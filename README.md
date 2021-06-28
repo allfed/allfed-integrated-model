@@ -10,19 +10,22 @@ To install:
 poetry install
 ```
 # Run the model
-From the command line:
+### From the command line (requires cloned repo):
 ```bash
 poetry shell
 python src/cheri.py
 ```
 
-Using Jupyter (access via command line):
+### Using Jupyter (requires cloned repo):
 ```bash
 poetry run jupyter lab
 ```
 Then navigate to the `notebooks` folder, open `1.0-example-run-cheri.ipynb`, and
-execute each cell in order.
+execute each cell in order, ignoring the first cell
 
+### Using Colab:
+Go to https://colab.research.google.com/github/allfed/allfed-integrated-model/blob/main/notebooks/1.0-example-run-cheri.ipynb
+Then, run each cell in order.
 
 # Project Organization
 
