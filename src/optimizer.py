@@ -17,11 +17,23 @@ STORED_FOOD_BEFORE_MONTH0=10
 
 FUEL_BEFORE_MONTH0=100
 FUEL_ADDED_BEFORE_MONTH2=100
-FUEL_ADDED_BEFORE_MONTH3=100
+FUEL_ADDED_BEFORE_MONTH3=0
 
 FUEL_USED_PER_LEAF_FOOD=2
 FUEL_USED_PER_CROPS_PLANTING=1
 FOOD_PRODUCED_PER_CROPS_PLANTED=1
+
+#each month, how many people have their nutrition satisfied for each type of food
+
+PERSON_FATS_PER_STORED_FOOD = .3
+PERSON_FATS_PER_LEAF_FOOD = 0
+PERSON_FATS_PER_CROPS_FOOD = 1
+PERSON_CALORIES_PER_STORED_FOOD = 1
+PERSON_CALORIES_PER_LEAF_FOOD = .3
+PERSON_CALORIES_PER_CROPS_FOOD = 0
+PERSON_PROTEINS_PER_STORED_FOOD = 0
+PERSON_PROTEINS_PER_LEAF_FOOD = 1
+PERSON_PROTEINS_PER_CROPS_FOOD = .3
 
 NMONTHS=3
 # Create the model to optimize
@@ -43,15 +55,18 @@ leaf_food_produced=[0]*NMONTHS
 stored_food_eaten=[0]*NMONTHS
 leaf_food_eaten=[0]*NMONTHS
 crops_food_eaten=[0]*NMONTHS
-total_eaten=[0]*NMONTHS
+humans_fed_fat=[0]*NMONTHS
+humans_fed_protein=[0]*NMONTHS
+humans_fed_calories=[0]*NMONTHS
 maximize_constraints=[]
 # Initialize the variable to maximize
 z = LpVariable(name="least_food_eaten_any_month", lowBound=0)
 
 for m in range(0,NMONTHS):
-
+	
 	print('month')
 	print(m)
+
 	#shared resources
 	fuel[m] = LpVariable(name="Fuel_Beginning_Month_"+str(m), lowBound=0)
 	fuel_after[m] = LpVariable(name="Fuel_After_Month_"+str(m), lowBound=0)
@@ -75,17 +90,45 @@ for m in range(0,NMONTHS):
 	crops_food_eaten[m] = LpVariable(name="Crops_Food_Eaten_During_Month_"+str(m), lowBound=0)
 
 	#total eaten
-	total_eaten[m] = LpVariable(name="Total_Eaten_Month_"+str(m),lowBound=0)
+	humans_fed_fat[m] = LpVariable(name="Humans_Fed_Fat"+str(m),lowBound=0)
+	humans_fed_protein[m] = LpVariable(name="Humans_Fed_Protein"+str(m),lowBound=0)
+	humans_fed_calories[m] = LpVariable(name="Humans_Fed_Calories"+str(m),lowBound=0)
 
 	#total eaten assignment
-	model += (total_eaten[m] <= stored_food_eaten[m]+
-		leaf_food_eaten[m]+crops_food_eaten[m],
-		"Total_Eaten_Month_"+str(m)+"_Constraint")
 
-	#maximizes the minimum z value
-	maximizer_string="Total_Eaten_Month_"+str(m)+"_Objective_Constraint"
+	model += (humans_fed_fat[m] <= 
+		stored_food_eaten[m]*PERSON_FATS_PER_STORED_FOOD
+		+ leaf_food_eaten[m]*PERSON_FATS_PER_LEAF_FOOD
+		+ crops_food_eaten[m]*PERSON_FATS_PER_CROPS_FOOD,
+		"Fat_Fed_Month_"+str(m)+"_Constraint")
+	model += (humans_fed_calories[m] <= 
+		stored_food_eaten[m]*PERSON_CALORIES_PER_STORED_FOOD
+		+ leaf_food_eaten[m]*PERSON_CALORIES_PER_LEAF_FOOD
+		+ crops_food_eaten[m]*PERSON_CALORIES_PER_CROPS_FOOD,
+		"Calories_Fed_Month_"+str(m)+"_Constraint")
+	model += (humans_fed_protein[m] <= 
+		stored_food_eaten[m]*PERSON_PROTEINS_PER_STORED_FOOD
+		+leaf_food_eaten[m]*PERSON_PROTEINS_PER_LEAF_FOOD
+		+crops_food_eaten[m]*PERSON_PROTEINS_PER_CROPS_FOOD,
+		"Protein_Fed_Month_"+str(m)+"_Constraint")
+
+	# maximizes the minimum z value
+	# we maximize the minimum humans fed from any month and either fat, protein, or calories
+	maximizer_string="Fat_Fed_Month_"+str(m)+"_Objective_Constraint"
 	maximize_constraints.append(maximizer_string)
-	model += (z <= total_eaten[m], maximizer_string)
+	print(model)
+	print(humans_fed_fat[m])
+	print(maximizer_string)
+	model += (z <= humans_fed_fat[m], maximizer_string)
+
+	maximizer_string="Calories_Fed_Month_"+str(m)+"_Objective_Constraint"
+	maximize_constraints.append(maximizer_string)
+	model += (z <= humans_fed_protein[m], maximizer_string)
+
+	maximizer_string="Protein_Fed_Month_"+str(m)+"_Objective_Constraint"
+	maximize_constraints.append(maximizer_string)
+	model += (z <= humans_fed_calories[m], maximizer_string)
+
 
 
 #resource consumption assignment
@@ -151,7 +194,7 @@ for var in model.variables():
 
 
 #double check it worked
-SHOW_CONSTRAINT_CHECK=True
+SHOW_CONSTRAINT_CHECK=False
 # print(model.constraints.items())
 print('pulp reports successful optimization')
 Validator.checkConstraintsSatisfied(model,status,maximize_constraints,SHOW_CONSTRAINT_CHECK)
