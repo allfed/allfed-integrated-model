@@ -17,13 +17,15 @@ class Validator:
 		pass
 
 	def checkConstraintsSatisfied(model,status,maximize_constraints,all_constraints,SHOW_CONSTRAINT_CHECK):
-		print(status)
+		if(SHOW_CONSTRAINT_CHECK):
+			print(status)
 		assert(status==1)
 
 		constraints_dict={}
 		# print(maximize_constraints)
 		for c in all_constraints:
-			# print(c)
+			if(SHOW_CONSTRAINT_CHECK):
+				print(c)
 			if(c.name in maximize_constraints):
 				continue
 			constraints_dict[c.name]=c.varValue
@@ -32,7 +34,10 @@ class Validator:
 			if(constraint[0] in maximize_constraints):
 				continue
 			compare_type=0
-			print(constraint)
+			
+			if(SHOW_CONSTRAINT_CHECK):
+				print(constraint)
+
 			splitted=str(constraint[1]).split(' = ')
 			if(len(splitted)<2):
 				compare_type=1
@@ -51,29 +56,16 @@ class Validator:
 			# print(equation_string)
 
 			for var in model.variables():
-				# if((var.name in equation_string) or (var.name in variable_string)):
-				# 	# print('equation_string')
-				# 	# print(equation_string)
-				# 	print('var.name')
-				# 	print(var.name)
-				# 	print('var.value')
-				# 	print(str(var.value()))
-				# 	# if(var.name in maximize_constraints):
-				# 	# 	continue
-				# 	print('constraints_dict[name]')
-				# 	print(constraints_dict[var.name])
 				equation_string = equation_string.replace(var.name,str(constraints_dict[var.name]))
 				variable_string = variable_string.replace(var.name,str(constraints_dict[var.name]))
-			# quit()
 			eq_val=eval(equation_string)
 			var_val=eval(variable_string)
 			if(SHOW_CONSTRAINT_CHECK):
 				print('checking constraint '+\
 				str(constraint[0])+' has '+str(constraint[1]))
-			print(eq_val)
-			print(var_val)
 			if(compare_type==0):
-				print('difference'+str(abs(eq_val- var_val)))
+				if(SHOW_CONSTRAINT_CHECK):
+					print('difference'+str(abs(eq_val- var_val)))
 				assert(abs(eq_val- var_val)<1)
 			if(compare_type==1):
 				assert(var_val- eq_val<=1)
