@@ -39,12 +39,21 @@ class Plotter:
 			plt.plot(time_months_middle,analysis.billions_fed_seaweed_fat)
 			plt.plot(time_months_middle,analysis.billions_fed_seaweed_protein)
 			legend = legend + ['Seaweed, Limit by kcals','Seaweed, Limited by Fat','Seaweed, Limited by protein']
-		plt.title('People fed')
+		plt.title('People fed, by type')
 		plt.ylabel('billions of people')
 		plt.xlabel('Months Since May Nuclear Event')
 		plt.legend(legend)
 		plt.show()
 
+		plt.title('People fed, cumulative')
+		plt.plot(time_months_middle,np.array(analysis.billions_fed_SF_kcals)+np.array(analysis.billions_fed_seaweed_kcals))
+		plt.plot(time_months_middle,np.array(analysis.billions_fed_SF_fat)+np.array(analysis.billions_fed_seaweed_fat))
+		plt.plot(time_months_middle,np.array(analysis.billions_fed_SF_protein)+np.array(analysis.billions_fed_seaweed_protein))
+		legend = ['Limit by kcals','Limited by Fat','Limited by protein']
+		plt.ylabel('billions of people')
+		plt.xlabel('Months Since May Nuclear Event')
+		plt.legend(legend)
+		plt.show()
 	#plot comparison between Aron's Data and this model's data
 	def plot_seaweed_comparison(time_days_daily,time_days_monthly,analysis):
 		#aron's food produced data for each day

@@ -107,31 +107,36 @@ class Analyzer:
 
 		self.billions_fed_SF_fat = self.makeMidMonthlyVars(
 			stored_food_eaten,
-			self.constants["SF_FRACTION_FATS"]/self.constants["FAT_MONTHLY"],
+			self.constants["SF_FRACTION_FATS"]/self.constants["FAT_MONTHLY"]/1e9,
 			show_output)
 
 		self.billion_person_years_SF_fat = self.makeStartEndMonthlyVars(
 			stored_food_start,
 			stored_food_end,
-			self.constants["SF_FRACTION_FATS"]/(self.constants["FAT_MONTHLY"]*12),
+			self.constants["SF_FRACTION_FATS"]/(self.constants["FAT_MONTHLY"]*12)/1e9,
 			show_output)
 	
 		self.billions_fed_SF_protein = self.makeMidMonthlyVars(
 			stored_food_eaten,
-			self.constants["SF_FRACTION_PROTEIN"]/self.constants["PROTEIN_MONTHLY"],
+			self.constants["SF_FRACTION_PROTEIN"]/self.constants["PROTEIN_MONTHLY"]/1e9,
 			show_output)
 
 		self.billion_person_years_SF_protein = self.makeStartEndMonthlyVars(
 			stored_food_start,
 			stored_food_end,
-			self.constants["SF_FRACTION_PROTEIN"]/(self.constants["PROTEIN_MONTHLY"]*12),
+			self.constants["SF_FRACTION_PROTEIN"]/(self.constants["PROTEIN_MONTHLY"]*12)/1e9,
 			show_output)
 	
-		if(self.constants['ADD_STORED_FOOD']):
-			print('Days stored food global at start')
-			print(360*self.constants['INITIAL_SF'] 
-				* self.constants['SF_FRACTION_KCALS']
-				/(12*self.constants['KCALS_MONTHLY']*7.9))
+		# if(self.constants['ADD_STORED_FOOD']):
+			# print('Days stored food global at start')
+			# print(initial_stored_food_calories*self.constants['SF_FRACTION_KCALS'])
+			# print(self.constants['INITIAL_SF'])
+			# print(self.constants['SF_FRACTION_KCALS'])
+			# print(self.constants['KCALS_MONTHLY'])
+
+			# self.constants["SF_FRACTION_KCALS"]/self.constants["KCALS_MONTHLY"]
+			# print(360*self.constants['INITIAL_SF'] 
+			# * self.constants['SF_FRACTION_KCALS']/(12*self.constants['KCALS_MONTHLY']*7.9e9))
 
 	def analyze_seaweed_results(
 		self,
