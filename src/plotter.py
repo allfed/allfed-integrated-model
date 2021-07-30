@@ -24,45 +24,115 @@ class Plotter:
 		plt.title('Stored Food')
 		plt.xlabel('Months Since May Nuclear Event')
 		plt.ylabel('Billion Person-Years')
-		plt.legend(['Limit by kcals','Limited by Fat','Limited by protein'])
+		plt.legend(['kcals available','fat available','protein available'])
 		plt.show()
 
 
+
+	def plot_nonegg_nondairy_meat(time_months,analysis):
+
+		plt.plot(time_months,np.array(analysis.billion_person_years_meat_kcals))
+		plt.plot(time_months,np.array(analysis.billion_person_years_meat_fat))
+		plt.plot(time_months,np.array(analysis.billion_person_years_meat_protein))
+		plt.title('Meat')
+		plt.xlabel('Months Since May Nuclear Event')
+		plt.ylabel('Billion Person-Years')
+		plt.legend(['kcals available','fat available','protein available'])
+		plt.show()
+
+	def plot_dairy(time_months,analysis):
+		plt.plot(time_months,np.array(analysis.billions_fed_milk_kcals))
+		plt.plot(time_months,np.array(analysis.billions_fed_milk_fat))
+		plt.plot(time_months,np.array(analysis.billions_fed_milk_protein))
+		plt.plot(time_months,np.array(analysis.billions_fed_dairy_meat_kcals))
+		plt.plot(time_months,np.array(analysis.billions_fed_dairy_meat_fat))
+		plt.plot(time_months,np.array(analysis.billions_fed_dairy_meat_protein))
+		plt.title('Billions Fed from Milk and Eating Dairy Animals')
+		plt.xlabel('Months Since May Nuclear Event')
+		plt.ylabel('Billion Person-Years')
+		plt.legend(['kcals available, milk',
+			'fat available, milk',
+			'protein available, milk',
+			'kcals available, dairy cow meat',
+			'fat available, dairy cow meat',
+			'protein available, dairy cow meat'])
+		plt.show()
+
 	def plot_people_fed(time_months_middle,analysis):
+		fig = plt.figure()
+		ax=plt.subplot(111)
 		legend=[]
 		if(analysis.constants['ADD_STORED_FOOD']):
-			plt.plot(time_months_middle,analysis.billions_fed_SF_kcals)
-			plt.plot(time_months_middle,analysis.billions_fed_SF_fat)
-			plt.plot(time_months_middle,analysis.billions_fed_SF_protein)
-			legend = legend + ['Stored Food, Limit by kcals',
+			ax.plot(time_months_middle,analysis.billions_fed_SF_kcals)
+			ax.plot(time_months_middle,analysis.billions_fed_SF_fat)
+			ax.plot(time_months_middle,analysis.billions_fed_SF_protein)
+			legend = legend + ['Stored Food, Limited by kcals',
 			'Stored Food, Limited by Fat',
 			'Stored Food, Limited by protein']
+		if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+			ax.plot(time_months_middle,analysis.billions_fed_meat_kcals)
+			ax.plot(time_months_middle,analysis.billions_fed_meat_fat)
+			ax.plot(time_months_middle,analysis.billions_fed_meat_protein)
+			legend = legend + ['Meat, Limited by kcals',
+			'Meat, Limited by Fat',
+			'Meat, Limited by protein']
+		if(analysis.constants['ADD_DAIRY']):
+			ax.plot(time_months_middle,analysis.billions_fed_milk_kcals)
+			ax.plot(time_months_middle,analysis.billions_fed_milk_fat)
+			ax.plot(time_months_middle,analysis.billions_fed_milk_protein)
+			legend = legend + ['Milk, Limited by kcals',
+			'Milk, Limited by Fat',
+			'Milk, Limited by protein']
+			ax.plot(time_months_middle,analysis.billions_fed_dairy_meat_kcals)
+			ax.plot(time_months_middle,analysis.billions_fed_dairy_meat_fat)
+			ax.plot(time_months_middle,analysis.billions_fed_dairy_meat_protein)
+			legend = legend + ['Dairy meat, Limited by kcals',
+			'Dairy meat, Limited by Fat',
+			'Dairy meat, Limited by protein']
+
 		if(analysis.constants['ADD_SEAWEED']):
-			plt.plot(time_months_middle,analysis.billions_fed_seaweed_kcals)
-			plt.plot(time_months_middle,analysis.billions_fed_seaweed_fat)
-			plt.plot(time_months_middle,analysis.billions_fed_seaweed_protein)
-			legend = legend + ['Seaweed, Limit by kcals',
+			ax.plot(time_months_middle,analysis.billions_fed_seaweed_kcals)
+			ax.plot(time_months_middle,analysis.billions_fed_seaweed_fat)
+			ax.plot(time_months_middle,analysis.billions_fed_seaweed_protein)
+			legend = legend + ['Seaweed, Limited by kcals',
 				'Seaweed, Limited by Fat',
 				'Seaweed, Limited by protein']
 		if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
-			plt.plot(time_months_middle,analysis.billions_fed_CS_kcals[0:len(time_months_middle)])
-			legend = legend + ['Cellulosuc Sugar, Limit by kcals']
+			ax.plot(time_months_middle,analysis.billions_fed_CS_kcals[0:len(time_months_middle)])
+			legend = legend + ['Cellulosuc Sugar, Limited by kcals']
+		box = ax.get_position()
+		ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+		ax.legend(legend,loc='center left', bbox_to_anchor=(1, 0.5))
 		plt.title('People fed, by type')
 		plt.ylabel('billions of people')
 		plt.xlabel('Months Since May Nuclear Event')
-		plt.legend(legend)
-		plt.show()
+		# plt.legend(legend,loc='upper center', bbox_to_anchor=(0.5, 1.05),
+		  # ncol=3, fancybox=True, shadow=True)
 
-		plt.title('People fed, cumulative')
+		plt.show()
+		title=''
+		if(analysis.constants['ADD_SEAWEED']):
+			title = title + "Seaweed, "
+		if(analysis.constants['ADD_STORED_FOOD']):
+			title = title + "Stored Food, "
+		if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+			title = title + "Meat, "
+		if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
+			title = title + "Cell. Sugar, "
+		title = title + "Population Fed"
+		plt.title(title)
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_kcals)
+			+np.array(analysis.billions_fed_meat_kcals)
 			+np.array(analysis.billions_fed_seaweed_kcals)
 			+np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)]))
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_fat)
+			+np.array(analysis.billions_fed_meat_fat)
 			+np.array(analysis.billions_fed_seaweed_fat))
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_protein)
+			+np.array(analysis.billions_fed_meat_protein)
 			+np.array(analysis.billions_fed_seaweed_protein))
 		legend = ['Limit by kcals','Limited by Fat','Limited by protein']
 		plt.ylabel('billions of people')
@@ -99,63 +169,19 @@ class Plotter:
 			'Optimizer Estimate Wet On Farm'
 			])
 		plt.title('Seaweed Wet, 1000s of tons')
+		plt.xlabel('Days since May Nuclear Event')
 		plt.yscale('log')
 		plt.show()
-		quit()
-		max_line=np.linspace(4e6*SEAWEED_KCALS/KCALS_MONTHLY,4e6*SEAWEED_KCALS/KCALS_MONTHLY,len(wet_on_farm_spreadsheet))
 
-		plt.plot(spreadsheet_days,max_line)
-		plt.plot(spreadsheet_days,world_kcals_month/KCALS_MONTHLY)
-		plt.plot(spreadsheet_days,np.array(food_spreadsheet).cumsum()/1000*SEAWEED_KCALS/KCALS_MONTHLY)
-		plt.plot(time_days_daily,np.array(seaweed_food_produced_vals_daily	).cumsum()*SEAWEED_KCALS/KCALS_MONTHLY)
+		plt.plot(spreadsheet_days,np.array(food_spreadsheet).cumsum()/1000*analysis.constants["SEAWEED_KCALS"]/analysis.constants["KCALS_MONTHLY"])
+		plt.plot(time_days_daily,np.array(analysis.seaweed_food_produced_daily).cumsum()*analysis.constants["SEAWEED_KCALS"]/analysis.constants["KCALS_MONTHLY"])
 		legend = [
-			'Max Density times Max Area',
-			'7.9 billion people monthly kcals requirement',
 			'Aron\'s Spreadsheet Food Wet Harvest Estimate',
 			'Optimizer Estimate Food Wet Harvest Estimate'
 			]
 			
-		if(ADD_STORED_FOOD):
-			legend.append('Stored Food Eaten')
-			plt.plot(time_days_middle,np.array(stored_food_eaten_vals).cumsum())
 		plt.legend(legend)
-		plt.title('Cumulative Eaten food, Billions of people, Monthly')
-		plt.yscale('log')
-		plt.show()
-
-		# plt.plot(spreadsheet_days,world_kcals_month/KCALS_MONTHLY)
-		# plt.plot(time_days_daily,np.array(seaweed_food_produced_monthly)*SEAWEED_KCALS/KCALS_MONTHLY)
-		# legend = [
-		# 	'7.9 billion people monthly kcals requirement',
-		# 	'Seaweed Food'
-		# 	]
-			
-		# if(ADD_STORED_FOOD):
-		# 	legend.append('Stored Food Eaten')
-		# 	plt.plot(time_days_middle,np.array(stored_food_eaten_vals).cumsum())
-		# plt.legend(legend)
-		# plt.title('Cumulative Eaten food, Billions of people, Monthly')
+		plt.xlabel('Days since May Nuclear Event')
+		plt.title('Cumulative Seaweed Harvest, 1000s Tons Wet')
 		# plt.yscale('log')
-		# plt.show()
-		
-
-		if(not MAXIMIZE_ONLY_FOOD_AFTER_DAY_150):
-			humans_fed_fat_vals=[]
-			humans_fed_protein_vals=[]
-			humans_fed_kcals_vals=[]
-			for m in range(0,NMONTHS):
-				val=humans_fed_kcals[m]
-				humans_fed_kcals_vals.append(val.varValue)
-				val=humans_fed_fat[m]
-				humans_fed_fat_vals.append(val.varValue)
-				val=humans_fed_protein[m]
-				humans_fed_protein_vals.append(val.varValue)
-				print(str(val)+str(val.varValue))
-
-			plt.plot(time_months_middle,np.array(humans_fed_kcals_vals))
-			plt.plot(time_months_middle,np.array(humans_fed_fat_vals))
-			plt.plot(time_months_middle,np.array(humans_fed_protein_vals))
-			plt.legend(['kcals req satisfied','fat req satisfied','protein req satisfied'])
-			plt.title('People Fed (Billions)')
-			plt.xlabel('Months Since May Nuclear Event')
-			plt.show()
+		plt.show()
