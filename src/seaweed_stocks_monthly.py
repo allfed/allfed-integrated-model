@@ -17,12 +17,14 @@ NMONTHS=9
 print("NMONTHS: "+str(NMONTHS))
 DAYS_IN_MONTH=30
 NDAYS=NMONTHS*DAYS_IN_MONTH
-
+WORLD_POP=7.8e9
 
 ADD_SEAWEED=True
 print("ADD_SEAWEED: "+str(ADD_SEAWEED))
 ADD_STORED_FOOD=True
 print("ADD_STORED_FOOD: "+str(ADD_STORED_FOOD))
+ADD_CELLULOSIC_SUGAR = True
+print("ADD_CELLULOSIC_SUGAR: "+str(ADD_CELLULOSIC_SUGAR))
 MAXIMIZE_ONLY_FOOD_AFTER_DAY_150=False
 print("MAXIMIZE_ONLY_FOOD_AFTER_DAY_150: "
 	+ str(MAXIMIZE_ONLY_FOOD_AFTER_DAY_150))
@@ -132,8 +134,34 @@ stored_food_end=[0]*NMONTHS
 stored_food_eaten=[0]*NMONTHS # if stored food isn't modeled, this stays zero
 
 
-#### OTHER VARIABLES ####
 
+#### CONSTANTS FOR CELLULOSIC SUGAR ####
+
+#in billions of calories
+caloric_requirement_per_month = WORLD_POP * KCALS_MONTHLY/1e9
+
+ramp_up_cellulosic_sugar_monthly = [0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 19.57, 23.48, 24.58, 28.49, 28.49,
+									29.59,
+									31.64, 31.64, 31.64, 31.64, 33.69, 35.74, 35.74, 35.74, 35.74, 37.78, 38.70, 39.61,
+									40.53,
+									41.44, 42.35, 43.27, 44.18, 45.10, 46.01, 46.93, 47.84, 48.76, 49.67, 50.58, 51.50,
+									52.41,
+									53.33, 54.24, 55.16, 56.07, 56.99, 57.90, 58.81, 59.73, 60.64, 61.56, 62.47, 63.39,
+									64.30,
+									65.21, 66.13, 67.04, 67.96, 68.87, 69.79, 70.70, 71.62, 72.53, 73.44, 74.36, 75.27,
+									76.19,
+									77.10, 78.02, 78.93, 79.85, 80.76, 81.67]
+if(ADD_CELLULOSIC_SUGAR):
+	production_calories_cellulosic_sugar_per_month = []
+	for x in ramp_up_cellulosic_sugar_monthly:
+		production_calories_cellulosic_sugar_per_month.append(x / 100 * caloric_requirement_per_month)
+else:
+	production_calories_cellulosic_sugar_per_month=[0]*len(ramp_up_cellulosic_sugar_monthly)
+
+# print(production_calories_cellulosic_sugar_per_month)
+# quit()
+
+#### OTHER VARIABLES ####
 
 humans_fed_fat = [0]*NMONTHS
 humans_fed_protein = [0]*NMONTHS
@@ -163,8 +191,10 @@ constants['SF_FRACTION_PROTEIN']=SF_FRACTION_PROTEIN
 constants['SEAWEED_KCALS']=SEAWEED_KCALS
 constants['SEAWEED_FATS']=SEAWEED_FATS
 constants['SEAWEED_PROTEIN']=SEAWEED_PROTEIN
-constants['INITIAL_SF']=SEAWEED_KCALS
-
+constants['INITIAL_SF']=INITIAL_SF
+constants['STANDARD_KCALS_DAILY']=STANDARD_KCALS_DAILY
+constants['WORLD_POP'] = WORLD_POP
+constants['ADD_CELLULOSIC_SUGAR'] = ADD_CELLULOSIC_SUGAR
 #### FUNCTIONS FOR EACH FOOD TYPE ####
 
 
@@ -210,6 +240,7 @@ def add_seaweed_to_model(model, m):
 
 	return model
 
+
 #incorporate linear constraints for stored food consumption each month
 def add_stored_food_to_model(model, m):
 	stored_food_start[m] = LpVariable("Stored_Food_Start_Month_"+str(m)+"_Variable", 0,INITIAL_SF)
@@ -253,7 +284,8 @@ def add_objectives_to_model(model, m, maximize_constraints):
 	#kcals monthly is in units kcals
 	model += (humans_fed_kcals[m] == 
 		(stored_food_eaten[m]*SF_FRACTION_KCALS
-		+ seaweed_food_produced_monthly[m]*SEAWEED_KCALS)/KCALS_MONTHLY,
+		+ seaweed_food_produced_monthly[m]*SEAWEED_KCALS
+		+ production_calories_cellulosic_sugar_per_month[m])/KCALS_MONTHLY,
 		"Kcals_Fed_Month_"+str(m)+"_Constraint")
 	#stored_food_eaten*sf_fraction_fat is in units thousand tons monthly
 	#seaweed_food_produced_monthly*seaweed_fats is in units thousand tons monthly
@@ -365,8 +397,6 @@ analysis.analyze_SF_results(
 	stored_food_end,
 	show_output
 )
-if(ADD_STORED_FOOD):
-	Plotter.plot_stored_food(time_months,analysis)
 
 #extract numeric seaweed results in terms of people fed and raw tons wet
 #if seaweed not added to model, will be zero
@@ -377,6 +407,16 @@ analysis.analyze_seaweed_results(
 	seaweed_food_produced_monthly,
 	show_output
 )
+
+# if no stored food, will be zero
+analysis.analyze_CS_results(
+	production_calories_cellulosic_sugar_per_month,
+	show_output
+)
+
+
+if(ADD_STORED_FOOD):
+	Plotter.plot_stored_food(time_months,analysis)
 
 Plotter.plot_people_fed(time_months_middle,analysis)
 

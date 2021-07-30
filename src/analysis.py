@@ -84,6 +84,17 @@ class Analyzer:
 		return variable_output
 
 
+	#if cellulosic sugar isn't included, these results will be zero
+	def analyze_CS_results(
+		self,
+		production_calories_cellulosic_sugar_per_month,
+		show_output
+		):
+
+		self.billions_fed_CS_kcals = \
+			np.array(production_calories_cellulosic_sugar_per_month) \
+			/ self.constants["KCALS_MONTHLY"]
+
 	#if stored food isn't included, these results will be zero
 	def analyze_SF_results(
 		self,
@@ -92,8 +103,7 @@ class Analyzer:
 		stored_food_end,
 		show_output
 		):
-		# quit()
-		# print()
+
 		self.billions_fed_SF_kcals = self.makeMidMonthlyVars(
 			stored_food_eaten,
 			self.constants["SF_FRACTION_KCALS"]/self.constants["KCALS_MONTHLY"],

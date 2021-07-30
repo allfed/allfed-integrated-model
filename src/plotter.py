@@ -27,18 +27,26 @@ class Plotter:
 		plt.legend(['Limit by kcals','Limited by Fat','Limited by protein'])
 		plt.show()
 
+
 	def plot_people_fed(time_months_middle,analysis):
 		legend=[]
 		if(analysis.constants['ADD_STORED_FOOD']):
 			plt.plot(time_months_middle,analysis.billions_fed_SF_kcals)
 			plt.plot(time_months_middle,analysis.billions_fed_SF_fat)
 			plt.plot(time_months_middle,analysis.billions_fed_SF_protein)
-			legend = legend + ['Stored Food, Limit by kcals','Stored Food, Limited by Fat','Stored Food, Limited by protein']
+			legend = legend + ['Stored Food, Limit by kcals',
+			'Stored Food, Limited by Fat',
+			'Stored Food, Limited by protein']
 		if(analysis.constants['ADD_SEAWEED']):
 			plt.plot(time_months_middle,analysis.billions_fed_seaweed_kcals)
 			plt.plot(time_months_middle,analysis.billions_fed_seaweed_fat)
 			plt.plot(time_months_middle,analysis.billions_fed_seaweed_protein)
-			legend = legend + ['Seaweed, Limit by kcals','Seaweed, Limited by Fat','Seaweed, Limited by protein']
+			legend = legend + ['Seaweed, Limit by kcals',
+				'Seaweed, Limited by Fat',
+				'Seaweed, Limited by protein']
+		if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
+			plt.plot(time_months_middle,analysis.billions_fed_CS_kcals[0:len(time_months_middle)])
+			legend = legend + ['Cellulosuc Sugar, Limit by kcals']
 		plt.title('People fed, by type')
 		plt.ylabel('billions of people')
 		plt.xlabel('Months Since May Nuclear Event')
@@ -46,9 +54,16 @@ class Plotter:
 		plt.show()
 
 		plt.title('People fed, cumulative')
-		plt.plot(time_months_middle,np.array(analysis.billions_fed_SF_kcals)+np.array(analysis.billions_fed_seaweed_kcals))
-		plt.plot(time_months_middle,np.array(analysis.billions_fed_SF_fat)+np.array(analysis.billions_fed_seaweed_fat))
-		plt.plot(time_months_middle,np.array(analysis.billions_fed_SF_protein)+np.array(analysis.billions_fed_seaweed_protein))
+		plt.plot(time_months_middle,
+			np.array(analysis.billions_fed_SF_kcals)
+			+np.array(analysis.billions_fed_seaweed_kcals)
+			+np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)]))
+		plt.plot(time_months_middle,
+			np.array(analysis.billions_fed_SF_fat)
+			+np.array(analysis.billions_fed_seaweed_fat))
+		plt.plot(time_months_middle,
+			np.array(analysis.billions_fed_SF_protein)
+			+np.array(analysis.billions_fed_seaweed_protein))
 		legend = ['Limit by kcals','Limited by Fat','Limited by protein']
 		plt.ylabel('billions of people')
 		plt.xlabel('Months Since May Nuclear Event')
