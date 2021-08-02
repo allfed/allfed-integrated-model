@@ -40,6 +40,14 @@ class Plotter:
 		plt.legend(['kcals available','fat available','protein available'])
 		plt.show()
 
+	def plot_dairy_cows(time_months_middle,analysis):
+		plt.plot(time_months_middle,np.array(analysis.millions_dairy_animals_midmonth))
+		plt.title('Millions of Dairy Animals')
+		plt.xlabel('Months Since May Nuclear Event')
+		plt.ylabel('Livestock Population, Millions')
+		plt.show()
+
+
 	def plot_dairy(time_months,analysis):
 		plt.plot(time_months,np.array(analysis.billions_fed_milk_kcals))
 		plt.plot(time_months,np.array(analysis.billions_fed_milk_fat))
@@ -50,7 +58,8 @@ class Plotter:
 		plt.title('Billions Fed from Milk and Eating Dairy Animals')
 		plt.xlabel('Months Since May Nuclear Event')
 		plt.ylabel('Billion Person-Years')
-		plt.legend(['kcals available, milk',
+		plt.legend([\
+			'kcals available, milk',
 			'fat available, milk',
 			'protein available, milk',
 			'kcals available, dairy cow meat',
@@ -119,21 +128,29 @@ class Plotter:
 			title = title + "Meat, "
 		if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
 			title = title + "Cell. Sugar, "
+		if(analysis.constants['ADD_DAIRY']):
+			title = title + "Dairy, "
 		title = title + "Population Fed"
 		plt.title(title)
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_kcals)
 			+np.array(analysis.billions_fed_meat_kcals)
 			+np.array(analysis.billions_fed_seaweed_kcals)
+			+np.array(analysis.billions_fed_dairy_meat_kcals)
+			+np.array(analysis.billions_fed_milk_kcals)
 			+np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)]))
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_fat)
 			+np.array(analysis.billions_fed_meat_fat)
-			+np.array(analysis.billions_fed_seaweed_fat))
+			+np.array(analysis.billions_fed_seaweed_fat)
+			+np.array(analysis.billions_fed_dairy_meat_fat)
+			+np.array(analysis.billions_fed_milk_fat))
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_protein)
 			+np.array(analysis.billions_fed_meat_protein)
-			+np.array(analysis.billions_fed_seaweed_protein))
+			+np.array(analysis.billions_fed_seaweed_protein)
+			+np.array(analysis.billions_fed_dairy_meat_protein)
+			+np.array(analysis.billions_fed_milk_protein))
 		legend = ['Limit by kcals','Limited by Fat','Limited by protein']
 		plt.ylabel('billions of people')
 		plt.xlabel('Months Since May Nuclear Event')

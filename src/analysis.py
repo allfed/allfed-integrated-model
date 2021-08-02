@@ -140,6 +140,7 @@ class Analyzer:
 		show_output
 		):
 
+
 		self.dairy_animals = self.makeStartEndMonthlyVars(
 			dairy_animals_start,
 			dairy_animals_end,
@@ -147,48 +148,54 @@ class Analyzer:
 			show_output
 		)
 
-		self.dairy_animals_start = self.makeMidMonthlyVars(
+		self.dairy_animals_start_month = self.makeMidMonthlyVars(
 			dairy_animals_start,
 			1,
 			show_output
 		)
 
-		self.dairy_animals_end = self.makeMidMonthlyVars(
+		self.dairy_animals_end_month = self.makeMidMonthlyVars(
 			dairy_animals_end,
 			1,
 			show_output
 		)
+		dairy_animals_1000s_midmonth = (np.array( \
+			self.dairy_animals_start_month)
+			+ np.array(self.dairy_animals_end_month))/2
+		self.millions_dairy_animals_midmonth = dairy_animals_1000s_midmonth/1000
 
-		dairy_animals_midmonth = (np.array(self.dairy_animals_start)
-			+ np.array(self.dairy_animals_end))/2
-
-		self.billions_fed_milk_kcals = dairy_animals_midmonth \
-			* self.constants["MILK_KCALS_PER_COW_PER_MONTH"] \
+		self.billions_fed_milk_kcals = dairy_animals_1000s_midmonth \
+			* self.constants["MILK_KCALS_PER_1000_COWS_PER_MONTH"] \
 			/ self.constants["KCALS_MONTHLY"]
 
-		self.billions_fed_milk_fat = dairy_animals_midmonth \
-			* self.constants["MILK_FAT_PER_COW_PER_MONTH"] \
+		self.billions_fed_milk_fat = dairy_animals_1000s_midmonth \
+			* self.constants["MILK_FAT_PER_1000_COWS_PER_MONTH"] \
 			/ self.constants["FAT_MONTHLY"]
 
-		self.billions_fed_milk_protein = dairy_animals_midmonth \
-			* self.constants["MILK_PROTEIN_PER_COW_PER_MONTH"] \
+		self.billions_fed_milk_protein = dairy_animals_1000s_midmonth \
+			* self.constants["MILK_PROTEIN_PER_1000_COWS_PER_MONTH"] \
 			/ self.constants["PROTEIN_MONTHLY"]
 
 		self.billions_fed_dairy_meat_kcals = self.makeMidMonthlyVars(
 			dairy_animals_eaten,
-			self.constants["KCALS_PER_LARGE_ANIMAL"]
+			self.constants["KCALS_PER_1000_LARGE_ANIMALS"]
+			# self.constants["MEAT_FRACTION_KCALS"]
 			/ self.constants["KCALS_MONTHLY"],
 			show_output)
 
 		self.billions_fed_dairy_meat_fat = self.makeMidMonthlyVars(
 			dairy_animals_eaten,
-			self.constants["FAT_PER_LARGE_ANIMAL"]
+			self.constants["FAT_PER_1000_LARGE_ANIMALS"]
+			# self.constants["MEAT_FRACTION_FAT"]
 			/ self.constants["FAT_MONTHLY"]/1e9,
-			show_output)
+			True)
+		# quit()
 
 		self.billions_fed_dairy_meat_protein = self.makeMidMonthlyVars(
 			dairy_animals_eaten,
-			self.constants["PROTEIN_PER_LARGE_ANIMAL"]/self.constants["PROTEIN_MONTHLY"]/1e9,
+			self.constants["PROTEIN_PER_1000_LARGE_ANIMALS"]
+			# self.constants["MEAT_FRACTION_PROTEIN"]
+			/self.constants["PROTEIN_MONTHLY"]/1e9,
 			show_output)
 	
 

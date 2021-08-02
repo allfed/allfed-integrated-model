@@ -35,8 +35,12 @@ class Validator:
 				continue
 			constraints_dict[c.name]=c.varValue
 
-		for constraint in list(model.constraints.items()):
+		differences=[]
+		constraintlist=list(model.constraints.items())
+		for constraint in constraintlist:
+
 			if(constraint[0] in maximize_constraints):
+				differences.append(0)
 				continue
 			compare_type=0
 			
@@ -65,6 +69,7 @@ class Validator:
 				variable_string = variable_string.replace(var.name,str(constraints_dict[var.name]))
 			eq_val=eval(equation_string)
 			var_val=eval(variable_string)
+			differences.append(abs(eq_val- var_val))
 			if(SHOW_CONSTRAINT_CHECK):
 				print('checking constraint '+\
 				str(constraint[0])+' has '+str(constraint[1]))
@@ -76,4 +81,10 @@ class Validator:
 				assert(var_val- eq_val<=1)
 			if(compare_type==2):
 				assert(eq_val- var_val<=1)
+
 		print('all constraints satisfied')
+		m=max(differences)
+		print('biggest difference:'+str(m))
+		max_index=np.where(np.array(differences)==m)[0][0]
+		print('for constraint:')
+		print(constraintlist[max_index])
