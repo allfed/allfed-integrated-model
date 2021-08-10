@@ -12,33 +12,97 @@ from src.validate import Validator
 import pulp
 from pulp import LpMaximize, LpProblem, LpVariable
 
+####### TO DO ###
+##  Crops
+##		nonrelocated: we're closer to an answer here. Open phil: 
+##			total production year 1, war happens month 5: 40%
+##			already 20% harvested, remaining 20% after month 5 (7 months).
+##			year 2: 10% of normal
+##			
+##		relocated: 60% reduction plucked out of thin air (for later)
+##		crop relocation within countries (for later)
+##		
+##  Assume food availability increases, increasing human food to chickens (for later)
+## 	Assume different times till standard agriculture supplants resilient foods (12 months baseline). Not having resilient foods would extend.
+## 	For small animals, should be able to slaughter them in less than a month (1 month baseline)
+##  Cattle currently take a year to slaughter normally
+##		Rate limit: all cattle in 3 months. (baseline)
+##  Assume biofuel takes a month (baseline)
+##		find biofuel values for total production, tons dry food, ask mike
+##		roughly currently 60% sugarcane, 40% maize
+## 	Assume waste drops
+##		assume global average is waste from household from poor countries in one month (baseline)
+##		waste from distribution doesn't change (baseline)
+##		seaweed as 30% (baseline)
+
+constants = {}
+constants['inputs'] = {}
+
+constants['inputs']['NMONTHS'] = 12
+constants['inputs']['NUTRITION'] = 'lower_moderate'
+constants['inputs']['ADD_SEAWEED'] = True
+constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
+constants['inputs']['ADD_DAIRY'] = True
+constants['inputs']['ADD_STORED_FOOD'] = True
+constants['inputs']['ADD_CELLULOSIC_SUGAR'] = True
+constants['inputs']['ADD_GREENHOUSES'] = True
+constants['inputs']['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
+constants['inputs']['ASSUMED_WASTE_PERCENT'] = 35
+constants['inputs']['ASSUMED_KCALS_EATEN'] = 2100
+constants['inputs']['MILK_INIT_TONS_ANNUAL'] = 145
+constants['inputs']['INITIAL_MILK_COWS'] = 264e6
+constants['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS'] = 10
+constants['inputs']['INIT_SMALL_ANIMALS'] = 28.2e9
+constants['inputs']['INIT_MEDIUM_ANIMALS'] = 3.2e9
+constants['inputs']['INIT_LARGE_ANIMALS'] = 1.9e9
+constants['inputs']['HARVEST_LOSS'] = 15 # percent
+constants['inputs']['INITIAL_SEAWEED'] = 1 # 1000 tons
+constants['inputs']['INITIAL_AREA'] = 1 # 1000 tons
+constants['inputs']['NEW_AREA_PER_DAY'] = 4.153 # 1000 km^2
+constants['inputs']['MINIMUM_DENSITY'] = 400 #tons/km^2
+constants['inputs']['MAXIMUM_DENSITY'] = 4000 #tons/km^2
+constants['inputs']['MAXIMUM_AREA'] = 1000 # 1000 km^2
+constants['inputs']['PRODUCTION_RATE'] = 10 # percent
+constants['inputs']['TONS_DRY_CALORIC_EQIVALENT'] = = 1602542*1000.
+constants['inputs']['INITIAL_SF_PROTEIN'] = 203607 #1000 tons protein per unit mass initial
+constants['inputs']['INITIAL_SF_FAT'] = 63948 # 1000 tons fat per unit mass initial
 #full months duration of simulation
-NMONTHS=7
+NMONTHS=constants['inputs']['NMONTHS']
 print("NMONTHS: "+str(NMONTHS))
 DAYS_IN_MONTH=30
 NDAYS=NMONTHS*DAYS_IN_MONTH
-WORLD_POP=7.8e9
 
-ADD_SEAWEED=False
+#Lower (severe risk)": it is dangerous to be under
+#"Lower (moderate risk)": it is tolerable to be under and adequate to be above
+NUTRITION = 'lower_severe'
+# NUTRITION = 'lower_moderate'
+
+ADD_SEAWEED=constants['inputs']['ADD_SEAWEED']
 print("ADD_SEAWEED: "+str(ADD_SEAWEED))
-ADD_NONEGG_NONDAIRY_MEAT=True
+ADD_NONEGG_NONDAIRY_MEAT=constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT']
 print("ADD_NONEGG_NONDAIRY_MEAT: "+str(ADD_NONEGG_NONDAIRY_MEAT))
-ADD_DAIRY=True
+ADD_DAIRY=constants['inputs']['ADD_DAIRY']
 print("ADD_DAIRY: "+str(ADD_DAIRY))
-ADD_EGGS=False
+
+# eggs are lower priority than milk, so we're waiting till later to fill in data
+ADD_EGGS=False 
 print("ADD_EGGS: "+str(ADD_EGGS))
-ADD_STORED_FOOD=True
+
+ADD_STORED_FOOD=constants['inputs']['ADD_STORED_FOOD']
 print("ADD_STORED_FOOD: "+str(ADD_STORED_FOOD))
-ADD_CELLULOSIC_SUGAR = True
+ADD_CELLULOSIC_SUGAR = constants['inputs']['ADD_CELLULOSIC_SUGAR']
 print("ADD_CELLULOSIC_SUGAR: "+str(ADD_CELLULOSIC_SUGAR))
+ADD_GREENHOUSES = constants['inputs']['ADD_GREENHOUSES']
+print("ADD_GREENHOUSES: "+str(ADD_GREENHOUSES))
 MAXIMIZE_ONLY_FOOD_AFTER_DAY_150=False
 print("MAXIMIZE_ONLY_FOOD_AFTER_DAY_150: "
 	+ str(MAXIMIZE_ONLY_FOOD_AFTER_DAY_150))
-LIMIT_SEAWEED_AS_PERCENT_KCALS=True
+LIMIT_SEAWEED_AS_PERCENT_KCALS=constants['inputs']['LIMIT_SEAWEED_AS_PERCENT_KCALS']
 print("LIMIT_SEAWEED_AS_PERCENT_KCALS: "+str(LIMIT_SEAWEED_AS_PERCENT_KCALS))
+MAX_SEAWEED_AS_PERCENT_KCALS=constants['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS']#max percent of kcals from seaweed  per person
+
 VERBOSE = False
 print("VERBOSE: "+str(VERBOSE))
-
 
 # Create the model to optimize
 model = LpProblem(name="optimization_nutrition", sense=LpMaximize)
@@ -53,12 +117,24 @@ z = LpVariable(name="Least_Humans_Fed_Any_Month", lowBound=0)
 #we will assume a 2100 kcals diet, and scale the "upper safe" nutrients
 #from the spreadsheet down to this "standard" level.
 #we also add 20% loss, according to the sorts of loss seen in this spreadsheet
+ASSUMED_WASTE_PERCENT = constants['inputs']['ASSUMED_WASTE_PERCENT']
+ASSUMED_KCALS_EATEN = constants['inputs']['ASSUMED_KCALS_EATEN']
+ASSUMED_KCALS_DAILY=ASSUMED_KCALS_EATEN/(1-ASSUMED_WASTE_PERCENT/100) #kcals
 
-ASSUMED_KCALS_DAILY=2100*1.25 #kcals
+# INTAKES={}
+# INTAKES['lower_severe']={}
+# INTAKES['lower_severe']['fat'] = 20 #grams per day
+# INTAKES['lower_severe']['protein'] = 46 #grams per day
+# INTAKES['lower_severe']['kcals'] = 1039 #per day
+# INTAKES['lower_moderate']={}
+# INTAKES['lower_moderate']['fat'] = 35 #grams per day
+# INTAKES['lower_moderate']['protein'] = 51 #grams per day
+# INTAKES['lower_moderate']['kcals'] = 1039 #per day
 
 UPPER_KCALS_DAILY=2755 #kcals
 UPPER_PROTEIN_DAILY = 78.75 #grams
-UPPER_FAT_DAILY = 70 #grams
+UPPER_FAT_DAILY = 35 #grams
+
 
 STANDARD_TO_UPPER_RATIO=\
 	ASSUMED_KCALS_DAILY/UPPER_KCALS_DAILY
@@ -69,6 +145,39 @@ STANDARD_FAT_DAILY=UPPER_FAT_DAILY*STANDARD_TO_UPPER_RATIO # grams
 KCALS_MONTHLY=STANDARD_KCALS_DAILY*DAYS_IN_MONTH#in kcals per person
 PROTEIN_MONTHLY=STANDARD_PROTEIN_DAILY*DAYS_IN_MONTH/1e9# in thousands of tons
 FAT_MONTHLY=STANDARD_FAT_DAILY*DAYS_IN_MONTH/1e9# in thousands of tons
+
+WORLD_POP=7.8e9
+KCAL_REQ_PER_MONTH = WORLD_POP * KCALS_MONTHLY/1e9
+
+KG_TO_1000_TONS=1/(1e6)
+
+MILK_INIT_TONS_ANNUAL=constants['inputs']['MILK_INIT_TONS_ANNUAL']
+# MILK_INIT_TONS_DRY_CALORIC_EQIVALENT=MILK_INIT_TONS_ANNUAL*1e6/12 #first month
+KCALS_PER_DRY_CALORIC_TONS=4e6
+
+#https://www.ciwf.org.uk/media/5235182/Statistics-Dairy-cows.pdf
+ANNUAL_LITERS_PER_COW=2200
+KCALS_PER_LITER=609 #kcals for 1 liter whole milk, googled it
+
+#billions of kcals
+MILK_KCALS_PER_1000_COWS_PER_MONTH = ANNUAL_LITERS_PER_COW \
+	* KCALS_PER_LITER \
+	/ 12 \
+	/ 1e9 \
+	* 1000 
+
+# billion kcals per unit mass initial (first month)
+INITIAL_MILK_COWS = constants['inputs']['INITIAL_MILK_COWS']
+INITIAL_MILK_COWS_THOUSANDS = INITIAL_MILK_COWS/1000
+
+INIT_SMALL_ANIMALS=constants['inputs']['INIT_SMALL_ANIMALS']
+INIT_SMALL_NONEGG_ANIMALS=INIT_SMALL_ANIMALS
+INIT_MEDIUM_ANIMALS=constants['inputs']['INIT_MEDIUM_ANIMALS']
+INIT_LARGE_ANIMALS = constants['inputs']['INIT_LARGE_ANIMALS']
+
+INIT_LARGE_NONDAIRY_ANIMALS=INIT_LARGE_ANIMALS-INITIAL_MILK_COWS_THOUSANDS*1e3
+
+
 
 
 ####SEAWEED INITIAL VARIABLES####
@@ -93,16 +202,15 @@ SEAWEED_PROTEIN = MASS_FRACTION_PROTEIN_DRY * WET_TO_DRY_MASS_CONVERSION
 ## seaweed fraction fat per ton wet
 SEAWEED_FAT = MASS_FRACTION_FAT_DRY * WET_TO_DRY_MASS_CONVERSION 
 
-HARVEST_LOSS=15 # percent
-INITIAL_SEAWEED=1 # 1000 tons
-INITIAL_AREA=1 # 1000 tons
-NEW_AREA_PER_DAY=4.153 # 1000 km^2
-MINIMUM_DENSITY=400 #tons/km^2
-MAXIMUM_DENSITY=4000 #tons/km^2
-MAXIMUM_AREA=1000 # 1000 km^2
-PRODUCTION_RATE=10 # percent
+HARVEST_LOSS=constants['inputs']['HARVEST_LOSS']
+INITIAL_SEAWEED=constants['inputs']['INITIAL_SEAWEED']
+INITIAL_AREA=constants['inputs']['INITIAL_AREA']
+NEW_AREA_PER_DAY=constants['inputs']['NEW_AREA_PER_DAY']
+MINIMUM_DENSITY=constants['inputs']['MINIMUM_DENSITY']
+MAXIMUM_DENSITY=constants['inputs']['MAXIMUM_DENSITY']
+MAXIMUM_AREA=constants['inputs']['MAXIMUM_AREA']
+PRODUCTION_RATE=constants['inputs']['PRODUCTION_RATE']
 
-MAX_SEAWEED_AS_PERCENT_KCALS=10#max percent of kcals from seaweed  per person
 
 built_area=np.linspace(INITIAL_AREA,(NDAYS-1)*NEW_AREA_PER_DAY+INITIAL_AREA,NDAYS)
 built_area[built_area>MAXIMUM_AREA]=MAXIMUM_AREA
@@ -116,11 +224,11 @@ used_area=[0]*NDAYS
 
 # (nuclear event in mid-may)
 #mike's spreadsheet: https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=806987252
-TONS_DRY_CALORIC_EQIVALENT=1602542*1000.
-KCALS_PER_DRY_CALORIC_TONS=4e6
+
+TONS_DRY_CALORIC_EQIVALENT=constants['inputs']['TONS_DRY_CALORIC_EQIVALENT']
 INITIAL_SF_KCALS = KCALS_PER_DRY_CALORIC_TONS*TONS_DRY_CALORIC_EQIVALENT/1e9 # billion kcals per unit mass initial
-INITIAL_SF_PROTEIN = 203607 #1000 tons protein per unit mass initial
-INITIAL_SF_FAT = 63948 # 1000 tons fat per unit mass initial
+INITIAL_SF_PROTEIN = constants['inputs']['INITIAL_SF_PROTEIN'] 
+INITIAL_SF_FAT = constants['inputs']['INITIAL_SF_FAT'] 
 
 SF_FRACTION_KCALS =	INITIAL_SF_KCALS \
 	/ (INITIAL_SF_KCALS
@@ -142,75 +250,11 @@ stored_food_start=[0]*NMONTHS
 stored_food_end=[0]*NMONTHS
 stored_food_eaten=[0]*NMONTHS # if stored food isn't modeled, this stays zero
 
-
-####LIVESTOCK, EGG, DAIRY INITIAL VARIABLES####
-#https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=2007828143
-#per kg, whole milk, per nutrition calculator
-MILK_KCALS = 610
-MILK_FAT = .032 #kg
-MILK_PROTEIN = .033 #kg
-
-#1000 tons to billions of kcals = grams/kcals
-MILK_FAT_TO_KCAL_RATIO = MILK_FAT/MILK_KCALS
-MILK_PROTEIN_TO_KCAL_RATIO = MILK_PROTEIN/MILK_KCALS
-
-# "FAOSTAT Food Balances", cell z 148
-#https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=102948593 
-# !!!assume all dairy from large animals!!!
-# at start, from all large animals, milk contribution over a month
-TONS_DRY_CALORIC_EQIVALENT=145*1e6/12
-KCALS_PER_DRY_CALORIC_TONS=4e6
-KG_TO_1000_TONS=1/(1e6)
-
-# billion kcals per unit mass initial
-INITIAL_MILK_KCALS = KCALS_PER_DRY_CALORIC_TONS*TONS_DRY_CALORIC_EQIVALENT/1e9
-
-#gallons per cow times calories per cow gives total milk cows
-#!!!THESE NUMBERS ARE PRELIMINARY, NEED FUTURE ADJUSTMENT!!! (I googled these numbers)
-ANNUAL_GALLONS_PER_COW=2320
-CALORIES_PER_GALLON=2304
-
-#billions of kcals
-MILK_KCALS_PER_1000_COWS_PER_MONTH = ANNUAL_GALLONS_PER_COW \
-	* CALORIES_PER_GALLON \
-	/ 12 \
-	/ 1e9 \
-	* 1000 
-
-INITIAL_MILK_COWS_THOUSANDS = (INITIAL_MILK_KCALS) \
-	/ MILK_KCALS_PER_1000_COWS_PER_MONTH
-
-print('MILK_KCALS_PER_1000_COWS_PER_MONTH')
-print(MILK_KCALS_PER_1000_COWS_PER_MONTH)
-#1000s of Tons
-MILK_FAT_PER_1000_COWS_PER_MONTH= MILK_FAT/MILK_KCALS \
-	* (MILK_KCALS_PER_1000_COWS_PER_MONTH / 1000) \
-	* KG_TO_1000_TONS \
-	* 1000
-
-#1000s of Tons
-MILK_PROTEIN_PER_1000_COWS_PER_MONTH=MILK_PROTEIN/MILK_KCALS \
-	* (MILK_KCALS_PER_1000_COWS_PER_MONTH / 1000) \
-	* KG_TO_1000_TONS \
-	* 1000
-print('MILK_FAT_PER_1000_COWS_PER_MONTH')
-print(MILK_FAT_PER_1000_COWS_PER_MONTH)
-
-#mike's spreadsheet "area and scaling by month"
-#https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=642022040
-
-INIT_SMALL_NONEGG_ANIMALS=28.2*1.9e9
-INIT_MEDIUM_ANIMALS=3.2*1.9e9
-INIT_LARGE_NONDAIRY_ANIMALS=0.5*1.9e9-INITIAL_MILK_COWS_THOUSANDS
-
-
-dairy_animals_1000s_start=[0]*NMONTHS
-dairy_animals_1000s_end=[0]*NMONTHS
-dairy_animals_1000s_eaten=[0]*NMONTHS
-
-
 #### NON EGG NONDAIRY MEAT ####
 
+#time from slaughter livestock to it turning into food
+#not functional yet
+# MEAT_DELAY = 1 #months
 
 #mike's spreadsheet "livestock meat stats"
 #https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=642022040
@@ -272,12 +316,93 @@ nonegg_nondairy_meat_start=[0]*NMONTHS
 nonegg_nondairy_meat_end=[0]*NMONTHS
 nonegg_nondairy_meat_eaten=[0]*NMONTHS
 
+#### CONSTANTS FOR GREENHOUSES ####
+#greenhouses tab
+#assumption: greenhouse crop production is very similar in nutritional
+# profile to stored food
+# reference: see https://docs.google.com/spreadsheets/d/1f9eVD14Y2d9vmLFP3OsJPFA5d2JXBU-63MTz8MlB1rY/edit#gid=756212200
+GREENHOUSE_PERCENT_KCALS=[0,0,0,0,0,11.60,11.60,11.60,23.21,23.21,23.21,34.81,34.81,34.81,46.41,46.41,46.41,58.01,58.01,58.01,69.62,69.62,69.62,81.22,81.22,81.22,92.82,92.82,92.82,104.43,104.43,104.43,116.03,116.03,116.03,127.63,127.63,127.63,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24]
+
+if(ADD_GREENHOUSES):
+	production_kcals_greenhouses_per_month = []
+	for x in GREENHOUSE_PERCENT_KCALS:
+		production_kcals_greenhouses_per_month.append(x / 100 * KCAL_REQ_PER_MONTH)
+else:
+	production_kcals_greenhouses_per_month=[0]*len(GREENHOUSE_PERCENT_KCALS)
+
+# we know:
+# 	units_sf_mass*SF_FRACTION_KCALS=sf_kcals
+# and
+# 	units_sf_mass*SF_FRACTION_PROTEIN=sf_protein
+# so
+# 	units_sf_mass = sf_kcals/SF_FRACTION_KCALS
+# => assumption listed previously =>
+# 	units_gh_mass = gh_kcals/SF_FRACTION_KCALS
+# 	units_gh_mass = gh_protein/SF_FRACTION_PROTEIN
+# therefore
+# 	gh_protein = gh_kcals*SF_FRACTION_PROTEIN/SF_FRACTION_KCALS
+
+production_protein_greenhouses_per_month = \
+	np.array(production_kcals_greenhouses_per_month) \
+	* SF_FRACTION_PROTEIN / SF_FRACTION_KCALS  / 1e9
+
+production_fat_greenhouses_per_month = \
+	np.array(production_kcals_greenhouses_per_month) \
+	* SF_FRACTION_FAT / SF_FRACTION_KCALS   / 1e9
+
+# #mass initial, units don't matter, we only need to ensure we use the correct 
+# #fraction of kcals, fat, and protein per unit greenhouse grown food.
+# #we use stored food fractions here per assumption mentioned above.
+# production_kcals_greenhouses_per_month = \
+# 	np.array(production_kcals_greenhouses_per_month) * SF_FRACTION_PROTEIN
+
+####LIVESTOCK, EGG, DAIRY INITIAL VARIABLES####
+
+#https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=2007828143
+#per kg, whole milk, per nutrition calculator
+MILK_KCALS = 610
+MILK_FAT = .032 #kg
+MILK_PROTEIN = .033 #kg
+
+#1000 tons to billions of kcals = grams/kcals
+MILK_FAT_TO_KCAL_RATIO = MILK_FAT/MILK_KCALS
+MILK_PROTEIN_TO_KCAL_RATIO = MILK_PROTEIN/MILK_KCALS
+
+# "FAOSTAT Food Balances", cell z 148
+#https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=102948593 
+# !!!assume all dairy from large animals!!!
+# at start, from all large animals, milk contribution over a month
+
+#gallons per cow times calories per cow gives total milk cows
+#!!!THESE NUMBERS ARE PRELIMINARY, NEED FUTURE ADJUSTMENT!!! (I googled these numbers)
+
+#1000s of Tons
+MILK_FAT_PER_1000_COWS_PER_MONTH= MILK_FAT/MILK_KCALS \
+	* (MILK_KCALS_PER_1000_COWS_PER_MONTH / 1000) \
+	* KG_TO_1000_TONS \
+	* 1000
+
+#1000s of Tons
+MILK_PROTEIN_PER_1000_COWS_PER_MONTH=MILK_PROTEIN/MILK_KCALS \
+	* (MILK_KCALS_PER_1000_COWS_PER_MONTH / 1000) \
+	* KG_TO_1000_TONS \
+	* 1000
+
+#mike's spreadsheet "area and scaling by month"
+#https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=642022040
+
+
+dairy_animals_1000s_start=[0]*NMONTHS
+dairy_animals_1000s_end=[0]*NMONTHS
+dairy_animals_1000s_eaten=[0]*NMONTHS
+
+
+
 #### CONSTANTS FOR CELLULOSIC SUGAR ####
 
 #in billions of calories
-caloric_requirement_per_month = WORLD_POP * KCALS_MONTHLY/1e9
 
-ramp_up_cellulosic_sugar_monthly = [0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 19.57, 23.48, 24.58, 28.49, 28.49,
+CELL_SUGAR_PERCENT_KCALS = [0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 19.57, 23.48, 24.58, 28.49, 28.49,
 									29.59,
 									31.64, 31.64, 31.64, 31.64, 33.69, 35.74, 35.74, 35.74, 35.74, 37.78, 38.70, 39.61,
 									40.53,
@@ -289,11 +414,11 @@ ramp_up_cellulosic_sugar_monthly = [0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.
 									76.19,
 									77.10, 78.02, 78.93, 79.85, 80.76, 81.67]
 if(ADD_CELLULOSIC_SUGAR):
-	production_calories_cellulosic_sugar_per_month = []
-	for x in ramp_up_cellulosic_sugar_monthly:
-		production_calories_cellulosic_sugar_per_month.append(x / 100 * caloric_requirement_per_month)
+	production_kcals_cell_sugar_per_month = []
+	for x in CELL_SUGAR_PERCENT_KCALS:
+		production_kcals_cell_sugar_per_month.append(x / 100 * KCAL_REQ_PER_MONTH)
 else:
-	production_calories_cellulosic_sugar_per_month=[0]*len(ramp_up_cellulosic_sugar_monthly)
+	production_kcals_cell_sugar_per_month=[0]*len(CELL_SUGAR_PERCENT_KCALS)
 
 if(VERBOSE):
 	print("INITIAL_MILK_COWS_THOUSANDS, billions")
@@ -323,6 +448,7 @@ constants['NMONTHS']=NMONTHS
 constants['NDAYS']=NDAYS
 constants['ADD_STORED_FOOD']=ADD_STORED_FOOD
 constants['ADD_SEAWEED']=ADD_SEAWEED
+constants['ADD_GREENHOUSES']=ADD_GREENHOUSES
 constants['ADD_NONEGG_NONDAIRY_MEAT']=ADD_NONEGG_NONDAIRY_MEAT
 constants['ADD_DAIRY']=ADD_DAIRY
 constants['MAXIMIZE_ONLY_FOOD_AFTER_DAY_150']=MAXIMIZE_ONLY_FOOD_AFTER_DAY_150
@@ -518,7 +644,8 @@ def add_objectives_to_model(model, m, maximize_constraints):
 		+ (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
 			* MILK_KCALS_PER_1000_COWS_PER_MONTH
 		+ nonegg_nondairy_meat_eaten[m]*MEAT_FRACTION_KCALS
-		+ production_calories_cellulosic_sugar_per_month[m])/KCALS_MONTHLY,
+		+ production_kcals_cell_sugar_per_month[m]
+		+ production_kcals_greenhouses_per_month[m])/KCALS_MONTHLY,
 		"Kcals_Fed_Month_"+str(m)+"_Constraint")
 
 	#stored_food_eaten*sf_fraction_fat is in units thousand tons monthly
@@ -535,6 +662,7 @@ def add_objectives_to_model(model, m, maximize_constraints):
 		+ dairy_animals_1000s_eaten[m]*FAT_PER_1000_LARGE_ANIMALS
 		+ (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
 			* MILK_FAT_PER_1000_COWS_PER_MONTH
+		+ production_fat_greenhouses_per_month[m]
 		+ nonegg_nondairy_meat_eaten[m]*MEAT_FRACTION_FAT)/FAT_MONTHLY/1e9,
 		"Fat_Fed_Month_"+str(m)+"_Constraint")
 	
@@ -547,6 +675,7 @@ def add_objectives_to_model(model, m, maximize_constraints):
 		+ dairy_animals_1000s_eaten[m]*PROTEIN_PER_1000_LARGE_ANIMALS
 		+ (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
 			* MILK_PROTEIN_PER_1000_COWS_PER_MONTH
+		+ production_protein_greenhouses_per_month[m]
 		+ nonegg_nondairy_meat_eaten[m]*MEAT_FRACTION_PROTEIN)/PROTEIN_MONTHLY/1e9,
 		"Protein_Fed_Month_"+str(m)+"_Constraint")
 
@@ -637,8 +766,9 @@ print('RESULTS')
 print('')	
 print('')
 
+print(f"objective: {model.objective.value()}")
+
 if(VERBOSE):
-	print(f"objective: {model.objective.value()}")
 	for var in model.variables():
 		print(f"{var.name}: {var.value()}")
 
@@ -667,9 +797,17 @@ analysis.analyze_seaweed_results(
 	show_output
 )
 
-# if no stored food, will be zero
+# if no cellulosic sugar, will be zero
 analysis.analyze_CS_results(
-	production_calories_cellulosic_sugar_per_month,
+	production_kcals_cell_sugar_per_month,
+	show_output
+)
+
+# if no greenhouses, will be zero
+analysis.analyze_GH_results(
+	production_kcals_greenhouses_per_month,
+	production_fat_greenhouses_per_month,
+	production_protein_greenhouses_per_month,
 	show_output
 )
 
@@ -689,14 +827,20 @@ analysis.analyze_dairy_results(
 	show_output
 )
 
+if(ADD_CELLULOSIC_SUGAR):
+	Plotter.plot_CS(time_months_middle,analysis)
+
 if(ADD_STORED_FOOD):
 	Plotter.plot_stored_food(time_months,analysis)
+if(ADD_SEAWEED):
+	Plotter.plot_seaweed(time_months_middle,analysis)
 
 if(ADD_NONEGG_NONDAIRY_MEAT):
 	Plotter.plot_nonegg_nondairy_meat(time_months,analysis)
 
 if(ADD_DAIRY):
 	Plotter.plot_dairy_cows(time_months_middle,analysis)
+	Plotter.plot_dairy(time_months_middle,analysis)
 
 Plotter.plot_people_fed(time_months_middle,analysis)
 

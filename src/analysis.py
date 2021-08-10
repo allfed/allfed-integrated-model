@@ -3,7 +3,6 @@ import sys
 module_path = os.path.abspath(os.path.join('..'))
 if module_path not in sys.path:
 	sys.path.append(module_path)
-
 import numpy as np
 
 class Analyzer:
@@ -73,14 +72,33 @@ class Analyzer:
 
 
 	#if cellulosic sugar isn't included, these results will be zero
+	def analyze_GH_results(
+		self,
+		production_kcals_greenhouses_per_month,
+		production_fat_greenhouses_per_month,
+		production_protein_greenhouses_per_month,
+		show_output
+		):
+
+		self.billions_fed_GH_kcals = \
+			np.array(production_kcals_greenhouses_per_month) \
+			/ self.constants["KCALS_MONTHLY"]
+		self.billions_fed_GH_fat= \
+			np.array(production_fat_greenhouses_per_month) \
+			/ self.constants["FAT_MONTHLY"]
+		self.billions_fed_GH_protein = \
+			np.array(production_protein_greenhouses_per_month) \
+			/ self.constants["PROTEIN_MONTHLY"]
+
+	#if cellulosic sugar isn't included, these results will be zero
 	def analyze_CS_results(
 		self,
-		production_calories_cellulosic_sugar_per_month,
+		production_kcals_cellulosic_sugar_per_month,
 		show_output
 		):
 
 		self.billions_fed_CS_kcals = \
-			np.array(production_calories_cellulosic_sugar_per_month) \
+			np.array(production_kcals_cellulosic_sugar_per_month) \
 			/ self.constants["KCALS_MONTHLY"]
 
 	#if stored food isn't included, these results will be zero
@@ -179,22 +197,18 @@ class Analyzer:
 		self.billions_fed_dairy_meat_kcals = self.makeMidMonthlyVars(
 			dairy_animals_eaten,
 			self.constants["KCALS_PER_1000_LARGE_ANIMALS"]
-			# self.constants["MEAT_FRACTION_KCALS"]
 			/ self.constants["KCALS_MONTHLY"],
 			show_output)
 
 		self.billions_fed_dairy_meat_fat = self.makeMidMonthlyVars(
 			dairy_animals_eaten,
 			self.constants["FAT_PER_1000_LARGE_ANIMALS"]
-			# self.constants["MEAT_FRACTION_FAT"]
 			/ self.constants["FAT_MONTHLY"]/1e9,
-			True)
+			show_output)
 		# quit()
-
 		self.billions_fed_dairy_meat_protein = self.makeMidMonthlyVars(
 			dairy_animals_eaten,
 			self.constants["PROTEIN_PER_1000_LARGE_ANIMALS"]
-			# self.constants["MEAT_FRACTION_PROTEIN"]
 			/self.constants["PROTEIN_MONTHLY"]/1e9,
 			show_output)
 	

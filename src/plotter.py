@@ -11,13 +11,26 @@ if module_path not in sys.path:
 
 import matplotlib.pyplot as plt
 import numpy as np
+from cycler import cycler
 
 class Plotter:
 	def __init__(self):
 		pass
 
 	def plot_stored_food(time_months,analysis):
+		ls_cycler = cycler('linestyle',
+							[\
+							 (0,()), # solid 
+							 (0, (1, 1)), # densely dotted
+							 (0, (1, 5)) # dotted
+							 ]
+						  )
 
+		color_cycler = cycler('color', [plt.get_cmap('viridis')(i/3) for i in np.arange(3)] )
+
+		new_cycler = color_cycler + ls_cycler
+		plt.rc('axes',prop_cycle=new_cycler)
+		
 		plt.plot(time_months,np.array(analysis.billion_person_years_SF_kcals))
 		plt.plot(time_months,np.array(analysis.billion_person_years_SF_fat))
 		plt.plot(time_months,np.array(analysis.billion_person_years_SF_protein))
@@ -25,6 +38,26 @@ class Plotter:
 		plt.xlabel('Months Since May Nuclear Event')
 		plt.ylabel('Billion Person-Years')
 		plt.legend(['kcals available','fat available','protein available'])
+		plt.show()
+
+	def plot_CS(time_months_middle,analysis):
+		ls_cycler = cycler('linestyle',
+							[\
+							 (0,()) # solid 
+							 # (0, (1, 1)), # densely dotted
+							 # (0, (1, 5)) # dotted
+							 ]
+						  )
+
+		color_cycler = cycler('color', [plt.get_cmap('viridis')(i) for i in np.arange(1)] )
+
+		new_cycler = color_cycler + ls_cycler
+		plt.rc('axes',prop_cycle=new_cycler)
+		
+		plt.plot(time_months_middle,np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)]))
+		plt.title('Cellulosic Sugar')
+		plt.xlabel('Months Since May Nuclear Event')
+		plt.ylabel('Billions fed from CS')
 		plt.show()
 
 
@@ -49,6 +82,22 @@ class Plotter:
 
 
 	def plot_dairy(time_months,analysis):
+		ls_cycler = cycler('linestyle',
+							[\
+							 (0,()), # solid 
+							 (0,()), # solid 
+							 (0,()), # solid 
+							 (0, (1, 1)), # densely dotted
+							 (0, (1, 1)), # densely dotted
+							 (0, (1, 1)) # densely dotted
+							 ]
+						  )
+
+		color_cycler = cycler('color', [plt.get_cmap('viridis')(np.floor(i%3)/3) for i in np.arange(len(ls_cycler))])
+
+		new_cycler = color_cycler + ls_cycler
+		plt.rc('axes',prop_cycle=new_cycler)
+		
 		plt.plot(time_months,np.array(analysis.billions_fed_milk_kcals))
 		plt.plot(time_months,np.array(analysis.billions_fed_milk_fat))
 		plt.plot(time_months,np.array(analysis.billions_fed_milk_protein))
@@ -68,6 +117,32 @@ class Plotter:
 		plt.show()
 
 	def plot_people_fed(time_months_middle,analysis):
+
+		ls_cycler = cycler('linestyle',
+							[\
+							 (0,()), # solid 
+							 (0,()), # solid 
+							 (0,()), # solid 
+							 (0, (1, 1)), # densely dotted
+							 (0, (1, 1)), # densely dotted
+							 (0, (1, 1)), # densely dotted
+							 (0, (1, 5)), # dotted
+							 (0, (1, 5)), # dotted
+							 (0, (1, 5)), # dotted
+							 (0, (5, 1)), # densely dashed 
+							 (0, (5, 1)), # densely dashed 
+							 (0, (5, 1)), # densely dashed 
+							 (0, (3, 5, 1, 5)), # dashdotted
+							 (0, (3, 5, 1, 5)), # dashdotted
+							 (0, (3, 5, 1, 5)), # dashdotted
+							 (0, (3, 1, 1, 1, 1, 1)) # densely dashdotdotted
+							 ]
+						  )
+
+		color_cycler = cycler('color', [plt.get_cmap('viridis')(np.floor(i%3)/3) for i in np.arange(16)])
+
+		new_cycler = color_cycler + ls_cycler
+		plt.rc('axes',prop_cycle=new_cycler)
 		fig = plt.figure()
 		ax=plt.subplot(111)
 		legend=[]
@@ -79,9 +154,12 @@ class Plotter:
 			'Stored Food, Limited by Fat',
 			'Stored Food, Limited by protein']
 		if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
-			ax.plot(time_months_middle,analysis.billions_fed_meat_kcals)
-			ax.plot(time_months_middle,analysis.billions_fed_meat_fat)
-			ax.plot(time_months_middle,analysis.billions_fed_meat_protein)
+			ax.plot(time_months_middle,np.array(analysis.billions_fed_meat_kcals)\
+				+np.array(analysis.billions_fed_dairy_meat_kcals))
+			ax.plot(time_months_middle,np.array(analysis.billions_fed_meat_fat)\
+				+np.array(analysis.billions_fed_dairy_meat_fat))
+			ax.plot(time_months_middle,np.array(analysis.billions_fed_meat_protein)\
+				+np.array(analysis.billions_fed_dairy_meat_protein))
 			legend = legend + ['Meat, Limited by kcals',
 			'Meat, Limited by Fat',
 			'Meat, Limited by protein']
@@ -92,12 +170,12 @@ class Plotter:
 			legend = legend + ['Milk, Limited by kcals',
 			'Milk, Limited by Fat',
 			'Milk, Limited by protein']
-			ax.plot(time_months_middle,analysis.billions_fed_dairy_meat_kcals)
-			ax.plot(time_months_middle,analysis.billions_fed_dairy_meat_fat)
-			ax.plot(time_months_middle,analysis.billions_fed_dairy_meat_protein)
-			legend = legend + ['Dairy meat, Limited by kcals',
-			'Dairy meat, Limited by Fat',
-			'Dairy meat, Limited by protein']
+			# ax.plot(time_months_middle,analysis.billions_fed_dairy_meat_kcals)
+			# ax.plot(time_months_middle,analysis.billions_fed_dairy_meat_fat)
+			# ax.plot(time_months_middle,analysis.billions_fed_dairy_meat_protein)
+			# legend = legend + ['Dairy meat, Limited by kcals',
+			# 'Dairy meat, Limited by Fat',
+			# 'Dairy meat, Limited by protein']
 
 		if(analysis.constants['ADD_SEAWEED']):
 			ax.plot(time_months_middle,analysis.billions_fed_seaweed_kcals)
@@ -106,9 +184,16 @@ class Plotter:
 			legend = legend + ['Seaweed, Limited by kcals',
 				'Seaweed, Limited by Fat',
 				'Seaweed, Limited by protein']
+		if(analysis.constants['ADD_GREENHOUSES']):
+			ax.plot(time_months_middle,analysis.billions_fed_GH_kcals[0:len(time_months_middle)])
+			ax.plot(time_months_middle,analysis.billions_fed_GH_fat[0:len(time_months_middle)])
+			ax.plot(time_months_middle,analysis.billions_fed_GH_protein[0:len(time_months_middle)])
+			legend = legend + ['Greenhouse Food, Limited by kcals',
+			'Greenhouse Food, Limited by Fat',
+			'Greenhouse Food, Limited by protein']
 		if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
 			ax.plot(time_months_middle,analysis.billions_fed_CS_kcals[0:len(time_months_middle)])
-			legend = legend + ['Cellulosuc Sugar, Limited by kcals']
+			legend = legend + ['Cellulosic Sugar, Limited by kcals']
 		box = ax.get_position()
 		ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 		ax.legend(legend,loc='center left', bbox_to_anchor=(1, 0.5))
@@ -119,6 +204,7 @@ class Plotter:
 		  # ncol=3, fancybox=True, shadow=True)
 
 		plt.show()
+
 		title=''
 		if(analysis.constants['ADD_SEAWEED']):
 			title = title + "Seaweed, "
@@ -138,24 +224,111 @@ class Plotter:
 			+np.array(analysis.billions_fed_seaweed_kcals)
 			+np.array(analysis.billions_fed_dairy_meat_kcals)
 			+np.array(analysis.billions_fed_milk_kcals)
-			+np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)]))
+			+np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])
+			+np.array(analysis.billions_fed_GH_kcals[0:len(time_months_middle)]))
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_fat)
 			+np.array(analysis.billions_fed_meat_fat)
 			+np.array(analysis.billions_fed_seaweed_fat)
 			+np.array(analysis.billions_fed_dairy_meat_fat)
-			+np.array(analysis.billions_fed_milk_fat))
+			+np.array(analysis.billions_fed_milk_fat)
+			+np.array(analysis.billions_fed_GH_fat[0:len(time_months_middle)]))
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_protein)
 			+np.array(analysis.billions_fed_meat_protein)
 			+np.array(analysis.billions_fed_seaweed_protein)
 			+np.array(analysis.billions_fed_dairy_meat_protein)
-			+np.array(analysis.billions_fed_milk_protein))
+			+np.array(analysis.billions_fed_milk_protein)
+			+np.array(analysis.billions_fed_GH_protein[0:len(time_months_middle)]))
 		legend = ['Limit by kcals','Limited by Fat','Limited by protein']
 		plt.ylabel('billions of people')
 		plt.xlabel('Months Since May Nuclear Event')
 		plt.legend(legend)
 		plt.show()
+
+
+		ls_cycler = cycler('linestyle',
+							[\
+							 (0,()), # solid 
+							 (0,()), # solid 
+							 (0,()), # solid 
+							 (0, (1, 1)), # densely dotted
+							 (0, (1, 1)), # densely dotted
+							 (0, (1, 1)) # densely dotted
+							 ]
+						  )
+
+		color_cycler = cycler('color', [plt.get_cmap('viridis')(np.floor(i%3)/3) for i in np.arange(len(ls_cycler))])
+
+		new_cycler = color_cycler + ls_cycler
+		plt.rc('axes',prop_cycle=new_cycler)
+		title = "Population Fed With vs Without Resilient Foods"
+		plt.title(title)
+		plt.plot(time_months_middle,
+			np.array(analysis.billions_fed_SF_kcals)
+			+np.array(analysis.billions_fed_meat_kcals)
+			+np.array(analysis.billions_fed_milk_kcals)
+			+np.array(analysis.billions_fed_dairy_meat_kcals))
+		plt.plot(time_months_middle,
+			np.array(analysis.billions_fed_SF_fat)
+			+np.array(analysis.billions_fed_meat_fat)
+			+np.array(analysis.billions_fed_milk_fat)
+			+np.array(analysis.billions_fed_dairy_meat_kcals))
+		plt.plot(time_months_middle,
+			np.array(analysis.billions_fed_SF_protein)
+			+np.array(analysis.billions_fed_meat_protein)
+			+np.array(analysis.billions_fed_milk_protein)
+			+np.array(analysis.billions_fed_dairy_meat_kcals))
+		plt.plot(time_months_middle,
+			+np.array(analysis.billions_fed_seaweed_kcals)
+			+np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])
+			+np.array(analysis.billions_fed_GH_kcals[0:len(time_months_middle)]))
+		plt.plot(time_months_middle,
+			+np.array(analysis.billions_fed_seaweed_fat)
+			+np.array(analysis.billions_fed_GH_fat[0:len(time_months_middle)]))
+		plt.plot(time_months_middle,
+			+np.array(analysis.billions_fed_seaweed_protein)
+			+np.array(analysis.billions_fed_GH_protein[0:len(time_months_middle)]))
+
+		legend = [\
+			'Dairy+Meat+SF, kcals',
+			'Dairy+Meat+SF, fat',
+			'Dairy+Meat+SF, protein'
+			'Seaweed+CS+GH, kcals',
+			'Seaweed+CS+GH, fat',
+			'Seaweed+CS+GH, protein'
+			]
+		plt.ylabel('billions of people')
+		plt.xlabel('Months Since May Nuclear Event')
+		plt.legend(legend)
+		plt.show()
+
+
+	def plot_seaweed(time_months_middle,analysis):
+		ls_cycler = cycler('linestyle',
+							[\
+							 (0,()), # solid 
+							 (0, (1, 1)), # densely dotted
+							 (0, (1, 5)) # dotted
+							 ]
+						  )
+
+		color_cycler = cycler('color', [plt.get_cmap('viridis')(i/3) for i in np.arange(3)] )
+
+		new_cycler = color_cycler + ls_cycler
+		plt.rc('axes',prop_cycle=new_cycler)
+
+		plt.plot(time_months_middle,np.array(analysis.billions_fed_seaweed_kcals))
+		plt.plot(time_months_middle,np.array(analysis.billions_fed_seaweed_fat))
+		plt.plot(time_months_middle,np.array(analysis.billions_fed_seaweed_protein))
+		plt.title('Seaweed People Fed')
+		plt.xlabel('Months Since May Nuclear Event')
+		plt.ylabel('Billion People Fed by macronutrient')
+		plt.legend(['kcals available','fat available','protein available'])
+		plt.show()
+
+
+
 	#plot comparison between Aron's Data and this model's data
 	def plot_seaweed_comparison(time_days_daily,time_days_monthly,analysis):
 		#aron's food produced data for each day
