@@ -69,7 +69,7 @@ class Validator:
 				variable_string = variable_string.replace(var.name,str(constraints_dict[var.name]))
 			eq_val=eval(equation_string)
 			var_val=eval(variable_string)
-			differences.append(abs(eq_val- var_val))
+			
 			if(SHOW_CONSTRAINT_CHECK):
 				print('checking constraint '+\
 				str(constraint[0])+' has '+str(constraint[1]))
@@ -77,10 +77,13 @@ class Validator:
 				if(SHOW_CONSTRAINT_CHECK):
 					print('difference'+str(abs(eq_val- var_val)))
 				assert(abs(eq_val- var_val)<1)
+				differences.append(abs(eq_val- var_val))
 			if(compare_type==1):
 				assert(var_val- eq_val<=1)
+				differences.append(var_val- eq_val)
 			if(compare_type==2):
 				assert(eq_val- var_val<=1)
+				differences.append(eq_val- var_val)
 
 		print('all constraints satisfied')
 		m=max(differences)

@@ -71,7 +71,7 @@ class Analyzer:
 		return variable_output
 
 
-	#if cellulosic sugar isn't included, these results will be zero
+	#if greenhouses aren't included, these results will be zero
 	def analyze_GH_results(
 		self,
 		production_kcals_greenhouses_per_month,
@@ -85,10 +85,29 @@ class Analyzer:
 			/ self.constants["KCALS_MONTHLY"]
 		self.billions_fed_GH_fat= \
 			np.array(production_fat_greenhouses_per_month) \
-			/ self.constants["FAT_MONTHLY"]
+			/ self.constants["FAT_MONTHLY"]/1e9
 		self.billions_fed_GH_protein = \
 			np.array(production_protein_greenhouses_per_month) \
-			/ self.constants["PROTEIN_MONTHLY"]
+			/ self.constants["PROTEIN_MONTHLY"]/1e9
+
+	#if outdoor growing isn't included, these results will be zero
+	def analyze_OG_results(
+		self,
+		production_kcals_outdoor_growing_per_month,
+		production_fat_outdoor_growing_per_month,
+		production_protein_outdoor_growing_per_month,
+		show_output
+		):
+
+		self.billions_fed_OG_kcals = \
+			np.array(production_kcals_outdoor_growing_per_month) \
+			/ self.constants["KCALS_MONTHLY"]
+		self.billions_fed_OG_fat= \
+			np.array(production_fat_outdoor_growing_per_month) \
+			/ self.constants["FAT_MONTHLY"]/1e9
+		self.billions_fed_OG_protein = \
+			np.array(production_protein_outdoor_growing_per_month) \
+			/ self.constants["PROTEIN_MONTHLY"]/1e9
 
 	#if cellulosic sugar isn't included, these results will be zero
 	def analyze_CS_results(
@@ -98,8 +117,8 @@ class Analyzer:
 		):
 
 		self.billions_fed_CS_kcals = \
-			np.array(production_kcals_cellulosic_sugar_per_month) \
-			/ self.constants["KCALS_MONTHLY"]
+			list(np.array(production_kcals_cellulosic_sugar_per_month) \
+			/ self.constants["KCALS_MONTHLY"])
 
 	#if stored food isn't included, these results will be zero
 	def analyze_nonegg_nondairy_results(
@@ -149,7 +168,7 @@ class Analyzer:
 				* self.constants['MEAT_FRACTION_KCALS']
 				/ (12*self.constants['KCALS_MONTHLY']*7.9))
 
-	#if stored food isn't included, these results will be zero
+	#if dairy food isn't included, these results will be zero
 	def analyze_dairy_results(
 		self,
 		dairy_animals_start,
@@ -177,22 +196,22 @@ class Analyzer:
 			1,
 			show_output
 		)
-		dairy_animals_1000s_midmonth = (np.array( \
+		dairy_animals_1000s_midmonth = list((np.array( \
 			self.dairy_animals_start_month)
-			+ np.array(self.dairy_animals_end_month))/2
-		self.millions_dairy_animals_midmonth = dairy_animals_1000s_midmonth/1000
+			+ np.array(self.dairy_animals_end_month))/2)
+		self.millions_dairy_animals_midmonth = list(np.array(dairy_animals_1000s_midmonth)/1000)
 
-		self.billions_fed_milk_kcals = dairy_animals_1000s_midmonth \
+		self.billions_fed_milk_kcals = list(np.array(dairy_animals_1000s_midmonth) \
 			* self.constants["MILK_KCALS_PER_1000_COWS_PER_MONTH"] \
-			/ self.constants["KCALS_MONTHLY"]
+			/ self.constants["KCALS_MONTHLY"])
 
-		self.billions_fed_milk_fat = dairy_animals_1000s_midmonth \
+		self.billions_fed_milk_fat = list(np.array(dairy_animals_1000s_midmonth)\
 			* self.constants["MILK_FAT_PER_1000_COWS_PER_MONTH"] \
-			/ self.constants["FAT_MONTHLY"]
+			/ self.constants["FAT_MONTHLY"])
 
-		self.billions_fed_milk_protein = dairy_animals_1000s_midmonth \
+		self.billions_fed_milk_protein = list(np.array(dairy_animals_1000s_midmonth) \
 			* self.constants["MILK_PROTEIN_PER_1000_COWS_PER_MONTH"] \
-			/ self.constants["PROTEIN_MONTHLY"]
+			/ self.constants["PROTEIN_MONTHLY"])
 
 		self.billions_fed_dairy_meat_kcals = self.makeMidMonthlyVars(
 			dairy_animals_eaten,
