@@ -60,6 +60,30 @@ class Plotter:
 		plt.ylabel('Billions fed from CS')
 		plt.show()
 
+	def plot_fish(time_months_middle,analysis):
+		ls_cycler = cycler('linestyle',
+							[\
+							 (0,()), # solid 
+							 (0, (1, 1)), # densely dotted
+							 (0, (1, 5)) # dotted
+							 ]
+						  )
+
+		color_cycler = cycler('color', [plt.get_cmap('viridis')(i) for i in np.arange(len(ls_cycler))] )
+
+		new_cycler = color_cycler + ls_cycler
+		plt.rc('axes',prop_cycle=new_cycler)
+		
+		plt.plot(time_months_middle,analysis.billions_fed_fish_kcals,marker='o',markersize=3)
+		plt.plot(time_months_middle,analysis.billions_fed_fish_fat,marker='o',markersize=3)
+		plt.plot(time_months_middle,analysis.billions_fed_fish_protein,marker='o',markersize=3)
+		plt.legend(['kcals available','fat available','protein available'])
+
+		plt.title('Fish')
+		plt.xlabel('Months Since May Nuclear Event')
+		plt.ylabel('Billions fed from fish')
+		plt.show()
+
 	def plot_GH(time_months_middle,analysis):
 		ls_cycler = cycler('linestyle',
 							[\
@@ -195,6 +219,14 @@ class Plotter:
 				(0, (5, 1)), # densely dashed 
 				(0, (5, 1)), # densely dashed 
 				])
+
+		# if(analysis.constants['ADD_FISH']):
+		# 	linestyles = linestyles + ([\
+		# 		(0, (5, 1)), # densely dashed 
+		# 		(0, (5, 1)), # densely dashed 
+		# 		(0, (5, 1)), # densely dashed 
+		# 		])
+
 		if(analysis.constants['ADD_OUTDOOR_GROWING']):
 			linestyles = linestyles + ([\
 				(0, (3, 10, 1, 10, 1, 10)), # loosely dash dotted 
@@ -263,6 +295,11 @@ class Plotter:
 		if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
 			ax.plot(time_months_middle,analysis.billions_fed_CS_kcals[0:len(time_months_middle)],marker='o',markersize=3)
 			legend = legend + ['Cellulosic Sugar, Limited by kcals']
+
+		# if(analysis.constants['ADD_FISH']
+		# 	ax.plot(time_months_middle,analysis.billions_fed_CS_kcals[0:len(time_months_middle)],marker='o',markersize=3)
+		# 	legend = legend + ['Cellulosic Sugar, Limited by kcals']
+
 		box = ax.get_position()
 		ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 		ax.legend(legend,loc='center left', bbox_to_anchor=(1, 0.5))
@@ -517,6 +554,8 @@ class Plotter:
 			title = title + "Greenhouses, "
 		if(analysis.constants['ADD_OUTDOOR_GROWING']):
 			title = title + "Outdoor Growing, "
+		if(analysis.constants['ADD_FISH']):
+			title = title + "Fish, "
 		title = title + "Population Fed"
 		plt.title(title)
 		plt.plot(time_months_middle,
@@ -527,7 +566,8 @@ class Plotter:
 			+np.array(analysis.billions_fed_milk_kcals)
 			+np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_GH_kcals[0:len(time_months_middle)])
-			+np.array(analysis.billions_fed_OG_kcals[0:len(time_months_middle)]),marker='o',markersize=3)
+			+np.array(analysis.billions_fed_OG_kcals[0:len(time_months_middle)])
+			+np.array(analysis.billions_fed_fish_kcals),marker='o',markersize=3)
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_fat)
 			+np.array(analysis.billions_fed_meat_fat)
@@ -535,7 +575,8 @@ class Plotter:
 			+np.array(analysis.billions_fed_dairy_meat_fat)
 			+np.array(analysis.billions_fed_milk_fat)
 			+np.array(analysis.billions_fed_OG_fat[0:len(time_months_middle)])
-			+np.array(analysis.billions_fed_GH_fat[0:len(time_months_middle)]),marker='o',markersize=3)
+			+np.array(analysis.billions_fed_GH_fat[0:len(time_months_middle)])
+			+np.array(analysis.billions_fed_fish_fat),marker='o',markersize=3)
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_protein)
 			+np.array(analysis.billions_fed_meat_protein)
@@ -544,7 +585,8 @@ class Plotter:
 			+np.array(analysis.billions_fed_milk_protein)
 			+np.array(analysis.billions_fed_OG_protein[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_GH_protein[0:len(time_months_middle)
-				]),marker='o',markersize=3)
+				])
+			+np.array(analysis.billions_fed_fish_protein),marker='o',markersize=3)
 		legend = ['Limit by kcals','Limited by Fat','Limited by protein']
 		plt.ylabel('billions of people')
 		plt.xlabel('Months Since May Nuclear Event')

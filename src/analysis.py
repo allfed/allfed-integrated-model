@@ -90,6 +90,22 @@ class Analyzer:
 			np.array(production_protein_greenhouses_per_month) \
 			/ self.constants["PROTEIN_MONTHLY"]/1e9
 
+	#if greenhouses aren't included, these results will be zero
+	def analyze_fish_results(
+		self,
+		time_months_middle
+		):
+
+		kcals=self.constants['FISH_KCALS'] / self.constants["KCALS_MONTHLY"]
+		fat=self.constants['FISH_FAT'] / self.constants["FAT_MONTHLY"]/1e9
+		protein=self.constants['FISH_PROTEIN'] / self.constants["PROTEIN_MONTHLY"]/1e9
+		self.billions_fed_fish_kcals = \
+			np.linspace(kcals,kcals,len(time_months_middle))
+		self.billions_fed_fish_fat= \
+			np.linspace(fat,fat,len(time_months_middle))
+		self.billions_fed_fish_protein = \
+			np.linspace(protein,protein,len(time_months_middle))
+
 	#if outdoor growing isn't included, these results will be zero
 	def analyze_OG_results(
 		self,
@@ -279,6 +295,14 @@ class Analyzer:
 			print(360*self.constants['INITIAL_SF'] 
 				* self.constants['SF_FRACTION_KCALS']
 				/ (12*self.constants['KCALS_MONTHLY']*7.9))
+			print('Days stored food global at start, by fat')
+			print(360*self.constants['INITIAL_SF'] 
+				* self.constants['SF_FRACTION_FAT']
+				/ (12*self.constants['FAT_MONTHLY']*7.9e9))
+			print('Days stored food global at start, by protein')
+			print(360*self.constants['INITIAL_SF'] 
+				* self.constants['SF_FRACTION_PROTEIN']
+				/ (12*self.constants['PROTEIN_MONTHLY']*7.9e9))
 
 	def analyze_seaweed_results(
 		self,
