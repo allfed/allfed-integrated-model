@@ -15,66 +15,69 @@ poetry install
 The interactive model runs off colab. It doesn't require any downloading or code, you just need to hit the right buttons as they show up. Here's a demo:
 
 first click on the "notebooks" folder, highlighted below
-![step1](http://github.com/allfed/allfed-integrated-model/step1.png)
+The interactive model runs off colab. It doesn't require any downloading or code, you just need to hit the right buttons as they show up. Here's a demo:
 
-[!step2](http://github.com/allfed/allfed-integrated-model/step2.png)
+first click on the "notebooks" folder, highlighted below
+![step1](https://github.com/allfed/allfed-integrated-model/step1.png)
+
+[!step2](https://github.com/allfed/allfed-integrated-model/step2.png)
 
 open example_optimize.ipynb
 
-![step3](http://github.com/allfed/allfed-integrated-model/step3.png)
+![step3](https://github.com/allfed/allfed-integrated-model/step3.png)
 
 click 'Open in Colab'
 
-![step4](http://github.com/allfed/allfed-integrated-model/step4.png)
+![step4](https://github.com/allfed/allfed-integrated-model/step4.png)
 
 'Authorize with github'
-![step5](http://github.com/allfed/allfed-integrated-model/step5.png)
+![step5](https://github.com/allfed/allfed-integrated-model/step5.png)
 
 'OK'
 
-![step6](http://github.com/allfed/allfed-integrated-model/step6.png)
+![step6](https://github.com/allfed/allfed-integrated-model/step6.png)
 
 for repository, select 'allfed/allfed-integrated-model' branch 'main', then click on the item labelled under Path, 'notebooks/example_optimize.ipynb'
 
-![step7](http://github.com/allfed/allfed-integrated-model/step7.png)
+![step7](https://github.com/allfed/allfed-integrated-model/step7.png)
 
 
 Now we're in the actual code! If you scroll down, you can see where all the constants are set. But first we need to run the Colab environment. Following along with the instructions,
-![step8](http://github.com/allfed/allfed-integrated-model/step8.png)
+![step8](https://github.com/allfed/allfed-integrated-model/step8.png)
 
 
 "Run Anyway"
 
-![step9](http://github.com/allfed/allfed-integrated-model/step9.png)
+![step9](https://github.com/allfed/allfed-integrated-model/step9.png)
 
 
 Hit the black arrow on the left, and press 'enter' inside each entry box as the instructions say.
 You will get a nice ascii picture.
 Moving on, run the lines up to and including the 'cat' command.
-![step10](http://github.com/allfed/allfed-integrated-model/step10.png)
+![step10](https://github.com/allfed/allfed-integrated-model/step10.png)
 
 select all that text the cat command generateds, and copy it.
 
-![step11](http://github.com/allfed/allfed-integrated-model/step11.png)
+![step11](https://github.com/allfed/allfed-integrated-model/step11.png)
 
 navigate to the URL mentioned, hit 'New SSH Key'. Name it something and paste the key in.
 
-![step12](http://github.com/allfed/allfed-integrated-model/step12.png)
+![step12](https://github.com/allfed/allfed-integrated-model/step12.png)
 
 
 hit 'Add SSH key'. Might have to put your github password in again.
 
 Finally, return to the code to check that it worked.
 
-![step13](http://github.com/allfed/allfed-integrated-model/step13.png)
+![step13](https://github.com/allfed/allfed-integrated-model/step13.png)
 Should look like message above.
 Run the remaining blocks one at a time, be sure they've completed before running the next one.
-![step14](http://github.com/allfed/allfed-integrated-model/step14.png)
+![step14](https://github.com/allfed/allfed-integrated-model/step14.png)
 
 and continue to run the blocks, if everything has gone well, you can run each block of the code.
-![step15](http://github.com/allfed/allfed-integrated-model/step15.png)
+![step15](https://github.com/allfed/allfed-integrated-model/step15.png)
 
-Please let me know if any of these steps go awry!
+Please let me know if any of these steps go awry! (morgan@allfed.info)
 
 ### From the command line (requires cloned repo):
 ```bash
