@@ -812,10 +812,6 @@ class Optimizer:
 			#stored_food_eaten*sf_fraction_fat is in units thousand tons monthly
 			#seaweed_food_produced_monthly*seaweed_fat is in units thousand tons monthly
 			#fat monthly is in units thousand tons
-			# print("MEAT_FRACTION_FAT")
-			# print(MEAT_FRACTION_FAT)
-			# print("FAT_PER_LARGE_ANIMAL")
-			# print(FAT_PER_LARGE_ANIMAL)
 			# quit()
 			model += (humans_fed_fat[m] == 
 				(stored_food_eaten[m]*SF_FRACTION_FAT 
@@ -832,14 +828,12 @@ class Optimizer:
 			#stored_food_eaten*sf_fraction_protein is in units thousand tons monthly
 			#seaweed_food_produced_monthly*seaweed_protein is in units thousand tons monthly
 			#fat monthly is in units thousand tons
-			# print((stored_food_eaten[m]*SF_FRACTION_PROTEIN
 			# 	+ seaweed_food_produced_monthly[m]*SEAWEED_PROTEIN
 			# 	+ dairy_animals_1000s_eaten[m]*PROTEIN_PER_1000_LARGE_ANIMALS
 			# 	+ (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
 			# 		* MILK_PROTEIN_PER_1000_COWS_PER_MONTH
 			# 	+ production_protein_greenhouses_per_month[m]
 			# 	+ nonegg_nondairy_meat_eaten[m]*MEAT_FRACTION_PROTEIN)/PROTEIN_MONTHLY/1e9)
-
 			model += (humans_fed_protein[m] == 
 				(stored_food_eaten[m]*SF_FRACTION_PROTEIN
 				+ seaweed_food_produced_monthly[m]*SEAWEED_PROTEIN
@@ -916,7 +910,6 @@ class Optimizer:
 
 		status = model.solve(pulp.PULP_CBC_CMD(fracGap=0.0001,msg=VERBOSE))
 		assert(status==1)
-		print('')	
 		print('')	
 		print('VALIDATION')	
 		print('')	
@@ -1008,4 +1001,5 @@ class Optimizer:
 
 		analysis.analyze_results(model,time_months_middle)
 		return [time_months,time_months_middle,analysis]
+
 

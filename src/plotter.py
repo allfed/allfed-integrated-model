@@ -9,10 +9,10 @@ module_path = os.path.abspath(os.path.join('..'))
 if module_path not in sys.path:
 	sys.path.append(module_path)
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from cycler import cycler
-
 class Plotter:
 	def __init__(self):
 		pass
@@ -449,7 +449,11 @@ class Plotter:
 
 	def plot_people_fed_kcals(time_months_middle,analysis):
 
+		font = {'family' : 'normal',
+				'weight' : 'bold',
+				'size'   : 16}
 
+		matplotlib.rc('font', **font)
 		fig = plt.figure()
 		ax=plt.subplot(111)
 		# legend=[]
@@ -484,12 +488,23 @@ class Plotter:
 			 analysis.billions_fed_GH_kcals[0:len(time_months_middle)],\
 			 analysis.billions_fed_seaweed_kcals[0:len(time_months_middle)],\
 			analysis.billions_fed_CS_kcals[0:len(time_months_middle)],\
-			 labels=['Outdoor Crops','Stored Food','Fish','Dairy Milk','Meat', 'Greenhouses', 'Seaweed', 'Cellulosic Sugar'], colors=pal)
+			 labels=[\
+			 'Outdoor Crops',
+			 'Stored Food',\
+			 'Fish',\
+			 'Dairy Milk',\
+			 'Meat',\
+			 'Greenhouses',\
+			 'Seaweed',\
+			 'Cellulosic Sugar'\
+			 ], colors=pal)
 		box = ax.get_position()
 		ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-		ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-		plt.title('People fed, in terms of calorie requirement')
-		plt.ylabel('billions of people')
+		handles, labels = ax.get_legend_handles_labels()   #get the handles
+		ax.legend()
+		ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),handles=reversed(handles),labels=reversed(labels))
+		plt.title('People Fed, in Terms of Calorie Requirement')
+		plt.ylabel('Billions of People')
 		plt.xlabel('Months Since May Nuclear Event')
 		# plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05),
 		#   ncol=3, fancybox=True, shadow=True)
