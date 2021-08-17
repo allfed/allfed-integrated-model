@@ -10,6 +10,72 @@ To install:
 poetry install
 ```
 # Run the model
+
+### Using Colab (most users use this):
+The interactive model runs off colab. It doesn't require any downloading or code, you just need to hit the right buttons as they show up. Here's a demo:
+
+first click on the "notebooks" folder, highlighted below
+![step1](http://github.com/allfed/allfed-integrated-model/step1.png)
+
+[!step2](http://github.com/allfed/allfed-integrated-model/step2.png)
+
+open example_optimize.ipynb
+
+![step3](http://github.com/allfed/allfed-integrated-model/step3.png)
+
+click 'Open in Colab'
+
+![step4](http://github.com/allfed/allfed-integrated-model/step4.png)
+
+'Authorize with github'
+![step5](http://github.com/allfed/allfed-integrated-model/step5.png)
+
+'OK'
+
+![step6](http://github.com/allfed/allfed-integrated-model/step6.png)
+
+for repository, select 'allfed/allfed-integrated-model' branch 'main', then click on the item labelled under Path, 'notebooks/example_optimize.ipynb'
+
+![step7](http://github.com/allfed/allfed-integrated-model/step7.png)
+
+
+Now we're in the actual code! If you scroll down, you can see where all the constants are set. But first we need to run the Colab environment. Following along with the instructions,
+![step8](http://github.com/allfed/allfed-integrated-model/step8.png)
+
+
+"Run Anyway"
+
+![step9](http://github.com/allfed/allfed-integrated-model/step9.png)
+
+
+Hit the black arrow on the left, and press 'enter' inside each entry box as the instructions say.
+You will get a nice ascii picture.
+Moving on, run the lines up to and including the 'cat' command.
+![step10](http://github.com/allfed/allfed-integrated-model/step10.png)
+
+select all that text the cat command generateds, and copy it.
+
+![step11](http://github.com/allfed/allfed-integrated-model/step11.png)
+
+navigate to the URL mentioned, hit 'New SSH Key'. Name it something and paste the key in.
+
+![step12](http://github.com/allfed/allfed-integrated-model/step12.png)
+
+
+hit 'Add SSH key'. Might have to put your github password in again.
+
+Finally, return to the code to check that it worked.
+
+![step13](http://github.com/allfed/allfed-integrated-model/step13.png)
+Should look like message above.
+Run the remaining blocks one at a time, be sure they've completed before running the next one.
+![step14](http://github.com/allfed/allfed-integrated-model/step14.png)
+
+and continue to run the blocks, if everything has gone well, you can run each block of the code.
+![step15](http://github.com/allfed/allfed-integrated-model/step15.png)
+
+Please let me know if any of these steps go awry!
+
 ### From the command line (requires cloned repo):
 ```bash
 poetry shell
@@ -23,11 +89,7 @@ poetry run jupyter lab
 Then navigate to the `notebooks` folder, open `1.0-example-run-cheri.ipynb`, and
 execute each cell in order, ignoring the first cell
 
-### Using Colab:
-Go to https://colab.research.google.com/github/allfed/allfed-integrated-model/blob/main/notebooks/1.0-example-run-cheri.ipynb
-Then, run each cell in order.
-
-# Project Organization
+# Project Tree
 
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
@@ -46,9 +108,6 @@ Then, run each cell in order.
     │
     ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
     ├── src                <- Source code for use in this project.
-    │   └── __init__.py    <- Makes src a Python module
-    │   
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
-
+        └── __init__.py    <- Makes src a Python module
 
 --------
