@@ -8,7 +8,7 @@ import numpy as np
 class Analyzer:
 	def __init__(self,constants):
 		self.constants=constants
-		
+
 	#order the variables that occur mid-month into a list of numeric values
 	def makeMidMonthlyVars(self,variables,conversion,show_output):
 		variable_output=[]
@@ -178,7 +178,7 @@ class Analyzer:
 			self.constants["MEAT_FRACTION_PROTEIN"]/(self.constants["PROTEIN_MONTHLY"]*12)/1e9,
 			show_output)
 	
-		if(self.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		if(self.constants['ADD_NONEGG_NONDAIRY_MEAT'] and self.constants['VERBOSE']):
 			print('Days non egg, non dairy meat global at start, by kcals')
 			print(360*self.constants['INITIAL_NONEGG_NONDAIRY_MEAT'] 
 				* self.constants['MEAT_FRACTION_KCALS']
@@ -290,7 +290,7 @@ class Analyzer:
 			self.constants["SF_FRACTION_PROTEIN"]/(self.constants["PROTEIN_MONTHLY"]*12)/1e9,
 			show_output)
 
-		if(self.constants['ADD_STORED_FOOD']):
+		if(self.constants['ADD_STORED_FOOD'] and self.constants['VERBOSE']):
 			print('Days stored food global at start, by kcals')
 			print(360*self.constants['INITIAL_SF'] 
 				* self.constants['SF_FRACTION_KCALS']
@@ -358,3 +358,48 @@ class Analyzer:
 
 		self.max_seaweed = self.constants['MAXIMUM_AREA'] * self.constants['MAXIMUM_DENSITY']
 		self.seaweed_used_area_max_density = np.array(self.seaweed_used_area) * self.constants['MAXIMUM_DENSITY']
+
+
+	def analyze_results(self,model,time_months_middle):
+		# np.array(self.billions_fed_GH_kcals[0:len(time_months_middle)]))
+		# quit
+		kcals_fed = np.array(self.billions_fed_SF_kcals)\
+			+np.array(self.billions_fed_meat_kcals)\
+			+np.array(self.billions_fed_seaweed_kcals)\
+			+np.array(self.billions_fed_dairy_meat_kcals)\
+			+np.array(self.billions_fed_milk_kcals)\
+			+np.array(self.billions_fed_CS_kcals[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_GH_kcals[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_OG_kcals[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_fish_kcals)
+
+		fat_fed = np.array(self.billions_fed_SF_fat)\
+			+np.array(self.billions_fed_meat_fat)\
+			+np.array(self.billions_fed_seaweed_fat)\
+			+np.array(self.billions_fed_dairy_meat_fat)\
+			+np.array(self.billions_fed_milk_fat)\
+			+np.array(self.billions_fed_OG_fat[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_GH_fat[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_fish_fat)\
+
+		protein_fed = np.array(self.billions_fed_SF_protein)\
+			+np.array(self.billions_fed_meat_protein)\
+			+np.array(self.billions_fed_seaweed_protein)\
+			+np.array(self.billions_fed_dairy_meat_protein)\
+			+np.array(self.billions_fed_milk_protein)\
+			+np.array(self.billions_fed_OG_protein[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_GH_protein[0:len(time_months_middle)
+				])\
+			+np.array(self.billions_fed_fish_protein)\
+
+		self.people_fed_billions=model.objective.value()
+		fed = {'fat':np.round(np.min(fat_fed),2),'kcals':np.round(np.min(kcals_fed),2),'protein':np.round(np.min(protein_fed),2)}
+		mins =  [key for key in fed if 
+				all(fed[temp] >= fed[key]
+				for temp in fed)]
+
+		# printing result 
+		print("Nutrients with constraining values are: " + str(mins))
+		print('Estimated people fed is '+ str(self.people_fed_billions)+' billion')
+		return [self.people_fed_billions,mins]
+		

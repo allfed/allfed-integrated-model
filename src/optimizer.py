@@ -95,9 +95,9 @@ class Optimizer:
 		#from the spreadsheet down to this "standard" level.
 		#we also add 20% loss, according to the sorts of loss seen in this spreadsheet
 		ASSUMED_WASTE_PERCENT = constants['inputs']['ASSUMED_WASTE_PERCENT']
-		KCALS_DAILY = constants['inputs']['KCALS_DAILY']
-		PROTEIN_DAILY = constants['inputs']['PROTEIN_DAILY']
-		FAT_DAILY = constants['inputs']['FAT_DAILY']
+		KCALS_DAILY = constants['inputs']['NUTRITION']['KCALS_DAILY']
+		PROTEIN_DAILY = constants['inputs']['NUTRITION']['PROTEIN_DAILY']
+		FAT_DAILY = constants['inputs']['NUTRITION']['FAT_DAILY']
 
 		ASSUMED_KCALS_DAILY=KCALS_DAILY/(1-ASSUMED_WASTE_PERCENT/100) #kcals
 		ASSUMED_PROTEIN_DAILY=PROTEIN_DAILY/(1-ASSUMED_WASTE_PERCENT/100) #kcals
@@ -112,7 +112,7 @@ class Optimizer:
 		# INTAKES['lower_moderate']['fat'] = 35 #grams per day
 		# INTAKES['lower_moderate']['protein'] = 51 #grams per day
 		# INTAKES['lower_moderate']['kcals'] = 1039 #per day
-
+		DAIRY_PRODUCTION = constants['inputs']['DAIRY_PRODUCTION']
 		KCALS_MONTHLY=ASSUMED_KCALS_DAILY*DAYS_IN_MONTH#in kcals per person
 		PROTEIN_MONTHLY=ASSUMED_PROTEIN_DAILY*DAYS_IN_MONTH/1e9# in thousands of tons
 		FAT_MONTHLY=ASSUMED_FAT_DAILY*DAYS_IN_MONTH/1e9# in thousands of tons
@@ -135,7 +135,8 @@ class Optimizer:
 			* KCALS_PER_LITER \
 			/ 12 \
 			/ 1e9 \
-			* 1000 
+			* 1000 \
+			* DAIRY_PRODUCTION
 
 		# billion kcals per unit mass initial (first month)
 		INITIAL_MILK_COWS = constants['inputs']['INITIAL_MILK_COWS']
@@ -216,7 +217,7 @@ class Optimizer:
 		MINIMUM_DENSITY=constants['inputs']['MINIMUM_DENSITY']
 		MAXIMUM_DENSITY=constants['inputs']['MAXIMUM_DENSITY']
 		MAXIMUM_AREA=constants['inputs']['MAXIMUM_AREA']
-		PRODUCTION_RATE=constants['inputs']['PRODUCTION_RATE']
+		SEAWEED_PRODUCTION_RATE=constants['inputs']['SEAWEED_PRODUCTION_RATE']
 
 
 		built_area=np.linspace(INITIAL_AREA,(NDAYS-1)*NEW_AREA_PER_DAY+INITIAL_AREA,NDAYS)
@@ -279,24 +280,46 @@ class Optimizer:
 		#mike's spreadsheet "livestock meat stats"
 		#https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=642022040
 
-		KG_PER_SMALL_ANIMAL=1.6*1.5
-		KG_PER_MEDIUM_ANIMAL=17*1.5
-		KG_PER_LARGE_ANIMAL=211*1.5
+		#note: I took the ratio between a cow organs and bones etc assuming we
+		# reduce waste by eating all the cow parts rather than waste as society 
+		# does now.
+
+		KG_PER_SMALL_ANIMAL=1.6
+		KG_PER_MEDIUM_ANIMAL=17
+		KG_PER_LARGE_ANIMAL=211
+
+		# see comparison between row https://docs.google.com/spreadsheets/d/1RZqSrHNiIEuPQLtx1ebCd_kUcFvEF6Ea46xyzA5wU0s/edit#gid=1516287804
+		#kcal ratio:
+		# compared to livestock meat stats here: https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=1495649381
+
+		MASS_RATIO_ORGANS = 1 #ratio organ meat to currently eaten meat, so global average animal at slaughter food cooked weighs (1+this) * (kg per animal).
+
+		KCALS_RATIO_ORGANS = 1400/2090 #ratio organ kcals to currently eaten meat kcals per kg (kcals per kg / kcals per kg)
+
+		FAT_RATIO_ORGANS = 49/147 #ratio organ fat to currently eaten meat fat (grams per kg / grams per kg)
+
+		PROTEIN_RATIO_ORGANS = 206/204 #ratio organ protein to currently eaten meat protein (grams per kg / grams per kg)
+
+
+		ORGANS_KCALS = 1+MASS_RATIO_ORGANS*KCALS_RATIO_ORGANS
+		ORGANS_FAT = 1+MASS_RATIO_ORGANS*FAT_RATIO_ORGANS
+		ORGANS_PROTEIN = 1+MASS_RATIO_ORGANS*PROTEIN_RATIO_ORGANS
+		
+
 
 		#billions of kcals, 1000s of tons fat, 1000s of tons protein
-		#kcals: half is meat, half is rest
 
-		KCALS_PER_SMALL_ANIMAL=1480*KG_PER_SMALL_ANIMAL/1e9
-		FAT_PER_SMALL_ANIMAL=.135*KG_PER_SMALL_ANIMAL*KG_TO_1000_TONS
-		PROTEIN_PER_SMALL_ANIMAL=.273*KG_PER_SMALL_ANIMAL*KG_TO_1000_TONS
+		KCALS_PER_SMALL_ANIMAL=1480*KG_PER_SMALL_ANIMAL*ORGANS_KCALS/1e9
+		FAT_PER_SMALL_ANIMAL=.135*KG_PER_SMALL_ANIMAL*KG_TO_1000_TONS*ORGANS_FAT
+		PROTEIN_PER_SMALL_ANIMAL=.273*KG_PER_SMALL_ANIMAL*KG_TO_1000_TONS*ORGANS_PROTEIN
 
-		KCALS_PER_MEDIUM_ANIMAL=2080*KG_PER_MEDIUM_ANIMAL/1e9
-		FAT_PER_MEDIUM_ANIMAL=.205*KG_PER_MEDIUM_ANIMAL*KG_TO_1000_TONS
-		PROTEIN_PER_MEDIUM_ANIMAL=.215*KG_PER_MEDIUM_ANIMAL*KG_TO_1000_TONS
+		KCALS_PER_MEDIUM_ANIMAL=2080*KG_PER_MEDIUM_ANIMAL*ORGANS_KCALS/1e9
+		FAT_PER_MEDIUM_ANIMAL=.205*KG_PER_MEDIUM_ANIMAL*KG_TO_1000_TONS*ORGANS_FAT
+		PROTEIN_PER_MEDIUM_ANIMAL=.215*KG_PER_MEDIUM_ANIMAL*KG_TO_1000_TONS*ORGANS_PROTEIN
 
-		KCALS_PER_LARGE_ANIMAL=2090*KG_PER_LARGE_ANIMAL/1e9
-		FAT_PER_LARGE_ANIMAL=.147*KG_PER_LARGE_ANIMAL*KG_TO_1000_TONS
-		PROTEIN_PER_LARGE_ANIMAL=.204*KG_PER_LARGE_ANIMAL*KG_TO_1000_TONS
+		KCALS_PER_LARGE_ANIMAL=2090*KG_PER_LARGE_ANIMAL*ORGANS_KCALS/1e9
+		FAT_PER_LARGE_ANIMAL=.147*KG_PER_LARGE_ANIMAL*KG_TO_1000_TONS*ORGANS_FAT
+		PROTEIN_PER_LARGE_ANIMAL=.204*KG_PER_LARGE_ANIMAL*KG_TO_1000_TONS*ORGANS_PROTEIN
 
 		KCALS_PER_1000_LARGE_ANIMALS=KCALS_PER_LARGE_ANIMAL * 1000
 		FAT_PER_1000_LARGE_ANIMALS=FAT_PER_LARGE_ANIMAL * 1000
@@ -376,7 +399,7 @@ class Optimizer:
 
 
 		# year 1: post disaster yield annual = 40% of predisaster yields, with war in mid-may
-		RATIO_KCALS_POSTDISASTER_Y1 = constants['inputs']['RATIO_KCALS_POSTDISASTER_Y1']
+		RATIO_KCALS_POSTDISASTER_Y1 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y1']
 
 		RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1 = (RATIO_KCALS_POSTDISASTER_Y1
 			* KCALS_PREDISASTER_ANNUAL
@@ -384,9 +407,9 @@ class Optimizer:
 			/ KCALS_PREDISASTER_AFTER_MAY
 
 		# year 2: 20% of normal year
-		RATIO_KCALS_POSTDISASTER_Y2 = constants['inputs']['RATIO_KCALS_POSTDISASTER_Y2']
-		RATIO_KCALS_POSTDISASTER_Y3 = constants['inputs']['RATIO_KCALS_POSTDISASTER_Y3']
-		RATIO_KCALS_POSTDISASTER_Y4 = constants['inputs']['RATIO_KCALS_POSTDISASTER_Y4']
+		RATIO_KCALS_POSTDISASTER_Y2 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y2']
+		RATIO_KCALS_POSTDISASTER_Y3 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y3']
+		RATIO_KCALS_POSTDISASTER_Y4 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y4']
 
 		KCALS_GROWN=[\
 			MAY_KCALS_OG * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
@@ -454,16 +477,19 @@ class Optimizer:
 		production_protein_outdoor_growing_per_month = \
 			list(np.array(production_kcals_outdoor_growing_per_month) \
 			* SF_FRACTION_PROTEIN / SF_FRACTION_KCALS  )
-
+		
+		OUTDOOR_GROWING_FAT_MULTIPLIER = constants['inputs']['OUTDOOR_GROWING_FAT_MULTIPLIER']
+		
 		production_fat_outdoor_growing_per_month = \
 			list(np.array(production_kcals_outdoor_growing_per_month) \
-			* SF_FRACTION_FAT / SF_FRACTION_KCALS *2 )
+			* SF_FRACTION_FAT / SF_FRACTION_KCALS * OUTDOOR_GROWING_FAT_MULTIPLIER )
 		#### CONSTANTS FOR GREENHOUSES ####
 		#greenhouses tab
 		#assumption: greenhouse crop production is very similar in nutritional
 		# profile to stored food
 		# reference: see https://docs.google.com/spreadsheets/d/1f9eVD14Y2d9vmLFP3OsJPFA5d2JXBU-63MTz8MlB1rY/edit#gid=756212200
-		GREENHOUSE_PERCENT_KCALS=[0,0,0,0,0,11.60,11.60,11.60,23.21,23.21,23.21,34.81,34.81,34.81,46.41,46.41,46.41,58.01,58.01,58.01,69.62,69.62,69.62,81.22,81.22,81.22,92.82,92.82,92.82,104.43,104.43,104.43,116.03,116.03,116.03,127.63,127.63,127.63,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24]
+		GREENHOUSE_SLOPE_MULTIPLIER = constants['inputs']['GREENHOUSE_SLOPE_MULTIPLIER']
+		GREENHOUSE_PERCENT_KCALS=list(np.array([0,0,0,0,0,11.60,11.60,11.60,23.21,23.21,23.21,34.81,34.81,34.81,46.41,46.41,46.41,58.01,58.01,58.01,69.62,69.62,69.62,81.22,81.22,81.22,92.82,92.82,92.82,104.43,104.43,104.43,116.03,116.03,116.03,127.63,127.63,127.63,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24])*GREENHOUSE_SLOPE_MULTIPLIER)
 
 		if(ADD_GREENHOUSES):
 			production_kcals_greenhouses_per_month = []
@@ -484,13 +510,16 @@ class Optimizer:
 		# therefore
 		# 	gh_protein = gh_kcals*SF_FRACTION_PROTEIN/SF_FRACTION_KCALS
 
+		GREENHOUSE_FAT_MULTIPLIER = constants['inputs']['GREENHOUSE_FAT_MULTIPLIER']
+
+
 		production_protein_greenhouses_per_month = \
 			list(np.array(production_kcals_greenhouses_per_month) \
 			* SF_FRACTION_PROTEIN / SF_FRACTION_KCALS  )
 
 		production_fat_greenhouses_per_month = \
 			list(np.array(production_kcals_greenhouses_per_month) \
-			* SF_FRACTION_FAT / SF_FRACTION_KCALS * 2 )
+			* SF_FRACTION_FAT / SF_FRACTION_KCALS * GREENHOUSE_FAT_MULTIPLIER )
 
 		####LIVESTOCK, EGG, DAIRY INITIAL VARIABLES####
 
@@ -536,18 +565,8 @@ class Optimizer:
 		#### CONSTANTS FOR CELLULOSIC SUGAR ####
 
 		#in billions of calories
-
-		CELL_SUGAR_PERCENT_KCALS = [0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 19.57, 23.48, 24.58, 28.49, 28.49,
-											29.59,
-											31.64, 31.64, 31.64, 31.64, 33.69, 35.74, 35.74, 35.74, 35.74, 37.78, 38.70, 39.61,
-											40.53,
-											41.44, 42.35, 43.27, 44.18, 45.10, 46.01, 46.93, 47.84, 48.76, 49.67, 50.58, 51.50,
-											52.41,
-											53.33, 54.24, 55.16, 56.07, 56.99, 57.90, 58.81, 59.73, 60.64, 61.56, 62.47, 63.39,
-											64.30,
-											65.21, 66.13, 67.04, 67.96, 68.87, 69.79, 70.70, 71.62, 72.53, 73.44, 74.36, 75.27,
-											76.19,
-											77.10, 78.02, 78.93, 79.85, 80.76, 81.67]
+		CELLULOSIC_SUGAR_SLOPE_MULTIPLIER = constants['inputs']['CELLULOSIC_SUGAR_SLOPE_MULTIPLIER']
+		CELL_SUGAR_PERCENT_KCALS = list(np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 19.57, 23.48, 24.58, 28.49, 28.49,29.59,31.64, 31.64, 31.64, 31.64, 33.69, 35.74, 35.74, 35.74, 35.74, 37.78, 38.70, 39.61,40.53,41.44, 42.35, 43.27, 44.18, 45.10, 46.01, 46.93, 47.84, 48.76, 49.67, 50.58, 51.50,52.41,53.33, 54.24, 55.16, 56.07, 56.99, 57.90, 58.81, 59.73, 60.64, 61.56, 62.47, 63.39,64.30,65.21, 66.13, 67.04, 67.96, 68.87, 69.79, 70.70, 71.62, 72.53, 73.44, 74.36, 75.27,76.19,77.10, 78.02, 78.93, 79.85, 80.76, 81.67]) * CELLULOSIC_SUGAR_SLOPE_MULTIPLIER)
 		if(ADD_CELLULOSIC_SUGAR):
 			production_kcals_cell_sugar_per_month = []
 			for x in CELL_SUGAR_PERCENT_KCALS:
@@ -648,7 +667,7 @@ class Optimizer:
 					model += (seaweed_wet_on_farm[d] <= used_area[d]*MAXIMUM_DENSITY)
 
 					model += (seaweed_wet_on_farm[d] == 
-						seaweed_wet_on_farm[d-1]*(1+PRODUCTION_RATE/100.)
+						seaweed_wet_on_farm[d-1]*(1+SEAWEED_PRODUCTION_RATE/100.)
 						- seaweed_food_produced[d]
 						- (used_area[d]-used_area[d-1])*MINIMUM_DENSITY*(HARVEST_LOSS/100),
 						"Seaweed_Wet_On_Farm_"+str(d)+"_Constraint")
@@ -896,7 +915,7 @@ class Optimizer:
 		model += obj_func
 
 		status = model.solve(pulp.PULP_CBC_CMD(fracGap=0.0001,msg=VERBOSE))
-
+		assert(status==1)
 		print('')	
 		print('')	
 		print('VALIDATION')	
@@ -916,14 +935,6 @@ class Optimizer:
 				VERBOSE)
 
 
-		print('')	
-		print('')	
-		print('RESULTS')	
-		print('')	
-		print('')
-
-		print(f"objective: {model.objective.value()}")
-
 		if(VERBOSE):
 			for var in model.variables():
 				print(f"{var.name}: {var.value()}")
@@ -933,6 +944,7 @@ class Optimizer:
 		analysis = Analyzer(constants)
 
 		show_output=False
+
 
 		# if no stored food, will be zero
 		analysis.analyze_SF_results(
@@ -994,42 +1006,6 @@ class Optimizer:
 			show_output
 		)
 
+		analysis.analyze_results(model,time_months_middle)
+		return [time_months,time_months_middle,analysis]
 
-		if(ADD_CELLULOSIC_SUGAR):
-			Plotter.plot_CS(time_months_middle,analysis)
-			# pass
-
-		if(ADD_FISH):
-			Plotter.plot_fish(time_months_middle,analysis)
-			# pass
-		if(ADD_GREENHOUSES):
-			Plotter.plot_GH(time_months_middle,analysis)
-			# pass
-		if(ADD_OUTDOOR_GROWING):
-			Plotter.plot_OG(time_months_middle,analysis)
-			# pass
-
-		if(ADD_STORED_FOOD):
-			Plotter.plot_stored_food(time_months,analysis)
-
-		if(ADD_SEAWEED):
-			Plotter.plot_seaweed(time_months_middle,analysis)
-
-		if(ADD_NONEGG_NONDAIRY_MEAT):
-			Plotter.plot_nonegg_nondairy_meat(time_months,analysis)
-			# pass
-		if(ADD_DAIRY):
-			Plotter.plot_dairy_cows(time_months_middle,analysis)
-			Plotter.plot_dairy(time_months_middle,analysis)
-			# pass
-		Plotter.plot_people_fed(time_months_middle,analysis)
-		Plotter.plot_people_fed_combined(time_months_middle,analysis)
-		Plotter.plot_people_fed_kcals(time_months_middle,analysis)
-		Plotter.plot_people_fed_fat(time_months_middle,analysis)
-		Plotter.plot_people_fed_protein(time_months_middle,analysis)
-		Plotter.plot_people_fed_comparison(time_months_middle,analysis)
-		#if we don't have stored food, and we are optimizing last 150 days,
-		# we can compare to Aron's data.
-		if(ADD_SEAWEED and (not ADD_STORED_FOOD) and MAXIMIZE_ONLY_FOOD_AFTER_DAY_150):
-			Plotter.plot_seaweed_comparison(time_days_daily,time_days_monthly,analysis)
-		return model.objective.value()
