@@ -20,7 +20,7 @@ The interactive model runs off colab. It doesn't require any downloading or code
 
 First click on the "notebooks" folder, highlighted in the image below:
 
-![step1](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/readme_content/readme_content/step1.png)
+![step1](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/readme_content/step1.png)
 
 ![step2](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/readme_content/step2.png)
 
