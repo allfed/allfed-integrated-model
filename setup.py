@@ -4,7 +4,7 @@ setup(
     name='src',
     packages=find_packages(),
     version='0.1.0',
-    description='An integrated economic model for resilient foods',
+    description='A diet planner tool using resilient foods',
     author='ALLFED',
     license='',
 )
