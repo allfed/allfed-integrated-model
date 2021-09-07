@@ -277,49 +277,52 @@ class Optimizer:
 		#not functional yet
 		# MEAT_DELAY = 1 #months
 
-		#mike's spreadsheet "livestock meat stats"
-		#https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=642022040
+		#we use this spreadsheeet https://docs.google.com/spreadsheets/d/1ZyDrGI84TwhXj_QNicwjj9EPWLJ-r3xnAYMzKSAfWc0/edit#gid=824870019
 
-		#note: I took the ratio between a cow organs and bones etc assuming we
-		# reduce waste by eating all the cow parts rather than waste as society 
-		# does now.
+		#edible meat, organs, and fat added
 
-		KG_PER_SMALL_ANIMAL=1.6
-		KG_PER_MEDIUM_ANIMAL=17
-		KG_PER_LARGE_ANIMAL=211
+		KG_PER_SMALL_ANIMAL=2.36
+		KG_PER_MEDIUM_ANIMAL=24.6
+		KG_PER_LARGE_ANIMAL=269.7
 
 		# see comparison between row https://docs.google.com/spreadsheets/d/1RZqSrHNiIEuPQLtx1ebCd_kUcFvEF6Ea46xyzA5wU0s/edit#gid=1516287804
 		#kcal ratio:
 		# compared to livestock meat stats here: https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=1495649381
 
-		MASS_RATIO_ORGANS = 1 #ratio organ meat to currently eaten meat, so global average animal at slaughter food cooked weighs (1+this) * (kg per animal).
-
-		KCALS_RATIO_ORGANS = 1400/2090 #ratio organ kcals to currently eaten meat kcals per kg (kcals per kg / kcals per kg)
-
-		FAT_RATIO_ORGANS = 49/147 #ratio organ fat to currently eaten meat fat (grams per kg / grams per kg)
-
-		PROTEIN_RATIO_ORGANS = 206/204 #ratio organ protein to currently eaten meat protein (grams per kg / grams per kg)
-
-
-		ORGANS_KCALS = 1+MASS_RATIO_ORGANS*KCALS_RATIO_ORGANS
-		ORGANS_FAT = 1+MASS_RATIO_ORGANS*FAT_RATIO_ORGANS
-		ORGANS_PROTEIN = 1+MASS_RATIO_ORGANS*PROTEIN_RATIO_ORGANS
-		
+		#this helps with fat vs other meat https://extension.tennessee.edu/publications/documents/pb1822.pdf
+		#that's how we get 237 kg meat but not separable fat, and 91kg separable fat+bone
+		#then, we use this spreadsheeet https://docs.google.com/spreadsheets/d/1ZyDrGI84TwhXj_QNicwjj9EPWLJ-r3xnAYMzKSAfWc0/edit#gid=824870019
+		# to estimate 13% organ to meat ratio.
 
 
 		#billions of kcals, 1000s of tons fat, 1000s of tons protein
+		#includes organs, fat, and meat
 
-		KCALS_PER_SMALL_ANIMAL=1480*KG_PER_SMALL_ANIMAL*ORGANS_KCALS/1e9
-		FAT_PER_SMALL_ANIMAL=.135*KG_PER_SMALL_ANIMAL*KG_TO_1000_TONS*ORGANS_FAT
-		PROTEIN_PER_SMALL_ANIMAL=.273*KG_PER_SMALL_ANIMAL*KG_TO_1000_TONS*ORGANS_PROTEIN
+		LARGE_ANIMAL_KCALS_PER_KG = 3258
+		LARGE_ANIMAL_FAT_PER_KG = .293
+		LARGE_ANIMAL_PROTEIN_PER_KG = 0.143
 
-		KCALS_PER_MEDIUM_ANIMAL=2080*KG_PER_MEDIUM_ANIMAL*ORGANS_KCALS/1e9
-		FAT_PER_MEDIUM_ANIMAL=.205*KG_PER_MEDIUM_ANIMAL*KG_TO_1000_TONS*ORGANS_FAT
-		PROTEIN_PER_MEDIUM_ANIMAL=.215*KG_PER_MEDIUM_ANIMAL*KG_TO_1000_TONS*ORGANS_PROTEIN
+		MEDIUM_ANIMAL_KCALS_PER_KG = 3375
+		MEDIUM_ANIMAL_FAT_PER_KG = .247
+		MEDIUM_ANIMAL_PROTEIN_PER_KG = .129
 
-		KCALS_PER_LARGE_ANIMAL=2090*KG_PER_LARGE_ANIMAL*ORGANS_KCALS/1e9
-		FAT_PER_LARGE_ANIMAL=.147*KG_PER_LARGE_ANIMAL*KG_TO_1000_TONS*ORGANS_FAT
-		PROTEIN_PER_LARGE_ANIMAL=.204*KG_PER_LARGE_ANIMAL*KG_TO_1000_TONS*ORGANS_PROTEIN
+		SMALL_ANIMAL_KCALS_PER_KG = 1525
+		SMALL_ANIMAL_FAT_PER_KG = 0.076
+		SMALL_ANIMAL_PROTEIN_PER_KG = .196
+
+
+
+		KCALS_PER_SMALL_ANIMAL=SMALL_ANIMAL_KCALS_PER_KG*KG_PER_SMALL_ANIMAL/1e9
+		FAT_PER_SMALL_ANIMAL=SMALL_ANIMAL_FAT_PER_KG*KG_PER_SMALL_ANIMAL*KG_TO_1000_TONS
+		PROTEIN_PER_SMALL_ANIMAL=SMALL_ANIMAL_PROTEIN_PER_KG*KG_PER_SMALL_ANIMAL*KG_TO_1000_TONS
+
+		KCALS_PER_MEDIUM_ANIMAL=MEDIUM_ANIMAL_KCALS_PER_KG*KG_PER_MEDIUM_ANIMAL/1e9
+		FAT_PER_MEDIUM_ANIMAL=MEDIUM_ANIMAL_FAT_PER_KG*KG_PER_MEDIUM_ANIMAL*KG_TO_1000_TONS
+		PROTEIN_PER_MEDIUM_ANIMAL=MEDIUM_ANIMAL_PROTEIN_PER_KG*KG_PER_MEDIUM_ANIMAL*KG_TO_1000_TONS
+
+		KCALS_PER_LARGE_ANIMAL=LARGE_ANIMAL_KCALS_PER_KG*KG_PER_LARGE_ANIMAL/1e9
+		FAT_PER_LARGE_ANIMAL=LARGE_ANIMAL_FAT_PER_KG*KG_PER_LARGE_ANIMAL*KG_TO_1000_TONS
+		PROTEIN_PER_LARGE_ANIMAL=LARGE_ANIMAL_PROTEIN_PER_KG*KG_PER_LARGE_ANIMAL*KG_TO_1000_TONS
 
 		KCALS_PER_1000_LARGE_ANIMALS=KCALS_PER_LARGE_ANIMAL * 1000
 		FAT_PER_1000_LARGE_ANIMALS=FAT_PER_LARGE_ANIMAL * 1000

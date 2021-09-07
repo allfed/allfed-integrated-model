@@ -31,10 +31,6 @@ constants['inputs']['M1_ADDITIONAL_WASTE'] = 5e9/12#tons dry caloric equivalent
 
 constants['inputs']['NUTRITION'] = {'FAT_DAILY':35,'KCALS_DAILY':2100,'PROTEIN_DAILY':51}
 
-# constants['inputs']['KCALS_DAILY'] = 2100 #kcals per person per day
-# constants['inputs']['FAT_DAILY'] = 35 #grams per person per day
-# constants['inputs']['PROTEIN_DAILY'] = 51 #grams per person per day
-
 constants['inputs']['INITIAL_MILK_COWS'] = 264e6
 constants['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS'] = 30
 constants['inputs']['INIT_SMALL_ANIMALS'] = 28.2e9
@@ -93,7 +89,25 @@ def monte_carlo():
 	variables['CELLULOSIC_SUGAR_SLOPE_MULTIPLIER'] = [0.1,0.5,1,2,3]
 	variables['OUTDOOR_GROWING_FAT_MULTIPLIER'] = [1,1.5,2,3]
 
-	nsamples=100
+
+	# variables['NMONTHS'] = [12]
+	# variables['ASSUMED_WASTE'] = [15]
+
+	# variables['NUTRITION'] = [{'FAT_DAILY':35,'KCALS_DAILY':2100,'PROTEIN_DAILY':51}]
+
+	# variables['RATIO_KCALS_POSTDISASTER_Y1'] = [{'Y1':0.4,'Y2':0.2,'Y3':0.2,'Y4':0.2}]
+
+	# variables['GREENHOUSE_FAT_MULTIPLIER'] = [3]
+	# variables['DAIRY_PRODUCTION'] = [1]
+	# variables['MAX_SEAWEED_AS_PERCENT_KCALS'] = [30]
+	# variables['SEAWEED_PRODUCTION_RATE'] = [20]
+	# variables['SEAWEED_NEW_AREA'] = [6]
+	# variables['GREENHOUSE_SLOPE_MULTIPLIER'] = [3]
+	# variables['CELLULOSIC_SUGAR_SLOPE_MULTIPLIER'] = [3]
+	# variables['OUTDOOR_GROWING_FAT_MULTIPLIER'] = [3]
+
+
+	nsamples=1000
 	
 	all_vars = list(variables.values())
 	all_keys = [list(variables.keys())]*nsamples
