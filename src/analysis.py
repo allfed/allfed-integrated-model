@@ -9,6 +9,8 @@ class Analyzer:
 	def __init__(self,constants):
 		self.constants=constants
 
+
+
 	#order the variables that occur mid-month into a list of numeric values
 	def makeMidMonthlyVars(self,variables,conversion,show_output):
 		variable_output=[]
@@ -363,7 +365,7 @@ class Analyzer:
 	def analyze_results(self,model,time_months_middle):
 		# np.array(self.billions_fed_GH_kcals[0:len(time_months_middle)]))
 		# quit
-		kcals_fed = np.array(self.billions_fed_SF_kcals)\
+		self.kcals_fed = np.array(self.billions_fed_SF_kcals)\
 			+np.array(self.billions_fed_meat_kcals)\
 			+np.array(self.billions_fed_seaweed_kcals)\
 			+np.array(self.billions_fed_dairy_meat_kcals)\
@@ -373,7 +375,7 @@ class Analyzer:
 			+np.array(self.billions_fed_OG_kcals[0:len(time_months_middle)])\
 			+np.array(self.billions_fed_fish_kcals)
 
-		fat_fed = np.array(self.billions_fed_SF_fat)\
+		self.fat_fed = np.array(self.billions_fed_SF_fat)\
 			+np.array(self.billions_fed_meat_fat)\
 			+np.array(self.billions_fed_seaweed_fat)\
 			+np.array(self.billions_fed_dairy_meat_fat)\
@@ -382,7 +384,7 @@ class Analyzer:
 			+np.array(self.billions_fed_GH_fat[0:len(time_months_middle)])\
 			+np.array(self.billions_fed_fish_fat)\
 
-		protein_fed = np.array(self.billions_fed_SF_protein)\
+		self.protein_fed = np.array(self.billions_fed_SF_protein)\
 			+np.array(self.billions_fed_meat_protein)\
 			+np.array(self.billions_fed_seaweed_protein)\
 			+np.array(self.billions_fed_dairy_meat_protein)\
@@ -393,7 +395,7 @@ class Analyzer:
 			+np.array(self.billions_fed_fish_protein)\
 
 		self.people_fed_billions=model.objective.value()
-		fed = {'fat':np.round(np.min(fat_fed),2),'kcals':np.round(np.min(kcals_fed),2),'protein':np.round(np.min(protein_fed),2)}
+		fed = {'fat':np.round(np.min(self.fat_fed),2),'kcals':np.round(np.min(self.kcals_fed),2),'protein':np.round(np.min(self.protein_fed),2)}
 		mins =  [key for key in fed if 
 				all(fed[temp] >= fed[key]
 				for temp in fed)]
@@ -403,3 +405,15 @@ class Analyzer:
 		print('Estimated people fed is '+ str(self.people_fed_billions)+' billion')
 		return [self.people_fed_billions,mins]
 		
+
+	#billions of kcals
+	def countProduction(self,months):
+		
+		kcals = self.kcals_fed*self.constants['KCALS_MONTHLY']
+
+		kcals_sum = 0
+		for m in months:
+			kcals_sum = kcals_sum + kcals[m-1]
+
+		return kcals_sum
+
