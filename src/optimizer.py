@@ -236,8 +236,13 @@ class Optimizer:
 
 		TONS_DRY_CALORIC_EQIVALENT_SF=constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF']
 		INITIAL_SF_KCALS = KCALS_PER_DRY_CALORIC_TONS*TONS_DRY_CALORIC_EQIVALENT_SF/1e9 # billion kcals per unit mass initial
+
+
 		INITIAL_SF_PROTEIN = constants['inputs']['INITIAL_SF_PROTEIN'] 
 		INITIAL_SF_FAT = constants['inputs']['INITIAL_SF_FAT'] 
+
+		#we need kcals from a unit of mass of stored food.
+		#if the unit is mass, we know initial_sf_kcals/initial_sf_kcals is unitless 1
 
 		SF_FRACTION_KCALS =	INITIAL_SF_KCALS \
 			/ (INITIAL_SF_KCALS
@@ -255,20 +260,28 @@ class Optimizer:
 		#mass initial, units don't matter, we only need to ensure we use the correct 
 		#fraction of kcals, fat, and protein per unit initial stored food.
 		INITIAL_SF=INITIAL_SF_KCALS/SF_FRACTION_KCALS
+		# so INITIAL_SF = INITIAL_SF_KCALS+ INITIAL_SF_PROTEIN+ INITIAL_SF_FAT
+		# and we find:  INITIAL_SF*SF_FRACTION_FAT =INITIAL_SF_FAT
+		# 
+
 		stored_food_start=[0]*NMONTHS
 		stored_food_end=[0]*NMONTHS
 		stored_food_eaten=[0]*NMONTHS # if stored food isn't modeled, this stays zero
 
 		#### FISH ####
 
-		FISH_PROTEIN = 3.2e3 #1000s tons protein
-		FISH_FAT = 0.2e3# 1000s tons fat
 
-		FISH_TONS_DRY_CALORIC_EQUIVALENT = 9e6 #tons
+		FISH_TONS_WET_2018 = 168936.71*1e3
+		FISH_KCALS_PER_TON = 1310*1e3
+		FISH_PROTEIN_PER_KG = 0.0204
+		FISH_FAT_PER_KG = 0.0048
 
-		#billions of kcals
-		FISH_KCALS = KCALS_PER_DRY_CALORIC_TONS*FISH_TONS_DRY_CALORIC_EQUIVALENT/1e9
+		#billions of kcals per month
+		FISH_KCALS = FISH_TONS_WET_2018/12*FISH_KCALS_PER_TON/1e9
+		FISH_KG_MONTHLY=FISH_TONS_WET_2018/12*1e3
 
+		FISH_PROTEIN = FISH_KG_MONTHLY * FISH_PROTEIN_PER_KG / 1e6 #units of 1000s tons protein (so, value is in the hundreds of thousands of tons)
+		FISH_FAT = FISH_KG_MONTHLY * FISH_FAT_PER_KG / 1e6#units of 1000s tons fat (so, value is in the tens of thousands of tons)
 		
 
 		#### NON EGG NONDAIRY MEAT ####
@@ -298,9 +311,9 @@ class Optimizer:
 		#billions of kcals, 1000s of tons fat, 1000s of tons protein
 		#includes organs, fat, and meat
 
-		LARGE_ANIMAL_KCALS_PER_KG = 3258
-		LARGE_ANIMAL_FAT_PER_KG = .293
-		LARGE_ANIMAL_PROTEIN_PER_KG = 0.143
+		LARGE_ANIMAL_KCALS_PER_KG = 2750
+		LARGE_ANIMAL_FAT_PER_KG = .182
+		LARGE_ANIMAL_PROTEIN_PER_KG = .257
 
 		MEDIUM_ANIMAL_KCALS_PER_KG = 3375
 		MEDIUM_ANIMAL_FAT_PER_KG = .247
@@ -486,14 +499,42 @@ class Optimizer:
 		production_fat_outdoor_growing_per_month = \
 			list(np.array(production_kcals_outdoor_growing_per_month) \
 			* SF_FRACTION_FAT / SF_FRACTION_KCALS * OUTDOOR_GROWING_FAT_MULTIPLIER )
+
+		INITIAL_OG_KCALS = production_kcals_outdoor_growing_per_month[0]
+		INITIAL_OG_FAT = production_fat_outdoor_growing_per_month[0]
+		INITIAL_OG_PROTEIN = production_protein_outdoor_growing_per_month[0] 
+
+
+		OG_FRACTION_KCALS =	INITIAL_OG_KCALS \
+			/ (INITIAL_OG_KCALS
+				+ INITIAL_OG_PROTEIN
+				+ INITIAL_OG_FAT)
+		OG_FRACTION_FAT =	INITIAL_OG_FAT \
+			/ (INITIAL_OG_KCALS
+				+ INITIAL_OG_PROTEIN
+				+ INITIAL_OG_FAT)
+		OG_FRACTION_PROTEIN = INITIAL_OG_PROTEIN \
+			/ (INITIAL_OG_KCALS
+				+ INITIAL_OG_PROTEIN
+				+ INITIAL_OG_FAT)
+
+		#mass initial, units don't matter, we only need to ensure we use the correct 
+		#fraction of kcals, fat, and protein per unit initial stored food.
+		
+		crops_food_start=[0]*NMONTHS
+		crops_food_end=[0]*NMONTHS
+		crops_food_produced=list(np.array(production_kcals_outdoor_growing_per_month)/OG_FRACTION_KCALS)
+		crops_food_eaten=[0]*NMONTHS
+
 		#### CONSTANTS FOR GREENHOUSES ####
 		#greenhouses tab
 		#assumption: greenhouse crop production is very similar in nutritional
 		# profile to stored food
 		# reference: see https://docs.google.com/spreadsheets/d/1f9eVD14Y2d9vmLFP3OsJPFA5d2JXBU-63MTz8MlB1rY/edit#gid=756212200
 		GREENHOUSE_SLOPE_MULTIPLIER = constants['inputs']['GREENHOUSE_SLOPE_MULTIPLIER']
-		GREENHOUSE_PERCENT_KCALS=list(np.array([0,0,0,0,0,11.60,11.60,11.60,23.21,23.21,23.21,34.81,34.81,34.81,46.41,46.41,46.41,58.01,58.01,58.01,69.62,69.62,69.62,81.22,81.22,81.22,92.82,92.82,92.82,104.43,104.43,104.43,116.03,116.03,116.03,127.63,127.63,127.63,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24])*GREENHOUSE_SLOPE_MULTIPLIER)
+		GREENHOUSE_PERCENT_KCALS=list(np.array([0,0,0,0,0,11.60,11.60,11.60,23.21,23.21,23.21,34.81,34.81,34.81,46.41,46.41,46.41,58.01,58.01,58.01,69.62,69.62,69.62,81.22,81.22,81.22,92.82,92.82,92.82,104.43,104.43,104.43,116.03,116.03,116.03,127.63,127.63,127.63,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24])*1/(1-0.12)**GREENHOUSE_SLOPE_MULTIPLIER)
 
+		import matplotlib.pyplot as plt
 		if(ADD_GREENHOUSES):
 			production_kcals_greenhouses_per_month = []
 			for x in GREENHOUSE_PERCENT_KCALS:
@@ -513,6 +554,14 @@ class Optimizer:
 		# therefore
 		# 	gh_protein = gh_kcals*SF_FRACTION_PROTEIN/SF_FRACTION_KCALS
 
+		#productivity of 2.4 dry tons/ha/yr
+		GH_DRY_TONS_PER_HECTARE_PER_YEAR = 2.4*0.80 #tons/ha/yr, multiplied by 80% of area used
+		GH_KCALS_PER_HECTARE_PER_MONTH =  GH_DRY_TONS_PER_HECTARE_PER_YEAR*KCALS_PER_DRY_CALORIC_TONS/12
+
+		greenhouse_area = list(np.array(production_kcals_greenhouses_per_month)*1e9/GH_KCALS_PER_HECTARE_PER_MONTH)
+		greenhouse_yield = list(np.array(production_kcals_greenhouses_per_month)*1e9/GH_KCALS_PER_HECTARE_PER_MONTH)
+		# print(greenhouse_area)
+
 		GREENHOUSE_FAT_MULTIPLIER = constants['inputs']['GREENHOUSE_FAT_MULTIPLIER']
 
 
@@ -524,6 +573,12 @@ class Optimizer:
 			list(np.array(production_kcals_greenhouses_per_month) \
 			* SF_FRACTION_FAT / SF_FRACTION_KCALS * GREENHOUSE_FAT_MULTIPLIER )
 
+		# plt.plot(GREENHOUSE_PERCENT_KCALS)
+		# plt.show()
+
+		# plt.plot(greenhouse_area)
+		# plt.show()
+		# quit()
 		####LIVESTOCK, EGG, DAIRY INITIAL VARIABLES####
 
 		#https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=2007828143
@@ -591,6 +646,25 @@ class Optimizer:
 			print("billions of people fed for a year from eating all livestock minus dairy cows and egg laying hens")
 			print(INIT_NONEGG_NONDAIRY_MEAT_FAT/(12*FAT_MONTHLY)/1e9)
 
+
+		#### BIOFUELS ####
+		#see 'biofuels' tab https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=2030318378
+		BIOFUEL_KCALS_PER_YEAR = 8.3e5 #billions of kcals
+		BIOFUEL_KCALS_PER_MONTH = BIOFUEL_KCALS_PER_YEAR/12
+		BIOFUEL_PROTEIN_PER_YEAR = 1.45e4 #1000s of tons
+		BIOFUEL_PROTEIN_PER_MONTH = BIOFUEL_PROTEIN_PER_YEAR/12
+		BIOFUEL_FAT_PER_YEAR = 0.522e4 #1000s of tons
+		BIOFUEL_FAT_PER_MONTH = BIOFUEL_FAT_PER_YEAR/12#1000s of tons
+		biofuels_fat = [BIOFUEL_FAT_PER_MONTH]*NMONTHS
+		biofuels_kcals = [BIOFUEL_KCALS_PER_MONTH]*NMONTHS
+		biofuels_protein = [BIOFUEL_PROTEIN_PER_MONTH]*NMONTHS
+
+		biofuel_delay = constants['inputs']['BIOFUEL_SHUTOFF_DELAY']
+		biofuels_fat = [BIOFUEL_FAT_PER_MONTH]*biofuel_delay + [0]*(NMONTHS-biofuel_delay)
+		biofuels_protein = [BIOFUEL_PROTEIN_PER_MONTH]*biofuel_delay + [0]*(NMONTHS-biofuel_delay)
+		biofuels_kcals = [BIOFUEL_KCALS_PER_MONTH]*biofuel_delay + [0]*(NMONTHS-biofuel_delay)
+
+
 		#### OTHER VARIABLES ####
 
 		humans_fed_fat = [0]*NMONTHS
@@ -623,6 +697,9 @@ class Optimizer:
 		constants['SF_FRACTION_KCALS']=SF_FRACTION_KCALS
 		constants['SF_FRACTION_FAT']=SF_FRACTION_FAT
 		constants['SF_FRACTION_PROTEIN']=SF_FRACTION_PROTEIN
+		constants['OG_FRACTION_KCALS']=OG_FRACTION_KCALS
+		constants['OG_FRACTION_FAT']=OG_FRACTION_FAT
+		constants['OG_FRACTION_PROTEIN']=OG_FRACTION_PROTEIN
 		constants['MEAT_FRACTION_KCALS']=MEAT_FRACTION_KCALS
 		constants['MEAT_FRACTION_FAT']=MEAT_FRACTION_FAT
 		constants['MEAT_FRACTION_PROTEIN']=MEAT_FRACTION_PROTEIN
@@ -709,6 +786,25 @@ class Optimizer:
 			allvariables.append(stored_food_start[m])
 			allvariables.append(stored_food_end[m])
 			allvariables.append(stored_food_eaten[m])
+
+			return model
+
+		#incorporate linear constraints for stored food consumption each month
+		def add_outdoor_crops_to_model(model, m):
+			crops_food_start[m] = LpVariable("Crops_Food_Start_Month_"+str(m)+"_Variable", lowBound=0)
+			crops_food_end[m] = LpVariable("Crops_Food_End_Month_"+str(m)+"_Variable", lowBound=0)
+			crops_food_eaten[m] = LpVariable("Crops_Food_Eaten_During_Month_"+str(m)+"_Variable",lowBound=0)
+			
+			if(m==0): #first Month
+				model += (crops_food_start[m] <= 0, "Crops_Food_Start_Month_0_Constraint")
+			else:
+				model += (crops_food_start[m] <= crops_food_end[m-1], "Crops_Food_Start_Month_"+str(m)+"_Constraint")
+
+			model += (crops_food_end[m] <= crops_food_start[m]-crops_food_eaten[m]+crops_food_produced[m], "Crops_Food_End_Month_"+str(m)+"_Constraint")
+
+			allvariables.append(crops_food_start[m])
+			allvariables.append(crops_food_end[m])
+			allvariables.append(crops_food_eaten[m])
 
 			return model
 
@@ -801,14 +897,15 @@ class Optimizer:
 			#kcals monthly is in units kcals
 			model += (humans_fed_kcals[m] == 
 				(stored_food_eaten[m]*SF_FRACTION_KCALS
+				+ crops_food_eaten[m]*OG_FRACTION_KCALS
 				+ seaweed_food_produced_monthly[m]*SEAWEED_KCALS
-				+ dairy_animals_1000s_eaten[m]*KCALS_PER_1000_LARGE_ANIMALS
+				# + dairy_animals_1000s_eaten[m]*KCALS_PER_1000_LARGE_ANIMALS
 				+ (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
 					* MILK_KCALS_PER_1000_COWS_PER_MONTH
 				+ nonegg_nondairy_meat_eaten[m]*MEAT_FRACTION_KCALS
+				- biofuels_kcals[m]
 				+ production_kcals_cell_sugar_per_month[m]
 				+ production_kcals_greenhouses_per_month[m]
-				+ production_kcals_outdoor_growing_per_month[m]
 				+FISH_KCALS)/KCALS_MONTHLY,
 				"Kcals_Fed_Month_"+str(m)+"_Constraint")
 
@@ -818,13 +915,14 @@ class Optimizer:
 			# quit()
 			model += (humans_fed_fat[m] == 
 				(stored_food_eaten[m]*SF_FRACTION_FAT 
+				+ crops_food_eaten[m]*OG_FRACTION_FAT
 				+ seaweed_food_produced_monthly[m]*SEAWEED_FAT
-				+ dairy_animals_1000s_eaten[m]*FAT_PER_1000_LARGE_ANIMALS
+				# + dairy_animals_1000s_eaten[m]*FAT_PER_1000_LARGE_ANIMALS
 				+ (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
 					* MILK_FAT_PER_1000_COWS_PER_MONTH*1e9
+				- biofuels_fat[m]
 				+ production_fat_greenhouses_per_month[m]
 				+ nonegg_nondairy_meat_eaten[m]*MEAT_FRACTION_FAT
-				+ production_fat_outdoor_growing_per_month[m]
 				+ FISH_FAT)/FAT_MONTHLY/1e9,
 				"Fat_Fed_Month_"+str(m)+"_Constraint")
 			
@@ -839,13 +937,14 @@ class Optimizer:
 			# 	+ nonegg_nondairy_meat_eaten[m]*MEAT_FRACTION_PROTEIN)/PROTEIN_MONTHLY/1e9)
 			model += (humans_fed_protein[m] == 
 				(stored_food_eaten[m]*SF_FRACTION_PROTEIN
+				+ crops_food_eaten[m]*OG_FRACTION_PROTEIN
 				+ seaweed_food_produced_monthly[m]*SEAWEED_PROTEIN
-				+ dairy_animals_1000s_eaten[m]*PROTEIN_PER_1000_LARGE_ANIMALS
+				# + dairy_animals_1000s_eaten[m]*PROTEIN_PER_1000_LARGE_ANIMALS
 				+ (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
 					* MILK_PROTEIN_PER_1000_COWS_PER_MONTH*1e9
+				- biofuels_protein
 				+ production_protein_greenhouses_per_month[m]
 				+ nonegg_nondairy_meat_eaten[m]*MEAT_FRACTION_PROTEIN
-				+ production_kcals_outdoor_growing_per_month[m]
 				+ FISH_PROTEIN)/PROTEIN_MONTHLY/1e9,
 				"Protein_Fed_Month_"+str(m)+"_Constraint")
 
@@ -887,6 +986,9 @@ class Optimizer:
 
 			if(ADD_SEAWEED):
 				model = add_seaweed_to_model(model,m)
+
+			if(ADD_OUTDOOR_GROWING):
+				model = add_outdoor_crops_to_model(model,m)
 
 			if(ADD_STORED_FOOD):
 				model = add_stored_food_to_model(model,m)
@@ -978,11 +1080,12 @@ class Optimizer:
 			show_output
 		)
 
-		# if no greenhouses, will be zero
+		# if no outdoor food, will be zero
 		analysis.analyze_OG_results(
-			production_kcals_outdoor_growing_per_month,
-			production_fat_outdoor_growing_per_month,
-			production_protein_outdoor_growing_per_month,
+			crops_food_eaten,
+			crops_food_start,
+			crops_food_end,
+			crops_food_produced,
 			show_output
 		)
 

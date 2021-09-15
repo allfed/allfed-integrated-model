@@ -55,7 +55,7 @@ class Plotter:
 		plt.rc('axes',prop_cycle=new_cycler)
 		
 		plt.plot(time_months_middle,np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)]),marker='o',markersize=3)
-		plt.title('Cellulosic Sugar')
+		plt.title('Industrial Foods')
 		plt.xlabel('Months Since May Nuclear Event')
 		plt.ylabel('Billions fed from CS')
 		plt.show()
@@ -121,12 +121,12 @@ class Plotter:
 		new_cycler = color_cycler + ls_cycler
 		plt.rc('axes',prop_cycle=new_cycler)
 		
-		plt.plot(time_months_middle,np.array(analysis.billions_fed_OG_kcals[0:len(time_months_middle)]),marker='o',markersize=3)
-		plt.plot(time_months_middle,np.array(analysis.billions_fed_OG_fat[0:len(time_months_middle)]),marker='o',markersize=3)
-		plt.plot(time_months_middle,np.array(analysis.billions_fed_OG_protein[0:len(time_months_middle)]),marker='o',markersize=3)
+		plt.plot(time_months_middle,np.array(analysis.billion_person_years_OG_kcals),marker='o',markersize=3)
+		plt.plot(time_months_middle,np.array(analysis.billion_person_years_OG_fat),marker='o',markersize=3)
+		plt.plot(time_months_middle,np.array(analysis.billion_person_years_OG_protein),marker='o',markersize=3)
 		plt.title('Outdoor Growing')
 		plt.xlabel('Months Since May Nuclear Event')
-		plt.ylabel('Billions Fed from Outdoor Growing')
+		plt.ylabel('Billion person-years food produced from Outdoor Growing')
 		plt.legend(['kcals available','fat available','protein available'])
 		plt.show()
 
@@ -286,15 +286,15 @@ class Plotter:
 			'Greenhouse Food, Limited by Fat',
 			'Greenhouse Food, Limited by protein']
 		if(analysis.constants['ADD_OUTDOOR_GROWING']):
-			ax.plot(time_months_middle,analysis.billions_fed_OG_kcals[0:len(time_months_middle)],marker='o',markersize=3)
-			ax.plot(time_months_middle,analysis.billions_fed_OG_fat[0:len(time_months_middle)],marker='o',markersize=3)
-			ax.plot(time_months_middle,analysis.billions_fed_OG_protein[0:len(time_months_middle)],marker='o',markersize=3)
+			ax.plot(time_months_middle,analysis.billions_fed_OG_kcals,marker='o',markersize=3)
+			ax.plot(time_months_middle,analysis.billions_fed_OG_fat,marker='o',markersize=3)
+			ax.plot(time_months_middle,analysis.billions_fed_OG_protein,marker='o',markersize=3)
 			legend = legend + ['Outdoor Growing Food, Limited by kcals',
 			'Outdoor Growing Food, Limited by Fat',
 			'Outdoor Growing Food, Limited by protein']
 		if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
 			ax.plot(time_months_middle,analysis.billions_fed_CS_kcals[0:len(time_months_middle)],marker='o',markersize=3)
-			legend = legend + ['Cellulosic Sugar, Limited by kcals']
+			legend = legend + ['Industrial Foods, Limited by kcals']
 
 		# if(analysis.constants['ADD_FISH']
 		# 	ax.plot(time_months_middle,analysis.billions_fed_CS_kcals[0:len(time_months_middle)],marker='o',markersize=3)
@@ -365,7 +365,7 @@ class Plotter:
 			ax.plot(time_months_middle,analysis.billions_fed_GH_fat[0:len(time_months_middle)],marker='o',markersize=3)
 			legend = legend + ['Greenhouse Food']
 		if(analysis.constants['ADD_OUTDOOR_GROWING']):
-			ax.plot(time_months_middle,analysis.billions_fed_OG_fat[0:len(time_months_middle)],marker='o',markersize=3)
+			ax.plot(time_months_middle,analysis.billions_fed_OG_fat,marker='o',markersize=3)
 			legend = legend + ['Outdoor Growing']
 		box = ax.get_position()
 		ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
@@ -432,7 +432,7 @@ class Plotter:
 			ax.plot(time_months_middle,analysis.billions_fed_GH_protein[0:len(time_months_middle)],marker='o',markersize=3)
 			legend = legend + ['Greenhouse Food']
 		if(analysis.constants['ADD_OUTDOOR_GROWING']):
-			ax.plot(time_months_middle,analysis.billions_fed_OG_protein[0:len(time_months_middle)],marker='o',markersize=3)
+			ax.plot(time_months_middle,analysis.billions_fed_OG_protein,marker='o',markersize=3)
 			legend = legend + ['Outdoor Growing']
 		box = ax.get_position()
 		ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
@@ -477,10 +477,18 @@ class Plotter:
 		# 	"#000000","#004949","#009292","#ff6db6","#ffb6db",
 		# "#490092","#006ddb","#b66dff","#6db6ff","#b6dbff",
 		# "#920000","#924900","#db6d00","#24ff24","#ffff6d"
-		pal=["#b66dff","6db6ff","#b6dbff",\
+		# patterns = [ "/" , "\\" , "|" , "-" , "+" , "x", "o", "O", ".", "*" ]
+		patterns = [ "/" , "\\" , "|" , "-" , "+" , "x", "o", "O"]
+		pal=["#006ddb","#b66dff","6db6ff","#b6dbff",\
 		 "#920000","#924900","#db6d00","#24ff24","#ffff6d"]
-		ax.stackplot(time_months_middle,\
-			analysis.billions_fed_OG_kcals[0:len(time_months_middle)],\
+		print('analysis.billions_fed_immediate_OG_kcals')
+		print(analysis.billions_fed_immediate_OG_kcals)
+		print('analysis.billions_fed_new_stored_OG_kcals')
+		print(analysis.billions_fed_new_stored_OG_kcals)
+
+		stacks = ax.stackplot(time_months_middle,\
+			analysis.billions_fed_immediate_OG_kcals,\
+			analysis.billions_fed_new_stored_OG_kcals,\
 			analysis.billions_fed_SF_kcals,\
 			analysis.billions_fed_fish_kcals,\
 			analysis.billions_fed_milk_kcals,\
@@ -489,15 +497,18 @@ class Plotter:
 			 analysis.billions_fed_seaweed_kcals[0:len(time_months_middle)],\
 			analysis.billions_fed_CS_kcals[0:len(time_months_middle)],\
 			 labels=[\
-			 'Outdoor Crops',
-			 'Stored Food',\
+			 'Outdoor Crops Eaten \n immediately',
+			 'Outdoor Crops that \n were stored',
+			 'Stored Food from  \n before event',\
 			 'Fish',\
 			 'Dairy Milk',\
 			 'Meat',\
 			 'Greenhouses',\
 			 'Seaweed',\
-			 'Cellulosic Sugar'\
+			 'Industrial Foods'\
 			 ], colors=pal)
+		for stack, hatch in zip(stacks, patterns):
+			stack.set_hatch(hatch)
 		box = ax.get_position()
 		ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 		handles, labels = ax.get_legend_handles_labels()   #get the handles
@@ -568,7 +579,7 @@ class Plotter:
 		# 	ax.plot(time_months_middle,analysis.billions_fed_GH_kcals[0:len(time_months_middle)],marker='o',markersize=3)
 		# 	legend = legend + ['Greenhouse Food']
 		# if(analysis.constants['ADD_OUTDOOR_GROWING']):
-		# 	ax.plot(time_months_middle,analysis.billions_fed_OG_kcals[0:len(time_months_middle)],marker='o',markersize=3)
+		# 	ax.plot(time_months_middle,analysis.billions_fed_OG_kcals,marker='o',markersize=3)
 		# 	legend = legend + ['Outdoor Growing']
 		# if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
 		# 	ax.plot(time_months_middle,analysis.billions_fed_CS_kcals[0:len(time_months_middle)],marker='o',markersize=3)
@@ -630,7 +641,7 @@ class Plotter:
 			+np.array(analysis.billions_fed_milk_kcals)
 			+np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_GH_kcals[0:len(time_months_middle)])
-			+np.array(analysis.billions_fed_OG_kcals[0:len(time_months_middle)])
+			+np.array(analysis.billions_fed_OG_kcals)
 			+np.array(analysis.billions_fed_fish_kcals),marker='o',markersize=3)
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_fat)
@@ -638,7 +649,7 @@ class Plotter:
 			+np.array(analysis.billions_fed_seaweed_fat)
 			+np.array(analysis.billions_fed_dairy_meat_fat)
 			+np.array(analysis.billions_fed_milk_fat)
-			+np.array(analysis.billions_fed_OG_fat[0:len(time_months_middle)])
+			+np.array(analysis.billions_fed_OG_fat)
 			+np.array(analysis.billions_fed_GH_fat[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_fish_fat),marker='o',markersize=3)
 		plt.plot(time_months_middle,
@@ -647,7 +658,7 @@ class Plotter:
 			+np.array(analysis.billions_fed_seaweed_protein)
 			+np.array(analysis.billions_fed_dairy_meat_protein)
 			+np.array(analysis.billions_fed_milk_protein)
-			+np.array(analysis.billions_fed_OG_protein[0:len(time_months_middle)])
+			+np.array(analysis.billions_fed_OG_protein)
 			+np.array(analysis.billions_fed_GH_protein[0:len(time_months_middle)
 				])
 			+np.array(analysis.billions_fed_fish_protein),marker='o',markersize=3)
@@ -681,19 +692,19 @@ class Plotter:
 			+np.array(analysis.billions_fed_meat_kcals)
 			+np.array(analysis.billions_fed_milk_kcals)
 			+np.array(analysis.billions_fed_dairy_meat_kcals)
-			+np.array(analysis.billions_fed_OG_kcals[0:len(time_months_middle)]),marker='o',markersize=3)
+			+np.array(analysis.billions_fed_OG_kcals),marker='o',markersize=3)
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_fat)
 			+np.array(analysis.billions_fed_meat_fat)
 			+np.array(analysis.billions_fed_milk_fat)
 			+np.array(analysis.billions_fed_dairy_meat_kcals)
-			+np.array(analysis.billions_fed_OG_fat[0:len(time_months_middle)]),marker='o',markersize=3)
+			+np.array(analysis.billions_fed_OG_fat),marker='o',markersize=3)
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_protein)
 			+np.array(analysis.billions_fed_meat_protein)
 			+np.array(analysis.billions_fed_milk_protein)
 			+np.array(analysis.billions_fed_dairy_meat_kcals)
-			+np.array(analysis.billions_fed_OG_fat[0:len(time_months_middle)]),marker='o',markersize=3)
+			+np.array(analysis.billions_fed_OG_fat),marker='o',markersize=3)
 		plt.plot(time_months_middle,
 			+np.array(analysis.billions_fed_seaweed_kcals)
 			+np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])

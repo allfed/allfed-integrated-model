@@ -23,7 +23,7 @@ constants['inputs']['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
 constants['inputs']['ASSUMED_WASTE_PERCENT'] = 35
 constants['inputs']['ASSUMED_WASTE_PERCENT_M1'] = 35
 constants['inputs']['ASSUMED_WASTE_PERCENT_AFTER_M1'] = 30
-# constants['inputs']['ALL_BIOFUEL'] = 22e6#tons dry caloric equivalent
+constants['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 10 # months
 constants['inputs']['M1_ADDITIONAL_WASTE'] = 5e9/12#tons dry caloric equivalent
 constants['inputs']['NUTRITION']={}
 constants['inputs']['NUTRITION']['KCALS_DAILY'] = 2100 #kcals per person per day
@@ -73,14 +73,14 @@ optimizer = Optimizer()
 
 [time_months,time_months_middle,analysis]=optimizer.optimize(constants)
 
-if(constants['inputs']['ADD_CELLULOSIC_SUGAR']):
-	Plotter.plot_CS(time_months_middle,analysis)
+# if(constants['inputs']['ADD_CELLULOSIC_SUGAR']):
+# 	Plotter.plot_CS(time_months_middle,analysis)
 
-if(constants['inputs']['ADD_FISH']):
-	Plotter.plot_fish(time_months_middle,analysis)
+# if(constants['inputs']['ADD_FISH']):
+# 	Plotter.plot_fish(time_months_middle,analysis)
 
-if(constants['inputs']['ADD_GREENHOUSES']):
-	Plotter.plot_GH(time_months_middle,analysis)
+# if(constants['inputs']['ADD_GREENHOUSES']):
+# 	Plotter.plot_GH(time_months_middle,analysis)
 
 if(constants['inputs']['ADD_OUTDOOR_GROWING']):
 	Plotter.plot_OG(time_months_middle,analysis)
@@ -88,22 +88,22 @@ if(constants['inputs']['ADD_OUTDOOR_GROWING']):
 if(constants['inputs']['ADD_STORED_FOOD']):
 	Plotter.plot_stored_food(time_months,analysis)
 
-if(constants['inputs']['ADD_SEAWEED']):
-	Plotter.plot_seaweed(time_months_middle,analysis)
+# if(constants['inputs']['ADD_SEAWEED']):
+# 	Plotter.plot_seaweed(time_months_middle,analysis)
 
-if(constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT']):
-	Plotter.plot_nonegg_nondairy_meat(time_months,analysis)
+# if(constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT']):
+# 	Plotter.plot_nonegg_nondairy_meat(time_months,analysis)
 
-if(constants['inputs']['ADD_DAIRY']):
-	Plotter.plot_dairy_cows(time_months_middle,analysis)
-	Plotter.plot_dairy(time_months_middle,analysis)
+# if(constants['inputs']['ADD_DAIRY']):
+# 	Plotter.plot_dairy_cows(time_months_middle,analysis)
+# 	Plotter.plot_dairy(time_months_middle,analysis)
 
-Plotter.plot_people_fed(time_months_middle,analysis)
+# Plotter.plot_people_fed(time_months_middle,analysis)
 Plotter.plot_people_fed_combined(time_months_middle,analysis)
 Plotter.plot_people_fed_kcals(time_months_middle,analysis)
-Plotter.plot_people_fed_fat(time_months_middle,analysis)
-Plotter.plot_people_fed_protein(time_months_middle,analysis)
-Plotter.plot_people_fed_comparison(time_months_middle,analysis)
+# Plotter.plot_people_fed_fat(time_months_middle,analysis)
+# Plotter.plot_people_fed_protein(time_months_middle,analysis)
+# Plotter.plot_people_fed_comparison(time_months_middle,analysis)
 # constants['inputs']['ADD_SEAWEED'] = False
 # constants['inputs']['ADD_CELLULOSIC_SUGAR'] = True
 # constants['inputs']['ADD_GREENHOUSES'] = True
