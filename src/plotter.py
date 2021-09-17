@@ -497,8 +497,8 @@ class Plotter:
 			 analysis.billions_fed_seaweed_kcals[0:len(time_months_middle)],\
 			analysis.billions_fed_CS_kcals[0:len(time_months_middle)],\
 			 labels=[\
-			 'Outdoor Crops Eaten \n immediately',
-			 'Outdoor Crops that \n were stored',
+			 'Outdoor Crops eaten \n immediately',
+			 'Outdoor Crops stored \n after event',
 			 'Stored Food from  \n before event',\
 			 'Fish',\
 			 'Dairy Milk',\
