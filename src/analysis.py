@@ -110,21 +110,38 @@ class Analyzer:
 	#if greenhouses aren't included, these results will be zero
 	def analyze_GH_results(
 		self,
-		production_kcals_greenhouses_per_month,
-		production_fat_greenhouses_per_month,
-		production_protein_greenhouses_per_month,
+		greenhouse_area,
 		show_output
 		):
 
 		self.billions_fed_GH_kcals = \
-			np.array(production_kcals_greenhouses_per_month) \
+			np.array(greenhouse_area)*self.constants['GREENHOUSE_CALORIES'] \
 			/ self.constants["KCALS_MONTHLY"]
 		self.billions_fed_GH_fat= \
-			np.array(production_fat_greenhouses_per_month) \
+			np.array(greenhouse_area)*self.constants['GREENHOUSE_FAT'] \
 			/ self.constants["FAT_MONTHLY"]/1e9
 		self.billions_fed_GH_protein = \
-			np.array(production_protein_greenhouses_per_month) \
+			np.array(greenhouse_area)*self.constants['GREENHOUSE_PROTEIN'] \
 			/ self.constants["PROTEIN_MONTHLY"]/1e9
+
+	# #if greenhouses aren't included, these results will be zero
+	# def analyze_GH_results(
+	# 	self,
+	# 	production_kcals_greenhouses_per_month,
+	# 	production_fat_greenhouses_per_month,
+	# 	production_protein_greenhouses_per_month,
+	# 	show_output
+	# 	):
+
+	# 	self.billions_fed_GH_kcals = \
+	# 		np.array(production_kcals_greenhouses_per_month) \
+	# 		/ self.constants["KCALS_MONTHLY"]
+	# 	self.billions_fed_GH_fat= \
+	# 		np.array(production_fat_greenhouses_per_month) \
+	# 		/ self.constants["FAT_MONTHLY"]/1e9
+	# 	self.billions_fed_GH_protein = \
+	# 		np.array(production_protein_greenhouses_per_month) \
+	# 		/ self.constants["PROTEIN_MONTHLY"]/1e9
 
 	#if greenhouses aren't included, these results will be zero
 	def analyze_fish_results(
@@ -149,6 +166,7 @@ class Analyzer:
 		crops_food_start,
 		crops_food_end,
 		crops_food_produced,
+		greenhouse_area,
 		show_output
 		):
 
@@ -202,6 +220,28 @@ class Analyzer:
 		self.billions_fed_CS_kcals = \
 			list(np.array(production_kcals_cellulosic_sugar_per_month) \
 			/ self.constants["KCALS_MONTHLY"])
+
+
+	#if methane scp isn't included, these results will be zero
+	def analyze_SCP_results(
+		self,
+		production_kcals_scp_per_month,
+		production_protein_scp_per_month,
+		production_fat_scp_per_month,
+		show_output
+		):
+
+		self.billions_fed_SCP_kcals = \
+			list(np.array(production_kcals_scp_per_month) \
+			/ self.constants["KCALS_MONTHLY"])
+
+		self.billions_fed_SCP_protein = \
+			list(np.array(production_protein_scp_per_month) \
+			/ self.constants["PROTEIN_MONTHLY"]/1e9)
+
+		self.billions_fed_SCP_fat = \
+			list(np.array(production_fat_scp_per_month) \
+			/ self.constants["FAT_MONTHLY"]/1e9)
 
 	#if stored food isn't included, these results will be zero
 	def analyze_nonegg_nondairy_results(
@@ -438,6 +478,7 @@ class Analyzer:
 			+np.array(self.billions_fed_dairy_meat_kcals)\
 			+np.array(self.billions_fed_milk_kcals)\
 			+np.array(self.billions_fed_CS_kcals[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_SCP_kcals[0:len(time_months_middle)])\
 			+np.array(self.billions_fed_GH_kcals[0:len(time_months_middle)])\
 			+np.array(self.billions_fed_OG_kcals)\
 			+np.array(self.billions_fed_fish_kcals)
@@ -447,6 +488,7 @@ class Analyzer:
 			+np.array(self.billions_fed_seaweed_fat)\
 			+np.array(self.billions_fed_dairy_meat_fat)\
 			+np.array(self.billions_fed_milk_fat)\
+			+np.array(self.billions_fed_SCP_fat[0:len(time_months_middle)])\
 			+np.array(self.billions_fed_GH_fat[0:len(time_months_middle)])\
 			+np.array(self.billions_fed_OG_fat)\
 			+np.array(self.billions_fed_fish_fat)\
@@ -457,6 +499,7 @@ class Analyzer:
 			+np.array(self.billions_fed_dairy_meat_protein)\
 			+np.array(self.billions_fed_milk_protein)\
 			+np.array(self.billions_fed_GH_protein[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_SCP_protein[0:len(time_months_middle)])\
 			+np.array(self.billions_fed_OG_protein)\
 			+np.array(self.billions_fed_fish_protein)\
 

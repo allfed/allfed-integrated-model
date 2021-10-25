@@ -495,11 +495,11 @@ class Plotter:
 			np.array(analysis.billions_fed_meat_kcals)+np.array(analysis.billions_fed_dairy_meat_kcals),\
 			 analysis.billions_fed_GH_kcals[0:len(time_months_middle)],\
 			 analysis.billions_fed_seaweed_kcals[0:len(time_months_middle)],\
-			analysis.billions_fed_CS_kcals[0:len(time_months_middle)],\
+			np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])+np.array(analysis.billions_fed_SCP_kcals[0:len(time_months_middle)]),\
 			 labels=[\
 			 'Outdoor Crops eaten \n immediately',
-			 'Outdoor Crops stored \n after event',
-			 'Stored Food from  \n before event',\
+			 'Food eaten that month \n that was stored \n after nuclear event',
+			 'Food eaten that month \n that was stored \n before nuclear event',\
 			 'Fish',\
 			 'Dairy Milk',\
 			 'Meat',\
@@ -640,6 +640,7 @@ class Plotter:
 			+np.array(analysis.billions_fed_dairy_meat_kcals)
 			+np.array(analysis.billions_fed_milk_kcals)
 			+np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])
+			+np.array(analysis.billions_fed_SCP_kcals[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_GH_kcals[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_OG_kcals)
 			+np.array(analysis.billions_fed_fish_kcals),marker='o',markersize=3)
@@ -649,6 +650,7 @@ class Plotter:
 			+np.array(analysis.billions_fed_seaweed_fat)
 			+np.array(analysis.billions_fed_dairy_meat_fat)
 			+np.array(analysis.billions_fed_milk_fat)
+			+np.array(analysis.billions_fed_SCP_fat[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_OG_fat)
 			+np.array(analysis.billions_fed_GH_fat[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_fish_fat),marker='o',markersize=3)
@@ -657,6 +659,7 @@ class Plotter:
 			+np.array(analysis.billions_fed_meat_protein)
 			+np.array(analysis.billions_fed_seaweed_protein)
 			+np.array(analysis.billions_fed_dairy_meat_protein)
+			+np.array(analysis.billions_fed_SCP_protein[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_milk_protein)
 			+np.array(analysis.billions_fed_OG_protein)
 			+np.array(analysis.billions_fed_GH_protein[0:len(time_months_middle)
