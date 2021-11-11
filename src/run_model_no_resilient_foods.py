@@ -21,13 +21,28 @@ constants['inputs']['NMONTHS'] = 84
 constants['inputs']['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
 
 constants['inputs']['WASTE'] = {}
-constants['inputs']['WASTE']['CEREALS'] = 19.02 #%
-constants['inputs']['WASTE']['SUGAR'] = 14.47 #%
-constants['inputs']['WASTE']['MEAT'] = 15.17 #%
-constants['inputs']['WASTE']['DAIRY'] = 16.49 #%
-constants['inputs']['WASTE']['SEAFOOD'] = 14.55 #%
-constants['inputs']['WASTE']['CROPS'] = 19.33 #%
-constants['inputs']['WASTE']['SEAWEED'] = 14.37 #%
+# constants['inputs']['WASTE']['CEREALS'] = 19.02 #%
+# constants['inputs']['WASTE']['SUGAR'] = 14.47 #%
+# constants['inputs']['WASTE']['MEAT'] = 15.17 #%
+# constants['inputs']['WASTE']['DAIRY'] = 16.49 #%
+# constants['inputs']['WASTE']['SEAFOOD'] = 14.55 #%
+# constants['inputs']['WASTE']['CROPS'] = 19.33 #%
+# constants['inputs']['WASTE']['SEAWEED'] = 14.37 #%
+constants['inputs']['WASTE'] = {}
+# constants['inputs']['WASTE']['CEREALS'] = 19.02+10.5 #%
+constants['inputs']['WASTE']['CEREALS'] = 0 #%
+# constants['inputs']['WASTE']['SUGAR'] = 14.47+10.5 #%
+constants['inputs']['WASTE']['SUGAR'] = 0 #%
+# constants['inputs']['WASTE']['MEAT'] = 15.17+10.5 #%
+constants['inputs']['WASTE']['MEAT'] = 0 #%
+# constants['inputs']['WASTE']['DAIRY'] = 16.49+10.5 #%
+constants['inputs']['WASTE']['DAIRY'] = 0 #%
+# constants['inputs']['WASTE']['SEAFOOD'] = 14.55+10.5 #%
+constants['inputs']['WASTE']['SEAFOOD'] = 0 #%
+# constants['inputs']['WASTE']['CROPS'] = 23.87+4.96 #%
+constants['inputs']['WASTE']['CROPS'] = 0
+# constants['inputs']['WASTE']['SEAWEED'] = 14.37+10.5 #%
+constants['inputs']['WASTE']['SEAWEED'] = 0 #%
 
 constants['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 0 # months
 constants['inputs']['M1_ADDITIONAL_WASTE'] = 5e9/12#tons dry caloric equivalent
@@ -65,30 +80,29 @@ constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y8'] = 1-.5
 constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y9'] = 1-.4
 constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y10'] = 1-.17
 constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y11'] = 1-.08
-constants['inputs']['MEAT_SUSTAINABLE_YIELD_PER_YEAR'] = 100.4
-constants['inputs']['INCLUDE_PROTEIN'] = True
-constants['inputs']['INCLUDE_FAT'] = True
-
-constants['inputs']['IS_NUCLEAR_WINTER'] = True
-
 constants['inputs']['DAIRY_PRODUCTION'] = 1 #multiplies current dairy productivity (based on stress of animals)
+constants['inputs']['INCLUDE_PROTEIN'] = False
+constants['inputs']['INCLUDE_FAT'] = True
+constants['inputs']['MEAT_SUSTAINABLE_YIELD_PER_YEAR'] = 0
+constants['inputs']['NO_RESILIENT_FOODS'] = True
+
 constants['inputs']['GREENHOUSE_FAT_MULTIPLIER'] = 1 # we can grow twice as much fat as greenhouses would have
 constants['inputs']['GREENHOUSE_SLOPE_MULTIPLIER'] = 1 #default values from greenhouse paper
 constants['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1 #default values from CS paper
-constants['inputs']['NO_RESILIENT_FOODS'] = False
+constants['inputs']['IS_NUCLEAR_WINTER'] = True
 
 
 constants['inputs']['ADD_FISH'] = True
-constants['inputs']['ADD_SEAWEED'] = True
-constants['inputs']['ADD_CELLULOSIC_SUGAR'] = True
-constants['inputs']['ADD_METHANE_SCP'] = True
-constants['inputs']['ADD_GREENHOUSES'] = True
+constants['inputs']['ADD_SEAWEED'] = False
+constants['inputs']['ADD_CELLULOSIC_SUGAR'] = False
+constants['inputs']['ADD_METHANE_SCP'] = False
+constants['inputs']['ADD_GREENHOUSES'] = False
+constants['inputs']['ADD_STORED_FOOD'] = True
 constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
 constants['inputs']['ADD_DAIRY'] = True
-constants['inputs']['ADD_STORED_FOOD'] = True
 constants['inputs']['ADD_OUTDOOR_GROWING'] = True
 
-constants['inputs']['INCLUDE_ECONOMICS'] = False
+constants['inputs']['INCLUDE_ECONOMICS'] = True
 constants['CHECK_CONSTRAINTS'] = False
 optimizer = Optimizer()
 
@@ -121,7 +135,7 @@ if(constants['inputs']['ADD_STORED_FOOD']):
 
 # Plotter.plot_people_fed(time_months_middle,analysis)
 Plotter.plot_people_fed_combined(time_months_middle,analysis)
-Plotter.plot_people_fed_kcals(time_months_middle,analysis)
+Plotter.plot_people_fed_kcals_no_resilient(time_months_middle,analysis)
 # Plotter.plot_people_fed_fat(time_months_middle,analysis)
 # Plotter.plot_people_fed_protein(time_months_middle,analysis)
 # Plotter.plot_people_fed_comparison(time_months_middle,analysis)

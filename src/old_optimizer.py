@@ -1,10 +1,3 @@
- ################################Optimizer Model################################
- ##                                                                            #
- ##	In this model, we estimate the macronutrient production allocated optimally#
- ##  over time including models for traditional and resilient foods.           #
- ##	                                                                           #
- ###############################################################################
-
 import os
 import sys
 module_path = os.path.abspath(os.path.join('..'))
@@ -20,9 +13,29 @@ import pulp
 from pulp import LpMaximize, LpProblem, LpVariable
 
 ####### TO DO ###
+##  Crops
+##		nonrelocated: we're closer to an answer here. Open phil: 
+##			total production year 1, war happens month 5: 40%
+##			already 20% harvested, remaining 20% (of ~5gtons annualized) after month 5 (7 months).
+##			year 2: 10% of normal (but let's assume year 2, assume 20% rather than 10%)
+##			year 2 would have ~1 gton dry carb equivalent, 20% of normal year
+##			
+##		relocated: 60% reduction plucked out of thin air (for later)
+##		crop relocation within countries (for later)
+##		
+##  Assume food availability increases, increasing human food to chickens (for later)
+## 	Assume different times till standard agriculture supplants resilient foods (12 months baseline). Not having resilient foods would extend.
 ## 	For small animals, should be able to slaughter them in less than a month (1 month baseline)
 ##  Cattle currently take a year to slaughter normally
 ##		Rate limit: all cattle in 3 months. (baseline)
+##  Assume biofuel takes a month (baseline)
+##		find biofuel values for total production, tons dry food, ask mike
+##		roughly currently 60% sugarcane, 40% maize
+## 	Assume waste drops
+##		assume global average is waste from household from poor countries in one month (baseline)
+##		waste from distribution doesn't change (baseline)
+##		seaweed as 30% (baseline)
+##   MULTIPLIER ON CS 
 
 class Optimizer:
 
@@ -253,11 +266,6 @@ class Optimizer:
 		#mass initial, units don't matter, we only need to ensure we use the correct 
 		#fraction of kcals, fat, and protein per unit initial stored food.
 		INITIAL_SF=INITIAL_SF_KCALS/SF_FRACTION_KCALS * (1-SF_WASTE/100)
-
-
-		# INITIAL_SF = 350e6*4e6/1e9
-		# print(INITIAL_SF*1e9/4e6/1e6)
-
 		# so INITIAL_SF = INITIAL_SF_KCALS+ INITIAL_SF_PROTEIN+ INITIAL_SF_FAT
 		# and we find:  INITIAL_SF*SF_FRACTION_FAT =INITIAL_SF_FAT
 		# 
@@ -281,58 +289,8 @@ class Optimizer:
 		FISH_KG_MONTHLY=FISH_ESTIMATE/12*1e3
 
 		FISH_PROTEIN = FISH_KG_MONTHLY * FISH_PROTEIN_PER_KG / 1e6 #units of 1000s tons protein (so, value is in the hundreds of thousands of tons)
-		FISH_FAT = FISH_KG_MONTHLY * FISH_FAT_PER_KG / 1e6 #units of 1000s tons fat (so, value is in the tens of thousands of tons)
+		FISH_FAT = FISH_KG_MONTHLY * FISH_FAT_PER_KG / 1e6#units of 1000s tons fat (so, value is in the tens of thousands of tons)
 		
-		#https://assets.researchsquare.com/files/rs-830419/v1_covered.pdf?c=1631878417
-
-		FISH_PERCENT_EACH_MONTH = list(np.array(\
-			[  0.        ,  -0.90909091,  -1.81818182,  -2.72727273,
-			  -3.63636364,  -4.54545455,  -5.45454545,  -6.36363636,
-			  -7.27272727,  -8.18181818,  -9.09090909, -10         ,
-			  \
-			  -10., -12., -14., -16.,
-			  -18., -20., -22., -24.,
-			  -26., -28., -30., -32.,
-			  \
-			  -32.        , -32.27272727, -32.54545455, -32.81818182,
-			  -33.09090909, -33.36363636, -33.63636364, -33.90909091,
-			  -34.18181818, -34.45454545, -34.72727273, -35.        ,
-			  \
-			  -35.        , -34.90909091, -34.81818182, -34.72727273,
-			  -34.63636364, -34.54545455, -34.45454545, -34.36363636,
-			  -34.27272727, -34.18181818, -34.09090909, -34.        ,
-			  \
-			  -34.        , -33.90909091, -33.81818182, -33.72727273,
-			  -33.63636364, -33.54545455, -33.45454545, -33.36363636,
-			  -33.27272727, -33.18181818, -33.09090909, -33.        ,
-			  \
-			  -33.        , -32.81818182, -32.63636364, -32.45454545,
-			  -32.27272727, -32.09090909, -31.90909091, -31.72727273,
-			  -31.54545455, -31.36363636, -31.18181818, -31.        ,
-			  \
-			  -31.        , -30.90909091, -30.81818182, -30.72727273,
-			  -30.63636364, -30.54545455, -30.45454545, -30.36363636,
-			  -30.27272727, -30.18181818, -30.09090909, -30.        
-			]) + 100)
-		print(len(FISH_PERCENT_EACH_MONTH))
-		print(FISH_PERCENT_EACH_MONTH)
-		if(ADD_FISH):
-			production_kcals_fish_per_month = []
-			production_protein_fish_per_month = []
-			production_fat_fish_per_month = []
-			for x in FISH_PERCENT_EACH_MONTH:
-				if(constants['inputs']['IS_NUCLEAR_WINTER']):				
-					production_kcals_fish_per_month.append(x / 100 * FISH_KCALS)
-					production_protein_fish_per_month.append(x / 100 * FISH_PROTEIN)
-					production_fat_fish_per_month.append(x / 100 * FISH_FAT)
-				else:
-					production_kcals_fish_per_month.append(FISH_KCALS)
-					production_protein_fish_per_month.append(FISH_PROTEIN)
-					production_fat_fish_per_month.append(FISH_FAT)					
-		else:
-			production_kcals_fish_per_month=[0]*len(FISH_PERCENT_EACH_MONTH)
-			production_protein_fish_per_month =[0]*len(FISH_PERCENT_EACH_MONTH)
-			production_fat_fish_per_month =[0]*len(FISH_PERCENT_EACH_MONTH)
 
 		#### NON EGG NONDAIRY MEAT ####
 
@@ -427,28 +385,32 @@ class Optimizer:
 		#arbitrary mass units
 
 
-		# if we assume the rich serve the remaining food to animals and 
-		# eating the animals
-		
-		#billions kcals
-		MEAT_CURRENT_YIELD_PER_YEAR = 222 #million tons dry caloric
-		MEAT_SUSTAINABLE_YIELD_PER_YEAR = constants['inputs']["MEAT_SUSTAINABLE_YIELD_PER_YEAR"] #million tons dry caloric
+		if(constants['inputs']['INCLUDE_ECONOMICS']):
+			# if we assume the rich serve the remaining food to animals and 
+			# eating the animals
+			
+			#billions kcals
+			MEAT_CURRENT_YIELD_PER_YEAR = 158 #million tons dry caloric
+			MEAT_SUSTAINABLE_YIELD_PER_YEAR = 100.4 #million tons dry caloric
 
-		FRACTION_TO_SLAUGHTER = 1-MEAT_SUSTAINABLE_YIELD_PER_YEAR/MEAT_CURRENT_YIELD_PER_YEAR
+			FRACTION_TO_SLAUGHTER = 1-MEAT_SUSTAINABLE_YIELD_PER_YEAR/MEAT_CURRENT_YIELD_PER_YEAR
 
+			MEAT_SUSTAINABLE_YIELD_PER_MONTH = \
+				MEAT_SUSTAINABLE_YIELD_PER_YEAR/12*4e12/1e9
+			
+			SUSTAINED_MEAT_MONTHLY = MEAT_SUSTAINABLE_YIELD_PER_YEAR
 
+			print("SUSTAINED_MEAT_MONTHLY")
+			print(SUSTAINED_MEAT_MONTHLY)
 
-		# MEAT_SUSTAINABLE_YIELD_PER_MONTH = \
-		# 	MEAT_SUSTAINABLE_YIELD_PER_YEAR/12*4e12/1e9
-		
-		# SUSTAINED_MEAT_MONTHLY = MEAT_SUSTAINABLE_YIELD_PER_YEAR
+		else:
+			SUSTAINED_MEAT_MONTHLY = 0
+			FRACTION_TO_SLAUGHTER = 1
 
-		# print("SUSTAINED_MEAT_MONTHLY")
-		# print(SUSTAINED_MEAT_MONTHLY)
-
+		print('SUSTAINED_MEAT_MONTHLY')
+		print(SUSTAINED_MEAT_MONTHLY)
 		print('FRACTION_TO_SLAUGHTER')
 		print(FRACTION_TO_SLAUGHTER)
-
 		INITIAL_NONEGG_NONDAIRY_MEAT=INIT_NONEGG_NONDAIRY_MEAT_KCALS \
 			/ MEAT_FRACTION_KCALS \
 			* (1-MEAT_WASTE/100) \
@@ -481,6 +443,7 @@ class Optimizer:
 
 		# print('tons per hectare per year')
 		# print(np.sum(np.array([JAN_YIELD, FEB_YIELD, MAR_YIELD, APR_YIELD, MAY_YIELD, JUN_YIELD, JUL_YIELD, AUG_YIELD, SEP_YIELD, OCT_YIELD, NOV_YIELD, DEC_YIELD]))/500e6)
+		# quit()
 			#billions of kcals
 		JAN_KCALS_OG=JAN_YIELD*KCALS_PER_DRY_CALORIC_TONS / 1e9
 		FEB_KCALS_OG=FEB_YIELD*KCALS_PER_DRY_CALORIC_TONS / 1e9
@@ -513,13 +476,6 @@ class Optimizer:
 		RATIO_KCALS_POSTDISASTER_Y2 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y2']
 		RATIO_KCALS_POSTDISASTER_Y3 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y3']
 		RATIO_KCALS_POSTDISASTER_Y4 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y4']
-		RATIO_KCALS_POSTDISASTER_Y5 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y5']
-		RATIO_KCALS_POSTDISASTER_Y6 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y6']
-		RATIO_KCALS_POSTDISASTER_Y7 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y7']
-		RATIO_KCALS_POSTDISASTER_Y8 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y8']
-		RATIO_KCALS_POSTDISASTER_Y9 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y9']
-		RATIO_KCALS_POSTDISASTER_Y10 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y10']
-		RATIO_KCALS_POSTDISASTER_Y11 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y11']
 
 		KCALS_GROWN=[\
 			MAY_KCALS_OG * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
@@ -565,95 +521,9 @@ class Optimizer:
 			SEP_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y4,
 			OCT_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y4,
 			NOV_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y4,
-			DEC_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y4,
-			JAN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y5,
-			FEB_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y5,
-			MAR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y5,
-			APR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y5,
-			MAY_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y5,
-			JUN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y5,
-			JUL_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y5,
-			AUG_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y5,
-			SEP_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y5,
-			OCT_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y5,
-			NOV_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y5,
-			DEC_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y5,
-			JAN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y6,
-			FEB_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y6,
-			MAR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y6,
-			APR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y6,
-			MAY_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y6,
-			JUN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y6,
-			JUL_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y6,
-			AUG_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y6,
-			SEP_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y6,
-			OCT_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y6,
-			NOV_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y6,
-			DEC_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y6,
-			JAN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y7,
-			FEB_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y7,
-			MAR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y7,
-			APR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y7,
-			MAY_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y7,
-			JUN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y7,
-			JUL_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y7,
-			AUG_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y7,
-			SEP_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y7,
-			OCT_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y7,
-			NOV_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y7,
-			DEC_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y7,
-			JAN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y8,
-			FEB_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y8,
-			MAR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y8,
-			APR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y8,
-			MAY_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y8,
-			JUN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y8,
-			JUL_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y8,
-			AUG_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y8,
-			SEP_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y8,
-			OCT_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y8,
-			NOV_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y8,
-			DEC_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y8,
-			JAN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y9,
-			FEB_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y9,
-			MAR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y9,
-			APR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y9,
-			MAY_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y9,
-			JUN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y9,
-			JUL_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y9,
-			AUG_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y9,
-			SEP_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y9,
-			OCT_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y9,
-			NOV_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y9,
-			DEC_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y9,
-			JAN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y10,
-			FEB_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y10,
-			MAR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y10,
-			APR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y10,
-			MAY_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y10,
-			JUN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y10,
-			JUL_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y10,
-			AUG_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y10,
-			SEP_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y10,
-			OCT_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y10,
-			NOV_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y10,
-			DEC_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y10,
-			JAN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y11,
-			FEB_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y11,
-			MAR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y11,
-			APR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y11,
-			MAY_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y11,
-			JUN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y11,
-			JUL_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y11,
-			AUG_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y11,
-			SEP_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y11,
-			OCT_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y11,
-			NOV_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y11,
-			DEC_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y11
-			]
+			DEC_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y4]
 
 		CROP_WASTE = constants['inputs']['WASTE']['CROPS']
-		print(CROP_WASTE)
 
 		TOTAL_CROP_AREA = 500e6 #500 million hectares in tropics
 
@@ -687,17 +557,7 @@ class Optimizer:
 		# profile to stored food
 		# reference: see https://docs.google.com/spreadsheets/d/1f9eVD14Y2d9vmLFP3OsJPFA5d2JXBU-63MTz8MlB1rY/edit#gid=756212200
 		GREENHOUSE_SLOPE_MULTIPLIER = constants['inputs']['GREENHOUSE_SLOPE_MULTIPLIER']
-		GREENHOUSE_PERCENT_KCALS=list(np.array([0,0,0,0,0,11.60,11.60,11.60,23.21,23.21,23.21,34.81,34.81,34.81,46.41,46.41,46.41,58.01,58.01,58.01,69.62,69.62,69.62,81.22,81.22,81.22,92.82,92.82,92.82,104.43,104.43,104.43,116.03,116.03,116.03,127.63,127.63,127.63,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24\
-			,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,
-			139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,
-			139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24
-			,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,
-			139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,
-			139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24
-			,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,
-			139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,
-			139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24
-			])*GREENHOUSE_SLOPE_MULTIPLIER)
+		GREENHOUSE_PERCENT_KCALS=list(np.array([0,0,0,0,0,11.60,11.60,11.60,23.21,23.21,23.21,34.81,34.81,34.81,46.41,46.41,46.41,58.01,58.01,58.01,69.62,69.62,69.62,81.22,81.22,81.22,92.82,92.82,92.82,104.43,104.43,104.43,116.03,116.03,116.03,127.63,127.63,127.63,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24,139.24])*GREENHOUSE_SLOPE_MULTIPLIER*(1-CROP_WASTE/100))
 
 		import matplotlib.pyplot as plt
 		if(ADD_GREENHOUSES):
@@ -709,19 +569,12 @@ class Optimizer:
 
 		greenhouse_area = list(np.array(production_kcals_greenhouses_per_month)*1e9/GH_KCALS_PER_HECTARE_PER_MONTH)
 		KCALS_GROWN_MINUS_GREENHOUSE = []
-		# quit()
 		for i in range(0,len(KCALS_GROWN)):
-			if(sum(production_kcals_greenhouses_per_month[1:])>0):
-				KCALS_GROWN_MINUS_GREENHOUSE.append(\
-					KCALS_GROWN[i]*(1-greenhouse_area[i]/TOTAL_CROP_AREA)\
-				)
-			else:
-				KCALS_GROWN_MINUS_GREENHOUSE.append(\
-					KCALS_GROWN[i]\
-				)
-			# print((1-greenhouse_area[i]/TOTAL_CROP_AREA))
-		# plt.plot(KCALS_GROWN_MINUS_GREENHOUSE)
-		# plt.show()
+			KCALS_GROWN_MINUS_GREENHOUSE.append(\
+				KCALS_GROWN[i]*(1-greenhouse_area[i]/TOTAL_CROP_AREA)\
+			)
+			print((1-greenhouse_area[i]/TOTAL_CROP_AREA))
+		# quit()
 		# GH_DRY_TONS_PER_HECTARE_PER_YEAR*4e6/1e9
 		
 		# print("GH_DRY_TONS_PER_HECTARE_PER_YEAR*4e6/1e9")
@@ -729,14 +582,10 @@ class Optimizer:
 		# print("POTATO_CALORIES")
 		# print(POTATO_CALORIES)
 
-		SPRING_WHEAT_FRACTION_OF_ROTATION = 0.25
+		SPRING_WHEAT_FRACTION_OF_ROTATION = 0.20
 		SPRING_BARLEY_FRACTION_OF_ROTATION = 0.25
-		POTATO_FRACTION_OF_ROTATION = 0.25
-		RAPESEED_FRACTION_OF_ROTATION = 0.25
-		assert(SPRING_WHEAT_FRACTION_OF_ROTATION
-		+ SPRING_BARLEY_FRACTION_OF_ROTATION
-		+ POTATO_FRACTION_OF_ROTATION
-		+ RAPESEED_FRACTION_OF_ROTATION == 1)
+		POTATO_FRACTION_OF_ROTATION = 0.22
+		RAPESEED_FRACTION_OF_ROTATION = 0.33
 
 		#billion kcals per hectare per year
 		SPRING_WHEAT_CALORIES = 21056*1e3/1e9 * SPRING_WHEAT_FRACTION_OF_ROTATION
@@ -750,11 +599,12 @@ class Optimizer:
 			+ RAPESEED_CALORIES
 
 		# SUM_CALORIES_PER_HECTARE = 0.0237337
-		SUM_CALORIES_PER_HECTARE = (1-CROP_WASTE/100)*9.69/5*1.4*4e6/1e9 # 0.010853 
+		SUM_CALORIES_PER_HECTARE = 9.69/5*1.4*4e6/1e9 # 0.010853 
 
 		# GREENHOUSE_YIELD_MULTIPLIER = \
 			# (GH_DRY_TONS_PER_HECTARE_PER_YEAR*4e6/1e9)/SUM_CALORIES
 		GREENHOUSE_YIELD_MULTIPLIER = 1
+		print(GREENHOUSE_YIELD_MULTIPLIER)
 
 		GREENHOUSE_CALORIES = SUM_CALORIES_PER_HECTARE/12#SUM_CALORIES*GREENHOUSE_YIELD_MULTIPLIER
 
@@ -892,30 +742,31 @@ class Optimizer:
 			print(INITIAL_SF_PROTEIN/INITIAL_SF_KCALS)
 			print("production_fat_stored_food_per_monthper b kcals[0]")
 			print(INITIAL_SF_FAT/INITIAL_SF_KCALS)
+		# quit()		
 
 
+		# quit()
 		# plt.plot(GREENHOUSE_PERCENT_KCALS)
 
 		# plt.show()
 
 		# plt.plot(greenhouse_area)
 		# plt.show()
+		# quit()
 		####LIVESTOCK, EGG, DAIRY INITIAL VARIABLES####
 
 		DAIRY_PRODUCTION = constants['inputs']['DAIRY_PRODUCTION']
 		DAIRY_WASTE = constants['inputs']['WASTE']['DAIRY']
 		#billions of kcals
-		# MILK_KCALS_PER_1000_COWS_PER_MONTH = ANNUAL_LITERS_PER_COW \
-		# 	* KCALS_PER_LITER \
-		# 	/ 12 \
-		# 	/ 1e9 \
-		# 	* 1000 \
-		# 	* DAIRY_PRODUCTION \
-		# 	* (1-DAIRY_WASTE/100)
-		# print(MILK_KCALS_PER_1000_COWS_PER_MONTH)
+		MILK_KCALS_PER_1000_COWS_PER_MONTH = ANNUAL_LITERS_PER_COW \
+			* KCALS_PER_LITER \
+			/ 12 \
+			/ 1e9 \
+			* 1000 \
+			* DAIRY_PRODUCTION \
+			* (1-DAIRY_WASTE/100)
 
-		MILK_KCALS_PER_1000_COWS_PER_MONTH = 0.0369/(1/1000*1e9/4e6)* (1-DAIRY_WASTE/100)
-		print(MILK_KCALS_PER_1000_COWS_PER_MONTH)
+
 		#https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=2007828143
 		#per kg, whole milk, per nutrition calculator
 		MILK_KCALS = 610
@@ -963,18 +814,7 @@ class Optimizer:
 			constants['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER']
 		#billion calories a month for 100% population.
 		INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER = 6793977/12 
-		METHANE_SCP_PERCENT_KCALS = list(np.array([0,0,0,0,0,0,0,0,0,0,0,0,2,2,\
-			2,2,2,4,7,7,7,7,7,9,11,11,11,11,11,11,13,15,15,15,15,15,17,20,20,\
-			20,20,20,22,22,24,24,24,24,24,26,28,28,28,28,28,30,30,33,33,33,33,
-			33,35,37,37,37,37,37,39,39,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41])/(1-0.12)*INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
+		METHANE_SCP_PERCENT_KCALS = list(np.array([0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,4,7,7,7,7,7,9,11,11,11,11,11,11,13,15,15,15,15,15,17,20,20,20,20,20,22,22,24,24,24,24,24,26,28,28,28,28,28,30,30,33,33,33,33,33,35,37,37,37,37,37,39,39,41,41])/(1-0.12)*INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
 
 		if(ADD_METHANE_SCP):
 			production_kcals_scp_per_month = []
@@ -1002,8 +842,8 @@ class Optimizer:
 
 		#in billions of calories
 		# CELL_SUGAR_PERCENT_KCALS = list(np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 19.57, 23.48, 24.58, 28.49, 28.49,29.59,31.64, 31.64, 31.64, 31.64, 33.69, 35.74, 35.74, 35.74, 35.74, 37.78, 38.70, 39.61,40.53,41.44, 42.35, 43.27, 44.18, 45.10, 46.01, 46.93, 47.84, 48.76, 49.67, 50.58, 51.50,52.41,53.33, 54.24, 55.16, 56.07, 56.99, 57.90, 58.81, 59.73, 60.64, 61.56, 62.47, 63.39,64.30,65.21, 66.13, 67.04, 67.96, 68.87, 69.79, 70.70, 71.62, 72.53, 73.44, 74.36, 75.27,76.19,77.10, 78.02, 78.93, 79.85, 80.76, 81.67]) * CELLULOSIC_SUGAR_SLOPE_MULTIPLIER*(1-12/100))
-		CELL_SUGAR_PERCENT_KCALS = list(np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20]) *1/(1-0.12)* INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
-		print(len(CELL_SUGAR_PERCENT_KCALS))
+		CELL_SUGAR_PERCENT_KCALS = list(np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20]) *1/(1-0.12)* INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
+
 
 		# print(np.array(CELL_SUGAR_PERCENT_KCALS)+np.array(METHANE_SCP_PERCENT_KCALS))
 		# years = np.linspace(0,len(CELL_SUGAR_PERCENT_KCALS)-1,len(CELL_SUGAR_PERCENT_KCALS))/12
@@ -1011,6 +851,7 @@ class Optimizer:
 		# plt.xlabel('years from may event')
 		# plt.ylabel('percent human kcal requirement')
 		# plt.show()
+		# quit()
 		if(ADD_CELLULOSIC_SUGAR):
 			production_kcals_cell_sugar_per_month = []
 			for x in CELL_SUGAR_PERCENT_KCALS:
@@ -1172,15 +1013,7 @@ class Optimizer:
 			else:
 				model += (stored_food_start[m] == stored_food_end[m-1], "Stored_Food_Start_Month_"+str(m)+"_Constraint")
 
-				#####helps reduce wild fluctutions in stored food #######
-				if(constants['inputs']["IS_NUCLEAR_WINTER"]):
-					model += (stored_food_eaten[m] <= stored_food_eaten[m-1]*1.1, "Small_Change_Plus_SF_Eaten_Month_"+str(m)+"_Constraint")
-
-					model += (stored_food_eaten[m] >= stored_food_eaten[m-1]*0.9, "Small_Change_Minus_SF_Eaten_Month_"+str(m)+"_Constraint")
-
 			model += (stored_food_end[m] == stored_food_start[m] - stored_food_eaten[m], "Stored_Food_End_Month_"+str(m)+"_Constraint")
-
-
 
 			allvariables.append(stored_food_start[m])
 			allvariables.append(stored_food_end[m])
@@ -1195,11 +1028,11 @@ class Optimizer:
 			crops_food_eaten[m] = LpVariable("Crops_Food_Eaten_During_Month_"+str(m)+"_Variable",lowBound=0)
 			
 			if(m==0): #first Month
-				model += (crops_food_start[m] == 0, "Crops_Food_Start_Month_0_Constraint")
+				model += (crops_food_start[m] <= 0, "Crops_Food_Start_Month_0_Constraint")
 			else:
-				model += (crops_food_start[m] == crops_food_end[m-1], "Crops_Food_Start_Month_"+str(m)+"_Constraint")
+				model += (crops_food_start[m] <= crops_food_end[m-1], "Crops_Food_Start_Month_"+str(m)+"_Constraint")
 
-			model += (crops_food_end[m] == crops_food_start[m]-crops_food_eaten[m]+crops_food_produced[m], "Crops_Food_End_Month_"+str(m)+"_Constraint")
+			model += (crops_food_end[m] <= crops_food_start[m]-crops_food_eaten[m]+crops_food_produced[m], "Crops_Food_End_Month_"+str(m)+"_Constraint")
 
 			allvariables.append(crops_food_start[m])
 			allvariables.append(crops_food_end[m])
@@ -1262,17 +1095,11 @@ class Optimizer:
 			nonegg_nondairy_meat_eaten[m] = LpVariable("Non_Egg_Nondairy_Meat_Eaten_During_Month_"+str(m)+"_Variable",0,INITIAL_NONEGG_NONDAIRY_MEAT)
 			
 			if(m==0): #first Month
-				model += (nonegg_nondairy_meat_start[0] == INITIAL_NONEGG_NONDAIRY_MEAT, "Non_Egg_Nondairy_Meat_Start_Month_0_Constraint")
+				model += (nonegg_nondairy_meat_start[0] <= INITIAL_NONEGG_NONDAIRY_MEAT, "Non_Egg_Nondairy_Meat_Start_Month_0_Constraint")
 			else:
-				model += (nonegg_nondairy_meat_start[m] == nonegg_nondairy_meat_end[m-1], "Non_Egg_Nondairy_Meat_Start_Month_"+str(m)+"_Constraint")
+				model += (nonegg_nondairy_meat_start[m] <= nonegg_nondairy_meat_end[m-1], "Non_Egg_Nondairy_Meat_Start_Month_"+str(m)+"_Constraint")
 
-				#####helps reduce wild fluctutions in meat #######
-				if(constants['inputs']["NO_RESILIENT_FOODS"]):
-					model += (nonegg_nondairy_meat_eaten[m] <= nonegg_nondairy_meat_eaten[m-1]*1.05, "Small_Change_Plus_Eaten_Month_"+str(m)+"_Constraint")
-
-
-			model += (nonegg_nondairy_meat_end[m] == nonegg_nondairy_meat_start[m] - nonegg_nondairy_meat_eaten[m], "Non_Egg_Nondairy_Meat_End_Month_"+str(m)+"_Constraint")
-
+			model += (nonegg_nondairy_meat_end[m] <= nonegg_nondairy_meat_start[m] - nonegg_nondairy_meat_eaten[m], "Non_Egg_Nondairy_Meat_End_Month_"+str(m)+"_Constraint")
 
 			allvariables.append(nonegg_nondairy_meat_start[m])
 			allvariables.append(nonegg_nondairy_meat_end[m])
@@ -1296,12 +1123,12 @@ class Optimizer:
 			dairy_animals_1000s_eaten[m] = LpVariable("Dairy_Animals_Eaten_During_Month_"+str(m)+"_Variable",0,INITIAL_MILK_COWS_THOUSANDS)
 			
 			if(m==0): #first Month
-				model += (dairy_animals_1000s_start[0] == INITIAL_MILK_COWS_THOUSANDS, "Dairy_Animals_Start_Month_0_Constraint")
+				model += (dairy_animals_1000s_start[0] <= INITIAL_MILK_COWS_THOUSANDS, "Dairy_Animals_Start_Month_0_Constraint")
 			else:
-				model += (dairy_animals_1000s_start[m] == dairy_animals_1000s_end[m-1], 
+				model += (dairy_animals_1000s_start[m] <= dairy_animals_1000s_end[m-1], 
 					"Dairy_Animals_Start_Month_"+str(m)+"_Constraint")
 
-			model += (dairy_animals_1000s_end[m] == dairy_animals_1000s_start[m] \
+			model += (dairy_animals_1000s_end[m] <= dairy_animals_1000s_start[m] \
 				- dairy_animals_1000s_eaten[m],
 				"Dairy_Animals_Eaten_Month_"+str(m)+"_Constraint")
 
@@ -1329,22 +1156,11 @@ class Optimizer:
 
 
 			if(ADD_SEAWEED and LIMIT_SEAWEED_AS_PERCENT_KCALS):
-				# after month 8, enforce maximum seaweed production to prevent 
-				# a rounding error from producing full quantity of seaweed
-				if(m>8): 
-					model += (seaweed_food_produced_monthly[m]*SEAWEED_KCALS == 
-						(MAX_SEAWEED_AS_PERCENT_KCALS/100) \
-						* (humans_fed_kcals[m]*KCALS_MONTHLY),
-						"Seaweed_Limit_Kcals_"+str(m)+"_Constraint")
-				else:
-					model += (seaweed_food_produced_monthly[m]*SEAWEED_KCALS <= 
-						(MAX_SEAWEED_AS_PERCENT_KCALS/100) \
-						* (humans_fed_kcals[m]*KCALS_MONTHLY),
-						"Seaweed_Limit_Kcals_"+str(m)+"_Constraint")
-			# if(m>24):
-			# 	model += (stored_food_eaten[m] == 0,
-			# 		"Food_Storage_Limit_"+str(m)+"_Constraint")
-			# 	# allvariables.append(humans_fed_fat[m])
+				model += (seaweed_food_produced_monthly[m]*SEAWEED_KCALS <= 
+					(MAX_SEAWEED_AS_PERCENT_KCALS/100)*(humans_fed_kcals[m]*KCALS_MONTHLY),
+					"Seaweed_Limit_Kcals_"+str(m)+"_Constraint")
+
+				# allvariables.append(humans_fed_fat[m])
 
 			#finds billions of people fed that month per nutrient
 
@@ -1364,29 +1180,27 @@ class Optimizer:
 				+ production_kcals_scp_per_month[m]
 				# + production_kcals_greenhouses_per_month[m]
 				+ greenhouse_area[m]*GREENHOUSE_CALORIES
-				+ production_kcals_fish_per_month[m])/KCALS_MONTHLY,
+				+FISH_KCALS)/KCALS_MONTHLY,
 				"Kcals_Fed_Month_"+str(m)+"_Constraint")
 
 			#stored_food_eaten*sf_fraction_fat is in units thousand tons monthly
 			#seaweed_food_produced_monthly*seaweed_fat is in units thousand tons monthly
-
-			if(constants['inputs']['INCLUDE_FAT'] == True):
-
-				# fat monthly is in units thousand tons
-				model += (humans_fed_fat[m] == 
-					(stored_food_eaten[m]*SF_FRACTION_FAT 
-					+ crops_food_eaten[m]*OG_FRACTION_FAT
-					+ seaweed_food_produced_monthly[m]*SEAWEED_FAT
-					# + dairy_animals_1000s_eaten[m]*FAT_PER_1000_LARGE_ANIMALS
-					+ (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
-						* MILK_FAT_PER_1000_COWS_PER_MONTH*1e9
-					- biofuels_fat[m]
-					# + production_fat_greenhouses_per_month[m]
-					+ production_fat_scp_per_month[m]
-					+ nonegg_nondairy_meat_eaten[m]*MEAT_FRACTION_FAT
-					+ greenhouse_area[m]*GREENHOUSE_FAT
-					+ production_fat_fish_per_month[m])/FAT_MONTHLY/1e9,
-					"Fat_Fed_Month_"+str(m)+"_Constraint")
+			#fat monthly is in units thousand tons
+			# quit()
+			model += (humans_fed_fat[m] == 
+				(stored_food_eaten[m]*SF_FRACTION_FAT 
+				+ crops_food_eaten[m]*OG_FRACTION_FAT
+				+ seaweed_food_produced_monthly[m]*SEAWEED_FAT
+				# + dairy_animals_1000s_eaten[m]*FAT_PER_1000_LARGE_ANIMALS
+				+ (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
+					* MILK_FAT_PER_1000_COWS_PER_MONTH*1e9
+				- biofuels_fat[m]
+				# + production_fat_greenhouses_per_month[m]
+				+ production_fat_scp_per_month[m]
+				+ nonegg_nondairy_meat_eaten[m]*MEAT_FRACTION_FAT
+				+ greenhouse_area[m]*GREENHOUSE_FAT
+				+ FISH_FAT)/FAT_MONTHLY/1e9,
+				"Fat_Fed_Month_"+str(m)+"_Constraint")
 			
 			#stored_food_eaten*sf_fraction_protein is in units thousand tons monthly
 			#seaweed_food_produced_monthly*seaweed_protein is in units thousand tons monthly
@@ -1397,23 +1211,20 @@ class Optimizer:
 			# 		* MILK_PROTEIN_PER_1000_COWS_PER_MONTH
 			# 	+ production_protein_greenhouses_per_month[m]
 			# 	+ nonegg_nondairy_meat_eaten[m]*MEAT_FRACTION_PROTEIN)/PROTEIN_MONTHLY/1e9)
-
-			if(constants['inputs']['INCLUDE_PROTEIN'] == True):
-
-				model += (humans_fed_protein[m] == 
-					(stored_food_eaten[m]*SF_FRACTION_PROTEIN
-					+ crops_food_eaten[m]*OG_FRACTION_PROTEIN
-					+ seaweed_food_produced_monthly[m]*SEAWEED_PROTEIN
-					# + dairy_animals_1000s_eaten[m]*PROTEIN_PER_1000_LARGE_ANIMALS
-					+ (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
-						* MILK_PROTEIN_PER_1000_COWS_PER_MONTH*1e9
-					- biofuels_protein
-					# + production_protein_greenhouses_per_month[m]
-					+ production_protein_scp_per_month[m]
-					+ nonegg_nondairy_meat_eaten[m]*MEAT_FRACTION_PROTEIN
-					+ greenhouse_area[m]*GREENHOUSE_PROTEIN
-					+ production_protein_fish_per_month[m])/PROTEIN_MONTHLY/1e9,
-					"Protein_Fed_Month_"+str(m)+"_Constraint")
+			model += (humans_fed_protein[m] == 
+				(stored_food_eaten[m]*SF_FRACTION_PROTEIN
+				+ crops_food_eaten[m]*OG_FRACTION_PROTEIN
+				+ seaweed_food_produced_monthly[m]*SEAWEED_PROTEIN
+				# + dairy_animals_1000s_eaten[m]*PROTEIN_PER_1000_LARGE_ANIMALS
+				+ (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
+					* MILK_PROTEIN_PER_1000_COWS_PER_MONTH*1e9
+				- biofuels_protein
+				# + production_protein_greenhouses_per_month[m]
+				+ production_protein_scp_per_month[m]
+				+ nonegg_nondairy_meat_eaten[m]*MEAT_FRACTION_PROTEIN
+				+ greenhouse_area[m]*GREENHOUSE_PROTEIN
+				+ FISH_PROTEIN)/PROTEIN_MONTHLY/1e9,
+				"Protein_Fed_Month_"+str(m)+"_Constraint")
 
 			# maximizes the minimum z value
 			# We maximize the minimum humans fed from any month 
@@ -1437,11 +1248,7 @@ class Optimizer:
 
 
 		#### MODEL GENERATION LOOP ####
-		print(MILK_KCALS_PER_1000_COWS_PER_MONTH * INITIAL_MILK_COWS_THOUSANDS*1e9/4e6/1e6)
-		print('INITIAL_MILK_COWS_THOUSANDS')
-		print(INITIAL_MILK_COWS_THOUSANDS)
-		print("MILK_KCALS_PER_1000_COWS_PER_MONTH")
-		print(MILK_KCALS_PER_1000_COWS_PER_MONTH*1/1000*1e9/4e6)
+		
 		time_days_monthly=[]
 		time_days_daily=[]
 		time_months=[]
@@ -1550,15 +1357,9 @@ class Optimizer:
 			production_fat_scp_per_month,
 			show_output
 		)
+		# if no cellulosic sugar, will be zero
+		analysis.analyze_fish_results(time_months_middle)
 
-		# if no fish, will be zero
-		analysis.analyze_fish_results(
-			production_kcals_fish_per_month,
-			production_protein_fish_per_month,
-			production_fat_fish_per_month,
-			show_output
-		)
-		
 		# if no greenhouses, will be zero
 		analysis.analyze_GH_results(
 			greenhouse_area,

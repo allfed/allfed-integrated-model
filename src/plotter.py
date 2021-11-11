@@ -130,6 +130,29 @@ class Plotter:
 		plt.legend(['kcals available','fat available','protein available'])
 		plt.show()
 
+	def plot_OG_before_nuclear_event(time_months_middle,analysis):
+		ls_cycler = cycler('linestyle',
+							[\
+							 (0,()), # solid 
+							 (0, (1, 1)), # densely dotted
+							 (0, (1, 5)) # dotted
+							 ]
+						  )
+
+		color_cycler = cycler('color', [plt.get_cmap('viridis')(i) for i in np.arange(len(ls_cycler))] )
+
+		new_cycler = color_cycler + ls_cycler
+		plt.rc('axes',prop_cycle=new_cycler)
+		
+		plt.plot(time_months_middle,np.array(analysis.billion_person_years_OG_kcals),marker='o',markersize=3)
+		plt.plot(time_months_middle,np.array(analysis.billion_person_years_OG_fat),marker='o',markersize=3)
+		plt.plot(time_months_middle,np.array(analysis.billion_person_years_OG_protein),marker='o',markersize=3)
+		plt.title('Outdoor Growing')
+		plt.xlabel('Months Since May, Roughly Present-Day')
+		plt.ylabel('Billion person-years food produced from Outdoor Growing')
+		plt.legend(['kcals available','fat available','protein available'])
+		plt.show()
+
 
 
 
@@ -490,7 +513,7 @@ class Plotter:
 			analysis.billions_fed_immediate_OG_kcals,\
 			analysis.billions_fed_new_stored_OG_kcals,\
 			analysis.billions_fed_SF_kcals,\
-			analysis.billions_fed_fish_kcals,\
+			analysis.billions_fed_fish_kcals[0:len(time_months_middle)],\
 			analysis.billions_fed_milk_kcals,\
 			np.array(analysis.billions_fed_meat_kcals)+np.array(analysis.billions_fed_dairy_meat_kcals),\
 			 analysis.billions_fed_GH_kcals[0:len(time_months_middle)],\
@@ -498,11 +521,12 @@ class Plotter:
 			np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])+np.array(analysis.billions_fed_SCP_kcals[0:len(time_months_middle)]),\
 			 labels=[\
 			 'Outdoor Crops eaten \n immediately',
-			 'Food eaten that month \n that was stored \n after nuclear event',
-			 'Food eaten that month \n that was stored \n before nuclear event',\
+			 'Crops eaten that month \n that were stored \n after nuclear event',
+			 'Crops eaten that month \n that were stored \n before nuclear event',\
 			 'Fish',\
 			 'Dairy Milk',\
-			 'Meat',\
+			 'Culled Livestock',\
+			 # ], colors=pal)
 			 'Greenhouses',\
 			 'Seaweed',\
 			 'Industrial Foods'\
@@ -514,8 +538,165 @@ class Plotter:
 		handles, labels = ax.get_legend_handles_labels()   #get the handles
 		ax.legend()
 		ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),handles=reversed(handles),labels=reversed(labels))
-		plt.title('People Fed, in Terms of Calorie Requirement')
-		plt.ylabel('Billions of People')
+		# plt.title('Caloric Availability, Nuclear Winter, No Resilient Foods')
+		plt.title('Post-Nuclear Winter Caloric Availability')
+		plt.ylabel('Maximum People Fed, Billions')
+		plt.xlabel('Months Since May Nuclear Event')
+		# plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05),
+		#   ncol=3, fancybox=True, shadow=True)
+
+		plt.show()
+
+
+	def plot_people_fed_kcals_before_nuclear_event(time_months_middle,analysis):
+
+		font = {'family' : 'normal',
+				'weight' : 'bold',
+				'size'   : 16}
+
+		matplotlib.rc('font', **font)
+		fig = plt.figure()
+		ax=plt.subplot(111)
+		# legend=[]
+		# if(analysis.constants['ADD_STORED_FOOD']):
+		# 	legend = legend + ['Stored Food']
+		# if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		# 	legend = legend + ['Meat']
+		# if(analysis.constants['ADD_DAIRY']):
+		# 	legend = legend + ['Milk']
+		# if(analysis.constants['ADD_DAIRY']):
+		# 	legend = legend + ['Fish']
+		# if(analysis.constants['ADD_SEAWEED']):
+		# 	legend = legend + ['Seaweed']
+		# if(analysis.constants['ADD_GREENHOUSES']):
+		# 	legend = legend + ['Greenhouse Food']
+		# if(analysis.constants['ADD_OUTDOOR_GROWING']):
+		# 	legend = legend + ['Outdoor Growing']
+		# if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
+		# 	legend = legend + ['Cellulosic Sugar']
+		# https://jacksonlab.agronomy.wisc.edu/2016/05/23/15-level-colorblind-friendly-palette/
+		# 	"#000000","#004949","#009292","#ff6db6","#ffb6db",
+		# "#490092","#006ddb","#b66dff","#6db6ff","#b6dbff",
+		# "#920000","#924900","#db6d00","#24ff24","#ffff6d"
+		# patterns = [ "/" , "\\" , "|" , "-" , "+" , "x", "o", "O", ".", "*" ]
+		patterns = [ "/" , "\\" , "|" , "-" , "+" , "x", "o", "O"]
+		pal=["#006ddb","#b66dff","6db6ff","#b6dbff",\
+		 "#920000","#924900","#db6d00","#24ff24","#ffff6d"]
+		print('analysis.billions_fed_immediate_OG_kcals')
+		print(analysis.billions_fed_immediate_OG_kcals)
+		print('analysis.billions_fed_new_stored_OG_kcals')
+		print(analysis.billions_fed_new_stored_OG_kcals)
+
+		stacks = ax.stackplot(time_months_middle,\
+			analysis.billions_fed_immediate_OG_kcals,\
+			analysis.billions_fed_new_stored_OG_kcals,\
+			analysis.billions_fed_SF_kcals,\
+			analysis.billions_fed_fish_kcals[0:len(time_months_middle)],\
+			analysis.billions_fed_milk_kcals,\
+			np.array(analysis.billions_fed_meat_kcals)+np.array(analysis.billions_fed_dairy_meat_kcals),\
+			 analysis.billions_fed_GH_kcals[0:len(time_months_middle)],\
+			 analysis.billions_fed_seaweed_kcals[0:len(time_months_middle)],\
+			np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])+np.array(analysis.billions_fed_SCP_kcals[0:len(time_months_middle)]),\
+			 labels=[\
+			 'Crops eaten \n immediately',
+			 'Crops eaten that month \n that were stored \n before simulation',
+			 'Crops eaten that month \n that were stored \n after simulation',\
+			 # 'Fish',\
+			 # 'Dairy Milk',\
+			 # 'All livestock',\
+			 ], colors=pal)
+			 # 'Greenhouses',\
+			 # 'Seaweed',\
+			 # 'Industrial Foods'\
+			 # ], colors=pal)
+		for stack, hatch in zip(stacks, patterns):
+			stack.set_hatch(hatch)
+		box = ax.get_position()
+		ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+		handles, labels = ax.get_legend_handles_labels()   #get the handles
+		ax.legend()
+		ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),handles=reversed(handles),labels=reversed(labels))
+		plt.title('Present-Day Caloric Production')
+		# plt.title('Post-Nuclear Winter Caloric Availability')
+		plt.ylabel('Maximum People Fed, Billions')
+		plt.xlabel('Months Since May, Roughly Present-Day')
+		# plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05),
+		#   ncol=3, fancybox=True, shadow=True)
+
+		plt.show()
+
+
+	def plot_people_fed_kcals_no_resilient(time_months_middle,analysis):
+
+		font = {'family' : 'normal',
+				'weight' : 'bold',
+				'size'   : 16}
+
+		matplotlib.rc('font', **font)
+		fig = plt.figure()
+		ax=plt.subplot(111)
+		# legend=[]
+		# if(analysis.constants['ADD_STORED_FOOD']):
+		# 	legend = legend + ['Stored Food']
+		# if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		# 	legend = legend + ['Meat']
+		# if(analysis.constants['ADD_DAIRY']):
+		# 	legend = legend + ['Milk']
+		# if(analysis.constants['ADD_DAIRY']):
+		# 	legend = legend + ['Fish']
+		# if(analysis.constants['ADD_SEAWEED']):
+		# 	legend = legend + ['Seaweed']
+		# if(analysis.constants['ADD_GREENHOUSES']):
+		# 	legend = legend + ['Greenhouse Food']
+		# if(analysis.constants['ADD_OUTDOOR_GROWING']):
+		# 	legend = legend + ['Outdoor Growing']
+		# if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
+		# 	legend = legend + ['Cellulosic Sugar']
+		# https://jacksonlab.agronomy.wisc.edu/2016/05/23/15-level-colorblind-friendly-palette/
+		# 	"#000000","#004949","#009292","#ff6db6","#ffb6db",
+		# "#490092","#006ddb","#b66dff","#6db6ff","#b6dbff",
+		# "#920000","#924900","#db6d00","#24ff24","#ffff6d"
+		# patterns = [ "/" , "\\" , "|" , "-" , "+" , "x", "o", "O", ".", "*" ]
+		patterns = [ "/" , "\\" , "|" , "-" , "+" , "x", "o", "O"]
+		pal=["#006ddb","#b66dff","6db6ff","#b6dbff",\
+		 "#920000","#924900","#db6d00","#24ff24","#ffff6d"]
+		print('analysis.billions_fed_immediate_OG_kcals')
+		print(analysis.billions_fed_immediate_OG_kcals)
+		print('analysis.billions_fed_new_stored_OG_kcals')
+		print(analysis.billions_fed_new_stored_OG_kcals)
+
+		stacks = ax.stackplot(time_months_middle,\
+			analysis.billions_fed_immediate_OG_kcals,\
+			analysis.billions_fed_new_stored_OG_kcals,\
+			analysis.billions_fed_SF_kcals,\
+			analysis.billions_fed_fish_kcals[0:len(time_months_middle)],\
+			analysis.billions_fed_milk_kcals,\
+			np.array(analysis.billions_fed_meat_kcals)+np.array(analysis.billions_fed_dairy_meat_kcals),\
+			 analysis.billions_fed_GH_kcals[0:len(time_months_middle)],\
+			 analysis.billions_fed_seaweed_kcals[0:len(time_months_middle)],\
+			np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])+np.array(analysis.billions_fed_SCP_kcals[0:len(time_months_middle)]),\
+			 labels=[\
+			 'Outdoor Crops eaten \n immediately',
+			 'Crops eaten that month \n that were stored \n after nuclear event',
+			 'Crops eaten that month \n that were stored \n before nuclear event',\
+			 'Fish',\
+			 'Dairy Milk',\
+			 'All livestock',\
+			 ], colors=pal)
+			 # 'Greenhouses',\
+			 # 'Seaweed',\
+			 # 'Industrial Foods'\
+			 # ], colors=pal)
+		for stack, hatch in zip(stacks, patterns):
+			stack.set_hatch(hatch)
+		box = ax.get_position()
+		ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+		handles, labels = ax.get_legend_handles_labels()   #get the handles
+		ax.legend()
+		ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),handles=reversed(handles),labels=reversed(labels))
+		plt.title('Caloric Availability, Nuclear Winter, No Resilient Foods')
+		# plt.title('Post-Nuclear Winter Caloric Availability')
+		plt.ylabel('Maximum People Fed, Billions')
 		plt.xlabel('Months Since May Nuclear Event')
 		# plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05),
 		#   ncol=3, fancybox=True, shadow=True)
@@ -643,7 +824,7 @@ class Plotter:
 			+np.array(analysis.billions_fed_SCP_kcals[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_GH_kcals[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_OG_kcals)
-			+np.array(analysis.billions_fed_fish_kcals),marker='o',markersize=3)
+			+np.array(analysis.billions_fed_fish_kcals[0:len(time_months_middle)]),marker='o',markersize=3)
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_fat)
 			+np.array(analysis.billions_fed_meat_fat)
@@ -653,7 +834,7 @@ class Plotter:
 			+np.array(analysis.billions_fed_SCP_fat[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_OG_fat)
 			+np.array(analysis.billions_fed_GH_fat[0:len(time_months_middle)])
-			+np.array(analysis.billions_fed_fish_fat),marker='o',markersize=3)
+			+np.array(analysis.billions_fed_fish_fat[0:len(time_months_middle)]),marker='o',markersize=3)
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_protein)
 			+np.array(analysis.billions_fed_meat_protein)
@@ -664,7 +845,7 @@ class Plotter:
 			+np.array(analysis.billions_fed_OG_protein)
 			+np.array(analysis.billions_fed_GH_protein[0:len(time_months_middle)
 				])
-			+np.array(analysis.billions_fed_fish_protein),marker='o',markersize=3)
+			+np.array(analysis.billions_fed_fish_protein[0:len(time_months_middle)]),marker='o',markersize=3)
 		legend = ['Limit by kcals','Limited by Fat','Limited by protein']
 		plt.ylabel('billions of people')
 		plt.xlabel('Months Since May Nuclear Event')

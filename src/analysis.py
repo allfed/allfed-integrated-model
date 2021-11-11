@@ -143,21 +143,27 @@ class Analyzer:
 	# 		np.array(production_protein_greenhouses_per_month) \
 	# 		/ self.constants["PROTEIN_MONTHLY"]/1e9
 
-	#if greenhouses aren't included, these results will be zero
+
+	#if fish aren't included, these results will be zero
 	def analyze_fish_results(
 		self,
-		time_months_middle
+		production_kcals_fish_per_month,
+		production_protein_fish_per_month,
+		production_fat_fish_per_month,
+		show_output
 		):
 
-		kcals=self.constants['FISH_KCALS'] / self.constants["KCALS_MONTHLY"]
-		fat=self.constants['FISH_FAT'] / self.constants["FAT_MONTHLY"]/1e9
-		protein=self.constants['FISH_PROTEIN'] / self.constants["PROTEIN_MONTHLY"]/1e9
 		self.billions_fed_fish_kcals = \
-			np.linspace(kcals,kcals,len(time_months_middle))
-		self.billions_fed_fish_fat= \
-			np.linspace(fat,fat,len(time_months_middle))
+			list(np.array(production_kcals_fish_per_month) \
+			/ self.constants["KCALS_MONTHLY"])
+
 		self.billions_fed_fish_protein = \
-			np.linspace(protein,protein,len(time_months_middle))
+			list(np.array(production_protein_fish_per_month) \
+			/ self.constants["PROTEIN_MONTHLY"]/1e9)
+
+		self.billions_fed_fish_fat = \
+			list(np.array(production_fat_fish_per_month) \
+			/ self.constants["FAT_MONTHLY"]/1e9)
 
 	#if outdoor growing isn't included, these results will be zero
 	def analyze_OG_results(
@@ -166,7 +172,6 @@ class Analyzer:
 		crops_food_start,
 		crops_food_end,
 		crops_food_produced,
-		greenhouse_area,
 		show_output
 		):
 
@@ -178,11 +183,6 @@ class Analyzer:
 			self.constants["OG_FRACTION_KCALS"]/self.constants["KCALS_MONTHLY"],
 			show_output
 			)
-
-		self.billions_fed_OG_kcals = self.makeMidMonthlyVars(
-			crops_food_eaten,
-			self.constants["OG_FRACTION_KCALS"]/self.constants["KCALS_MONTHLY"],
-			show_output)
 
 
 		self.billions_fed_OG_kcals = self.makeMidMonthlyVars(
@@ -365,6 +365,7 @@ class Analyzer:
 		):
 
 
+
 		self.billions_fed_SF_kcals = self.makeMidMonthlyVars(
 			stored_food_eaten,
 			self.constants["SF_FRACTION_KCALS"]/self.constants["KCALS_MONTHLY"],
@@ -481,7 +482,7 @@ class Analyzer:
 			+np.array(self.billions_fed_SCP_kcals[0:len(time_months_middle)])\
 			+np.array(self.billions_fed_GH_kcals[0:len(time_months_middle)])\
 			+np.array(self.billions_fed_OG_kcals)\
-			+np.array(self.billions_fed_fish_kcals)
+			+np.array(self.billions_fed_fish_kcals[0:len(time_months_middle)])
 
 		self.fat_fed = np.array(self.billions_fed_SF_fat)\
 			+np.array(self.billions_fed_meat_fat)\
@@ -491,7 +492,7 @@ class Analyzer:
 			+np.array(self.billions_fed_SCP_fat[0:len(time_months_middle)])\
 			+np.array(self.billions_fed_GH_fat[0:len(time_months_middle)])\
 			+np.array(self.billions_fed_OG_fat)\
-			+np.array(self.billions_fed_fish_fat)\
+			+np.array(self.billions_fed_fish_fat[0:len(time_months_middle)])\
 
 		self.protein_fed = np.array(self.billions_fed_SF_protein)\
 			+np.array(self.billions_fed_meat_protein)\
@@ -501,7 +502,7 @@ class Analyzer:
 			+np.array(self.billions_fed_GH_protein[0:len(time_months_middle)])\
 			+np.array(self.billions_fed_SCP_protein[0:len(time_months_middle)])\
 			+np.array(self.billions_fed_OG_protein)\
-			+np.array(self.billions_fed_fish_protein)\
+			+np.array(self.billions_fed_fish_protein[0:len(time_months_middle)])\
 
 		self.people_fed_billions=model.objective.value()
 		fed = {'fat':np.round(np.min(self.fat_fed),2),'kcals':np.round(np.min(self.kcals_fed),2),'protein':np.round(np.min(self.protein_fed),2)}
