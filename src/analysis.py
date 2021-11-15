@@ -110,19 +110,49 @@ class Analyzer:
 	#if greenhouses aren't included, these results will be zero
 	def analyze_GH_results(
 		self,
+		greenhouse_kcals_per_ha,
+		greenhouse_protein_per_ha,
+		greenhouse_fat_per_ha,
 		greenhouse_area,
 		show_output
 		):
 
+		print("greenhouse_kcals_per_ha")
+		print(greenhouse_kcals_per_ha)
+		# self.greenhouse_kcals_per_ha = self.makeMidMonthlyVars(
+		# 	greenhouse_kcals_per_ha,
+		# 	1,
+		# 	show_output)
+		# self.greenhouse_fat_per_ha = self.makeMidMonthlyVars(
+		# 	greenhouse_fat_per_ha,
+		# 	1,
+		# 	show_output)
+		# self.greenhouse_protein_per_ha = self.makeMidMonthlyVars(
+		# 	greenhouse_protein_per_ha,
+		# 	1,
+		# 	show_output)
+
 		self.billions_fed_GH_kcals = \
-			np.array(greenhouse_area)*self.constants['GREENHOUSE_CALORIES'] \
-			/ self.constants["KCALS_MONTHLY"]
+			np.multiply(\
+				np.array(greenhouse_area),\
+				np.array(greenhouse_kcals_per_ha) \
+				* 1/self.constants["KCALS_MONTHLY"]
+			)
+		# print("self.billions_fed_GH_kcals")
+		# print(self.billions_fed_GH_kcals)
 		self.billions_fed_GH_fat= \
-			np.array(greenhouse_area)*self.constants['GREENHOUSE_FAT'] \
-			/ self.constants["FAT_MONTHLY"]/1e9
+			np.multiply(
+				np.array(greenhouse_area),\
+				np.array(greenhouse_fat_per_ha) \
+				*1/self.constants["FAT_MONTHLY"]/1e9
+			)
+
 		self.billions_fed_GH_protein = \
-			np.array(greenhouse_area)*self.constants['GREENHOUSE_PROTEIN'] \
-			/ self.constants["PROTEIN_MONTHLY"]/1e9
+			np.multiply(
+				np.array(greenhouse_area),\
+				np.array(greenhouse_protein_per_ha)
+				* 1/self.constants["PROTEIN_MONTHLY"]/1e9
+			)
 
 	# #if greenhouses aren't included, these results will be zero
 	# def analyze_GH_results(
@@ -189,6 +219,9 @@ class Analyzer:
 			crops_food_eaten,
 			self.constants["OG_FRACTION_KCALS"]/self.constants["KCALS_MONTHLY"],
 			show_output)
+
+		print("billions_fed_OG_kcals")
+		print(self.billions_fed_OG_kcals)
 
 		self.billions_fed_OG_fat = self.makeMidMonthlyVars(
 			crops_food_eaten,
@@ -347,7 +380,6 @@ class Analyzer:
 			self.constants["FAT_PER_1000_LARGE_ANIMALS"]
 			/ self.constants["FAT_MONTHLY"]/1e9,
 			show_output)
-		# quit()
 		self.billions_fed_dairy_meat_protein = self.makeMidMonthlyVars(
 			dairy_animals_eaten,
 			self.constants["PROTEIN_PER_1000_LARGE_ANIMALS"]
@@ -472,7 +504,6 @@ class Analyzer:
 
 	def analyze_results(self,model,time_months_middle):
 		# np.array(self.billions_fed_GH_kcals[0:len(time_months_middle)]))
-		# quit
 		self.kcals_fed = np.array(self.billions_fed_SF_kcals)\
 			+np.array(self.billions_fed_meat_kcals)\
 			+np.array(self.billions_fed_seaweed_kcals)\

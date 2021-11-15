@@ -57,7 +57,9 @@ constants['inputs']['MAXIMUM_DENSITY'] = 4000 #tons/km^2 (seaweed)
 constants['inputs']['MAXIMUM_AREA'] = 1000 # 1000 km^2 (seaweed)
 constants['inputs']['SEAWEED_PRODUCTION_RATE'] = 10 # percent (seaweed)
 #trying to 
-constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1602542*1000./10*3
+# 217.5 million dry caloric tons
+# constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1602542*1000./10*3
+constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 3*217.5*1e6 #thousand tons
 constants['inputs']['INITIAL_SF_PROTEIN'] = 203607 #1000 tons protein per unit mass initial
 constants['inputs']['INITIAL_SF_FAT'] = 63948 # 1000 tons fat per unit mass initial
 
@@ -78,14 +80,15 @@ constants['inputs']['GREENHOUSE_FAT_MULTIPLIER'] = 1 # we can grow twice as much
 constants['inputs']['GREENHOUSE_SLOPE_MULTIPLIER'] = 1 #default values from greenhouse paper
 constants['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1 #default values from CS paper
 
-constants['inputs']['NO_RESILIENT_FOODS'] = True
+constants['inputs']['MEAT_SMOOTHING'] = False
+constants['inputs']['STORED_FOOD_SMOOTHING'] = False
+constants['inputs']['IS_NUCLEAR_WINTER'] = False
 
 constants['inputs']['INCLUDE_PROTEIN'] = False
 constants['inputs']['INCLUDE_FAT'] = False
 constants['inputs']['MEAT_SUSTAINABLE_YIELD_PER_YEAR'] = 222
-constants['inputs']['IS_NUCLEAR_WINTER'] = False
-
-constants['inputs']['ADD_FISH'] = False
+constants['inputs']['FLUCTUATION_LIMIT'] = 1.5
+constants['inputs']['ADD_FISH'] = True
 constants['inputs']['ADD_SEAWEED'] = False
 constants['inputs']['ADD_CELLULOSIC_SUGAR'] = False
 constants['inputs']['ADD_METHANE_SCP'] = False

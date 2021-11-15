@@ -523,7 +523,7 @@ class Plotter:
 			 'Outdoor Crops eaten \n immediately',
 			 'Crops eaten that month \n that were stored \n after nuclear event',
 			 'Crops eaten that month \n that were stored \n before nuclear event',\
-			 'Fish',\
+			 'Marine Fish',\
 			 'Dairy Milk',\
 			 'Culled Livestock',\
 			 # ], colors=pal)
@@ -601,7 +601,7 @@ class Plotter:
 			 'Crops eaten \n immediately',
 			 'Crops eaten that month \n that were stored \n before simulation',
 			 'Crops eaten that month \n that were stored \n after simulation',\
-			 # 'Fish',\
+			 'Marine Fish',\
 			 # 'Dairy Milk',\
 			 # 'All livestock',\
 			 ], colors=pal)
@@ -679,9 +679,9 @@ class Plotter:
 			 'Outdoor Crops eaten \n immediately',
 			 'Crops eaten that month \n that were stored \n after nuclear event',
 			 'Crops eaten that month \n that were stored \n before nuclear event',\
-			 'Fish',\
-			 'Dairy Milk',\
-			 'All livestock',\
+			 'Marine Fish',\
+			 # 'Dairy Milk',\
+			 'All Livestock Culled',\
 			 ], colors=pal)
 			 # 'Greenhouses',\
 			 # 'Seaweed',\

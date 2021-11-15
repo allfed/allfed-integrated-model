@@ -45,11 +45,10 @@ constants['inputs']['WASTE']['CROPS'] = 0
 constants['inputs']['WASTE']['SEAWEED'] = 0 #%
 
 constants['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 0 # months
-constants['inputs']['M1_ADDITIONAL_WASTE'] = 5e9/12#tons dry caloric equivalent
 constants['inputs']['NUTRITION']={}
 constants['inputs']['NUTRITION']['KCALS_DAILY'] = 2100 #kcals per person per day
-constants['inputs']['NUTRITION']['FAT_DAILY'] = 35 #grams per person per day
-constants['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51 #grams per person per day
+constants['inputs']['NUTRITION']['FAT_DAILY'] = 35/2 #grams per person per day
+constants['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51/2 #grams per person per day
 
 constants['inputs']['INITIAL_MILK_COWS'] = 264e6
 constants['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS'] = 10
@@ -81,15 +80,18 @@ constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y9'] = 1-.4
 constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y10'] = 1-.17
 constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y11'] = 1-.08
 constants['inputs']['DAIRY_PRODUCTION'] = 1 #multiplies current dairy productivity (based on stress of animals)
-constants['inputs']['INCLUDE_PROTEIN'] = False
+constants['inputs']['INCLUDE_PROTEIN'] = True
 constants['inputs']['INCLUDE_FAT'] = True
 constants['inputs']['MEAT_SUSTAINABLE_YIELD_PER_YEAR'] = 0
-constants['inputs']['NO_RESILIENT_FOODS'] = True
+
+constants['inputs']['MEAT_SMOOTHING'] = True
+constants['inputs']['FLUCTUATION_LIMIT'] = 1.5
 
 constants['inputs']['GREENHOUSE_FAT_MULTIPLIER'] = 1 # we can grow twice as much fat as greenhouses would have
 constants['inputs']['GREENHOUSE_SLOPE_MULTIPLIER'] = 1 #default values from greenhouse paper
 constants['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1 #default values from CS paper
 constants['inputs']['IS_NUCLEAR_WINTER'] = True
+constants['inputs']['STORED_FOOD_SMOOTHING'] = True
 
 
 constants['inputs']['ADD_FISH'] = True
@@ -99,7 +101,7 @@ constants['inputs']['ADD_METHANE_SCP'] = False
 constants['inputs']['ADD_GREENHOUSES'] = False
 constants['inputs']['ADD_STORED_FOOD'] = True
 constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
-constants['inputs']['ADD_DAIRY'] = True
+constants['inputs']['ADD_DAIRY'] = False
 constants['inputs']['ADD_OUTDOOR_GROWING'] = True
 
 constants['inputs']['INCLUDE_ECONOMICS'] = True

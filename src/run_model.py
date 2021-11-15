@@ -65,17 +65,21 @@ constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y8'] = 1-.5
 constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y9'] = 1-.4
 constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y10'] = 1-.17
 constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y11'] = 1-.08
+
 constants['inputs']['MEAT_SUSTAINABLE_YIELD_PER_YEAR'] = 100.4
 constants['inputs']['INCLUDE_PROTEIN'] = True
 constants['inputs']['INCLUDE_FAT'] = True
-
-constants['inputs']['IS_NUCLEAR_WINTER'] = True
+constants['inputs']['FLUCTUATION_LIMIT'] = 1.01
+constants['inputs']['GREENHOUSE_GAIN_PCT'] = 40
 
 constants['inputs']['DAIRY_PRODUCTION'] = 1 #multiplies current dairy productivity (based on stress of animals)
 constants['inputs']['GREENHOUSE_FAT_MULTIPLIER'] = 1 # we can grow twice as much fat as greenhouses would have
 constants['inputs']['GREENHOUSE_SLOPE_MULTIPLIER'] = 1 #default values from greenhouse paper
 constants['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1 #default values from CS paper
-constants['inputs']['NO_RESILIENT_FOODS'] = False
+
+constants['inputs']['IS_NUCLEAR_WINTER'] = True
+constants['inputs']['STORED_FOOD_SMOOTHING'] = False
+constants['inputs']['MEAT_SMOOTHING'] = False
 
 
 constants['inputs']['ADD_FISH'] = True
