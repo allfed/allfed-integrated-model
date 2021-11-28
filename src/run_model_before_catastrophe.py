@@ -42,7 +42,14 @@ constants['inputs']['NUTRITION']={}
 constants['inputs']['NUTRITION']['KCALS_DAILY'] = 2100 #kcals per person per day
 constants['inputs']['NUTRITION']['FAT_DAILY'] = 35 #grams per person per day
 constants['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51 #grams per person per day
-
+# constants['inputs']['SEASONALITY']=\
+# 	[0.1564,0.0461,0.0650,0.1017,0.0772,0.0785,\
+# 	0.0667,0.0256,0.0163,0.1254,0.1183,0.1228]
+	
+constants['inputs']['SEASONALITY']=\
+	[0.1121,0.0178,0.0241,0.0344,0.0338,0.0411,\
+	0.0882,0.0791,0.1042,0.1911,0.1377,0.1365]
+constants['inputs']['GREENHOUSE_GAIN_PCT'] = 0
 constants['inputs']['INITIAL_MILK_COWS'] = 264e6
 constants['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS'] = 10
 constants['inputs']['INIT_SMALL_ANIMALS'] = 28.2e9
@@ -59,7 +66,9 @@ constants['inputs']['SEAWEED_PRODUCTION_RATE'] = 10 # percent (seaweed)
 #trying to 
 # 217.5 million dry caloric tons
 # constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1602542*1000./10*3
-constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 3*217.5*1e6 #thousand tons
+# constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 3.1*217.5*1e6 #thousand tons
+constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 351.433*1e6 #thousand tons
+# constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1602542*1000.
 constants['inputs']['INITIAL_SF_PROTEIN'] = 203607 #1000 tons protein per unit mass initial
 constants['inputs']['INITIAL_SF_FAT'] = 63948 # 1000 tons fat per unit mass initial
 
@@ -84,6 +93,8 @@ constants['inputs']['MEAT_SMOOTHING'] = False
 constants['inputs']['STORED_FOOD_SMOOTHING'] = False
 constants['inputs']['IS_NUCLEAR_WINTER'] = False
 
+constants["inputs"]["OG_USE_BETTER_ROTATION"] = False
+
 constants['inputs']['INCLUDE_PROTEIN'] = False
 constants['inputs']['INCLUDE_FAT'] = False
 constants['inputs']['MEAT_SUSTAINABLE_YIELD_PER_YEAR'] = 222
@@ -97,8 +108,7 @@ constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
 constants['inputs']['ADD_DAIRY'] = False
 constants['inputs']['ADD_STORED_FOOD'] = True
 constants['inputs']['ADD_OUTDOOR_GROWING'] = True
-
-constants['inputs']['INCLUDE_ECONOMICS'] = True
+constants['inputs']['OVERALL_SMOOTHING'] = False
 constants['CHECK_CONSTRAINTS'] = False
 optimizer = Optimizer()
 
@@ -110,14 +120,14 @@ optimizer = Optimizer()
 # if(constants['inputs']['ADD_FISH']):
 # 	Plotter.plot_fish(time_months_middle,analysis)
 
-if(constants['inputs']['ADD_GREENHOUSES']):
-	Plotter.plot_GH(time_months_middle,analysis)
+# if(constants['inputs']['ADD_GREENHOUSES']):
+# 	Plotter.plot_GH(time_months_middle,analysis)
 
-if(constants['inputs']['ADD_OUTDOOR_GROWING']):
-	Plotter.plot_OG_before_nuclear_event(time_months_middle,analysis)
+# if(constants['inputs']['ADD_OUTDOOR_GROWING']):
+# 	Plotter.plot_OG_before_nuclear_event(time_months_middle,analysis)
 
-if(constants['inputs']['ADD_STORED_FOOD']):
-	Plotter.plot_stored_food(time_months,analysis)
+# if(constants['inputs']['ADD_STORED_FOOD']):
+# 	Plotter.plot_stored_food(time_months,analysis)
 
 # if(constants['inputs']['ADD_SEAWEED']):
 # 	Plotter.plot_seaweed(time_months_middle,analysis)
@@ -130,7 +140,7 @@ if(constants['inputs']['ADD_STORED_FOOD']):
 # 	Plotter.plot_dairy(time_months_middle,analysis)
 
 # Plotter.plot_people_fed(time_months_middle,analysis)
-Plotter.plot_people_fed_combined(time_months_middle,analysis)
+# Plotter.plot_people_fed_combined(time_months_middle,analysis)
 Plotter.plot_people_fed_kcals_before_nuclear_event(time_months_middle,analysis)
 # Plotter.plot_people_fed_fat(time_months_middle,analysis)
 # Plotter.plot_people_fed_protein(time_months_middle,analysis)

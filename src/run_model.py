@@ -33,8 +33,8 @@ constants['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 0 # months
 constants['inputs']['M1_ADDITIONAL_WASTE'] = 5e9/12#tons dry caloric equivalent
 constants['inputs']['NUTRITION']={}
 constants['inputs']['NUTRITION']['KCALS_DAILY'] = 2100 #kcals per person per day
-constants['inputs']['NUTRITION']['FAT_DAILY'] = 35 #grams per person per day
-constants['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51 #grams per person per day
+constants['inputs']['NUTRITION']['FAT_DAILY'] = 35/2 #grams per person per day
+constants['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51/2 #grams per person per day
 
 constants['inputs']['INITIAL_MILK_COWS'] = 264e6
 constants['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS'] = 10
@@ -49,7 +49,7 @@ constants['inputs']['MINIMUM_DENSITY'] = 400 #tons/km^2 (seaweed)
 constants['inputs']['MAXIMUM_DENSITY'] = 4000 #tons/km^2 (seaweed)
 constants['inputs']['MAXIMUM_AREA'] = 1000 # 1000 km^2 (seaweed)
 constants['inputs']['SEAWEED_PRODUCTION_RATE'] = 10 # percent (seaweed)
-constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1602542*1000.
+constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1349e6
 constants['inputs']['INITIAL_SF_PROTEIN'] = 203607 #1000 tons protein per unit mass initial
 constants['inputs']['INITIAL_SF_FAT'] = 63948 # 1000 tons fat per unit mass initial
 
@@ -66,20 +66,25 @@ constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y9'] = 1-.4
 constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y10'] = 1-.17
 constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y11'] = 1-.08
 
+constants['inputs']['SEASONALITY']=\
+	[0.1564,0.0461,0.0650,0.1017,0.0772,0.0785,\
+	0.0667,0.0256,0.0163,0.1254,0.1183,0.1228]
 constants['inputs']['MEAT_SUSTAINABLE_YIELD_PER_YEAR'] = 100.4
 constants['inputs']['INCLUDE_PROTEIN'] = True
 constants['inputs']['INCLUDE_FAT'] = True
-constants['inputs']['FLUCTUATION_LIMIT'] = 1.01
+constants['inputs']['FLUCTUATION_LIMIT'] = 1.5
 constants['inputs']['GREENHOUSE_GAIN_PCT'] = 40
 
 constants['inputs']['DAIRY_PRODUCTION'] = 1 #multiplies current dairy productivity (based on stress of animals)
 constants['inputs']['GREENHOUSE_FAT_MULTIPLIER'] = 1 # we can grow twice as much fat as greenhouses would have
 constants['inputs']['GREENHOUSE_SLOPE_MULTIPLIER'] = 1 #default values from greenhouse paper
 constants['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1 #default values from CS paper
+constants["inputs"]["OG_USE_BETTER_ROTATION"] = True
 
 constants['inputs']['IS_NUCLEAR_WINTER'] = True
-constants['inputs']['STORED_FOOD_SMOOTHING'] = False
-constants['inputs']['MEAT_SMOOTHING'] = False
+constants['inputs']['STORED_FOOD_SMOOTHING'] = True
+constants['inputs']['MEAT_SMOOTHING'] = True
+constants['inputs']['OVERALL_SMOOTHING'] = True
 
 
 constants['inputs']['ADD_FISH'] = True
@@ -88,7 +93,7 @@ constants['inputs']['ADD_CELLULOSIC_SUGAR'] = True
 constants['inputs']['ADD_METHANE_SCP'] = True
 constants['inputs']['ADD_GREENHOUSES'] = True
 constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
-constants['inputs']['ADD_DAIRY'] = True
+constants['inputs']['ADD_DAIRY'] = False
 constants['inputs']['ADD_STORED_FOOD'] = True
 constants['inputs']['ADD_OUTDOOR_GROWING'] = True
 
@@ -116,8 +121,8 @@ if(constants['inputs']['ADD_STORED_FOOD']):
 # if(constants['inputs']['ADD_SEAWEED']):
 # 	Plotter.plot_seaweed(time_months_middle,analysis)
 
-# if(constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT']):
-# 	Plotter.plot_nonegg_nondairy_meat(time_months,analysis)
+if(constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT']):
+	Plotter.plot_nonegg_nondairy_meat(time_months_middle,analysis)
 
 # if(constants['inputs']['ADD_DAIRY']):
 # 	Plotter.plot_dairy_cows(time_months_middle,analysis)

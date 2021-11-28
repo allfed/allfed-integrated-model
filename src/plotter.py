@@ -35,7 +35,7 @@ class Plotter:
 		plt.plot(time_months,np.array(analysis.billion_person_years_SF_fat))
 		plt.plot(time_months,np.array(analysis.billion_person_years_SF_protein))
 		plt.title('Stored Food')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.xlabel('Months Since May ASRS')
 		plt.ylabel('Billion Person-Years')
 		plt.legend(['kcals available','fat available','protein available'])
 		plt.show()
@@ -56,7 +56,7 @@ class Plotter:
 		
 		plt.plot(time_months_middle,np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)]),marker='o',markersize=3)
 		plt.title('Industrial Foods')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.xlabel('Months Since May ASRS')
 		plt.ylabel('Billions fed from CS')
 		plt.show()
 
@@ -80,7 +80,7 @@ class Plotter:
 		plt.legend(['kcals available','fat available','protein available'])
 
 		plt.title('Fish')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.xlabel('Months Since May ASRS')
 		plt.ylabel('Billions fed from fish')
 		plt.show()
 
@@ -102,7 +102,7 @@ class Plotter:
 		plt.plot(time_months_middle,np.array(analysis.billions_fed_GH_fat[0:len(time_months_middle)]),marker='o',markersize=3)
 		plt.plot(time_months_middle,np.array(analysis.billions_fed_GH_protein[0:len(time_months_middle)]),marker='o',markersize=3)
 		plt.title('Greenhouses')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.xlabel('Months Since May ASRS')
 		plt.ylabel('Billions Fed from Greenhouses')
 		plt.legend(['kcals available','fat available','protein available'])
 		plt.show()
@@ -121,12 +121,15 @@ class Plotter:
 		new_cycler = color_cycler + ls_cycler
 		plt.rc('axes',prop_cycle=new_cycler)
 		
-		plt.plot(time_months_middle,np.array(analysis.billion_person_years_OG_kcals),marker='o',markersize=3)
-		plt.plot(time_months_middle,np.array(analysis.billion_person_years_OG_fat),marker='o',markersize=3)
-		plt.plot(time_months_middle,np.array(analysis.billion_person_years_OG_protein),marker='o',markersize=3)
+		plt.plot(time_months_middle,np.array(analysis.\
+			billions_fed_OG_produced_kcals[0:len(time_months_middle)]),marker='o',markersize=3)
+		plt.plot(time_months_middle,np.array(analysis.\
+			billions_fed_OG_produced_fat[0:len(time_months_middle)]),marker='o',markersize=3)
+		plt.plot(time_months_middle,np.array(analysis.\
+			billions_fed_OG_produced_protein[0:len(time_months_middle)]),marker='o',markersize=3)
 		plt.title('Outdoor Growing')
-		plt.xlabel('Months Since May Nuclear Event')
-		plt.ylabel('Billion person-years food produced from Outdoor Growing')
+		plt.xlabel('Months Since May ASRS')
+		plt.ylabel('Nutrition per Capita Produced from Outdoor Growing')
 		plt.legend(['kcals available','fat available','protein available'])
 		plt.show()
 
@@ -144,9 +147,9 @@ class Plotter:
 		new_cycler = color_cycler + ls_cycler
 		plt.rc('axes',prop_cycle=new_cycler)
 		
-		plt.plot(time_months_middle,np.array(analysis.billion_person_years_OG_kcals),marker='o',markersize=3)
-		plt.plot(time_months_middle,np.array(analysis.billion_person_years_OG_fat),marker='o',markersize=3)
-		plt.plot(time_months_middle,np.array(analysis.billion_person_years_OG_protein),marker='o',markersize=3)
+		plt.plot(time_months_middle,np.array(analysis.billions_fed_OG_kcals),marker='o',markersize=3)
+		plt.plot(time_months_middle,np.array(analysis.billions_fed_OG_fat),marker='o',markersize=3)
+		plt.plot(time_months_middle,np.array(analysis.billions_fed_OG_protein),marker='o',markersize=3)
 		plt.title('Outdoor Growing')
 		plt.xlabel('Months Since May, Roughly Present-Day')
 		plt.ylabel('Billion person-years food produced from Outdoor Growing')
@@ -156,13 +159,13 @@ class Plotter:
 
 
 
-	def plot_nonegg_nondairy_meat(time_months,analysis):
+	def plot_nonegg_nondairy_meat(time_months_middle,analysis):
 
-		plt.plot(time_months,np.array(analysis.billion_person_years_meat_kcals))
-		plt.plot(time_months,np.array(analysis.billion_person_years_meat_fat))
-		plt.plot(time_months,np.array(analysis.billion_person_years_meat_protein))
+		plt.plot(time_months_middle,np.array(analysis.billions_fed_meat_kcals))
+		# plt.plot(time_months,np.array(analysis.billion_person_years_meat_fat))
+		# plt.plot(time_months,np.array(analysis.billion_person_years_meat_protein))
 		plt.title('Meat')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.xlabel('Months Since May ASRS')
 		plt.ylabel('Billion Person-Years')
 		plt.legend(['kcals available','fat available','protein available'])
 		plt.show()
@@ -170,7 +173,7 @@ class Plotter:
 	def plot_dairy_cows(time_months_middle,analysis):
 		plt.plot(time_months_middle,np.array(analysis.millions_dairy_animals_midmonth),marker='o',markersize=3)
 		plt.title('Millions of Dairy Animals')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.xlabel('Months Since May ASRS')
 		plt.ylabel('Livestock Population, Millions')
 		plt.show()
 
@@ -195,11 +198,11 @@ class Plotter:
 		plt.plot(time_months,np.array(analysis.billions_fed_milk_kcals))
 		plt.plot(time_months,np.array(analysis.billions_fed_milk_fat))
 		plt.plot(time_months,np.array(analysis.billions_fed_milk_protein))
-		plt.plot(time_months,np.array(analysis.billions_fed_dairy_meat_kcals))
+		# plt.plot(time_months,np.array(analysis.billions_fed_dairy_meat_kcals))
 		plt.plot(time_months,np.array(analysis.billions_fed_dairy_meat_fat))
 		plt.plot(time_months,np.array(analysis.billions_fed_dairy_meat_protein))
 		plt.title('Billions Fed from Milk and Eating Dairy Animals')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.xlabel('Months Since May ASRS')
 		plt.ylabel('Billion Person-Years')
 		plt.legend([\
 			'kcals available, milk',
@@ -278,7 +281,8 @@ class Plotter:
 			'Stored Food, Limited by protein']
 		if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
 			ax.plot(time_months_middle,np.array(analysis.billions_fed_meat_kcals)\
-				+np.array(analysis.billions_fed_dairy_meat_kcals),marker='o',markersize=3)
+				# +np.array(analysis.billions_fed_dairy_meat_kcals)\
+				,marker='o',markersize=3)
 			ax.plot(time_months_middle,np.array(analysis.billions_fed_meat_fat)\
 				+np.array(analysis.billions_fed_dairy_meat_fat),marker='o',markersize=3)
 			ax.plot(time_months_middle,np.array(analysis.billions_fed_meat_protein)\
@@ -328,9 +332,19 @@ class Plotter:
 		ax.legend(legend,loc='center left', bbox_to_anchor=(1, 0.5))
 		plt.title('People fed, by type')
 		plt.ylabel('billions of people')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.xlabel('Months Since May ASRS')
 		# plt.legend(legend,loc='upper center', bbox_to_anchor=(0.5, 1.05),
 		  # ncol=3, fancybox=True, shadow=True)
+		ax.set_ylim([0,analysis.billions_fed_immediate_OG_kcals[-1]
+			+analysis.billions_fed_new_stored_OG_kcals[-1]
+			+analysis.billions_fed_SF_kcals[-1]
+			+analysis.billions_fed_fish_kcals[-1]
+			+analysis.billions_fed_milk_kcals[-1]
+			+analysis.billions_fed_meat_kcals[-1]
+			+analysis.billions_fed_GH_kcals[-1]
+			+analysis.billions_fed_seaweed_kcals[-1]
+			+analysis.billions_fed_CS_kcals[-1]
+			+analysis.billions_fed_SCP_kcals[-1]])
 
 		plt.show()
 
@@ -395,7 +409,7 @@ class Plotter:
 		ax.legend(legend,loc='center left', bbox_to_anchor=(1, 0.5))
 		plt.title('People fed, in terms of fat')
 		plt.ylabel('billions of people')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.xlabel('Months Since May ASRS')
 		# plt.legend(legend,loc='upper center', bbox_to_anchor=(0.5, 1.05),
 		  # ncol=3, fancybox=True, shadow=True)
 
@@ -462,9 +476,19 @@ class Plotter:
 		ax.legend(legend,loc='center left', bbox_to_anchor=(1, 0.5))
 		plt.title('People fed, in terms of protein')
 		plt.ylabel('billions of people')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.xlabel('Months Since May ASRS')
 		# plt.legend(legend,loc='upper center', bbox_to_anchor=(0.5, 1.05),
 		  # ncol=3, fancybox=True, shadow=True)
+		ax.set_ylim([0,analysis.billions_fed_immediate_OG_kcals[-1]
+			+analysis.billions_fed_new_stored_OG_kcals[-1]
+			+analysis.billions_fed_SF_kcals[-1]
+			+analysis.billions_fed_fish_kcals[-1]
+			+analysis.billions_fed_milk_kcals[-1]
+			+analysis.billions_fed_meat_kcals[-1]
+			+analysis.billions_fed_GH_kcals[-1]
+			+analysis.billions_fed_seaweed_kcals[-1]
+			+analysis.billions_fed_CS_kcals[-1]
+			+analysis.billions_fed_SCP_kcals[-1]])
 
 		plt.show()
 
@@ -510,41 +534,52 @@ class Plotter:
 		print(analysis.billions_fed_new_stored_OG_kcals)
 
 		stacks = ax.stackplot(time_months_middle,\
+			analysis.billions_fed_fish_kcals[0:len(time_months_middle)],\
+			np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])+np.array(analysis.billions_fed_SCP_kcals[0:len(time_months_middle)]),\
+			analysis.billions_fed_GH_kcals[0:len(time_months_middle)],\
+			 analysis.billions_fed_seaweed_kcals[0:len(time_months_middle)],\
+			# analysis.billions_fed_milk_kcals,\
+			analysis.billions_fed_meat_kcals,\
+			analysis.billions_fed_SF_kcals,\
 			analysis.billions_fed_immediate_OG_kcals,\
 			analysis.billions_fed_new_stored_OG_kcals,\
-			analysis.billions_fed_SF_kcals,\
-			analysis.billions_fed_fish_kcals[0:len(time_months_middle)],\
-			analysis.billions_fed_milk_kcals,\
-			np.array(analysis.billions_fed_meat_kcals)+np.array(analysis.billions_fed_dairy_meat_kcals),\
-			 analysis.billions_fed_GH_kcals[0:len(time_months_middle)],\
-			 analysis.billions_fed_seaweed_kcals[0:len(time_months_middle)],\
-			np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])+np.array(analysis.billions_fed_SCP_kcals[0:len(time_months_middle)]),\
 			 labels=[\
-			 'Outdoor Crops eaten \n immediately',
-			 'Crops eaten that month \n that were stored \n after nuclear event',
-			 'Crops eaten that month \n that were stored \n before nuclear event',\
 			 'Marine Fish',\
-			 'Dairy Milk',\
-			 'Culled Livestock',\
-			 # ], colors=pal)
+			 'Industrial Foods',\
 			 'Greenhouses',\
 			 'Seaweed',\
-			 'Industrial Foods'\
+			 # 'Dairy Milk',\
+			 'Culled Livestock',\
+			 'Crops eaten that month \n that were stored \n before nuclear event',\
+			 'Outdoor Crops eaten \n immediately',
+			 'Crops eaten that month \n that were stored \n after nuclear event'
+			 # ], colors=pal)
 			 ], colors=pal)
 		for stack, hatch in zip(stacks, patterns):
 			stack.set_hatch(hatch)
 		box = ax.get_position()
-		ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+		ax.set_position([box.x0, box.y0, box.width * 0.695, box.height])
 		handles, labels = ax.get_legend_handles_labels()   #get the handles
 		ax.legend()
 		ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),handles=reversed(handles),labels=reversed(labels))
 		# plt.title('Caloric Availability, Nuclear Winter, No Resilient Foods')
-		plt.title('Post-Nuclear Winter Caloric Availability')
-		plt.ylabel('Maximum People Fed, Billions')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.title('Primary Caloric Monthly Sources, With Deployment')
+		plt.ylabel('Calories per Capita')
+		plt.xlabel('Months Since May ASRS')
 		# plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05),
 		#   ncol=3, fancybox=True, shadow=True)
-
+		ax.set_ylim([0,analysis.billions_fed_immediate_OG_kcals[-1]
+			+analysis.billions_fed_new_stored_OG_kcals[-1]
+			+analysis.billions_fed_SF_kcals[-1]
+			+analysis.billions_fed_fish_kcals[-1]
+			+analysis.billions_fed_milk_kcals[-1]
+			+analysis.billions_fed_meat_kcals[-1]
+			+analysis.billions_fed_GH_kcals[-1]
+			+analysis.billions_fed_seaweed_kcals[-1]
+			+analysis.billions_fed_CS_kcals[-1]
+			+analysis.billions_fed_SCP_kcals[-1]])
+		# ax.set_ylim([0,60])
+		ax.set_xlim([0,60])
 		plt.show()
 
 
@@ -593,7 +628,7 @@ class Plotter:
 			analysis.billions_fed_SF_kcals,\
 			analysis.billions_fed_fish_kcals[0:len(time_months_middle)],\
 			analysis.billions_fed_milk_kcals,\
-			np.array(analysis.billions_fed_meat_kcals)+np.array(analysis.billions_fed_dairy_meat_kcals),\
+			np.array(analysis.billions_fed_meat_kcals),\
 			 analysis.billions_fed_GH_kcals[0:len(time_months_middle)],\
 			 analysis.billions_fed_seaweed_kcals[0:len(time_months_middle)],\
 			np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])+np.array(analysis.billions_fed_SCP_kcals[0:len(time_months_middle)]),\
@@ -616,12 +651,23 @@ class Plotter:
 		handles, labels = ax.get_legend_handles_labels()   #get the handles
 		ax.legend()
 		ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),handles=reversed(handles),labels=reversed(labels))
-		plt.title('Present-Day Caloric Production')
-		# plt.title('Post-Nuclear Winter Caloric Availability')
-		plt.ylabel('Maximum People Fed, Billions')
-		plt.xlabel('Months Since May, Roughly Present-Day')
+		plt.title('Primary Caloric Monthly Sources, Present-Day')
+		plt.ylabel('Calories per Capita')
+		plt.xlabel('Months Since May ASRS')
 		# plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05),
 		#   ncol=3, fancybox=True, shadow=True)
+		ax.set_xlim([0,60])
+
+		ax.set_ylim([0,analysis.billions_fed_immediate_OG_kcals[-1]
+			+analysis.billions_fed_new_stored_OG_kcals[-1]
+			+analysis.billions_fed_SF_kcals[-1]
+			+analysis.billions_fed_fish_kcals[-1]
+			+analysis.billions_fed_milk_kcals[-1]
+			+analysis.billions_fed_meat_kcals[-1]
+			+analysis.billions_fed_GH_kcals[-1]
+			+analysis.billions_fed_seaweed_kcals[-1]
+			+analysis.billions_fed_CS_kcals[-1]
+			+analysis.billions_fed_SCP_kcals[-1]])
 
 		plt.show()
 
@@ -671,7 +717,7 @@ class Plotter:
 			analysis.billions_fed_SF_kcals,\
 			analysis.billions_fed_fish_kcals[0:len(time_months_middle)],\
 			analysis.billions_fed_milk_kcals,\
-			np.array(analysis.billions_fed_meat_kcals)+np.array(analysis.billions_fed_dairy_meat_kcals),\
+			np.array(analysis.billions_fed_meat_kcals),\
 			 analysis.billions_fed_GH_kcals[0:len(time_months_middle)],\
 			 analysis.billions_fed_seaweed_kcals[0:len(time_months_middle)],\
 			np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])+np.array(analysis.billions_fed_SCP_kcals[0:len(time_months_middle)]),\
@@ -694,12 +740,22 @@ class Plotter:
 		handles, labels = ax.get_legend_handles_labels()   #get the handles
 		ax.legend()
 		ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),handles=reversed(handles),labels=reversed(labels))
-		plt.title('Caloric Availability, Nuclear Winter, No Resilient Foods')
-		# plt.title('Post-Nuclear Winter Caloric Availability')
-		plt.ylabel('Maximum People Fed, Billions')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.title('Primary Caloric Monthly Sources, No Deployment')
+		plt.ylabel('Calories per Capita')
+		plt.xlabel('Months Since May ASRS')
 		# plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05),
 		#   ncol=3, fancybox=True, shadow=True)
+		ax.set_ylim([0,analysis.billions_fed_immediate_OG_kcals[-1]
+			+analysis.billions_fed_new_stored_OG_kcals[-1]
+			+analysis.billions_fed_SF_kcals[-1]
+			+analysis.billions_fed_fish_kcals[-1]
+			+analysis.billions_fed_milk_kcals[-1]
+			+analysis.billions_fed_meat_kcals[-1]
+			+analysis.billions_fed_GH_kcals[-1]
+			+analysis.billions_fed_seaweed_kcals[-1]
+			+analysis.billions_fed_CS_kcals[-1]
+			+analysis.billions_fed_SCP_kcals[-1]])
+		ax.set_xlim([0,60])
 
 		plt.show()
 
@@ -770,7 +826,7 @@ class Plotter:
 		# ax.legend(legend,loc='center left', bbox_to_anchor=(1, 0.5))
 		# plt.title('People fed, in terms of calorie requirement')
 		# plt.ylabel('billions of people')
-		# plt.xlabel('Months Since May Nuclear Event')
+		# plt.xlabel('Months Since May ASRS')
 		# # plt.legend(legend,loc='upper center', bbox_to_anchor=(0.5, 1.05),
 		#   # ncol=3, fancybox=True, shadow=True)
 
@@ -818,7 +874,7 @@ class Plotter:
 			np.array(analysis.billions_fed_SF_kcals)
 			+np.array(analysis.billions_fed_meat_kcals)
 			+np.array(analysis.billions_fed_seaweed_kcals)
-			+np.array(analysis.billions_fed_dairy_meat_kcals)
+			# +np.array(analysis.billions_fed_dairy_meat_kcals)
 			+np.array(analysis.billions_fed_milk_kcals)
 			+np.array(analysis.billions_fed_CS_kcals[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_SCP_kcals[0:len(time_months_middle)])
@@ -829,7 +885,7 @@ class Plotter:
 			np.array(analysis.billions_fed_SF_fat)
 			+np.array(analysis.billions_fed_meat_fat)
 			+np.array(analysis.billions_fed_seaweed_fat)
-			+np.array(analysis.billions_fed_dairy_meat_fat)
+			# +np.array(analysis.billions_fed_dairy_meat_fat)
 			+np.array(analysis.billions_fed_milk_fat)
 			+np.array(analysis.billions_fed_SCP_fat[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_OG_fat)
@@ -839,7 +895,7 @@ class Plotter:
 			np.array(analysis.billions_fed_SF_protein)
 			+np.array(analysis.billions_fed_meat_protein)
 			+np.array(analysis.billions_fed_seaweed_protein)
-			+np.array(analysis.billions_fed_dairy_meat_protein)
+			# +np.array(analysis.billions_fed_dairy_meat_protein)
 			+np.array(analysis.billions_fed_SCP_protein[0:len(time_months_middle)])
 			+np.array(analysis.billions_fed_milk_protein)
 			+np.array(analysis.billions_fed_OG_protein)
@@ -848,7 +904,7 @@ class Plotter:
 			+np.array(analysis.billions_fed_fish_protein[0:len(time_months_middle)]),marker='o',markersize=3)
 		legend = ['Limit by kcals','Limited by Fat','Limited by protein']
 		plt.ylabel('billions of people')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.xlabel('Months Since May ASRS')
 		plt.legend(legend)
 		plt.show()
 
@@ -875,19 +931,19 @@ class Plotter:
 			np.array(analysis.billions_fed_SF_kcals)
 			+np.array(analysis.billions_fed_meat_kcals)
 			+np.array(analysis.billions_fed_milk_kcals)
-			+np.array(analysis.billions_fed_dairy_meat_kcals)
+			# +np.array(analysis.billions_fed_dairy_meat_kcals)
 			+np.array(analysis.billions_fed_OG_kcals),marker='o',markersize=3)
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_fat)
 			+np.array(analysis.billions_fed_meat_fat)
 			+np.array(analysis.billions_fed_milk_fat)
-			+np.array(analysis.billions_fed_dairy_meat_kcals)
+			# +np.array(analysis.billions_fed_dairy_meat_kcals)
 			+np.array(analysis.billions_fed_OG_fat),marker='o',markersize=3)
 		plt.plot(time_months_middle,
 			np.array(analysis.billions_fed_SF_protein)
 			+np.array(analysis.billions_fed_meat_protein)
 			+np.array(analysis.billions_fed_milk_protein)
-			+np.array(analysis.billions_fed_dairy_meat_kcals)
+			# +np.array(analysis.billions_fed_dairy_meat_kcals)
 			+np.array(analysis.billions_fed_OG_fat),marker='o',markersize=3)
 		plt.plot(time_months_middle,
 			+np.array(analysis.billions_fed_seaweed_kcals)
@@ -909,7 +965,7 @@ class Plotter:
 			'if added, Seaweed+CS+GH, protein'
 			]
 		plt.ylabel('billions of people')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.xlabel('Months Since May ASRS')
 		plt.legend(legend)
 		plt.show()
 
@@ -932,7 +988,7 @@ class Plotter:
 		plt.plot(time_months_middle,np.array(analysis.billions_fed_seaweed_fat),marker='o',markersize=3)
 		plt.plot(time_months_middle,np.array(analysis.billions_fed_seaweed_protein),marker='o',markersize=3)
 		plt.title('Seaweed People Fed')
-		plt.xlabel('Months Since May Nuclear Event')
+		plt.xlabel('Months Since May ASRS')
 		plt.ylabel('Billion People Fed by macronutrient')
 		plt.legend(['kcals available','fat available','protein available'])
 		plt.show()
@@ -969,7 +1025,7 @@ class Plotter:
 			'Optimizer Estimate Wet On Farm'
 			])
 		plt.title('Seaweed Wet, 1000s of tons')
-		plt.xlabel('Days since May Nuclear Event')
+		plt.xlabel('Days since May ASRS')
 		plt.yscale('log')
 		plt.show()
 
@@ -981,7 +1037,7 @@ class Plotter:
 			]
 			
 		plt.legend(legend)
-		plt.xlabel('Days since May Nuclear Event')
+		plt.xlabel('Days since May ASRS')
 		plt.title('Cumulative Seaweed Harvest, 1000s Tons Wet')
 		# plt.yscale('log')
 		plt.show()

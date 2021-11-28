@@ -96,12 +96,10 @@ class Optimizer:
 		# INTAKES['lower_moderate']['fat'] = 35 #grams per day
 		# INTAKES['lower_moderate']['protein'] = 51 #grams per day
 		# INTAKES['lower_moderate']['kcals'] = 1039 #per day
+		WORLD_POP=7.8e9
 		KCALS_MONTHLY=KCALS_DAILY*DAYS_IN_MONTH#in kcals per person
 		PROTEIN_MONTHLY=PROTEIN_DAILY*DAYS_IN_MONTH/1e9# in thousands of tons
 		FAT_MONTHLY=FAT_DAILY*DAYS_IN_MONTH/1e9# in thousands of tons
-
-		WORLD_POP=7.8e9
-		KCAL_REQ_PER_MONTH = WORLD_POP * KCALS_MONTHLY/1e9
 
 		KG_TO_1000_TONS=1/(1e6)
 
@@ -465,19 +463,36 @@ class Optimizer:
 		#### CROP PRODUCTION VARIABLES ####
 		#assumption: outdoor crop production is very similar in nutritional
 		# profile to stored food
-		#reference: row 58, 'area and scaling by month' tab  https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=642022040
-		JAN_YIELD = 543e6 #tonnes dry carb equivalent
-		FEB_YIELD = 86e6 #tonnes dry carb equivalent
-		MAR_YIELD = 117e6 #tonnes dry carb equivalent
-		APR_YIELD = 167e6 #tonnes dry carb equivalent
-		MAY_YIELD = 164e6 #tonnes dry carb equivalent
-		JUN_YIELD = 199e6 #tonnes dry carb equivalent
-		JUL_YIELD = 427e6 #tonnes dry carb equivalent
-		AUG_YIELD = 383e6 #tonnes dry carb equivalent
-		SEP_YIELD = 505e6 #tonnes dry carb equivalent
-		OCT_YIELD = 926e6 #tonnes dry carb equivalent
-		NOV_YIELD = 667e6 #tonnes dry carb equivalent
-		DEC_YIELD = 661e6 #tonnes dry carb equivalent
+		#reference: row 11, 'outputs' tab  https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673
+
+		
+		ANNUAL_YIELD = 4372e6 #tonnes dry carb equivalent
+		JAN_FRACTION = constants['inputs']['SEASONALITY'][0]
+		FEB_FRACTION = constants['inputs']['SEASONALITY'][1]
+		MAR_FRACTION = constants['inputs']['SEASONALITY'][2]
+		APR_FRACTION = constants['inputs']['SEASONALITY'][3]
+		MAY_FRACTION = constants['inputs']['SEASONALITY'][4]
+		JUN_FRACTION = constants['inputs']['SEASONALITY'][5]
+		JUL_FRACTION = constants['inputs']['SEASONALITY'][6]
+		AUG_FRACTION = constants['inputs']['SEASONALITY'][7]
+		SEP_FRACTION = constants['inputs']['SEASONALITY'][8]
+		OCT_FRACTION = constants['inputs']['SEASONALITY'][9]
+		NOV_FRACTION = constants['inputs']['SEASONALITY'][10]
+		DEC_FRACTION = constants['inputs']['SEASONALITY'][11]
+		print(JAN_FRACTION+FEB_FRACTION+MAR_FRACTION+APR_FRACTION+MAY_FRACTION+JUN_FRACTION+JUL_FRACTION+AUG_FRACTION+SEP_FRACTION+OCT_FRACTION+NOV_FRACTION+DEC_FRACTION)
+
+		JAN_YIELD = JAN_FRACTION*ANNUAL_YIELD #tonnes dry carb equivalent
+		FEB_YIELD = FEB_FRACTION*ANNUAL_YIELD #tonnes dry carb equivalent
+		MAR_YIELD = MAR_FRACTION*ANNUAL_YIELD #tonnes dry carb equivalent
+		APR_YIELD = APR_FRACTION*ANNUAL_YIELD #tonnes dry carb equivalent
+		MAY_YIELD = MAY_FRACTION*ANNUAL_YIELD #tonnes dry carb equivalent
+		JUN_YIELD = JUN_FRACTION*ANNUAL_YIELD #tonnes dry carb equivalent
+		JUL_YIELD = JUL_FRACTION*ANNUAL_YIELD #tonnes dry carb equivalent
+		AUG_YIELD = AUG_FRACTION*ANNUAL_YIELD #tonnes dry carb equivalent
+		SEP_YIELD = SEP_FRACTION*ANNUAL_YIELD #tonnes dry carb equivalent
+		OCT_YIELD = OCT_FRACTION*ANNUAL_YIELD #tonnes dry carb equivalent
+		NOV_YIELD = NOV_FRACTION*ANNUAL_YIELD #tonnes dry carb equivalent
+		DEC_YIELD = DEC_FRACTION*ANNUAL_YIELD #tonnes dry carb equivalent
 
 		# print('tons per hectare per year')
 		# print(np.sum(np.array([JAN_YIELD, FEB_YIELD, MAR_YIELD, APR_YIELD, MAY_YIELD, JUN_YIELD, JUL_YIELD, AUG_YIELD, SEP_YIELD, OCT_YIELD, NOV_YIELD, DEC_YIELD]))/500e6)
@@ -501,14 +516,15 @@ class Optimizer:
 		KCALS_PREDISASTER_ANNUAL=JAN_KCALS_OG+FEB_KCALS_OG+MAR_KCALS_OG+APR_KCALS_OG+MAY_KCALS_OG+JUN_KCALS_OG+JUL_KCALS_OG+AUG_KCALS_OG+SEP_KCALS_OG+OCT_KCALS_OG+NOV_KCALS_OG+DEC_KCALS_OG
 
 
-		RATIO_KCALS_POSTDISASTER_Y1 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y1']
+		# RATIO_KCALS_POSTDISASTER_Y1 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y1']
 
-		RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1 = (RATIO_KCALS_POSTDISASTER_Y1
-			* KCALS_PREDISASTER_ANNUAL
-			- KCALS_PREDISASTER_BEFORE_MAY) \
-			/ KCALS_PREDISASTER_AFTER_MAY
+		# RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1 = (RATIO_KCALS_POSTDISASTER_Y1
+		# 	* KCALS_PREDISASTER_ANNUAL
+		# 	- KCALS_PREDISASTER_BEFORE_MAY) \
+		# 	/ KCALS_PREDISASTER_AFTER_MAY
 
 		# year 2: 20% of normal year
+		RATIO_KCALS_POSTDISASTER_Y1 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y1']
 		RATIO_KCALS_POSTDISASTER_Y2 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y2']
 		RATIO_KCALS_POSTDISASTER_Y3 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y3']
 		RATIO_KCALS_POSTDISASTER_Y4 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y4']
@@ -521,14 +537,14 @@ class Optimizer:
 		RATIO_KCALS_POSTDISASTER_Y11 = constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y11']
 
 		KCALS_GROWN=[\
-			MAY_KCALS_OG * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
-			JUN_KCALS_OG * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
-			JUL_KCALS_OG * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
-			AUG_KCALS_OG * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
-			SEP_KCALS_OG * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
-			OCT_KCALS_OG * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
-			NOV_KCALS_OG * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
-			DEC_KCALS_OG * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
+			MAY_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y1,
+			JUN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y1,
+			JUL_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y1,
+			AUG_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y1,
+			SEP_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y1,
+			OCT_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y1,
+			NOV_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y1,
+			DEC_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y1,
 			JAN_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y2,
 			FEB_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y2,
 			MAR_KCALS_OG * RATIO_KCALS_POSTDISASTER_Y2,
@@ -703,14 +719,14 @@ class Optimizer:
 
 
 			KCALS_GROWN_PER_HECTARE_BEFORE_WASTE=[\
-				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
-				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
-				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
-				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
-				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
-				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
-				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
-				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_AFTER_MAY_Y1,
+				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_Y1,
+				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_Y1,
+				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_Y1,
+				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_Y1,
+				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_Y1,
+				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_Y1,
+				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_Y1,
+				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_Y1,
 				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_Y2,
 				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_Y2,
 				MONTHLY_KCALS * RATIO_KCALS_POSTDISASTER_Y2,
@@ -894,7 +910,11 @@ class Optimizer:
 		production_protein_outdoor_growing_per_month = \
 			list(np.array(production_kcals_outdoor_growing_per_month) \
 			* OG_PROTEIN_PER_KCALS  )
-		
+		print("OG_PROTEIN_PER_KCALS")
+		print(OG_PROTEIN_PER_KCALS)
+		print("OG_FAT_PER_KCALS")
+		print(OG_FAT_PER_KCALS)
+
 		production_fat_outdoor_growing_per_month = \
 			list(np.array(production_kcals_outdoor_growing_per_month) \
 			* OG_FAT_PER_KCALS)
@@ -902,6 +922,10 @@ class Optimizer:
 		INITIAL_OG_KCALS = production_kcals_outdoor_growing_per_month[0]
 		INITIAL_OG_FAT = production_fat_outdoor_growing_per_month[0]
 		INITIAL_OG_PROTEIN = production_protein_outdoor_growing_per_month[0] 
+		print("INITIAL_OG_kcals/fat")
+		print(INITIAL_OG_FAT/INITIAL_OG_KCALS)
+		print("INITIAL_OG_kcals/prots")
+		print(INITIAL_OG_PROTEIN/INITIAL_OG_KCALS)
 
 		OG_FRACTION_KCALS =	INITIAL_OG_KCALS \
 			/ (INITIAL_OG_KCALS
@@ -917,10 +941,242 @@ class Optimizer:
 				+ INITIAL_OG_FAT)
 
 
-		crops_food_start=[0]*NMONTHS
-		crops_food_end=[0]*NMONTHS
-		crops_food_produced=list(np.array(production_kcals_outdoor_growing_per_month)/OG_FRACTION_KCALS)
+		# crops_food_start=[0]*NMONTHS
+		# crops_food_end=[0]*NMONTHS
+		crops_food_produced=list(\
+			np.array(production_kcals_outdoor_growing_per_month)/OG_FRACTION_KCALS\
+			)
+		# print("crops_food_produced")
+		# print(crops_food_produced)
+		# plt.plot(crops_food_produced)
+		# print("production_kcals_outdoor_growing_per_month")
+		# print(production_kcals_outdoor_growing_per_month)
+		# plt.plot(production_kcals_outdoor_growing_per_month)
+		# plt.show()
+		# quit()
 		crops_food_eaten=[0]*NMONTHS
+		crops_food_storage=[0]*NMONTHS
+
+		def getImprovementsFromRotation(
+			spring_wheat_fraction_of_rotation,\
+			spring_barley_fraction_of_rotation,\
+			potato_fraction_of_rotation,\
+			rapeseed_fraction_of_rotation):
+
+			#see https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=352242036 greenhouse_NW tab
+
+			# assert(spring_wheat_fraction_of_rotation
+			# + spring_barley_fraction_of_rotation
+			# + potato_fraction_of_rotation
+			# + rapeseed_fraction_of_rotation == 1)
+
+			#billion kcals per hectare per year
+			# SPRING_WHEAT_CALORIES = 21056*1e3/1e9 * spring_wheat_fraction_of_rotation
+			# SPRING_BARLEY_CALORIES = 22528*1e3/1e9 * spring_barley_fraction_of_rotation
+			# POTATO_CALORIES = 37410*1e3/1e9 * potato_fraction_of_rotation
+			# RAPESEED_CALORIES = 10670*1e3/1e9 * rapeseed_fraction_of_rotation
+
+			#annual
+			SPRING_WHEAT_CALORIES = 2.91195539 # dry caloric tons per ha
+			SPRING_BARLEY_CALORIES =  2.91195539# dry caloric tons per ha
+			POTATO_CALORIES = 3.749669935 # dry caloric tons per ha
+			RAPESEED_CALORIES = 2.558870452 # dry caloric tons per ha
+
+			#due to NW
+			SPRING_WHEAT_REDUCED =  -.65 + 1
+			SPRING_BARLEY_REDUCED = -.65 + 1
+			POTATO_REDUCED = -.166 + 1
+			RAPESEED_REDUCED = -.679 + 1
+
+
+			# annual estimated calorie contribution per hectare for each crop 
+			#weighted by the fraction of rotation
+			SPRING_WHEAT_CONTRIBUTION = spring_wheat_fraction_of_rotation \
+				* SPRING_WHEAT_CALORIES*SPRING_WHEAT_REDUCED*4e6/1e9
+			SPRING_BARLEY_CONTRIBUTION = spring_barley_fraction_of_rotation\
+				* SPRING_BARLEY_CALORIES*SPRING_BARLEY_REDUCED*4e6/1e9
+			POTATO_CONTRIBUTION = potato_fraction_of_rotation \
+				* POTATO_CALORIES*POTATO_REDUCED*4e6/1e9
+			RAPESEED_CONTRIBUTION = rapeseed_fraction_of_rotation \
+				* RAPESEED_CALORIES*RAPESEED_REDUCED*4e6/1e9
+			# min 1 in 6 years, max 1 in 3.
+			# rotation_options = [0.17,0.2,0.25,0.3,0.33]
+
+			SUM_CALORIES_PER_HA_PER_MONTH = (SPRING_WHEAT_CONTRIBUTION \
+				+ SPRING_BARLEY_CONTRIBUTION \
+				+ POTATO_CONTRIBUTION \
+				+ RAPESEED_CONTRIBUTION)/12
+
+			# print("SUM_CALORIES_PER_HA_PER year")
+			# print(SUM_CALORIES_PER_HA_PER_MONTH*12)
+
+			SUM_CALORIES = SUM_CALORIES_PER_HA_PER_MONTH * TOTAL_CROP_AREA
+
+			#estimate for "do nothing" nuclear yields, cell h41
+			DO_NOTHING_SUM_PER_HECTARE_PER_MONTH=0.0004798542381 # bill kcals
+			# print("SUM_CALORIES_PER_HA_PER_MONTH")
+			# print(SUM_CALORIES_PER_HA_PER_MONTH)
+			# print("DO_NOTHING_SUM_PER_HECTARE_PER_MONTH")
+			# print(DO_NOTHING_SUM_PER_HECTARE_PER_MONTH)
+			SUM_CALORIES_DO_NOTHING = DO_NOTHING_SUM_PER_HECTARE_PER_MONTH*TOTAL_CROP_AREA # billions kcals per month
+			# let's assume greenhouses average the annual from outdoor growing plus
+			# a 40% increase.
+
+			#thousand tons protein per hectare per year
+			ADJUSTED_POTATO_PROTEIN = 0.804/1e3 *(3.7496/9.3525)*  potato_fraction_of_rotation
+
+			#thousand tons protein per hectare per year8
+			ADJUSTED_SPRING_BARLEY_PROTEIN = 0.634/1e3 *(2.9/2.6)  \
+				* spring_barley_fraction_of_rotation
+
+			#thousand tons protein per hectare per year
+			ADJUSTED_SPRING_WHEAT_PROTEIN = 0.634/1e3*(2.9/2.6) \
+				* spring_wheat_fraction_of_rotation
+
+			#thousand tons protein per hectare per year
+			ADJUSTED_RAPESEED_PROTEIN = 0/1e3 *  rapeseed_fraction_of_rotation
+
+			#thousand tons fat per hectare per year
+			ADJUSTED_POTATO_FAT = 0.043/1e3 *(3.7496/9.3525)*  potato_fraction_of_rotation
+
+			#thousand tons fat per hectare per year
+			ADJUSTED_SPRING_WHEAT_FAT = 0.074/1e3  *(2.9/2.6) \
+				* spring_wheat_fraction_of_rotation
+
+
+			#thousand tons fat per hectare per year
+			ADJUSTED_SPRING_BARLEY_FAT = 0.074/1e3 *(2.9/2.6)\
+				* spring_barley_fraction_of_rotation
+
+			#thousand tons fat per hectare per year
+			ADJUSTED_RAPESEED_FAT = 2.66745/2.559*1.195/1e3 *  rapeseed_fraction_of_rotation
+
+			ROTATION_PROTEIN = (ADJUSTED_POTATO_PROTEIN \
+				+ ADJUSTED_SPRING_BARLEY_PROTEIN\
+				+ ADJUSTED_SPRING_WHEAT_PROTEIN\
+				+ ADJUSTED_RAPESEED_PROTEIN) \
+				/12
+
+			ROTATION_FAT = (ADJUSTED_POTATO_FAT \
+				+ ADJUSTED_SPRING_WHEAT_FAT \
+				+ ADJUSTED_SPRING_BARLEY_FAT \
+				+ ADJUSTED_RAPESEED_FAT) \
+				/12
+
+			KCAL_RATIO = SUM_CALORIES_PER_HA_PER_MONTH / DO_NOTHING_SUM_PER_HECTARE_PER_MONTH
+			FAT_RATIO = ROTATION_FAT/SUM_CALORIES_PER_HA_PER_MONTH
+			PROTEIN_RATIO = ROTATION_PROTEIN/SUM_CALORIES_PER_HA_PER_MONTH
+
+			return (KCAL_RATIO,FAT_RATIO,PROTEIN_RATIO)
+
+
+
+		# SUM_CALORIES is an overestimate by some factor, as it is in current
+		# day conditions. We improve accuracy by applying the outdoor growing 
+		# estimate and decreasing the estimated fat and protein by the same 
+		# factor that calories are decreased by
+		def get_greenhouse_yield_per_ha(KCAL_RATIO,FAT_RATIO,PROTEIN_RATIO):
+			rotation_fat_per_ha = []
+			rotation_protein_per_ha = []
+			rotation_kcals_per_ha = []
+			for yearly_mean_kcals in KCALS_GROWN_PER_HECTARE:
+				gh_kcals = yearly_mean_kcals*KCAL_RATIO \
+				* (1+constants['inputs']["GREENHOUSE_GAIN_PCT"]/100)
+				
+				rotation_kcals_per_ha.append(gh_kcals)
+
+				rotation_fat_per_ha.append(FAT_RATIO * gh_kcals)
+
+
+				# print("ROTATION_PROTEIN")
+				# print("yearly_mean_kcals/DO_NOTHING_SUM_PER_HECTARE_PER_MONTH")
+				# print(ROTATION_PROTEIN)
+				# print(yearly_mean_kcals/DO_NOTHING_SUM_PER_HECTARE_PER_MONTH)
+				rotation_protein_per_ha.append(PROTEIN_RATIO * gh_kcals)
+				# print("")
+				# if(yearly_mean_kcals>0):
+					# print()
+					# print("ratio calories people fed to protein")
+					# print((rotation_kcals_per_ha[0]*1e9/2100/30.4)/(rotation_protein_per_ha[0]*1e9/51/30.4))
+					# # quit()
+					# print("yearly_mean_kcals")
+					# print(yearly_mean_kcals)
+					# print(yearly_mean_kcals/(1-CROP_WASTE/100)*1e9)
+
+					# print("gh_kcals")
+					# print(gh_kcals)
+
+					# print(gh_kcals/yearly_mean_kcals)
+					# print("how much yield per hectare per year estimated")
+					# print(gh_kcals*1e9/2100/365*12)
+					# print("ratio nw green to control yield per hectare")
+					# print(12*gh_kcals*1e9/2100/365/9.3525)
+					# print("rotation_protein_per_ha")
+					# print(1000*rotation_protein_per_ha[0]*1e3/(.051)/365*12)
+					# print("protein scaled to control")
+					# print(1000*rotation_protein_per_ha[0]*1e3/(.051)/365*12/(12*gh_kcals*1e9/2100/365/9.3525))
+					# print("rotation_fat_per_ha")
+					# print(rotation_fat_per_ha)
+					# print("SUM_CALORIES / SUM_CALORIES_DO_NOTHING")
+					# print(SUM_CALORIES / SUM_CALORIES_DO_NOTHING)
+					# print(SUM_CALORIES)
+					# print(SUM_CALORIES_DO_NOTHING)
+					# quit()
+			return (rotation_kcals_per_ha,\
+				rotation_fat_per_ha,\
+				rotation_protein_per_ha)
+
+
+		spring_wheat_pct_of_rotation = 25
+		spring_barley_pct_of_rotation = 25
+		potato_pct_of_rotation = 25
+		rapeseed_pct_of_rotation = 25
+		assert(spring_wheat_pct_of_rotation
+					+ spring_barley_pct_of_rotation
+					+ potato_pct_of_rotation
+					+ rapeseed_pct_of_rotation == 100)
+
+		(KCAL_RATIO,FAT_RATIO,PROTEIN_RATIO) = getImprovementsFromRotation(spring_wheat_pct_of_rotation/100,\
+			spring_barley_pct_of_rotation/100,\
+			potato_pct_of_rotation/100,\
+			rapeseed_pct_of_rotation/100)
+		
+		og_rot_frac_kcals = []
+		og_rot_frac_fat = []
+		og_rot_frac_protein = []
+
+		for m in range(0,NMONTHS):
+
+			if(constants["inputs"]["OG_USE_BETTER_ROTATION"] and m>8):
+				OG_ROTATION_FRACTION_KCALS = OG_FRACTION_KCALS\
+					* KCAL_RATIO
+				OG_ROTATION_FRACTION_FAT = OG_ROTATION_FRACTION_KCALS\
+					* FAT_RATIO
+				OG_ROTATION_FRACTION_PROTEIN = OG_ROTATION_FRACTION_KCALS\
+					* PROTEIN_RATIO
+
+				print("rotation improvement factor:")
+
+				print("KCALS")
+				print(OG_ROTATION_FRACTION_KCALS/OG_FRACTION_KCALS)
+				print("FAT")
+				print(OG_ROTATION_FRACTION_FAT/OG_FRACTION_FAT)
+				print("PROTEIN")
+				print(OG_ROTATION_FRACTION_PROTEIN/OG_FRACTION_PROTEIN)
+			else:
+				OG_ROTATION_FRACTION_KCALS = OG_FRACTION_KCALS
+				OG_ROTATION_FRACTION_FAT = OG_FRACTION_FAT
+				OG_ROTATION_FRACTION_PROTEIN = OG_FRACTION_PROTEIN
+
+			og_rot_frac_kcals.append(OG_ROTATION_FRACTION_KCALS) 
+			og_rot_frac_fat.append(OG_ROTATION_FRACTION_FAT) 
+			og_rot_frac_protein.append(OG_ROTATION_FRACTION_PROTEIN) 
+
+		print("og_rot_frac_kcals")
+		print(og_rot_frac_kcals)
+
+		(greenhouse_kcals_per_ha,greenhouse_fat_per_ha,greenhouse_protein_per_ha) \
+			= get_greenhouse_yield_per_ha(KCAL_RATIO, FAT_RATIO, PROTEIN_RATIO)
 
 
 		if(VERBOSE):
@@ -1008,17 +1264,20 @@ class Optimizer:
 		#billion calories a month for 100% population.
 		INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER = 6793977/12 
 		METHANE_SCP_PERCENT_KCALS = list(np.array([0,0,0,0,0,0,0,0,0,0,0,0,2,2,\
-			2,2,2,4,7,7,7,7,7,9,11,11,11,11,11,11,13,15,15,15,15,15,17,20,20,\
-			20,20,20,22,22,24,24,24,24,24,26,28,28,28,28,28,30,30,33,33,33,33,
-			33,35,37,37,37,37,37,39,39,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41])/(1-0.12)*INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
+			2,2,2,4,7,7,7,7,7,9,11,11,11,11,11,11,13,15,15,15,15,\
+			15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15])/(1-0.12)*INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
+
+			# 15,17,20,20,\
+			# 20,20,20,22,22,24,24,24,24,24,26,28,28,28,28,28,30,30,33,33,33,33,
+			# 33,35,37,37,37,37,37,39,39,41,41,\
+			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
+			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
+			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
+			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
+			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
+			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
+			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
+			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41])/(1-0.12)*INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
 
 		if(ADD_METHANE_SCP):
 			production_kcals_scp_per_month = []
@@ -1098,6 +1357,10 @@ class Optimizer:
 
 		#### OTHER VARIABLES ####
 
+		CONVERT_TO_KCALS = WORLD_POP/1e9/KCALS_DAILY
+		CONVERT_TO_FAT = 1/WORLD_POP * FAT_DAILY / 1e9
+		CONVERT_TO_PROTEIN = 1/WORLD_POP * PROTEIN_DAILY / 1e9
+
 		humans_fed_fat = [0]*NMONTHS
 		humans_fed_protein = [0]*NMONTHS
 		humans_fed_kcals = [0]*NMONTHS
@@ -1133,9 +1396,9 @@ class Optimizer:
 		constants['SF_FRACTION_KCALS']=SF_FRACTION_KCALS
 		constants['SF_FRACTION_FAT']=SF_FRACTION_FAT
 		constants['SF_FRACTION_PROTEIN']=SF_FRACTION_PROTEIN
-		constants['OG_FRACTION_KCALS']=OG_FRACTION_KCALS
-		constants['OG_FRACTION_FAT']=OG_FRACTION_FAT
-		constants['OG_FRACTION_PROTEIN']=OG_FRACTION_PROTEIN
+		# constants['OG_ROTATION_FRACTION_KCALS']=OG_ROTATION_FRACTION_KCALS
+		# constants['OG_ROTATION_FRACTION_FAT']=OG_ROTATION_FRACTION_FAT
+		# constants['OG_ROTATION_FRACTION_PROTEIN']=OG_ROTATION_FRACTION_PROTEIN
 		constants['MEAT_FRACTION_KCALS']=MEAT_FRACTION_KCALS
 		constants['MEAT_FRACTION_FAT']=MEAT_FRACTION_FAT
 		constants['MEAT_FRACTION_PROTEIN']=MEAT_FRACTION_PROTEIN
@@ -1156,222 +1419,59 @@ class Optimizer:
 		constants['FISH_FAT'] = FISH_FAT
 		constants['FISH_PROTEIN'] = FISH_PROTEIN
 		constants['FISH_KCALS'] = FISH_KCALS
-
-		#### FUNCTIONS FOR EACH FOOD TYPE ####
-		def getCaloriesFromRotation(
-			spring_wheat_fraction_of_rotation,\
-			spring_barley_fraction_of_rotation,\
-			potato_fraction_of_rotation,\
-			rapeseed_fraction_of_rotation):
-
-			#see https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=352242036 greenhouse_NW tab
-
-			# assert(spring_wheat_fraction_of_rotation
-			# + spring_barley_fraction_of_rotation
-			# + potato_fraction_of_rotation
-			# + rapeseed_fraction_of_rotation == 1)
-
-			#billion kcals per hectare per year
-			# SPRING_WHEAT_CALORIES = 21056*1e3/1e9 * spring_wheat_fraction_of_rotation
-			# SPRING_BARLEY_CALORIES = 22528*1e3/1e9 * spring_barley_fraction_of_rotation
-			# POTATO_CALORIES = 37410*1e3/1e9 * potato_fraction_of_rotation
-			# RAPESEED_CALORIES = 10670*1e3/1e9 * rapeseed_fraction_of_rotation
-
-			#annual
-			SPRING_WHEAT_CALORIES = 2.91195539 # dry caloric tons per ha
-			SPRING_BARLEY_CALORIES =  2.91195539# dry caloric tons per ha
-			POTATO_CALORIES = 3.749669935 # dry caloric tons per ha
-			RAPESEED_CALORIES = 2.558870452 # dry caloric tons per ha
-
-			#due to NW
-			SPRING_WHEAT_REDUCED =  -.65 + 1
-			SPRING_BARLEY_REDUCED = -.65 + 1
-			POTATO_REDUCED = -.166 + 1
-			RAPESEED_REDUCED = -.679 + 1
-
-
-			# annual estimated calorie contribution per hectare for each crop 
-			#weighted by the fraction of rotation
-			SPRING_WHEAT_CONTRIBUTION = spring_wheat_fraction_of_rotation \
-				* SPRING_WHEAT_CALORIES*SPRING_WHEAT_REDUCED*4e6/1e9
-			SPRING_BARLEY_CONTRIBUTION = spring_barley_fraction_of_rotation\
-				* SPRING_BARLEY_CALORIES*SPRING_BARLEY_REDUCED*4e6/1e9
-			POTATO_CONTRIBUTION = potato_fraction_of_rotation \
-				* POTATO_CALORIES*POTATO_REDUCED*4e6/1e9
-			RAPESEED_CONTRIBUTION = rapeseed_fraction_of_rotation \
-				* RAPESEED_CALORIES*RAPESEED_REDUCED*4e6/1e9
-			# min 1 in 6 years, max 1 in 3.
-			# rotation_options = [0.17,0.2,0.25,0.3,0.33]
-
-			SUM_CALORIES_PER_HA_PER_MONTH = (SPRING_WHEAT_CONTRIBUTION \
-				+ SPRING_BARLEY_CONTRIBUTION \
-				+ POTATO_CONTRIBUTION \
-				+ RAPESEED_CONTRIBUTION)/12
-
-			print("SUM_CALORIES_PER_HA_PER year")
-			print(SUM_CALORIES_PER_HA_PER_MONTH*12)
-
-			SUM_CALORIES = SUM_CALORIES_PER_HA_PER_MONTH * TOTAL_CROP_AREA
-
-			#estimate for "do nothing" nuclear yields, cell h41
-			DO_NOTHING_SUM_PER_HECTARE_PER_MONTH=0.0004798542381 # bill kcals
-			print("SUM_CALORIES_PER_HA_PER_MONTH")
-			print(SUM_CALORIES_PER_HA_PER_MONTH)
-			print("DO_NOTHING_SUM_PER_HECTARE_PER_MONTH")
-			print(DO_NOTHING_SUM_PER_HECTARE_PER_MONTH)
-			SUM_CALORIES_DO_NOTHING = DO_NOTHING_SUM_PER_HECTARE_PER_MONTH*TOTAL_CROP_AREA # billions kcals per month
-			# let's assume greenhouses average the annual from outdoor growing plus
-			# a 40% increase.
-
-			#thousand tons protein per hectare per year
-			ADJUSTED_POTATO_PROTEIN = 0.804/1e3 *(3.7496/9.3525)*  potato_fraction_of_rotation
-
-			#thousand tons protein per hectare per year8
-			ADJUSTED_SPRING_BARLEY_PROTEIN = 0.634/1e3 *(2.9/2.6)  \
-				* spring_barley_fraction_of_rotation
-
-			#thousand tons protein per hectare per year
-			ADJUSTED_SPRING_WHEAT_PROTEIN = 0.634/1e3*(2.9/2.6) \
-				* spring_wheat_fraction_of_rotation
-
-			#thousand tons protein per hectare per year
-			ADJUSTED_RAPESEED_PROTEIN = 0/1e3 *  rapeseed_fraction_of_rotation
-
-			#thousand tons fat per hectare per year
-			ADJUSTED_POTATO_FAT = 0.043/1e3 *(3.7496/9.3525)*  potato_fraction_of_rotation
-
-			#thousand tons fat per hectare per year
-			ADJUSTED_SPRING_WHEAT_FAT = 0.074/1e3  *(2.9/2.6) \
-				* spring_wheat_fraction_of_rotation
-
-
-			#thousand tons fat per hectare per year
-			ADJUSTED_SPRING_BARLEY_FAT = 0.074/1e3 *(2.9/2.6)\
-				* spring_barley_fraction_of_rotation
-
-			#thousand tons fat per hectare per year
-			ADJUSTED_RAPESEED_FAT = 2.66745/2.559*1.195/1e3 *  rapeseed_fraction_of_rotation
-
-			GREENHOUSE_PROTEIN = (ADJUSTED_POTATO_PROTEIN \
-				+ ADJUSTED_SPRING_BARLEY_PROTEIN\
-				+ ADJUSTED_SPRING_WHEAT_PROTEIN\
-				+ ADJUSTED_RAPESEED_PROTEIN) \
-				/12
-
-			GREENHOUSE_FAT = (ADJUSTED_POTATO_FAT \
-				+ ADJUSTED_SPRING_WHEAT_FAT \
-				+ ADJUSTED_SPRING_BARLEY_FAT \
-				+ ADJUSTED_RAPESEED_FAT) \
-				/12
-
-			greenhouse_fat_per_ha = []
-			greenhouse_protein_per_ha = []
-
-			# SUM_CALORIES is an overestimate by some factor, as it is in current
-			# day conditions. We improve accuracy by applying the outdoor growing 
-			# estimate and decreasing the estimated fat and protein by the same 
-			# factor that calories are decreased by
-			greenhouse_kcals_per_ha = []
-			for og_kcals in KCALS_GROWN_PER_HECTARE:
-				gh_kcals = og_kcals\
-					* (SUM_CALORIES_PER_HA_PER_MONTH / DO_NOTHING_SUM_PER_HECTARE_PER_MONTH)\
-					* (1+constants['inputs']["GREENHOUSE_GAIN_PCT"]/100)
-				
-				greenhouse_kcals_per_ha.append(gh_kcals)
-
-				greenhouse_fat_per_ha.append(GREENHOUSE_FAT\
-					# * og_kcals/DO_NOTHING_SUM_PER_HECTARE_PER_MONTH\
-					* gh_kcals/SUM_CALORIES_PER_HA_PER_MONTH
-					# * (1+constants['inputs']["GREENHOUSE_GAIN_PCT"]/100)
-				)
-
-
-				# print("GREENHOUSE_PROTEIN")
-				# print("og_kcals/DO_NOTHING_SUM_PER_HECTARE_PER_MONTH")
-				# print(GREENHOUSE_PROTEIN)
-				# print(og_kcals/DO_NOTHING_SUM_PER_HECTARE_PER_MONTH)
-				greenhouse_protein_per_ha.append(GREENHOUSE_PROTEIN\
-					# * og_kcals/DO_NOTHING_SUM_PER_HECTARE_PER_MONTH\
-					* gh_kcals/SUM_CALORIES_PER_HA_PER_MONTH
-					# * (1+constants['inputs']["GREENHOUSE_GAIN_PCT"]/100)
-				)
-				# print("")
-				# if(og_kcals>0):
-					# print()
-					# print("ratio calories people fed to protein")
-					# print((greenhouse_kcals_per_ha[0]*1e9/2100/30.4)/(greenhouse_protein_per_ha[0]*1e9/51/30.4))
-					# # quit()
-					# print("og_kcals")
-					# print(og_kcals)
-					# print(og_kcals/(1-CROP_WASTE/100)*1e9)
-
-					# print("gh_kcals")
-					# print(gh_kcals)
-
-					# print(gh_kcals/og_kcals)
-					# print("how much yield per hectare per year estimated")
-					# print(gh_kcals*1e9/2100/365*12)
-					# print("ratio nw green to control yield per hectare")
-					# print(12*gh_kcals*1e9/2100/365/9.3525)
-					# print("greenhouse_protein_per_ha")
-					# print(1000*greenhouse_protein_per_ha[0]*1e3/(.051)/365*12)
-					# print("protein scaled to control")
-					# print(1000*greenhouse_protein_per_ha[0]*1e3/(.051)/365*12/(12*gh_kcals*1e9/2100/365/9.3525))
-					# print("greenhouse_fat_per_ha")
-					# print(greenhouse_fat_per_ha)
-					# print("SUM_CALORIES / SUM_CALORIES_DO_NOTHING")
-					# print(SUM_CALORIES / SUM_CALORIES_DO_NOTHING)
-					# print(SUM_CALORIES)
-					# print(SUM_CALORIES_DO_NOTHING)
-					# quit()
-			return (greenhouse_kcals_per_ha,\
-				greenhouse_protein_per_ha,\
-				greenhouse_fat_per_ha)
+		constants['CONVERT_TO_KCALS'] = CONVERT_TO_KCALS
 
 
 		def add_seaweed_to_model(model, m):
 			sum_food_this_month=[]
-			for d in np.arange(m*DAYS_IN_MONTH,(m+1)*DAYS_IN_MONTH):
-				time_days_daily.append(d)
-				seaweed_wet_on_farm[d] = LpVariable("Seaweed_Wet_On_Farm_"+str(d)+"_Variable", INITIAL_SEAWEED, MAXIMUM_DENSITY*built_area[d])
-				# food production (using resources)
-				seaweed_food_produced[d] = LpVariable(name="Seaweed_Food_Produced_During_Day_"+str(d)+"_Variable", lowBound=0)
 
-				used_area[d] = LpVariable("Used_Area_"+str(d)+"_Variable", INITIAL_AREA,built_area[d])
+			if(m > 15):
+				seaweed_food_produced_monthly[m] = LpVariable(name="Seaweed_Food_Produced_Monthly_"+str(m)+"_Variable", lowBound=0)
+				allvariables.append(seaweed_food_produced_monthly[m])
+				return model
 
-				if(d==0): #first Day
-					model += (seaweed_wet_on_farm[0] == INITIAL_SEAWEED,
-						"Seaweed_Wet_On_Farm_0_Constraint")
-					model += (used_area[0] == INITIAL_AREA,
-						"Used_Area_Day_0_Constraint")
-					model += (seaweed_food_produced[0] == 0,
-						"Seaweed_Food_Produced_Day_0_Constraint")
+			else:
+				for d in np.arange(m*DAYS_IN_MONTH,(m+1)*DAYS_IN_MONTH):
+					time_days_daily.append(d)
+					seaweed_wet_on_farm[d] = LpVariable("Seaweed_Wet_On_Farm_"+str(d)+"_Variable", INITIAL_SEAWEED, MAXIMUM_DENSITY*built_area[d])
+					# food production (using resources)
+					seaweed_food_produced[d] = LpVariable(name="Seaweed_Food_Produced_During_Day_"+str(d)+"_Variable", lowBound=0)
 
-				else: #later Days
-					model += (seaweed_wet_on_farm[d] <= used_area[d]*MAXIMUM_DENSITY)
+					used_area[d] = LpVariable("Used_Area_"+str(d)+"_Variable", INITIAL_AREA,built_area[d])
 
-					model += (seaweed_wet_on_farm[d] == 
-						seaweed_wet_on_farm[d-1]*(1+SEAWEED_PRODUCTION_RATE/100.)
-						- seaweed_food_produced[d]
-						- (used_area[d]-used_area[d-1])*MINIMUM_DENSITY*(HARVEST_LOSS/100),
-						"Seaweed_Wet_On_Farm_"+str(d)+"_Constraint")
+					if(d==0): #first Day
+						model += (seaweed_wet_on_farm[0] == INITIAL_SEAWEED,
+							"Seaweed_Wet_On_Farm_0_Constraint")
+						model += (used_area[0] == INITIAL_AREA,
+							"Used_Area_Day_0_Constraint")
+						model += (seaweed_food_produced[0] == 0,
+							"Seaweed_Food_Produced_Day_0_Constraint")
 
-				allvariables.append(used_area[d])
-				allvariables.append(seaweed_wet_on_farm[d])
+					else: #later Days
+						model += (seaweed_wet_on_farm[d] <= used_area[d]*MAXIMUM_DENSITY)
 
-				allvariables.append(seaweed_food_produced[d])
-				sum_food_this_month.append(seaweed_food_produced[d])
+						model += (seaweed_wet_on_farm[d] == 
+							seaweed_wet_on_farm[d-1]*(1+SEAWEED_PRODUCTION_RATE/100.)
+							- seaweed_food_produced[d]
+							- (used_area[d]-used_area[d-1])*MINIMUM_DENSITY*(HARVEST_LOSS/100),
+							"Seaweed_Wet_On_Farm_"+str(d)+"_Constraint")
 
-			seaweed_food_produced_monthly[m] = LpVariable(name="Seaweed_Food_Produced_Monthly_"+str(m)+"_Variable", lowBound=0)
-			
+					allvariables.append(used_area[d])
+					allvariables.append(seaweed_wet_on_farm[d])
 
-			model += (seaweed_food_produced_monthly[m] == np.sum(sum_food_this_month),
-				"Seaweed_Food_Produced_Monthly_"+str(m)+"_Constraint")
+					allvariables.append(seaweed_food_produced[d])
+					sum_food_this_month.append(seaweed_food_produced[d])
+
+				seaweed_food_produced_monthly[m] = LpVariable(name="Seaweed_Food_Produced_Monthly_"+str(m)+"_Variable", lowBound=0)
+				
+
+				model += (seaweed_food_produced_monthly[m] == np.sum(sum_food_this_month),
+					"Seaweed_Food_Produced_Monthly_"+str(m)+"_Constraint")
 
 
-			allvariables.append(seaweed_food_produced_monthly[m])
+				allvariables.append(seaweed_food_produced_monthly[m])
 
-			return model
+				return model
 
 
 		#incorporate linear constraints for stored food consumption each month
@@ -1386,10 +1486,9 @@ class Optimizer:
 				model += (stored_food_start[m] == stored_food_end[m-1], "Stored_Food_Start_Month_"+str(m)+"_Constraint")
 
 				#####helps reduce wild fluctutions in stored food #######
-				if(constants['inputs']["STORED_FOOD_SMOOTHING"]):
+				if(m>0 and constants['inputs']["STORED_FOOD_SMOOTHING"] and m < 74):
 					FLUCTUATION_LIMIT = constants['inputs']["FLUCTUATION_LIMIT"]
 					# constants['inputs']['STORED_FOOD_SMOOTHING']
-					quit()
 					model += (stored_food_eaten[m] <= stored_food_eaten[m-1]*FLUCTUATION_LIMIT, "Small_Change_Plus_SF_Eaten_Month_"+str(m)+"_Constraint")
 
 					model += (stored_food_eaten[m] >= stored_food_eaten[m-1]*(1/FLUCTUATION_LIMIT), "Small_Change_Minus_SF_Eaten_Month_"+str(m)+"_Constraint")
@@ -1407,20 +1506,48 @@ class Optimizer:
 
 		#incorporate linear constraints for stored food consumption each month
 		def add_outdoor_crops_to_model(model, m):
-			crops_food_start[m] = LpVariable("Crops_Food_Start_Month_"+str(m)+"_Variable", lowBound=0)
-			crops_food_end[m] = LpVariable("Crops_Food_End_Month_"+str(m)+"_Variable", lowBound=0)
+			# crops_food_stored[m] = LpVariable("Crops_Food_Start_Month_"+str(m)+"_Variable", lowBound=0)
+			# crops_food_end[m] = LpVariable("Crops_Food_End_Month_"+str(m)+"_Variable", lowBound=0)
+			crops_food_storage[m] = LpVariable("Crops_Food_Storage_Month_"+str(m)+"_Variable", lowBound=0)
+
 			crops_food_eaten[m] = LpVariable("Crops_Food_Eaten_During_Month_"+str(m)+"_Variable",lowBound=0)
 			
-			if(m==0): #first Month
-				model += (crops_food_start[m] == 0, "Crops_Food_Start_Month_0_Constraint")
+			# if(m==0): #first Month
+			# 	model += (crops_food_start[m] == 0, "Crops_Food_Start_Month_0_Constraint")
+			# else:
+			# 	model += (crops_food_start[m] == crops_food_end[m-1], "Crops_Food_Start_Month_"+str(m)+"_Constraint")
+
+			# if(m<60):
+			if(m==0):
+				model += (crops_food_storage[m] == 0, "Crops_Food_Storage_"+str(m)+"_Constraint")
+				model += (crops_food_eaten[m] <= crops_food_produced[m], "Crops_Food_Eaten_First_Month_"+str(m)+"_Constraint")
+			elif(m==NMONTHS-1):
+				model += (crops_food_storage[m] == 0, "Crops_Food_None_Left_"+str(m)+"_Constraint")
+				model += (crops_food_storage[m] == crops_food_produced[m]-crops_food_eaten[m]+crops_food_storage[m-1], "Crops_Food_Storage_"+str(m)+"_Constraint")
 			else:
-				model += (crops_food_start[m] == crops_food_end[m-1], "Crops_Food_Start_Month_"+str(m)+"_Constraint")
+				model += (crops_food_storage[m] == crops_food_produced[m]-crops_food_eaten[m]+crops_food_storage[m-1], "Crops_Food_Storage_"+str(m)+"_Constraint")
 
-			model += (crops_food_end[m] == crops_food_start[m]-crops_food_eaten[m]+crops_food_produced[m], "Crops_Food_End_Month_"+str(m)+"_Constraint")
+			#the commented out block below seems pretty much equivalent, but 
+			#seems to cause problems
 
-			allvariables.append(crops_food_start[m])
-			allvariables.append(crops_food_end[m])
+			# if(m==0):
+			# 	model += (crops_food_storage[m] == 0, "Crops_Food_Storage_"+str(m)+"_Constraint")
+			# elif(m==NMONTHS-1):
+			# 	model += (crops_food_storage[m] == 0, "Crops_Food_None_Left_"+str(m)+"_Constraint")
+			# 	model += (crops_food_storage[m] + crops_food_produced[m] - crops_food_eaten[m] == 0, "Crops_Food_Storage_"+str(m)+"_Constraint")
+
+			# else:
+			# 	model += (crops_food_storage[m] == crops_food_produced[m-1]\
+			# 		- crops_food_eaten[m-1]\
+			# 		+ crops_food_storage[m-1],\
+			# 		 "Crops_Food_Storage_"+str(m)+"_Constraint")
+
+
+
+
 			allvariables.append(crops_food_eaten[m])
+			# allvariables.append(crops_food_produced[m])
+			allvariables.append(crops_food_storage[m])
 
 			return model
 
@@ -1484,7 +1611,7 @@ class Optimizer:
 				model += (nonegg_nondairy_meat_start[m] == nonegg_nondairy_meat_end[m-1], "Non_Egg_Nondairy_Meat_Start_Month_"+str(m)+"_Constraint")
 
 				#####helps reduce wild fluctutions in meat #######
-				if(constants['inputs']["MEAT_SMOOTHING"]):
+				if(m>0 and constants['inputs']["MEAT_SMOOTHING"] and m < 74):
 					FLUCTUATION_LIMIT = constants['inputs']["FLUCTUATION_LIMIT"]
 
 					model += (nonegg_nondairy_meat_eaten[m] <= nonegg_nondairy_meat_eaten[m-1]*FLUCTUATION_LIMIT, "Small_Change_Plus_Eaten_Month_"+str(m)+"_Constraint")
@@ -1512,7 +1639,7 @@ class Optimizer:
 			# print(INITIAL_MILK_COWS_THOUSANDS)
 			dairy_animals_1000s_start[m] = LpVariable("Dairy_Animals_Start_"+str(m)+"_Variable", 0,INITIAL_MILK_COWS_THOUSANDS)
 			dairy_animals_1000s_end[m] = LpVariable("Dairy_Animals_End_"+str(m)+"_Variable", 0,INITIAL_MILK_COWS_THOUSANDS)
-			dairy_animals_1000s_eaten[m] = LpVariable("Dairy_Animals_Eaten_During_Month_"+str(m)+"_Variable",0,INITIAL_MILK_COWS_THOUSANDS)
+			# dairy_animals_1000s_eaten[m] = LpVariable("Dairy_Animals_Eaten_During_Month_"+str(m)+"_Variable",0,INITIAL_MILK_COWS_THOUSANDS)
 			
 			if(m==0): #first Month
 				model += (dairy_animals_1000s_start[0] == INITIAL_MILK_COWS_THOUSANDS, "Dairy_Animals_Start_Month_0_Constraint")
@@ -1520,13 +1647,14 @@ class Optimizer:
 				model += (dairy_animals_1000s_start[m] == dairy_animals_1000s_end[m-1], 
 					"Dairy_Animals_Start_Month_"+str(m)+"_Constraint")
 
-			model += (dairy_animals_1000s_end[m] == dairy_animals_1000s_start[m] \
-				- dairy_animals_1000s_eaten[m],
+
+			model += (dairy_animals_1000s_end[m] == dairy_animals_1000s_start[m],
+				# - dairy_animals_1000s_eaten[m], #(uncomment to eat dairy animals)
 				"Dairy_Animals_Eaten_Month_"+str(m)+"_Constraint")
 
 			allvariables.append(dairy_animals_1000s_start[m])
 			allvariables.append(dairy_animals_1000s_end[m])
-			allvariables.append(dairy_animals_1000s_eaten[m])
+			# allvariables.append(dairy_animals_1000s_eaten[m])
 
 			return model
 
@@ -1550,7 +1678,7 @@ class Optimizer:
 			if(ADD_SEAWEED and LIMIT_SEAWEED_AS_PERCENT_KCALS):
 				# after month 8, enforce maximum seaweed production to prevent 
 				# a rounding error from producing full quantity of seaweed
-				if(m>8): 
+				if(m>10): 
 					model += (seaweed_food_produced_monthly[m]*SEAWEED_KCALS == 
 						(MAX_SEAWEED_AS_PERCENT_KCALS/100) \
 						* (humans_fed_kcals[m]*KCALS_MONTHLY),
@@ -1560,7 +1688,6 @@ class Optimizer:
 						(MAX_SEAWEED_AS_PERCENT_KCALS/100) \
 						* (humans_fed_kcals[m]*KCALS_MONTHLY),
 						"Seaweed_Limit_Kcals_"+str(m)+"_Constraint")
-
 
 			# if(m>24):
 			# 	model += (stored_food_eaten[m] == 0,
@@ -1574,7 +1701,7 @@ class Optimizer:
 			#kcals monthly is in units kcals
 			model += (humans_fed_kcals[m] == 
 				(stored_food_eaten[m]*SF_FRACTION_KCALS
-				+ crops_food_eaten[m]*OG_FRACTION_KCALS
+				+ crops_food_eaten[m]*og_rot_frac_kcals[m]
 				+ seaweed_food_produced_monthly[m]*SEAWEED_KCALS
 				# + dairy_animals_1000s_eaten[m]*KCALS_PER_1000_LARGE_ANIMALS
 				+ (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
@@ -1595,7 +1722,7 @@ class Optimizer:
 				# fat monthly is in units thousand tons
 				model += (humans_fed_fat[m] == 
 					(stored_food_eaten[m]*SF_FRACTION_FAT 
-					+ crops_food_eaten[m]*OG_FRACTION_FAT
+					+ crops_food_eaten[m]*og_rot_frac_fat[m]
 					+ seaweed_food_produced_monthly[m]*SEAWEED_FAT
 					# + dairy_animals_1000s_eaten[m]*FAT_PER_1000_LARGE_ANIMALS
 					+ (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
@@ -1621,7 +1748,7 @@ class Optimizer:
 
 				model += (humans_fed_protein[m] == 
 					(stored_food_eaten[m]*SF_FRACTION_PROTEIN
-					+ crops_food_eaten[m]*OG_FRACTION_PROTEIN
+					+ crops_food_eaten[m]*og_rot_frac_protein[m]
 					+ seaweed_food_produced_monthly[m]*SEAWEED_PROTEIN
 					# + dairy_animals_1000s_eaten[m]*PROTEIN_PER_1000_LARGE_ANIMALS
 					+ (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
@@ -1635,11 +1762,32 @@ class Optimizer:
 					"Protein_Fed_Month_"+str(m)+"_Constraint")
 
 			#####helps reduce wild fluctutions in people fed #######
-			# if( m>0):
-			# 	# FLUCTUATION_LIMIT = constants['inputs']["FLUCTUATION_LIMIT"]
-			# 	# model += (humans_fed_kcals[m] <= humans_fed_kcals[m-1]*FLUCTUATION_LIMIT, "Small_Change_Plus_Humans_Fed_Month_"+str(m)+"_Constraint")
-			# 	# model += (humans_fed_kcals[m] >= humans_fed_kcals[m-1]*(1/FLUCTUATION_LIMIT), "Small_Change_Minus_Humans_Fed_Month_"+str(m)+"_Constraint")
+			if(m>0 and constants['inputs']['OVERALL_SMOOTHING'] and m < 74):
+				FLUCTUATION_LIMIT = constants['inputs']["FLUCTUATION_LIMIT"]
+				model += (humans_fed_kcals[m] <= humans_fed_kcals[m-1]*FLUCTUATION_LIMIT, "Small_Change_Plus_Humans_Fed_Month_"+str(m)+"_Constraint")
+				model += (humans_fed_kcals[m] >= humans_fed_kcals[m-1]*(1/FLUCTUATION_LIMIT), "Small_Change_Minus_Humans_Fed_Month_"+str(m)+"_Constraint")
+				pass
+
+			# make sure we haven't left any crops produced unconsumed
+			# if(m==NMONTHS-1):
+			# 	# probably not best practice to use eval, but pulp won't accept 
+			# 	# sum(crops_food_eaten).
+
+			# 	exec(
+			# 		"model += (crops_food_eaten[79]"
+			# 		+ "".join(
+			# 			[" + crops_food_eaten["+str(month)+"]"
+			# 				for month in range(80,NMONTHS)]
+			# 			)
+			# 		+ " >= " + str(sum(crops_food_produced))
+			# 		+ "*0.5 , \"No_Lost_Crops_Constraint\")"
+			# 	)
+			# 	# quit()
 			# 	pass
+			# if(m>56):
+			# 	model += (crops_food_eaten[m] == crops_food_produced[m], 
+			# 	"No_Lost_Crops_"+str(m)+"_Constraint")
+
 
 
 			# maximizes the minimum z value
@@ -1690,23 +1838,7 @@ class Optimizer:
 		# 	+ spring_barley_fraction_of_rotation
 		# 	+ potato_fraction_of_rotation
 		# 	+ rapeseed_fraction_of_rotation == 100, \
-		# 	"Crop_Rotation_Upper_Constraint")
-
-		spring_wheat_pct_of_rotation = 25
-		spring_barley_pct_of_rotation = 25
-		potato_pct_of_rotation = 25
-		rapeseed_pct_of_rotation = 25
-		assert(spring_wheat_pct_of_rotation
-					+ spring_barley_pct_of_rotation
-					+ potato_pct_of_rotation
-					+ rapeseed_pct_of_rotation == 100)
-
-		(greenhouse_kcals_per_ha,\
-		greenhouse_protein_per_ha,\
-		greenhouse_fat_per_ha) = getCaloriesFromRotation(spring_wheat_pct_of_rotation/100,\
-			spring_barley_pct_of_rotation/100,\
-			potato_pct_of_rotation/100,\
-			rapeseed_pct_of_rotation/100)
+		# 	"Crop_Rotation_Upper_Constraint")		
 
 
 		for m in range(0,NMONTHS):
@@ -1745,7 +1877,8 @@ class Optimizer:
 			):
 				[model,maximize_constraints] = \
 					add_objectives_to_model(model, m,maximize_constraints)
-			
+
+
 		obj_func = z
 		model += obj_func
 
@@ -1833,9 +1966,13 @@ class Optimizer:
 		# if no outdoor food, will be zero
 		analysis.analyze_OG_results(
 			crops_food_eaten,
-			crops_food_start,
-			crops_food_end,
+#			 crops_food_start,
+#			 crops_food_end,
+			crops_food_storage,
 			crops_food_produced,
+			np.array(og_rot_frac_fat),
+			np.array(og_rot_frac_kcals),
+			np.array(og_rot_frac_protein),
 			show_output
 		)
 
@@ -1851,7 +1988,7 @@ class Optimizer:
 		analysis.analyze_dairy_results(
 			dairy_animals_1000s_start,
 			dairy_animals_1000s_end,
-			dairy_animals_1000s_eaten,
+			# dairy_animals_1000s_eaten,
 			show_output
 		)
 
