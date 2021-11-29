@@ -36,8 +36,8 @@ constants['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 0 # months
 constants['inputs']['M1_ADDITIONAL_WASTE'] = 5e9/12#tons dry caloric equivalent
 constants['inputs']['NUTRITION']={}
 constants['inputs']['NUTRITION']['KCALS_DAILY'] = 2100 #kcals per person per day
-constants['inputs']['NUTRITION']['FAT_DAILY'] = 47 #grams per person per day
-constants['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51#grams per person per day
+constants['inputs']['NUTRITION']['FAT_DAILY'] = 47/2 #grams per person per day
+constants['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51/2#grams per person per day
 
 constants['inputs']['INITIAL_MILK_COWS'] = 264e6
 constants['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS'] = 10
@@ -72,10 +72,11 @@ constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y11'] = 1-.08
 constants['inputs']['SEASONALITY']=\
 	[0.1564,0.0461,0.0650,0.1017,0.0772,0.0785,\
 	0.0667,0.0256,0.0163,0.1254,0.1183,0.1228]
+	
 constants['inputs']['MEAT_SUSTAINABLE_YIELD_PER_YEAR'] = 100.4
 constants['inputs']['INCLUDE_PROTEIN'] = True
 constants['inputs']['INCLUDE_FAT'] = True
-constants['inputs']['FLUCTUATION_LIMIT'] = 1.1
+constants['inputs']['FLUCTUATION_LIMIT'] = 1.2
 constants['inputs']['GREENHOUSE_GAIN_PCT'] = 40
 
 constants['inputs']['DAIRY_PRODUCTION'] = 1 #multiplies current dairy productivity (based on stress of animals)
@@ -86,7 +87,7 @@ constants["inputs"]["OG_USE_BETTER_ROTATION"] = True
 
 constants['inputs']['IS_NUCLEAR_WINTER'] = True
 constants['inputs']['STORED_FOOD_SMOOTHING'] = True
-constants['inputs']['MEAT_SMOOTHING'] = False
+constants['inputs']['MEAT_SMOOTHING'] = True
 constants['inputs']['OVERALL_SMOOTHING'] = True
 
 
@@ -96,14 +97,12 @@ constants['inputs']['ADD_CELLULOSIC_SUGAR'] = True
 constants['inputs']['ADD_METHANE_SCP'] = True
 constants['inputs']['ADD_GREENHOUSES'] = True
 constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
-constants['inputs']['ADD_DAIRY'] = True
+constants['inputs']['ADD_DAIRY'] = False
 constants['inputs']['ADD_STORED_FOOD'] = True
 constants['inputs']['ADD_OUTDOOR_GROWING'] = True
 
 constants['inputs']['INCLUDE_ECONOMICS'] = False
 # only on farm + distribution waste
-
-constants['inputs']['DISTRIBUTION_WASTE'] = {} #%
 constants['inputs']['DISTRIBUTION_WASTE']['SEAWEED'] = 0 #%
 constants['inputs']['DISTRIBUTION_WASTE']['CEREALS'] = 4.65 #%
 constants['inputs']['DISTRIBUTION_WASTE']['CROPS'] = 4.96
@@ -124,14 +123,14 @@ optimizer = Optimizer()
 # if(constants['inputs']['ADD_FISH']):
 # 	Plotter.plot_fish(time_months_middle,analysis)
 
-# if(constants['inputs']['ADD_GREENHOUSES']):
-# 	Plotter.plot_GH(time_months_middle,analysis)
+if(constants['inputs']['ADD_GREENHOUSES']):
+	Plotter.plot_GH(time_months_middle,analysis)
 
-# if(constants['inputs']['ADD_OUTDOOR_GROWING']):
-# 	Plotter.plot_OG_with_resilient_foods(time_months_middle,analysis)
+if(constants['inputs']['ADD_OUTDOOR_GROWING']):
+	Plotter.plot_OG_with_resilient_foods(time_months_middle,analysis)
 
-# if(constants['inputs']['ADD_STORED_FOOD']):
-# 	Plotter.plot_stored_food(time_months,analysis)
+if(constants['inputs']['ADD_STORED_FOOD']):
+	Plotter.plot_stored_food(time_months,analysis)
 
 # if(constants['inputs']['ADD_SEAWEED']):
 # 	Plotter.plot_seaweed(time_months_middle,analysis)
@@ -139,9 +138,9 @@ optimizer = Optimizer()
 if(constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT']):
 	Plotter.plot_nonegg_nondairy_meat(time_months_middle,analysis)
 
-if(constants['inputs']['ADD_DAIRY']):
-	# Plotter.plot_dairy_cows(time_months_middle,analysis)
-	Plotter.plot_dairy(time_months_middle,analysis)
+# if(constants['inputs']['ADD_DAIRY']):
+# 	Plotter.plot_dairy_cows(time_months_middle,analysis)
+# 	Plotter.plot_dairy(time_months_middle,analysis)
 
 # Plotter.plot_people_fed(time_months_middle,analysis)
 Plotter.plot_people_fed_combined(time_months_middle,analysis)

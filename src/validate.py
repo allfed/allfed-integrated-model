@@ -25,13 +25,17 @@ class Validator:
 		assert(status==1)
 
 		constraints_dict={}
-		# print(maximize_constraints)
+		print(maximize_constraints)
 		# print(all_variables)
 		# quit()
 		for c in all_variables:
+			print(c.name)
 			if(SHOW_CONSTRAINT_CHECK):
 				print(c)
 			if(c.name in maximize_constraints):
+				print(c.name)
+				print(c.varValue)
+				quit()
 				continue
 			constraints_dict[c.name]=c.varValue
 

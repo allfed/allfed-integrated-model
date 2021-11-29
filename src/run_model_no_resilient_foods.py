@@ -17,7 +17,7 @@ from src.plotter import Plotter
 constants = {}
 constants['inputs'] = {}
 
-constants['inputs']['NMONTHS'] = 67#84
+constants['inputs']['NMONTHS'] = 84
 constants['inputs']['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
 
 constants['inputs']['WASTE'] = {}
@@ -29,26 +29,34 @@ constants['inputs']['WASTE'] = {}
 # constants['inputs']['WASTE']['CROPS'] = 19.33 #%
 # constants['inputs']['WASTE']['SEAWEED'] = 14.37 #%
 constants['inputs']['WASTE'] = {}
+
 # constants['inputs']['WASTE']['CEREALS'] = 19.02+10.5 #%
-constants['inputs']['WASTE']['CEREALS'] = 0 #%
+constants['inputs']['WASTE']['CEREALS'] = 4.65 #%
 # constants['inputs']['WASTE']['SUGAR'] = 14.47+10.5 #%
-constants['inputs']['WASTE']['SUGAR'] = 0 #%
+constants['inputs']['WASTE']['SUGAR'] = 0.09 #%
 # constants['inputs']['WASTE']['MEAT'] = 15.17+10.5 #%
-constants['inputs']['WASTE']['MEAT'] = 0 #%
+constants['inputs']['WASTE']['MEAT'] = .80 #%
 # constants['inputs']['WASTE']['DAIRY'] = 16.49+10.5 #%
-constants['inputs']['WASTE']['DAIRY'] = 0 #%
+constants['inputs']['WASTE']['DAIRY'] = 2.120 #%
 # constants['inputs']['WASTE']['SEAFOOD'] = 14.55+10.5 #%
-constants['inputs']['WASTE']['SEAFOOD'] = 0 #%
+constants['inputs']['WASTE']['SEAFOOD'] = 0.17 #%
 # constants['inputs']['WASTE']['CROPS'] = 23.87+4.96 #%
-constants['inputs']['WASTE']['CROPS'] = 0
+constants['inputs']['WASTE']['CROPS'] = 4.96
 # constants['inputs']['WASTE']['SEAWEED'] = 14.37+10.5 #%
 constants['inputs']['WASTE']['SEAWEED'] = 0 #%
 
+# constants['inputs']['WASTE']['CEREALS'] = 19.02 #%
+# constants['inputs']['WASTE']['SUGAR'] = 14.47 #%
+# constants['inputs']['WASTE']['MEAT'] = 15.17 #%
+# constants['inputs']['WASTE']['DAIRY'] = 16.49 #%
+# constants['inputs']['WASTE']['SEAFOOD'] = 14.55 #%
+# constants['inputs']['WASTE']['CROPS'] = 19.33 #%
+# constants['inputs']['WASTE']['SEAWEED'] = 14.37 #%
 constants['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 0 # months
 constants['inputs']['NUTRITION']={}
 constants['inputs']['NUTRITION']['KCALS_DAILY'] = 2100 #kcals per person per day
-constants['inputs']['NUTRITION']['FAT_DAILY'] = 35/2 #grams per person per day
-constants['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51/2 #grams per person per day
+constants['inputs']['NUTRITION']['FAT_DAILY'] = 47 #grams per person per day
+constants['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51 #grams per person per day
 
 constants['inputs']['INITIAL_MILK_COWS'] = 264e6
 constants['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS'] = 10
@@ -87,7 +95,7 @@ constants['inputs']['MEAT_SUSTAINABLE_YIELD_PER_YEAR'] = 0
 constants["inputs"]["OG_USE_BETTER_ROTATION"] = False
 
 constants['inputs']['MEAT_SMOOTHING'] = True
-constants['inputs']['FLUCTUATION_LIMIT'] = 1.5
+constants['inputs']['FLUCTUATION_LIMIT'] = 1.1
 
 constants['inputs']['GREENHOUSE_FAT_MULTIPLIER'] = 1 # we can grow twice as much fat as greenhouses would have
 constants['inputs']['GREENHOUSE_SLOPE_MULTIPLIER'] = 1 #default values from greenhouse paper
@@ -108,7 +116,7 @@ constants['inputs']['ADD_STORED_FOOD'] = True
 constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
 constants['inputs']['ADD_DAIRY'] = False
 constants['inputs']['ADD_OUTDOOR_GROWING'] = True
-constants['inputs']['OVERALL_SMOOTHING'] = False
+constants['inputs']['OVERALL_SMOOTHING'] = True
 constants['inputs']['GREENHOUSE_GAIN_PCT'] = 0
 
 constants['inputs']['INCLUDE_ECONOMICS'] = True
@@ -127,7 +135,7 @@ if(constants['inputs']['ADD_GREENHOUSES']):
 	Plotter.plot_GH(time_months_middle,analysis)
 
 if(constants['inputs']['ADD_OUTDOOR_GROWING']):
-	Plotter.plot_OG(time_months_middle,analysis)
+	Plotter.plot_OG_no_resilient_foods(time_months_middle,analysis)
 
 if(constants['inputs']['ADD_STORED_FOOD']):
 	Plotter.plot_stored_food(time_months,analysis)

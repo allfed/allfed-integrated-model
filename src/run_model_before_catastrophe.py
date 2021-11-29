@@ -40,7 +40,7 @@ constants['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 0 # months
 constants['inputs']['M1_ADDITIONAL_WASTE'] = 5e9/12#tons dry caloric equivalent
 constants['inputs']['NUTRITION']={}
 constants['inputs']['NUTRITION']['KCALS_DAILY'] = 2100 #kcals per person per day
-constants['inputs']['NUTRITION']['FAT_DAILY'] = 35 #grams per person per day
+constants['inputs']['NUTRITION']['FAT_DAILY'] = 47 #grams per person per day
 constants['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51 #grams per person per day
 # constants['inputs']['SEASONALITY']=\
 # 	[0.1564,0.0461,0.0650,0.1017,0.0772,0.0785,\
@@ -67,7 +67,7 @@ constants['inputs']['SEAWEED_PRODUCTION_RATE'] = 10 # percent (seaweed)
 # 217.5 million dry caloric tons
 # constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1602542*1000./10*3
 # constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 3.1*217.5*1e6 #thousand tons
-constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 351.433*1e6 #thousand tons
+constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1.15*351.433*1e6 #thousand tons
 # constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1602542*1000.
 constants['inputs']['INITIAL_SF_PROTEIN'] = 203607 #1000 tons protein per unit mass initial
 constants['inputs']['INITIAL_SF_FAT'] = 63948 # 1000 tons fat per unit mass initial
@@ -123,8 +123,8 @@ optimizer = Optimizer()
 # if(constants['inputs']['ADD_GREENHOUSES']):
 # 	Plotter.plot_GH(time_months_middle,analysis)
 
-# if(constants['inputs']['ADD_OUTDOOR_GROWING']):
-# 	Plotter.plot_OG_before_nuclear_event(time_months_middle,analysis)
+if(constants['inputs']['ADD_OUTDOOR_GROWING']):
+	Plotter.plot_OG_before_nuclear_event(time_months_middle,analysis)
 
 # if(constants['inputs']['ADD_STORED_FOOD']):
 # 	Plotter.plot_stored_food(time_months,analysis)
