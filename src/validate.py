@@ -25,7 +25,7 @@ class Validator:
 		assert(status==1)
 
 		constraints_dict={}
-		print(maximize_constraints)
+		# print(maximize_constraints)
 		# print(all_variables)
 		# quit()
 		for c in all_variables:
