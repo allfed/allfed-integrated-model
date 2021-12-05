@@ -14,10 +14,11 @@ if module_path not in sys.path:
 	sys.path.append(module_path)
 from src.optimizer import Optimizer
 from src.plotter import Plotter
+import numpy as np
 constants = {}
 constants['inputs'] = {}
 
-constants['inputs']['NMONTHS'] = 84
+constants['inputs']['NMONTHS'] = 60#84
 constants['inputs']['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
 
 constants['inputs']['WASTE'] = {}
@@ -36,8 +37,8 @@ constants['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 0 # months
 constants['inputs']['M1_ADDITIONAL_WASTE'] = 5e9/12#tons dry caloric equivalent
 constants['inputs']['NUTRITION']={}
 constants['inputs']['NUTRITION']['KCALS_DAILY'] = 2100 #kcals per person per day
-constants['inputs']['NUTRITION']['FAT_DAILY'] = 47 #grams per person per day
-constants['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51#grams per person per day
+constants['inputs']['NUTRITION']['FAT_DAILY'] = 47/2 #grams per person per day
+constants['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51/2#grams per person per day
 
 constants['inputs']['INITIAL_MILK_COWS'] = 264e6
 constants['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS'] = 10
@@ -92,7 +93,7 @@ constants['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1 #default values fro
 constants["inputs"]["OG_USE_BETTER_ROTATION"] = True
 
 constants['inputs']['IS_NUCLEAR_WINTER'] = True
-constants['inputs']['STORED_FOOD_SMOOTHING'] = True
+constants['inputs']['STORED_FOOD_SMOOTHING'] = False
 constants['inputs']['MEAT_SMOOTHING'] = False
 constants['inputs']['OVERALL_SMOOTHING'] = False
 
@@ -107,7 +108,6 @@ constants['inputs']['ADD_DAIRY'] = True
 constants['inputs']['ADD_STORED_FOOD'] = True
 constants['inputs']['ADD_OUTDOOR_GROWING'] = True
 
-constants['inputs']['INCLUDE_ECONOMICS'] = False
 # only on farm + distribution waste
 
 constants['inputs']['DISTRIBUTION_WASTE'] = {} #%
@@ -124,30 +124,43 @@ constants["inputs"]["H_E_FED_MEAT_KCALS"] = 0
 constants["inputs"]["H_E_FED_MEAT_FAT"] = 0
 constants["inputs"]["H_E_FED_MEAT_PROTEIN"] = 0
 
-constants["inputs"]["H_E_FRACTION_USED_FOR_FEED"] = 0
 # constants["inputs"]["FEED_SOURCES"] = ["SEAWEED","CELLULOSIC_SUGAR","METHANE_SCP","OUTDOOR_GROWING","STORED_FOOD"]
 
 
 constants['CHECK_CONSTRAINTS'] = False
 optimizer = Optimizer()
 
-[time_months,time_months_middle,analysis]=optimizer.optimize(constants)
-Plotter.plot_people_fed_combined(time_months_middle,analysis)
-Plotter.plot_people_fed_kcals(time_months_middle,analysis)
-# we take total food produced given the excess, calculate calories from animals fed maintained, and subtract the human edible and add the resulting meat to the simulation. If the minimum is below, we take the discepancy, use it as an added value to maintained, and run optimizer again. Stop when within 0.1% of the minimum being at 7.8 billion.
-constants['inputs']['INCLUDE_ECONOMICS'] = True
+# [time_months,time_months_middle,analysis]=optimizer.optimize(constants)
+# Plotter.plot_people_fed_combined(time_months_middle,analysis)
+# Plotter.plot_people_fed_kcals(time_months_middle,analysis)
 
-previous_fed = analysis.people_fed_billions
-excess = analysis.people_fed_billions - 7.8
+# we take total food produced given the excess, calculate calories from animals fed maintained, and subtract the human edible and add the resulting meat to the simulation. If the minimum is below, we take the discepancy, use it as an added value to maintained, and run optimizer again. Stop when within 0.1% of the minimum being at 7.8 billion.
+
+# previous_fed = analysis.people_fed_billions
+# excess = analysis.people_fed_billions - 7.8
 # fraction_to_feed_to_animals = initial_excess/analysis.people_fed_billions
-while(analysis.people_fed_billions > 7.81):
-	fraction_to_feed_to_animals = excess/analysis.people_fed_billions/3
-	constants = analysis.get_meat_from_excess(constants,excess) #, human_edible_excess)
-	constants["inputs"]["H_E_FRACTION_USED_FOR_FEED"] = fraction_to_feed_to_animals
-	# constants['inputs']['FRACTION_TO_SLAUGHTER']
-	print("fraction_to_feed_to_animals")
-	print(fraction_to_feed_to_animals)
+n=0
+excess = 0
+people_fed_billions = 0
+
+people_fed_arr = []
+excess_to_animals_arr = []
+# for excess in range(0,6):#billions human edible people excess calories
+while(people_fed_billions > 7.81 \
+	or people_fed_billions < 7.79):
+	excess_to_animals_arr.append(excess)
+
+
+	excess_per_month = 2100 * 30*7.8e9/1e9/50
+	# print("excess_per_month")
+	# print(excess_per_month)
+	#implies a certain amount of protein actually eaten by the animals as well
+	#units of billions of calories monthly
+	constants["inputs"]["EXCESS_CALORIES"] = np.array([excess_per_month]*constants['inputs']['NMONTHS'])
+
 	[time_months,time_months_middle,analysis]=optimizer.optimize(constants)
+	people_fed_billions = analysis.people_fed_billions
+	people_fed_arr.append(people_fed_billions)
 	print("")
 	print("")
 	print("")
@@ -158,25 +171,58 @@ while(analysis.people_fed_billions > 7.81):
 	print("")
 	print("")
 	print("")
+	Plotter.plot_people_fed_combined(time_months_middle,analysis)
+	Plotter.plot_people_fed_kcals(time_months_middle,analysis)
+	quit()
+	# if(analysis.people_fed_billions < 7.75):
+	# 	excess = excess*.99
+	# 	previous_fed = analysis.people_fed_billions*1/.9
+	# 	continue
+	# 	#went too fast
+	# 	print("went too fast")
 
-	if(analysis.people_fed_billions < 7.75):
-		#went too fast
-		print("whoops.")
-		quit()
 
-
-	if(analysis.people_fed_billions < 7.79):
-		print("less than population, stopping")
-		break
+	# if(analysis.people_fed_billions < 7.79):
+	# 	print("less than population, stopping")
+		# break
 	#below could break if we are short on fat or protein
-	assert(analysis.people_fed_billions <= previous_fed)
+	# assert(analysis.people_fed_billions <= previous_fed)
 
 
-	previous_fed = analysis.people_fed_billions
-	new_excess = analysis.people_fed_billions - 7.8
-	excess = new_excess + excess
-	print("excess")
-	print(excess)
+	# previous_fed = analysis.people_fed_billions
+	# new_excess = analysis.people_fed_billions - 7.8
+	# print('new_excess')
+	# print(new_excess)
+	# excess = new_excess + excess
+	# print("excess")
+	# print(excess)
+	# constants = analysis.get_meat_from_excess(constants,excess) #, human_edible_excess)
+
+	# constants['inputs']['FRACTION_TO_SLAUGHTER']
+	print("Human Edible meat as fraction of population")
+	# h_e_frac = constants["inputs"]["H_E_FED_MEAT_KCALS"]*1e9/constants["KCALS_MONTHLY"]/analysis.people_fed_billions/1e9
+	h_e_meat_people_fed = constants["inputs"]["H_E_FED_MEAT_KCALS"]*1e9/constants["KCALS_MONTHLY"]/1e9
+
+	print("h_e_meat_people_fed/excess")
+	# print(h_e_meat_people_fed/excess)
+	print("h_e_meat_people_fed")
+	print(h_e_meat_people_fed)
+
+	# fraction_to_feed_to_animals = excess/analysis.people_fed_billions
+	fraction_to_feed_to_animals = excess/7.8
+	
+	constants["inputs"]["gshrjdtrm"] = fraction_to_feed_to_animals
+	print("fraction_to_feed_to_animals")
+	print(fraction_to_feed_to_animals)
+	# print("conversion_ratio")
+	# print(h_e_frac/fraction_to_feed_to_animals)
+
+	if(n==3):
+		quit()
+	n = n + 1
+
+	# print("excess")
+	# print(excess)
 
 
 	# constants['inputs']['FRACTION_TO_SLAUGHTER']
@@ -228,8 +274,6 @@ Plotter.plot_people_fed_kcals(time_months_middle,analysis)
 # constants['inputs']['ADD_OUTDOOR_GROWING'] = True
 
 # seaweed_omitted=optimizer.optimize(constants)
-# print('seaweed omitted')
-# print(seaweed_omitted-max_fed)
 
 
 # constants['inputs']['ADD_SEAWEED'] = True
@@ -240,8 +284,6 @@ Plotter.plot_people_fed_kcals(time_months_middle,analysis)
 # constants['inputs']['ADD_STORED_FOOD'] = True
 # constants['inputs']['ADD_OUTDOOR_GROWING'] = True
 # cell_sugar_omitted=optimizer.optimize(constants)
-# print('cellulosic sugar omitted')
-# print(cell_sugar_omitted-max_fed)
 
 
 # constants['inputs']['ADD_SEAWEED'] = True
@@ -252,8 +294,6 @@ Plotter.plot_people_fed_kcals(time_months_middle,analysis)
 # constants['inputs']['ADD_STORED_FOOD'] = True
 # constants['inputs']['ADD_OUTDOOR_GROWING'] = True
 # greenhouses_omitted=optimizer.optimize(constants)
-# print('greenhouses omitted')
-# print(greenhouses_omitted-max_fed)
 
 
 # constants['inputs']['ADD_SEAWEED'] = False
@@ -264,8 +304,6 @@ Plotter.plot_people_fed_kcals(time_months_middle,analysis)
 # constants['inputs']['ADD_STORED_FOOD'] = True
 # constants['inputs']['ADD_OUTDOOR_GROWING'] = True
 # no_intervention=optimizer.optimize(constants)
-# print('no intervention')
-# print(no_intervention)
 
 
 # constants['inputs']['ADD_SEAWEED'] = True
@@ -276,8 +314,6 @@ Plotter.plot_people_fed_kcals(time_months_middle,analysis)
 # constants['inputs']['ADD_STORED_FOOD'] = True
 # constants['inputs']['ADD_OUTDOOR_GROWING'] = True
 # just_seaweed=optimizer.optimize(constants)
-# print('just seaweed')
-# print(just_seaweed-no_intervention)
 
 
 # constants['inputs']['ADD_SEAWEED'] = False
@@ -288,8 +324,6 @@ Plotter.plot_people_fed_kcals(time_months_middle,analysis)
 # constants['inputs']['ADD_STORED_FOOD'] = True
 # constants['inputs']['ADD_OUTDOOR_GROWING'] = True
 # just_cell_sugar=optimizer.optimize(constants)
-# print('just CS')
-# print(just_cell_sugar-no_intervention)
 
 
 
@@ -301,5 +335,3 @@ Plotter.plot_people_fed_kcals(time_months_middle,analysis)
 # constants['inputs']['ADD_STORED_FOOD'] = True
 # constants['inputs']['ADD_OUTDOOR_GROWING'] = True
 # just_greenhouses=optimizer.optimize(constants)
-# print('just Greenhouses')
-# print(just_greenhouses-no_intervention)

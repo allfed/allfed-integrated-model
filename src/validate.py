@@ -25,17 +25,13 @@ class Validator:
 		assert(status==1)
 
 		constraints_dict={}
-		# print(maximize_constraints)
-		# print(all_variables)
-		# quit()
 		for c in all_variables:
-			print(c.name)
+			# if("Humans_Fed_Fat" in c.name):
+			# 	print(c.name)
+			# 	print(c.varValue)
 			if(SHOW_CONSTRAINT_CHECK):
 				print(c)
 			if(c.name in maximize_constraints):
-				print(c.name)
-				print(c.varValue)
-				quit()
 				continue
 			constraints_dict[c.name]=c.varValue
 
@@ -47,9 +43,8 @@ class Validator:
 				differences.append(0)
 				continue
 			compare_type=0
-			
 			if(SHOW_CONSTRAINT_CHECK):
-				print(constraint)
+				pass
 
 			splitted=str(constraint[1]).split(' = ')
 			if(len(splitted)<2):
@@ -62,11 +57,8 @@ class Validator:
 						print("Error! Assignment is not ==, <=, or >=")
 						quit()
 				# splitted=str(constraint[1]).split(' >= ')
-
 			variable_string=splitted[0]	
-			# print(variable_string)
 			equation_string=splitted[1]	
-			# print(equation_string)
 
 			for var in model.variables():
 				equation_string = equation_string.replace(var.name,str(constraints_dict[var.name]))
@@ -80,6 +72,7 @@ class Validator:
 			if(compare_type==0):
 				if(SHOW_CONSTRAINT_CHECK):
 					print('difference'+str(abs(eq_val- var_val)))
+				
 				assert(abs(eq_val- var_val)<1)
 				differences.append(abs(eq_val- var_val))
 			if(compare_type==1):

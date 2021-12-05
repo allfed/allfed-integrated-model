@@ -43,6 +43,8 @@ meat_to_ls_ratio => Meat calories produced per month while maintaining the lives
 [4] sum(culled_cals[m]) = init_ls_cals 
 		- ls_cals_maintained*meat_to_ls_ratio
 
+init_ls_cals-sum(culled_cals[m]) = ls_cals_maintained*meat_to_ls_ratio
+
 
 We wish to solve for sum(culled_cals[m]), and use this to estimate primary production.
 
@@ -55,7 +57,7 @@ We have from [1], [2], and [3]:
 Combining [3] and [4]:
 
 	[6] h_e_cals_fed_to_ls = 
-			(init_ls_cals - sum(culled_cals))
+			(init_ls_cals - sum(culled_cals[m]))
 			/ (meat_to_ls_ratio*h_e_feed_ratio)
 
 combining [5] and [6]:
