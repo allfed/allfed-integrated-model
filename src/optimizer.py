@@ -1912,6 +1912,7 @@ class Optimizer:
 			allvariables.append(humans_fed_kcals[m])
 
 
+
 			if(ADD_SEAWEED and LIMIT_SEAWEED_AS_PERCENT_KCALS):
 				# after month 8, enforce maximum seaweed production to prevent 
 				# a rounding error from producing full quantity of seaweed
@@ -2200,8 +2201,9 @@ class Optimizer:
 				allvariables,
 				VERBOSE)
 
-		# for var in model.variables():
-		# 	print(f"{var.name}: {var.value()}")
+		for var in model.variables():
+			if("Humans_Fed_Kcals_0_" in var.name):
+				print(f"{var.name}: {var.value()}")
 
 		analysis = Analyzer(constants)
 
@@ -2256,8 +2258,8 @@ class Optimizer:
 		# if no fish, will be zero
 		analysis.analyze_fish_results(
 			production_kcals_fish_per_m,
-			production_protein_fish_per_m,
 			production_fat_fish_per_m,
+			production_protein_fish_per_m,
 			show_output
 		)
 		

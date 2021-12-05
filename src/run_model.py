@@ -18,7 +18,7 @@ import numpy as np
 constants = {}
 constants['inputs'] = {}
 
-constants['inputs']['NMONTHS'] = 60#84
+constants['inputs']['NMONTHS'] = 84
 constants['inputs']['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
 
 constants['inputs']['WASTE'] = {}
@@ -98,15 +98,15 @@ constants['inputs']['MEAT_SMOOTHING'] = False
 constants['inputs']['OVERALL_SMOOTHING'] = False
 
 
-constants['inputs']['ADD_FISH'] = True
-constants['inputs']['ADD_SEAWEED'] = True
-constants['inputs']['ADD_CELLULOSIC_SUGAR'] = True
-constants['inputs']['ADD_METHANE_SCP'] = True
-constants['inputs']['ADD_GREENHOUSES'] = True
+constants['inputs']['ADD_FISH'] = False
+constants['inputs']['ADD_SEAWEED'] = False
+constants['inputs']['ADD_CELLULOSIC_SUGAR'] = False
+constants['inputs']['ADD_METHANE_SCP'] = False
+constants['inputs']['ADD_GREENHOUSES'] = False
 constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
 constants['inputs']['ADD_DAIRY'] = True
-constants['inputs']['ADD_STORED_FOOD'] = True
-constants['inputs']['ADD_OUTDOOR_GROWING'] = True
+constants['inputs']['ADD_STORED_FOOD'] = False
+constants['inputs']['ADD_OUTDOOR_GROWING'] = False
 
 # only on farm + distribution waste
 
@@ -151,7 +151,7 @@ while(people_fed_billions > 7.81 \
 	excess_to_animals_arr.append(excess)
 
 
-	excess_per_month = 2100 * 30*7.8e9/1e9/50
+	excess_per_month = 2100 * 30*7.8e9/1e9/40
 	# print("excess_per_month")
 	# print(excess_per_month)
 	#implies a certain amount of protein actually eaten by the animals as well

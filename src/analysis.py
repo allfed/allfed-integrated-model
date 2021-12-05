@@ -194,8 +194,8 @@ class Analyzer:
 	def analyze_fish_results(
 		self,
 		production_kcals_fish_per_m,
-		production_protein_fish_per_m,
 		production_fat_fish_per_m,
+		production_protein_fish_per_m,
 		show_output
 		):
 
@@ -207,12 +207,12 @@ class Analyzer:
 		self.billions_fed_fish_protein = \
 			np.multiply(np.array(production_protein_fish_per_m) \
 			/ self.constants["PROTEIN_MONTHLY"]/1e9\
-			,self.h_e_fraction_fat_fed_to_humans)
+			,self.h_e_fraction_protein_fed_to_humans)
 
 		self.billions_fed_fish_fat = \
 			np.multiply(np.array(production_fat_fish_per_m) \
 			/ self.constants["FAT_MONTHLY"]/1e9\
-			,self.h_e_fraction_protein_fed_to_humans)
+			,self.h_e_fraction_fat_fed_to_humans)
 		
 	#if outdoor growing isn't included, these results will be zero
 	def analyze_OG_results(
@@ -386,6 +386,7 @@ class Analyzer:
 		 + np.array(cattle_maintained_kcals)\
 			 / self.constants["KCALS_MONTHLY"],\
 		 self.h_e_fraction_kcals_fed_to_humans) #human edible fed
+
 
 		self.billions_fed_meat_fat_tmp = np.array(self.makeMidMonthlyVars(
 			nonegg_nondairy_meat_eaten,
@@ -612,6 +613,8 @@ class Analyzer:
 		sorted_zipped_lists = sorted(zipped_lists)
 		humans_fed_kcals = [element for _, element in sorted_zipped_lists]
 
+		print("humans_fed_kcals[0]")
+		print(humans_fed_kcals[0])
 		zipped_lists = zip(order_fat, humans_fed_fat)
 		sorted_zipped_lists = sorted(zipped_lists)
 		humans_fed_fat = [element for _, element in sorted_zipped_lists]
@@ -718,11 +721,11 @@ class Analyzer:
 			+np.array(self.billions_fed_meat_kcals)\
 			+np.array(self.billions_fed_seaweed_kcals)\
 			+np.array(self.billions_fed_milk_kcals)\
-			+np.array(self.billions_fed_CS_kcals[0:len(time_months_middle)])\
-			+np.array(self.billions_fed_SCP_kcals[0:len(time_months_middle)])\
-			+np.array(self.billions_fed_GH_kcals[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_CS_kcals)\
+			+np.array(self.billions_fed_SCP_kcals)\
+			+np.array(self.billions_fed_GH_kcals)\
 			+np.array(self.billions_fed_OG_kcals)\
-			+np.array(self.billions_fed_fish_kcals[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_fish_kcals)\
 			+ self.billions_fed_h_e_meat_kcals\
 			+ self.billions_fed_h_e_milk_kcals)
 
@@ -730,10 +733,10 @@ class Analyzer:
 			+np.array(self.billions_fed_meat_fat)\
 			+np.array(self.billions_fed_seaweed_fat)\
 			+np.array(self.billions_fed_milk_fat)\
-			+np.array(self.billions_fed_SCP_fat[0:len(time_months_middle)])\
-			+np.array(self.billions_fed_GH_fat[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_SCP_fat)\
+			+np.array(self.billions_fed_GH_fat)\
 			+np.array(self.billions_fed_OG_fat)\
-			+np.array(self.billions_fed_fish_fat[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_fish_fat)\
 			+ self.billions_fed_h_e_meat_fat\
 			+ self.billions_fed_h_e_milk_fat
 
@@ -741,10 +744,10 @@ class Analyzer:
 			+np.array(self.billions_fed_meat_protein)\
 			+np.array(self.billions_fed_seaweed_protein)\
 			+np.array(self.billions_fed_milk_protein)\
-			+np.array(self.billions_fed_GH_protein[0:len(time_months_middle)])\
-			+np.array(self.billions_fed_SCP_protein[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_GH_protein)\
+			+np.array(self.billions_fed_SCP_protein)\
 			+np.array(self.billions_fed_OG_protein)\
-			+np.array(self.billions_fed_fish_protein[0:len(time_months_middle)]))\
+			+np.array(self.billions_fed_fish_protein))\
 			+ self.billions_fed_h_e_meat_protein\
 			+ self.billions_fed_h_e_milk_protein
 
@@ -752,29 +755,29 @@ class Analyzer:
 			+np.array(self.billions_fed_meat_kcals)\
 			+np.array(self.billions_fed_seaweed_kcals)\
 			+np.array(self.billions_fed_milk_kcals)\
-			+np.array(self.billions_fed_CS_kcals[0:len(time_months_middle)])\
-			+np.array(self.billions_fed_SCP_kcals[0:len(time_months_middle)])\
-			+np.array(self.billions_fed_GH_kcals[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_CS_kcals)\
+			+np.array(self.billions_fed_SCP_kcals)\
+			+np.array(self.billions_fed_GH_kcals)\
 			+np.array(self.billions_fed_OG_kcals)\
-			+np.array(self.billions_fed_fish_kcals[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_fish_kcals)\
 			)
 		sum_sources_minus_excess_minus_h_e_fed_fat = (np.array(self.billions_fed_SF_fat)\
 			+np.array(self.billions_fed_meat_fat)\
 			+np.array(self.billions_fed_seaweed_fat)\
 			+np.array(self.billions_fed_milk_fat)\
-			+np.array(self.billions_fed_SCP_fat[0:len(time_months_middle)])\
-			+np.array(self.billions_fed_GH_fat[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_SCP_fat)\
+			+np.array(self.billions_fed_GH_fat)\
 			+np.array(self.billions_fed_OG_fat)\
-			+np.array(self.billions_fed_fish_fat[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_fish_fat)\
 			)
 		sum_sources_minus_excess_minus_h_e_fed_protein = (np.array(self.billions_fed_SF_protein)\
 			+np.array(self.billions_fed_meat_protein)\
 			+np.array(self.billions_fed_seaweed_protein)\
 			+np.array(self.billions_fed_milk_protein)\
-			+np.array(self.billions_fed_SCP_protein[0:len(time_months_middle)])\
-			+np.array(self.billions_fed_GH_protein[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_SCP_protein)\
+			+np.array(self.billions_fed_GH_protein)\
 			+np.array(self.billions_fed_OG_protein)\
-			+np.array(self.billions_fed_fish_protein[0:len(time_months_middle)])\
+			+np.array(self.billions_fed_fish_protein)\
 			)
 		
 		fractional_difference = \
@@ -819,6 +822,7 @@ class Analyzer:
 				+ self.billions_fed_h_e_milk_fat\
 			)
 
+		print(fractional_difference)
 		assert((abs(fractional_difference)<1e-6).all())
 		
 
