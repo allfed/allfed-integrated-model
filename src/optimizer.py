@@ -460,7 +460,7 @@ class Optimizer:
 			cattle_maintained_fat =[0]*len(cattle_maintained)
 			cattle_maintained_protein =[0]*len(cattle_maintained)
 
-		###### Human Inedible Produced "Secondary" Dairy and Cattle Meat #######
+		###### Human Edible Produced "Secondary" Dairy and Cattle Meat #######
 
 		# https://docs.google.com/document/d/1HlML7ptYmRfNJjko5qMfIJJGyLRUBlnCIiEiBMr41cM/edit#heading=h.7wiajnpimw8t
 		def get_meat_milk_from_excess(excess_calories,h_e_fed_dairy_limit):
@@ -468,7 +468,7 @@ class Optimizer:
 			# each unit of excess calories (with associated fat and protein)
 			#are fed first to dairy, then to pigs and chickens, then to cattle
 
-			excess_dry_cal_tons = excess_calories*1e9/ 4e6
+			excess_dry_cal_tons = excess_calories*1e9/4e6
 
 			assert(np.array(excess_dry_cal_tons>=0).all())
 
@@ -508,7 +508,6 @@ class Optimizer:
 
 					dairy_h_e.append(h_e_fed_dairy_limit[m])
 
-					assert(dairy_h_e[m]>=0)
 
 					limit_dairy = h_e_fed_dairy_limit_food_usage[m]
 				else:
@@ -538,14 +537,15 @@ class Optimizer:
 				cattle_h_e_maintained.append(for_cattle/EDIBLE_TO_CATTLE_CONVERSION)
 				
 
-			present_day_tons_per_m_cattle = 136e6/12 #million tons a month
-			present_day_tons_per_m_chicken_pork = 250e6/12 #million tons a month
+			present_day_tons_per_m_cattle = 136e6/12 #tons a month meat
+			present_day_tons_per_m_chicken_pork = 250e6/12 #tons a month
 
-			ratio_maintained_cattle = np.array(cattle_h_e_maintained)/present_day_tons_per_m_cattle
+			ratio_maintained_cattle = (np.array(cattle_maintained)+np.array(cattle_h_e_maintained))/present_day_tons_per_m_cattle
 			assert((ratio_maintained_cattle <= 1).all())
 
 			ratio_maintained_chicken_pork = np.array(chicken_pork_maintained)/present_day_tons_per_m_chicken_pork
 			assert((ratio_maintained_chicken_pork <= 1).all())
+			assert((np.array(dairy_h_e)>=0).all())
 
 
 			#chicken pork assumed to maintain ratio between medium and small animal mass 
@@ -555,17 +555,18 @@ class Optimizer:
 
 			INIT_SMALL_ANIMALS  \
 				= 28.2e9*(1-np.min(ratio_maintained_chicken_pork))
-				 # - (chicken_pork_maintained / KG_PER_SMALL_ANIMAL
-					# 	 * small_to_medium_ratio
 
 			INIT_MEDIUM_ANIMALS  \
 				= 3.2e9*(1-np.min(ratio_maintained_chicken_pork))
-					# - (chicken_pork_maintained / KG_PER_MEDIUM_ANIMAL
-					# 	* (1-small_to_medium_ratio))
+
+			print("culled chicken pork fraction")
+			print(1-np.min(ratio_maintained_chicken_pork))
 
 			INIT_LARGE_ANIMALS  \
 				= 1.9e9*(1-np.min(ratio_maintained_cattle)) 
-				# - cattle_h_e_maintained/KG_PER_LARGE_ANIMAL
+
+			print("culled cattle fraction")
+			print(1-np.min(ratio_maintained_cattle))
 
 			#billions kcals monthly
 			chicken_pork_kcals = np.array(chicken_pork_maintained)*1e3\
@@ -575,16 +576,18 @@ class Optimizer:
 			 /1e9
 			
 			#thousands tons monthly
-			chicken_pork_fat = np.array(chicken_pork_maintained)/1e3\
+			chicken_pork_fat = np.array(chicken_pork_maintained)*1e3\
 			 * (SMALL_ANIMAL_FAT_PER_KG*small_to_medium_ratio\
 				+ MEDIUM_ANIMAL_FAT_PER_KG*(1-small_to_medium_ratio))\
-			 * (1-MEAT_WASTE/100)
+			 * (1-MEAT_WASTE/100)\
+			 /1e6
 
 			#thousands tons monthly
-			chicken_pork_protein = np.array(chicken_pork_maintained)/1e3\
+			chicken_pork_protein = np.array(chicken_pork_maintained)*1e3\
 			 * (SMALL_ANIMAL_PROTEIN_PER_KG*small_to_medium_ratio\
 				+ MEDIUM_ANIMAL_PROTEIN_PER_KG*(1-small_to_medium_ratio))\
-			 * (1-MEAT_WASTE/100)
+			 * (1-MEAT_WASTE/100)\
+			 /1e6
 
 			#billions kcals monthly
 			cattle_h_e_maintained_kcals = np.array(cattle_h_e_maintained)\
@@ -594,11 +597,11 @@ class Optimizer:
 
 			#1000s tons fat
 			cattle_h_e_maintained_fat = cattle_h_e_maintained_kcals*1e9 \
-			* LARGE_ANIMAL_FAT_PER_KG/LARGE_ANIMAL_KCALS_PER_KG/1e6
+			 / LARGE_ANIMAL_KCALS_PER_KG * LARGE_ANIMAL_FAT_PER_KG/1e6
 
 			#1000s tons protein
 			cattle_h_e_maintained_protein = cattle_h_e_maintained_kcals*1e9 \
-			* LARGE_ANIMAL_PROTEIN_PER_KG/LARGE_ANIMAL_KCALS_PER_KG/1e6
+			 / LARGE_ANIMAL_KCALS_PER_KG * LARGE_ANIMAL_PROTEIN_PER_KG/1e6
 			 
 
 			h_e_meat_kcals = \
@@ -635,61 +638,53 @@ class Optimizer:
 		h_e_fed_dairy_produced) = get_meat_milk_from_excess(excess_calories,h_e_fed_dairy_limit)
 
 		if(not ADD_NONEGG_NONDAIRY_MEAT):
-			h_e_meat_kcals = [0]*NMONTHS
-			h_e_meat_fat = [0]*NMONTHS
-			h_e_meat_protein = [0]*NMONTHS
+			h_e_meat_kcals = np.array([0]*NMONTHS)
+			h_e_meat_fat = np.array([0]*NMONTHS)
+			h_e_meat_protein = np.array([0]*NMONTHS)
 
 		if(not ADD_DAIRY):
-			h_e_fed_dairy_produced = [0]*NMONTHS
+			h_e_fed_dairy_produced = np.array([0]*NMONTHS)
 
 
 		DAIRY_WASTE = constants['inputs']['WASTE']['DAIRY']
 		if(ADD_DAIRY):
 			
 			#billions kcals
-			dairy_milk_kcals = (h_e_fed_dairy_produced)*1e3\
-			*MILK_KCALS/1e9*(1-DAIRY_WASTE/100)
+			dairy_milk_kcals = np.array(dairy_milk_produced)*1e3\
+				* MILK_KCALS/1e9*(1-DAIRY_WASTE/100)
 
 			h_e_milk_kcals = h_e_fed_dairy_produced*1e3\
-			*MILK_KCALS/1e9*(1-DAIRY_WASTE/100)
+				* MILK_KCALS/1e9*(1-DAIRY_WASTE/100)
 			
 			#thousands tons
-			dairy_milk_fat = (np.array(dairy_milk_produced)+h_e_fed_dairy_produced)/1e3\
-			*MILK_FAT*(1-DAIRY_WASTE/100)
+			dairy_milk_fat = np.array(dairy_milk_produced)/1e3\
+				* MILK_FAT*(1-DAIRY_WASTE/100)
 
 			h_e_milk_fat = h_e_fed_dairy_produced/1e3\
-			*MILK_FAT*(1-DAIRY_WASTE/100)
+				* MILK_FAT*(1-DAIRY_WASTE/100)
 			
 			#thousands tons
-			dairy_milk_protein = (np.array(dairy_milk_produced)+h_e_fed_dairy_produced)/1e3\
-			* MILK_PROTEIN*(1-DAIRY_WASTE/100)
+			dairy_milk_protein = np.array(dairy_milk_produced)/1e3\
+				* MILK_PROTEIN*(1-DAIRY_WASTE/100)
 
-			h_e_milk_protein = (np.array(dairy_milk_produced)+h_e_fed_dairy_produced)/1e3\
-			* MILK_PROTEIN*(1-DAIRY_WASTE/100)
+			h_e_milk_protein = h_e_fed_dairy_produced/1e3\
+				* MILK_PROTEIN*(1-DAIRY_WASTE/100)
 
 
 		else:
-			dairy_milk_kcals = [0]*len(dairy_milk_produced)
-			dairy_milk_fat = [0]*len(dairy_milk_produced)			
-			dairy_milk_protein = [0]*len(dairy_milk_produced)
+			dairy_milk_kcals = np.array([0]*NMONTHS)
+			dairy_milk_fat = np.array([0]*NMONTHS)
+			dairy_milk_protein = np.array([0]*NMONTHS)
 
-		h_e_milk_kcals = 0
-		h_e_milk_fat = 0
-		h_e_milk_protein = 0
-
-		h_e_meat_kcals = excess_calories * .1
-		h_e_meat_fat = h_e_meat_kcals/LARGE_ANIMAL_KCALS_PER_KG*LARGE_ANIMAL_FAT_PER_KG
-		h_e_meat_protein = h_e_meat_kcals/LARGE_ANIMAL_KCALS_PER_KG*LARGE_ANIMAL_PROTEIN_PER_KG
 
 		h_e_balance_kcals = -excess_calories + h_e_meat_kcals + h_e_milk_kcals
 		h_e_balance_fat = -excess_fat_used + h_e_meat_fat + h_e_milk_fat
 		h_e_balance_protein = -excess_protein_used + h_e_meat_protein + h_e_milk_protein
-
-
+		
 		#### NON EGG NONDAIRY MEAT ####
 
 		#https://www.ciwf.org.uk/media/5235182/Statistics-Dairy-cows.pdf
-		ANNUAL_LITERS_PER_COW=2200
+		ANNUAL_LITERS_PER_COW = 2200
 		KCALS_PER_LITER=609 #kcals for 1 liter whole milk, googled it
 
 		# billion kcals per unit mass initial (first month)
@@ -1183,12 +1178,12 @@ class Optimizer:
 			# for x in greenhouse_area:
 			# 	kcals_per_hectare.append(x * )
 		else:
-			KCALS_GROWN_PER_HECTARE = [0]*len(greenhouse_area)
-			greenhouse_area = [0]*len(greenhouse_area)
+			KCALS_GROWN_PER_HECTARE = [0]*NMONTHS
+			greenhouse_area = [0]*NMONTHS
 
 		KCALS_GROWN_MINUS_GREENHOUSE = []
 
-		for i in range(0,len(greenhouse_area)):
+		for i in range(0,NMONTHS):
 			#billions of kcals
 			KCALS_GROWN_MINUS_GREENHOUSE.append(\
 				KCALS_GROWN[i]*(1-greenhouse_area[i]/TOTAL_CROP_AREA)\
@@ -1204,7 +1199,7 @@ class Optimizer:
 				list(np.array(KCALS_GROWN_MINUS_GREENHOUSE) \
 					* (1 - CROP_WASTE/100) )
 		else:
-			production_kcals_outdoor_growing_per_m=[0]*len(KCALS_GROWN)
+			production_kcals_outdoor_growing_per_m=[0]*NMONTHS
 		# we know:
 		# 	units_sf_mass*SF_FRACTION_KCALS=sf_kcals
 		# and
@@ -2058,7 +2053,6 @@ class Optimizer:
 					# + (dairy_animals_1000s_start[m]+dairy_animals_1000s_end[m])/2 \
 						# * MILK_PROTEIN_PER_1000_COWS_PER_MONTH*1e9
 					- biofuels_protein[m]
-					# + production_protein_greenhouses_per_m[m]
 					+ production_protein_scp_per_m[m]
 					+ nonegg_nondairy_meat_eaten[m]*MEAT_FRACTION_PROTEIN
 					+ greenhouse_area[m]*greenhouse_protein_per_ha[m]

@@ -393,6 +393,10 @@ class Analyzer:
 			self.constants["MEAT_FRACTION_FAT"]/self.constants["FAT_MONTHLY"]/1e9,
 			show_output))
 
+
+
+
+
 		self.billions_fed_meat_fat = np.multiply(self.billions_fed_meat_fat_tmp\
 		 + np.array(cattle_maintained_fat) / self.constants["FAT_MONTHLY"]/1e9,\
 		 self.h_e_fraction_fat_fed_to_humans)#human edible fed
@@ -446,6 +450,26 @@ class Analyzer:
 
 		self.billions_fed_h_e_balance_protein = \
 			h_e_balance_protein / self.constants["PROTEIN_MONTHLY"]/1e9
+		
+
+		##useful for plotting meat and dairy
+
+		# import matplotlib.pyplot as plt
+		# cm = np.multiply(np.array(cattle_maintained_kcals)\
+		# 			 / self.constants["KCALS_MONTHLY"],self.h_e_fraction_kcals_fed_to_humans)
+		# # plt.plot(cm)
+		# m=np.multiply(self.billions_fed_meat_kcals_tmp,self.h_e_fraction_kcals_fed_to_humans)
+		# plt.plot(m)
+		# lim = np.array(879e6/12)*1e3* 610/1e9*(1-self.constants['inputs']['WASTE']['DAIRY']/100)/self.constants["KCALS_MONTHLY"]
+		# plt.plot(np.array([lim]*self.constants["inputs"]["NMONTHS"]))
+		# plt.plot(self.billions_fed_h_e_meat_kcals)
+		# plt.plot(self.billions_fed_h_e_milk_kcals)
+		# plt.title("milk and meat")
+		# plt.plot(self.billions_fed_milk_kcals)
+		# plt.plot(cm + m +self.billions_fed_h_e_meat_kcals + self.billions_fed_h_e_milk_kcals + self.billions_fed_milk_kcals)
+		# plt.legend(["cattle","not cattle meat","limit dairy","h_e_meat_kcals","h_e_milk_kcals","milk_kcals","sum "])
+		# plt.show()
+
 
 		if(self.constants['ADD_NONEGG_NONDAIRY_MEAT'] and self.constants['VERBOSE']):
 			print('Days non egg, non dairy meat global at start, by kcals')
@@ -614,7 +638,7 @@ class Analyzer:
 		humans_fed_kcals = [element for _, element in sorted_zipped_lists]
 
 		print("humans_fed_kcals[0]")
-		print(humans_fed_kcals[0])
+		print(humans_fed_kcals)
 		zipped_lists = zip(order_fat, humans_fed_fat)
 		sorted_zipped_lists = sorted(zipped_lists)
 		humans_fed_fat = [element for _, element in sorted_zipped_lists]
@@ -712,6 +736,9 @@ class Analyzer:
 		assert((h_e_fraction_protein_used_for_feed < 1).all())
 		assert((h_e_fraction_protein_used_for_feed >= 0).all())
 
+		print("h e fraction kcals fed to humans")
+		print(h_e_fraction_kcals_fed_to_humans)
+
 		self.h_e_fraction_kcals_fed_to_humans = h_e_fraction_kcals_fed_to_humans
 		self.h_e_fraction_fat_fed_to_humans = h_e_fraction_fat_fed_to_humans
 		self.h_e_fraction_protein_fed_to_humans = h_e_fraction_protein_fed_to_humans
@@ -728,6 +755,11 @@ class Analyzer:
 			+np.array(self.billions_fed_fish_kcals)\
 			+ self.billions_fed_h_e_meat_kcals\
 			+ self.billions_fed_h_e_milk_kcals)
+
+		print("self.billions_fed_h_e_meat_kcals")
+		print(self.billions_fed_h_e_meat_kcals)
+		print("self.billions_fed_h_e_milk_kcals")
+		print(self.billions_fed_h_e_milk_kcals)
 
 		self.fat_fed = np.array(self.billions_fed_SF_fat)\
 			+np.array(self.billions_fed_meat_fat)\
