@@ -98,15 +98,15 @@ constants['inputs']['MEAT_SMOOTHING'] = False
 constants['inputs']['OVERALL_SMOOTHING'] = False
 
 
-constants['inputs']['ADD_FISH'] = False
-constants['inputs']['ADD_SEAWEED'] = False
-constants['inputs']['ADD_CELLULOSIC_SUGAR'] = False
-constants['inputs']['ADD_METHANE_SCP'] = False
-constants['inputs']['ADD_GREENHOUSES'] = False
+constants['inputs']['ADD_FISH'] = True
+constants['inputs']['ADD_SEAWEED'] = True
+constants['inputs']['ADD_CELLULOSIC_SUGAR'] = True
+constants['inputs']['ADD_METHANE_SCP'] = True
+constants['inputs']['ADD_GREENHOUSES'] = True
 constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
 constants['inputs']['ADD_DAIRY'] = True
-constants['inputs']['ADD_STORED_FOOD'] = False
-constants['inputs']['ADD_OUTDOOR_GROWING'] = False
+constants['inputs']['ADD_STORED_FOOD'] = True
+constants['inputs']['ADD_OUTDOOR_GROWING'] = True
 
 # only on farm + distribution waste
 
@@ -145,22 +145,23 @@ people_fed_billions = 0
 
 people_fed_arr = []
 excess_to_animals_arr = []
-# for excess in range(0,6):#billions human edible people excess calories
+excess_per_month_val = 0#2100 * 30*7.8e9/1e9
+excess_per_month = np.array([excess_per_month_val]*constants['inputs']['NMONTHS'])
+import matplotlib.pyplot as plt
 while(people_fed_billions > 7.81 \
 	or people_fed_billions < 7.79):
-	excess_to_animals_arr.append(excess)
-
-
-	excess_per_month = 2100 * 30*7.8e9/1e9/40
+	
 	# print("excess_per_month")
 	# print(excess_per_month)
-	#implies a certain amount of protein actually eaten by the animals as well
-	#units of billions of calories monthly
-	constants["inputs"]["EXCESS_CALORIES"] = np.array([excess_per_month]*constants['inputs']['NMONTHS'])
+	# plt.plot(excess_per_month)
+	# plt.show()
+
+	#billions of kcals	
+	constants["inputs"]["EXCESS_CALORIES"] = excess_per_month
 
 	[time_months,time_months_middle,analysis]=optimizer.optimize(constants)
-	people_fed_billions = analysis.people_fed_billions
-	people_fed_arr.append(people_fed_billions)
+	
+	# people_fed_arr.append(people_fed_billions)
 	print("")
 	print("")
 	print("")
@@ -173,7 +174,13 @@ while(people_fed_billions > 7.81 \
 	print("")
 	Plotter.plot_people_fed_combined(time_months_middle,analysis)
 	Plotter.plot_people_fed_kcals(time_months_middle,analysis)
-	quit()
+
+	people_fed_billions = analysis.people_fed_billions
+	excess_per_month = excess_per_month + analysis.excess_after_run
+	
+	if(n>30):
+		quit()
+	n = n + 1
 	# if(analysis.people_fed_billions < 7.75):
 	# 	excess = excess*.99
 	# 	previous_fed = analysis.people_fed_billions*1/.9
@@ -199,27 +206,24 @@ while(people_fed_billions > 7.81 \
 	# constants = analysis.get_meat_from_excess(constants,excess) #, human_edible_excess)
 
 	# constants['inputs']['FRACTION_TO_SLAUGHTER']
-	print("Human Edible meat as fraction of population")
-	# h_e_frac = constants["inputs"]["H_E_FED_MEAT_KCALS"]*1e9/constants["KCALS_MONTHLY"]/analysis.people_fed_billions/1e9
-	h_e_meat_people_fed = constants["inputs"]["H_E_FED_MEAT_KCALS"]*1e9/constants["KCALS_MONTHLY"]/1e9
+	# print("Human Edible meat as fraction of population")
+	# # h_e_frac = constants["inputs"]["H_E_FED_MEAT_KCALS"]*1e9/constants["KCALS_MONTHLY"]/analysis.people_fed_billions/1e9
+	# h_e_meat_people_fed = constants["inputs"]["H_E_FED_MEAT_KCALS"]*1e9/constants["KCALS_MONTHLY"]/1e9
 
-	print("h_e_meat_people_fed/excess")
-	# print(h_e_meat_people_fed/excess)
-	print("h_e_meat_people_fed")
-	print(h_e_meat_people_fed)
+	# print("h_e_meat_people_fed/excess")
+	# # print(h_e_meat_people_fed/excess)
+	# print("h_e_meat_people_fed")
+	# print(h_e_meat_people_fed)
 
-	# fraction_to_feed_to_animals = excess/analysis.people_fed_billions
-	fraction_to_feed_to_animals = excess/7.8
+	# # fraction_to_feed_to_animals = excess/analysis.people_fed_billions
+	# fraction_to_feed_to_animals = excess/7.8
 	
-	constants["inputs"]["gshrjdtrm"] = fraction_to_feed_to_animals
-	print("fraction_to_feed_to_animals")
-	print(fraction_to_feed_to_animals)
-	# print("conversion_ratio")
-	# print(h_e_frac/fraction_to_feed_to_animals)
+	# constants["inputs"]["gshrjdtrm"] = fraction_to_feed_to_animals
+	# print("fraction_to_feed_to_animals")
+	# print(fraction_to_feed_to_animals)
+	# # print("conversion_ratio")
+	# # print(h_e_frac/fraction_to_feed_to_animals)
 
-	if(n==3):
-		quit()
-	n = n + 1
 
 	# print("excess")
 	# print(excess)

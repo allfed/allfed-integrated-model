@@ -249,52 +249,52 @@ class Plotter:
 
 	def plot_people_fed(time_months_middle,analysis):
 		linestyles=[]
-		if(analysis.constants['ADD_STORED_FOOD']):
+		if(analysis.c['ADD_STORED_FOOD']):
 			linestyles = linestyles + ([\
 				(0,()), # solid 
 				(0,()), # solid 
 				(0,()) # solid 
 				])
-		if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		if(analysis.c['ADD_NONEGG_NONDAIRY_MEAT']):
 			linestyles = linestyles + ([\
 				(0,(1, 1)), # densely dotted 
 				(0,(1, 1)), # densely dotted 
 				(0,(1, 1)) # densely dotted 
 				])
-		if(analysis.constants['ADD_DAIRY']):
+		if(analysis.c['ADD_DAIRY']):
 			linestyles = linestyles + ([\
 				(0,(1, 5)), # dotted 
 				(0,(1, 5)), # dotted 
 				(0,(1, 5)) # dotted 
 				])
-		if(analysis.constants['ADD_SEAWEED']):
+		if(analysis.c['ADD_SEAWEED']):
 			linestyles = linestyles + ([\
 				(0, (3, 5, 1, 5)), # dashdotted
 				(0, (3, 5, 1, 5)), # dashdotted
 				(0, (3, 5, 1, 5)) # dashdotted
 				])
-		if(analysis.constants['ADD_GREENHOUSES']):
+		if(analysis.c['ADD_GREENHOUSES']):
 			linestyles = linestyles + ([\
 				(0, (5, 1)), # densely dashed 
 				(0, (5, 1)), # densely dashed 
 				(0, (5, 1)), # densely dashed 
 				])
 
-		# if(analysis.constants['ADD_FISH']):
+		# if(analysis.c['ADD_FISH']):
 		# 	linestyles = linestyles + ([\
 		# 		(0, (5, 1)), # densely dashed 
 		# 		(0, (5, 1)), # densely dashed 
 		# 		(0, (5, 1)), # densely dashed 
 		# 		])
 
-		if(analysis.constants['ADD_OUTDOOR_GROWING']):
+		if(analysis.c['ADD_OUTDOOR_GROWING']):
 			linestyles = linestyles + ([\
 				(0, (3, 10, 1, 10, 1, 10)), # loosely dash dotted 
 				(0, (3, 10, 1, 10, 1, 10)), # loosely dash dotted 
 				(0, (3, 10, 1, 10, 1, 10)), # loosely dash dotted 
 				])
 
-		if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
+		if(analysis.c['ADD_CELLULOSIC_SUGAR']):
 			linestyles = linestyles + ([(0, (3, 1, 1, 1, 1, 1))]) # densely dashdotdotted
 
 		ls_cycler = cycler('linestyle',linestyles)
@@ -306,14 +306,14 @@ class Plotter:
 		fig = plt.figure()
 		ax=plt.subplot(111)
 		legend=[]
-		if(analysis.constants['ADD_STORED_FOOD']):
+		if(analysis.c['ADD_STORED_FOOD']):
 			ax.plot(time_months_middle,analysis.billions_fed_SF_kcals,marker='o',markersize=3)
 			ax.plot(time_months_middle,analysis.billions_fed_SF_fat,marker='o',markersize=3)
 			ax.plot(time_months_middle,analysis.billions_fed_SF_protein,marker='o',markersize=3)
 			legend = legend + ['Stored Food, Limited by kcals',
 			'Stored Food, Limited by Fat',
 			'Stored Food, Limited by protein']
-		if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		if(analysis.c['ADD_NONEGG_NONDAIRY_MEAT']):
 			ax.plot(time_months_middle,np.array(analysis.billions_fed_meat_kcals)\
 				# +np.array(analysis.billions_fed_dairy_meat_kcals)\
 				,marker='o',markersize=3)
@@ -324,7 +324,7 @@ class Plotter:
 			legend = legend + ['Meat, Limited by kcals',
 			'Meat, Limited by Fat',
 			'Meat, Limited by protein']
-		if(analysis.constants['ADD_DAIRY']):
+		if(analysis.c['ADD_DAIRY']):
 			ax.plot(time_months_middle,analysis.billions_fed_milk_kcals,marker='o',markersize=3)
 			ax.plot(time_months_middle,analysis.billions_fed_milk_fat,marker='o',markersize=3)
 			ax.plot(time_months_middle,analysis.billions_fed_milk_protein,marker='o',markersize=3)
@@ -332,32 +332,32 @@ class Plotter:
 			'Milk, Limited by Fat',
 			'Milk, Limited by protein']
 
-		if(analysis.constants['ADD_SEAWEED']):
+		if(analysis.c['ADD_SEAWEED']):
 			ax.plot(time_months_middle,analysis.billions_fed_seaweed_kcals,marker='o',markersize=3)
 			ax.plot(time_months_middle,analysis.billions_fed_seaweed_fat,marker='o',markersize=3)
 			ax.plot(time_months_middle,analysis.billions_fed_seaweed_protein,marker='o',markersize=3)
 			legend = legend + ['Seaweed, Limited by kcals',
 				'Seaweed, Limited by Fat',
 				'Seaweed, Limited by protein']
-		if(analysis.constants['ADD_GREENHOUSES']):
+		if(analysis.c['ADD_GREENHOUSES']):
 			ax.plot(time_months_middle,analysis.billions_fed_GH_kcals,marker='o',markersize=3)
 			ax.plot(time_months_middle,analysis.billions_fed_GH_fat,marker='o',markersize=3)
 			ax.plot(time_months_middle,analysis.billions_fed_GH_protein,marker='o',markersize=3)
 			legend = legend + ['Greenhouse Food, Limited by kcals',
 			'Greenhouse Food, Limited by Fat',
 			'Greenhouse Food, Limited by protein']
-		if(analysis.constants['ADD_OUTDOOR_GROWING']):
+		if(analysis.c['ADD_OUTDOOR_GROWING']):
 			ax.plot(time_months_middle,analysis.billions_fed_OG_kcals,marker='o',markersize=3)
 			ax.plot(time_months_middle,analysis.billions_fed_OG_fat,marker='o',markersize=3)
 			ax.plot(time_months_middle,analysis.billions_fed_OG_protein,marker='o',markersize=3)
 			legend = legend + ['Outdoor Growing Food, Limited by kcals',
 			'Outdoor Growing Food, Limited by Fat',
 			'Outdoor Growing Food, Limited by protein']
-		if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
+		if(analysis.c['ADD_CELLULOSIC_SUGAR']):
 			ax.plot(time_months_middle,analysis.billions_fed_CS_kcals,marker='o',markersize=3)
 			legend = legend + ['Industrial Foods, Limited by kcals']
 
-		# if(analysis.constants['ADD_FISH']
+		# if(analysis.c['ADD_FISH']
 		# 	ax.plot(time_months_middle,analysis.billions_fed_CS_kcals,marker='o',markersize=3)
 		# 	legend = legend + ['Cellulosic Sugar, Limited by kcals']
 
@@ -386,27 +386,27 @@ class Plotter:
 
 	def plot_people_fed_fat(time_months_middle,analysis):
 		linestyles=[]
-		if(analysis.constants['ADD_STORED_FOOD']):
+		if(analysis.c['ADD_STORED_FOOD']):
 			linestyles = linestyles + ([\
 				(0,()) # solid 
 				])
-		if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		if(analysis.c['ADD_NONEGG_NONDAIRY_MEAT']):
 			linestyles = linestyles + ([\
 				(0,(1, 1)) # densely dotted 
 				])
-		if(analysis.constants['ADD_DAIRY']):
+		if(analysis.c['ADD_DAIRY']):
 			linestyles = linestyles + ([\
 				(0,(1, 5)) # dotted 
 				])
-		if(analysis.constants['ADD_SEAWEED']):
+		if(analysis.c['ADD_SEAWEED']):
 			linestyles = linestyles + ([\
 				(0, (3, 5, 1, 5)), # dashdotted
 				])
-		if(analysis.constants['ADD_GREENHOUSES']):
+		if(analysis.c['ADD_GREENHOUSES']):
 			linestyles = linestyles + ([\
 				(0, (5, 1)), # densely dashed 
 				])
-		if(analysis.constants['ADD_OUTDOOR_GROWING']):
+		if(analysis.c['ADD_OUTDOOR_GROWING']):
 			linestyles = linestyles + ([\
 				(0, (3, 10, 1, 10, 1, 10)) # loosely dash dotted 
 				])
@@ -420,24 +420,24 @@ class Plotter:
 		fig = plt.figure()
 		ax=plt.subplot(111)
 		legend=[]
-		if(analysis.constants['ADD_STORED_FOOD']):
+		if(analysis.c['ADD_STORED_FOOD']):
 			ax.plot(time_months_middle,analysis.billions_fed_SF_fat,marker='o',markersize=3)
 			legend = legend + ['Stored Food']
-		if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		if(analysis.c['ADD_NONEGG_NONDAIRY_MEAT']):
 			ax.plot(time_months_middle,np.array(analysis.billions_fed_meat_fat)\
 				+np.array(analysis.billions_fed_dairy_meat_fat),marker='o',markersize=3)
 			legend = legend + ['Meat']
-		if(analysis.constants['ADD_DAIRY']):
+		if(analysis.c['ADD_DAIRY']):
 			ax.plot(time_months_middle,analysis.billions_fed_milk_fat,marker='o',markersize=3)
 			legend = legend + ['Milk']
 
-		if(analysis.constants['ADD_SEAWEED']):
+		if(analysis.c['ADD_SEAWEED']):
 			ax.plot(time_months_middle,analysis.billions_fed_seaweed_fat,marker='o',markersize=3)
 			legend = legend + ['Seaweed']
-		if(analysis.constants['ADD_GREENHOUSES']):
+		if(analysis.c['ADD_GREENHOUSES']):
 			ax.plot(time_months_middle,analysis.billions_fed_GH_fat,marker='o',markersize=3)
 			legend = legend + ['Greenhouse Food']
-		if(analysis.constants['ADD_OUTDOOR_GROWING']):
+		if(analysis.c['ADD_OUTDOOR_GROWING']):
 			ax.plot(time_months_middle,analysis.billions_fed_OG_fat,marker='o',markersize=3)
 			legend = legend + ['Outdoor Growing']
 		box = ax.get_position()
@@ -453,27 +453,27 @@ class Plotter:
 
 	def plot_people_fed_protein(time_months_middle,analysis):
 		linestyles=[]
-		if(analysis.constants['ADD_STORED_FOOD']):
+		if(analysis.c['ADD_STORED_FOOD']):
 			linestyles = linestyles + ([\
 				(0,()) # solid 
 				])
-		if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		if(analysis.c['ADD_NONEGG_NONDAIRY_MEAT']):
 			linestyles = linestyles + ([\
 				(0,(1, 1)) # densely dotted 
 				])
-		if(analysis.constants['ADD_DAIRY']):
+		if(analysis.c['ADD_DAIRY']):
 			linestyles = linestyles + ([\
 				(0,(1, 5)) # dotted 
 				])
-		if(analysis.constants['ADD_SEAWEED']):
+		if(analysis.c['ADD_SEAWEED']):
 			linestyles = linestyles + ([\
 				(0, (3, 5, 1, 5)), # dashdotted
 				])
-		if(analysis.constants['ADD_GREENHOUSES']):
+		if(analysis.c['ADD_GREENHOUSES']):
 			linestyles = linestyles + ([\
 				(0, (5, 1)), # densely dashed 
 				])
-		if(analysis.constants['ADD_OUTDOOR_GROWING']):
+		if(analysis.c['ADD_OUTDOOR_GROWING']):
 			linestyles = linestyles + ([\
 				(0, (3, 10, 1, 10, 1, 10)) # loosely dash dotted 
 				])
@@ -487,24 +487,24 @@ class Plotter:
 		fig = plt.figure()
 		ax=plt.subplot(111)
 		legend=[]
-		if(analysis.constants['ADD_STORED_FOOD']):
+		if(analysis.c['ADD_STORED_FOOD']):
 			ax.plot(time_months_middle,analysis.billions_fed_SF_protein,marker='o',markersize=3)
 			legend = legend + ['Stored Food']
-		if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		if(analysis.c['ADD_NONEGG_NONDAIRY_MEAT']):
 			ax.plot(time_months_middle,np.array(analysis.billions_fed_meat_protein)\
 				+np.array(analysis.billions_fed_dairy_meat_protein),marker='o',markersize=3)
 			legend = legend + ['Meat']
-		if(analysis.constants['ADD_DAIRY']):
+		if(analysis.c['ADD_DAIRY']):
 			ax.plot(time_months_middle,analysis.billions_fed_milk_protein,marker='o',markersize=3)
 			legend = legend + ['Milk']
 
-		if(analysis.constants['ADD_SEAWEED']):
+		if(analysis.c['ADD_SEAWEED']):
 			ax.plot(time_months_middle,analysis.billions_fed_seaweed_protein,marker='o',markersize=3)
 			legend = legend + ['Seaweed']
-		if(analysis.constants['ADD_GREENHOUSES']):
+		if(analysis.c['ADD_GREENHOUSES']):
 			ax.plot(time_months_middle,analysis.billions_fed_GH_protein,marker='o',markersize=3)
 			legend = legend + ['Greenhouse Food']
-		if(analysis.constants['ADD_OUTDOOR_GROWING']):
+		if(analysis.c['ADD_OUTDOOR_GROWING']):
 			ax.plot(time_months_middle,analysis.billions_fed_OG_protein,marker='o',markersize=3)
 			legend = legend + ['Outdoor Growing']
 		box = ax.get_position()
@@ -542,21 +542,21 @@ class Plotter:
 		fig = plt.figure()
 		ax=plt.subplot(111)
 		# legend=[]
-		# if(analysis.constants['ADD_STORED_FOOD']):
+		# if(analysis.c['ADD_STORED_FOOD']):
 		# 	legend = legend + ['Stored Food']
-		# if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		# if(analysis.c['ADD_NONEGG_NONDAIRY_MEAT']):
 		# 	legend = legend + ['Meat']
-		# if(analysis.constants['ADD_DAIRY']):
+		# if(analysis.c['ADD_DAIRY']):
 		# 	legend = legend + ['Milk']
-		# if(analysis.constants['ADD_DAIRY']):
+		# if(analysis.c['ADD_DAIRY']):
 		# 	legend = legend + ['Fish']
-		# if(analysis.constants['ADD_SEAWEED']):
+		# if(analysis.c['ADD_SEAWEED']):
 		# 	legend = legend + ['Seaweed']
-		# if(analysis.constants['ADD_GREENHOUSES']):
+		# if(analysis.c['ADD_GREENHOUSES']):
 		# 	legend = legend + ['Greenhouse Food']
-		# if(analysis.constants['ADD_OUTDOOR_GROWING']):
+		# if(analysis.c['ADD_OUTDOOR_GROWING']):
 		# 	legend = legend + ['Outdoor Growing']
-		# if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
+		# if(analysis.c['ADD_CELLULOSIC_SUGAR']):
 		# 	legend = legend + ['Cellulosic Sugar']
 		# https://jacksonlab.agronomy.wisc.edu/2016/05/23/15-level-colorblind-friendly-palette/
 		# 	"#000000","#004949","#009292","#ff6db6","#ffb6db",
@@ -573,15 +573,15 @@ class Plotter:
 
 
 		stacks = ax.stackplot(time_months_middle,\
-			analysis.billions_fed_fish_kcals/analysis.constants["CONVERT_TO_KCALS"],\
-			(np.array(analysis.billions_fed_CS_kcals)+np.array(analysis.billions_fed_SCP_kcals))/ analysis.constants["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_GH_kcals/ analysis.constants["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_seaweed_kcals/ analysis.constants["CONVERT_TO_KCALS"],\
-			(analysis.billions_fed_milk_kcals+analysis.billions_fed_h_e_milk_kcals)/ analysis.constants["CONVERT_TO_KCALS"],\
-			(analysis.billions_fed_meat_kcals+analysis.billions_fed_h_e_meat_kcals)/analysis.constants["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_SF_kcals/analysis.constants["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_immediate_OG_kcals/analysis.constants["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_new_stored_OG_kcals/analysis.constants["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_fish_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			(np.array(analysis.billions_fed_CS_kcals)+np.array(analysis.billions_fed_SCP_kcals))/ analysis.c["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_GH_kcals/ analysis.c["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_seaweed_kcals/ analysis.c["CONVERT_TO_KCALS"],\
+			(analysis.billions_fed_milk_kcals+analysis.billions_fed_h_e_milk_kcals)/ analysis.c["CONVERT_TO_KCALS"],\
+			(analysis.billions_fed_meat_kcals+analysis.billions_fed_h_e_meat_kcals)/analysis.c["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_SF_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_immediate_OG_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_new_stored_OG_kcals/analysis.c["CONVERT_TO_KCALS"],\
 			 labels=[\
 			 'Marine Fish',\
 			 'Industrial Foods',\
@@ -618,7 +618,7 @@ class Plotter:
 			+analysis.billions_fed_GH_kcals[-1]
 			+analysis.billions_fed_seaweed_kcals[-1]
 			+analysis.billions_fed_CS_kcals[-1]
-			+analysis.billions_fed_SCP_kcals[-1])/analysis.constants["CONVERT_TO_KCALS"]])
+			+analysis.billions_fed_SCP_kcals[-1])/analysis.c["CONVERT_TO_KCALS"]])
 		# ax.set_ylim([0,48])
 		ax.set_xlim([0,48])
 		plt.show()
@@ -634,21 +634,21 @@ class Plotter:
 		fig = plt.figure()
 		ax=plt.subplot(111)
 		# legend=[]
-		# if(analysis.constants['ADD_STORED_FOOD']):
+		# if(analysis.c['ADD_STORED_FOOD']):
 		# 	legend = legend + ['Stored Food']
-		# if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		# if(analysis.c['ADD_NONEGG_NONDAIRY_MEAT']):
 		# 	legend = legend + ['Meat']
-		# if(analysis.constants['ADD_DAIRY']):
+		# if(analysis.c['ADD_DAIRY']):
 		# 	legend = legend + ['Milk']
-		# if(analysis.constants['ADD_DAIRY']):
+		# if(analysis.c['ADD_DAIRY']):
 		# 	legend = legend + ['Fish']
-		# if(analysis.constants['ADD_SEAWEED']):
+		# if(analysis.c['ADD_SEAWEED']):
 		# 	legend = legend + ['Seaweed']
-		# if(analysis.constants['ADD_GREENHOUSES']):
+		# if(analysis.c['ADD_GREENHOUSES']):
 		# 	legend = legend + ['Greenhouse Food']
-		# if(analysis.constants['ADD_OUTDOOR_GROWING']):
+		# if(analysis.c['ADD_OUTDOOR_GROWING']):
 		# 	legend = legend + ['Outdoor Growing']
-		# if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
+		# if(analysis.c['ADD_CELLULOSIC_SUGAR']):
 		# 	legend = legend + ['Cellulosic Sugar']
 		# https://jacksonlab.agronomy.wisc.edu/2016/05/23/15-level-colorblind-friendly-palette/
 		# 	"#000000","#004949","#009292","#ff6db6","#ffb6db",
@@ -660,17 +660,17 @@ class Plotter:
 		 "#920000","#924900","#db6d00","#24ff24","#ffff6d"]
 
 		stacks = ax.stackplot(time_months_middle,\
-			analysis.billions_fed_fish_kcals/analysis.constants["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_immediate_OG_kcals/analysis.constants["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_new_stored_OG_kcals/analysis.constants["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_SF_kcals/analysis.constants["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_fish_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_immediate_OG_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_new_stored_OG_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_SF_kcals/analysis.c["CONVERT_TO_KCALS"],\
 			(analysis.billions_fed_milk_kcals\
-				+analysis.billions_fed_h_e_milk_kcals)/analysis.constants["CONVERT_TO_KCALS"],\
+				+analysis.billions_fed_h_e_milk_kcals)/analysis.c["CONVERT_TO_KCALS"],\
 			(np.array(analysis.billions_fed_meat_kcals)\
-				+analysis.billions_fed_h_e_meat_kcals)/analysis.constants["CONVERT_TO_KCALS"],\
-			 analysis.billions_fed_GH_kcals/analysis.constants["CONVERT_TO_KCALS"],\
-			 analysis.billions_fed_seaweed_kcals/analysis.constants["CONVERT_TO_KCALS"],\
-			(np.array(analysis.billions_fed_CS_kcals)+np.array(analysis.billions_fed_SCP_kcals))/analysis.constants["CONVERT_TO_KCALS"],\
+				+analysis.billions_fed_h_e_meat_kcals)/analysis.c["CONVERT_TO_KCALS"],\
+			 analysis.billions_fed_GH_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			 analysis.billions_fed_seaweed_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			(np.array(analysis.billions_fed_CS_kcals)+np.array(analysis.billions_fed_SCP_kcals))/analysis.c["CONVERT_TO_KCALS"],\
 			 labels=[\
 			 'Marine Fish',\
 			 'Crops consumed \n immediately',
@@ -721,21 +721,21 @@ class Plotter:
 		fig = plt.figure()
 		ax=plt.subplot(111)
 		# legend=[]
-		# if(analysis.constants['ADD_STORED_FOOD']):
+		# if(analysis.c['ADD_STORED_FOOD']):
 		# 	legend = legend + ['Stored Food']
-		# if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		# if(analysis.c['ADD_NONEGG_NONDAIRY_MEAT']):
 		# 	legend = legend + ['Meat']
-		# if(analysis.constants['ADD_DAIRY']):
+		# if(analysis.c['ADD_DAIRY']):
 		# 	legend = legend + ['Milk']
-		# if(analysis.constants['ADD_DAIRY']):
+		# if(analysis.c['ADD_DAIRY']):
 		# 	legend = legend + ['Fish']
-		# if(analysis.constants['ADD_SEAWEED']):
+		# if(analysis.c['ADD_SEAWEED']):
 		# 	legend = legend + ['Seaweed']
-		# if(analysis.constants['ADD_GREENHOUSES']):
+		# if(analysis.c['ADD_GREENHOUSES']):
 		# 	legend = legend + ['Greenhouse Food']
-		# if(analysis.constants['ADD_OUTDOOR_GROWING']):
+		# if(analysis.c['ADD_OUTDOOR_GROWING']):
 		# 	legend = legend + ['Outdoor Growing']
-		# if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
+		# if(analysis.c['ADD_CELLULOSIC_SUGAR']):
 		# 	legend = legend + ['Cellulosic Sugar']
 		# https://jacksonlab.agronomy.wisc.edu/2016/05/23/15-level-colorblind-friendly-palette/
 		# 	"#000000","#004949","#009292","#ff6db6","#ffb6db",
@@ -751,17 +751,17 @@ class Plotter:
 		# print(analysis.billions_fed_new_stored_OG_kcals)
 
 		stacks = ax.stackplot(time_months_middle,\
-			analysis.billions_fed_fish_kcals/analysis.constants["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_immediate_OG_kcals/analysis.constants["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_new_stored_OG_kcals/analysis.constants["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_SF_kcals/analysis.constants["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_fish_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_immediate_OG_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_new_stored_OG_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_SF_kcals/analysis.c["CONVERT_TO_KCALS"],\
 			# (analysis.billions_fed_milk_kcals\
-			# 	+analysis.billions_fed_h_e_milk_kcals)/analysis.constants["CONVERT_TO_KCALS"],\
+			# 	+analysis.billions_fed_h_e_milk_kcals)/analysis.c["CONVERT_TO_KCALS"],\
 			(np.array(analysis.billions_fed_meat_kcals)\
-				+analysis.billions_fed_h_e_meat_kcals)/analysis.constants["CONVERT_TO_KCALS"],\
-			 analysis.billions_fed_GH_kcals/analysis.constants["CONVERT_TO_KCALS"],\
-			 analysis.billions_fed_seaweed_kcals/analysis.constants["CONVERT_TO_KCALS"],\
-			(np.array(analysis.billions_fed_CS_kcals)+np.array(analysis.billions_fed_SCP_kcals))/analysis.constants["CONVERT_TO_KCALS"],\
+				+analysis.billions_fed_h_e_meat_kcals)/analysis.c["CONVERT_TO_KCALS"],\
+			 analysis.billions_fed_GH_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			 analysis.billions_fed_seaweed_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			(np.array(analysis.billions_fed_CS_kcals)+np.array(analysis.billions_fed_SCP_kcals))/analysis.c["CONVERT_TO_KCALS"],\
 			 labels=[\
 			 'Marine Fish',\
 			 'Outdoor Crops consumed \n immediately',
@@ -804,32 +804,32 @@ class Plotter:
 
 
 		# linestyles=[]
-		# if(analysis.constants['ADD_STORED_FOOD']):
+		# if(analysis.c['ADD_STORED_FOOD']):
 		# 	linestyles = linestyles + ([\
 		# 		(0,()) # solid 
 		# 		])
-		# if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		# if(analysis.c['ADD_NONEGG_NONDAIRY_MEAT']):
 		# 	linestyles = linestyles + ([\
 		# 		(0,(1, 1)) # densely dotted 
 		# 		])
-		# if(analysis.constants['ADD_DAIRY']):
+		# if(analysis.c['ADD_DAIRY']):
 		# 	linestyles = linestyles + ([\
 		# 		(0,(1, 5)) # dotted 
 		# 		])
-		# if(analysis.constants['ADD_SEAWEED']):
+		# if(analysis.c['ADD_SEAWEED']):
 		# 	linestyles = linestyles + ([\
 		# 		(0, (3, 5, 1, 5)), # dashdotted
 		# 		])
-		# if(analysis.constants['ADD_GREENHOUSES']):
+		# if(analysis.c['ADD_GREENHOUSES']):
 		# 	linestyles = linestyles + ([\
 		# 		(0, (5, 1)), # densely dashed 
 		# 		])
-		# if(analysis.constants['ADD_OUTDOOR_GROWING']):
+		# if(analysis.c['ADD_OUTDOOR_GROWING']):
 		# 	linestyles = linestyles + ([\
 		# 		(0, (3, 10, 1, 10, 1, 10)) # loosely dash dotted 
 		# 		])
 
-		# if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
+		# if(analysis.c['ADD_CELLULOSIC_SUGAR']):
 		# 	linestyles = linestyles + ([(0, (3, 1, 1, 1, 1, 1))]) # densely dashdotdotted
 
 		# ls_cycler = cycler('linestyle',linestyles)
@@ -841,27 +841,27 @@ class Plotter:
 		# fig = plt.figure()
 		# ax=plt.subplot(111)
 		# legend=[]
-		# if(analysis.constants['ADD_STORED_FOOD']):
+		# if(analysis.c['ADD_STORED_FOOD']):
 		# 	ax.plot(time_months_middle,analysis.billions_fed_SF_kcals,marker='o',markersize=3)
 		# 	legend = legend + ['Stored Food']
-		# if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		# if(analysis.c['ADD_NONEGG_NONDAIRY_MEAT']):
 		# 	ax.plot(time_months_middle,np.array(analysis.billions_fed_meat_kcals)\
 		# 		+np.array(analysis.billions_fed_dairy_meat_kcals),marker='o',markersize=3)
 		# 	legend = legend + ['Meat']
-		# if(analysis.constants['ADD_DAIRY']):
+		# if(analysis.c['ADD_DAIRY']):
 		# 	ax.plot(time_months_middle,analysis.billions_fed_milk_kcals,marker='o',markersize=3)
 		# 	legend = legend + ['Milk']
 
-		# if(analysis.constants['ADD_SEAWEED']):
+		# if(analysis.c['ADD_SEAWEED']):
 		# 	ax.plot(time_months_middle,analysis.billions_fed_seaweed_kcals,marker='o',markersize=3)
 		# 	legend = legend + ['Seaweed']
-		# if(analysis.constants['ADD_GREENHOUSES']):
+		# if(analysis.c['ADD_GREENHOUSES']):
 		# 	ax.plot(time_months_middle,analysis.billions_fed_GH_kcals,marker='o',markersize=3)
 		# 	legend = legend + ['Greenhouse Food']
-		# if(analysis.constants['ADD_OUTDOOR_GROWING']):
+		# if(analysis.c['ADD_OUTDOOR_GROWING']):
 		# 	ax.plot(time_months_middle,analysis.billions_fed_OG_kcals,marker='o',markersize=3)
 		# 	legend = legend + ['Outdoor Growing']
-		# if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
+		# if(analysis.c['ADD_CELLULOSIC_SUGAR']):
 		# 	ax.plot(time_months_middle,analysis.billions_fed_CS_kcals,marker='o',markersize=3)
 		# 	legend = legend + ['Cellulosic Sugar']
 		# box = ax.get_position()
@@ -884,21 +884,21 @@ class Plotter:
 		fig = plt.figure()
 		ax=plt.subplot(111)
 		title=''
-		if(analysis.constants['ADD_SEAWEED']):
+		if(analysis.c['ADD_SEAWEED']):
 			title = title + "Seaweed, "
-		if(analysis.constants['ADD_STORED_FOOD']):
+		if(analysis.c['ADD_STORED_FOOD']):
 			title = title + "Stored Food, "
-		if(analysis.constants['ADD_NONEGG_NONDAIRY_MEAT']):
+		if(analysis.c['ADD_NONEGG_NONDAIRY_MEAT']):
 			title = title + "Meat, "
-		if(analysis.constants['ADD_CELLULOSIC_SUGAR']):
+		if(analysis.c['ADD_CELLULOSIC_SUGAR']):
 			title = title + "Cell. Sugar, "
-		if(analysis.constants['ADD_DAIRY']):
+		if(analysis.c['ADD_DAIRY']):
 			title = title + "Dairy, "
-		if(analysis.constants['ADD_GREENHOUSES']):
+		if(analysis.c['ADD_GREENHOUSES']):
 			title = title + "Greenhouses, "
-		if(analysis.constants['ADD_OUTDOOR_GROWING']):
+		if(analysis.c['ADD_OUTDOOR_GROWING']):
 			title = title + "Outdoor Growing, "
-		if(analysis.constants['ADD_FISH']):
+		if(analysis.c['ADD_FISH']):
 			title = title + "Fish, "
 		title = title + "Population Fed"
 		plt.title(title)
@@ -1075,8 +1075,8 @@ class Plotter:
 		plt.yscale('log')
 		plt.show()
 
-		plt.plot(spreadsheet_days,np.array(food_spreadsheet).cumsum()/1000*analysis.constants["SEAWEED_KCALS"]/analysis.constants["KCALS_MONTHLY"])
-		plt.plot(time_days_daily,np.array(analysis.seaweed_food_produced_daily).cumsum()*analysis.constants["SEAWEED_KCALS"]/analysis.constants["KCALS_MONTHLY"])
+		plt.plot(spreadsheet_days,np.array(food_spreadsheet).cumsum()/1000*analysis.c["SEAWEED_KCALS"]/analysis.c["KCALS_MONTHLY"])
+		plt.plot(time_days_daily,np.array(analysis.seaweed_food_produced_daily).cumsum()*analysis.c["SEAWEED_KCALS"]/analysis.c["KCALS_MONTHLY"])
 		legend = [
 			'Aron\'s Spreadsheet Food Wet Harvest Estimate',
 			'Optimizer Estimate Food Wet Harvest Estimate'
