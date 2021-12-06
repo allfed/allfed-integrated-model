@@ -574,9 +574,7 @@ class Optimizer:
 		
 		#####helps reduce wild fluctutions in people fed #######
 		if(m>0 and self.c['inputs']['OVERALL_SMOOTHING'] and m < 74):
-			self.c["FLUCTUATION_LIMIT"] = c['inputs']["FLUCTUATION_LIMIT"]
-			model += (v["humans_fed_kcals"][m] <= v["humans_fed_kcals"][m]*self.c["FLUCTUATION_LIMIT"], "Small_Change_Plus_Humans_Fed_Month_"+str(m)+"_Constraint")
-			model += (v["humans_fed_kcals"][m] >= v["humans_fed_kcals"][m]*(1/self.c["FLUCTUATION_LIMIT"]), "Small_Change_Minus_Humans_Fed_Month_"+str(m)+"_Constraint")
+			model += (v["humans_fed_kcals"][m] >= v["humans_fed_kcals"][m]*(1/self.c["inputs"]["FLUCTUATION_LIMIT"]), "Small_Change_Minus_Humans_Fed_Month_"+str(m)+"_Constraint")
 
 		# make sure we haven't left any crops produced unconsumed
 		# if(m==NMONTHS-1):
