@@ -4,55 +4,38 @@
 
 #check that as time increases, more people can be fed
 
-#check that stored food plus meat is always used at the 
-#highest rate during the largest food shortage.
-
 import os
 import sys
 module_path = os.path.abspath(os.path.join('..'))
 if module_path not in sys.path:
 	sys.path.append(module_path)
-from src.optimizer import Optimizer
 
 import itertools
 import random
+from src.optimizer import Optimizer
 import matplotlib.pyplot as plt
+
 constants = {}
 constants['inputs'] = {}
 
-constants['inputs']['NMONTHS'] = 24
+constants['inputs']['NMONTHS'] = 84
 constants['inputs']['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
 
-constants['inputs']['ASSUMED_WASTE_PERCENT'] = 35
-constants['inputs']['ASSUMED_WASTE_PERCENT_M1'] = 35
-constants['inputs']['ASSUMED_WASTE_PERCENT_AFTER_M1'] = 30
-# constants['inputs']['ALL_BIOFUEL'] = 22e6#tons dry caloric equivalent
-constants['inputs']['M1_ADDITIONAL_WASTE'] = 5e9/12#tons dry caloric equivalent
+constants['inputs']['NUTRITION'] = {\
+	'FAT_DAILY':47,'KCALS_DAILY':2100,'PROTEIN_DAILY':51}
 
-constants['inputs']['NUTRITION'] = {'FAT_DAILY':35,'KCALS_DAILY':2100,'PROTEIN_DAILY':51}
-
-constants['inputs']['INITIAL_MILK_COWS'] = 264e6
 constants['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS'] = 30
-constants['inputs']['INIT_SMALL_ANIMALS'] = 28.2e9
-constants['inputs']['INIT_MEDIUM_ANIMALS'] = 3.2e9
-constants['inputs']['INIT_LARGE_ANIMALS'] = 1.9e9
-constants['inputs']['HARVEST_LOSS'] = 15 # percent (seaweed)
-constants['inputs']['INITIAL_SEAWEED'] = 1 # 1000 tons (seaweed)
-constants['inputs']['INITIAL_AREA'] = 1 # 1000 tons (seaweed)
 constants['inputs']['NEW_AREA_PER_DAY'] = 4.153 # 1000 km^2 (seaweed)
-constants['inputs']['MINIMUM_DENSITY'] = 400 #tons/km^2 (seaweed)
-constants['inputs']['MAXIMUM_DENSITY'] = 4000 #tons/km^2 (seaweed)
-constants['inputs']['MAXIMUM_AREA'] = 1000 # 1000 km^2 (seaweed)
 constants['inputs']['SEAWEED_PRODUCTION_RATE'] = 10 # percent (seaweed)
-constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1602542*1000.
-constants['inputs']['INITIAL_SF_PROTEIN'] = 203607 #1000 tons protein per unit mass initial
-constants['inputs']['INITIAL_SF_FAT'] = 63948 # 1000 tons fat per unit mass initial
-constants['CHECK_CONSTRAINTS'] = False
-constants['inputs']['RATIO_KCALS_POSTDISASTER'] = {'Y1':0.4,'Y2':0.2,'Y3':0.2,'Y4':0.2}
-# constants['inputs']['RATIO_KCALS_POSTDISASTER_Y1'] = 0.4
-# constants['inputs']['RATIO_KCALS_POSTDISASTER_Y2'] = 0.2
-# constants['inputs']['RATIO_KCALS_POSTDISASTER_Y3'] = 0.2
-# constants['inputs']['RATIO_KCALS_POSTDISASTER_Y4'] = 0.2
+
+# "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
+constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1360e6
+constants['inputs']['INITIAL_SF_PROTEIN'] = 166071 #1000 tons protein per unit mass initial
+constants['inputs']['INITIAL_SF_FAT'] = 69254 # 1000 tons fat per unit mass 
+
+constants["inputs"]["OG_USE_BETTER_ROTATION"] = False
+
+
 optimizer = Optimizer()
 
 
@@ -67,6 +50,7 @@ constants['inputs']['ADD_OUTDOOR_GROWING'] = True
 constants['inputs']['GREENHOUSE_FAT_MULTIPLIER'] = 1.5
 # 
 
+constants['CHECK_CONSTRAINTS'] = False
 def monte_carlo():
 
 	variables = {}

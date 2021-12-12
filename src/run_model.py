@@ -15,153 +15,132 @@ if module_path not in sys.path:
 from src.optimizer import Optimizer
 from src.plotter import Plotter
 import numpy as np
-constants = {}
-constants['inputs'] = {}
+c = {}
+c['CHECK_CONSTRAINTS'] = False
 
-constants['inputs']['NMONTHS'] = 84
-constants['inputs']['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
+c['inputs'] = {}
 
-constants['inputs']['WASTE'] = {}
+c['inputs']['NMONTHS'] = 84
+c['inputs']['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
 
+c['inputs']['NUTRITION']={}
+c['inputs']['NUTRITION']['KCALS_DAILY'] = 2100 #kcals per person per day
+c['inputs']['NUTRITION']['FAT_DAILY'] = 47#35 #grams per person per day
+c['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51#46 #grams per person per day
 
-#overall waste, on farm+distribution+retail
-constants['inputs']['WASTE']['CEREALS'] = 19.02 #%
-constants['inputs']['WASTE']['SUGAR'] = 14.47 #%
-constants['inputs']['WASTE']['MEAT'] = 15.17 #%
-constants['inputs']['WASTE']['DAIRY'] = 16.49 #%
-constants['inputs']['WASTE']['SEAFOOD'] = 14.55 #%
-constants['inputs']['WASTE']['CROPS'] = 19.33 #%
-constants['inputs']['WASTE']['SEAWEED'] = 14.37 #%
+c['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS'] = 10
+c['inputs']['NEW_AREA_PER_DAY'] = 4.153 # 1000 km^2 (seaweed)
+c['inputs']['SEAWEED_PRODUCTION_RATE'] = 10 # percent (seaweed)
 
-constants['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 0 # months
-constants['inputs']['M1_ADDITIONAL_WASTE'] = 5e9/12#tons dry caloric equivalent
-constants['inputs']['NUTRITION']={}
-constants['inputs']['NUTRITION']['KCALS_DAILY'] = 2100 #kcals per person per day
-constants['inputs']['NUTRITION']['FAT_DAILY'] = 47/2 #grams per person per day
-constants['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51/2#grams per person per day
+# "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
+c['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1360e6
+c['inputs']['INITIAL_SF_PROTEIN'] = 166071 #1000 tons protein per unit mass initial
+c['inputs']['INITIAL_SF_FAT'] = 69254 # 1000 tons fat per unit mass 
 
-constants['inputs']['INITIAL_MILK_COWS'] = 264e6
-constants['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS'] = 10
-constants['inputs']['INIT_SMALL_ANIMALS'] = 28.2e9
-constants['inputs']['INIT_MEDIUM_ANIMALS'] = 3.2e9
-constants['inputs']['INIT_LARGE_ANIMALS'] = 1.9e9
-constants['inputs']['HARVEST_LOSS'] = 15 # percent (seaweed)
-constants['inputs']['INITIAL_SEAWEED'] = 1 # 1000 tons (seaweed)
-constants['inputs']['INITIAL_AREA'] = 1 # 1000 tons (seaweed)
-constants['inputs']['NEW_AREA_PER_DAY'] = 4.153 # 1000 km^2 (seaweed)
-constants['inputs']['MINIMUM_DENSITY'] = 400 #tons/km^2 (seaweed)
-constants['inputs']['MAXIMUM_DENSITY'] = 4000 #tons/km^2 (seaweed)
-constants['inputs']['MAXIMUM_AREA'] = 1000 # 1000 km^2 (seaweed)
-constants['inputs']['SEAWEED_PRODUCTION_RATE'] = 10 # percent (seaweed)
-constants['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1349e6
-constants['inputs']['INITIAL_SF_PROTEIN'] = 203607 #1000 tons protein per unit mass initial
-constants['inputs']['INITIAL_SF_FAT'] = 63948 # 1000 tons fat per unit mass initial
+c["inputs"]["OG_USE_BETTER_ROTATION"] = True
 
-constants['inputs']['RATIO_KCALS_POSTDISASTER']={}
-constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y1'] = 1-.53
-constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y2'] = 1-0.82
-constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y3'] = 1-.89
-constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y4'] = 1-.88
-constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y5'] = 1-.84
-constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y6'] = 1-.76
-constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y7'] = 1-.65
-constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y8'] = 1-.5
-constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y9'] = 1-.4
-constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y10'] = 1-.17
-constants['inputs']['RATIO_KCALS_POSTDISASTER']['Y11'] = 1-.08
+c['inputs']['INCLUDE_PROTEIN'] = True
+c['inputs']['INCLUDE_FAT'] = True
 
-constants['inputs']['SEASONALITY']=\
-	[0.1564,0.0461,0.0650,0.1017,0.0772,0.0785,\
-	0.0667,0.0256,0.0163,0.1254,0.1183,0.1228]
+c['inputs']['GREENHOUSE_GAIN_PCT'] = 40
 
-MEAT_SUSTAINABLE_YIELD_PER_YEAR = 100.4
+c['inputs']['GREENHOUSE_SLOPE_MULTIPLIER'] = 1 #default values from greenhouse paper
+c['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1 #default values from CS paper
 
-MEAT_CURRENT_YIELD_PER_YEAR = 222 #million tons dry caloric
+c['inputs']['INITIAL_HARVEST_DURATION'] = 7 # months
 
-# constants['inputs']['FRACTION_TO_SLAUGHTER'] = 0#\
-	# 1-MEAT_SUSTAINABLE_YIELD_PER_YEAR/MEAT_CURRENT_YIELD_PER_YEAR
+c['inputs']['IS_NUCLEAR_WINTER'] = True
+c['inputs']['FLUCTUATION_LIMIT'] = 2
+c['inputs']['KCAL_SMOOTHING'] = False
+c['inputs']['MEAT_SMOOTHING'] = False
+c['inputs']['STORED_FOOD_SMOOTHING'] = False
 
-constants['inputs']['INCLUDE_PROTEIN'] = True
-constants['inputs']['INCLUDE_FAT'] = True
-constants['inputs']['FLUCTUATION_LIMIT'] = 1.2 
-constants['inputs']['GREENHOUSE_GAIN_PCT'] = 40
+c['inputs']['ADD_CELLULOSIC_SUGAR'] = True
+c['inputs']['ADD_DAIRY'] = True
+c['inputs']['ADD_FISH'] = True
+c['inputs']['ADD_GREENHOUSES'] = True
+c['inputs']['ADD_OUTDOOR_GROWING'] = True
+c['inputs']['ADD_MEAT'] = True
+c['inputs']['ADD_METHANE_SCP'] = True
+c['inputs']['ADD_SEAWEED'] = True
+c['inputs']['ADD_STORED_FOOD'] = True
 
-constants['inputs']['DAIRY_PRODUCTION'] = 1 #multiplies current dairy productivity (based on stress of animals)
-constants['inputs']['GREENHOUSE_FAT_MULTIPLIER'] = 1 # we can grow twice as much fat as greenhouses would have
-constants['inputs']['GREENHOUSE_SLOPE_MULTIPLIER'] = 1 #default values from greenhouse paper
-constants['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1 #default values from CS paper
-constants["inputs"]["OG_USE_BETTER_ROTATION"] = True
-
-constants['inputs']['IS_NUCLEAR_WINTER'] = True
-constants['inputs']['STORED_FOOD_SMOOTHING'] = False
-constants['inputs']['MEAT_SMOOTHING'] = False
-constants['inputs']['OVERALL_SMOOTHING'] = False
-
-
-constants['inputs']['ADD_FISH'] = True
-constants['inputs']['ADD_SEAWEED'] = True
-constants['inputs']['ADD_CELLULOSIC_SUGAR'] = True
-constants['inputs']['ADD_METHANE_SCP'] = True
-constants['inputs']['ADD_GREENHOUSES'] = True
-constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
-constants['inputs']['ADD_DAIRY'] = True
-constants['inputs']['ADD_STORED_FOOD'] = True
-constants['inputs']['ADD_OUTDOOR_GROWING'] = True
-
-# only on farm + distribution waste
-
-constants['inputs']['DISTRIBUTION_WASTE'] = {} #%
-constants['inputs']['DISTRIBUTION_WASTE']['SEAWEED'] = 0 #%
-constants['inputs']['DISTRIBUTION_WASTE']['CEREALS'] = 4.65 #%
-constants['inputs']['DISTRIBUTION_WASTE']['CROPS'] = 4.96
-constants['inputs']['DISTRIBUTION_WASTE']['SUGAR'] = 0.09 #%
-constants['inputs']['DISTRIBUTION_WASTE']['MEAT'] = .80 #%
-constants['inputs']['DISTRIBUTION_WASTE']['DAIRY'] = 2.120 #%
-constants['inputs']['DISTRIBUTION_WASTE']['SEAFOOD'] = 0.17 #%
-
+c["inputs"]["EXCESS_CALORIES"] = np.array([0]*c['inputs']['NMONTHS'])
+c['inputs']['FEED_SHUTOFF_DELAY'] = 0 # months
+c['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 0 # months
  
-constants["inputs"]["H_E_FED_MEAT_KCALS"] = 0
-constants["inputs"]["H_E_FED_MEAT_FAT"] = 0
-constants["inputs"]["H_E_FED_MEAT_PROTEIN"] = 0
+c["inputs"]["CULL_DURATION"] = np.nan # will be recalculated
+c['inputs']['RECALCULATE_CULL_DURATION'] = True #thousand tons
 
-# constants["inputs"]["FEED_SOURCES"] = ["SEAWEED","CELLULOSIC_SUGAR","METHANE_SCP","OUTDOOR_GROWING","STORED_FOOD"]
+c['inputs']['WASTE'] = {}
+c['inputs']['WASTE']['CEREALS'] = 0 #%
+c['inputs']['WASTE']['SUGAR'] = 0 #%
+c['inputs']['WASTE']['MEAT'] = 0 #%
+c['inputs']['WASTE']['DAIRY'] = 0 #%
+c['inputs']['WASTE']['SEAFOOD'] = 0 #%
+c['inputs']['WASTE']['CROPS'] = 0 #%
+c['inputs']['WASTE']['SEAWEED'] = 0 #%
 
-
-constants['CHECK_CONSTRAINTS'] = False
 optimizer = Optimizer()
+[time_months,time_months_middle,analysis]=optimizer.optimize(c)
 
-# [time_months,time_months_middle,analysis]=optimizer.optimize(constants)
-# Plotter.plot_people_fed_combined(time_months_middle,analysis)
-# Plotter.plot_people_fed_kcals(time_months_middle,analysis)
+print("")
+print("")
+print("")
+print("")
+print("people_fed_billions")
+print(analysis.people_fed_billions)
+print("")
+print("")
+print("")
+print("")
 
-# we take total food produced given the excess, calculate calories from animals fed maintained, and subtract the human edible and add the resulting meat to the simulation. If the minimum is below, we take the discepancy, use it as an added value to maintained, and run optimizer again. Stop when within 0.1% of the minimum being at 7.8 billion.
+Plotter.plot_people_fed_combined(time_months_middle,analysis)
+Plotter.plot_people_fed_kcals(time_months_middle,analysis,\
+	'Primary Caloric Monthly Sources, With Deployment')
 
-# previous_fed = analysis.people_fed_billions
-# excess = analysis.people_fed_billions - 7.8
-# fraction_to_feed_to_animals = initial_excess/analysis.people_fed_billions
+# nuclear winter 150 tab, cell G30-G38  https://docs.google.com/spreadsheets/d/14t3_PUIky6aNiBvw8q24sj6QYxCN9s_VddLY2-eJuPE/edit#gid=1637082097
+#overall waste, on farm+distribution+retail
+#3x prices (note, currently set to 2019, not 2020)
+c['inputs']['WASTE'] = {}
+c['inputs']['WASTE']['CEREALS'] = 19.02 #%
+c['inputs']['WASTE']['SUGAR'] = 14.47 #%
+c['inputs']['WASTE']['MEAT'] = 15.17 #%
+c['inputs']['WASTE']['DAIRY'] = 16.49 #%
+c['inputs']['WASTE']['SEAFOOD'] = 14.55 #%
+c['inputs']['WASTE']['CROPS'] = 19.33 #%
+c['inputs']['WASTE']['SEAWEED'] = 14.37 #%
+
+excess_per_month = np.array([0]*c['inputs']['NMONTHS'])
+c["inputs"]["EXCESS_CALORIES"] = excess_per_month
+c['inputs']['FEED_SHUTOFF_DELAY'] = 2 # months
+c['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 1 # months
+ 
+c["inputs"]["CULL_DURATION"] = analysis.c["CULL_DURATION"]
+c['inputs']['RECALCULATE_CULL_DURATION'] = False #thousand tons
+
 n=0
-excess = 0
 people_fed_billions = 0
-
-people_fed_arr = []
-excess_to_animals_arr = []
-excess_per_month_val = 0#2100 * 30*7.8e9/1e9
-excess_per_month = np.array([excess_per_month_val]*constants['inputs']['NMONTHS'])
-import matplotlib.pyplot as plt
 while(people_fed_billions > 7.81 \
 	or people_fed_billions < 7.79):
 	
+	# import matplotlib.pyplot as plt
 	# print("excess_per_month")
 	# print(excess_per_month)
 	# plt.plot(excess_per_month)
 	# plt.show()
 
 	#billions of kcals	
-	constants["inputs"]["EXCESS_CALORIES"] = excess_per_month
+	c["inputs"]["EXCESS_CALORIES"] = c['inputs']["EXCESS_CALORIES"]
+	c['inputs']['FEED_SHUTOFF_DELAY'] = 2 # months
+	c['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 1 # months
+	# "Sources/summary" tab cell I14.  https://docs.google.com/spreadsheets/d/1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=0
 
-	[time_months,time_months_middle,analysis]=optimizer.optimize(constants)
+	c["inputs"]["CULL_DURATION"] = analysis.c["CULL_DURATION"]
+	c['inputs']['RECALCULATE_CULL_DURATION'] = False #thousand tons
+
+	[time_months,time_months_middle,analysis]=optimizer.optimize(c)
 	
-	# people_fed_arr.append(people_fed_billions)
 	print("")
 	print("")
 	print("")
@@ -172,170 +151,140 @@ while(people_fed_billions > 7.81 \
 	print("")
 	print("")
 	print("")
-	Plotter.plot_people_fed_combined(time_months_middle,analysis)
-	Plotter.plot_people_fed_kcals(time_months_middle,analysis)
+	if(n == 0):
+		Plotter.plot_people_fed_combined(time_months_middle,analysis)
+		Plotter.plot_people_fed_kcals(time_months_middle,analysis,'Caloric Sources Minus Waste and Temporary Continued Present-day Feed and Biofuel, With Deployment')
+
 
 	people_fed_billions = analysis.people_fed_billions
-	excess_per_month = excess_per_month + analysis.excess_after_run
+	
+	feed_delay = c['inputs']['FEED_SHUTOFF_DELAY']
+	
+	#don't try to feed more animals in the  months before feed shutoff
+	excess_per_month[feed_delay:] = excess_per_month[feed_delay:]+ analysis.excess_after_run[feed_delay:]
+
+	# excess_per_month = excess_per_month+ analysis.excess_after_run
 	
 	if(n>30):
-		quit()
+		break
 	n = n + 1
-	# if(analysis.people_fed_billions < 7.75):
-	# 	excess = excess*.99
-	# 	previous_fed = analysis.people_fed_billions*1/.9
-	# 	continue
-	# 	#went too fast
-	# 	print("went too fast")
 
 
-	# if(analysis.people_fed_billions < 7.79):
-	# 	print("less than population, stopping")
-		# break
-	#below could break if we are short on fat or protein
-	# assert(analysis.people_fed_billions <= previous_fed)
-
-
-	# previous_fed = analysis.people_fed_billions
-	# new_excess = analysis.people_fed_billions - 7.8
-	# print('new_excess')
-	# print(new_excess)
-	# excess = new_excess + excess
-	# print("excess")
-	# print(excess)
-	# constants = analysis.get_meat_from_excess(constants,excess) #, human_edible_excess)
-
-	# constants['inputs']['FRACTION_TO_SLAUGHTER']
-	# print("Human Edible meat as fraction of population")
-	# # h_e_frac = constants["inputs"]["H_E_FED_MEAT_KCALS"]*1e9/constants["KCALS_MONTHLY"]/analysis.people_fed_billions/1e9
-	# h_e_meat_people_fed = constants["inputs"]["H_E_FED_MEAT_KCALS"]*1e9/constants["KCALS_MONTHLY"]/1e9
-
-	# print("h_e_meat_people_fed/excess")
-	# # print(h_e_meat_people_fed/excess)
-	# print("h_e_meat_people_fed")
-	# print(h_e_meat_people_fed)
-
-	# # fraction_to_feed_to_animals = excess/analysis.people_fed_billions
-	# fraction_to_feed_to_animals = excess/7.8
-	
-	# constants["inputs"]["gshrjdtrm"] = fraction_to_feed_to_animals
-	# print("fraction_to_feed_to_animals")
-	# print(fraction_to_feed_to_animals)
-	# # print("conversion_ratio")
-	# # print(h_e_frac/fraction_to_feed_to_animals)
-
-
-	# print("excess")
-	# print(excess)
-
-
-	# constants['inputs']['FRACTION_TO_SLAUGHTER']
-	# [time_months,time_months_middle,analysis]=optimizer.optimize(constants)
-
-
+# only on farm + distribution waste
+# (on farm waste is implicit in production numbers)
+# c['inputs']['DISTRIBUTION_WASTE'] = {} #%
+# c['inputs']['DISTRIBUTION_WASTE']['SEAWEED'] = 0 #%
+# c['inputs']['DISTRIBUTION_WASTE']['CEREALS'] = 4.65 #%
+# c['inputs']['DISTRIBUTION_WASTE']['CROPS'] = 4.96
+# c['inputs']['DISTRIBUTION_WASTE']['SUGAR'] = 0.09 #%
+# c['inputs']['DISTRIBUTION_WASTE']['MEAT'] = .80 #%
+# c['inputs']['DISTRIBUTION_WASTE']['DAIRY'] = 2.120 #%
+# c['inputs']['DISTRIBUTION_WASTE']['SEAFOOD'] = 0.17 #%
 
 # calories_fed_to_animals = analysis.get_calories_fed_to_animals(analysis,)
 
-# [time_months,time_months_middle,analysis]=optimizer.estimate_food_ratios(constants)
+# [time_months,time_months_middle,analysis]=optimizer.estimate_food_ratios(c)
 
-# if(constants['inputs']['ADD_CELLULOSIC_SUGAR']):
+# if(c['inputs']['ADD_CELLULOSIC_SUGAR']):
 # 	Plotter.plot_CS(time_months_middle,analysis)
 
-# if(constants['inputs']['ADD_FISH']):
+# if(c['inputs']['ADD_FISH']):
 # 	Plotter.plot_fish(time_months_middle,analysis)
 
-# if(constants['inputs']['ADD_GREENHOUSES']):
+# if(c['inputs']['ADD_GREENHOUSES']):
 # 	Plotter.plot_GH(time_months_middle,analysis)
 
-# if(constants['inputs']['ADD_OUTDOOR_GROWING']):
+# if(c['inputs']['ADD_OUTDOOR_GROWING']):
 # 	Plotter.plot_OG_with_resilient_foods(time_months_middle,analysis)
 
-# if(constants['inputs']['ADD_STORED_FOOD']):
+# if(c['inputs']['ADD_STORED_FOOD']):
 # 	Plotter.plot_stored_food(time_months,analysis)
 
-# if(constants['inputs']['ADD_SEAWEED']):
+# if(c['inputs']['ADD_SEAWEED']):
 # 	Plotter.plot_seaweed(time_months_middle,analysis)
 
-if(constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT']):
-	Plotter.plot_nonegg_nondairy_meat(time_months_middle,analysis)
+if(c['inputs']['ADD_MEAT']):
+	Plotter.plot_meat(time_months_middle,analysis)
 
-if(constants['inputs']['ADD_DAIRY']):
+if(c['inputs']['ADD_DAIRY']):
 	# Plotter.plot_dairy_cows(time_months_middle,analysis)
 	Plotter.plot_dairy(time_months_middle,analysis)
 
+plt.plot(excess_per_month/2100/30)
+plt.show()
 # Plotter.plot_people_fed(time_months_middle,analysis)
 Plotter.plot_people_fed_combined(time_months_middle,analysis)
-Plotter.plot_people_fed_kcals(time_months_middle,analysis)
+Plotter.plot_people_fed_kcals_diet(time_months_middle,analysis)
 # Plotter.plot_people_fed_fat(time_months_middle,analysis)
 # Plotter.plot_people_fed_protein(time_months_middle,analysis)
 # Plotter.plot_people_fed_comparison(time_months_middle,analysis)
-# constants['inputs']['ADD_SEAWEED'] = False
-# constants['inputs']['ADD_CELLULOSIC_SUGAR'] = True
-# constants['inputs']['ADD_GREENHOUSES'] = True
-# constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
-# constants['inputs']['ADD_DAIRY'] = True
-# constants['inputs']['ADD_STORED_FOOD'] = True
-# constants['inputs']['ADD_OUTDOOR_GROWING'] = True
+# c['inputs']['ADD_SEAWEED'] = False
+# c['inputs']['ADD_CELLULOSIC_SUGAR'] = True
+# c['inputs']['ADD_GREENHOUSES'] = True
+# c['inputs']['ADD_MEAT'] = True
+# c['inputs']['ADD_DAIRY'] = True
+# c['inputs']['ADD_STORED_FOOD'] = True
+# c['inputs']['ADD_OUTDOOR_GROWING'] = True
 
-# seaweed_omitted=optimizer.optimize(constants)
-
-
-# constants['inputs']['ADD_SEAWEED'] = True
-# constants['inputs']['ADD_CELLULOSIC_SUGAR'] = False
-# constants['inputs']['ADD_GREENHOUSES'] = True
-# constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
-# constants['inputs']['ADD_DAIRY'] = True
-# constants['inputs']['ADD_STORED_FOOD'] = True
-# constants['inputs']['ADD_OUTDOOR_GROWING'] = True
-# cell_sugar_omitted=optimizer.optimize(constants)
+# seaweed_omitted=optimizer.optimize(c)
 
 
-# constants['inputs']['ADD_SEAWEED'] = True
-# constants['inputs']['ADD_CELLULOSIC_SUGAR'] = True
-# constants['inputs']['ADD_GREENHOUSES'] = False
-# constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
-# constants['inputs']['ADD_DAIRY'] = True
-# constants['inputs']['ADD_STORED_FOOD'] = True
-# constants['inputs']['ADD_OUTDOOR_GROWING'] = True
-# greenhouses_omitted=optimizer.optimize(constants)
+# c['inputs']['ADD_SEAWEED'] = True
+# c['inputs']['ADD_CELLULOSIC_SUGAR'] = False
+# c['inputs']['ADD_GREENHOUSES'] = True
+# c['inputs']['ADD_MEAT'] = True
+# c['inputs']['ADD_DAIRY'] = True
+# c['inputs']['ADD_STORED_FOOD'] = True
+# c['inputs']['ADD_OUTDOOR_GROWING'] = True
+# cell_sugar_omitted=optimizer.optimize(c)
 
 
-# constants['inputs']['ADD_SEAWEED'] = False
-# constants['inputs']['ADD_CELLULOSIC_SUGAR'] = False
-# constants['inputs']['ADD_GREENHOUSES'] = False
-# constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
-# constants['inputs']['ADD_DAIRY'] = True
-# constants['inputs']['ADD_STORED_FOOD'] = True
-# constants['inputs']['ADD_OUTDOOR_GROWING'] = True
-# no_intervention=optimizer.optimize(constants)
+# c['inputs']['ADD_SEAWEED'] = True
+# c['inputs']['ADD_CELLULOSIC_SUGAR'] = True
+# c['inputs']['ADD_GREENHOUSES'] = False
+# c['inputs']['ADD_MEAT'] = True
+# c['inputs']['ADD_DAIRY'] = True
+# c['inputs']['ADD_STORED_FOOD'] = True
+# c['inputs']['ADD_OUTDOOR_GROWING'] = True
+# greenhouses_omitted=optimizer.optimize(c)
 
 
-# constants['inputs']['ADD_SEAWEED'] = True
-# constants['inputs']['ADD_CELLULOSIC_SUGAR'] = False
-# constants['inputs']['ADD_GREENHOUSES'] = False
-# constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
-# constants['inputs']['ADD_DAIRY'] = True
-# constants['inputs']['ADD_STORED_FOOD'] = True
-# constants['inputs']['ADD_OUTDOOR_GROWING'] = True
-# just_seaweed=optimizer.optimize(constants)
+# c['inputs']['ADD_SEAWEED'] = False
+# c['inputs']['ADD_CELLULOSIC_SUGAR'] = False
+# c['inputs']['ADD_GREENHOUSES'] = False
+# c['inputs']['ADD_MEAT'] = True
+# c['inputs']['ADD_DAIRY'] = True
+# c['inputs']['ADD_STORED_FOOD'] = True
+# c['inputs']['ADD_OUTDOOR_GROWING'] = True
+# no_intervention=optimizer.optimize(c)
 
 
-# constants['inputs']['ADD_SEAWEED'] = False
-# constants['inputs']['ADD_CELLULOSIC_SUGAR'] = True
-# constants['inputs']['ADD_GREENHOUSES'] = False
-# constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
-# constants['inputs']['ADD_DAIRY'] = True
-# constants['inputs']['ADD_STORED_FOOD'] = True
-# constants['inputs']['ADD_OUTDOOR_GROWING'] = True
-# just_cell_sugar=optimizer.optimize(constants)
+# c['inputs']['ADD_SEAWEED'] = True
+# c['inputs']['ADD_CELLULOSIC_SUGAR'] = False
+# c['inputs']['ADD_GREENHOUSES'] = False
+# c['inputs']['ADD_MEAT'] = True
+# c['inputs']['ADD_DAIRY'] = True
+# c['inputs']['ADD_STORED_FOOD'] = True
+# c['inputs']['ADD_OUTDOOR_GROWING'] = True
+# just_seaweed=optimizer.optimize(c)
+
+
+# c['inputs']['ADD_SEAWEED'] = False
+# c['inputs']['ADD_CELLULOSIC_SUGAR'] = True
+# c['inputs']['ADD_GREENHOUSES'] = False
+# c['inputs']['ADD_MEAT'] = True
+# c['inputs']['ADD_DAIRY'] = True
+# c['inputs']['ADD_STORED_FOOD'] = True
+# c['inputs']['ADD_OUTDOOR_GROWING'] = True
+# just_cell_sugar=optimizer.optimize(c)
 
 
 
-# constants['inputs']['ADD_SEAWEED'] = False
-# constants['inputs']['ADD_CELLULOSIC_SUGAR'] = False
-# constants['inputs']['ADD_GREENHOUSES'] = True
-# constants['inputs']['ADD_NONEGG_NONDAIRY_MEAT'] = True
-# constants['inputs']['ADD_DAIRY'] = True
-# constants['inputs']['ADD_STORED_FOOD'] = True
-# constants['inputs']['ADD_OUTDOOR_GROWING'] = True
-# just_greenhouses=optimizer.optimize(constants)
+# c['inputs']['ADD_SEAWEED'] = False
+# c['inputs']['ADD_CELLULOSIC_SUGAR'] = False
+# c['inputs']['ADD_GREENHOUSES'] = True
+# c['inputs']['ADD_MEAT'] = True
+# c['inputs']['ADD_DAIRY'] = True
+# c['inputs']['ADD_STORED_FOOD'] = True
+# c['inputs']['ADD_OUTDOOR_GROWING'] = True
+# just_greenhouses=optimizer.optimize(c)

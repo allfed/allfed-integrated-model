@@ -5,28 +5,67 @@ class Constants:
 
 	def computeConstants(self,c):
 		#full months duration of simulation
+		VERBOSE = False
+		WORLD_POP=7.8e9
+		KG_TO_1000_TONS=1/(1e6)
 		NMONTHS=c['inputs']['NMONTHS']
 		DAYS_IN_MONTH=30
 		NDAYS=NMONTHS*DAYS_IN_MONTH
 		ADD_FISH = c['inputs']['ADD_FISH']
 		ADD_SEAWEED=c['inputs']['ADD_SEAWEED']
-		ADD_NONEGG_NONDAIRY_MEAT=c['inputs']['ADD_NONEGG_NONDAIRY_MEAT']
+		ADD_MEAT=c['inputs']['ADD_MEAT']
 		ADD_DAIRY=c['inputs']['ADD_DAIRY']
 
-		# eggs are lower priority than milk, so we're waiting till later to fill in data
-		ADD_EGGS=False 
+		# FAO ALL SUPPLY UTILIZATION SHEET
+		# units are millions tons (dry caloric, fat, protein)
+		# 		year	Kcals	Fat	Protein
+		# 		2014	3550	225	468
+		# 		2015	3583	228	478
+		# 		2016	3682	234	493
+		# 		2017	3774	246	511
+		# 		2018	3725	245	498
+		# 		2019	7087	449	937
+					
+		# TREND	2020	3879.2	257	525
+
+		ANNUAL_YIELD = 3879.2e6 #tonnes dry carb equivalent
+		OG_FRACTION_FAT = (257*1e3)/(ANNUAL_YIELD*4e6/1e9) #1000 tons fat per billion kcals
+		OG_FRACTION_PROTEIN = (525*1e3)/(ANNUAL_YIELD*4e6/1e9) #1000 tons protein per billion kcals
 
 		ADD_STORED_FOOD=c['inputs']['ADD_STORED_FOOD']
 		ADD_METHANE_SCP = c['inputs']['ADD_METHANE_SCP']
 		ADD_CELLULOSIC_SUGAR = c['inputs']['ADD_CELLULOSIC_SUGAR']
 		ADD_GREENHOUSES = c['inputs']['ADD_GREENHOUSES']
 		ADD_OUTDOOR_GROWING = c['inputs']['ADD_OUTDOOR_GROWING']
-		MAXIMIZE_ONLY_FOOD_AFTER_DAY_150=False
 			# + str(MAXIMIZE_ONLY_FOOD_AFTER_DAY_150))
 		LIMIT_SEAWEED_AS_PERCENT_KCALS=c['inputs']['LIMIT_SEAWEED_AS_PERCENT_KCALS']
 		MAX_SEAWEED_AS_PERCENT_KCALS=c['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS']#max percent of kcals from seaweed  per person
+		MAXIMIZE_ONLY_FOOD_AFTER_DAY_150=False
 
-		VERBOSE = False
+		#or, should this be 1543e6?? cell L8 https://docs.google.com/spreadsheets/d/1rYcxSe-Z7ztvW-QwTBXT8GABaRmVdDuQ05HXmTHbQ8I/edit#gid=1141282747
+		FEED_MONTHLY_USAGE_KCALS = 1455e6/12*4e6/1e9 #billions kcals
+		FEED_MONTHLY_USAGE_FAT = 6e3 #thousand tons
+		FEED_MONTHLY_USAGE_PROTEIN = 25e3 #thousand tons
+
+		BIOFUEL_MONTHLY_USAGE_KCALS = 623e6/12*4e6/1e9 #billions kcals
+		BIOFUEL_MONTHLY_USAGE_FAT = 11e3 #thousand tons
+		BIOFUEL_MONTHLY_USAGE_PROTEIN = 2e3#thousand tons
+
+		# "outputs" tab https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=25523129
+		if(c['inputs']["IS_NUCLEAR_WINTER"]):
+			#tropics seasonality present-day (average 2000 to 2018)
+			c['inputs']['SEASONALITY']=\
+				[0.1564,0.0461,0.0650,0.1017,0.0772,0.0785,\
+				0.0667,0.0256,0.0163,0.1254,0.1183,0.1228]
+			# c['inputs']['SEASONALITY']=\
+			# 	[1/12,1/12,1/12,1/12,1/12,1/12,\
+			# 	1/12,1/12,1/12,1/12,1/12,1/12]
+		else:	
+			#normal times present-day global seasonality (average 2000 to 2018)
+			c['inputs']['SEASONALITY']=\
+				[0.1121,0.0178,0.0241,0.0344,0.0338,0.0411,\
+				0.0882,0.0791,0.1042,0.1911,0.1377,0.1365]
+
 
 
 		#### NUTRITION PER MONTH ####
@@ -49,12 +88,10 @@ class Constants:
 		# INTAKES['lower_moderate']['fat'] = 35 #grams per day
 		# INTAKES['lower_moderate']['protein'] = 51 #grams per day
 		# INTAKES['lower_moderate']['kcals'] = 1039 #per day
-		WORLD_POP=7.8e9
 		KCALS_MONTHLY=KCALS_DAILY*DAYS_IN_MONTH#in kcals per person
 		PROTEIN_MONTHLY=PROTEIN_DAILY*DAYS_IN_MONTH/1e9# in thousands of tons
 		FAT_MONTHLY=FAT_DAILY*DAYS_IN_MONTH/1e9# in thousands of tons
 
-		KG_TO_1000_TONS=1/(1e6)
 
 		# MILK_INIT_TONS_ANNUAL=c['inputs']['MILK_INIT_TONS_ANNUAL']
 		# MILK_INIT_TONS_DRY_CALORIC_EQIVALENT=MILK_INIT_TONS_ANNUAL*1e6/12 #first month
@@ -106,6 +143,17 @@ class Constants:
 			+ 0.700 * 0.182
 			+ 0.147 * 0.060
 			+ 0.147 * 0.100)/7
+		INITIAL_MILK_COWS = 264e6
+
+		INIT_SMALL_ANIMALS = 28.2e9
+		INIT_MEDIUM_ANIMALS = 3.2e9
+		INIT_LARGE_ANIMALS = 1.9e9 - INITIAL_MILK_COWS
+		HARVEST_LOSS = 15 # percent (seaweed)
+		INITIAL_SEAWEED = 1 # 1000 tons (seaweed)
+		INITIAL_AREA = 1 # 1000 tons (seaweed)
+		MINIMUM_DENSITY = 400 #tons/km^2 (seaweed)
+		MAXIMUM_DENSITY = 4000 #tons/km^2 (seaweed)
+		MAXIMUM_AREA = 1000 # 1000 km^2 (seaweed)
 
 		SEAWEED_WASTE = c['inputs']['WASTE']['SEAWEED']
 
@@ -129,11 +177,7 @@ class Constants:
 			* WET_TO_DRY_MASS_CONVERSION \
 			* (1-SEAWEED_WASTE/100)
 
-		HARVEST_LOSS=c['inputs']['HARVEST_LOSS']
-		INITIAL_SEAWEED=c['inputs']['INITIAL_SEAWEED']
-		INITIAL_AREA=c['inputs']['INITIAL_AREA']
 		NEW_AREA_PER_DAY=c['inputs']['NEW_AREA_PER_DAY']
-		MAXIMUM_AREA=c['inputs']['MAXIMUM_AREA']
 		SEAWEED_PRODUCTION_RATE=c['inputs']['SEAWEED_PRODUCTION_RATE']
 
 
@@ -151,8 +195,7 @@ class Constants:
 
 		INITIAL_SF_PROTEIN = c['inputs']['INITIAL_SF_PROTEIN'] 
 		INITIAL_SF_FAT = c['inputs']['INITIAL_SF_FAT'] 
-
-
+		
 
 		#we need kcals from a unit of mass of stored food.
 		#if the unit is mass, we know initial_sf_kcals/initial_sf_kcals is unitless 1
@@ -200,7 +243,6 @@ class Constants:
 
 		FISH_PROTEIN = FISH_KG_MONTHLY * FISH_PROTEIN_PER_KG / 1e6 #units of 1000s tons protein (so, value is in the hundreds of thousands of tons)
 		FISH_FAT = FISH_KG_MONTHLY * FISH_FAT_PER_KG / 1e6 #units of 1000s tons fat (so, value is in the tens of thousands of tons)
-
 		#https://assets.researchsquare.com/files/rs-830419/v1_covered.pdf?c=1631878417
 
 		FISH_PERCENT_EACH_MONTH_LONG = list(np.array(\
@@ -335,29 +377,34 @@ class Constants:
 		# dairy_animals_1000s_end=[0]*NMONTHS
 		# dairy_animals_1000s_eaten=[0]*NMONTHS
 
+
 		######## Human Inedible Produced Primary Dairy and Cattle Meat #########
+		# 'integrated model 150 tg' tab https://docs.google.com/spreadsheets/d/1rYcxSe-Z7ztvW-QwTBXT8GABaRmVdDuQ05HXmTHbQ8I/edit#gid=1141282747
 
 		# monthly dry caloric tons, globally
-		human_inedible_feed = np.array([\
-		2728,2728,2728,2728,2728,2728,2728,2728,
-		972,972,972,972,972,972,972,972,972,972,972,972,
-		594,594,594,594,594,594,594,594,594,594,594,594,
-		531,531,531,531,531,531,531,531,531,531,531,531,
-		552,552,552,552,552,552,552,552,552,552,552,552,
-		789,789,789,789,789,789,789,789,789,789,789,789,
-		1026,1026,1026,1026,1026,1026,1026,1026,1026,1026,1026,1026,
-		1026,1026,1026,1026,1026,1026,1026,1026,1026,1026,1026,1026#NEEDS FIXING
-		])\
-		 * 1e6/12
+		if(c['inputs']['IS_NUCLEAR_WINTER']):
+			human_inedible_feed = np.array([\
+			2728,2728,2728,2728,2728,2728,2728,2728,
+			972,972,972,972,972,972,972,972,972,972,972,972,
+			594,594,594,594,594,594,594,594,594,594,594,594,
+			531,531,531,531,531,531,531,531,531,531,531,531,
+			552,552,552,552,552,552,552,552,552,552,552,552,
+			789,789,789,789,789,789,789,789,789,789,789,789,
+			1026,1026,1026,1026,1026,1026,1026,1026,1026,1026,1026,1026,
+			1394,1394,1394,1394,1394,1394,1394,1394,1394,1394,1394,1394])\
+			 * 1e6/12
+		else:
+			human_inedible_feed = np.array([4206
+			]*NMONTHS)\
+			 * 1e6/12
+
 
 		#dry caloric ton feed/ton milk
 		INEDIBLE_TO_DAIRY_CONVERSION = 1.44
 
-		#dry caloric ton feed/ton chicken or pork
-		INEDIBLE_TO_CHICKEN_PORK_CONVERSION = 4.8
-
 		#dry caloric ton feed/ton cattle
-		INEDIBLE_TO_CATTLE_CONVERSION = 103.0
+		# INEDIBLE_TO_CATTLE_CONVERSION = 103.0
+		INEDIBLE_TO_CATTLE_CONVERSION = 92.6
 
 		# monthly in tons milk (present day value)
 		DAIRY_LIMIT = 879e6/12
@@ -365,7 +412,6 @@ class Constants:
 
 		#monthly in dry caloric tons inedible feed
 		DAIRY_LIMIT_FEED_USAGE = DAIRY_LIMIT*INEDIBLE_TO_DAIRY_CONVERSION
-
 
 		dairy_milk_produced = [] # tons
 		cattle_maintained = [] # tons
@@ -383,7 +429,7 @@ class Constants:
 				dairy_milk_produced.append(0)
 				inedible_for_cattle = human_inedible_feed[m]
 
-			if(ADD_NONEGG_NONDAIRY_MEAT):
+			if(ADD_MEAT):
 				cattle_maintained.append(\
 					inedible_for_cattle/INEDIBLE_TO_CATTLE_CONVERSION)
 			else:
@@ -391,14 +437,14 @@ class Constants:
 
 		h_e_fed_dairy_limit = DAIRY_LIMIT - np.array(dairy_milk_produced)
 
-		if(ADD_NONEGG_NONDAIRY_MEAT):
+		if(ADD_MEAT):
 
 			#billions kcals
 			cattle_maintained_kcals = np.array(cattle_maintained)\
 			 * 1000  \
 			 * LARGE_ANIMAL_KCALS_PER_KG \
-			 / 1e9
-
+			 / 1e9\
+			 *(1-MEAT_WASTE/100)
 
 			#1000s tons fat
 			cattle_maintained_fat = cattle_maintained_kcals*1e9 \
@@ -413,15 +459,44 @@ class Constants:
 			cattle_maintained_fat =[0]*len(cattle_maintained)
 			cattle_maintained_protein =[0]*len(cattle_maintained)
 
+		#### Delayed shutoff BIOFUELS and FEED ####
+		# "Monthly flows" tab https://docs.google.com/spreadsheets/d/1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=1714403726
+
+		biofuel_delay = c["inputs"]["BIOFUEL_SHUTOFF_DELAY"]
+		biofuels_kcals = [BIOFUEL_MONTHLY_USAGE_KCALS]*biofuel_delay + [0]*(NMONTHS-biofuel_delay)
+		biofuels_fat = [BIOFUEL_MONTHLY_USAGE_FAT]*biofuel_delay + [0]*(NMONTHS-biofuel_delay)
+		biofuels_protein = [BIOFUEL_MONTHLY_USAGE_PROTEIN]*biofuel_delay + [0]*(NMONTHS-biofuel_delay)
+
+		feed_shutoff_delay = c["inputs"]["FEED_SHUTOFF_DELAY"]
+		feed_shutoff_kcals = np.array([FEED_MONTHLY_USAGE_KCALS]*feed_shutoff_delay + [0]*(NMONTHS-feed_shutoff_delay))
+		feed_shutoff_fat = np.array([FEED_MONTHLY_USAGE_FAT]*feed_shutoff_delay + [0]*(NMONTHS-feed_shutoff_delay))
+		feed_shutoff_protein = np.array([FEED_MONTHLY_USAGE_PROTEIN]*feed_shutoff_delay + [0]*(NMONTHS-feed_shutoff_delay))
+
+		KCALS_PER_SMALL_ANIMAL=SMALL_ANIMAL_KCALS_PER_KG*KG_PER_SMALL_ANIMAL/1e9
+		FAT_PER_SMALL_ANIMAL=SMALL_ANIMAL_FAT_PER_KG*KG_PER_SMALL_ANIMAL*KG_TO_1000_TONS
+		PROTEIN_PER_SMALL_ANIMAL=SMALL_ANIMAL_PROTEIN_PER_KG*KG_PER_SMALL_ANIMAL*KG_TO_1000_TONS
+
+
+		KCALS_PER_MEDIUM_ANIMAL=MEDIUM_ANIMAL_KCALS_PER_KG*KG_PER_MEDIUM_ANIMAL/1e9
+		FAT_PER_MEDIUM_ANIMAL=MEDIUM_ANIMAL_FAT_PER_KG*KG_PER_MEDIUM_ANIMAL*KG_TO_1000_TONS
+		PROTEIN_PER_MEDIUM_ANIMAL=MEDIUM_ANIMAL_PROTEIN_PER_KG*KG_PER_MEDIUM_ANIMAL*KG_TO_1000_TONS
+
+		KCALS_PER_LARGE_ANIMAL=LARGE_ANIMAL_KCALS_PER_KG*KG_PER_LARGE_ANIMAL/1e9
+		FAT_PER_LARGE_ANIMAL=LARGE_ANIMAL_FAT_PER_KG*KG_PER_LARGE_ANIMAL*KG_TO_1000_TONS
+		PROTEIN_PER_LARGE_ANIMAL=LARGE_ANIMAL_PROTEIN_PER_KG*KG_PER_LARGE_ANIMAL*KG_TO_1000_TONS
+
+		
+
 		###### Human Edible Produced "Secondary" Dairy and Cattle Meat #######
+		CHICKEN_AND_PORK_LIMIT = 250e6/12 #tons meat per month
 
 		# https://docs.google.com/document/d/1HlML7ptYmRfNJjko5qMfIJJGyLRUBlnCIiEiBMr41cM/edit#heading=h.7wiajnpimw8t
-		def get_meat_milk_from_excess(excess_calories,h_e_fed_dairy_limit):
+		def get_meat_milk_from_excess(excess_kcals,h_e_fed_dairy_limit):
 
-			# each unit of excess calories (with associated fat and protein)
+			# each unit of excess kcals (with associated fat and protein)
 			#are fed first to dairy, then to pigs and chickens, then to cattle
 
-			excess_dry_cal_tons = excess_calories*1e9/4e6
+			excess_dry_cal_tons = excess_kcals*1e9/4e6
 
 			assert(np.array(excess_dry_cal_tons>=0).all())
 
@@ -431,7 +506,6 @@ class Constants:
 			h_e_fed_dairy_limit_food_usage = h_e_fed_dairy_limit\
 			 * EDIBLE_TO_DAIRY_CONVERSION
 
-			CHICKEN_AND_PORK_LIMIT = 250e6/12 #tons meat per month
 
 			#dry caloric ton excess/ton meat
 			CHICKEN_PORK_CONVERSION = 4.8 
@@ -440,6 +514,8 @@ class Constants:
 			CHICKEN_PORK_LIMIT_FOOD_USAGE = CHICKEN_AND_PORK_LIMIT\
 			 * CHICKEN_PORK_CONVERSION
 
+			# print("CHICKEN_PORK_LIMIT_FOOD_USAGE")
+			# print(CHICKEN_PORK_LIMIT_FOOD_USAGE)
 			#dry caloric ton excess/ton meat
 			EDIBLE_TO_CATTLE_CONVERSION = 9.8
 			dairy_h_e = []
@@ -467,7 +543,12 @@ class Constants:
 					limit_dairy = 0			
 					dairy_h_e.append(0)
 
+
 				for_chicken_pork_cattle = excess_dry_cal_tons[m] - limit_dairy
+				# print("for_chicken_pork_cattle")
+				# print(for_chicken_pork_cattle)
+				# print("excess_dry_cal_tons")
+				# print(excess_dry_cal_tons)
 
 				assert(for_chicken_pork_cattle>=0)
 
@@ -478,69 +559,94 @@ class Constants:
 					chicken_pork_maintained.append(max_chicken_pork)
 					# tons per month meat
 					cattle_h_e_maintained.append(0)
-
 					continue				
-
 				# tons per month meat
 				chicken_pork_maintained.append(CHICKEN_AND_PORK_LIMIT)
-
 				for_cattle = for_chicken_pork_cattle - CHICKEN_PORK_LIMIT_FOOD_USAGE
 				
 				# tons per month meat
 				cattle_h_e_maintained.append(for_cattle/EDIBLE_TO_CATTLE_CONVERSION)
-				
+				# cattle_h_e_maintained.append(0)
+			# print("CHICKEN_AND_PORK_LIMIT")
+			# print("chicken_pork_maintained")
+			# print("cattle_h_e_maintained")
+			# print(CHICKEN_AND_PORK_LIMIT)
+			# print(chicken_pork_maintained)
+			# print(cattle_h_e_maintained)
+			
+			
+			# print("cattle_maintained[0]")
+			# print(cattle_maintained[0]/1e6*12)
+			# print("cattle_h_e_maintained[0]")
+			# print(cattle_h_e_maintained[0]/1e6*12)
+			# print("chicken_pork_maintained[0]")
+			# print(chicken_pork_maintained[0]/1e6*12)
 
-			present_day_tons_per_m_cattle = 136e6/12 #tons a month meat
-			present_day_tons_per_m_chicken_pork = 250e6/12 #tons a month
+			# plt.title("residue cattle")
+			# plt.plot(np.array(cattle_maintained)/1e6)
+			# plt.show()
 
+
+			# plt.title("h_e_cattle")
+			# plt.plot(np.array(cattle_h_e_maintained)/1e6)
+			# plt.show()
+
+			# plt.title("dairy_h_e")
+			# plt.plot(np.array(dairy_h_e)/1e6)
+			# plt.show()
+
+			# plt.title("chicken_pork_maintained")
+			# plt.plot(np.array(chicken_pork_maintained)/1e6)
+			# plt.show()
+
+			present_day_tons_per_m_cattle = 74.2e6/12 #tons a month meat
+			present_day_tons_per_m_chicken_pork = CHICKEN_AND_PORK_LIMIT #tons a month
+
+
+			#does not consider waste
 			ratio_maintained_cattle = (np.array(cattle_maintained)+np.array(cattle_h_e_maintained))/present_day_tons_per_m_cattle
-			print(ratio_maintained_cattle)
+			
+			#make sure for the months we really care about we're not exceeding present-day cattle meat maintained production
 			assert((ratio_maintained_cattle <= 1)[0:47].all())
 
+			#does not consider waste
 			ratio_maintained_chicken_pork = np.array(chicken_pork_maintained)/present_day_tons_per_m_chicken_pork
+			
 			assert((ratio_maintained_chicken_pork <= 1).all())
 			assert((np.array(dairy_h_e)>=0).all())
 
 
+			#limit the rate of livestock culling by how long it takes to reduce the maintained livestock to its minimum.
+
+
 			#chicken pork assumed to maintain ratio between medium and small animal mass 
 			small_to_medium_ratio \
-				= 28.2e9*KG_PER_SMALL_ANIMAL \
-				/ (3.2e9*KG_PER_MEDIUM_ANIMAL + 28.2e9*KG_PER_SMALL_ANIMAL)
+				= INIT_SMALL_ANIMALS*KG_PER_SMALL_ANIMAL \
+				/ (INIT_MEDIUM_ANIMALS*KG_PER_MEDIUM_ANIMAL + 28.2e9*KG_PER_SMALL_ANIMAL)
 
-			INIT_SMALL_ANIMALS  \
-				= 28.2e9*(1-np.min(ratio_maintained_chicken_pork))
-
-			INIT_MEDIUM_ANIMALS  \
-				= 3.2e9*(1-np.min(ratio_maintained_chicken_pork))
-
-			print("culled chicken pork fraction")
-			print(1-np.min(ratio_maintained_chicken_pork))
-
-			INIT_LARGE_ANIMALS  \
-				= 1.9e9*(1-np.min(ratio_maintained_cattle)) 
-
-			print("culled cattle fraction")
-			print(1-np.min(ratio_maintained_cattle))
+			# print("")
+			# print("ratio")
+			# print(1e3\
+			#  * (SMALL_ANIMAL_KCALS_PER_KG*small_to_medium_ratio\
+			# 	+ MEDIUM_ANIMAL_KCALS_PER_KG*(1-small_to_medium_ratio))/1e9)
+			# print("")
 
 			#billions kcals monthly
 			chicken_pork_kcals = np.array(chicken_pork_maintained)*1e3\
 			 * (SMALL_ANIMAL_KCALS_PER_KG*small_to_medium_ratio\
 				+ MEDIUM_ANIMAL_KCALS_PER_KG*(1-small_to_medium_ratio))\
-			 * (1-MEAT_WASTE/100)\
 			 /1e9
 			
 			#thousands tons monthly
 			chicken_pork_fat = np.array(chicken_pork_maintained)*1e3\
 			 * (SMALL_ANIMAL_FAT_PER_KG*small_to_medium_ratio\
 				+ MEDIUM_ANIMAL_FAT_PER_KG*(1-small_to_medium_ratio))\
-			 * (1-MEAT_WASTE/100)\
 			 /1e6
 
 			#thousands tons monthly
 			chicken_pork_protein = np.array(chicken_pork_maintained)*1e3\
 			 * (SMALL_ANIMAL_PROTEIN_PER_KG*small_to_medium_ratio\
 				+ MEDIUM_ANIMAL_PROTEIN_PER_KG*(1-small_to_medium_ratio))\
-			 * (1-MEAT_WASTE/100)\
 			 /1e6
 
 			#billions kcals monthly
@@ -559,39 +665,162 @@ class Constants:
 			 
 
 			h_e_meat_kcals = \
-				cattle_h_e_maintained_kcals + chicken_pork_kcals
+				np.array(cattle_h_e_maintained_kcals + chicken_pork_kcals)*(1-MEAT_WASTE/100)
 			h_e_meat_fat = \
-				cattle_h_e_maintained_fat + chicken_pork_fat
+				np.array(cattle_h_e_maintained_fat + chicken_pork_fat)*(1-MEAT_WASTE/100)
 			h_e_meat_protein = \
-				cattle_h_e_maintained_protein + chicken_pork_protein
+				np.array(cattle_h_e_maintained_protein + chicken_pork_protein)*(1-MEAT_WASTE/100)
 			
-			return (INIT_SMALL_ANIMALS,
-				INIT_MEDIUM_ANIMALS,
-				INIT_LARGE_ANIMALS,
+			if(c["inputs"]["IS_NUCLEAR_WINTER"]):
+				INIT_SMALL_ANIMALS_CULLED  \
+					= INIT_SMALL_ANIMALS*(1-np.min(ratio_maintained_chicken_pork))
+				INIT_MEDIUM_ANIMALS_CULLED  \
+					= INIT_MEDIUM_ANIMALS*(1-np.min(ratio_maintained_chicken_pork))
+				INIT_LARGE_ANIMALS_CULLED  \
+					= INIT_LARGE_ANIMALS*(1-np.min(ratio_maintained_cattle)) 
+			else:
+				INIT_SMALL_ANIMALS_CULLED = 0
+				INIT_MEDIUM_ANIMALS_CULLED = 0
+				INIT_LARGE_ANIMALS_CULLED = 0
+
+			return (small_to_medium_ratio,
+				INIT_SMALL_ANIMALS_CULLED,
+				INIT_MEDIUM_ANIMALS_CULLED,
+				INIT_LARGE_ANIMALS_CULLED,
+				chicken_pork_kcals,
+				chicken_pork_fat,
+				chicken_pork_protein,
 				h_e_meat_kcals,
 				h_e_meat_fat,
 				h_e_meat_protein,
-				np.array(dairy_h_e))
+				np.array(dairy_h_e),
+				ratio_maintained_chicken_pork,
+				ratio_maintained_cattle,
+				cattle_h_e_maintained)
+
 
 		#assume animals need and use human levels of fat and protein per kcal
 		#units grams per kcal same as units 1000s tons per billion kcals
 		fat_used_ls = c['inputs']['NUTRITION']['FAT_DAILY']/c['inputs']['NUTRITION']['KCALS_DAILY']
+		# print(fat_used_ls)
+		# fat_used_ls = (11e3)/(113e6*4e6/1e9)
+		# print(fat_used_ls)
 		protein_used_ls = c['inputs']['NUTRITION']['PROTEIN_DAILY']/c['inputs']['NUTRITION']['KCALS_DAILY']
+		# print(protein_used_ls)
+		# protein_used_ls = (11e3)/(113e6*4e6/1e9)
+		# print(protein_used_ls)
+		# quit()
 
-		excess_calories = c["inputs"]["EXCESS_CALORIES"] 
-		excess_fat_used = fat_used_ls*excess_calories
+		nonshutoff_excess_fat_used = fat_used_ls*c["inputs"]["EXCESS_CALORIES"]
+		nonshutoff_excess_protein_used = protein_used_ls*c["inputs"]["EXCESS_CALORIES"]
 
-		excess_protein_used = protein_used_ls*excess_calories
 
-		(INIT_SMALL_ANIMALS,
-		INIT_MEDIUM_ANIMALS,
-		INIT_LARGE_ANIMALS,
+		#totals human edible used for animal feed and biofuels
+		#excess is directly supplied separately from the feed_shutoff used.
+
+		excess_kcals = c["inputs"]["EXCESS_CALORIES"] \
+		 + biofuels_kcals \
+		 + feed_shutoff_kcals
+
+		excess_fat_used = nonshutoff_excess_fat_used\
+		 + biofuels_fat \
+		 + feed_shutoff_fat
+
+		excess_protein_used = nonshutoff_excess_protein_used\
+		 + biofuels_protein \
+		 + feed_shutoff_protein
+
+		kcals_fed_to_animals = c["inputs"]["EXCESS_CALORIES"]\
+		 + feed_shutoff_kcals
+
+		# plt.title("kcals fed to animals million dry cal ton")
+		# plt.plot(kcals_fed_to_animals*1e9/4e6/1e6)
+		# plt.show()
+
+
+		(small_to_medium_ratio,
+		INIT_SMALL_ANIMALS_CULLED,
+		INIT_MEDIUM_ANIMALS_CULLED,
+		INIT_LARGE_ANIMALS_CULLED,
+		chicken_pork_kcals,
+		chicken_pork_fat,
+		chicken_pork_protein,
 		h_e_meat_kcals,
 		h_e_meat_fat,
 		h_e_meat_protein, 
-		h_e_fed_dairy_produced) = get_meat_milk_from_excess(excess_calories,h_e_fed_dairy_limit)
+		h_e_fed_dairy_produced,
+		ratio_maintained_chicken_pork,
+		ratio_maintained_cattle,
+		cattle_h_e_maintained) = get_meat_milk_from_excess(kcals_fed_to_animals,h_e_fed_dairy_limit)
 
-		if(not ADD_NONEGG_NONDAIRY_MEAT):
+
+
+		INIT_MEAT_KCALS = \
+			INIT_SMALL_ANIMALS_CULLED*KCALS_PER_SMALL_ANIMAL \
+			+ INIT_MEDIUM_ANIMALS_CULLED*KCALS_PER_MEDIUM_ANIMAL \
+			+ INIT_LARGE_ANIMALS_CULLED*KCALS_PER_LARGE_ANIMAL 
+		INIT_MEAT_FAT = \
+			INIT_SMALL_ANIMALS_CULLED*FAT_PER_SMALL_ANIMAL \
+			+ INIT_MEDIUM_ANIMALS_CULLED*FAT_PER_MEDIUM_ANIMAL \
+			+ INIT_LARGE_ANIMALS_CULLED*FAT_PER_LARGE_ANIMAL
+		INIT_MEAT_PROTEIN = \
+			INIT_SMALL_ANIMALS_CULLED*PROTEIN_PER_SMALL_ANIMAL \
+			+ INIT_MEDIUM_ANIMALS_CULLED*PROTEIN_PER_MEDIUM_ANIMAL \
+			+ INIT_LARGE_ANIMALS_CULLED*PROTEIN_PER_LARGE_ANIMAL
+
+		INITIAL_MEAT=INIT_MEAT_KCALS \
+			* (1-MEAT_WASTE/100) 
+
+		if(INITIAL_MEAT>0):
+			MEAT_FRACTION_FAT =	INIT_MEAT_FAT \
+				/ INIT_MEAT_KCALS
+			MEAT_FRACTION_PROTEIN = INIT_MEAT_PROTEIN \
+				/ INIT_MEAT_KCALS
+		else:
+			MEAT_FRACTION_FAT = 0
+			MEAT_FRACTION_PROTEIN = 0
+
+		import matplotlib.pyplot as plt
+		
+		if(c['inputs']['IS_NUCLEAR_WINTER']):
+			culled_meat_over_time = (\
+				(1-ratio_maintained_chicken_pork)\
+					*(INIT_SMALL_ANIMALS*KCALS_PER_SMALL_ANIMAL\
+					*small_to_medium_ratio\
+					+ INIT_MEDIUM_ANIMALS*KCALS_PER_MEDIUM_ANIMAL\
+					*(1-small_to_medium_ratio))\
+				+ (1-ratio_maintained_cattle)\
+					*INIT_LARGE_ANIMALS*KCALS_PER_LARGE_ANIMAL\
+			) * (1-MEAT_WASTE/100)
+
+			if(c['inputs']["RECALCULATE_CULL_DURATION"]):
+				CULL_DURATION = list(culled_meat_over_time).index(max(culled_meat_over_time)) + 1
+			else:
+				CULL_DURATION = c['inputs']["CULL_DURATION"]
+			
+			
+			LIMIT_PER_MONTH_CULLED = max(culled_meat_over_time)/CULL_DURATION
+		else:
+			LIMIT_PER_MONTH_CULLED = 0
+			CULL_DURATION = 0
+
+		if(VERBOSE):
+			print("CULL_DURATION")
+			print(CULL_DURATION)
+		
+		# plt.title("culled_meat_over_time")
+		# plt.plot(culled_meat_over_time)
+		# plt.show()
+		# plt.title("1-ratio_maintained_cattle")
+		# plt.plot(1-ratio_maintained_cattle)
+		# plt.show()
+		# plt.title("1-ratio_maintained_chicken_pork")
+		# plt.plot(1-ratio_maintained_chicken_pork)
+		# plt.show()
+
+
+
+		if(not ADD_MEAT):
 			h_e_meat_kcals = np.array([0]*NMONTHS)
 			h_e_meat_fat = np.array([0]*NMONTHS)
 			h_e_meat_protein = np.array([0]*NMONTHS)
@@ -630,27 +859,16 @@ class Constants:
 			dairy_milk_fat = np.array([0]*NMONTHS)
 			dairy_milk_protein = np.array([0]*NMONTHS)
 
+			h_e_milk_kcals = np.array([0]*NMONTHS)
+			h_e_milk_fat = np.array([0]*NMONTHS)
+			h_e_milk_protein = np.array([0]*NMONTHS)
 
-		h_e_balance_kcals = -excess_calories + h_e_meat_kcals + h_e_milk_kcals
+		h_e_balance_kcals = -excess_kcals + h_e_meat_kcals + h_e_milk_kcals
 		h_e_balance_fat = -excess_fat_used + h_e_meat_fat + h_e_milk_fat
 		h_e_balance_protein = -excess_protein_used + h_e_meat_protein + h_e_milk_protein
 
+
 		#### NON EGG NONDAIRY MEAT ####
-
-		#https://www.ciwf.org.uk/media/5235182/Statistics-Dairy-cows.pdf
-		ANNUAL_LITERS_PER_COW = 2200
-		KCALS_PER_LITER=609 #kcals for 1 liter whole milk, googled it
-
-		# billion kcals per unit mass initial (first month)
-		INITIAL_MILK_COWS = c['inputs']['INITIAL_MILK_COWS']
-		INITIAL_MILK_COWS_THOUSANDS = INITIAL_MILK_COWS/1000
-
-		# INIT_SMALL_ANIMALS=c['inputs']['INIT_SMALL_ANIMALS']
-		INIT_SMALL_NONEGG_ANIMALS=INIT_SMALL_ANIMALS
-		# INIT_MEDIUM_ANIMALS=c['inputs']['INIT_MEDIUM_ANIMALS']
-		# INIT_LARGE_ANIMALS = c['inputs']['INIT_LARGE_ANIMALS']
-
-		INIT_LARGE_NONDAIRY_ANIMALS=INIT_LARGE_ANIMALS-INITIAL_MILK_COWS_THOUSANDS*1e3
 
 		# see comparison between row https://docs.google.com/spreadsheets/d/1RZqSrHNiIEuPQLtx1ebCd_kUcFvEF6Ea46xyzA5wU0s/edit#gid=1516287804
 		#kcal ratio:
@@ -662,78 +880,6 @@ class Constants:
 		# to estimate 13% organ to meat ratio.
 
 
-		#billions of kcals, 1000s of tons fat, 1000s of tons protein
-		#includes organs, fat, and meat
-
-
-		KCALS_PER_SMALL_ANIMAL=SMALL_ANIMAL_KCALS_PER_KG*KG_PER_SMALL_ANIMAL/1e9
-		FAT_PER_SMALL_ANIMAL=SMALL_ANIMAL_FAT_PER_KG*KG_PER_SMALL_ANIMAL*KG_TO_1000_TONS
-		PROTEIN_PER_SMALL_ANIMAL=SMALL_ANIMAL_PROTEIN_PER_KG*KG_PER_SMALL_ANIMAL*KG_TO_1000_TONS
-
-		KCALS_PER_MEDIUM_ANIMAL=MEDIUM_ANIMAL_KCALS_PER_KG*KG_PER_MEDIUM_ANIMAL/1e9
-		FAT_PER_MEDIUM_ANIMAL=MEDIUM_ANIMAL_FAT_PER_KG*KG_PER_MEDIUM_ANIMAL*KG_TO_1000_TONS
-		PROTEIN_PER_MEDIUM_ANIMAL=MEDIUM_ANIMAL_PROTEIN_PER_KG*KG_PER_MEDIUM_ANIMAL*KG_TO_1000_TONS
-
-		KCALS_PER_LARGE_ANIMAL=LARGE_ANIMAL_KCALS_PER_KG*KG_PER_LARGE_ANIMAL/1e9
-		FAT_PER_LARGE_ANIMAL=LARGE_ANIMAL_FAT_PER_KG*KG_PER_LARGE_ANIMAL*KG_TO_1000_TONS
-		PROTEIN_PER_LARGE_ANIMAL=LARGE_ANIMAL_PROTEIN_PER_KG*KG_PER_LARGE_ANIMAL*KG_TO_1000_TONS
-
-		KCALS_PER_1000_LARGE_ANIMALS=KCALS_PER_LARGE_ANIMAL * 1000
-		FAT_PER_1000_LARGE_ANIMALS=FAT_PER_LARGE_ANIMAL * 1000
-		PROTEIN_PER_1000_LARGE_ANIMALS=PROTEIN_PER_LARGE_ANIMAL * 1000
-
-		INIT_NONEGG_NONDAIRY_MEAT_KCALS = \
-			INIT_SMALL_NONEGG_ANIMALS*KCALS_PER_SMALL_ANIMAL \
-			+ INIT_MEDIUM_ANIMALS*KCALS_PER_MEDIUM_ANIMAL \
-			+ INIT_LARGE_NONDAIRY_ANIMALS*KCALS_PER_LARGE_ANIMAL 
-		INIT_NONEGG_NONDAIRY_MEAT_FAT = \
-			INIT_SMALL_NONEGG_ANIMALS*FAT_PER_SMALL_ANIMAL \
-			+ INIT_MEDIUM_ANIMALS*FAT_PER_MEDIUM_ANIMAL \
-			+ INIT_LARGE_NONDAIRY_ANIMALS*FAT_PER_LARGE_ANIMAL
-		INIT_NONEGG_NONDAIRY_MEAT_PROTEIN = \
-			INIT_SMALL_NONEGG_ANIMALS*PROTEIN_PER_SMALL_ANIMAL \
-			+ INIT_MEDIUM_ANIMALS*PROTEIN_PER_MEDIUM_ANIMAL \
-			+ INIT_LARGE_NONDAIRY_ANIMALS*PROTEIN_PER_LARGE_ANIMAL
-
-
-		MEAT_FRACTION_KCALS = INIT_NONEGG_NONDAIRY_MEAT_KCALS \
-			/ (INIT_NONEGG_NONDAIRY_MEAT_KCALS
-				+ INIT_NONEGG_NONDAIRY_MEAT_PROTEIN
-				+ INIT_NONEGG_NONDAIRY_MEAT_FAT)
-		MEAT_FRACTION_FAT =	INIT_NONEGG_NONDAIRY_MEAT_FAT \
-			/ (INIT_NONEGG_NONDAIRY_MEAT_KCALS
-				+ INIT_NONEGG_NONDAIRY_MEAT_PROTEIN
-				+ INIT_NONEGG_NONDAIRY_MEAT_FAT)
-		MEAT_FRACTION_PROTEIN = INIT_NONEGG_NONDAIRY_MEAT_PROTEIN \
-			/ (INIT_NONEGG_NONDAIRY_MEAT_KCALS
-				+ INIT_NONEGG_NONDAIRY_MEAT_PROTEIN
-				+ INIT_NONEGG_NONDAIRY_MEAT_FAT)
-
-
-
-		# if we assume the rich serve the remaining food to animals and 
-		# eating the animals
-
-		#billions kcals
-		# MEAT_CURRENT_YIELD_PER_YEAR = 222 #million tons dry caloric
-		# MEAT_SUSTAINABLE_YIELD_PER_YEAR = c['inputs']["MEAT_SUSTAINABLE_YIELD_PER_YEAR"] #million tons dry caloric
-
-		# FRACTION_TO_SLAUGHTER = 1-MEAT_SUSTAINABLE_YIELD_PER_YEAR/MEAT_CURRENT_YIELD_PER_YEAR
-
-		# FRACTION_TO_SLAUGHTER = c["inputs"]["FRACTION_TO_SLAUGHTER"]
-
-
-		# MEAT_SUSTAINABLE_YIELD_PER_MONTH = \
-		# 	MEAT_SUSTAINABLE_YIELD_PER_YEAR/12*4e12/1e9
-
-		# SUSTAINED_MEAT_MONTHLY = MEAT_SUSTAINABLE_YIELD_PER_YEAR
-
-
-
-		INITIAL_NONEGG_NONDAIRY_MEAT=INIT_NONEGG_NONDAIRY_MEAT_KCALS \
-			/ MEAT_FRACTION_KCALS \
-			* (1-MEAT_WASTE/100) \
-			# * FRACTION_TO_SLAUGHTER
 
 
 		#### CROP PRODUCTION VARIABLES ####
@@ -742,7 +888,6 @@ class Constants:
 		#reference: row 11, 'outputs' tab  https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673
 
 
-		ANNUAL_YIELD = 4372e6 #tonnes dry carb equivalent
 		JAN_FRACTION = c['inputs']['SEASONALITY'][0]
 		FEB_FRACTION = c['inputs']['SEASONALITY'][1]
 		MAR_FRACTION = c['inputs']['SEASONALITY'][2]
@@ -797,18 +942,33 @@ class Constants:
 		# 	- KCALS_PREDISASTER_BEFORE_MAY) \
 		# 	/ KCALS_PREDISASTER_AFTER_MAY
 
+		if(c['inputs']['IS_NUCLEAR_WINTER']):
+			RATIO_KCALS_POSTDISASTER_Y1 = 1-.53
+			RATIO_KCALS_POSTDISASTER_Y2 = 1-0.82
+			RATIO_KCALS_POSTDISASTER_Y3 = 1-.89
+			RATIO_KCALS_POSTDISASTER_Y4 = 1-.88
+			RATIO_KCALS_POSTDISASTER_Y5 = 1-.84
+			RATIO_KCALS_POSTDISASTER_Y6 = 1-.76
+			RATIO_KCALS_POSTDISASTER_Y7 = 1-.65
+			RATIO_KCALS_POSTDISASTER_Y8 = 1-.5
+			RATIO_KCALS_POSTDISASTER_Y9 = 1-.4
+			RATIO_KCALS_POSTDISASTER_Y10 = 1-.17
+			RATIO_KCALS_POSTDISASTER_Y11 = 1-.08
+		else:
+			RATIO_KCALS_POSTDISASTER_Y1 = 1
+			RATIO_KCALS_POSTDISASTER_Y2 = 1
+			RATIO_KCALS_POSTDISASTER_Y3 = 1
+			RATIO_KCALS_POSTDISASTER_Y4 = 1
+			RATIO_KCALS_POSTDISASTER_Y5 = 1
+			RATIO_KCALS_POSTDISASTER_Y6 = 1
+			RATIO_KCALS_POSTDISASTER_Y7 = 1
+			RATIO_KCALS_POSTDISASTER_Y8 = 1
+			RATIO_KCALS_POSTDISASTER_Y9 = 1
+			RATIO_KCALS_POSTDISASTER_Y10 = 1
+			RATIO_KCALS_POSTDISASTER_Y11 = 1
+
+
 		# year 2: 20% of normal year
-		RATIO_KCALS_POSTDISASTER_Y1 = c['inputs']['RATIO_KCALS_POSTDISASTER']['Y1']
-		RATIO_KCALS_POSTDISASTER_Y2 = c['inputs']['RATIO_KCALS_POSTDISASTER']['Y2']
-		RATIO_KCALS_POSTDISASTER_Y3 = c['inputs']['RATIO_KCALS_POSTDISASTER']['Y3']
-		RATIO_KCALS_POSTDISASTER_Y4 = c['inputs']['RATIO_KCALS_POSTDISASTER']['Y4']
-		RATIO_KCALS_POSTDISASTER_Y5 = c['inputs']['RATIO_KCALS_POSTDISASTER']['Y5']
-		RATIO_KCALS_POSTDISASTER_Y6 = c['inputs']['RATIO_KCALS_POSTDISASTER']['Y6']
-		RATIO_KCALS_POSTDISASTER_Y7 = c['inputs']['RATIO_KCALS_POSTDISASTER']['Y7']
-		RATIO_KCALS_POSTDISASTER_Y8 = c['inputs']['RATIO_KCALS_POSTDISASTER']['Y8']
-		RATIO_KCALS_POSTDISASTER_Y9 = c['inputs']['RATIO_KCALS_POSTDISASTER']['Y9']
-		RATIO_KCALS_POSTDISASTER_Y10 = c['inputs']['RATIO_KCALS_POSTDISASTER']['Y10']
-		RATIO_KCALS_POSTDISASTER_Y11 = c['inputs']['RATIO_KCALS_POSTDISASTER']['Y11']
 
 		#billions of kcals
 		KCALS_GROWN=[\
@@ -958,10 +1118,6 @@ class Constants:
 		# therefore
 		# 	og_protein = og_kcals*SF_FRACTION_PROTEIN/SF_FRACTION_KCALS
 
-
-		#see z152 on 'FAOSTAT food balance' tab https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=102948593
-		OG_PROTEIN_PER_KCALS = 0.00946373696 #1000 tons protein per billion kcals
-		OG_FAT_PER_KCALS = 0.01361071549 #1000 tons fat per billion kcals
 
 
 		#### CONSTANTS FOR GREENHOUSES ####
@@ -1149,11 +1305,11 @@ class Constants:
 
 
 		if(ADD_OUTDOOR_GROWING):
-			production_kcals_outdoor_growing_per_m = \
-				list(np.array(KCALS_GROWN_MINUS_GREENHOUSE) \
-					* (1 - CROP_WASTE/100) )
+			crops_food_produced = \
+				np.array(KCALS_GROWN_MINUS_GREENHOUSE) \
+					* (1 - CROP_WASTE/100)
 		else:
-			production_kcals_outdoor_growing_per_m=[0]*NMONTHS
+			crops_food_produced=np.array([0]*NMONTHS)
 		# we know:
 		# 	units_sf_mass*SF_FRACTION_KCALS=sf_kcals
 		# and
@@ -1172,41 +1328,6 @@ class Constants:
 		# https://docs.google.com/document/d/1HlML7ptYmRfNJjko5qMfIJJGyLRUBlnCIiEiBMr41cM/edit#
 		# and here
 		# https://docs.google.com/spreadsheets/d/1rYcxSe-Z7ztvW-QwTBXT8GABaRmVdDuQ05HXmTHbQ8I/edit#gid=1141282747
-
-		greenhouse_start=[0]*NMONTHS
-		greenhouse_end=[0]*NMONTHS
-		greenhouse_eaten=[0]*NMONTHS
-
-		production_protein_outdoor_growing_per_m = \
-			list(np.array(production_kcals_outdoor_growing_per_m) \
-			* OG_PROTEIN_PER_KCALS  )
-
-		production_fat_outdoor_growing_per_m = \
-			list(np.array(production_kcals_outdoor_growing_per_m) \
-			* OG_FAT_PER_KCALS)
-
-		INITIAL_OG_KCALS = production_kcals_outdoor_growing_per_m[0]
-		INITIAL_OG_FAT = production_fat_outdoor_growing_per_m[0]
-		INITIAL_OG_PROTEIN = production_protein_outdoor_growing_per_m[0] 
-
-		if(INITIAL_OG_KCALS==0):
-			OG_FRACTION_FAT = 0
-			OG_FRACTION_PROTEIN = 0			
-		else:
-
-			OG_FRACTION_FAT = INITIAL_OG_FAT / INITIAL_OG_KCALS
-			OG_FRACTION_PROTEIN = INITIAL_OG_PROTEIN / INITIAL_OG_KCALS
-
-		# crops_food_start=[0]*NMONTHS
-		# crops_food_end=[0]*NMONTHS
-		crops_food_produced=list(\
-			np.array(production_kcals_outdoor_growing_per_m)
-			)
-		# plt.plot(crops_food_produced)
-		# plt.plot(production_kcals_outdoor_growing_per_m)
-		# plt.show()
-		crops_food_eaten=[0]*NMONTHS
-		crops_food_storage=[0]*NMONTHS
 
 		def getImprovementsFromRotation(
 			spring_wheat_fraction_of_rotation,\
@@ -1324,14 +1445,14 @@ class Constants:
 			FAT_RATIO = ROTATION_FAT/SUM_CALORIES_PER_HA_PER_MONTH
 			PROTEIN_RATIO = ROTATION_PROTEIN/SUM_CALORIES_PER_HA_PER_MONTH
 
-			return (KCAL_RATIO,FAT_RATIO,PROTEIN_RATIO)
+			return (KCAL_RATIO,FAT_RATIO*1.5,PROTEIN_RATIO*1.5)
 
 
 
 		# SUM_CALORIES is an overestimate by some factor, as it is in current
 		# day conditions. We improve accuracy by applying the outdoor growing 
 		# estimate and decreasing the estimated fat and protein by the same 
-		# factor that calories are decreased by
+		# factor that kcals are decreased by
 		def get_greenhouse_yield_per_ha(KCAL_RATIO,FAT_RATIO,PROTEIN_RATIO):
 			rotation_fat_per_ha_long = []
 			rotation_protein_per_ha_long = []
@@ -1366,73 +1487,38 @@ class Constants:
 					+ potato_pct_of_rotation
 					+ rapeseed_pct_of_rotation == 100)
 
-		(KCAL_RATIO,FAT_RATIO,PROTEIN_RATIO) = getImprovementsFromRotation(spring_wheat_pct_of_rotation/100,\
+		(KCAL_RATIO_ROT,FAT_RATIO_ROT,PROTEIN_RATIO_ROT) = getImprovementsFromRotation(spring_wheat_pct_of_rotation/100,\
 			spring_barley_pct_of_rotation/100,\
 			potato_pct_of_rotation/100,\
 			rapeseed_pct_of_rotation/100)
 
-		og_rot_frac_kcals = []
-		og_rot_frac_fat = []
-		og_rot_frac_protein = []
+		
+		#need to use the multiplier on units of kcals to get fat and protein
+		if(c["inputs"]["OG_USE_BETTER_ROTATION"]):
 
-		for m in range(0,NMONTHS):
-			
-			if(np.isnan(OG_FRACTION_PROTEIN)):
-				OG_FRACTION_PROTEIN = 0
-			if(np.isnan(OG_FRACTION_FAT)):
-				OG_FRACTION_FAT = 0
+			OG_ROTATION_FRACTION_KCALS = KCAL_RATIO_ROT
+			#need to multiply the amount of actual kcals, 
+			#then multiply by 1000s tons fat and protein per billion kcals
+			OG_ROTATION_FRACTION_FAT = KCAL_RATIO_ROT * FAT_RATIO_ROT
+			OG_ROTATION_FRACTION_PROTEIN = KCAL_RATIO_ROT * PROTEIN_RATIO_ROT
 
-			#need to use the multiplier on units of kcals to get fat and protein
-			if(c["inputs"]["OG_USE_BETTER_ROTATION"] and m>8):
-				OG_ROTATION_FRACTION_KCALS = KCAL_RATIO
-				#need to multiply the amount of actual calories, 
-				#then multiply by 1000s tons fat and protein per billion calories
-				OG_ROTATION_FRACTION_FAT = KCAL_RATIO * FAT_RATIO
-				OG_ROTATION_FRACTION_PROTEIN = KCAL_RATIO * PROTEIN_RATIO
-
-				
-
-			else:
-				OG_ROTATION_FRACTION_KCALS = 1
-				OG_ROTATION_FRACTION_FAT = OG_FRACTION_FAT
-				OG_ROTATION_FRACTION_PROTEIN = OG_FRACTION_PROTEIN
-
-			og_rot_frac_kcals.append(OG_ROTATION_FRACTION_KCALS) 
-			og_rot_frac_fat.append(OG_ROTATION_FRACTION_FAT) 
-			og_rot_frac_protein.append(OG_ROTATION_FRACTION_PROTEIN) 
+		else:
+			OG_ROTATION_FRACTION_KCALS = 1
+			OG_ROTATION_FRACTION_FAT = OG_FRACTION_FAT
+			OG_ROTATION_FRACTION_PROTEIN = OG_FRACTION_PROTEIN
 
 		(greenhouse_kcals_per_ha,greenhouse_fat_per_ha,greenhouse_protein_per_ha) \
-			= get_greenhouse_yield_per_ha(KCAL_RATIO, FAT_RATIO, PROTEIN_RATIO)
-
-
-		if(VERBOSE):
-			print("production_kcals_outdoor_growing_per_m0")
-			print(production_kcals_outdoor_growing_per_m[0])
-			print("production_protein_outdoor_growing_per_m[0]")
-			print(production_protein_outdoor_growing_per_m[0])
-			print("production_fat_outdoor_growing_per_m[0]")
-			print(production_fat_outdoor_growing_per_m[0])
-
-			print("production_protein_outdoor_growing_per_m per b kcals[0]")
-			print(production_protein_outdoor_growing_per_m[0]/production_kcals_outdoor_growing_per_m[0])
-			print("production_fat_outdoor_growing_per_mper b kcals[0]")
-			print(production_fat_outdoor_growing_per_m[0]/production_kcals_outdoor_growing_per_m[0])
-			
-			print("production_protein_sf_per_m per b kcals[0]")
-			print(INITIAL_SF_PROTEIN/INITIAL_SF_KCALS)
-			print("production_fat_stored_food_per_mper b kcals[0]")
-			print(INITIAL_SF_FAT/INITIAL_SF_KCALS)
-
+			= get_greenhouse_yield_per_ha(KCAL_RATIO_ROT, FAT_RATIO_ROT, PROTEIN_RATIO_ROT)
 
 		#### CONSTANTS FOR METHANE SINGLE CELL PROTEIN ####
 		SUGAR_WASTE = c['inputs']['WASTE']['SUGAR']
 
 		#apply sugar waste also to methane scp, for lack of better baseline
 
-		#in billions of calories
+		#in billions of kcals
 		INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = \
 			c['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER']
-		#billion calories a month for 100% population.
+		#billion kcals a month for 100% population.
 		INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER = 6793977/12 
 		METHANE_SCP_PERCENT_KCALS = list(np.array([0,0,0,0,0,0,0,0,0,0,0,0,2,2,\
 			2,2,2,4,7,7,7,7,7,9,11,11,11,11,11,11,13,15,15,15,15,\
@@ -1475,7 +1561,7 @@ class Constants:
 
 		#### CONSTANTS FOR CELLULOSIC SUGAR ####
 
-		#in billions of calories
+		#in billions of kcals
 		# CELL_SUGAR_PERCENT_KCALS = list(np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 19.57, 23.48, 24.58, 28.49, 28.49,29.59,31.64, 31.64, 31.64, 31.64, 33.69, 35.74, 35.74, 35.74, 35.74, 37.78, 38.70, 39.61,40.53,41.44, 42.35, 43.27, 44.18, 45.10, 46.01, 46.93, 47.84, 48.76, 49.67, 50.58, 51.50,52.41,53.33, 54.24, 55.16, 56.07, 56.99, 57.90, 58.81, 59.73, 60.64, 61.56, 62.47, 63.39,64.30,65.21, 66.13, 67.04, 67.96, 68.87, 69.79, 70.70, 71.62, 72.53, 73.44, 74.36, 75.27,76.19,77.10, 78.02, 78.93, 79.85, 80.76, 81.67]) * CELLULOSIC_SUGAR_SLOPE_MULTIPLIER*(1-12/100))
 		CELL_SUGAR_PERCENT_KCALS = list(np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20]) *1/(1-0.12)* INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
 
@@ -1495,35 +1581,176 @@ class Constants:
 		production_kcals_CS_per_m = production_kcals_CS_per_m_long[0:NMONTHS]
 
 		if(VERBOSE):
-			print("INITIAL_MILK_COWS_THOUSANDS, billions")
-			print(INITIAL_MILK_COWS_THOUSANDS/1e9)
-			print("Number of large animals, billions")
-			print((INIT_LARGE_NONDAIRY_ANIMALS+INITIAL_MILK_COWS_THOUSANDS)/1e9)
-			print("Percent Dairy Animals of large animals")
-			print(INITIAL_MILK_COWS_THOUSANDS/(INIT_LARGE_NONDAIRY_ANIMALS+INITIAL_MILK_COWS_THOUSANDS)*100)
+			#used by world population
+			print("")
+			print("calories consumed per day")
+			print(KCALS_DAILY)
+			print("fat consumed per day grams")
+			print(FAT_DAILY)
+			print("protein consumed per day grams")
+			print(PROTEIN_DAILY)
+			print("")
+			print("INITIAL_HUMANS_KCALS 7.8 billion consumed million tons dry caloric monthly")
+			print(-WORLD_POP*KCALS_MONTHLY/4e6/1e6)
+			print("INITIAL_HUMANS_FAT 7.8 billion consumed million tons monthly")
+			print(-WORLD_POP*FAT_MONTHLY/1e3)
+			print("INITIAL_HUMANS_PROTEIN 7.8 billion consumed million tons monthly")
+			print(-WORLD_POP*PROTEIN_MONTHLY/1e3)
+			print("")
+			#1000 tons protein/fat per dry caloric ton
+			print("INITIAL_HUMANS_FAT consumed percentage")
+			print(100*WORLD_POP*FAT_MONTHLY/1e3/(WORLD_POP*KCALS_MONTHLY/4e6/1e6))
+			print("INITIAL_HUMANS_PROTEIN consumed percentage")
+			print(100*WORLD_POP*PROTEIN_MONTHLY/1e3/(WORLD_POP*KCALS_MONTHLY/4e6/1e6))
 
-			print('millions of people fed for a year from eating milk cows')
-			print(INITIAL_MILK_COWS_THOUSANDS*1000*FAT_PER_LARGE_ANIMAL/(12*FAT_MONTHLY)/1e6)
+			#1000 tons protein/fat per dry caloric ton
+			print("")
+			print("INITIAL_OG_KCALS million tons dry caloric monthly")
+			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6)
+			print("INITIAL_OG_FAT million tons monthly")
+			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_FAT/1e3)
+			print("INITIAL_OG_PROTEIN million tons monthly")
+			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_PROTEIN/1e3)
+			print("")
+			print("INITIAL_OG_FAT percentage")
+			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_FAT/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6))
+			print("INITIAL_OG_PROTEIN percentage")
+			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_PROTEIN/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6))
+			print("")
+			print("INITIAL_OG_ROTATION_KCALS million tons dry caloric monthly")
+			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6)
+			print("INITIAL_OG_ROTATION_FAT million tons monthly")
+			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_FAT/1e3)
+			print("INITIAL_OG_ROTATION_PROTEIN million tons monthly")
+			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_PROTEIN/1e3)
+			print("")
+			print("INITIAL_OG_ROTATION_FAT percentage")
+			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_FAT/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6))
+			print("INITIAL_OG_ROTATION_PROTEIN percentage")
+			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_PROTEIN/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6))
+			#1000 tons protein/fat per dry caloric ton
+			print("")
+			print("INITIAL_SF_KCALS million tons dry caloric")
+			print(INITIAL_SF_KCALS*1e9/4e6/1e6)
+			print("INITIAL_SF_FAT million tons")
+			print(INITIAL_SF_FAT/1e3)
+			print("INITIAL_SF_PROTEIN million tons")
+			print(INITIAL_SF_PROTEIN/1e3)
+			print("")
+			print("INITIAL_SF_FAT percentage")
+			print(100*INITIAL_SF_FAT/1e3/(INITIAL_SF_KCALS*1e9/4e6/1e6))
+			print("INITIAL_SF_PROTEIN percentage")
+			print(100*INITIAL_SF_PROTEIN/1e3/(INITIAL_SF_KCALS*1e9/4e6/1e6))
+			if(FEED_MONTHLY_USAGE_KCALS > 0):
+				#1000 tons protein/fat per dry caloric ton
+				print("")
+				print("INITIAL_FEED_KCALS million tons dry caloric monthly")
+				print(-FEED_MONTHLY_USAGE_KCALS*1e9/4e6/1e6)
+				print("INITIAL_FEED_FAT million tons monthly")
+				print(-FEED_MONTHLY_USAGE_FAT/1e3)
+				print("INITIAL_FEED_PROTEIN million tons monthly")
+				print(-FEED_MONTHLY_USAGE_PROTEIN/1e3)
+				print("")
+				print("INITIAL_FEED_FAT percentage")
+				print(100*FEED_MONTHLY_USAGE_FAT/1e3/(FEED_MONTHLY_USAGE_KCALS*1e9/4e6/1e6))
+				print("INITIAL_FEED_PROTEIN percentage")
+				print(100*FEED_MONTHLY_USAGE_PROTEIN/1e3/(FEED_MONTHLY_USAGE_KCALS*1e9/4e6/1e6))
+				print("")
+				CPM = np.array(chicken_pork_kcals)[0]
+				CM = np.array(cattle_h_e_maintained)[0]\
+				 * 1000  \
+				 * LARGE_ANIMAL_KCALS_PER_KG \
+				 / 1e9
+				if(CPM>0):
+					print("INITIAL_CH_PK_KCALS million tons dry caloric monthly")
+					print(CPM*1e9/4e6/1e6)
+					print("INITIAL_CH_PK_FAT million tons monthly")
+					print(chicken_pork_fat[0]/1e3)
+					print("INITIAL_CH_PK_PROTEIN million tons monthly")
+					print(chicken_pork_protein[0]/1e3)
+					print("")
+					print("INITIAL_CH_PK_FAT percentage")
+					print(100*chicken_pork_fat[0]/1e3/(CPM*1e9/4e6/1e6))
+					print("INITIAL_CH_PK_PROTEIN percentage")
+					print(100*chicken_pork_protein[0]/1e3/(CPM*1e9/4e6/1e6))
+					print("")
+				else:
+					print("no chicken pork maintained")
+					print("")
+				if(CM>0):
+					print("INITIAL_CM_KCALS million tons dry caloric monthly")
+					print(CM* 1e9/4e6/1e6)
 
-			print("billions of people fed for a year from eating all livestock minus dairy cows and egg laying hens")
-			print(INIT_NONEGG_NONDAIRY_MEAT_FAT/(12*FAT_MONTHLY)/1e9)
+					print("INITIAL_CM_FAT million tons monthly")
+					print(CM*1e9 / LARGE_ANIMAL_KCALS_PER_KG * LARGE_ANIMAL_FAT_PER_KG/1e6/1e3)
+					print("INITIAL_CM_PROTEIN million tons monthly")
+					print(CM * 1e9 / LARGE_ANIMAL_KCALS_PER_KG * LARGE_ANIMAL_PROTEIN_PER_KG/1e6/1e3)
+					print("")
+					print("INITIAL_CM_FAT percentage")
+					print(100*CM*1e9 / LARGE_ANIMAL_KCALS_PER_KG * LARGE_ANIMAL_FAT_PER_KG/1e6/1e3/(CM* 1e9/4e6/1e6))
+					print("INITIAL_CM_PROTEIN percentage")
+					print(100*CM * 1e9 / LARGE_ANIMAL_KCALS_PER_KG * LARGE_ANIMAL_PROTEIN_PER_KG/1e6/1e3/(CM* 1e9/4e6/1e6))
+					print("")
+					print("culled chicken, pork, and cattle per month.")
+					print("reaches minimum after "+str(CULL_DURATION)+"  months")
+				else:
+					print("no cattle maintained from human edible")
+					print("")
+				CM_IN_KCALS = cattle_maintained_kcals[0]/(1-MEAT_WASTE/100)
+				CM_IN_FAT = cattle_maintained_fat[0]/(1-MEAT_WASTE/100)
+				CM_IN_PROTEIN = cattle_maintained_protein[0]/(1-MEAT_WASTE/100)
+
+				if(CM_IN_KCALS>0):
+					print("INITIAL_CM_IN_KCALS million tons dry caloric monthly")
+					print(CM_IN_KCALS* 1e9/4e6/1e6)
+
+					print("INITIAL_CM_IN_FAT million tons monthly")
+					print(CM_IN_FAT/1e3)
+					print("INITIAL_CM_IN_PROTEIN million tons monthly")
+					print(CM_IN_PROTEIN/1e3)
+					print("")
+					print("INITIAL_CM_IN_FAT percentage")
+					print(100*CM_IN_FAT/1e3/(CM_IN_KCALS* 1e9/4e6/1e6))
+					print("INITIAL_CM_IN_PROTEIN percentage")
+					print(100*CM_IN_PROTEIN/1e3/(CM_IN_KCALS* 1e9/4e6/1e6))
+					print("")
+				else:
+					print("No meat (would be cattle) from inedible sources")
+					print("")
 
 
-		#### BIOFUELS ####
-		#see 'biofuels' tab https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=2030318378
-		BIOFUEL_KCALS_PER_YEAR = 8.3e5 #billions of kcals
-		BIOFUEL_KCALS_PER_MONTH = BIOFUEL_KCALS_PER_YEAR/12
-		BIOFUEL_PROTEIN_PER_YEAR = 1.45e4 #1000s of tons
-		BIOFUEL_PROTEIN_PER_MONTH = BIOFUEL_PROTEIN_PER_YEAR/12
-		BIOFUEL_FAT_PER_YEAR = 0.522e4 #1000s of tons
-		BIOFUEL_FAT_PER_MONTH = BIOFUEL_FAT_PER_YEAR/12#1000s of tons
-
-		biofuel_delay = c['inputs']['BIOFUEL_SHUTOFF_DELAY']
-		biofuels_kcals = [BIOFUEL_KCALS_PER_MONTH]*biofuel_delay + [0]*(NMONTHS-biofuel_delay)
-		biofuels_fat = [BIOFUEL_FAT_PER_MONTH]*biofuel_delay + [0]*(NMONTHS-biofuel_delay)
-		biofuels_protein = [BIOFUEL_PROTEIN_PER_MONTH]*biofuel_delay + [0]*(NMONTHS-biofuel_delay)
-
-
+				print("")
+				if( c["inputs"]["IS_NUCLEAR_WINTER"]):
+					print("INITIAL_CULLED_KCALS million tons dry caloric monthly")
+					print(LIMIT_PER_MONTH_CULLED*1e9/4e6/1e6)
+					print("INITIAL_CULLED_FAT million tons monthly")
+					print(LIMIT_PER_MONTH_CULLED*MEAT_FRACTION_FAT/1e3)
+					print("INITIAL_CULLED_PROTEIN million tons monthly")
+					print(LIMIT_PER_MONTH_CULLED*MEAT_FRACTION_PROTEIN/1e3)
+					print("")
+					print("INITIAL_CULLED_FAT percentage")
+					print(100*LIMIT_PER_MONTH_CULLED*MEAT_FRACTION_FAT/1e3/(LIMIT_PER_MONTH_CULLED*1e9/4e6/1e6))
+					print("INITIAL_CULLED_PROTEIN percentage")
+					print(100*LIMIT_PER_MONTH_CULLED*MEAT_FRACTION_PROTEIN/1e3/(LIMIT_PER_MONTH_CULLED*1e9/4e6/1e6))
+					print("")
+			else:
+				print("No Feed Usage")			
+				print("")
+			if(BIOFUEL_MONTHLY_USAGE_KCALS > 0):
+				#1000 tons protein/fat per dry caloric ton
+				print("INITIAL_BIOFUEL_KCALS million tons dry caloric monthly")
+				print(-BIOFUEL_MONTHLY_USAGE_KCALS*1e9/4e6/1e6)
+				print("INITIAL_BIOFUEL_FAT million tons monthly")
+				print(-BIOFUEL_MONTHLY_USAGE_FAT/1e3)
+				print("INITIAL_BIOFUEL_PROTEIN million tons monthly")
+				print(-BIOFUEL_MONTHLY_USAGE_PROTEIN/1e3)
+				print("INITIAL_BIOFUEL_FAT percentage")
+				print(100*BIOFUEL_MONTHLY_USAGE_FAT/1e3/(BIOFUEL_MONTHLY_USAGE_KCALS*1e9/4e6/1e6))
+				print("INITIAL_BIOFUEL_PROTEIN percentage")
+				print(100*BIOFUEL_MONTHLY_USAGE_PROTEIN/1e3/(BIOFUEL_MONTHLY_USAGE_KCALS*1e9/4e6/1e6))
+			else:
+				print("No biofuel usage")
+				print("")
 
 		#### OTHER VARIABLES ####
 
@@ -1538,9 +1765,6 @@ class Constants:
 		s["biofuels_protein"] = biofuels_protein
 		s["biofuels_kcals"] = biofuels_kcals
 		s["crops_food_produced"] = crops_food_produced
-		s["og_rot_frac_kcals"] = og_rot_frac_kcals
-		s["og_rot_frac_fat"] = og_rot_frac_fat
-		s["og_rot_frac_protein"] = og_rot_frac_protein
 		s["greenhouse_kcals_per_ha"] = greenhouse_kcals_per_ha
 		s["greenhouse_fat_per_ha"] = greenhouse_fat_per_ha
 		s["greenhouse_protein_per_ha"] = greenhouse_protein_per_ha
@@ -1552,10 +1776,10 @@ class Constants:
 		s["production_fat_fish_per_m"] = production_fat_fish_per_m
 		s["production_kcals_CS_per_m"] = production_kcals_CS_per_m
 		s["dairy_milk_kcals"] = dairy_milk_kcals
-		s["h_e_milk_kcals"] = h_e_milk_kcals
 		s["dairy_milk_fat"] = dairy_milk_fat
-		s["h_e_milk_fat"] = h_e_milk_fat
 		s["dairy_milk_protein"] = dairy_milk_protein
+		s["h_e_milk_kcals"] = h_e_milk_kcals
+		s["h_e_milk_fat"] = h_e_milk_fat
 		s["h_e_milk_protein"] = h_e_milk_protein
 		s["h_e_balance_kcals"] = h_e_balance_kcals
 		s["h_e_balance_fat"] = h_e_balance_fat
@@ -1564,65 +1788,79 @@ class Constants:
 		s["cattle_maintained_fat"] = cattle_maintained_fat
 		s["cattle_maintained_protein"] = cattle_maintained_protein
 		s["greenhouse_area"] = greenhouse_area
-		s["og_rot_frac_fat"] = og_rot_frac_fat
-		s["og_rot_frac_protein"] = og_rot_frac_protein
 		s["h_e_meat_kcals"] = h_e_meat_kcals
 		s["h_e_meat_fat"] = h_e_meat_fat
 		s["h_e_meat_protein"] = h_e_meat_protein
 		s["h_e_fed_dairy_produced"] = h_e_fed_dairy_produced
-		s["excess_calories"] = excess_calories
+		s["excess_kcals"] = excess_kcals
 		s["excess_fat_used"] = excess_fat_used
 		s["excess_protein_used"] = excess_protein_used
 		#store variables useful for analysis
 		# c={}
+		c['VERBOSE']=VERBOSE
 		c['NMONTHS']=NMONTHS
 		c['NDAYS']=NDAYS
-		c['KCALS_DAILY']=KCALS_DAILY
-		c['FAT_DAILY']=FAT_DAILY
-		c['PROTEIN_DAILY']=PROTEIN_DAILY
+		c["DAYS_IN_MONTH"] = DAYS_IN_MONTH
+		c['WORLD_POP'] = WORLD_POP
+
 		c['ADD_STORED_FOOD']=ADD_STORED_FOOD
 		c['ADD_FISH']=ADD_FISH
 		c['ADD_SEAWEED']=ADD_SEAWEED
 		c['ADD_GREENHOUSES']=ADD_GREENHOUSES
-		c['ADD_NONEGG_NONDAIRY_MEAT']=ADD_NONEGG_NONDAIRY_MEAT
+		c['ADD_MEAT']=ADD_MEAT
 		c['ADD_DAIRY']=ADD_DAIRY
 		c['ADD_OUTDOOR_GROWING']=ADD_OUTDOOR_GROWING
+		c['ADD_CELLULOSIC_SUGAR'] = ADD_CELLULOSIC_SUGAR
+		c['ADD_METHANE_SCP'] = ADD_METHANE_SCP
+
+		c['KCALS_DAILY']=KCALS_DAILY
+		c['FAT_DAILY']=FAT_DAILY
+		c['PROTEIN_DAILY']=PROTEIN_DAILY
+		c['CONVERT_TO_KCALS'] = CONVERT_TO_KCALS
+
+		c['KCALS_MONTHLY']=KCALS_MONTHLY
+		c['PROTEIN_MONTHLY']=PROTEIN_MONTHLY
+		c['FAT_MONTHLY']=FAT_MONTHLY
+
 		c['MAXIMIZE_ONLY_FOOD_AFTER_DAY_150']= \
 			MAXIMIZE_ONLY_FOOD_AFTER_DAY_150
 		c['LIMIT_SEAWEED_AS_PERCENT_KCALS']=\
 			LIMIT_SEAWEED_AS_PERCENT_KCALS
-		c['VERBOSE']=VERBOSE
-		c['KCALS_MONTHLY']=KCALS_MONTHLY
-		c['PROTEIN_MONTHLY']=PROTEIN_MONTHLY
-		c['FAT_MONTHLY']=FAT_MONTHLY
-		c['HARVEST_LOSS']=HARVEST_LOSS
+
 		c['SF_FRACTION_KCALS']=SF_FRACTION_KCALS
 		c['SF_FRACTION_FAT']=SF_FRACTION_FAT
 		c['SF_FRACTION_PROTEIN']=SF_FRACTION_PROTEIN
-		# c['OG_ROTATION_FRACTION_KCALS']=OG_ROTATION_FRACTION_KCALS
-		# c['OG_ROTATION_FRACTION_FAT']=OG_ROTATION_FRACTION_FAT
-		# c['OG_ROTATION_FRACTION_PROTEIN']=OG_ROTATION_FRACTION_PROTEIN
-		c['MEAT_FRACTION_KCALS']=MEAT_FRACTION_KCALS
+
+		c['OG_FRACTION_FAT'] = OG_FRACTION_FAT
+		c['OG_FRACTION_PROTEIN'] = OG_FRACTION_PROTEIN
+
+		c['OG_ROTATION_FRACTION_KCALS']=OG_ROTATION_FRACTION_KCALS
+		c['OG_ROTATION_FRACTION_FAT']=OG_ROTATION_FRACTION_FAT
+		c['OG_ROTATION_FRACTION_PROTEIN']=OG_ROTATION_FRACTION_PROTEIN
+
 		c['MEAT_FRACTION_FAT']=MEAT_FRACTION_FAT
 		c['MEAT_FRACTION_PROTEIN']=MEAT_FRACTION_PROTEIN
-		# c['MILK_KCALS_PER_1000_COWS_PER_MONTH']=MILK_KCALS_PER_1000_COWS_PER_MONTH
-		# c['MILK_FAT_PER_1000_COWS_PER_MONTH']=MILK_FAT_PER_1000_COWS_PER_MONTH
-		# c['MILK_PROTEIN_PER_1000_COWS_PER_MONTH']=MILK_PROTEIN_PER_1000_COWS_PER_MONTH
-		c['KCALS_PER_1000_LARGE_ANIMALS']=KCALS_PER_1000_LARGE_ANIMALS
-		c['FAT_PER_1000_LARGE_ANIMALS']=FAT_PER_1000_LARGE_ANIMALS
-		c['PROTEIN_PER_1000_LARGE_ANIMALS']=PROTEIN_PER_1000_LARGE_ANIMALS
+
+		c['LIMIT_PER_MONTH_CULLED']=LIMIT_PER_MONTH_CULLED
+		c['CULL_DURATION']=CULL_DURATION
+		
+		c['INITIAL_SEAWEED']=INITIAL_SEAWEED 
 		c['SEAWEED_KCALS']=SEAWEED_KCALS
+		c['HARVEST_LOSS']=HARVEST_LOSS
 		c['SEAWEED_FAT']=SEAWEED_FAT
 		c['SEAWEED_PROTEIN']=SEAWEED_PROTEIN
+
+		c["MINIMUM_DENSITY"]=MINIMUM_DENSITY
+		c["MAXIMUM_DENSITY"]=MAXIMUM_DENSITY
+		c["MAXIMUM_AREA"]=MAXIMUM_AREA
+		c["INITIAL_AREA"]=INITIAL_AREA
+		
 		c['INITIAL_SF']=INITIAL_SF
-		c['INITIAL_NONEGG_NONDAIRY_MEAT']=INITIAL_NONEGG_NONDAIRY_MEAT
-		c['WORLD_POP'] = WORLD_POP
-		c['ADD_CELLULOSIC_SUGAR'] = ADD_CELLULOSIC_SUGAR
-		c['ADD_METHANE_SCP'] = ADD_METHANE_SCP
+		c['INITIAL_MEAT']=INITIAL_MEAT
+
 		c['FISH_FAT'] = FISH_FAT
 		c['FISH_PROTEIN'] = FISH_PROTEIN
 		c['FISH_KCALS'] = FISH_KCALS
-		c['CONVERT_TO_KCALS'] = CONVERT_TO_KCALS
 
 		c["KG_PER_SMALL_ANIMAL"] = KG_PER_SMALL_ANIMAL
 		c["KG_PER_MEDIUM_ANIMAL"] = KG_PER_MEDIUM_ANIMAL
@@ -1639,6 +1877,4 @@ class Constants:
 		c["SMALL_ANIMAL_KCALS_PER_KG"] = SMALL_ANIMAL_KCALS_PER_KG
 		c["SMALL_ANIMAL_FAT_PER_KG"] = SMALL_ANIMAL_FAT_PER_KG
 		c["SMALL_ANIMAL_PROTEIN_PER_KG"] = SMALL_ANIMAL_PROTEIN_PER_KG
-		c["DAYS_IN_MONTH"] = DAYS_IN_MONTH
-
 		return (c,s)

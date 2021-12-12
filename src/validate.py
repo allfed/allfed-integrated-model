@@ -31,10 +31,12 @@ class Validator:
 			# 	print(c.varValue)
 			if(SHOW_CONSTRAINT_CHECK):
 				print(c)
+			if(type(c)==type([])):
+				print("list")
+				continue
 			if(c.name in maximize_constraints):
 				continue
 			constraints_dict[c.name]=c.varValue
-
 		differences=[]
 		constraintlist=list(model.constraints.items())
 		for constraint in constraintlist:
