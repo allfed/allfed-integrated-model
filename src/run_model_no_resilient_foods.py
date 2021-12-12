@@ -97,7 +97,7 @@ print("")
 
 Plotter.plot_people_fed_combined(time_months_middle,analysis)
 Plotter.plot_people_fed_kcals(time_months_middle,analysis,\
-	'thing')
+	'Primary production before waste, no resilient foods')
 
 # nuclear winter 150 tab, cell G30-G38  https://docs.google.com/spreadsheets/d/14t3_PUIky6aNiBvw8q24sj6QYxCN9s_VddLY2-eJuPE/edit#gid=1637082097
 #overall waste, on farm+distribution+retail
@@ -135,7 +135,7 @@ if(c['inputs']['ADD_OUTDOOR_GROWING']):
 	Plotter.plot_OG_no_resilient_foods(time_months_middle,analysis)
 
 Plotter.plot_people_fed_combined(time_months_middle,analysis)
-Plotter.plot_people_fed_kcals_no_resilient(time_months_middle,analysis,"Primary production before waste, no resilient foods")
+Plotter.plot_people_fed_kcals(time_months_middle,analysis,"Food minus waste & delayed halt of nonhuman consumption, no resilient foods")
 
 # if(c['inputs']['ADD_STORED_FOOD']):
 # 	Plotter.plot_stored_food(time_months_middle,analysis)

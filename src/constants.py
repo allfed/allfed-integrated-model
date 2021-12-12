@@ -5,7 +5,7 @@ class Constants:
 
 	def computeConstants(self,c):
 		#full months duration of simulation
-		VERBOSE = False
+		VERBOSE = True
 		WORLD_POP=7.8e9
 		KG_TO_1000_TONS=1/(1e6)
 		NMONTHS=c['inputs']['NMONTHS']
@@ -44,12 +44,12 @@ class Constants:
 
 		#or, should this be 1543e6?? cell L8 https://docs.google.com/spreadsheets/d/1rYcxSe-Z7ztvW-QwTBXT8GABaRmVdDuQ05HXmTHbQ8I/edit#gid=1141282747
 		FEED_MONTHLY_USAGE_KCALS = 1455e6/12*4e6/1e9 #billions kcals
-		FEED_MONTHLY_USAGE_FAT = 6e3 #thousand tons
-		FEED_MONTHLY_USAGE_PROTEIN = 25e3 #thousand tons
+		FEED_MONTHLY_USAGE_FAT = 72/12*1e3 #thousand tons
+		FEED_MONTHLY_USAGE_PROTEIN = 25/12*1e3 #thousand tons
 
 		BIOFUEL_MONTHLY_USAGE_KCALS = 623e6/12*4e6/1e9 #billions kcals
-		BIOFUEL_MONTHLY_USAGE_FAT = 11e3 #thousand tons
-		BIOFUEL_MONTHLY_USAGE_PROTEIN = 2e3#thousand tons
+		BIOFUEL_MONTHLY_USAGE_FAT = 133/12*1e3 #thousand tons
+		BIOFUEL_MONTHLY_USAGE_PROTEIN = 30/12*1e3#thousand tons
 
 		# "outputs" tab https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=25523129
 		if(c['inputs']["IS_NUCLEAR_WINTER"]):
@@ -1641,7 +1641,7 @@ class Constants:
 			print(100*INITIAL_SF_FAT/1e3/(INITIAL_SF_KCALS*1e9/4e6/1e6))
 			print("INITIAL_SF_PROTEIN percentage")
 			print(100*INITIAL_SF_PROTEIN/1e3/(INITIAL_SF_KCALS*1e9/4e6/1e6))
-			if(FEED_MONTHLY_USAGE_KCALS > 0):
+			if(feed_shutoff_kcals[0] > 0):
 				#1000 tons protein/fat per dry caloric ton
 				print("")
 				print("INITIAL_FEED_KCALS million tons dry caloric monthly")
@@ -1699,6 +1699,36 @@ class Constants:
 				CM_IN_KCALS = cattle_maintained_kcals[0]/(1-MEAT_WASTE/100)
 				CM_IN_FAT = cattle_maintained_fat[0]/(1-MEAT_WASTE/100)
 				CM_IN_PROTEIN = cattle_maintained_protein[0]/(1-MEAT_WASTE/100)
+				
+				if(ADD_DAIRY):
+					dairy_milk_kcals[0]
+					print("INITIAL_DAIRY_KCALS million tons dry caloric monthly")
+					print(dairy_milk_kcals[0]/(1-DAIRY_WASTE/100)*1e9/4e6/1e6)
+
+					print("INITIAL_DAIRY_FAT million tons monthly")
+					print(dairy_milk_fat[0]/(1-DAIRY_WASTE/100)/1e3)
+					print("INITIAL_DAIRY_PROTEIN million tons monthly")
+					print(dairy_milk_protein[0]/(1-DAIRY_WASTE/100)/1e3)
+					print("")
+					print("INITIAL_DAIRY_FAT percentage")
+					print(100*dairy_milk_fat[0]/(1-DAIRY_WASTE/100)/1e3/(dairy_milk_kcals[0]/(1-DAIRY_WASTE/100)*1e9/4e6/1e6))
+					print("INITIAL_DAIRY_PROTEIN percentage")
+					print(100*dairy_milk_protein[0]/(1-DAIRY_WASTE/100)/1e3/(dairy_milk_kcals[0]/(1-DAIRY_WASTE/100)*1e9/4e6/1e6))
+					print("")
+				if(ADD_FISH):
+					print("INITIAL_FISH_KCALS million tons dry caloric monthly")
+					print(production_kcals_fish_per_m[0]/(1-FISH_WASTE/100)*1e9/4e6/1e6)
+
+					print("INITIAL_FISH_FAT million tons monthly")
+					print(production_protein_fish_per_m[0]/(1-FISH_WASTE/100)/1e3)
+					print("INITIAL_FISH_PROTEIN million tons monthly")
+					print(production_fat_fish_per_m[0]/(1-FISH_WASTE/100)/1e3)
+					print("")
+					print("INITIAL_FISH_FAT percentage")
+					print(100*production_fat_fish_per_m[0]/(1-FISH_WASTE/100)/1e3/(production_kcals_fish_per_m[0]/(1-FISH_WASTE/100)*1e9/4e6/1e6))
+					print("INITIAL_FISH_PROTEIN percentage")
+					print(100*production_protein_fish_per_m[0]/(1-FISH_WASTE/100)/1e3/(production_kcals_fish_per_m[0]/(1-FISH_WASTE/100)*1e9/4e6/1e6))
+					print("")
 
 				if(CM_IN_KCALS>0):
 					print("INITIAL_CM_IN_KCALS million tons dry caloric monthly")
@@ -1736,7 +1766,7 @@ class Constants:
 			else:
 				print("No Feed Usage")			
 				print("")
-			if(BIOFUEL_MONTHLY_USAGE_KCALS > 0):
+			if(biofuels_kcals[0] > 0):
 				#1000 tons protein/fat per dry caloric ton
 				print("INITIAL_BIOFUEL_KCALS million tons dry caloric monthly")
 				print(-BIOFUEL_MONTHLY_USAGE_KCALS*1e9/4e6/1e6)

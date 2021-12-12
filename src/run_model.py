@@ -97,7 +97,7 @@ print("")
 
 Plotter.plot_people_fed_combined(time_months_middle,analysis)
 Plotter.plot_people_fed_kcals(time_months_middle,analysis,\
-	'Primary Caloric Monthly Sources, With Deployment')
+	'Primary production before waste, + resilient foods')
 
 # nuclear winter 150 tab, cell G30-G38  https://docs.google.com/spreadsheets/d/14t3_PUIky6aNiBvw8q24sj6QYxCN9s_VddLY2-eJuPE/edit#gid=1637082097
 #overall waste, on farm+distribution+retail
@@ -153,7 +153,7 @@ while(people_fed_billions > 7.81 \
 	print("")
 	if(n == 0):
 		Plotter.plot_people_fed_combined(time_months_middle,analysis)
-		Plotter.plot_people_fed_kcals(time_months_middle,analysis,'Caloric Sources Minus Waste and Temporary Continued Present-day Feed and Biofuel, With Deployment')
+		Plotter.plot_people_fed_kcals(time_months_middle,analysis,'Food minus waste & delayed halt of nonhuman consumption, + resilient foods')
 
 
 	people_fed_billions = analysis.people_fed_billions
@@ -210,11 +210,11 @@ if(c['inputs']['ADD_DAIRY']):
 	# Plotter.plot_dairy_cows(time_months_middle,analysis)
 	Plotter.plot_dairy(time_months_middle,analysis)
 
-plt.plot(excess_per_month/2100/30)
-plt.show()
+# plt.plot(excess_per_month/2100/30)
+# plt.show()
 # Plotter.plot_people_fed(time_months_middle,analysis)
 Plotter.plot_people_fed_combined(time_months_middle,analysis)
-Plotter.plot_people_fed_kcals_diet(time_months_middle,analysis)
+Plotter.plot_people_fed_kcals(time_months_middle,analysis,"Average diet, excess production used for feed, + resilient foods")
 # Plotter.plot_people_fed_fat(time_months_middle,analysis)
 # Plotter.plot_people_fed_protein(time_months_middle,analysis)
 # Plotter.plot_people_fed_comparison(time_months_middle,analysis)

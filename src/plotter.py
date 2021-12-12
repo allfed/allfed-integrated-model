@@ -345,48 +345,57 @@ class Plotter:
 			OG_stored_label = 'Crops consumed that month \n that were stored \n after simulation start'
 		else:
 			stored_food_label = 'Crops consumed that month \n that were stored \n before ASRS onset'
-			OG_stored_label = 'Crops consumed that month \n that were stored \n before ASRS onset'
+			OG_stored_label = 'Crops consumed that month \n that were stored \n after ASRS onset'
 
 
 		patterns = ["/" , "\\" , "|" , "-" , "+" , "x", "o", "O"]
 		pal=["#006ddb","#b66dff","6db6ff","#b6dbff",\
 		 "#920000","#924900","#db6d00","#24ff24","#ffff6d"]
 
+		
 		if(analysis.c['ADD_FISH']):
 			legend = legend + ['Marine Fish']
 		else:
 			legend = legend + ['']
+		
 		if(analysis.c['ADD_CELLULOSIC_SUGAR'] or analysis.c['ADD_METHANE_SCP']):
 			legend = legend + ['Industrial Foods']
 		else:
 			legend = legend + ['']
+		
 		if(analysis.c['ADD_GREENHOUSES']):
 			legend = legend + ['Greenhouses']
 		else:
 			legend = legend + ['']
+		
 		if(analysis.c['ADD_SEAWEED']):
 			legend = legend + ['Seaweed']
 		else:
 			legend = legend + ['']
+		
 		if(analysis.c['ADD_DAIRY']):
 			legend = legend + ['Dairy Milk']
 		else:
 			legend = legend + ['']
+		
 		if(analysis.c['ADD_MEAT']):
 			legend = legend + [meat_label]
 		else:
 			legend = legend + ['']
+		
+		if(analysis.c['ADD_OUTDOOR_GROWING']):
+			legend = legend + [\
+			'Outdoor Crops consumed \n immediately']
+		else:
+			legend = legend + ['']
+		
 		if(analysis.c['ADD_STORED_FOOD']):
 			legend = legend + [stored_food_label]
 		else:
 			legend = legend + ['']
+		
 		if(analysis.c['ADD_OUTDOOR_GROWING']):
 			legend = legend + [OG_stored_label]
-		else:
-			legend = legend + ['']
-		if(analysis.c['ADD_OUTDOOR_GROWING']):
-			legend = legend + [\
-			'Outdoor Crops consumed \n immediately']
 		else:
 			legend = legend + ['']
 
@@ -403,8 +412,8 @@ class Plotter:
 			analysis.billions_fed_seaweed_kcals/ analysis.c["CONVERT_TO_KCALS"],\
 			(analysis.billions_fed_milk_kcals+analysis.billions_fed_h_e_milk_kcals)/ analysis.c["CONVERT_TO_KCALS"],\
 			(analysis.billions_fed_meat_kcals+analysis.billions_fed_h_e_meat_kcals)/analysis.c["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_SF_kcals/analysis.c["CONVERT_TO_KCALS"],\
 			analysis.billions_fed_immediate_OG_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_SF_kcals/analysis.c["CONVERT_TO_KCALS"],\
 			analysis.billions_fed_new_stored_OG_kcals/analysis.c["CONVERT_TO_KCALS"],\
 			 labels=legend, colors=pal)
 		for stack, hatch in zip(stacks, patterns):
@@ -416,12 +425,12 @@ class Plotter:
 		ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),handles=reversed(handles),labels=reversed(labels))
 		# plt.title('Caloric Availability, Nuclear Winter, No Resilient Foods')
 		plt.title(title)
-		plt.ylabel('Calories per Capita per Day')
+		plt.ylabel('Calories per capita per day')
 
 		if(not analysis.c['inputs']['IS_NUCLEAR_WINTER']):
-			plt.xlabel('Months Since May, Baseline Around 2020')
+			plt.xlabel('Months since may, baseline around 2020')
 		else:
-			plt.xlabel('Months Since May Sunlight Reduction Event')
+			plt.xlabel('Months since may sunlight reduction event')
 		# plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05),
 		#   ncol=3, fancybox=True, shadow=True)
 		ax.set_ylim([0,(analysis.billions_fed_immediate_OG_kcals[-1]

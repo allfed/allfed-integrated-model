@@ -146,7 +146,7 @@ if(c['inputs']['ADD_OUTDOOR_GROWING']):
 	Plotter.plot_OG_before_nuclear_event(time_months_middle,analysis)
 
 Plotter.plot_people_fed_combined(time_months_middle,analysis)
-Plotter.plot_people_fed_kcals(time_months_middle,analysis,"Production minus waste and delayed feed and biofuel shutoff, baseline")
+Plotter.plot_people_fed_kcals(time_months_middle,analysis,"Baseline around 2020 average diet")
 
 # if(c['inputs']['ADD_CELLULOSIC_SUGAR']):
 # 	Plotter.plot_CS(time_months_middle,analysis)
