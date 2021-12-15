@@ -73,7 +73,7 @@ c["inputs"]["CULL_DURATION"] = 3
 c['inputs']['RECALCULATE_CULL_DURATION'] = False #thousand tons
 
 c['inputs']['WASTE'] = {}
-c['inputs']['WASTE']['CEREALS'] = 0 #%
+# c['inputs']['WASTE']['CEREALS'] = 0 #%
 c['inputs']['WASTE']['SUGAR'] = 0 #%
 c['inputs']['WASTE']['MEAT'] = 0 #%
 c['inputs']['WASTE']['DAIRY'] = 0 #%
@@ -103,7 +103,7 @@ Plotter.plot_people_fed_kcals(time_months_middle,analysis,\
 #overall waste, on farm+distribution+retail
 #2x prices (note, currently set to 2019, not 2020)
 c['inputs']['WASTE'] = {}
-c['inputs']['WASTE']['CEREALS'] = 14.46 #%
+# c['inputs']['WASTE']['CEREALS'] = 14.46 #%
 c['inputs']['WASTE']['SUGAR'] = 9.91 #%
 c['inputs']['WASTE']['MEAT'] = 10.61 #%
 c['inputs']['WASTE']['DAIRY'] = 11.93 #%
