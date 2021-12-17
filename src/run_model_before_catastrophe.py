@@ -40,7 +40,7 @@ c['inputs']['INITIAL_SF_FAT'] = 69254*(1.015*351.433*1e6/1360e6) # 1000 tons fat
 c["inputs"]["OG_USE_BETTER_ROTATION"] = False
 	
 c['inputs']['INCLUDE_PROTEIN'] = True
-c['inputs']['INCLUDE_FAT'] = False
+c['inputs']['INCLUDE_FAT'] = True
 
 c['inputs']['GREENHOUSE_GAIN_PCT'] = 0
 
@@ -91,10 +91,8 @@ c['inputs']['WASTE']['DAIRY'] = 0 #%
 c['inputs']['WASTE']['SEAFOOD'] = 0 #%
 c['inputs']['WASTE']['CROPS'] = 0 #%
 c['inputs']['WASTE']['SEAWEED'] = 0 #%
-
 optimizer = Optimizer()
 [time_months,time_months_middle,analysis]=optimizer.optimize(c)
-
 print("")
 print("")
 print("")
@@ -105,16 +103,16 @@ print("")
 print("")
 print("")
 print("")
-
 Plotter.plot_people_fed_combined(time_months_middle,analysis)
 Plotter.plot_people_fed_kcals(time_months_middle,analysis,\
 	'Primary production before waste, baseline')
+# quit()
 	
 # nuclear winter 150 tab, cell G30-G38  https://docs.google.com/spreadsheets/d/14t3_PUIky6aNiBvw8q24sj6QYxCN9s_VddLY2-eJuPE/edit#gid=1637082097
 #overall waste, on farm+distribution+retail
 #1x prices (note, currently set to 2019, not 2020)
 c['inputs']['WASTE'] = {}
-# c['inputs']['WASTE']['CEREALS'] = 28.52 #%
+c['inputs']['WASTE']['CEREALS'] = 28.52 #%
 c['inputs']['WASTE']['SUGAR'] = 23.96 #%
 c['inputs']['WASTE']['MEAT'] = 24.67 #%
 c['inputs']['WASTE']['DAIRY'] = 25.99 #%
@@ -124,7 +122,7 @@ c['inputs']['WASTE']['SEAWEED'] = 23.87 #%
 
 c["inputs"]["EXCESS_CALORIES"] = np.array([0]*c['inputs']['NMONTHS'])
 c['inputs']['FEED_SHUTOFF_DELAY'] = c['inputs']['NMONTHS']
-c['inputs']['BIOFUEL_SHUTOFF_DELAY'] = c['inputs']['NMONTHS'] 
+c['inputs']['BIOFUEL_SHUTOFF_DELAY'] = c['inputs']['NMONTHS']
 
 c["inputs"]["CULL_DURATION"] = 0 # there is no culling
 c['inputs']['RECALCULATE_CULL_DURATION'] = False #thousand tons

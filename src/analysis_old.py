@@ -23,12 +23,7 @@ class Analyzer:
 
 		for m in range(0,self.c['NMONTHS']):
 			val=variables[m]
-
-			#if something went wrong and the variable was not added for a certain month
-			assert(type(val) != type(0))
-			# if(type(val)==type(0)):
-			# 	variable_output.append(val*conversion)
-			# else:
+			# if(val==0)
 			variable_output.append(val.varValue*conversion)
 			if(show_output):
 				print("    Month "+str(m)+": "+str(variable_output[m]))
@@ -163,25 +158,25 @@ class Analyzer:
 		# 	1,
 		# 	show_output)
 		self.billions_fed_GH_kcals = \
-			np.multiply(\
+			np.multiply(np.multiply(\
 				np.array(greenhouse_area),\
 				np.array(greenhouse_kcals_per_ha) \
 				* 1/self.c["KCALS_MONTHLY"]
-			)
+			),self.h_e_fraction_kcals_fed_to_humans)
 
 		self.billions_fed_GH_fat= \
-			np.multiply(
+			np.multiply(np.multiply(
 				np.array(greenhouse_area),\
 				np.array(greenhouse_fat_per_ha) \
 				*1/self.c["FAT_MONTHLY"]/1e9
-			)
+			),self.h_e_fraction_fat_fed_to_humans)
 
 		self.billions_fed_GH_protein = \
-			np.multiply(
+			np.multiply(np.multiply(
 				np.array(greenhouse_area),\
 				np.array(greenhouse_protein_per_ha)
 				* 1/self.c["PROTEIN_MONTHLY"]/1e9
-			)
+			),self.h_e_fraction_protein_fed_to_humans)
 
 	# #if greenhouses aren't included, these results will be zero
 	# def analyze_GH_results(
@@ -214,16 +209,19 @@ class Analyzer:
 
 
 		self.billions_fed_fish_kcals = \
-			np.array(production_kcals_fish_per_m) \
-			/ self.c["KCALS_MONTHLY"]
+			np.multiply(np.array(production_kcals_fish_per_m) \
+			/ self.c["KCALS_MONTHLY"]\
+			,self.h_e_fraction_kcals_fed_to_humans)
 
 		self.billions_fed_fish_protein = \
-			np.array(production_protein_fish_per_m) \
-			/ self.c["PROTEIN_MONTHLY"]/1e9
+			np.multiply(np.array(production_protein_fish_per_m) \
+			/ self.c["PROTEIN_MONTHLY"]/1e9\
+			,self.h_e_fraction_protein_fed_to_humans)
 
 		self.billions_fed_fish_fat = \
-			np.array(production_fat_fish_per_m) \
-			/ self.c["FAT_MONTHLY"]/1e9
+			np.multiply(np.array(production_fat_fish_per_m) \
+			/ self.c["FAT_MONTHLY"]/1e9\
+			,self.h_e_fraction_fat_fed_to_humans)
 		
 	#if outdoor growing isn't included, these results will be zero
 	def analyze_OG_results(
@@ -235,16 +233,14 @@ class Analyzer:
 		crops_food_produced,
 		show_output
 		):
-		CROPS_WASTE = 1-self.c["inputs"]["WASTE"]["CROPS"]/100
 		self.billions_fed_OG_storage_no_rot = self.makeMidMonthlyVars(
 			crops_food_storage_no_rot,
-			CROPS_WASTE/self.c["KCALS_MONTHLY"],\
+			1/self.c["KCALS_MONTHLY"],\
 			show_output)
 
 		self.billions_fed_OG_storage_rot = self.makeMidMonthlyVars(
 			crops_food_storage_rot,
-			CROPS_WASTE\
-			* self.c["OG_ROTATION_FRACTION_KCALS"]/self.c["KCALS_MONTHLY"],\
+			self.c["OG_ROTATION_FRACTION_KCALS"]/self.c["KCALS_MONTHLY"],\
 			show_output)
 
 		#immediate from produced and storage changes account for all eaten
@@ -262,7 +258,7 @@ class Analyzer:
 				np.array(crops_food_produced[0:self.c['inputs']["INITIAL_HARVEST_DURATION"]]),\
 				np.array(crops_food_produced[self.c['inputs']["INITIAL_HARVEST_DURATION"]:])\
 				 * self.c["OG_ROTATION_FRACTION_KCALS"],
-			])* CROPS_WASTE
+			])
 
 
 		[self.billions_fed_immediate_OG_kcals_tmp,\
@@ -271,7 +267,7 @@ class Analyzer:
 			crops_food_eaten_no_rot,
 			crops_food_eaten_rot,
 			og_produced_kcals,
-			CROPS_WASTE / self.c["KCALS_MONTHLY"],
+			1 / self.c["KCALS_MONTHLY"],
 			show_output
 			)
 
@@ -279,63 +275,57 @@ class Analyzer:
 		self.billions_fed_immediate_OG_kcals = \
 			np.multiply(
 				np.array(self.billions_fed_immediate_OG_kcals_tmp),
-				self.OG_SF_fraction_kcals_to_humans
+				self.h_e_fraction_kcals_fed_to_humans
 			)
 
 		self.billions_fed_new_stored_OG_kcals = \
 			np.multiply(
 				np.array(self.billions_fed_new_stored_OG_kcals_tmp),
-				self.OG_SF_fraction_kcals_to_humans
+				self.h_e_fraction_kcals_fed_to_humans
 			)
 
 		self.billions_fed_OG_kcals = np.multiply(
 			np.array(self.makeMidMonthlyVars(
 				crops_food_eaten_no_rot,
-				CROPS_WASTE/self.c["KCALS_MONTHLY"],
+				1/self.c["KCALS_MONTHLY"],
 				show_output))
 			+ np.array(self.makeMidMonthlyVars(
 				crops_food_eaten_rot,
-				CROPS_WASTE \
-				 * self.c["OG_ROTATION_FRACTION_KCALS"]/self.c["KCALS_MONTHLY"],
+				self.c["OG_ROTATION_FRACTION_KCALS"]/self.c["KCALS_MONTHLY"],
 				show_output)),
-			self.OG_SF_fraction_kcals_to_humans\
+			self.h_e_fraction_kcals_fed_to_humans\
 		)
 
 		self.billions_fed_OG_fat = np.multiply(
 			np.array(self.makeMidMonthlyVars(
 				crops_food_eaten_no_rot,
-				CROPS_WASTE\
-				 * self.c["OG_FRACTION_FAT"]/self.c["FAT_MONTHLY"]/1e9,
+				self.c["OG_FRACTION_FAT"]/self.c["FAT_MONTHLY"]/1e9,
 				show_output))
 			+ np.array(self.makeMidMonthlyVars(
 				crops_food_eaten_rot,
-				CROPS_WASTE\
-				 * self.c["OG_ROTATION_FRACTION_FAT"]/self.c["FAT_MONTHLY"]/1e9,
+				self.c["OG_ROTATION_FRACTION_FAT"]/self.c["FAT_MONTHLY"]/1e9,
 				show_output)),
-			self.OG_SF_fraction_fat_to_humans\
+			self.h_e_fraction_fat_fed_to_humans\
 		)
 
 		self.billions_fed_OG_protein = np.multiply(
 			np.array(self.makeMidMonthlyVars(
 				crops_food_eaten_no_rot,
-				CROPS_WASTE
-				* self.c["OG_FRACTION_PROTEIN"]\
+				self.c["OG_FRACTION_PROTEIN"]\
 				/self.c["PROTEIN_MONTHLY"]/1e9,
 				show_output))
 			+ np.array(self.makeMidMonthlyVars(
 				crops_food_eaten_rot,
-				CROPS_WASTE\
-				 * self.c["OG_ROTATION_FRACTION_PROTEIN"]\
+				self.c["OG_ROTATION_FRACTION_PROTEIN"]\
 				/self.c["PROTEIN_MONTHLY"]/1e9,
 				show_output)),
-			self.OG_SF_fraction_protein_to_humans\
+			self.h_e_fraction_protein_fed_to_humans\
 		)
 
 		self.billions_fed_OG_produced_kcals = \
 			np.multiply(
-				CROPS_WASTE\
-				* og_produced_kcals / self.c["KCALS_MONTHLY"],
-				self.OG_SF_fraction_kcals_to_humans
+				og_produced_kcals / self.c["KCALS_MONTHLY"],
+				self.h_e_fraction_kcals_fed_to_humans
 			)
 
 		self.billions_fed_OG_produced_fat = \
@@ -346,8 +336,8 @@ class Analyzer:
 					np.array(crops_food_produced[self.c['inputs']["INITIAL_HARVEST_DURATION"]:])\
 					 * self.c["OG_ROTATION_FRACTION_FAT"],
 				]) / self.c["FAT_MONTHLY"]/1e9,
-				self.OG_SF_fraction_fat_to_humans
-			) * CROPS_WASTE
+				self.h_e_fraction_fat_fed_to_humans
+			)
 
 		self.billions_fed_OG_produced_protein = \
 			np.multiply(
@@ -357,8 +347,8 @@ class Analyzer:
 					np.array(crops_food_produced[self.c['inputs']["INITIAL_HARVEST_DURATION"]:])\
 					 * self.c["OG_ROTATION_FRACTION_PROTEIN"],
 				]) / self.c["PROTEIN_MONTHLY"]/1e9,
-				self.OG_SF_fraction_protein_to_humans
-			) * CROPS_WASTE
+				self.h_e_fraction_protein_fed_to_humans
+			)
 		# print("self.billions_fed_OG_produced_kcals")
 		# print(self.billions_fed_OG_produced_kcals)
 		# print("self.billions_fed_OG_produced_fat")
@@ -382,8 +372,8 @@ class Analyzer:
 		):
 
 		self.billions_fed_CS_kcals = \
-			np.array(production_kcals_CS_per_m) \
-			/ self.c["KCALS_MONTHLY"]
+			np.multiply(np.array(production_kcals_CS_per_m) \
+			/ self.c["KCALS_MONTHLY"],self.h_e_fraction_kcals_fed_to_humans)
 
 
 	#if methane scp isn't included, these results will be zero
@@ -396,16 +386,16 @@ class Analyzer:
 		):
 
 		self.billions_fed_SCP_kcals = \
-			np.array(production_kcals_scp_per_m) \
-			/ self.c["KCALS_MONTHLY"]
+			np.multiply(np.array(production_kcals_scp_per_m) \
+			/ self.c["KCALS_MONTHLY"],self.h_e_fraction_kcals_fed_to_humans)
 
 		self.billions_fed_SCP_fat = \
-			np.array(production_fat_scp_per_m) \
-			/ self.c["FAT_MONTHLY"]/1e9
+			np.multiply(np.array(production_fat_scp_per_m) \
+			/ self.c["FAT_MONTHLY"]/1e9,self.h_e_fraction_fat_fed_to_humans)
 
 		self.billions_fed_SCP_protein = \
-			np.array(production_protein_scp_per_m) \
-			/ self.c["PROTEIN_MONTHLY"]/1e9
+			np.multiply(np.array(production_protein_scp_per_m) \
+			/ self.c["PROTEIN_MONTHLY"]/1e9,self.h_e_fraction_protein_fed_to_humans)
 
 	#if stored food isn't included, these results will be zero
 	def analyze_meat_dairy_results(
@@ -437,10 +427,11 @@ class Analyzer:
 			show_output))
 
 
-		self.billions_fed_meat_kcals = \
+		self.billions_fed_meat_kcals = np.multiply(\
 			self.billions_fed_meat_kcals_tmp \
 		 + np.array(cattle_maintained_kcals)\
-			 / self.c["KCALS_MONTHLY"]
+			 / self.c["KCALS_MONTHLY"],\
+		 self.h_e_fraction_kcals_fed_to_humans) #human edible fed
 
 		if(self.c["VERBOSE"]):
 			print("expected culled meat kcals month 0 to 8ish")
@@ -448,15 +439,16 @@ class Analyzer:
 			print(self.c["LIMIT_PER_MONTH_CULLED"])
 			print("actual culled meat")
 			print(self.billions_fed_meat_kcals_tmp*self.c["KCALS_MONTHLY"])
-			# print(np.divide(self.billions_fed_meat_kcals_tmp,self.OG_SF_fraction_kcals_to_humans)*self.c["KCALS_MONTHLY"])
+			# print(np.divide(self.billions_fed_meat_kcals_tmp,self.h_e_fraction_kcals_fed_to_humans)*self.c["KCALS_MONTHLY"])
 
 		self.billions_fed_meat_fat_tmp = np.array(self.makeMidMonthlyVars(
 			meat_eaten,
 			self.c["MEAT_FRACTION_FAT"]/self.c["FAT_MONTHLY"]/1e9,
 			show_output))
 
-		self.billions_fed_meat_fat = self.billions_fed_meat_fat_tmp\
-		 + np.array(cattle_maintained_fat) / self.c["FAT_MONTHLY"]/1e9
+		self.billions_fed_meat_fat = np.multiply(self.billions_fed_meat_fat_tmp\
+		 + np.array(cattle_maintained_fat) / self.c["FAT_MONTHLY"]/1e9,\
+		 self.h_e_fraction_fat_fed_to_humans)#human edible fed
 
 
 		self.billions_fed_meat_protein_tmp = np.array(self.makeMidMonthlyVars(
@@ -465,18 +457,19 @@ class Analyzer:
 			/self.c["PROTEIN_MONTHLY"]/1e9,
 			show_output))
 
-		self.billions_fed_meat_protein = self.billions_fed_meat_protein_tmp\
-		 + np.array(cattle_maintained_protein) / self.c["PROTEIN_MONTHLY"]/1e9
+		self.billions_fed_meat_protein = np.multiply(self.billions_fed_meat_protein_tmp\
+		 + np.array(cattle_maintained_protein) / self.c["PROTEIN_MONTHLY"]/1e9,\
+		 self.h_e_fraction_protein_fed_to_humans)#human edible fed
 
 
-		self.billions_fed_milk_kcals = np.array(dairy_milk_kcals) \
-			/ self.c["KCALS_MONTHLY"]
+		self.billions_fed_milk_kcals = np.multiply(np.array(dairy_milk_kcals) \
+			/ self.c["KCALS_MONTHLY"],self.h_e_fraction_kcals_fed_to_humans)
 
-		self.billions_fed_milk_fat = np.array(dairy_milk_fat)\
-			/ self.c["FAT_MONTHLY"] / 1e9
+		self.billions_fed_milk_fat = np.multiply(np.array(dairy_milk_fat)\
+			/ self.c["FAT_MONTHLY"] / 1e9,self.h_e_fraction_fat_fed_to_humans)
 
-		self.billions_fed_milk_protein = np.array(dairy_milk_protein)\
-			/ self.c["PROTEIN_MONTHLY"] / 1e9
+		self.billions_fed_milk_protein = np.multiply(np.array(dairy_milk_protein)\
+			/ self.c["PROTEIN_MONTHLY"] / 1e9,self.h_e_fraction_protein_fed_to_humans)
 
 		self.billions_fed_h_e_meat_kcals = \
 			h_e_meat_kcals / self.c["KCALS_MONTHLY"]
@@ -512,9 +505,9 @@ class Analyzer:
 
 		# import matplotlib.pyplot as plt
 		# cm = np.multiply(np.array(cattle_maintained_kcals)\
-		# 			 / self.c["KCALS_MONTHLY"],self.OG_SF_fraction_kcals_to_humans)
+		# 			 / self.c["KCALS_MONTHLY"],self.h_e_fraction_kcals_fed_to_humans)
 		# plt.plot(cm,label = "cattle meat")
-		# m=np.multiply(self.billions_fed_meat_kcals_tmp,self.OG_SF_fraction_kcals_to_humans)
+		# m=np.multiply(self.billions_fed_meat_kcals_tmp,self.h_e_fraction_kcals_fed_to_humans)
 		# plt.plot(m,label = "non cattle meat")
 		# plt.plot(self.billions_fed_milk_kcals,label = "milk")
 		# plt.title("milk and meat")
@@ -542,13 +535,11 @@ class Analyzer:
 		):
 
 
-		CROPS_WASTE = 1-self.c["inputs"]["WASTE"]["CROPS"]/100
 
 		self.billions_fed_SF_kcals = np.multiply(self.makeMidMonthlyVars(
 			stored_food_eaten,
-			CROPS_WASTE\
-			 * self.c["SF_FRACTION_KCALS"]/self.c["KCALS_MONTHLY"],
-			show_output),self.OG_SF_fraction_kcals_to_humans)
+			self.c["SF_FRACTION_KCALS"]/self.c["KCALS_MONTHLY"],
+			show_output),self.h_e_fraction_kcals_fed_to_humans)
 
 
 		# self.billion_person_years_SF_kcals = self.makeStartEndMonthlyVars(
@@ -559,9 +550,8 @@ class Analyzer:
 
 		self.billions_fed_SF_fat = np.multiply(self.makeMidMonthlyVars(
 			stored_food_eaten,
-			CROPS_WASTE\
-			 * self.c["SF_FRACTION_FAT"]/self.c["FAT_MONTHLY"]/1e9,
-			show_output),self.OG_SF_fraction_fat_to_humans)
+			self.c["SF_FRACTION_FAT"]/self.c["FAT_MONTHLY"]/1e9,
+			show_output),self.h_e_fraction_fat_fed_to_humans)
 
 		# self.billion_person_years_SF_fat = self.makeStartEndMonthlyVars(
 		# 	stored_food_start,
@@ -571,9 +561,8 @@ class Analyzer:
 	
 		self.billions_fed_SF_protein = np.multiply(self.makeMidMonthlyVars(
 			stored_food_eaten,
-			CROPS_WASTE\
-			 * self.c["SF_FRACTION_PROTEIN"]/self.c["PROTEIN_MONTHLY"]/1e9,
-			show_output),self.OG_SF_fraction_protein_to_humans)
+			self.c["SF_FRACTION_PROTEIN"]/self.c["PROTEIN_MONTHLY"]/1e9,
+			show_output),self.h_e_fraction_protein_fed_to_humans)
 
 		# self.billion_person_years_SF_protein = self.makeStartEndMonthlyVars(
 		# 	stored_food_start,
@@ -632,29 +621,39 @@ class Analyzer:
 			1,
 			show_output)
 
-		self.billions_fed_seaweed_kcals = self.makeMidMonthlyVars(
+		self.billions_fed_seaweed_kcals = np.multiply(self.makeMidMonthlyVars(
 			seaweed_food_produced_monthly,
 			self.c["SEAWEED_KCALS"]/self.c["KCALS_MONTHLY"],
-			show_output)
+			show_output),self.h_e_fraction_kcals_fed_to_humans)
 
-		self.billions_fed_seaweed_fat = self.makeMidMonthlyVars(
+		self.billions_fed_seaweed_fat = np.multiply(self.makeMidMonthlyVars(
 			seaweed_food_produced_monthly,
 			self.c["SEAWEED_FAT"]/self.c["FAT_MONTHLY"]/1e9,
-			show_output)
+			show_output),self.h_e_fraction_fat_fed_to_humans)
 
-		self.billions_fed_seaweed_protein = self.makeMidMonthlyVars(
+		self.billions_fed_seaweed_protein = np.multiply(self.makeMidMonthlyVars(
 			seaweed_food_produced_monthly,
 			self.c["SEAWEED_PROTEIN"]/self.c["PROTEIN_MONTHLY"]/1e9,
-			show_output)
+			show_output),self.h_e_fraction_protein_fed_to_humans)
 
 
 		# self.max_seaweed = self.c['MAXIMUM_AREA'] * self.c['MAXIMUM_DENSITY']
 		# self.seaweed_used_area_max_density = np.array(self.seaweed_used_area) * self.c['MAXIMUM_DENSITY']
 
 
-	# The optimizer will maximize minimum fat, calories, and protein over any month, but it does not care which sources these come from. The point of this function is to determine the probable contributions to excess calories used for feed and biofuel from appropriate sources (unless this has been updated, it takes it exclusively from outdoor growing and stored food). 
-	# there is also a constraint to make sure the sources which can be used for feed are not exhausted, and the model will not be able to solve if the usage from biofuels and feed are more than the available stored food and outdoor crop production.
-	def compute_excess_after_run(self,model):
+	def compute_excess_after_run(
+		self,
+		model,
+		h_e_meat_kcals,
+		h_e_meat_fat,
+		h_e_meat_protein,
+		h_e_milk_kcals,
+		h_e_milk_fat,
+		h_e_milk_protein,
+		excess_calories,
+		excess_fat_used,
+		excess_protein_used
+		):
 
 		# I spent like five hours trying to figure out why the answer was wrong 
 		# until I finally found an issue with string ordering, fixed it below
@@ -684,46 +683,30 @@ class Analyzer:
 
 		zipped_lists = zip(order_kcals, humans_fed_kcals)
 		sorted_zipped_lists = sorted(zipped_lists)
-		self.humans_fed_kcals_optimizer = [element for _, element in sorted_zipped_lists]
+		humans_fed_kcals = [element for _, element in sorted_zipped_lists]
 
 		zipped_lists = zip(order_fat, humans_fed_fat)
 		sorted_zipped_lists = sorted(zipped_lists)
-		self.humans_fed_fat_optimizer = [element for _, element in sorted_zipped_lists]
+		humans_fed_fat = [element for _, element in sorted_zipped_lists]
 		
 		zipped_lists = zip(order_protein, humans_fed_protein)
 		sorted_zipped_lists = sorted(zipped_lists)
-		self.humans_fed_protein_optimizer = [element for _, element in sorted_zipped_lists]
+		humans_fed_protein = [element for _, element in sorted_zipped_lists]
+		
+		assert(len(humans_fed_kcals) == len(excess_calories))
+		assert(len(humans_fed_fat) == len(h_e_meat_fat))
+		assert(len(humans_fed_protein) == len(h_e_meat_protein))
 
 		feed_delay = self.c['inputs']['FEED_SHUTOFF_DELAY']
-		sum_before = np.sum((np.array(self.humans_fed_kcals_optimizer)[:feed_delay] - self.c["WORLD_POP"]/1e9))
+		sum_before = np.sum((np.array(humans_fed_kcals)[:feed_delay] - self.c["WORLD_POP"]/1e9))
 
 		if(feed_delay == self.c["NMONTHS"]):
-			self.excess_after_run = (np.array(self.humans_fed_kcals_optimizer) - self.c["WORLD_POP"]/1e9)*self.c["KCALS_MONTHLY"]
+			self.excess_after_run = (np.array(humans_fed_kcals) - self.c["WORLD_POP"]/1e9)*self.c["KCALS_MONTHLY"]
 		else:		
-			# any consistent monthly excess is subtracted
-			# also spread out excess calories in pre-"feed shutoff" months
-			# to be used in months after feed is shutoff 
-			self.excess_after_run = \
-				(\
-					np.array(self.humans_fed_kcals_optimizer) \
-					- self.c["WORLD_POP"]/1e9 \
-					+ (sum_before)/(self.c["NMONTHS"]-feed_delay)
-				)*self.c["KCALS_MONTHLY"]
-	
-	def calc_fraction_OG_SF_to_humans(\
-		self,
-		model,
-		crops_food_eaten_no_rot,
-		crops_food_eaten_rot,
-		stored_food_eaten,
-		excess_calories,
-		excess_fat_used,
-		excess_protein_used
-		):
-		
-		self.are_excess_kcals = (excess_calories>0).any()
+			#spread out excess calories to be used in future months
+			self.excess_after_run = (np.array(humans_fed_kcals) - self.c["WORLD_POP"]/1e9+(sum_before)/(self.c["NMONTHS"]-feed_delay))*self.c["KCALS_MONTHLY"]
+			"""
 
-		"""
 		each month:
 			(all the sources except using human edible fed food) + (-excess provided) + (meat and dairy from human edible sources)
 			=
@@ -759,79 +742,18 @@ class Analyzer:
 		c = 1 - b/(b-d+e)
 		
 		"""
-		SF_kcals = self.makeMidMonthlyVars(
-			stored_food_eaten,
-			self.c["SF_FRACTION_KCALS"]/self.c["KCALS_MONTHLY"],
-			False)
 
-
-		# self.billion_person_years_SF_kcals = self.makeStartEndMonthlyVars(
-		# 	stored_food_start,
-		# 	stored_food_end,
-		# 	self.c["SF_FRACTION_KCALS"]/(self.c["KCALS_MONTHLY"]*12)*(1-self.c["inputs"]["H_E_FRACTION_USED_FOR_FEED"]),
-		# 	show_output)
-
-		SF_fat = self.makeMidMonthlyVars(
-			stored_food_eaten,
-			self.c["SF_FRACTION_FAT"]/self.c["FAT_MONTHLY"]/1e9,
-			False)
-
-		# self.billion_person_years_SF_fat = self.makeStartEndMonthlyVars(
-		# 	stored_food_start,
-		# 	stored_food_end,
-		# 	self.c["SF_FRACTION_FAT"]/(self.c["FAT_MONTHLY"]*12)/1e9*(1-self.c["inputs"]["H_E_FRACTION_USED_FOR_FEED"]),
-		# 	show_output)
-		
-		SF_protein = self.makeMidMonthlyVars(
-			stored_food_eaten,
-			self.c["SF_FRACTION_PROTEIN"]/self.c["PROTEIN_MONTHLY"]/1e9,
-			False)
-
-		OG_kcals = \
-			np.array(self.makeMidMonthlyVars(
-				crops_food_eaten_no_rot,
-				1/self.c["KCALS_MONTHLY"],
-				False))\
-			+ np.array(self.makeMidMonthlyVars(
-				crops_food_eaten_rot,
-				self.c["OG_ROTATION_FRACTION_KCALS"]/self.c["KCALS_MONTHLY"],
-				False))\
-
-		OG_fat = \
-			np.array(self.makeMidMonthlyVars(
-				crops_food_eaten_no_rot,
-				self.c["OG_FRACTION_FAT"]/self.c["FAT_MONTHLY"]/1e9,
-				False))\
-			+ np.array(self.makeMidMonthlyVars(
-				crops_food_eaten_rot,
-				self.c["OG_ROTATION_FRACTION_FAT"]/self.c["FAT_MONTHLY"]/1e9,
-				False))
-
-		OG_protein = \
-			np.array(self.makeMidMonthlyVars(
-				crops_food_eaten_no_rot,
-				self.c["OG_FRACTION_PROTEIN"]\
-				/self.c["PROTEIN_MONTHLY"]/1e9,
-				False))\
-			+ np.array(self.makeMidMonthlyVars(
-				crops_food_eaten_rot,
-				self.c["OG_ROTATION_FRACTION_PROTEIN"]\
-				/self.c["PROTEIN_MONTHLY"]/1e9,
-				False))
-
-
-		# print(excess_calories)
-		# print(np.array(OG_kcals))
-		# print(np.array(SF_kcals))
-		OG_SF_fraction_kcals_to_feed =\
-			np.divide(\
+		h_e_fraction_kcals_used_for_feed\
+			= np.divide(\
 				excess_calories,\
-				(np.array(OG_kcals) + np.array(SF_kcals)) \
-				 * self.c["KCALS_MONTHLY"]\
-			)
+				excess_calories\
+				 - h_e_meat_kcals\
+				 - h_e_milk_kcals\
+				 + np.array(humans_fed_kcals) * self.c["KCALS_MONTHLY"]\
+				)
 
 
-		OG_SF_fraction_kcals_to_humans = 1 - OG_SF_fraction_kcals_to_feed
+		h_e_fraction_kcals_fed_to_humans = 1 - h_e_fraction_kcals_used_for_feed
 
 		# it seems impossible for there to be more fat used for feed than actually produced from all the sources, if the optimizer spits out a positive number of people fed in terms of fat.
 		# The estimate for amount used for feed divides the excess by all the sources (except human edible feed). If the excess is greater than the sources, we have a problem.
@@ -848,43 +770,56 @@ class Analyzer:
 		# 			 * self.c["FAT_MONTHLY"]\
 		# 			 * 1e9)
 
-		OG_SF_fraction_fat_to_feed = \
-			np.divide(\
+
+		if(self.c["VERBOSE"]):
+			print("humans_fed_fat")
+			print(np.array(humans_fed_fat)[0]\
+			 * self.c["FAT_MONTHLY"]\
+			 * 1e9)
+
+		h_e_fraction_fat_used_for_feed\
+			= np.divide(\
 				excess_fat_used,\
-				(np.array(OG_fat) + np.array(SF_fat))\
-				 * self.c["FAT_MONTHLY"] * 1e9
-			)
+				excess_fat_used\
+				 - h_e_meat_fat\
+				 - h_e_milk_fat\
+				 + np.array(humans_fed_fat)\
+					 * self.c["FAT_MONTHLY"]\
+					 * 1e9\
+				)
 
-		OG_SF_fraction_fat_to_humans = 1 - OG_SF_fraction_fat_to_feed
+		h_e_fraction_fat_fed_to_humans = 1 - h_e_fraction_fat_used_for_feed
 			
-		OG_SF_fraction_protein_to_feed = \
-			np.divide(\
+		h_e_fraction_protein_used_for_feed\
+			= np.divide(\
 				excess_protein_used,\
-				(np.array(OG_protein) + np.array(SF_protein))\
-				 * self.c["PROTEIN_MONTHLY"] * 1e9
-			)
+				excess_protein_used\
+				 - h_e_meat_protein\
+				 - h_e_milk_protein\
+				 + np.array(humans_fed_protein)\
+					 * self.c["PROTEIN_MONTHLY"]\
+					 * 1e9\
+				)
 
-		OG_SF_fraction_protein_to_humans = 1 - OG_SF_fraction_protein_to_feed
+		h_e_fraction_protein_fed_to_humans = 1 - h_e_fraction_protein_used_for_feed
 		
-		# print("OG_SF_fraction_fat_to_feed")
-		# print(OG_SF_fraction_fat_to_feed)
+		# print("h_e_fraction_fat_used_for_feed")
+		# print(h_e_fraction_fat_used_for_feed)
 
-		# print("OG_SF_fraction_kcals_to_feed")
-		# print(OG_SF_fraction_kcals_to_feed)
-		# print(OG_SF_fraction_fat_to_feed<=1)
-		assert((OG_SF_fraction_kcals_to_feed <= 1+ 1e-5).all())
-		assert((OG_SF_fraction_kcals_to_feed >= 0).all())
-		if(self.c["inputs"]["INCLUDE_FAT"]):
-			assert((OG_SF_fraction_fat_to_feed <= 1 + 1e-5).all())
-			assert((OG_SF_fraction_fat_to_feed >= 0).all())
-		if(self.c["inputs"]["INCLUDE_PROTEIN"]):
-			assert((OG_SF_fraction_protein_to_feed <= 1+ 1e-5).all())
-			assert((OG_SF_fraction_protein_to_feed >= 0).all())
+		# print("h_e_fraction_fat_used_for_feed")
+		# print(h_e_fraction_fat_used_for_feed)
+		# print(h_e_fraction_fat_used_for_feed<=1)
+		assert((h_e_fraction_kcals_used_for_feed <= 1+ 1e-5).all())
+		assert((h_e_fraction_kcals_used_for_feed >= 0).all())
+		assert((h_e_fraction_fat_used_for_feed <= 1 + 1e-5).all())
+		assert((h_e_fraction_fat_used_for_feed >= 0).all())
+		assert((h_e_fraction_protein_used_for_feed <= 1+ 1e-5).all())
+		assert((h_e_fraction_protein_used_for_feed >= 0).all())
 
 
-		self.OG_SF_fraction_kcals_to_humans = OG_SF_fraction_kcals_to_humans
-		self.OG_SF_fraction_fat_to_humans = OG_SF_fraction_fat_to_humans
-		self.OG_SF_fraction_protein_to_humans = OG_SF_fraction_protein_to_humans
+		self.h_e_fraction_kcals_fed_to_humans = h_e_fraction_kcals_fed_to_humans
+		self.h_e_fraction_fat_fed_to_humans = h_e_fraction_fat_fed_to_humans
+		self.h_e_fraction_protein_fed_to_humans = h_e_fraction_protein_fed_to_humans
 
 	def analyze_results(self,model,time_months_middle):
 		self.kcals_fed = (np.array(self.billions_fed_SF_kcals)\
@@ -922,37 +857,39 @@ class Analyzer:
 			+ self.billions_fed_h_e_meat_protein\
 			+ self.billions_fed_h_e_milk_protein
 
-		# print(abs(np.divide(self.kcals_fed - np.array(self.humans_fed_kcals_optimizer),self.kcals_fed)))
-		assert((abs(np.divide(self.kcals_fed \
-			- np.array(self.humans_fed_kcals_optimizer),self.kcals_fed)) < 1e-6).all())
-		if(self.c["inputs"]["INCLUDE_FAT"]):
-			# print(abs(np.divide(self.fat_fed - np.array(self.humans_fed_fat_optimizer),self.fat_fed)))
-			assert((abs(np.divide(self.fat_fed \
-				- np.array(self.humans_fed_fat_optimizer),self.fat_fed)) < 1e-6).all())
-		if(self.c["inputs"]["INCLUDE_PROTEIN"]):
-			assert((abs(np.divide(self.protein_fed \
-				- np.array(self.humans_fed_protein_optimizer),self.protein_fed)) < 1e-6).all())
-		
-
-		SF_OG_kcals = (np.array(self.billions_fed_SF_kcals)\
+		sum_sources_minus_excess_minus_h_e_fed_kcals = (np.array(self.billions_fed_SF_kcals)\
+			+np.array(self.billions_fed_meat_kcals)\
+			+np.array(self.billions_fed_seaweed_kcals)\
+			+np.array(self.billions_fed_milk_kcals)\
+			+np.array(self.billions_fed_CS_kcals)\
+			+np.array(self.billions_fed_SCP_kcals)\
+			+np.array(self.billions_fed_GH_kcals)\
 			+np.array(self.billions_fed_OG_kcals)\
+			+np.array(self.billions_fed_fish_kcals)\
 			)
-		SF_OG_fat = (np.array(self.billions_fed_SF_fat)\
+		sum_sources_minus_excess_minus_h_e_fed_fat = (np.array(self.billions_fed_SF_fat)\
+			+np.array(self.billions_fed_meat_fat)\
+			+np.array(self.billions_fed_seaweed_fat)\
+			+np.array(self.billions_fed_milk_fat)\
+			+np.array(self.billions_fed_SCP_fat)\
+			+np.array(self.billions_fed_GH_fat)\
 			+np.array(self.billions_fed_OG_fat)\
+			+np.array(self.billions_fed_fish_fat)\
 			)
-		SF_OG_protein = (np.array(self.billions_fed_SF_protein)\
+		sum_sources_minus_excess_minus_h_e_fed_protein = (np.array(self.billions_fed_SF_protein)\
+			+np.array(self.billions_fed_meat_protein)\
+			+np.array(self.billions_fed_seaweed_protein)\
+			+np.array(self.billions_fed_milk_protein)\
+			+np.array(self.billions_fed_SCP_protein)\
+			+np.array(self.billions_fed_GH_protein)\
 			+np.array(self.billions_fed_OG_protein)\
+			+np.array(self.billions_fed_fish_protein)\
 			)
 		
 			
 		#if it takes all the available ag production to produce minimum for biofuel and animal feed demands
 		division = []
-		# print("SF_OG_kcals")
-		# print(SF_OG_kcals)
-		# print("OG_SF_fraction_kcals_to_humans")
-		# print(self.OG_SF_fraction_kcals_to_humans)
-		#divide off the reduction to get
-		for zipped_lists in zip(SF_OG_kcals,self.OG_SF_fraction_kcals_to_humans):
+		for zipped_lists in zip(sum_sources_minus_excess_minus_h_e_fed_kcals,self.h_e_fraction_kcals_fed_to_humans):
 			
 			if(zipped_lists[1] <= 0):
 				assert(zipped_lists[0] >= -1e-5)
@@ -961,20 +898,11 @@ class Analyzer:
 				division.append(zipped_lists[0]/zipped_lists[1])
 		
 
-		# print("SF_OG_kcals")
-		# print(SF_OG_kcals)
-		# print("self.billions_fed_h_e_meat_kcals")
-		# print(self.billions_fed_h_e_meat_kcals)
-		# print("self.billions_fed_h_e_milk_kcals")
-		# print(self.billions_fed_h_e_milk_kcals)
-		# print("np.array(division)")
-		# print(np.array(division))
-		# print("self.billions_fed_h_e_balance_kcals")
-		# print(self.billions_fed_h_e_balance_kcals)
+
 		fractional_difference = \
 			np.divide(\
 				(\
-					SF_OG_kcals \
+					sum_sources_minus_excess_minus_h_e_fed_kcals \
 					+ self.billions_fed_h_e_meat_kcals\
 					+ self.billions_fed_h_e_milk_kcals\
 				)\
@@ -982,72 +910,72 @@ class Analyzer:
 				(\
 					np.array(division)+self.billions_fed_h_e_balance_kcals\
 				),\
-				SF_OG_kcals \
+				sum_sources_minus_excess_minus_h_e_fed_kcals \
 				+ self.billions_fed_h_e_meat_kcals\
 				+ self.billions_fed_h_e_milk_kcals\
 			)
-		print(abs(fractional_difference))
+
 		assert((abs(fractional_difference)<1e-6).all())
 
-		if(self.c['inputs']['INCLUDE_FAT'] == True):
-			division = []
-			for zipped_lists in zip(SF_OG_fat,self.OG_SF_fraction_fat_to_humans):
-				
-				if(zipped_lists[1] <= 0):
-					assert(zipped_lists[0] >= -1e-5)
-					division.append(0)
-				else:
-					division.append(zipped_lists[0]/zipped_lists[1])
+		division = []
+		for zipped_lists in zip(sum_sources_minus_excess_minus_h_e_fed_fat,self.h_e_fraction_fat_fed_to_humans):
+			
+			if(zipped_lists[1] <= 0):
+				assert(zipped_lists[0] >= -1e-5)
+				division.append(0)
+			else:
+				division.append(zipped_lists[0]/zipped_lists[1])
 
-			fractional_difference = \
-				np.divide(\
-					(\
-						SF_OG_fat \
-						+ self.billions_fed_h_e_meat_fat\
-						+ self.billions_fed_h_e_milk_fat\
-					)\
-					-\
-					(\
-						np.array(division)\
-						+self.billions_fed_h_e_balance_fat\
-					),\
-					SF_OG_fat \
+		fractional_difference = \
+			np.divide(\
+				(\
+					sum_sources_minus_excess_minus_h_e_fed_fat \
 					+ self.billions_fed_h_e_meat_fat\
 					+ self.billions_fed_h_e_milk_fat\
-				)
+				)\
+				-\
+				(\
+					np.array(division)\
+					+self.billions_fed_h_e_balance_fat\
+				),\
+				sum_sources_minus_excess_minus_h_e_fed_fat \
+				+ self.billions_fed_h_e_meat_fat\
+				+ self.billions_fed_h_e_milk_fat\
+			)
 
-			# print(fractional_difference)
+		if(self.c['inputs']['INCLUDE_FAT'] == True):
+		# print(fractional_difference)
 			assert((abs(fractional_difference)<1e-6).all())
 		
 
-		if(self.c['inputs']['INCLUDE_PROTEIN'] == True):
 
-			division = []
-			for zipped_lists in zip(SF_OG_protein,self.OG_SF_fraction_protein_to_humans):			
-				
-				if(zipped_lists[1] <= 0):
-					assert(zipped_lists[0] >= -1e-5)
-					division.append(0)
-				else:
-					division.append(zipped_lists[0]/zipped_lists[1])
+		division = []
+		for zipped_lists in zip(sum_sources_minus_excess_minus_h_e_fed_protein,self.h_e_fraction_protein_fed_to_humans):			
 			
-			fractional_difference = \
-				np.divide(\
-					(\
-						SF_OG_protein \
-						+ self.billions_fed_h_e_meat_protein\
-						+ self.billions_fed_h_e_milk_protein\
-					)\
-					-\
-					(\
-						np.array(division)\
-						+self.billions_fed_h_e_balance_protein\
-					),\
-					SF_OG_protein \
+			if(zipped_lists[1] <= 0):
+				assert(zipped_lists[0] >= -1e-5)
+				division.append(0)
+			else:
+				division.append(zipped_lists[0]/zipped_lists[1])
+		
+		fractional_difference = \
+			np.divide(\
+				(\
+					sum_sources_minus_excess_minus_h_e_fed_protein \
 					+ self.billions_fed_h_e_meat_protein\
 					+ self.billions_fed_h_e_milk_protein\
-				)
+				)\
+				-\
+				(\
+					np.array(division)\
+					+self.billions_fed_h_e_balance_protein\
+				),\
+				sum_sources_minus_excess_minus_h_e_fed_protein \
+				+ self.billions_fed_h_e_meat_protein\
+				+ self.billions_fed_h_e_milk_protein\
+			)
 
+		if(self.c['inputs']['INCLUDE_PROTEIN'] == True):
 			assert((abs(fractional_difference)<1e-6).all())
 		
 

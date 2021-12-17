@@ -40,7 +40,7 @@ c['inputs']['INITIAL_SF_FAT'] = 69254 # 1000 tons fat per unit mass
 c["inputs"]["OG_USE_BETTER_ROTATION"] = True
 
 c['inputs']['INCLUDE_PROTEIN'] = True
-c['inputs']['INCLUDE_FAT'] = True
+c['inputs']['INCLUDE_FAT'] = False
 
 c['inputs']['GREENHOUSE_GAIN_PCT'] = 40
 
@@ -55,15 +55,15 @@ c['inputs']['KCAL_SMOOTHING'] = False
 c['inputs']['MEAT_SMOOTHING'] = False
 c['inputs']['STORED_FOOD_SMOOTHING'] = False
 
-c['inputs']['ADD_CELLULOSIC_SUGAR'] = True
-c['inputs']['ADD_DAIRY'] = True
-c['inputs']['ADD_FISH'] = True
-c['inputs']['ADD_GREENHOUSES'] = True
+c['inputs']['ADD_CELLULOSIC_SUGAR'] = False
+c['inputs']['ADD_DAIRY'] = False
+c['inputs']['ADD_FISH'] = False
+c['inputs']['ADD_GREENHOUSES'] = False
 c['inputs']['ADD_OUTDOOR_GROWING'] = True
-c['inputs']['ADD_MEAT'] = True
-c['inputs']['ADD_METHANE_SCP'] = True
-c['inputs']['ADD_SEAWEED'] = True
-c['inputs']['ADD_STORED_FOOD'] = True
+c['inputs']['ADD_MEAT'] = False
+c['inputs']['ADD_METHANE_SCP'] = False
+c['inputs']['ADD_SEAWEED'] = False
+c['inputs']['ADD_STORED_FOOD'] = False
 
 c["inputs"]["EXCESS_CALORIES"] = np.array([0]*c['inputs']['NMONTHS'])
 c['inputs']['FEED_SHUTOFF_DELAY'] = 0 # months
@@ -98,7 +98,6 @@ print("")
 Plotter.plot_people_fed_combined(time_months_middle,analysis)
 Plotter.plot_people_fed_kcals(time_months_middle,analysis,\
 	'Primary production before waste, + resilient foods')
-
 # nuclear winter 150 tab, cell G30-G38  https://docs.google.com/spreadsheets/d/14t3_PUIky6aNiBvw8q24sj6QYxCN9s_VddLY2-eJuPE/edit#gid=1637082097
 #overall waste, on farm+distribution+retail
 #3x prices (note, currently set to 2019, not 2020)

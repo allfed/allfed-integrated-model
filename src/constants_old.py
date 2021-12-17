@@ -214,9 +214,10 @@ class Constants:
 				+ INITIAL_SF_FAT)
 
 
+		SF_WASTE = c['inputs']['WASTE']['CROPS']
 		#mass initial, units don't matter, we only need to ensure we use the correct 
 		#fraction of kcals, fat, and protein per unit initial stored food.
-		INITIAL_SF=INITIAL_SF_KCALS/SF_FRACTION_KCALS
+		INITIAL_SF=INITIAL_SF_KCALS/SF_FRACTION_KCALS * (1-SF_WASTE/100)
 
 
 		# INITIAL_SF = 350e6*4e6/1e9
@@ -496,11 +497,7 @@ class Constants:
 			#are fed first to dairy, then to pigs and chickens, then to cattle
 
 			excess_dry_cal_tons = excess_kcals*1e9/4e6
-			if(np.array(excess_dry_cal_tons<0).any()):
-				print("excess_dry_cal_tons per month")
-				print(excess_dry_cal_tons)
-				print("It appears assigning excess calories to feed or biofuels was attempted, but there were not enough calories to use for the feed and biofuel (because of this, excess was calculated as being negative). \nTry to rerun where the population fed after waste incorporating delayed shutoff to feed in biofuels is above the assigned global population. \nQuitting.")
-				quit()
+
 			assert(np.array(excess_dry_cal_tons>=0).all())
 
 			#dry caloric ton excess/ton milk
@@ -866,19 +863,9 @@ class Constants:
 			h_e_milk_fat = np.array([0]*NMONTHS)
 			h_e_milk_protein = np.array([0]*NMONTHS)
 
-		h_e_created_kcals = h_e_meat_kcals + h_e_milk_kcals
-		h_e_created_fat = h_e_meat_fat + h_e_milk_fat
-		h_e_created_protein = h_e_meat_protein + h_e_milk_protein
-
-		CROP_WASTE = 1-c["inputs"]["WASTE"]["CROPS"]/100
-
-		h_e_balance_kcals = -excess_kcals*CROP_WASTE \
-			+ h_e_created_kcals
-		h_e_balance_fat = -excess_fat_used*CROP_WASTE \
-			+ h_e_created_fat
-		h_e_balance_protein = -excess_protein_used*CROP_WASTE \
-			+ h_e_created_protein
-
+		h_e_balance_kcals = -excess_kcals + h_e_meat_kcals + h_e_milk_kcals
+		h_e_balance_fat = -excess_fat_used + h_e_meat_fat + h_e_milk_fat
+		h_e_balance_protein = -excess_protein_used + h_e_meat_protein + h_e_milk_protein
 
 
 		#### NON EGG NONDAIRY MEAT ####
@@ -1219,7 +1206,8 @@ class Constants:
 
 		if(ADD_OUTDOOR_GROWING):
 			crops_food_produced = \
-				np.array(KCALS_GROWN_MINUS_GREENHOUSE)
+				np.array(KCALS_GROWN_MINUS_GREENHOUSE) \
+					* (1 - CROP_WASTE/100)
 		else:
 			crops_food_produced=np.array([0]*NMONTHS)
 		# we know:
@@ -1357,7 +1345,7 @@ class Constants:
 			FAT_RATIO = ROTATION_FAT/SUM_CALORIES_PER_HA_PER_MONTH
 			PROTEIN_RATIO = ROTATION_PROTEIN/SUM_CALORIES_PER_HA_PER_MONTH
 
-			return (KCAL_RATIO,FAT_RATIO,PROTEIN_RATIO)
+			return (KCAL_RATIO,FAT_RATIO*1.5,PROTEIN_RATIO*1.5)
 
 
 
@@ -1397,7 +1385,7 @@ class Constants:
 		assert(spring_wheat_pct_of_rotation
 					+ spring_barley_pct_of_rotation
 					+ potato_pct_of_rotation
-					+ rapeseed_pct_of_rotation == 100, "oops")
+					+ rapeseed_pct_of_rotation == 100)
 
 		(KCAL_RATIO_ROT,FAT_RATIO_ROT,PROTEIN_RATIO_ROT) = getImprovementsFromRotation(spring_wheat_pct_of_rotation/100,\
 			spring_barley_pct_of_rotation/100,\
@@ -1492,7 +1480,7 @@ class Constants:
 
 		production_kcals_CS_per_m = production_kcals_CS_per_m_long[0:NMONTHS]
 
-		if(True):
+		if(VERBOSE):
 			#used by world population
 			print("")
 			print("calories consumed per day")
@@ -1706,7 +1694,7 @@ class Constants:
 		s["biofuels_fat"] = biofuels_fat
 		s["biofuels_protein"] = biofuels_protein
 		s["biofuels_kcals"] = biofuels_kcals
-		s["crops_food_produced"] = crops_food_produced # no waste
+		s["crops_food_produced"] = crops_food_produced
 		s["greenhouse_kcals_per_ha"] = greenhouse_kcals_per_ha
 		s["greenhouse_fat_per_ha"] = greenhouse_fat_per_ha
 		s["greenhouse_protein_per_ha"] = greenhouse_protein_per_ha
@@ -1723,9 +1711,6 @@ class Constants:
 		s["h_e_milk_kcals"] = h_e_milk_kcals
 		s["h_e_milk_fat"] = h_e_milk_fat
 		s["h_e_milk_protein"] = h_e_milk_protein
-		s["h_e_created_kcals"] = h_e_created_kcals
-		s["h_e_created_fat"] = h_e_created_fat
-		s["h_e_created_protein"] = h_e_created_protein
 		s["h_e_balance_kcals"] = h_e_balance_kcals
 		s["h_e_balance_fat"] = h_e_balance_fat
 		s["h_e_balance_protein"] = h_e_balance_protein
@@ -1800,7 +1785,7 @@ class Constants:
 		c["MAXIMUM_AREA"]=MAXIMUM_AREA
 		c["INITIAL_AREA"]=INITIAL_AREA
 		
-		c['INITIAL_SF']=INITIAL_SF # no waste
+		c['INITIAL_SF']=INITIAL_SF
 		c['INITIAL_MEAT']=INITIAL_MEAT
 
 		c['FISH_FAT'] = FISH_FAT

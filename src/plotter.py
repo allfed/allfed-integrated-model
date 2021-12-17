@@ -129,16 +129,16 @@ class Plotter:
 		ax.plot(time_months_middle,np.array(analysis.\
 			billions_fed_OG_produced_kcals),marker='o',markersize=3,color='green', linestyle='solid')
 		ax.set_ylabel('Calories per Capita per Day')
-		ax.legend(['kcals available'],loc=2)
+		ax.legend(['kcals available','fat available','protein available'],loc=2)
 		# ax2.set_x(['kcals available'])
 
-		ax2.plot(time_months_middle,np.array(analysis.\
+		ax.plot(time_months_middle,np.array(analysis.\
 			billions_fed_OG_produced_fat),marker='o',markersize=3,color='red', linestyle='dashed')
-		ax2.plot(time_months_middle,np.array(analysis.\
+		ax.plot(time_months_middle,np.array(analysis.\
 			billions_fed_OG_produced_protein),marker='o',markersize=3,color='blue', linestyle='dotted')
-		ax2.set_ylabel('Grams per Capita per Day')
-		ax2.set_ylim([0,50])
-		ax2.legend(['fat available','protein available'],loc=1)
+		# ax2.set_ylabel('Grams per Capita per Day')
+		# ax2.set_ylim([0,50])
+		# ax.legend(['fat available','protein available'],loc=1)
 		
 		plt.show()
 
@@ -177,16 +177,16 @@ class Plotter:
 		ax.plot(time_months_middle,np.array(analysis.\
 			billions_fed_OG_produced_kcals),marker='o',markersize=3,color='green', linestyle='solid')
 		ax.set_ylabel('Calories per Capita per Day')
-		ax.legend(['kcals available'],loc=2)
 		# ax2.set_x(['kcals available'])
 
-		ax2.plot(time_months_middle,np.array(analysis.\
+		ax.plot(time_months_middle,np.array(analysis.\
 			billions_fed_OG_produced_fat),marker='o',markersize=3,color='red', linestyle='dashed')
-		ax2.plot(time_months_middle,np.array(analysis.\
+		ax.plot(time_months_middle,np.array(analysis.\
 			billions_fed_OG_produced_protein),marker='o',markersize=3,color='blue', linestyle='dotted')
-		ax2.set_ylabel('Grams per Capita per Day')
-		ax2.set_ylim([0,50])
-		ax2.legend(['fat available','protein available'],loc=1)
+		ax.legend(['kcals available','fat available','protein available'],loc=2)
+		# ax.set_ylabel('Grams per Capita per Day')
+		# ax.set_ylim([0,50])
+		# ax2.legend(['fat available','protein available'],loc=1)
 		
 		plt.show()
 
@@ -249,70 +249,70 @@ class Plotter:
 
 
 
-	def plot_people_fed_kcals_diet(time_months_middle,analysis):
+	# def plot_people_fed_kcals_diet(time_months_middle,analysis):
 
-		font = {'family' : 'normal',
-				'weight' : 'bold',
-				'size'   : 16}
+	# 	font = {'family' : 'normal',
+	# 			'weight' : 'bold',
+	# 			'size'   : 16}
 
-		matplotlib.rc('font', **font)
-		fig = plt.figure()
-		ax=plt.subplot(111)
-		# https://jacksonlab.agronomy.wisc.edu/2016/05/23/15-level-colorblind-friendly-palette/
-		# 	"#000000","#004949","#009292","#ff6db6","#ffb6db",
-		# "#490092","#006ddb","#b66dff","#6db6ff","#b6dbff",
-		# "#920000","#924900","#db6d00","#24ff24","#ffff6d"
-		# patterns = [ "/" , "\\" , "|" , "-" , "+" , "x", "o", "O", ".", "*" ]
-		patterns = [ "/" , "\\" , "|" , "-" , "+" , "x", "o", "O"]
-		pal=["#006ddb","#b66dff","6db6ff","#b6dbff",\
-		 "#920000","#924900","#db6d00","#24ff24","#ffff6d"]
+	# 	matplotlib.rc('font', **font)
+	# 	fig = plt.figure()
+	# 	ax=plt.subplot(111)
+	# 	# https://jacksonlab.agronomy.wisc.edu/2016/05/23/15-level-colorblind-friendly-palette/
+	# 	# 	"#000000","#004949","#009292","#ff6db6","#ffb6db",
+	# 	# "#490092","#006ddb","#b66dff","#6db6ff","#b6dbff",
+	# 	# "#920000","#924900","#db6d00","#24ff24","#ffff6d"
+	# 	# patterns = [ "/" , "\\" , "|" , "-" , "+" , "x", "o", "O", ".", "*" ]
+	# 	patterns = [ "/" , "\\" , "|" , "-" , "+" , "x", "o", "O"]
+	# 	pal=["#006ddb","#b66dff","6db6ff","#b6dbff",\
+	# 	 "#920000","#924900","#db6d00","#24ff24","#ffff6d"]
 
 
-		stacks = ax.stackplot(time_months_middle,\
-			analysis.billions_fed_fish_kcals/analysis.c["CONVERT_TO_KCALS"],\
-			(np.array(analysis.billions_fed_CS_kcals)+np.array(analysis.billions_fed_SCP_kcals))/ analysis.c["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_GH_kcals/ analysis.c["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_seaweed_kcals/ analysis.c["CONVERT_TO_KCALS"],\
-			(analysis.billions_fed_milk_kcals+analysis.billions_fed_h_e_milk_kcals)/ analysis.c["CONVERT_TO_KCALS"],\
-			(analysis.billions_fed_meat_kcals+analysis.billions_fed_h_e_meat_kcals)/analysis.c["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_SF_kcals/analysis.c["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_immediate_OG_kcals/analysis.c["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_new_stored_OG_kcals/analysis.c["CONVERT_TO_KCALS"],\
-			 labels=[\
-			 'Marine Fish',\
-			 'Industrial Foods',\
-			 'Greenhouses',\
-			 'Seaweed',\
-			 'Dairy Milk',\
-			 'Meat',\
-			 'Crops consumed that month \n that were stored \n before sunlight reduction',\
-			 'Outdoor Crops consumed \n immediately',
-			 'Crops consumed that month \n that were stored \n after sunlight reduction'
-			 ], colors=pal)
-		for stack, hatch in zip(stacks, patterns):
-			stack.set_hatch(hatch)
-		box = ax.get_position()
-		ax.set_position([box.x0, box.y0, box.width * 0.695, box.height])
-		handles, labels = ax.get_legend_handles_labels()   #get the handles
-		ax.legend()
-		ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),handles=reversed(handles),labels=reversed(labels))
-		plt.title('Average Diet By Food Source, With Deployment')
-		plt.ylabel('Calories per Capita per Day')
-		plt.xlabel('Months Since May Sunlight Reduction Event')
-		ax.set_ylim([0,(analysis.billions_fed_immediate_OG_kcals[-1]
-			+analysis.billions_fed_new_stored_OG_kcals[-1]
-			+analysis.billions_fed_SF_kcals[-1]
-			+analysis.billions_fed_fish_kcals[-1]
-			+analysis.billions_fed_milk_kcals[-1]
-			+analysis.billions_fed_meat_kcals[-1]
-			+analysis.billions_fed_h_e_milk_kcals[-1]
-			+analysis.billions_fed_h_e_meat_kcals[-1]
-			+analysis.billions_fed_GH_kcals[-1]
-			+analysis.billions_fed_seaweed_kcals[-1]
-			+analysis.billions_fed_CS_kcals[-1]
-			+analysis.billions_fed_SCP_kcals[-1])/analysis.c["CONVERT_TO_KCALS"]])
-		ax.set_xlim([0,48])
-		plt.show()
+	# 	stacks = ax.stackplot(time_months_middle,\
+	# 		analysis.billions_fed_fish_kcals/analysis.c["CONVERT_TO_KCALS"],\
+	# 		(np.array(analysis.billions_fed_CS_kcals)+np.array(analysis.billions_fed_SCP_kcals))/ analysis.c["CONVERT_TO_KCALS"],\
+	# 		analysis.billions_fed_GH_kcals/ analysis.c["CONVERT_TO_KCALS"],\
+	# 		analysis.billions_fed_seaweed_kcals/ analysis.c["CONVERT_TO_KCALS"],\
+	# 		(analysis.billions_fed_milk_kcals+analysis.billions_fed_h_e_milk_kcals)/ analysis.c["CONVERT_TO_KCALS"],\
+	# 		(analysis.billions_fed_meat_kcals+analysis.billions_fed_h_e_meat_kcals)/analysis.c["CONVERT_TO_KCALS"],\
+	# 		analysis.billions_fed_SF_kcals/analysis.c["CONVERT_TO_KCALS"],\
+	# 		analysis.billions_fed_immediate_OG_kcals/analysis.c["CONVERT_TO_KCALS"],\
+	# 		analysis.billions_fed_new_stored_OG_kcals/analysis.c["CONVERT_TO_KCALS"],\
+	# 		 labels=[\
+	# 		 'Marine Fish',\
+	# 		 'Industrial Foods',\
+	# 		 'Greenhouses',\
+	# 		 'Seaweed',\
+	# 		 'Dairy Milk',\
+	# 		 'Meat',\
+	# 		 'Crops consumed that month \n that were stored \n before sunlight reduction',\
+	# 		 'Outdoor Crops consumed \n immediately',
+	# 		 'Crops consumed that month \n that were stored \n after sunlight reduction'
+	# 		 ], colors=pal)
+	# 	for stack, hatch in zip(stacks, patterns):
+	# 		stack.set_hatch(hatch)
+	# 	box = ax.get_position()
+	# 	ax.set_position([box.x0, box.y0, box.width * 0.695, box.height])
+	# 	handles, labels = ax.get_legend_handles_labels()   #get the handles
+	# 	ax.legend()
+	# 	ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),handles=reversed(handles),labels=reversed(labels))
+	# 	plt.title('Average Diet By Food Source, With Deployment')
+	# 	plt.ylabel('Calories per Capita per Day')
+	# 	plt.xlabel('Months Since May Sunlight Reduction Event')
+	# 	ax.set_ylim([0,(analysis.billions_fed_immediate_OG_kcals[-1]
+	# 		+analysis.billions_fed_new_stored_OG_kcals[-1]
+	# 		+analysis.billions_fed_SF_kcals[-1]
+	# 		+analysis.billions_fed_fish_kcals[-1]
+	# 		+analysis.billions_fed_milk_kcals[-1]
+	# 		+analysis.billions_fed_meat_kcals[-1]
+	# 		+analysis.billions_fed_h_e_milk_kcals[-1]
+	# 		+analysis.billions_fed_h_e_meat_kcals[-1]
+	# 		+analysis.billions_fed_GH_kcals[-1]
+	# 		+analysis.billions_fed_seaweed_kcals[-1]
+	# 		+analysis.billions_fed_CS_kcals[-1]
+	# 		+analysis.billions_fed_SCP_kcals[-1])/analysis.c["CONVERT_TO_KCALS"]])
+	# 	ax.set_xlim([0,48])
+	# 	plt.show()
 
 
 	def plot_people_fed_kcals(time_months_middle,analysis,title):
@@ -328,13 +328,13 @@ class Plotter:
 		
 		if(analysis.c["CULL_DURATION"] == 0 or np.isnan(analysis.c["CULL_DURATION"]) or analysis.c["LIMIT_PER_MONTH_CULLED"] == 0):
 		# no culled meat
-
-			if((analysis.c['inputs']["EXCESS_CALORIES"]<=1e-5).all()):
-				#primary production only
-				meat_label = 'Meat from Inedible Feed '
-			else:
+			# quit()
+			if(analysis.are_excess_kcals):
 				#present-day
 				meat_label = 'Meat'
+			else:
+				#primary production only
+				meat_label = 'Meat from Inedible Feed '
 
 		else:
 			#no resilient foods
@@ -389,16 +389,15 @@ class Plotter:
 		else:
 			legend = legend + ['']
 		
-		if(analysis.c['ADD_STORED_FOOD']):
-			legend = legend + [stored_food_label]
-		else:
-			legend = legend + ['']
-		
 		if(analysis.c['ADD_OUTDOOR_GROWING']):
 			legend = legend + [OG_stored_label]
 		else:
 			legend = legend + ['']
 
+		if(analysis.c['ADD_STORED_FOOD']):
+			legend = legend + [stored_food_label]
+		else:
+			legend = legend + ['']
 		# https://jacksonlab.agronomy.wisc.edu/2016/05/23/15-level-colorblind-friendly-palette/
 		# 	"#000000","#004949","#009292","#ff6db6","#ffb6db",
 		# "#490092","#006ddb","#b66dff","#6db6ff","#b6dbff",
@@ -413,8 +412,8 @@ class Plotter:
 			(analysis.billions_fed_milk_kcals+analysis.billions_fed_h_e_milk_kcals)/ analysis.c["CONVERT_TO_KCALS"],\
 			(analysis.billions_fed_meat_kcals+analysis.billions_fed_h_e_meat_kcals)/analysis.c["CONVERT_TO_KCALS"],\
 			analysis.billions_fed_immediate_OG_kcals/analysis.c["CONVERT_TO_KCALS"],\
-			analysis.billions_fed_SF_kcals/analysis.c["CONVERT_TO_KCALS"],\
 			analysis.billions_fed_new_stored_OG_kcals/analysis.c["CONVERT_TO_KCALS"],\
+			analysis.billions_fed_SF_kcals/analysis.c["CONVERT_TO_KCALS"],\
 			 labels=legend, colors=pal)
 		for stack, hatch in zip(stacks, patterns):
 			stack.set_hatch(hatch)

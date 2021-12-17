@@ -23,13 +23,13 @@ class Analyzer:
 
 		for m in range(0,self.c['NMONTHS']):
 			val=variables[m]
+			# if(val==0)
 
-			#if something went wrong and the variable was not added for a certain month
-			assert(type(val) != type(0))
-			# if(type(val)==type(0)):
-			# 	variable_output.append(val*conversion)
-			# else:
-			variable_output.append(val.varValue*conversion)
+			#if the variable was not modeled
+			if(type(val)==type(0)):
+				variable_output.append(val*conversion)
+			else:
+				variable_output.append(val.varValue*conversion)
 			if(show_output):
 				print("    Month "+str(m)+": "+str(variable_output[m]))
 		return np.array(variable_output)
@@ -721,8 +721,6 @@ class Analyzer:
 		excess_protein_used
 		):
 		
-		self.are_excess_kcals = (excess_calories>0).any()
-
 		"""
 		each month:
 			(all the sources except using human edible fed food) + (-excess provided) + (meat and dairy from human edible sources)
@@ -820,9 +818,9 @@ class Analyzer:
 				False))
 
 
-		# print(excess_calories)
-		# print(np.array(OG_kcals))
-		# print(np.array(SF_kcals))
+		print(excess_calories)
+		print(np.array(OG_kcals))
+		print(np.array(SF_kcals))
 		OG_SF_fraction_kcals_to_feed =\
 			np.divide(\
 				excess_calories,\
@@ -869,8 +867,8 @@ class Analyzer:
 		# print("OG_SF_fraction_fat_to_feed")
 		# print(OG_SF_fraction_fat_to_feed)
 
-		# print("OG_SF_fraction_kcals_to_feed")
-		# print(OG_SF_fraction_kcals_to_feed)
+		print("OG_SF_fraction_kcals_to_feed")
+		print(OG_SF_fraction_kcals_to_feed)
 		# print(OG_SF_fraction_fat_to_feed<=1)
 		assert((OG_SF_fraction_kcals_to_feed <= 1+ 1e-5).all())
 		assert((OG_SF_fraction_kcals_to_feed >= 0).all())
@@ -922,7 +920,7 @@ class Analyzer:
 			+ self.billions_fed_h_e_meat_protein\
 			+ self.billions_fed_h_e_milk_protein
 
-		# print(abs(np.divide(self.kcals_fed - np.array(self.humans_fed_kcals_optimizer),self.kcals_fed)))
+		print(abs(np.divide(self.kcals_fed - np.array(self.humans_fed_kcals_optimizer),self.kcals_fed)))
 		assert((abs(np.divide(self.kcals_fed \
 			- np.array(self.humans_fed_kcals_optimizer),self.kcals_fed)) < 1e-6).all())
 		if(self.c["inputs"]["INCLUDE_FAT"]):
@@ -947,10 +945,10 @@ class Analyzer:
 			
 		#if it takes all the available ag production to produce minimum for biofuel and animal feed demands
 		division = []
-		# print("SF_OG_kcals")
-		# print(SF_OG_kcals)
-		# print("OG_SF_fraction_kcals_to_humans")
-		# print(self.OG_SF_fraction_kcals_to_humans)
+		print("SF_OG_kcals")
+		print(SF_OG_kcals)
+		print("OG_SF_fraction_kcals_to_humans")
+		print(self.OG_SF_fraction_kcals_to_humans)
 		#divide off the reduction to get
 		for zipped_lists in zip(SF_OG_kcals,self.OG_SF_fraction_kcals_to_humans):
 			
@@ -961,16 +959,16 @@ class Analyzer:
 				division.append(zipped_lists[0]/zipped_lists[1])
 		
 
-		# print("SF_OG_kcals")
-		# print(SF_OG_kcals)
-		# print("self.billions_fed_h_e_meat_kcals")
-		# print(self.billions_fed_h_e_meat_kcals)
-		# print("self.billions_fed_h_e_milk_kcals")
-		# print(self.billions_fed_h_e_milk_kcals)
-		# print("np.array(division)")
-		# print(np.array(division))
-		# print("self.billions_fed_h_e_balance_kcals")
-		# print(self.billions_fed_h_e_balance_kcals)
+		print("SF_OG_kcals")
+		print(SF_OG_kcals)
+		print("self.billions_fed_h_e_meat_kcals")
+		print(self.billions_fed_h_e_meat_kcals)
+		print("self.billions_fed_h_e_milk_kcals")
+		print(self.billions_fed_h_e_milk_kcals)
+		print("np.array(division)")
+		print(np.array(division))
+		print("self.billions_fed_h_e_balance_kcals")
+		print(self.billions_fed_h_e_balance_kcals)
 		fractional_difference = \
 			np.divide(\
 				(\
