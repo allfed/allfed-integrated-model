@@ -173,8 +173,7 @@ excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
 
 n=0
 # kcals_fed = 0
-while(kcals_fed > 7.81 \
-	or kcals_fed < 7.79):
+while(True):
 	import matplotlib.pyplot as plt
 	# plt.plot(excess_per_month*1e9/4e6/1e6)
 	# plt.show()
@@ -216,6 +215,9 @@ while(kcals_fed > 7.81 \
 	
 	feed_delay = c['inputs']['FEED_SHUTOFF_DELAY']
 	
+	if(kcals_fed > 7.79 and kcals_fed < 7.81):
+		break
+
 	#don't try to feed more animals in the  months before feed shutoff
 	excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
 		excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]\
@@ -229,7 +231,11 @@ while(kcals_fed > 7.81 \
 
 	# if(n==3):
 	# 	c['CHECK_CONSTRAINTS'] = True
-
+plt.title("Excess kcals used for feed and biofuel")
+plt.ylabel("million dry caloric tons monthly")
+plt.xlabel("Months after May nuclear event")
+plt.plot(np.array(optimizer.s["excess_kcals"])*1e9/4e6/1e6)
+plt.show()
 # only on farm + distribution waste
 # (on farm waste is implicit in production numbers)
 # c['inputs']['DISTRIBUTION_WASTE'] = {} #%
