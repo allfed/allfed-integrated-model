@@ -152,16 +152,16 @@ class Plotter:
 		ax.plot(time_months_middle,np.array(analysis.\
 			billions_fed_OG_produced_kcals),marker='o',markersize=3,color='green', linestyle='solid')
 		ax.set_ylabel('Calories per Capita per Day')
-		ax.legend(['kcals available'],loc=2)
 		# ax2.set_x(['kcals available'])
 
-		ax2.plot(time_months_middle,np.array(analysis.\
+		ax.plot(time_months_middle,np.array(analysis.\
 			billions_fed_OG_produced_fat),marker='o',markersize=3,color='red', linestyle='dashed')
-		ax2.plot(time_months_middle,np.array(analysis.\
+		ax.plot(time_months_middle,np.array(analysis.\
 			billions_fed_OG_produced_protein),marker='o',markersize=3,color='blue', linestyle='dotted')
-		ax2.set_ylabel('Grams per Capita per Day')
-		ax2.set_ylim([0,50])
-		ax2.legend(['fat available','protein available'],loc=1)
+		# ax2.set_ylabel('Grams per Capita per Day')
+		# ax2.set_ylim([0,50])
+		# ax2.legend(['fat available','protein available'],loc=1)
+		ax.legend(['kcals available','fat available','protein available'],loc=2)
 		
 		plt.show()
 
@@ -404,6 +404,8 @@ class Plotter:
 		# "#920000","#924900","#db6d00","#24ff24","#ffff6d"
 		# patterns = [ "/" , "\\" , "|" , "-" , "+" , "x", "o", "O", ".", "*" ]
 
+		# print(analysis.billions_fed_h_e_meat_kcals)
+
 		stacks = ax.stackplot(time_months_middle,\
 			analysis.billions_fed_fish_kcals/analysis.c["CONVERT_TO_KCALS"],\
 			(np.array(analysis.billions_fed_CS_kcals)+np.array(analysis.billions_fed_SCP_kcals))/ analysis.c["CONVERT_TO_KCALS"],\
@@ -444,8 +446,7 @@ class Plotter:
 			+analysis.billions_fed_seaweed_kcals[-1]
 			+analysis.billions_fed_CS_kcals[-1]
 			+analysis.billions_fed_SCP_kcals[-1])/analysis.c["CONVERT_TO_KCALS"]])
-		# ax.set_ylim([0,48])
-		ax.set_xlim([0,48])
+		ax.set_xlim([0,84])
 		plt.show()
 
 

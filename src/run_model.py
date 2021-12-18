@@ -40,7 +40,7 @@ c['inputs']['INITIAL_SF_FAT'] = 69254 # 1000 tons fat per unit mass
 c["inputs"]["OG_USE_BETTER_ROTATION"] = True
 
 c['inputs']['INCLUDE_PROTEIN'] = True
-c['inputs']['INCLUDE_FAT'] = False
+c['inputs']['INCLUDE_FAT'] = True
 
 c['inputs']['GREENHOUSE_GAIN_PCT'] = 40
 
@@ -55,15 +55,15 @@ c['inputs']['KCAL_SMOOTHING'] = False
 c['inputs']['MEAT_SMOOTHING'] = False
 c['inputs']['STORED_FOOD_SMOOTHING'] = False
 
-c['inputs']['ADD_CELLULOSIC_SUGAR'] = False
-c['inputs']['ADD_DAIRY'] = False
-c['inputs']['ADD_FISH'] = False
-c['inputs']['ADD_GREENHOUSES'] = False
+c['inputs']['ADD_CELLULOSIC_SUGAR'] = True
+c['inputs']['ADD_DAIRY'] = True
+c['inputs']['ADD_FISH'] = True
+c['inputs']['ADD_GREENHOUSES'] = True
 c['inputs']['ADD_OUTDOOR_GROWING'] = True
-c['inputs']['ADD_MEAT'] = False
-c['inputs']['ADD_METHANE_SCP'] = False
-c['inputs']['ADD_SEAWEED'] = False
-c['inputs']['ADD_STORED_FOOD'] = False
+c['inputs']['ADD_MEAT'] = True
+c['inputs']['ADD_METHANE_SCP'] = True
+c['inputs']['ADD_SEAWEED'] = True
+c['inputs']['ADD_STORED_FOOD'] = True
 
 c["inputs"]["EXCESS_CALORIES"] = np.array([0]*c['inputs']['NMONTHS'])
 c['inputs']['FEED_SHUTOFF_DELAY'] = 0 # months
@@ -110,6 +110,8 @@ c['inputs']['WASTE']['SEAFOOD'] = 14.55 #%
 c['inputs']['WASTE']['CROPS'] = 19.33 #%
 c['inputs']['WASTE']['SEAWEED'] = 14.37 #%
 
+
+
 excess_per_month = np.array([0]*c['inputs']['NMONTHS'])
 c["inputs"]["EXCESS_CALORIES"] = excess_per_month
 c['inputs']['FEED_SHUTOFF_DELAY'] = 2 # months
@@ -118,19 +120,74 @@ c['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 1 # months
 c["inputs"]["CULL_DURATION"] = analysis.c["CULL_DURATION"]
 c['inputs']['RECALCULATE_CULL_DURATION'] = False #thousand tons
 
+optimizer = Optimizer()
+[time_months,time_months_middle,analysis]=optimizer.optimize(c)
+Plotter.plot_people_fed_combined(time_months_middle,analysis)
+Plotter.plot_people_fed_kcals(time_months_middle,analysis,"Food available after waste, feed ramp down and biofuel ramp down, + resilient foods")
+
+print("")
+print("")
+print("")
+print("")
+print("")
+print("")
+print("==========Running diet balancer=========")
+print("")
+print("")
+print("")
+
+#billions of kcals	
+# "Sources/summary" tab cell I14.  https://docs.google.com/spreadsheets/d/1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=0
+
+c['inputs']['INCLUDE_PROTEIN'] = False
+c['inputs']['INCLUDE_FAT'] = False
+
+
+[time_months,time_months_middle,analysis]=optimizer.optimize(c)
+Plotter.plot_people_fed_combined(time_months_middle,analysis)
+
+kcals_fed = np.min(analysis.kcals_fed)
+print("")
+print("")
+print("")
+print("")
+print("billions of people fed from kcals")
+print(kcals_fed)
+print("")
+print("")
+print("")
+print("")
+
+feed_delay = c['inputs']['FEED_SHUTOFF_DELAY']
+
+#these months are used to estimate the diet before the full scale-up of resilient foods makes there be way too much food to make sense economically
+N_MONTHS_TO_CALCULATE_DIET = 48
+
+#don't try to feed more animals in the  months before feed shutoff
+excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
+	excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]\
+	+ analysis.excess_after_run[feed_delay:N_MONTHS_TO_CALCULATE_DIET]
+
+
+#=================
+
 n=0
-people_fed_billions = 0
-while(people_fed_billions > 7.81 \
-	or people_fed_billions < 7.79):
+# kcals_fed = 0
+while(kcals_fed > 7.81 \
+	or kcals_fed < 7.79):
+	import matplotlib.pyplot as plt
+	# plt.plot(excess_per_month*1e9/4e6/1e6)
+	# plt.show()
+	# Plotter.plot_people_fed_combined(time_months_middle,analysis)
+	# Plotter.plot_people_fed_kcals(time_months_middle,analysis,"dumb stuff")
 	
 	# import matplotlib.pyplot as plt
-	# print("excess_per_month")
-	# print(excess_per_month)
+	# # print("excess_per_month")
+	# # print(excess_per_month)
 	# plt.plot(excess_per_month)
 	# plt.show()
 
 	#billions of kcals	
-	c["inputs"]["EXCESS_CALORIES"] = c['inputs']["EXCESS_CALORIES"]
 	c['inputs']['FEED_SHUTOFF_DELAY'] = 2 # months
 	c['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 1 # months
 	# "Sources/summary" tab cell I14.  https://docs.google.com/spreadsheets/d/1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=0
@@ -144,30 +201,34 @@ while(people_fed_billions > 7.81 \
 	print("")
 	print("")
 	print("")
-	print("people_fed_billions")
-	print(analysis.people_fed_billions)
+	print("kcals_fed")
+	print(np.min(analysis.kcals_fed))
 	print("")
 	print("")
 	print("")
 	print("")
-	if(n == 0):
-		Plotter.plot_people_fed_combined(time_months_middle,analysis)
-		Plotter.plot_people_fed_kcals(time_months_middle,analysis,'Food minus waste & delayed halt of nonhuman consumption, + resilient foods')
 
+	# the rebalancer is only responsible for balancing calories, and is unable to operate unless the assumption that fat and protein are limiting values is invalid.
+	c['inputs']['INCLUDE_PROTEIN'] = False
+	c['inputs']['INCLUDE_FAT'] = False
 
-	people_fed_billions = analysis.people_fed_billions
+	kcals_fed = np.min(analysis.kcals_fed)
 	
 	feed_delay = c['inputs']['FEED_SHUTOFF_DELAY']
 	
 	#don't try to feed more animals in the  months before feed shutoff
-	excess_per_month[feed_delay:] = excess_per_month[feed_delay:]+ analysis.excess_after_run[feed_delay:]
+	excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
+		excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]\
+		+ analysis.excess_after_run[feed_delay:N_MONTHS_TO_CALCULATE_DIET]
 
 	# excess_per_month = excess_per_month+ analysis.excess_after_run
 	
-	if(n>30):
-		break
+	# if(n>30):
+	# 	break
 	n = n + 1
 
+	# if(n==3):
+	# 	c['CHECK_CONSTRAINTS'] = True
 
 # only on farm + distribution waste
 # (on farm waste is implicit in production numbers)

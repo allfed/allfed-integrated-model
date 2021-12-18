@@ -235,6 +235,20 @@ class Analyzer:
 		crops_food_produced,
 		show_output
 		):
+		self.no_rot =  self.makeMidMonthlyVars(
+		crops_food_eaten_no_rot,
+		1,
+		show_output)
+		self.rot =  self.makeMidMonthlyVars(
+		crops_food_eaten_rot,
+		self.c["OG_ROTATION_FRACTION_KCALS"],
+		show_output)
+		# print("no_rot")
+		# print(self.no_rot*1e9/4e6/1e6)
+		# print("rot")
+		# print(self.rot*1e9/4e6/1e6)
+
+
 		CROPS_WASTE = 1-self.c["inputs"]["WASTE"]["CROPS"]/100
 		self.billions_fed_OG_storage_no_rot = self.makeMidMonthlyVars(
 			crops_food_storage_no_rot,
@@ -262,7 +276,7 @@ class Analyzer:
 				np.array(crops_food_produced[0:self.c['inputs']["INITIAL_HARVEST_DURATION"]]),\
 				np.array(crops_food_produced[self.c['inputs']["INITIAL_HARVEST_DURATION"]:])\
 				 * self.c["OG_ROTATION_FRACTION_KCALS"],
-			])* CROPS_WASTE
+			])
 
 
 		[self.billions_fed_immediate_OG_kcals_tmp,\
@@ -443,11 +457,12 @@ class Analyzer:
 			 / self.c["KCALS_MONTHLY"]
 
 		if(self.c["VERBOSE"]):
-			print("expected culled meat kcals month 0 to 8ish")
+			pass
+			# print("expected culled meat kcals month 0 to 8ish")
 			# print(self.c["MEAT_FRACTION_KCALS"]*self.c["LIMIT_PER_MONTH_CULLED"])
-			print(self.c["LIMIT_PER_MONTH_CULLED"])
-			print("actual culled meat")
-			print(self.billions_fed_meat_kcals_tmp*self.c["KCALS_MONTHLY"])
+			# print(self.c["LIMIT_PER_MONTH_CULLED"])
+			# print("actual culled meat")
+			# print(self.billions_fed_meat_kcals_tmp*self.c["KCALS_MONTHLY"])
 			# print(np.divide(self.billions_fed_meat_kcals_tmp,self.OG_SF_fraction_kcals_to_humans)*self.c["KCALS_MONTHLY"])
 
 		self.billions_fed_meat_fat_tmp = np.array(self.makeMidMonthlyVars(
@@ -478,6 +493,8 @@ class Analyzer:
 		self.billions_fed_milk_protein = np.array(dairy_milk_protein)\
 			/ self.c["PROTEIN_MONTHLY"] / 1e9
 
+		# print("h_e_meat_kcals")
+		# print(h_e_meat_kcals*1e9/4e6/1e6)
 		self.billions_fed_h_e_meat_kcals = \
 			h_e_meat_kcals / self.c["KCALS_MONTHLY"]
 
@@ -546,11 +563,16 @@ class Analyzer:
 
 		self.billions_fed_SF_kcals = np.multiply(self.makeMidMonthlyVars(
 			stored_food_eaten,
-			CROPS_WASTE\
-			 * self.c["SF_FRACTION_KCALS"]/self.c["KCALS_MONTHLY"],
+			CROPS_WASTE/self.c["KCALS_MONTHLY"],
 			show_output),self.OG_SF_fraction_kcals_to_humans)
 
-
+		self.sf =  self.makeMidMonthlyVars(
+		stored_food_eaten,
+		1,
+		show_output)
+		# print("sf")
+		# print(self.sf*1e9/4e6/1e6)
+		
 		# self.billion_person_years_SF_kcals = self.makeStartEndMonthlyVars(
 		# 	stored_food_start,
 		# 	stored_food_end,
@@ -583,17 +605,16 @@ class Analyzer:
 
 		if(self.c['ADD_STORED_FOOD'] and self.c['VERBOSE']):
 			print('Days stored food global at start, by kcals')
-			print(360*self.c['INITIAL_SF'] 
-				* self.c['SF_FRACTION_KCALS']
+			print(365*self.c['INITIAL_SF_KCALS'] 
 				/ (12*self.c["KCALS_MONTHLY"]))
 			print('Days stored food global at start, by fat')
-			print(360*self.c['INITIAL_SF'] 
+			print(365*self.c['INITIAL_SF_KCALS'] 
 				* self.c['SF_FRACTION_FAT']
-				/ (12*self.c['FAT_MONTHLY']*7.9e9))
+				/ (12*self.c['FAT_MONTHLY']*1e9))
 			print('Days stored food global at start, by protein')
-			print(360*self.c['INITIAL_SF'] 
+			print(365*self.c['INITIAL_SF_KCALS'] 
 				* self.c['SF_FRACTION_PROTEIN']
-				/ (12*self.c['PROTEIN_MONTHLY']*7.9e9))
+				/ (12*self.c['PROTEIN_MONTHLY']*1e9))
 
 	def analyze_seaweed_results(
 		self,
@@ -693,23 +714,26 @@ class Analyzer:
 		zipped_lists = zip(order_protein, humans_fed_protein)
 		sorted_zipped_lists = sorted(zipped_lists)
 		self.humans_fed_protein_optimizer = [element for _, element in sorted_zipped_lists]
-
 		feed_delay = self.c['inputs']['FEED_SHUTOFF_DELAY']
 		sum_before = np.sum((np.array(self.humans_fed_kcals_optimizer)[:feed_delay] - self.c["WORLD_POP"]/1e9))
 
-		if(feed_delay == self.c["NMONTHS"]):
-			self.excess_after_run = (np.array(self.humans_fed_kcals_optimizer) - self.c["WORLD_POP"]/1e9)*self.c["KCALS_MONTHLY"]
+		if(feed_delay >= self.c["NMONTHS"]):
+			self.excess_after_run = (np.array(self.humans_fed_kcals_optimizer) - self.c["WORLD_POP"]/1e9)*self.c["KCALS_MONTHLY"]/10
 		else:		
 			# any consistent monthly excess is subtracted
 			# also spread out excess calories in pre-"feed shutoff" months
 			# to be used in months after feed is shutoff 
+			# np.array(self.sf+self.rot+self.no_rot) \
 			self.excess_after_run = \
 				(\
-					np.array(self.humans_fed_kcals_optimizer) \
+					np.array(self.humans_fed_kcals_optimizer) 
 					- self.c["WORLD_POP"]/1e9 \
-					+ (sum_before)/(self.c["NMONTHS"]-feed_delay)
-				)*self.c["KCALS_MONTHLY"]
-	
+					# + (sum_before)/(self.c["NMONTHS"]-feed_delay)
+				)*self.c["KCALS_MONTHLY"]/10
+
+		# print("self.excess_after_run")
+		# print(self.excess_after_run*1e9/4e6/1e6)
+
 	def calc_fraction_OG_SF_to_humans(\
 		self,
 		model,
@@ -722,7 +746,10 @@ class Analyzer:
 		):
 		
 		self.are_excess_kcals = (excess_calories>0).any()
-
+		CROPS_WASTE = 1-self.c["inputs"]["WASTE"]["CROPS"]/100
+		self.excess = excess_calories
+		# print("excess_calories*1e9/4e6/1e6")
+		# print(self.excess*1e9/4e6/1e6)
 		"""
 		each month:
 			(all the sources except using human edible fed food) + (-excess provided) + (meat and dairy from human edible sources)
@@ -761,7 +788,7 @@ class Analyzer:
 		"""
 		SF_kcals = self.makeMidMonthlyVars(
 			stored_food_eaten,
-			self.c["SF_FRACTION_KCALS"]/self.c["KCALS_MONTHLY"],
+			1/self.c["KCALS_MONTHLY"],
 			False)
 
 
@@ -820,9 +847,16 @@ class Analyzer:
 				False))
 
 
-		# print(excess_calories)
-		# print(np.array(OG_kcals))
-		# print(np.array(SF_kcals))
+		# print("excess_calories")
+		# print(excess_calories*1e9/4e6/1e6)
+		# print(excess_calories[39]*1e9/4e6/1e6)
+		# print("np.array(OG_kcals)")
+		# print(np.array(OG_kcals)*1e9/4e6/1e6* self.c["KCALS_MONTHLY"])
+		# print(np.array(OG_kcals[39])*1e9/4e6/1e6* self.c["KCALS_MONTHLY"])
+		# print("np.array(SF_kcals)")
+		# print(np.array(SF_kcals)*1e9/4e6/1e6* self.c["KCALS_MONTHLY"])
+		# print(np.array(SF_kcals[39])*1e9/4e6/1e6* self.c["KCALS_MONTHLY"])
+		
 		OG_SF_fraction_kcals_to_feed =\
 			np.divide(\
 				excess_calories,\
@@ -871,8 +905,13 @@ class Analyzer:
 
 		# print("OG_SF_fraction_kcals_to_feed")
 		# print(OG_SF_fraction_kcals_to_feed)
-		# print(OG_SF_fraction_fat_to_feed<=1)
 		assert((OG_SF_fraction_kcals_to_feed <= 1+ 1e-5).all())
+
+		if((OG_SF_fraction_kcals_to_feed>=1).any()):
+			OG_SF_fraction_kcals_to_humans[OG_SF_fraction_kcals_to_feed>=1] = 0
+			# print("self.OG_SF_fraction_kcals_to_humans")
+			# print(OG_SF_fraction_kcals_to_humans)
+
 		assert((OG_SF_fraction_kcals_to_feed >= 0).all())
 		if(self.c["inputs"]["INCLUDE_FAT"]):
 			assert((OG_SF_fraction_fat_to_feed <= 1 + 1e-5).all())
@@ -887,6 +926,32 @@ class Analyzer:
 		self.OG_SF_fraction_protein_to_humans = OG_SF_fraction_protein_to_humans
 
 	def analyze_results(self,model,time_months_middle):
+		# print("self.rot39")
+		# print(np.array(self.rot)[39]*1e9/4e6/1e6)
+		# print("self.excess39")
+		# print(np.array(self.excess)[39]*1e9/4e6/1e6)
+		# print("self.sf39")
+		# print(np.array(self.sf)[39]*1e9/4e6/1e6)
+		# print("self.sf + self.rot + self.no_rot - self.excess")
+		# print(np.array(self.sf + self.rot + self.no_rot - self.excess)[39]*1e9/4e6/1e6)
+		import matplotlib.pyplot as plt
+		# plt.plot(np.array(self.sf + self.rot + self.no_rot - self.excess)*1e9/4e6/1e6)
+		# plt.show()
+		# print(np.array(self.sf + self.rot + self.no_rot - self.excess)*1e9/4e6/1e6)
+		if( not ((self.sf + self.rot + self.no_rot - self.excess)*1e9/4e6/1e6 >= -1e-5).all()):
+			print("There are too few calories available to meet the caloric excess provided to the simulator. This is probably because the optimizer seems to have failed to sufficiently meet the constraint to limit total food fed to animals to the sum of stored food and outdoor growing within a reasonable degree of precision. Consider reducing precision. Quitting.")
+			quit()
+
+
+		assert(((self.sf + self.rot + self.no_rot - self.excess)*1e9/4e6/1e6>=-1e-5).all())
+		if(((self.sf + self.rot + self.no_rot - self.excess)*1e9/4e6/1e6 <= 0).any()):
+			# if(self.c["VERBOSE"]):
+			if(True):
+				print("")
+				print("WARNING: All of the outdoor growing and stored food is being fed to animals and none to humans in months: ")
+				print(np.where((self.sf + self.rot + self.no_rot - self.excess)*1e9/4e6/1e6 <= 0))
+				print("Double check this is actually reasonable.")
+				print("")
 		self.kcals_fed = (np.array(self.billions_fed_SF_kcals)\
 			+np.array(self.billions_fed_meat_kcals)\
 			+np.array(self.billions_fed_seaweed_kcals)\
@@ -932,7 +997,12 @@ class Analyzer:
 		if(self.c["inputs"]["INCLUDE_PROTEIN"]):
 			assert((abs(np.divide(self.protein_fed \
 				- np.array(self.humans_fed_protein_optimizer),self.protein_fed)) < 1e-6).all())
-		
+		# print("self.OG_SF_fraction_kcals_to_humans")
+		# print(self.OG_SF_fraction_kcals_to_humans)
+		# print("self.billions_fed_SF_kcals")
+		# print(self.billions_fed_SF_kcals*self.c["KCALS_MONTHLY"]*1e9/4e6/1e6)
+		# print("self.billions_fed_OG_kcals")
+		# print(self.billions_fed_OG_kcals*self.c["KCALS_MONTHLY"]*1e9/4e6/1e6)
 
 		SF_OG_kcals = (np.array(self.billions_fed_SF_kcals)\
 			+np.array(self.billions_fed_OG_kcals)\
@@ -948,29 +1018,33 @@ class Analyzer:
 		#if it takes all the available ag production to produce minimum for biofuel and animal feed demands
 		division = []
 		# print("SF_OG_kcals")
-		# print(SF_OG_kcals)
+		# print(SF_OG_kcals*self.c["KCALS_MONTHLY"]*1e9/4e6/1e6)
 		# print("OG_SF_fraction_kcals_to_humans")
 		# print(self.OG_SF_fraction_kcals_to_humans)
 		#divide off the reduction to get
-		for zipped_lists in zip(SF_OG_kcals,self.OG_SF_fraction_kcals_to_humans):
+		CROPS_WASTE = 1-self.c["inputs"]["WASTE"]["CROPS"]/100
+
+		for zipped_lists in zip(SF_OG_kcals,self.OG_SF_fraction_kcals_to_humans,self.excess):
 			
 			if(zipped_lists[1] <= 0):
 				assert(zipped_lists[0] >= -1e-5)
-				division.append(0)
+				division.append(zipped_lists[2]/self.c["KCALS_MONTHLY"]*CROPS_WASTE)
 			else:
 				division.append(zipped_lists[0]/zipped_lists[1])
 		
-
-		# print("SF_OG_kcals")
-		# print(SF_OG_kcals)
+		# print("division")
+		# print(np.array(division)*self.c["KCALS_MONTHLY"]*1e9/4e6/1e6)
 		# print("self.billions_fed_h_e_meat_kcals")
-		# print(self.billions_fed_h_e_meat_kcals)
+		# print(self.billions_fed_h_e_meat_kcals*self.c["KCALS_MONTHLY"]*1e9/4e6/1e6)
 		# print("self.billions_fed_h_e_milk_kcals")
-		# print(self.billions_fed_h_e_milk_kcals)
-		# print("np.array(division)")
-		# print(np.array(division))
+		# print(self.billions_fed_h_e_milk_kcals*self.c["KCALS_MONTHLY"]*1e9/4e6/1e6)
 		# print("self.billions_fed_h_e_balance_kcals")
-		# print(self.billions_fed_h_e_balance_kcals)
+		# print(self.billions_fed_h_e_balance_kcals*self.c["KCALS_MONTHLY"]*1e9/4e6/1e6)
+		# a-b==a*c
+		# if a==b,c == 0
+		# if b>a, we don't have enough stored food and OG to produced food, and should quit.
+		# This may happen even if there is plenty of food to go around, because the stored food needs to 
+		# If we optimize such that stored food is used in one part while culled meat is used in another, and that generates excess calories above world demand
 		fractional_difference = \
 			np.divide(\
 				(\
@@ -986,7 +1060,9 @@ class Analyzer:
 				+ self.billions_fed_h_e_meat_kcals\
 				+ self.billions_fed_h_e_milk_kcals\
 			)
-		print(abs(fractional_difference))
+		# print(abs(fractional_difference))
+		# print("fractional_difference")
+		# print(fractional_difference)
 		assert((abs(fractional_difference)<1e-6).all())
 
 		if(self.c['inputs']['INCLUDE_FAT'] == True):
@@ -1023,6 +1099,8 @@ class Analyzer:
 		if(self.c['inputs']['INCLUDE_PROTEIN'] == True):
 
 			division = []
+			# print("OG_SF_fraction_protein_to_humans")
+			# print(self.OG_SF_fraction_protein_to_humans)
 			for zipped_lists in zip(SF_OG_protein,self.OG_SF_fraction_protein_to_humans):			
 				
 				if(zipped_lists[1] <= 0):
@@ -1031,6 +1109,21 @@ class Analyzer:
 				else:
 					division.append(zipped_lists[0]/zipped_lists[1])
 			
+			# print("SF_OG_protein")
+			# print(SF_OG_protein[-1])
+			# print("self.billions_fed_h_e_meat_protein")
+			# print(self.billions_fed_h_e_meat_protein[-1])
+			# print("self.billions_fed_h_e_milk_protein")
+			# print(self.billions_fed_h_e_milk_protein[-1])
+			# print("np.array(division)")
+			# print(np.array(division[-1]))
+			# print("self.billions_fed_h_e_balance_protein")
+			# print(self.billions_fed_h_e_balance_protein[-1])
+			
+
+			# a separate problem is if we have a primary restriction on protein or fat rather than calories, the rebalancer will try to get the calories the same for each month, but then even if there are enough calories, this will force protein used to be more than is available from outdoor growing and stored food.
+
+
 			fractional_difference = \
 				np.divide(\
 					(\
@@ -1048,6 +1141,8 @@ class Analyzer:
 					+ self.billions_fed_h_e_milk_protein\
 				)
 
+			# print("fractional_difference")
+			# print(fractional_difference)
 			assert((abs(fractional_difference)<1e-6).all())
 		
 

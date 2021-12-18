@@ -25,8 +25,8 @@ c['inputs']['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
 
 c['inputs']['NUTRITION']={}
 c['inputs']['NUTRITION']['KCALS_DAILY'] = 2100 #kcals per person per day
-c['inputs']['NUTRITION']['FAT_DAILY'] = 47#35 #grams per person per day
-c['inputs']['NUTRITION']['PROTEIN_DAILY'] = 51#46 #grams per person per day
+c['inputs']['NUTRITION']['FAT_DAILY'] = 61.7#47#35 #grams per person per day
+c['inputs']['NUTRITION']['PROTEIN_DAILY'] = 59.5#51#46 #grams per person per day
 
 c['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS'] = 10
 c['inputs']['NEW_AREA_PER_DAY'] = 4.153 # 1000 km^2 (seaweed)
@@ -91,6 +91,8 @@ c['inputs']['WASTE']['DAIRY'] = 0 #%
 c['inputs']['WASTE']['SEAFOOD'] = 0 #%
 c['inputs']['WASTE']['CROPS'] = 0 #%
 c['inputs']['WASTE']['SEAWEED'] = 0 #%
+
+print(c['inputs']['ADD_FISH'])
 optimizer = Optimizer()
 [time_months,time_months_middle,analysis]=optimizer.optimize(c)
 print("")
