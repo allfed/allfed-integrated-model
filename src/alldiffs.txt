@@ -1,0 +1,432 @@
+1016c1016
+< 		all_months_reductions = first_year_jan_to_may\
+---
+> 		all_months_reductions = np.array(first_year_jan_to_may\
+1027c1027
+< 			+ list(jun_y11_to_dec_y11)\
+---
+> 			+ list(jun_y11_to_dec_y11))\
+1029,1030c1029,1030
+< 		# plt.scatter(np.linspace(1,12*11+1,12*11),all_months_reductions)
+< 		# plt.show()
+---
+> 		plt.scatter(np.linspace(1,12*11+1,12*11),all_months_reductions)
+> 		plt.show()
+1035,1165c1035,1063
+< 		#billions of kcals
+< 		KCALS_GROWN=[\
+< 			MAY_KCALS_OG * all_months_reductions[4],
+< 			JUN_KCALS_OG * all_months_reductions[5],
+< 			JUL_KCALS_OG * all_months_reductions[6],
+< 			AUG_KCALS_OG * all_months_reductions[7],
+< 			SEP_KCALS_OG * all_months_reductions[8],
+< 			OCT_KCALS_OG * all_months_reductions[9],
+< 			NOV_KCALS_OG * all_months_reductions[10],
+< 			DEC_KCALS_OG * all_months_reductions[11],
+< 			JAN_KCALS_OG * all_months_reductions[12],
+< 			FEB_KCALS_OG * all_months_reductions[13],
+< 			MAR_KCALS_OG * all_months_reductions[14],
+< 			APR_KCALS_OG * all_months_reductions[15],
+< 			MAY_KCALS_OG * all_months_reductions[16],
+< 			JUN_KCALS_OG * all_months_reductions[17],
+< 			JUL_KCALS_OG * all_months_reductions[18],
+< 			AUG_KCALS_OG * all_months_reductions[19],
+< 			SEP_KCALS_OG * all_months_reductions[20],
+< 			OCT_KCALS_OG * all_months_reductions[21],
+< 			NOV_KCALS_OG * all_months_reductions[22],
+< 			DEC_KCALS_OG * all_months_reductions[23],
+< 			JAN_KCALS_OG * all_months_reductions[24],
+< 			FEB_KCALS_OG * all_months_reductions[25],
+< 			MAR_KCALS_OG * all_months_reductions[26],
+< 			APR_KCALS_OG * all_months_reductions[27],
+< 			MAY_KCALS_OG * all_months_reductions[28],
+< 			JUN_KCALS_OG * all_months_reductions[29],
+< 			JUL_KCALS_OG * all_months_reductions[30],
+< 			AUG_KCALS_OG * all_months_reductions[31],
+< 			SEP_KCALS_OG * all_months_reductions[32],
+< 			OCT_KCALS_OG * all_months_reductions[33],
+< 			NOV_KCALS_OG * all_months_reductions[34],
+< 			DEC_KCALS_OG * all_months_reductions[35],
+< 			JAN_KCALS_OG * all_months_reductions[36],
+< 			FEB_KCALS_OG * all_months_reductions[37],
+< 			MAR_KCALS_OG * all_months_reductions[38],
+< 			APR_KCALS_OG * all_months_reductions[39],
+< 			MAY_KCALS_OG * all_months_reductions[40],
+< 			JUN_KCALS_OG * all_months_reductions[41],
+< 			JUL_KCALS_OG * all_months_reductions[42],
+< 			AUG_KCALS_OG * all_months_reductions[43],
+< 			SEP_KCALS_OG * all_months_reductions[44],
+< 			OCT_KCALS_OG * all_months_reductions[45],
+< 			NOV_KCALS_OG * all_months_reductions[46],
+< 			DEC_KCALS_OG * all_months_reductions[47],
+< 			JAN_KCALS_OG * all_months_reductions[48],
+< 			FEB_KCALS_OG * all_months_reductions[49],
+< 			MAR_KCALS_OG * all_months_reductions[50],
+< 			APR_KCALS_OG * all_months_reductions[51],
+< 			MAY_KCALS_OG * all_months_reductions[52],
+< 			JUN_KCALS_OG * all_months_reductions[53],
+< 			JUL_KCALS_OG * all_months_reductions[54],
+< 			AUG_KCALS_OG * all_months_reductions[55],
+< 			SEP_KCALS_OG * all_months_reductions[56],
+< 			OCT_KCALS_OG * all_months_reductions[57],
+< 			NOV_KCALS_OG * all_months_reductions[58],
+< 			DEC_KCALS_OG * all_months_reductions[59],
+< 			JAN_KCALS_OG * all_months_reductions[60],
+< 			FEB_KCALS_OG * all_months_reductions[61],
+< 			MAR_KCALS_OG * all_months_reductions[62],
+< 			APR_KCALS_OG * all_months_reductions[63],
+< 			MAY_KCALS_OG * all_months_reductions[64],
+< 			JUN_KCALS_OG * all_months_reductions[65],
+< 			JUL_KCALS_OG * all_months_reductions[66],
+< 			AUG_KCALS_OG * all_months_reductions[67],
+< 			SEP_KCALS_OG * all_months_reductions[68],
+< 			OCT_KCALS_OG * all_months_reductions[69],
+< 			NOV_KCALS_OG * all_months_reductions[70],
+< 			DEC_KCALS_OG * all_months_reductions[71],
+< 			JAN_KCALS_OG * all_months_reductions[72],
+< 			FEB_KCALS_OG * all_months_reductions[73],
+< 			MAR_KCALS_OG * all_months_reductions[74],
+< 			APR_KCALS_OG * all_months_reductions[75],
+< 			MAY_KCALS_OG * all_months_reductions[76],
+< 			JUN_KCALS_OG * all_months_reductions[77],
+< 			JUL_KCALS_OG * all_months_reductions[78],
+< 			AUG_KCALS_OG * all_months_reductions[79],
+< 			SEP_KCALS_OG * all_months_reductions[80],
+< 			OCT_KCALS_OG * all_months_reductions[81],
+< 			NOV_KCALS_OG * all_months_reductions[82],
+< 			DEC_KCALS_OG * all_months_reductions[83],
+< 			JAN_KCALS_OG * all_months_reductions[84],
+< 			FEB_KCALS_OG * all_months_reductions[85],
+< 			MAR_KCALS_OG * all_months_reductions[86],
+< 			APR_KCALS_OG * all_months_reductions[87],
+< 			MAY_KCALS_OG * all_months_reductions[88],
+< 			JUN_KCALS_OG * all_months_reductions[89],
+< 			JUL_KCALS_OG * all_months_reductions[90],
+< 			AUG_KCALS_OG * all_months_reductions[91],
+< 			SEP_KCALS_OG * all_months_reductions[92],
+< 			OCT_KCALS_OG * all_months_reductions[93],
+< 			NOV_KCALS_OG * all_months_reductions[94],
+< 			DEC_KCALS_OG * all_months_reductions[95],
+< 			JAN_KCALS_OG * all_months_reductions[96],
+< 			FEB_KCALS_OG * all_months_reductions[97],
+< 			MAR_KCALS_OG * all_months_reductions[98],
+< 			APR_KCALS_OG * all_months_reductions[99],
+< 			MAY_KCALS_OG * all_months_reductions[100],
+< 			JUN_KCALS_OG * all_months_reductions[101],
+< 			JUL_KCALS_OG * all_months_reductions[102],
+< 			AUG_KCALS_OG * all_months_reductions[103],
+< 			SEP_KCALS_OG * all_months_reductions[104],
+< 			OCT_KCALS_OG * all_months_reductions[105],
+< 			NOV_KCALS_OG * all_months_reductions[106],
+< 			DEC_KCALS_OG * all_months_reductions[107],
+< 			JAN_KCALS_OG * all_months_reductions[108],
+< 			FEB_KCALS_OG * all_months_reductions[109],
+< 			MAR_KCALS_OG * all_months_reductions[110],
+< 			APR_KCALS_OG * all_months_reductions[111],
+< 			MAY_KCALS_OG * all_months_reductions[112],
+< 			JUN_KCALS_OG * all_months_reductions[113],
+< 			JUL_KCALS_OG * all_months_reductions[114],
+< 			AUG_KCALS_OG * all_months_reductions[115],
+< 			SEP_KCALS_OG * all_months_reductions[116],
+< 			OCT_KCALS_OG * all_months_reductions[117],
+< 			NOV_KCALS_OG * all_months_reductions[118],
+< 			DEC_KCALS_OG * all_months_reductions[119],
+< 			JAN_KCALS_OG * all_months_reductions[120],
+< 			FEB_KCALS_OG * all_months_reductions[121],
+< 			MAR_KCALS_OG * all_months_reductions[122],
+< 			APR_KCALS_OG * all_months_reductions[123],
+< 			MAY_KCALS_OG * all_months_reductions[124],
+< 			JUN_KCALS_OG * all_months_reductions[125],
+< 			JUL_KCALS_OG * all_months_reductions[126],
+< 			AUG_KCALS_OG * all_months_reductions[127],
+< 			SEP_KCALS_OG * all_months_reductions[128],
+< 			OCT_KCALS_OG * all_months_reductions[129],
+< 			NOV_KCALS_OG * all_months_reductions[130],
+< 			DEC_KCALS_OG * all_months_reductions[131]
+< 			]
+---
+> 		months_cycle = [MAY_KCALS_OG,JUN_KCALS_OG,JUL_KCALS_OG,AUG_KCALS_OG,SEP_KCALS_OG,OCT_KCALS_OG,NOV_KCALS_OG,DEC_KCALS_OG,JAN_KCALS_OG,FEB_KCALS_OG,MAR_KCALS_OG,APR_KCALS_OG]
+> 		KCALS_GROWN = []
+> 		FAT_GROWN = []
+> 		PROTEIN_GROWN = []
+> 		for i in range(0,NMONTHS):
+> 			cycle_index = i%12
+> 			month_kcals = months_cycle[cycle_index]
+> 			
+> 			KCALS_GROWN.append(\
+> 				month_kcals * (1 - (
+> 					(1-all_months_reductions[i+4])\
+> 					 * OG_KCAL_REDUCED
+> 				))\
+> 			)
+> 
+> 			FAT_GROWN.append(
+> 				month_kcals * OG_FRACTION_FAT * (1 - (
+> 					(1-all_months_reductions[i+4])\
+> 					 * OG_FAT_REDUCED
+> 				 ))\
+> 			)
+> 
+> 			PROTEIN_GROWN.append(\
+> 				month_kcals * OG_FRACTION_PROTEIN * (1 - (\
+> 					(1-all_months_reductions[i+4])\
+> 					 * OG_PROTEIN_REDUCED\
+> 				))\
+> 			)
+> 
+1197c1095
+< 			list(\
+---
+> 			np.array(\
+1210,1211c1108
+< 			MONTHLY_KCALS = np.mean([JAN_KCALS_OG,FEB_KCALS_OG,MAR_KCALS_OG,APR_KCALS_OG,MAY_KCALS_OG,JUN_KCALS_OG,JUL_KCALS_OG,AUG_KCALS_OG,SEP_KCALS_OG,OCT_KCALS_OG,NOV_KCALS_OG,DEC_KCALS_OG])/TOTAL_CROP_AREA
+< 
+---
+> 			MONTHLY_KCALS = np.mean(months_cycle)/TOTAL_CROP_AREA
+1214c1111
+< 				MONTHLY_KCALS * np.array(all_months_reductions[4:])
+---
+> 				MONTHLY_KCALS * all_months_reductions[4:]
+1224,1225c1121,1122
+< 			KCALS_GROWN_PER_HECTARE = [0]*NMONTHS
+< 			greenhouse_area = [0]*NMONTHS
+---
+> 			KCALS_GROWN_PER_HECTARE = np.array([0]*NMONTHS)
+> 			greenhouse_area = np.array([0]*NMONTHS)
+1227d1123
+< 		KCALS_GROWN_MINUS_GREENHOUSE = []
+1229,1233d1124
+< 		for i in range(0,NMONTHS):
+< 			#billions of kcals
+< 			KCALS_GROWN_MINUS_GREENHOUSE.append(\
+< 				KCALS_GROWN[i]*(1-greenhouse_area[i]/TOTAL_CROP_AREA)\
+< 			)
+1241,1242c1132,1141
+< 			crops_food_produced = \
+< 				np.array(KCALS_GROWN_MINUS_GREENHOUSE)
+---
+> 
+> 			crops_kcals_produced = \
+> 				np.array(KCALS_GROWN)*(1-greenhouse_area/TOTAL_CROP_AREA)
+> 			
+> 			crops_fat_produced = \
+> 				np.array(FAT_GROWN)*(1-greenhouse_area/TOTAL_CROP_AREA)\
+> 
+> 			crops_protein_produced = \
+> 				np.array(PROTEIN_GROWN)*(1-greenhouse_area/TOTAL_CROP_AREA)\
+> 
+1244c1143,1145
+< 			crops_food_produced=np.array([0]*NMONTHS)
+---
+> 			crops_kcals_produced=np.array([0]*NMONTHS)
+> 			crops_fat_produced=np.array([0]*NMONTHS)
+> 			crops_protein_produced=np.array([0]*NMONTHS)
+1264,1382d1164
+< 		def getImprovementsFromRotation(
+< 			spring_wheat_fraction_of_rotation,\
+< 			spring_barley_fraction_of_rotation,\
+< 			potato_fraction_of_rotation,\
+< 			rapeseed_fraction_of_rotation):
+< 
+< 			#see https://docs.google.com/spreadsheets/d/1-upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=352242036 greenhouse_NW tab
+< 
+< 			# assert(spring_wheat_fraction_of_rotation
+< 			# + spring_barley_fraction_of_rotation
+< 			# + potato_fraction_of_rotation
+< 			# + rapeseed_fraction_of_rotation == 1)
+< 
+< 			#billion kcals per hectare per year
+< 			# SPRING_WHEAT_CALORIES = 21056*1e3/1e9 * spring_wheat_fraction_of_rotation
+< 			# SPRING_BARLEY_CALORIES = 22528*1e3/1e9 * spring_barley_fraction_of_rotation
+< 			# POTATO_CALORIES = 37410*1e3/1e9 * potato_fraction_of_rotation
+< 			# RAPESEED_CALORIES = 10670*1e3/1e9 * rapeseed_fraction_of_rotation
+< 
+< 			#annual
+< 			# SPRING_WHEAT_CALORIES = 2.91195539 # dry caloric tons per ha
+< 			# SPRING_BARLEY_CALORIES =  2.91195539# dry caloric tons per ha
+< 			# POTATO_CALORIES = 3.749669935 # dry caloric tons per ha
+< 			# RAPESEED_CALORIES = 2.558870452 # dry caloric tons per ha
+< 
+< 			SPRING_WHEAT_CALORIES = 2.6 # dry caloric tons per ha
+< 			SPRING_BARLEY_CALORIES =  2.6# dry caloric tons per ha
+< 			POTATO_CALORIES = 9.3525 # dry caloric tons per ha
+< 			RAPESEED_CALORIES = 2.559 # dry caloric tons per ha
+< 
+< 			#due to NW
+< 			SPRING_WHEAT_REDUCED =  -.65 + 1
+< 			SPRING_BARLEY_REDUCED = -.65 + 1
+< 			POTATO_REDUCED = -.166 + 1
+< 			RAPESEED_REDUCED = -.679 + 1
+< 
+< 
+< 			# annual estimated calorie contribution per hectare for each crop 
+< 			#weighted by the fraction of rotation
+< 			SPRING_WHEAT_CONTRIBUTION = spring_wheat_fraction_of_rotation \
+< 				* SPRING_WHEAT_CALORIES*SPRING_WHEAT_REDUCED*4e6/1e9
+< 			SPRING_BARLEY_CONTRIBUTION = spring_barley_fraction_of_rotation\
+< 				* SPRING_BARLEY_CALORIES*SPRING_BARLEY_REDUCED*4e6/1e9
+< 			POTATO_CONTRIBUTION = potato_fraction_of_rotation \
+< 				* POTATO_CALORIES*POTATO_REDUCED*4e6/1e9
+< 			RAPESEED_CONTRIBUTION = rapeseed_fraction_of_rotation \
+< 				* RAPESEED_CALORIES*RAPESEED_REDUCED*4e6/1e9
+< 			# min 1 in 6 years, max 1 in 3.
+< 			# rotation_options = [0.17,0.2,0.25,0.3,0.33]
+< 
+< 			SUM_CALORIES_PER_HA_PER_MONTH = (SPRING_WHEAT_CONTRIBUTION \
+< 				+ SPRING_BARLEY_CONTRIBUTION \
+< 				+ POTATO_CONTRIBUTION \
+< 				+ RAPESEED_CONTRIBUTION)/12
+< 
+< 
+< 			SUM_CALORIES = SUM_CALORIES_PER_HA_PER_MONTH * TOTAL_CROP_AREA
+< 
+< 			#estimate for "do nothing" nuclear yields, cell h41
+< 			DO_NOTHING_SUM_PER_HECTARE_PER_MONTH=0.0004798542381 # bill kcals
+< 			SUM_CALORIES_DO_NOTHING = DO_NOTHING_SUM_PER_HECTARE_PER_MONTH*TOTAL_CROP_AREA # billions kcals per month
+< 			# let's assume greenhouses average the annual from outdoor growing plus
+< 			# a 40% increase.
+< 
+< 			#thousand tons protein per hectare per year
+< 			# ADJUSTED_POTATO_PROTEIN = 0.804/1e3 *(3.7496/9.3525)*  potato_fraction_of_rotation*POTATO_REDUCED
+< 			ADJUSTED_POTATO_PROTEIN = 0.804/1e3 *  potato_fraction_of_rotation*POTATO_REDUCED
+< 
+< 			#thousand tons protein per hectare per year8
+< 			# ADJUSTED_SPRING_BARLEY_PROTEIN = 0.634/1e3 *(2.9/2.6)  \
+< 			ADJUSTED_SPRING_BARLEY_PROTEIN = 0.634/1e3  \
+< 				* spring_barley_fraction_of_rotation*SPRING_BARLEY_REDUCED
+< 
+< 			#thousand tons protein per hectare per year
+< 			# ADJUSTED_SPRING_WHEAT_PROTEIN = 0.634/1e3*(2.9/2.6) \
+< 			ADJUSTED_SPRING_WHEAT_PROTEIN = 0.634/1e3 \
+< 				* spring_wheat_fraction_of_rotation*SPRING_WHEAT_REDUCED
+< 
+< 			#thousand tons protein per hectare per year
+< 			ADJUSTED_RAPESEED_PROTEIN = 0/1e3 *  rapeseed_fraction_of_rotation*RAPESEED_REDUCED
+< 
+< 			#thousand tons fat per hectare per year
+< 			# ADJUSTED_POTATO_FAT = 0.043/1e3 *(3.7496/9.3525)*  potato_fraction_of_rotation*POTATO_REDUCED
+< 			ADJUSTED_POTATO_FAT = 0.043/1e3 *  potato_fraction_of_rotation*POTATO_REDUCED
+< 
+< 			#thousand tons fat per hectare per year
+< 			# ADJUSTED_SPRING_WHEAT_FAT = 0.074/1e3  *(2.9/2.6) \
+< 			ADJUSTED_SPRING_WHEAT_FAT = 0.074/1e3  \
+< 				* spring_wheat_fraction_of_rotation*SPRING_WHEAT_REDUCED
+< 
+< 
+< 			#thousand tons fat per hectare per year
+< 			# ADJUSTED_SPRING_BARLEY_FAT = 0.074/1e3 *(2.9/2.6)\
+< 			ADJUSTED_SPRING_BARLEY_FAT = 0.074/1e3 \
+< 				* spring_barley_fraction_of_rotation*SPRING_BARLEY_REDUCED
+< 
+< 			#thousand tons fat per hectare per year
+< 			# ADJUSTED_RAPESEED_FAT = 2.66745/2.559*1.195/1e3 *  rapeseed_fraction_of_rotation*RAPESEED_REDUCED
+< 			ADJUSTED_RAPESEED_FAT = 1.195/1e3 *  rapeseed_fraction_of_rotation*RAPESEED_REDUCED
+< 
+< 			ROTATION_PROTEIN = (ADJUSTED_POTATO_PROTEIN \
+< 				+ ADJUSTED_SPRING_BARLEY_PROTEIN\
+< 				+ ADJUSTED_SPRING_WHEAT_PROTEIN\
+< 				+ ADJUSTED_RAPESEED_PROTEIN) \
+< 				/12
+< 
+< 			ROTATION_FAT = (ADJUSTED_POTATO_FAT \
+< 				+ ADJUSTED_SPRING_WHEAT_FAT \
+< 				+ ADJUSTED_SPRING_BARLEY_FAT \
+< 				+ ADJUSTED_RAPESEED_FAT) \
+< 				/12
+< 
+< 			KCAL_RATIO = SUM_CALORIES_PER_HA_PER_MONTH / DO_NOTHING_SUM_PER_HECTARE_PER_MONTH
+< 			FAT_RATIO = ROTATION_FAT/SUM_CALORIES_PER_HA_PER_MONTH
+< 			PROTEIN_RATIO = ROTATION_PROTEIN/SUM_CALORIES_PER_HA_PER_MONTH
+< 
+< 			return (KCAL_RATIO,FAT_RATIO,PROTEIN_RATIO)
+< 
+< 
+1412,1415d1193
+< 
+< 		KCAL_RATIO_ROT = 1.87
+< 		FAT_RATIO_ROT = 2.77
+< 		PROTEIN_RATIO_ROT = 1.78
+1419,1425c1197,1199
+< 
+< 			OG_ROTATION_FRACTION_KCALS = 1.87
+< 			#need to multiply the amount of actual kcals, 
+< 			#then multiply by 1000s tons fat and protein per billion kcals
+< 			OG_ROTATION_FRACTION_FAT = OG_FRACTION_FAT*2.77
+< 			OG_ROTATION_FRACTION_PROTEIN = OG_FRACTION_PROTEIN*1.78
+< 
+---
+> 			OG_KCAL_REDUCED = 0.892
+> 			OG_FAT_REDUCED = 0.773
+> 			OG_PROTEIN_REDUCED = 0.917
+1427,1429c1201,1203
+< 			OG_ROTATION_FRACTION_KCALS = 1
+< 			OG_ROTATION_FRACTION_FAT = OG_FRACTION_FAT
+< 			OG_ROTATION_FRACTION_PROTEIN = OG_FRACTION_PROTEIN
+---
+> 			OG_KCAL_REDUCED = 1
+> 			OG_FAT_REDUCED = 1
+> 			OG_PROTEIN_REDUCED = 1
+1504c1278
+< 		if(VERBOSE):
+---
+> 		if(True):
+1527,1551c1301,1327
+< 			#1000 tons protein/fat per dry caloric ton
+< 			print("")
+< 			print("INITIAL_OG_KCALS million tons dry caloric monthly")
+< 			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6)
+< 			print("INITIAL_OG_FAT million tons monthly")
+< 			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_FAT/1e3)
+< 			print("INITIAL_OG_PROTEIN million tons monthly")
+< 			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_PROTEIN/1e3)
+< 			print("")
+< 			print("INITIAL_OG_FAT percentage")
+< 			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_FAT/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6))
+< 			print("INITIAL_OG_PROTEIN percentage")
+< 			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_PROTEIN/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6))
+< 			print("")
+< 			print("INITIAL_OG_ROTATION_KCALS million tons dry caloric monthly")
+< 			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6)
+< 			print("INITIAL_OG_ROTATION_FAT million tons monthly")
+< 			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_FAT/1e3)
+< 			print("INITIAL_OG_ROTATION_PROTEIN million tons monthly")
+< 			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_PROTEIN/1e3)
+< 			print("")
+< 			print("INITIAL_OG_ROTATION_FAT percentage")
+< 			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_FAT/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6))
+< 			print("INITIAL_OG_ROTATION_PROTEIN percentage")
+< 			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_PROTEIN/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6))
+---
+> 			if(ADD_OUTDOOR_GROWING):
+> 				#1000 tons protein/fat per dry caloric ton
+> 				print("")
+> 				print("INITIAL_OG_KCALS million tons dry caloric monthly")
+> 				print(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6)
+> 				print("INITIAL_OG_FAT million tons monthly")
+> 				print(FAT_GROWN_MINUS_GREENHOUSE[0]/1e3)
+> 				print("INITIAL_OG_PROTEIN million tons monthly")
+> 				print(PROTEIN_GROWN_MINUS_GREENHOUSE[0]/1e3)
+> 				print("")
+> 				print("INITIAL_OG_FAT percentage")
+> 				print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_FAT/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6))
+> 				print("INITIAL_OG_PROTEIN percentage")
+> 				print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_PROTEIN/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6))
+> 				print("")
+> 				print("INITIAL_OG_ROTATION_KCALS million tons dry caloric monthly")
+> 				print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6)
+> 				print("INITIAL_OG_ROTATION_FAT million tons monthly")
+> 				print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_FAT/1e3)
+> 				print("INITIAL_OG_ROTATION_PROTEIN million tons monthly")
+> 				print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_PROTEIN/1e3)
+> 				print("")
+> 				print("INITIAL_OG_ROTATION_FAT percentage")
+> 				print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_FAT/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6))
+> 				print("INITIAL_OG_ROTATION_PROTEIN percentage")
+> 				print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_PROTEIN/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6))
+> 				quit()
+1718c1494,1496
+< 		s["crops_food_produced"] = crops_food_produced # no waste
+---
+> 		s["crops_kcals_produced"] = crops_kcals_produced # no waste
+> 		s["crops_fat_produced"] = crops_fat_produced # no waste
+> 		s["crops_protein_produced"] = crops_protein_produced # no waste

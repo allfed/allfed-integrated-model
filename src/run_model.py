@@ -218,6 +218,8 @@ while(True):
 	if(kcals_fed > 7.79 and kcals_fed < 7.81):
 		break
 
+	assert(feed_delay > c['inputs']['BIOFUEL_SHUTOFF_DELAY'])
+
 	#don't try to feed more animals in the  months before feed shutoff
 	excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
 		excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]\

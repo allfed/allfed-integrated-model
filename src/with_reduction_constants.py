@@ -1026,42 +1026,16 @@ class Constants:
 			+ list(jun_y10_to_may_y11)\
 			+ list(jun_y11_to_dec_y11))\
 
-		# plt.scatter(np.linspace(1,12*11+1,12*11),all_months_reductions)
-		# plt.show()
+		plt.scatter(np.linspace(1,12*11+1,12*11),all_months_reductions)
+		plt.show()
 		assert(len(all_months_reductions)==12*11)
 
 		# year 2: 20% of normal year
 
 		months_cycle = [MAY_KCALS_OG,JUN_KCALS_OG,JUL_KCALS_OG,AUG_KCALS_OG,SEP_KCALS_OG,OCT_KCALS_OG,NOV_KCALS_OG,DEC_KCALS_OG,JAN_KCALS_OG,FEB_KCALS_OG,MAR_KCALS_OG,APR_KCALS_OG]
-		
-		#need to use the multiplier on units of kcals to get fat and protein
-		if(c["inputs"]["OG_USE_BETTER_ROTATION"]):
-
-
-			#deals with the issue of caloric improvement being more than present-day production during the beginning months of the simulation.
-			OG_KCAL_REDUCED = 0.894#multiplier on the kcal reduction
-			OG_ROTATION_FRACTION_KCALS = 1
-
-			KCAL_RATIO_ROT = 1
-
-			OG_ROTATION_FRACTION_FAT = OG_FRACTION_FAT*1.516
-			OG_ROTATION_FRACTION_PROTEIN = OG_FRACTION_PROTEIN*.984
-
-			FAT_RATIO_ROT = OG_ROTATION_FRACTION_FAT
-			PROTEIN_RATIO_ROT = OG_ROTATION_FRACTION_PROTEIN
-
-		else:
-			OG_KCAL_REDUCED = 1
-			OG_ROTATION_FRACTION_KCALS = 1
-			OG_ROTATION_FRACTION_FAT = OG_FRACTION_FAT
-			OG_ROTATION_FRACTION_PROTEIN = OG_FRACTION_PROTEIN
-
-			KCAL_RATIO_ROT = 1
-			FAT_RATIO_ROT = OG_FRACTION_FAT
-			PROTEIN_RATIO_ROT = OG_FRACTION_PROTEIN
-
 		KCALS_GROWN = []
-		NO_ROT_KCALS_GROWN = []
+		FAT_GROWN = []
+		PROTEIN_GROWN = []
 		for i in range(0,NMONTHS):
 			cycle_index = i%12
 			month_kcals = months_cycle[cycle_index]
@@ -1072,9 +1046,18 @@ class Constants:
 					 * OG_KCAL_REDUCED
 				))\
 			)
-			NO_ROT_KCALS_GROWN.append(\
-				month_kcals * (1 - (
-					(1-all_months_reductions[i+4])
+
+			FAT_GROWN.append(
+				month_kcals * OG_FRACTION_FAT * (1 - (
+					(1-all_months_reductions[i+4])\
+					 * OG_FAT_REDUCED
+				 ))\
+			)
+
+			PROTEIN_GROWN.append(\
+				month_kcals * OG_FRACTION_PROTEIN * (1 - (\
+					(1-all_months_reductions[i+4])\
+					 * OG_PROTEIN_REDUCED\
 				))\
 			)
 
@@ -1094,7 +1077,7 @@ class Constants:
 		# therefore
 		# 	og_protein = og_kcals*SF_FRACTION_PROTEIN/SF_FRACTION_KCALS
 
-		
+
 
 		#### CONSTANTS FOR GREENHOUSES ####
 		#greenhouses tab
@@ -1109,7 +1092,7 @@ class Constants:
 		# Takes 5+36=41 months to reach full output
 		# NOTE: the 5 months represents the delay from plant to harvest.
 		greenhouse_area_long = \
-			list(\
+			np.array(\
 				np.append(\
 					np.append(\
 						np.linspace(0,0,5),\
@@ -1119,50 +1102,47 @@ class Constants:
 				)*GREENHOUSE_SLOPE_MULTIPLIER
 			)\
 
-		greenhouse_area = np.array(greenhouse_area_long[0:NMONTHS])
+		greenhouse_area = greenhouse_area_long[0:NMONTHS]
 
 		if(ADD_GREENHOUSES):
-			print(KCALS_GROWN)
 			MONTHLY_KCALS = np.mean(months_cycle)/TOTAL_CROP_AREA
 
 			KCALS_GROWN_PER_HECTARE_BEFORE_WASTE = \
-				MONTHLY_KCALS * (1 - (\
-					(1-all_months_reductions[4:])\
-					 * OG_KCAL_REDUCED\
-				))
-
+				MONTHLY_KCALS * all_months_reductions[4:]
 			# plt.title(" dry caloric tons per hectare if 500 million hectares, no waste")
 			# plt.plot(np.array(KCALS_GROWN_PER_HECTARE_BEFORE_WASTE)*1e9/4e6)
-			# plt.plot(np.array(KCALS_GROWN_PER_HECTARE_BEFORE_WASTE)/MONTHLY_KCALS)
 			# plt.show()
+			SUM_CALORIES_PER_HECTARE = 0.0237337
 			KCALS_GROWN_PER_HECTARE = (1-CROP_WASTE/100) \
 				* np.array(KCALS_GROWN_PER_HECTARE_BEFORE_WASTE)
 			# for x in greenhouse_area:
 			# 	kcals_per_hectare.append(x * )
 		else:
-			KCALS_GROWN_PER_HECTARE = [0]*NMONTHS
+			KCALS_GROWN_PER_HECTARE = np.array([0]*NMONTHS)
 			greenhouse_area = np.array([0]*NMONTHS)
 
 
-		if(ADD_OUTDOOR_GROWING):
-			if(c["inputs"]["OG_USE_BETTER_ROTATION"]):
-				crops_food_produced=np.array([0]*NMONTHS)
-
-				hd = c['inputs']["INITIAL_HARVEST_DURATION"]
-				crops_food_produced[hd:] = \
-					np.array(KCALS_GROWN[hd:])*(1-greenhouse_area[hd:]/TOTAL_CROP_AREA)
-				crops_food_produced[:hd] = \
-					np.array(NO_ROT_KCALS_GROWN[:hd])*(1-greenhouse_area[:hd]/TOTAL_CROP_AREA)
-			else:
-				crops_food_produced = \
-					np.array(NO_ROT_KCALS_GROWN)*(1-greenhouse_area/TOTAL_CROP_AREA)
-				
-		else:
-			crops_food_produced=np.array([0]*NMONTHS)
-		# plt.plot(crops_food_produced)
-		# plt.plot(NO_ROT_KCALS_GROWN)
+		# plt.plot(KCALS_GROWN_MINUS_GREENHOUSE)
 		# plt.show()
+		# GH_DRY_TONS_PER_HECTARE_PER_YEAR*4e6/1e9
 
+
+
+		if(ADD_OUTDOOR_GROWING):
+
+			crops_kcals_produced = \
+				np.array(KCALS_GROWN)*(1-greenhouse_area/TOTAL_CROP_AREA)
+			
+			crops_fat_produced = \
+				np.array(FAT_GROWN)*(1-greenhouse_area/TOTAL_CROP_AREA)\
+
+			crops_protein_produced = \
+				np.array(PROTEIN_GROWN)*(1-greenhouse_area/TOTAL_CROP_AREA)\
+
+		else:
+			crops_kcals_produced=np.array([0]*NMONTHS)
+			crops_fat_produced=np.array([0]*NMONTHS)
+			crops_protein_produced=np.array([0]*NMONTHS)
 		# we know:
 		# 	units_sf_mass*SF_FRACTION_KCALS=sf_kcals
 		# and
@@ -1183,19 +1163,17 @@ class Constants:
 		# https://docs.google.com/spreadsheets/d/1rYcxSe-Z7ztvW-QwTBXT8GABaRmVdDuQ05HXmTHbQ8I/edit#gid=1141282747
 
 
-
 		# SUM_CALORIES is an overestimate by some factor, as it is in current
 		# day conditions. We improve accuracy by applying the outdoor growing 
 		# estimate and decreasing the estimated fat and protein by the same 
 		# factor that kcals are decreased by
 		def get_greenhouse_yield_per_ha(KCAL_RATIO,FAT_RATIO,PROTEIN_RATIO):
-
 			rotation_fat_per_ha_long = []
 			rotation_protein_per_ha_long = []
 			rotation_kcals_per_ha_long = []
-			for kcals_per_month in KCALS_GROWN_PER_HECTARE:
-				gh_kcals = kcals_per_month*KCAL_RATIO \
-				 * (1+c['inputs']["GREENHOUSE_GAIN_PCT"]/100)
+			for yearly_mean_kcals in KCALS_GROWN_PER_HECTARE:
+				gh_kcals = yearly_mean_kcals*KCAL_RATIO \
+				* (1+c['inputs']["GREENHOUSE_GAIN_PCT"]/100)
 				
 				rotation_kcals_per_ha_long.append(gh_kcals)
 
@@ -1203,21 +1181,29 @@ class Constants:
 
 
 				rotation_protein_per_ha_long.append(PROTEIN_RATIO * gh_kcals)
+				# if(yearly_mean_kcals>0):
 
-			rotation_kcals_per_ha = rotation_kcals_per_ha_long[0:NMONTHS]
-			rotation_fat_per_ha = rotation_fat_per_ha_long[0:NMONTHS]
-			rotation_protein_per_ha = rotation_protein_per_ha_long[0:NMONTHS]
+				rotation_kcals_per_ha = rotation_kcals_per_ha_long[0:NMONTHS]
+				rotation_fat_per_ha = rotation_fat_per_ha_long[0:NMONTHS]
+				rotation_protein_per_ha = rotation_protein_per_ha_long[0:NMONTHS]
 
 			return (rotation_kcals_per_ha,\
 				rotation_fat_per_ha,\
 				rotation_protein_per_ha)
+
 		
-		(greenhouse_kcals_per_ha,\
-		greenhouse_fat_per_ha,\
-		greenhouse_protein_per_ha) \
-			= get_greenhouse_yield_per_ha(KCAL_RATIO_ROT,\
-				FAT_RATIO_ROT,\
-				PROTEIN_RATIO_ROT)
+		#need to use the multiplier on units of kcals to get fat and protein
+		if(c["inputs"]["OG_USE_BETTER_ROTATION"]):
+			OG_KCAL_REDUCED = 0.892
+			OG_FAT_REDUCED = 0.773
+			OG_PROTEIN_REDUCED = 0.917
+		else:
+			OG_KCAL_REDUCED = 1
+			OG_FAT_REDUCED = 1
+			OG_PROTEIN_REDUCED = 1
+
+		(greenhouse_kcals_per_ha,greenhouse_fat_per_ha,greenhouse_protein_per_ha) \
+			= get_greenhouse_yield_per_ha(KCAL_RATIO_ROT, FAT_RATIO_ROT, PROTEIN_RATIO_ROT)
 
 		#### CONSTANTS FOR METHANE SINGLE CELL PROTEIN ####
 		SUGAR_WASTE = c['inputs']['WASTE']['SUGAR']
@@ -1289,7 +1275,7 @@ class Constants:
 
 		production_kcals_CS_per_m = production_kcals_CS_per_m_long[0:NMONTHS]
 
-		if(VERBOSE):
+		if(True):
 			#used by world population
 			print("")
 			print("calories consumed per day")
@@ -1312,31 +1298,33 @@ class Constants:
 			print("INITIAL_HUMANS_PROTEIN consumed percentage")
 			print(100*WORLD_POP*PROTEIN_MONTHLY/1e3/(WORLD_POP*KCALS_MONTHLY/4e6/1e6))
 
-			#1000 tons protein/fat per dry caloric ton
-			print("")
-			print("INITIAL_OG_KCALS million tons dry caloric monthly")
-			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6)
-			print("INITIAL_OG_FAT million tons monthly")
-			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_FAT/1e3)
-			print("INITIAL_OG_PROTEIN million tons monthly")
-			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_PROTEIN/1e3)
-			print("")
-			print("INITIAL_OG_FAT percentage")
-			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_FAT/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6))
-			print("INITIAL_OG_PROTEIN percentage")
-			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_PROTEIN/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6))
-			print("")
-			print("INITIAL_OG_ROTATION_KCALS million tons dry caloric monthly")
-			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6)
-			print("INITIAL_OG_ROTATION_FAT million tons monthly")
-			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_FAT/1e3)
-			print("INITIAL_OG_ROTATION_PROTEIN million tons monthly")
-			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_PROTEIN/1e3)
-			print("")
-			print("INITIAL_OG_ROTATION_FAT percentage")
-			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_FAT/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6))
-			print("INITIAL_OG_ROTATION_PROTEIN percentage")
-			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_PROTEIN/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6))
+			if(ADD_OUTDOOR_GROWING):
+				#1000 tons protein/fat per dry caloric ton
+				print("")
+				print("INITIAL_OG_KCALS million tons dry caloric monthly")
+				print(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6)
+				print("INITIAL_OG_FAT million tons monthly")
+				print(FAT_GROWN_MINUS_GREENHOUSE[0]/1e3)
+				print("INITIAL_OG_PROTEIN million tons monthly")
+				print(PROTEIN_GROWN_MINUS_GREENHOUSE[0]/1e3)
+				print("")
+				print("INITIAL_OG_FAT percentage")
+				print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_FAT/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6))
+				print("INITIAL_OG_PROTEIN percentage")
+				print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_PROTEIN/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6))
+				print("")
+				print("INITIAL_OG_ROTATION_KCALS million tons dry caloric monthly")
+				print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6)
+				print("INITIAL_OG_ROTATION_FAT million tons monthly")
+				print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_FAT/1e3)
+				print("INITIAL_OG_ROTATION_PROTEIN million tons monthly")
+				print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_PROTEIN/1e3)
+				print("")
+				print("INITIAL_OG_ROTATION_FAT percentage")
+				print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_FAT/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6))
+				print("INITIAL_OG_ROTATION_PROTEIN percentage")
+				print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_PROTEIN/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6))
+				quit()
 			#1000 tons protein/fat per dry caloric ton
 			print("")
 			print("INITIAL_SF_KCALS million tons dry caloric")
@@ -1503,7 +1491,9 @@ class Constants:
 		s["biofuels_fat"] = biofuels_fat
 		s["biofuels_protein"] = biofuels_protein
 		s["biofuels_kcals"] = biofuels_kcals
-		s["crops_food_produced"] = crops_food_produced # no waste
+		s["crops_kcals_produced"] = crops_kcals_produced # no waste
+		s["crops_fat_produced"] = crops_fat_produced # no waste
+		s["crops_protein_produced"] = crops_protein_produced # no waste
 		s["greenhouse_kcals_per_ha"] = greenhouse_kcals_per_ha
 		s["greenhouse_fat_per_ha"] = greenhouse_fat_per_ha
 		s["greenhouse_protein_per_ha"] = greenhouse_protein_per_ha

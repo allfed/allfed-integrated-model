@@ -92,15 +92,6 @@ caption: present-day average diet predicted by the optimizer based on year 2020 
 caption: expected global average diet, assuming biofuels shutoff after X months and present-day levels of animal feed maintained for Y months. After  month Y, availability over 2100 kcals per capita goes preferentially to milk production, then chicken and pork meat production, then cattle meat production. [Waste is assumed to reduce from present-day levels.]
 
 
-Required changes to properly incorporate new yields for outdoor growing:
-	Determine maize, canola, potato, and wheat mass per dry matter or kcals per dry matter
-
-	Multiply by the percent reduction in these crops to get the actual kcals fat, protein
-	Multiply by the percent reduction in a rotation with maize, soybean, wheat, rice and get the percent reduction.
-	Put in the new numbers for the rotation 
-	Add an updated rotation of the crops with 33/33/17/17.
-
-
 Required changes to establish people fed present-day:
 	analysis:
 
@@ -140,11 +131,20 @@ Required changes to establish people fed present-day:
 [done]figure out why fat doesn't add up to around 8 billion
 [done]figure out why protein doesn't add up to around 8 billion
 
-determine why the eaten from stored food before catastrophe is positive for the very first month
+[done]determine why the eaten from stored food before catastrophe is positive for the very first month
 
-try to get the recursive reduction thing to assign stored food+outdoor growing to meat, in accordance with caloric surplus, for first 48 months
+[done]try to get the recursive reduction thing to assign stored food+outdoor growing to meat, in accordance with caloric surplus, for first 48 months
 
-do the math for if I need to alter the excess to incorporate biofuels delays in analysis compute_excess_after_run
+[done] do the math for if I need to alter the excess to incorporate biofuels delays in analysis compute_excess_after_run
+
+
+Required changes to properly incorporate new yields for outdoor growing:
+	[done]Determine maize, canola, potato, and wheat mass per dry matter or kcals per dry matter
+
+	Multiply by the percent reduction in these crops to get the actual kcals fat, protein
+	Multiply by the percent reduction in a rotation with maize, soybean, wheat, rice and get the percent reduction.
+	Put in the new numbers for the rotation 
+	Add an updated rotation of the crops with 33/33/17/17.
 
 write up remaining parts of paper:
 	[done] [morgan] explain the estimates made for crop growth (supplement)
@@ -205,11 +205,22 @@ Finish this message: Another piece of evidence something fishy is going on is wh
 
 === eventually... ===
 
+double check wheat maize potatoes rapeseed are the best options
+
+correct the 2005 cropland estimate to current cropland from DSSAT estimate
+
+correct the DSSAT estimate by checking DSSAT production in normal year matches estimated production
+
+remove redundant OG_ROTATION_FRACTION_KCALS
+
+
 determine average improvements on crop yields in alaskan/cold weather greenhouses for upper/lower bounds
 
 get all the modules working on different folders and commit cropopt repo
 
 fix the 1.5 multiplier on rotations
+
+add a way to store arbitrary fat/protein/kcal foods with OG at any point in time
 
 fix the edge cases with low fat levels or protein when you try to solve the diet and it tends to fail assertions or loop up to 30 and skip over 7.8 (generally, uses excess calories even if there's not enough fat/protein, and that doesn't work with the iteration)
 
@@ -242,4 +253,14 @@ change all the values from billions of kcals to thousand dry caloric tons
 
 alter all the WASTE so they are uniformly defined as 1-number/100 when passed in as constants from run_model_xxx.py
 
- deal with the case of nmonths being less than initial harvest
+deal with the case of nmonths being less than initial harvest
+
+potentially associatesome cost or minimum for available food storage
+
+add a more useful validation feature which takes a reasonable maximum for each variable and ensures the difference is less than a given fraction of that
+
+deal with edge case feed delay < biofuel delay
+
+alter code so that the case of non-limiting fat and protein would still work with the iterative diet calculator 
+
+figure out optimizer to determine optimal rotation percentages.
