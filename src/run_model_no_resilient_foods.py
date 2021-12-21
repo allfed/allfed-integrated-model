@@ -34,8 +34,6 @@ c['inputs']['SEAWEED_PRODUCTION_RATE'] = 10 # percent (seaweed)
 
 # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
 c['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1360e6
-c['inputs']['INITIAL_SF_PROTEIN'] = 166071 #1000 tons protein per unit mass initial
-c['inputs']['INITIAL_SF_FAT'] = 69254 # 1000 tons fat per unit mass 
 
 c["inputs"]["OG_USE_BETTER_ROTATION"] = False
 
@@ -52,8 +50,8 @@ c['inputs']['INITIAL_HARVEST_DURATION'] = 7 # months
 c['inputs']['IS_NUCLEAR_WINTER'] = True
 c['inputs']['FLUCTUATION_LIMIT'] = 1.5
 c['inputs']['KCAL_SMOOTHING'] = False
-c['inputs']['MEAT_SMOOTHING'] = False
-c['inputs']['STORED_FOOD_SMOOTHING'] = False
+c['inputs']['MEAT_SMOOTHING'] = True
+c['inputs']['STORED_FOOD_SMOOTHING'] = True
 
 c['inputs']['ADD_CELLULOSIC_SUGAR'] = False
 c['inputs']['ADD_DAIRY'] = True
@@ -135,7 +133,7 @@ if(c['inputs']['ADD_OUTDOOR_GROWING']):
 	Plotter.plot_OG_no_resilient_foods(time_months_middle,analysis)
 
 Plotter.plot_people_fed_combined(time_months_middle,analysis)
-Plotter.plot_people_fed_kcals(time_months_middle,analysis,"Food minus waste & delayed halt of nonhuman consumption, no resilient foods")
+Plotter.plot_people_fed_kcals(time_months_middle,analysis,"Food minus waste & delayed halt \nof nonhuman consumption, no resilient foods")
 
 # if(c['inputs']['ADD_STORED_FOOD']):
 # 	Plotter.plot_stored_food(time_months_middle,analysis)

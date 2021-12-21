@@ -33,9 +33,7 @@ c['inputs']['NEW_AREA_PER_DAY'] = 4.153 # 1000 km^2 (seaweed)
 c['inputs']['SEAWEED_PRODUCTION_RATE'] = 10 # percent (seaweed)
 
 # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
-c['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1.015*351.433*1e6
-c['inputs']['INITIAL_SF_PROTEIN'] = 166071*(1.015*351.433*1e6/1360e6) #1000 tons protein
-c['inputs']['INITIAL_SF_FAT'] = 69254*(1.015*351.433*1e6/1360e6) # 1000 tons fat
+c['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 0.96*351.433*1e6
 
 c["inputs"]["OG_USE_BETTER_ROTATION"] = False
 	
@@ -95,6 +93,10 @@ c['inputs']['WASTE']['SEAWEED'] = 0 #%
 print(c['inputs']['ADD_FISH'])
 optimizer = Optimizer()
 [time_months,time_months_middle,analysis]=optimizer.optimize(c)
+
+if(c['inputs']['ADD_OUTDOOR_GROWING']):
+	Plotter.plot_OG_before_nuclear_event(time_months_middle,analysis)
+
 print("")
 print("")
 print("")

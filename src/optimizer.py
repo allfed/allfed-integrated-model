@@ -354,7 +354,7 @@ class Optimizer:
 			model += (v["stored_food_start"][m] == v["stored_food_end"][m-1], "Stored_Food_Start_Month_"+str(m)+"_Constraint")
 
 			#####helps reduce wild fluctutions in stored food #######
-			if(m>0 and self.c['inputs']["STORED_FOOD_SMOOTHING"] and m < 74):
+			if(m>0 and self.c['inputs']["STORED_FOOD_SMOOTHING"]):
 				model += (v["stored_food_eaten"][m] <= v["stored_food_eaten"][m-1]*self.c["inputs"]["FLUCTUATION_LIMIT"], "Small_Change_Plus_SF_Eaten_Month_"+str(m)+"_Constraint")
 
 				model += (v["stored_food_eaten"][m] >= v["stored_food_eaten"][m-1]*(1/self.c["inputs"]["FLUCTUATION_LIMIT"]), "Small_Change_Minus_SF_Eaten_Month_"+str(m)+"_Constraint")
@@ -549,7 +549,7 @@ class Optimizer:
 			model += (v["meat_start"][m] == v["meat_end"][m-1], "Meat_Start_Month_"+str(m)+"_Constraint")
 
 			#####helps reduce wild fluctutions in meat #######
-			if(m>0 and self.c['inputs']["MEAT_SMOOTHING"] and m < 74):
+			if(m>0 and self.c['inputs']["MEAT_SMOOTHING"]):
 				self.c["FLUCTUATION_LIMIT"] = self.c['inputs']["FLUCTUATION_LIMIT"]
 
 				model += (v["meat_eaten"][m] <= v["meat_eaten"][m-1]*self.c["FLUCTUATION_LIMIT"], "Small_Change_Plus_Eaten_Month_"+str(m)+"_Constraint")
@@ -724,10 +724,10 @@ class Optimizer:
 		#####helps reduce wild fluctutions in people fed #######
 		# if(m>0 and self.c['inputs']['KCAL_SMOOTHING']):
 		if(m>0 and self.c['inputs']['KCAL_SMOOTHING']):
-			model += (v["humans_fed_kcals"][m-1] >= v["humans_fed_kcals"][m]*(1/1.1), "Small_Change_Minus_Humans_Fed_Month_"+str(m)+"_Constraint")
+			model += (v["humans_fed_kcals"][m-1] >= v["humans_fed_kcals"][m]*(1/1.05), "Small_Change_Minus_Humans_Fed_Month_"+str(m)+"_Constraint")
 			# model += (v["humans_fed_kcals"][m] >= v["humans_fed_kcals"][m]*(1/self.c["inputs"]["FLUCTUATION_LIMIT"]), "Small_Change_Minus_Humans_Fed_Month_"+str(m)+"_Constraint")
 			# model += (v["humans_fed_kcals"][m] <= v["humans_fed_kcals"][m]*(self.c["inputs"]["FLUCTUATION_LIMIT"]), "Small_Change_Plus_Humans_Fed_Month_"+str(m)+"_Constraint")
-			model += (v["humans_fed_kcals"][m-1] <= v["humans_fed_kcals"][m]*(1.1), "Small_Change_Plus_Humans_Fed_Month_"+str(m)+"_Constraint")
+			model += (v["humans_fed_kcals"][m-1] <= v["humans_fed_kcals"][m]*(1.05), "Small_Change_Plus_Humans_Fed_Month_"+str(m)+"_Constraint")
 
 		# couldn't get this to work?
 		# if(m>0 and self.c['inputs']['PROTEIN_SMOOTHING'] and m < 74):

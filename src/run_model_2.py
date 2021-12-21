@@ -48,8 +48,8 @@ c['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1 #default values from CS pap
 c['inputs']['INITIAL_HARVEST_DURATION'] = 7 # months
 
 c['inputs']['IS_NUCLEAR_WINTER'] = True
-c['inputs']['FLUCTUATION_LIMIT'] = 1.1
-c['inputs']['KCAL_SMOOTHING'] = True
+c['inputs']['FLUCTUATION_LIMIT'] = 1.5
+c['inputs']['KCAL_SMOOTHING'] = False
 c['inputs']['MEAT_SMOOTHING'] = True
 c['inputs']['STORED_FOOD_SMOOTHING'] = True
 
@@ -67,8 +67,8 @@ c["inputs"]["EXCESS_CALORIES"] = np.array([0]*c['inputs']['NMONTHS'])
 c['inputs']['FEED_SHUTOFF_DELAY'] = 0 # months
 c['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 0 # months
  
-c["inputs"]["CULL_DURATION"] = 0#np.nan # will be recalculated
-c['inputs']['RECALCULATE_CULL_DURATION'] = False #thousand tons
+c["inputs"]["CULL_DURATION"] = np.nan # will be recalculated
+c['inputs']['RECALCULATE_CULL_DURATION'] = True #thousand tons
 
 c['inputs']['WASTE'] = {}
 # c['inputs']['WASTE']['CEREALS'] = 0 #%
@@ -115,7 +115,7 @@ c["inputs"]["EXCESS_CALORIES"] = excess_per_month
 c['inputs']['FEED_SHUTOFF_DELAY'] = 2 # months
 c['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 1 # months
  
-c["inputs"]["CULL_DURATION"] = 0#analysis.c["CULL_DURATION"]
+c["inputs"]["CULL_DURATION"] = analysis.c["CULL_DURATION"]
 c['inputs']['RECALCULATE_CULL_DURATION'] = False #thousand tons
 
 optimizer = Optimizer()
@@ -162,7 +162,6 @@ feed_delay = c['inputs']['FEED_SHUTOFF_DELAY']
 N_MONTHS_TO_CALCULATE_DIET = 48
 
 #don't try to feed more animals in the  months before feed shutoff
-
 excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
 	excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]\
 	+ analysis.excess_after_run[feed_delay:N_MONTHS_TO_CALCULATE_DIET]
@@ -190,7 +189,7 @@ while(True):
 	c['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 1 # months
 	# "Sources/summary" tab cell I14.  https://docs.google.com/spreadsheets/d/1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=0
 
-	c["inputs"]["CULL_DURATION"] = 0#analysis.c["CULL_DURATION"]
+	c["inputs"]["CULL_DURATION"] = analysis.c["CULL_DURATION"]
 	c['inputs']['RECALCULATE_CULL_DURATION'] = False #thousand tons
 
 	[time_months,time_months_middle,analysis]=optimizer.optimize(c)
@@ -218,21 +217,11 @@ while(True):
 		break
 
 	assert(feed_delay > c['inputs']['BIOFUEL_SHUTOFF_DELAY'])
-	print(excess_per_month)
-	print()
+
 	#don't try to feed more animals in the  months before feed shutoff
-	# excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
-	# 	excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]\
-	# 	+ analysis.excess_after_run[feed_delay:N_MONTHS_TO_CALCULATE_DIET]
-	if(np.min(analysis.kcals_fed)<8.0 and np.min(analysis.kcals_fed)>7.8):
-		excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
-			excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]\
-			+ np.linspace(500,500,N_MONTHS_TO_CALCULATE_DIET-feed_delay)
-	else:
-		excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
-			excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]\
-			+ np.linspace(5000,5000,N_MONTHS_TO_CALCULATE_DIET-feed_delay)
-			# /+ analysis.excess_after_run[feed_delay:N_MONTHS_TO_CALCULATE_DIET]
+	excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
+		excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]\
+		+ analysis.excess_after_run[feed_delay:N_MONTHS_TO_CALCULATE_DIET]
 
 	# excess_per_month = excess_per_month+ analysis.excess_after_run
 	
@@ -280,12 +269,12 @@ plt.show()
 # if(c['inputs']['ADD_SEAWEED']):
 # 	Plotter.plot_seaweed(time_months_middle,analysis)
 
-# if(c['inputs']['ADD_MEAT']):
-# 	Plotter.plot_meat(time_months_middle,analysis)
+if(c['inputs']['ADD_MEAT']):
+	Plotter.plot_meat(time_months_middle,analysis)
 
-# if(c['inputs']['ADD_DAIRY']):
-# 	# Plotter.plot_dairy_cows(time_months_middle,analysis)
-# 	Plotter.plot_dairy(time_months_middle,analysis)
+if(c['inputs']['ADD_DAIRY']):
+	# Plotter.plot_dairy_cows(time_months_middle,analysis)
+	Plotter.plot_dairy(time_months_middle,analysis)
 
 # plt.plot(excess_per_month/2100/30)
 # plt.show()

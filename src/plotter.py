@@ -143,7 +143,7 @@ class Plotter:
 		plt.show()
 
 	def plot_OG_before_nuclear_event(time_months_middle,analysis):
-		plt.title('Outdoor Growing, Present-Day')
+		plt.title('Outdoor Growing, 2020 Baseline')
 		plt.xlabel('Months Since May')
 		
 		ax = plt.gca()
@@ -326,19 +326,7 @@ class Plotter:
 		ax=plt.subplot(111)
 		legend=[]
 		
-		if(analysis.c["CULL_DURATION"] == 0 or np.isnan(analysis.c["CULL_DURATION"]) or analysis.c["LIMIT_PER_MONTH_CULLED"] == 0):
-		# no culled meat
-			# quit()
-			if(analysis.are_excess_kcals):
-				#present-day
-				meat_label = 'Meat'
-			else:
-				#primary production only
-				meat_label = 'Meat from Inedible Feed '
-
-		else:
-			#no resilient foods
-			meat_label = 'Culled Livestock and Meat \nfrom Human Inedible Feed '
+		meat_label = 'Meat'
 
 		if(not analysis.c['inputs']['IS_NUCLEAR_WINTER']):
 			stored_food_label = 'Crops consumed that month \n that were stored \n before simulation'
@@ -446,7 +434,20 @@ class Plotter:
 			+analysis.billions_fed_seaweed_kcals[-1]
 			+analysis.billions_fed_CS_kcals[-1]
 			+analysis.billions_fed_SCP_kcals[-1])/analysis.c["CONVERT_TO_KCALS"]])
-		ax.set_xlim([0,84])
+		# ax.set_xlim([0,84])
+		ax.set_xlim([0,48])
+		ax.set_ylim([0,(analysis.billions_fed_immediate_OG_kcals[48]
+			+analysis.billions_fed_new_stored_OG_kcals[48]
+			+analysis.billions_fed_SF_kcals[48]
+			+analysis.billions_fed_fish_kcals[48]
+			+analysis.billions_fed_milk_kcals[48]
+			+analysis.billions_fed_meat_kcals[48]
+			+analysis.billions_fed_h_e_milk_kcals[48]
+			+analysis.billions_fed_h_e_meat_kcals[48]
+			+analysis.billions_fed_GH_kcals[48]
+			+analysis.billions_fed_seaweed_kcals[48]
+			+analysis.billions_fed_CS_kcals[48]
+			+analysis.billions_fed_SCP_kcals[48])/analysis.c["CONVERT_TO_KCALS"]])
 		plt.show()
 
 

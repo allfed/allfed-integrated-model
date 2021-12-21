@@ -28,9 +28,11 @@ class Constants:
 					
 		# TREND	2020	3879.2	257	525
 
-		ANNUAL_YIELD = 3898e6 #tonnes dry carb equivalent
-		OG_FRACTION_FAT = (322*1e3)/(ANNUAL_YIELD*4e6/1e9) #1000 tons fat per billion kcals
-		OG_FRACTION_PROTEIN = (350*1e3)/(ANNUAL_YIELD*4e6/1e9) #1000 tons protein per billion kcals
+		ANNUAL_YIELD = 0.94*3898e6 #tonnes dry carb equivalent
+		# OG_FRACTION_FAT = 1/(7.8/8.64)*(7.8/7.5)*(322*1e3)/(ANNUAL_YIELD*4e6/1e9) #1000 tons fat per billion kcals
+		OG_FRACTION_FAT =1.02*(322*1e3)/(ANNUAL_YIELD*4e6/1e9) #1000 tons fat per billion kcals
+		# OG_FRACTION_PROTEIN = 1/(7.8/8.64)*(7.8/8.56)*(350*1e3)/(ANNUAL_YIELD*4e6/1e9) #1000 tons protein per billion kcals
+		OG_FRACTION_PROTEIN = 0.93*(350*1e3)/(ANNUAL_YIELD*4e6/1e9) #1000 tons protein per billion kcals
 
 		ADD_STORED_FOOD=c['inputs']['ADD_STORED_FOOD']
 		ADD_METHANE_SCP = c['inputs']['ADD_METHANE_SCP']
@@ -815,22 +817,29 @@ class Constants:
 				+ culled_ratio_cattle\
 					*INIT_LARGE_ANIMALS*KCALS_PER_LARGE_ANIMAL\
 			) * (1-MEAT_WASTE/100)
+			
 
 			if(c['inputs']["RECALCULATE_CULL_DURATION"]):
 				CULL_DURATION = list(culled_meat_over_time).index(max(culled_meat_over_time)) + 1
 			else:
 				CULL_DURATION = c['inputs']["CULL_DURATION"]
-			
-			
-			LIMIT_PER_MONTH_CULLED = max(culled_meat_over_time)/CULL_DURATION
+	
+			if(CULL_DURATION!=0):
+				LIMIT_PER_MONTH_CULLED = max(culled_meat_over_time)/CULL_DURATION
+			else:
+				culled_meat_over_time = [0]*NMONTHS
+				LIMIT_PER_MONTH_CULLED = 0
+				
 		else:
 			LIMIT_PER_MONTH_CULLED = 0
 			CULL_DURATION = 0
 
-		if(VERBOSE):
+		
+
+		if(True):
 			print("CULL_DURATION")
 			print(CULL_DURATION)
-		
+			
 		# plt.title("culled_meat_over_time")
 		# plt.plot(culled_meat_over_time)
 		# plt.show()
@@ -1039,13 +1048,13 @@ class Constants:
 
 
 			#deals with the issue of caloric improvement being more than present-day production during the beginning months of the simulation.
-			OG_KCAL_REDUCED = 0.894#multiplier on the kcal reduction
+			OG_KCAL_REDUCED = 0.867#multiplier on the kcal reduction
 			OG_ROTATION_FRACTION_KCALS = 1
 
 			KCAL_RATIO_ROT = 1
 
-			OG_ROTATION_FRACTION_FAT = OG_FRACTION_FAT*1.516
-			OG_ROTATION_FRACTION_PROTEIN = OG_FRACTION_PROTEIN*.984
+			OG_ROTATION_FRACTION_FAT = OG_FRACTION_FAT*1.29
+			OG_ROTATION_FRACTION_PROTEIN = OG_FRACTION_PROTEIN*1.392
 
 			FAT_RATIO_ROT = OG_ROTATION_FRACTION_FAT
 			PROTEIN_RATIO_ROT = OG_ROTATION_FRACTION_PROTEIN
@@ -1122,7 +1131,6 @@ class Constants:
 		greenhouse_area = np.array(greenhouse_area_long[0:NMONTHS])
 
 		if(ADD_GREENHOUSES):
-			print(KCALS_GROWN)
 			MONTHLY_KCALS = np.mean(months_cycle)/TOTAL_CROP_AREA
 
 			KCALS_GROWN_PER_HECTARE_BEFORE_WASTE = \
@@ -1150,12 +1158,12 @@ class Constants:
 
 				hd = c['inputs']["INITIAL_HARVEST_DURATION"]
 				crops_food_produced[hd:] = \
-					np.array(KCALS_GROWN[hd:])*(1-greenhouse_area[hd:]/TOTAL_CROP_AREA)
+					np.array(KCALS_GROWN[hd:])
 				crops_food_produced[:hd] = \
-					np.array(NO_ROT_KCALS_GROWN[:hd])*(1-greenhouse_area[:hd]/TOTAL_CROP_AREA)
+					np.array(NO_ROT_KCALS_GROWN[:hd])
 			else:
 				crops_food_produced = \
-					np.array(NO_ROT_KCALS_GROWN)*(1-greenhouse_area/TOTAL_CROP_AREA)
+					np.array(NO_ROT_KCALS_GROWN)
 				
 		else:
 			crops_food_produced=np.array([0]*NMONTHS)
