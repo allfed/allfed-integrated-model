@@ -1,4 +1,4 @@
- ################################Optimizer Model################################
+################################Optimizer Model################################
  ##                                                                            #
  ##	In this model, we estimate the macronutrient production allocated optimally#
  ##  over time including models for traditional and resilient foods.           #

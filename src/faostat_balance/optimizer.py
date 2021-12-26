@@ -35,10 +35,9 @@ class Optimizer:
 		maximize_constraints=[] #used only for validation
 
 		constant_loader = Constants()
-
+		# print(constants['inputs']['ADD_FISH'])
 		#single valued constants = c, multi valued constants = s
 		(c,s) = constant_loader.computeConstants(constants)
-		
 		# Create the model to optimize
 		model = LpProblem(name="optimization_nutrition", sense=LpMaximize)
 
@@ -62,9 +61,9 @@ class Optimizer:
 		NDAYS = c["NDAYS"]
 		NMONTHS = c["NMONTHS"]
 
+		humans_fed_kcals = [0]*NMONTHS
 		humans_fed_fat = [0]*NMONTHS
 		humans_fed_protein = [0]*NMONTHS
-		humans_fed_kcals = [0]*NMONTHS
 		
 		# spring_wheat_fraction_of_rotation= LpVariable(\
 		# 	"Spring_Wheat_Fraction_Of_Rotation",\
@@ -110,6 +109,8 @@ class Optimizer:
 		v["humans_fed_protein"]=[0]*NMONTHS
 
 		for m in range(0,self.c["NMONTHS"]):
+			# if(m>0):
+			# 	continue
 			self.time_days_middle.append(c["DAYS_IN_MONTH"]*(m+0.5))
 			self.time_days_monthly.append(c["DAYS_IN_MONTH"]*m)
 			self.time_days_monthly.append(c["DAYS_IN_MONTH"]*(m+1))
@@ -134,24 +135,32 @@ class Optimizer:
 				or 
 				(c["MAXIMIZE_ONLY_FOOD_AFTER_DAY_150"] and (m >= 5))#start month 5 is day 150
 			):
+
 				[model,v,maximize_constraints] = \
 					self.add_objectives_to_model(model,v,m, maximize_constraints)
 
-
 		obj_func = z
+		# print("obj_func")
+		# print(obj_func)
 		model += obj_func
+		# print(model)
+		# print(model.variables())
+
 		status = model.solve(pulp.PULP_CBC_CMD(fracGap=0.0001,msg=c["VERBOSE"]))
 		assert(status==1)
-		print('')	
-		print('VALIDATION')	
-		print('')	
-		print('')
 
-
+		# print("h_e_created_fat")
+		# print(h_e_created_fat)
+		# print("production_fat_fish_per_m")
+		# print(production_fat_fish_per_m)
 
 		# var_values = [x for x in v.values()]
 		print('pulp reports successful optimization')
 		if(c['CHECK_CONSTRAINTS']):
+			print('')	
+			print('VALIDATION')	
+			print('')	
+			print('')
 			Validator.checkConstraintsSatisfied(
 				model,
 				status,
@@ -159,24 +168,47 @@ class Optimizer:
 				model.variables(),
 				c["VERBOSE"])
 
-		for var in model.variables():
-			if("Humans_Fed_Kcals_0_" in var.name):
-				print(f"{var.name}: {var.value()}")
+		# for var in model.variables():
+		# 	if("Crops_Food_Eaten_No_Rotation_During_Month_39" in var.name):
+		# 		print(f"{var.name}: {var.value()*1e9/4e6/1e6}")
+		# 	if("Crops_Food_Eaten_Rotation_During_Month_39" in var.name):
+		# 		vv = float(var.value())*self.c["OG_ROTATION_FRACTION_KCALS"]*1e9/4e6/1e6
+		# 		print(f"{var.name}: {vv}")
+		# 	if("Stored_Food_Eaten_During_Month_39" in var.name):
+		# 		vv = var.value()*1e9/4e6/1e6
+		# 		print(f"{var.name}: {vv}")
+		# variable_output=[]
+		# for m in range(0,self.c['NMONTHS']):
+		# 	val=v["crops_food_eaten_rot"][m]
 
+		# 	#if something went wrong and the variable was not added for a certain month
+		# 	assert(type(val) != type(0))
+		# 	# if(type(val)==type(0)):
+		# 	# 	variable_output.append(val*conversion)
+		# 	# else:
+		# 	variable_output.append(val.varValue)
+		# print("variable output")
+		# print(np.array(variable_output)*1e9/4e6/1e6* self.c["OG_ROTATION_FRACTION_KCALS"])
+		# print(variable_output[39]*1e9/4e6/1e6* self.c["OG_ROTATION_FRACTION_KCALS"])
+		
+
+		print("excess_kcals")
+		print(self.s["excess_kcals"][39]*1e9/4e6/1e6)
+
+		# quit()
 		analysis = Analyzer(c)
 
 		show_output=False
 
-		analysis.compute_excess_after_run(\
-			model,\
-			s["h_e_meat_kcals"],\
-			s["h_e_meat_fat"],\
-			s["h_e_meat_protein"],\
-			s["h_e_milk_kcals"],\
-			s["h_e_milk_fat"],\
-			s["h_e_milk_protein"],\
-			s["excess_kcals"],\
-			s["excess_fat_used"],\
+		analysis.compute_excess_after_run(model)
+
+		analysis.calc_fraction_OG_SF_to_humans(\
+			model,
+			v["crops_food_eaten_no_rot"],
+			v["crops_food_eaten_rot"],
+			v["stored_food_eaten"],
+			s["excess_kcals"],
+			s["excess_fat_used"],
 			s["excess_protein_used"]
 		)
 
@@ -315,17 +347,17 @@ class Optimizer:
 
 	#incorporate linear constraints for stored food consumption each month
 	def add_stored_food_to_model(self,model,v,m):
-		v["stored_food_start"][m] = LpVariable("Stored_Food_Start_Month_"+str(m)+"_Variable", 0,self.c["INITIAL_SF"])
-		v["stored_food_end"][m] = LpVariable("Stored_Food_End_Month_"+str(m)+"_Variable", 0,self.c["INITIAL_SF"])
-		v["stored_food_eaten"][m] = LpVariable("Stored_Food_Eaten_During_Month_"+str(m)+"_Variable",0,self.c["INITIAL_SF"])
+		v["stored_food_start"][m] = LpVariable("Stored_Food_Start_Month_"+str(m)+"_Variable", 0,self.c["INITIAL_SF_KCALS"])
+		v["stored_food_end"][m] = LpVariable("Stored_Food_End_Month_"+str(m)+"_Variable", 0,self.c["INITIAL_SF_KCALS"])
+		v["stored_food_eaten"][m] = LpVariable("Stored_Food_Eaten_During_Month_"+str(m)+"_Variable",0,self.c["INITIAL_SF_KCALS"])
 		
 		if(m==0): #first Month
-			model += (v["stored_food_start"][0] == self.c["INITIAL_SF"], "Stored_Food_Start_Month_0_Constraint")
+			model += (v["stored_food_start"][0] == self.c["INITIAL_SF_KCALS"], "Stored_Food_Start_Month_0_Constraint")
 		else:
 			model += (v["stored_food_start"][m] == v["stored_food_end"][m-1], "Stored_Food_Start_Month_"+str(m)+"_Constraint")
 
 			#####helps reduce wild fluctutions in stored food #######
-			if(m>0 and self.c['inputs']["STORED_FOOD_SMOOTHING"] and m < 74):
+			if(m>0 and self.c['inputs']["STORED_FOOD_SMOOTHING"]):
 				model += (v["stored_food_eaten"][m] <= v["stored_food_eaten"][m-1]*self.c["inputs"]["FLUCTUATION_LIMIT"], "Small_Change_Plus_SF_Eaten_Month_"+str(m)+"_Constraint")
 
 				model += (v["stored_food_eaten"][m] >= v["stored_food_eaten"][m-1]*(1/self.c["inputs"]["FLUCTUATION_LIMIT"]), "Small_Change_Minus_SF_Eaten_Month_"+str(m)+"_Constraint")
@@ -365,17 +397,17 @@ class Optimizer:
 				v["crops_food_storage_no_rot"][m] == \
 				self.s["crops_food_produced"][m]\
 				 - v["crops_food_eaten_no_rot"][m],\
-				"Crops_Food_Storage_No_Rotation"+str(m)+"_Constraint"\
+				"Crops_Food_Storage_No_Rotation_"+str(m)+"_Constraint"\
 			)
 
 			model += (\
 				v["crops_food_storage_rot"][m] == 0,\
-				"Crops_Food_Storage_Rotation"+str(m)+"_Constraint"\
+				"Crops_Food_Storage_Rotation_"+str(m)+"_Constraint"\
 			)
 
 			model += (\
 				v["crops_food_eaten_rot"][m] == 0,\
-				"Crops_Food_Eaten_Rotation"+str(m)+"_Constraint"\
+				"Crops_Food_Eaten_Rotation_"+str(m)+"_Constraint"\
 			)
 
 		elif(m==self.c["NMONTHS"]-1):
@@ -520,7 +552,7 @@ class Optimizer:
 			model += (v["meat_start"][m] == v["meat_end"][m-1], "Meat_Start_Month_"+str(m)+"_Constraint")
 
 			#####helps reduce wild fluctutions in meat #######
-			if(m>0 and self.c['inputs']["MEAT_SMOOTHING"] and m < 74):
+			if(m>0 and self.c['inputs']["MEAT_SMOOTHING"]):
 				self.c["FLUCTUATION_LIMIT"] = self.c['inputs']["FLUCTUATION_LIMIT"]
 
 				model += (v["meat_eaten"][m] <= v["meat_eaten"][m-1]*self.c["FLUCTUATION_LIMIT"], "Small_Change_Plus_Eaten_Month_"+str(m)+"_Constraint")
@@ -565,6 +597,7 @@ class Optimizer:
 
 	def add_objectives_to_model(self,model,v,m, maximize_constraints):
 		#total eaten
+
 		v["humans_fed_kcals"][m] = \
 			LpVariable(name="Humans_Fed_Kcals_"+str(m)+"_Variable",lowBound=0)
 		v["humans_fed_fat"][m] = \
@@ -579,13 +612,16 @@ class Optimizer:
 			if(m>10): 
 				model += (v["seaweed_food_produced_monthly"][m]*self.c["SEAWEED_KCALS"] == 
 					(self.c["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"]/100) \
-					* (v["humans_fed_kcals"][m]*self.c["KCALS_MONTHLY"]),
+					* (self.c["WORLD_POP"]/1e9*self.c["KCALS_MONTHLY"]),
 					"Seaweed_Limit_Kcals_"+str(m)+"_Constraint")
 			else:
 				model += (v["seaweed_food_produced_monthly"][m]*self.c["SEAWEED_KCALS"] <= 
 					(self.c["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"]/100) \
-					* (v["humans_fed_kcals"][m]*self.c["KCALS_MONTHLY"]),
+					* (self.c["WORLD_POP"]/1e9*self.c["KCALS_MONTHLY"]),
 					"Seaweed_Limit_Kcals_"+str(m)+"_Constraint")
+		# line was * (v["humans_fed_kcals"][m]*self.c["KCALS_MONTHLY"]),
+
+		
 
 		# if(m>24):
 		# 	model += (stored_food_eaten[m] == 0,
@@ -597,13 +633,13 @@ class Optimizer:
 		#stored food eaten*sf_fraction_kcals is in units billions kcals monthly
 		#seaweed_food_produced_monthly*seaweed_kcals is in units billions kcals
 		# kcals monthly is in units kcals
-
+		CROPS_WASTE = 1-self.c["inputs"]["WASTE"]["CROPS"]/100
 		
-
-		model += (v["humans_fed_kcals"][m] == 
-			(v["stored_food_eaten"][m]*self.c["SF_FRACTION_KCALS"]
-			+ v["crops_food_eaten_no_rot"][m]
-			+ v["crops_food_eaten_rot"][m]*self.c["OG_ROTATION_FRACTION_KCALS"]
+		model += (v["humans_fed_kcals"][m] == \
+			(v["stored_food_eaten"][m]* CROPS_WASTE\
+			+ v["crops_food_eaten_no_rot"][m]* CROPS_WASTE\
+			+ v["crops_food_eaten_rot"][m] * self.c["OG_ROTATION_FRACTION_KCALS"]* CROPS_WASTE\
+			- self.s["excess_kcals"][m]* CROPS_WASTE\
 			+ v["seaweed_food_produced_monthly"][m]*self.c["SEAWEED_KCALS"]
 			+ self.s["dairy_milk_kcals"][m]
 			+ self.s["cattle_maintained_kcals"][m]
@@ -612,83 +648,89 @@ class Optimizer:
 			+ self.s["production_kcals_scp_per_m"][m]
 			+ self.s["greenhouse_area"][m]*self.s["greenhouse_kcals_per_ha"][m]
 			+ self.s["production_kcals_fish_per_m"][m]
-			+ self.s["h_e_balance_kcals"][m]
+			+ self.s["h_e_created_kcals"][m]
 			)/self.c["KCALS_MONTHLY"],
 			"Kcals_Fed_Month_"+str(m)+"_Constraint")
 
 		#v["stored_food_eaten"][rsraction_fat is in units thousand tons monthly
 		#seaweed_food_produced_monthly*seaweed_fat is in units thousand tons monthly
-
-		if(self.c['inputs']['INCLUDE_FAT'] == True):
-				
+		# print('excess_fat_used')
+		# print(self.s['excess_fat_used'])
+		if(self.c['inputs']['INCLUDE_FAT']):
 			# fat monthly is in units thousand tons
 			model += (v["humans_fed_fat"][m] == 
-				((v["stored_food_eaten"][m]*self.c["SF_FRACTION_FAT"] 
+				(v["stored_food_eaten"][m]*self.c["SF_FRACTION_FAT"] \
+					* CROPS_WASTE
 				+ v["crops_food_eaten_no_rot"][m]\
-					* self.c["OG_FRACTION_FAT"]
+					* self.c["OG_FRACTION_FAT"]*CROPS_WASTE\
 				+ v["crops_food_eaten_rot"][m]\
-					* self.c["OG_ROTATION_FRACTION_FAT"]
+					* self.c["OG_ROTATION_FRACTION_FAT"]\
+					*CROPS_WASTE\
+				- self.s["excess_fat_used"][m] * CROPS_WASTE\
 				+ v["seaweed_food_produced_monthly"][m]*self.c["SEAWEED_FAT"]
 				+ self.s["dairy_milk_fat"][m]
 				+ self.s["cattle_maintained_fat"][m]
 				+ v["meat_eaten"][m]*self.c["MEAT_FRACTION_FAT"]
 				+ self.s["production_fat_scp_per_m"][m]
 				+ self.s["greenhouse_area"][m]*self.s["greenhouse_fat_per_ha"][m]
-				+ self.s["production_fat_fish_per_m"][m]) \
-				+ self.s["h_e_balance_fat"][m])\
-				/self.c["FAT_MONTHLY"]/1e9,
+				+ self.s["production_fat_fish_per_m"][m] \
+				+ self.s["h_e_created_fat"][m])\
+				/self.c["FAT_MONTHLY"]/1e9,\
 				"Fat_Fed_Month_"+str(m)+"_Constraint")
 
-
-
-			# print("h_e_balance_fat")
-			# print(self.s["h_e_balance_fat"])
-		#v["stored_food_eaten"][rsraction_protein is in units thousand tons monthly
-		#seaweed_food_produced_monthly*seaweed_protein is in units thousand tons monthly
-		#fat monthly is in units thousand tons
-
-		if(self.c['inputs']['INCLUDE_PROTEIN'] == True):
+		if(self.c['inputs']['INCLUDE_PROTEIN']):
 
 			model += (v["humans_fed_protein"][m] == 
-				((v["stored_food_eaten"][m]*self.c["SF_FRACTION_PROTEIN"]
+				(v["stored_food_eaten"][m]*self.c["SF_FRACTION_PROTEIN"]\
+					* CROPS_WASTE
 				+ v["crops_food_eaten_no_rot"][m]\
-					* self.c["OG_FRACTION_PROTEIN"]
+					* self.c["OG_FRACTION_PROTEIN"] * CROPS_WASTE\
 				+ v["crops_food_eaten_rot"][m]\
-					* self.c["OG_ROTATION_FRACTION_PROTEIN"]
+					* self.c["OG_ROTATION_FRACTION_PROTEIN"]*CROPS_WASTE\
+				- self.s["excess_protein_used"][m] * CROPS_WASTE
 				+ v["seaweed_food_produced_monthly"][m]*self.c["SEAWEED_PROTEIN"]
 				+ self.s["dairy_milk_protein"][m]
 				+ self.s["cattle_maintained_protein"][m]
 				+ self.s["production_protein_scp_per_m"][m]
 				+ v["meat_eaten"][m]*self.c["MEAT_FRACTION_PROTEIN"]
 				+ self.s["greenhouse_area"][m]*self.s["greenhouse_protein_per_ha"][m]
-				+ self.s["production_protein_fish_per_m"][m])
-				+ self.s["h_e_balance_protein"][m])\
+				+ self.s["production_protein_fish_per_m"][m]
+				+ self.s["h_e_created_protein"][m])\
 				/self.c["PROTEIN_MONTHLY"]/1e9,
 				"Protein_Fed_Month_"+str(m)+"_Constraint")
 
 		# no feeding human edible maintained meat or dairy to animals or biofuels
-		model += (v["humans_fed_kcals"][m] >= \
-			(self.s["h_e_meat_kcals"][m] \
-			+ self.s["h_e_milk_kcals"][m])/self.c["KCALS_MONTHLY"],\
-			"Excess_Kcals_From_Primary_Sources_"+str(m)+"_Constraint")
 
-		model += (v["humans_fed_fat"][m] >= \
-			(self.s["h_e_meat_fat"][m] \
-			+ self.s["h_e_milk_fat"][m])/self.c["FAT_MONTHLY"]/1e9,\
-			"Excess_Fat_From_Primary_Sources_"+str(m)+"_Constraint")
+		model += (v["stored_food_eaten"][m]\
+			+v["crops_food_eaten_no_rot"][m]\
+			+v["crops_food_eaten_rot"][m]\
+				* self.c["OG_ROTATION_FRACTION_KCALS"]\
+			>= self.s["excess_kcals"][m],
+			"Excess_Kcals_Less_Than_SF_And_OG_"+str(m)+"_Constraint")
 
-		model += (v["humans_fed_protein"][m] >= \
-			(self.s["h_e_meat_protein"][m] \
-			+ self.s["h_e_milk_protein"][m])/self.c["PROTEIN_MONTHLY"]/1e9,\
-			"Excess_Protein_From_Primary_Sources_"+str(m)+"_Constraint")
+		if(self.c['inputs']['INCLUDE_FAT']):
+			model += (v["stored_food_eaten"][m]*self.c["SF_FRACTION_FAT"] \
+				+v["crops_food_eaten_no_rot"][m]*self.c["OG_FRACTION_FAT"]\
+				+v["crops_food_eaten_rot"][m]\
+					* self.c["OG_ROTATION_FRACTION_FAT"]\
+				>= self.s["excess_fat_used"][m],
+				"Excess_Fat_Less_Than_SF_And_OG_"+str(m)+"_Constraint")
+
+		if(self.c['inputs']['INCLUDE_PROTEIN']):
+			model += (v["stored_food_eaten"][m]*self.c["SF_FRACTION_PROTEIN"] \
+				+v["crops_food_eaten_no_rot"][m]*self.c["OG_FRACTION_PROTEIN"]\
+				+v["crops_food_eaten_rot"][m]\
+					* self.c["OG_ROTATION_FRACTION_PROTEIN"]\
+				>= self.s["excess_protein_used"][m],
+				"Excess_Protein_Less_Than_SF_And_OG_"+str(m)+"_Constraint")
 		
 		#####helps reduce wild fluctutions in people fed #######
 		# if(m>0 and self.c['inputs']['KCAL_SMOOTHING']):
 		if(m>0 and self.c['inputs']['KCAL_SMOOTHING']):
-			model += (v["humans_fed_kcals"][m-1] >= v["humans_fed_kcals"][m]*(1/1.1), "Small_Change_Minus_Humans_Fed_Month_"+str(m)+"_Constraint")
+			model += (v["humans_fed_kcals"][m-1] >= v["humans_fed_kcals"][m]*(1/1.05), "Small_Change_Minus_Humans_Fed_Month_"+str(m)+"_Constraint")
 			# model += (v["humans_fed_kcals"][m] >= v["humans_fed_kcals"][m]*(1/self.c["inputs"]["FLUCTUATION_LIMIT"]), "Small_Change_Minus_Humans_Fed_Month_"+str(m)+"_Constraint")
 			# model += (v["humans_fed_kcals"][m] <= v["humans_fed_kcals"][m]*(self.c["inputs"]["FLUCTUATION_LIMIT"]), "Small_Change_Plus_Humans_Fed_Month_"+str(m)+"_Constraint")
-			model += (v["humans_fed_kcals"][m-1] <= v["humans_fed_kcals"][m]*(1.1), "Small_Change_Plus_Humans_Fed_Month_"+str(m)+"_Constraint")
+			model += (v["humans_fed_kcals"][m-1] <= v["humans_fed_kcals"][m]*(1.05), "Small_Change_Plus_Humans_Fed_Month_"+str(m)+"_Constraint")
 
 		# couldn't get this to work?
 		# if(m>0 and self.c['inputs']['PROTEIN_SMOOTHING'] and m < 74):
@@ -703,16 +745,21 @@ class Optimizer:
 		# for all months
 
 
-		maximizer_string="Protein_Fed_Month_"+str(m)+"_Objective_Constraint"
-		maximize_constraints.append(maximizer_string)
-		model += (v["z"] <= v["humans_fed_protein"][m], maximizer_string)
 
 		maximizer_string="Kcals_Fed_Month_"+str(m)+"_Objective_Constraint"
 		maximize_constraints.append(maximizer_string)
 		model += (v["z"] <= v["humans_fed_kcals"][m], maximizer_string)
 
-		maximizer_string="Fat_Fed_Month_"+str(m)+"_Objective_Constraint"
-		maximize_constraints.append(maximizer_string)
-		model += (v["z"] <= v["humans_fed_fat"][m], maximizer_string)
+
+		if(self.c['inputs']['INCLUDE_FAT']):
+
+			maximizer_string="Fat_Fed_Month_"+str(m)+"_Objective_Constraint"
+			maximize_constraints.append(maximizer_string)
+			model += (v["z"] <= v["humans_fed_fat"][m], maximizer_string)
+
+		if(self.c['inputs']['INCLUDE_PROTEIN']):
+			maximizer_string="Protein_Fed_Month_"+str(m)+"_Objective_Constraint"
+			maximize_constraints.append(maximizer_string)
+			model += (v["z"] <= v["humans_fed_protein"][m], maximizer_string)
 
 		return [model,v,maximize_constraints]
