@@ -183,11 +183,21 @@ class Constants:
 		NEW_AREA_PER_DAY=c['inputs']['NEW_AREA_PER_DAY']
 		SEAWEED_PRODUCTION_RATE=c['inputs']['SEAWEED_PRODUCTION_RATE']
 
+		if(c["inputs"]["ADD_SEAWEED"]):
+			sd = [INITIAL_AREA]*c["inputs"]["DELAY"]["SEAWEED"]*DAYS_IN_MONTH
+		else:
+			sd = [INITIAL_AREA]*100000
 
-		built_area=np.linspace(INITIAL_AREA,(NDAYS-1)*NEW_AREA_PER_DAY+INITIAL_AREA,NDAYS)
-		built_area[built_area>MAXIMUM_AREA]=MAXIMUM_AREA
-
-
+		built_area_long=np.append(\
+			np.array(sd),\
+			np.linspace(\
+				INITIAL_AREA,\
+				(NDAYS-1)*NEW_AREA_PER_DAY+INITIAL_AREA,\
+				NDAYS\
+			)\
+		)
+		built_area_long[built_area_long>MAXIMUM_AREA]=MAXIMUM_AREA
+		built_area = built_area_long[0:NDAYS]
 		#### STORED FOOD VARIABLES ####
 
 		# (nuclear event in mid-may)
@@ -302,7 +312,6 @@ class Constants:
 
 		#time from slaughter livestock to it turning into food
 		#not functional yet
-		# MEAT_DELAY = 1 #months
 
 		#we use this spreadsheeet https://docs.google.com/spreadsheets/d/1ZyDrGI84TwhXj_QNicwjj9EPWLJ-r3xnAYMzKSAfWc0/edit#gid=824870019
 
@@ -463,12 +472,12 @@ class Constants:
 		#### Delayed shutoff BIOFUELS and FEED ####
 		# "Monthly flows" tab https://docs.google.com/spreadsheets/d/1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=1714403726
 
-		biofuel_delay = c["inputs"]["BIOFUEL_SHUTOFF_DELAY"]
+		biofuel_delay = c["inputs"]["DELAY"]["BIOFUEL_SHUTOFF"]
 		biofuels_kcals = [BIOFUEL_MONTHLY_USAGE_KCALS]*biofuel_delay + [0]*(NMONTHS-biofuel_delay)
 		biofuels_fat = [BIOFUEL_MONTHLY_USAGE_FAT]*biofuel_delay + [0]*(NMONTHS-biofuel_delay)
 		biofuels_protein = [BIOFUEL_MONTHLY_USAGE_PROTEIN]*biofuel_delay + [0]*(NMONTHS-biofuel_delay)
 
-		feed_shutoff_delay = c["inputs"]["FEED_SHUTOFF_DELAY"]
+		feed_shutoff_delay = c["inputs"]["DELAY"]["FEED_SHUTOFF"]
 		feed_shutoff_kcals = np.array([FEED_MONTHLY_USAGE_KCALS]*feed_shutoff_delay + [0]*(NMONTHS-feed_shutoff_delay))
 		feed_shutoff_fat = np.array([FEED_MONTHLY_USAGE_FAT]*feed_shutoff_delay + [0]*(NMONTHS-feed_shutoff_delay))
 		feed_shutoff_protein = np.array([FEED_MONTHLY_USAGE_PROTEIN]*feed_shutoff_delay + [0]*(NMONTHS-feed_shutoff_delay))
@@ -837,7 +846,7 @@ class Constants:
 
 		
 
-		if(True):
+		if(VERBOSE):
 			print("CULL_DURATION")
 			print(CULL_DURATION)
 			
@@ -1049,12 +1058,13 @@ class Constants:
 
 
 			#deals with the issue of caloric improvement being more than present-day production during the beginning months of the simulation.
-			OG_KCAL_REDUCED = 0.867#multiplier on the kcal reduction
+			OG_KCAL_REDUCED = c["inputs"]["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"]
+			
 			OG_ROTATION_FRACTION_KCALS = 1
 
 			KCAL_RATIO_ROT = 1
-			FAT_ROTATION_RATIO = 3.096
-			PROTEIN_ROTATION_RATIO = 1.248
+			FAT_ROTATION_RATIO = c["inputs"]["ROTATION_IMPROVEMENTS"]["FAT_RATIO"]
+			PROTEIN_ROTATION_RATIO = c["inputs"]["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"]
 
 			OG_ROTATION_FRACTION_FAT = OG_FRACTION_FAT*FAT_ROTATION_RATIO
 			OG_ROTATION_FRACTION_PROTEIN = OG_FRACTION_PROTEIN*PROTEIN_ROTATION_RATIO
@@ -1114,26 +1124,29 @@ class Constants:
 		# profile to stored food
 		# reference: see https://docs.google.com/spreadsheets/d/1f9eVD14Y2d9vmLFP3OsJPFA5d2JXBU-63MTz8MlB1rY/edit#gid=756212200
 		GREENHOUSE_SLOPE_MULTIPLIER = c['inputs']['GREENHOUSE_SLOPE_MULTIPLIER']
-
+		GREENHOUSE_LIMIT_AREA = 0.125e9
 		#greenhouse paper (scaling of greenhouses in low sunlight scenarios)
 		# At constant expansion for 36 months, the cumulative ground coverage 
 		# will equal 2.5 million km^2 (250 million hectares). 
 		# Takes 5+36=41 months to reach full output
 		# NOTE: the 5 months represents the delay from plant to harvest.
-		greenhouse_area_long = \
-			list(\
-				np.append(\
-					np.append(\
-						np.linspace(0,0,5),\
-						np.linspace(0,0.25e9,37)
-					),\
-					np.linspace(0.25e9,0.25e9,len(KCALS_GROWN)-42)\
-				)*GREENHOUSE_SLOPE_MULTIPLIER
-			)\
-
-		greenhouse_area = np.array(greenhouse_area_long[0:NMONTHS])
 
 		if(ADD_GREENHOUSES):
+			gd = c["inputs"]["DELAY"]["GREENHOUSE"] # past the 5 month delay till harvest 
+
+			greenhouse_area_long = \
+				list(\
+					np.append(\
+						np.append(\
+							np.append(np.linspace(0,0,gd),np.linspace(0,0,5)),\
+							np.linspace(0,GREENHOUSE_LIMIT_AREA,37)
+						),\
+						np.linspace(GREENHOUSE_LIMIT_AREA,GREENHOUSE_LIMIT_AREA,len(KCALS_GROWN)-42)\
+					)*GREENHOUSE_SLOPE_MULTIPLIER
+				)\
+
+			greenhouse_area = np.array(greenhouse_area_long[0:NMONTHS])
+
 			MONTHLY_KCALS = np.mean(months_cycle)/TOTAL_CROP_AREA
 
 			KCALS_GROWN_PER_HECTARE_BEFORE_WASTE = \
@@ -1159,7 +1172,7 @@ class Constants:
 			if(c["inputs"]["OG_USE_BETTER_ROTATION"]):
 				crops_food_produced=np.array([0]*NMONTHS)
 
-				hd = c['inputs']["INITIAL_HARVEST_DURATION"]
+				hd = c['inputs']["INITIAL_HARVEST_DURATION"] + c['inputs']["DELAY"]["ROTATION_CHANGE"]
 				crops_food_produced[hd:] = \
 					np.array(KCALS_GROWN[hd:])
 				crops_food_produced[:hd] = \
@@ -1238,12 +1251,18 @@ class Constants:
 		#in billions of kcals
 		INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = \
 			c['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER']
+		
+		if(c["inputs"]["ADD_METHANE_SCP"] or c["inputs"]["ADD_CELLULOSIC_SUGAR"]):
+			ind_delay_months = [0]*c['inputs']["DELAY"]['INDUSTRIAL_FOODS']
+		else:
+			ind_delay_months = [0]*100000
+
 		#billion kcals a month for 100% population.
 		INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER = 6793977/12 
-		METHANE_SCP_PERCENT_KCALS = list(np.array([0,0,0,0,0,0,0,0,0,0,0,0,2,2,\
+		METHANE_SCP_PERCENT_KCALS = list(np.array(ind_delay_months\
+			+ [0,0,0,0,0,0,0,0,0,0,0,0,2,2,\
 			2,2,2,4,7,7,7,7,7,9,11,11,11,11,11,11,13,15,15,15,15,\
 			15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15])/(1-0.12)*INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
-
 			# 15,17,20,20,\
 			# 20,20,20,22,22,24,24,24,24,24,26,28,28,28,28,28,30,30,33,33,33,33,
 			# 33,35,37,37,37,37,37,39,39,41,41,\
@@ -1283,7 +1302,14 @@ class Constants:
 
 		#in billions of kcals
 		# CELL_SUGAR_PERCENT_KCALS = list(np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 19.57, 23.48, 24.58, 28.49, 28.49,29.59,31.64, 31.64, 31.64, 31.64, 33.69, 35.74, 35.74, 35.74, 35.74, 37.78, 38.70, 39.61,40.53,41.44, 42.35, 43.27, 44.18, 45.10, 46.01, 46.93, 47.84, 48.76, 49.67, 50.58, 51.50,52.41,53.33, 54.24, 55.16, 56.07, 56.99, 57.90, 58.81, 59.73, 60.64, 61.56, 62.47, 63.39,64.30,65.21, 66.13, 67.04, 67.96, 68.87, 69.79, 70.70, 71.62, 72.53, 73.44, 74.36, 75.27,76.19,77.10, 78.02, 78.93, 79.85, 80.76, 81.67]) * CELLULOSIC_SUGAR_SLOPE_MULTIPLIER*(1-12/100))
-		CELL_SUGAR_PERCENT_KCALS = list(np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20]) *1/(1-0.12)* INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
+		
+		if(c["inputs"]["ADD_METHANE_SCP"] or c["inputs"]["ADD_CELLULOSIC_SUGAR"]):
+			ind_delay_months = [0]*c['inputs']["DELAY"]['INDUSTRIAL_FOODS']
+		else:
+			ind_delay_months = [0]*100000
+
+
+		CELL_SUGAR_PERCENT_KCALS = list(np.append(ind_delay_months,np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20])) *1/(1-0.12)* INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
 
 		# years = np.linspace(0,len(CELL_SUGAR_PERCENT_KCALS)-1,len(CELL_SUGAR_PERCENT_KCALS))/12
 		# plt.plot(years,np.array(CELL_SUGAR_PERCENT_KCALS)+np.array(METHANE_SCP_PERCENT_KCALS))

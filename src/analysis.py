@@ -714,7 +714,7 @@ class Analyzer:
 		zipped_lists = zip(order_protein, humans_fed_protein)
 		sorted_zipped_lists = sorted(zipped_lists)
 		self.humans_fed_protein_optimizer = [element for _, element in sorted_zipped_lists]
-		feed_delay = self.c['inputs']['FEED_SHUTOFF_DELAY']
+		feed_delay = self.c['inputs']["DELAY"]['FEED_SHUTOFF']
 		sum_before = np.sum((np.array(self.humans_fed_kcals_optimizer)[:feed_delay] - self.c["WORLD_POP"]/1e9))
 
 		if(feed_delay >= self.c["NMONTHS"]):

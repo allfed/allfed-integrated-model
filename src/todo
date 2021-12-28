@@ -152,16 +152,28 @@ Required changes to establish people fed present-day:
 
 write up remaining parts of paper:
 	[done] [morgan] explain the estimates made for crop growth (supplement)
-	[morgan] combine the 7 plots into a graphic and add captions
-	[morgan] update the results section to describe results
+	[done] [morgan] update the results section to describe results
 	[morgan] explanation of seaweed growth algorithm (supplement)
 	[morgan] explanation of the software model architecture (main paper)
 	[morgan] monte carlo bounds (supplement)
-	[morgan] monte carlo results (main paper)
-	[done] [mike] explain the allocation (feed, biofuel) (main paper)
-	[done] [mike] explain inedible feed calculation (supplement)
-	[mike] create master spreadsheet (supplement)
-	[ross] add more context (main paper)
+	[done][morgan] monte carlo results (main paper)
+
+[done]run the monte-carlo with new values set
+	mc:
+		3x greenhouse production 
+		(look into gh upper and lower bounds based on alaskan potato growing)
+		
+		industrial 60 140 is fine
+		
+		upper bound delay:
+			industrial: 6 months, gh: 4 months, seaweed: 2 months, crops rotation: 11 months
+
+		estimated delay:
+			industrial: 3 months, gh: 2 months, seaweed: 1 months, crops rotation: 9 months
+
+		lower bound delay:
+			industrial: 1, gh: 1 month, seaweed: 0 months, crops rotation: 8 months
+
 
 	[morgan] Send email to people we'd like to review the paper before submission
 		Tony Barrett monte-carlo
@@ -174,23 +186,6 @@ write up remaining parts of paper:
 		Heinan grad student of gal
 		cer76@cam.ac.uk
 		Catherine Richards
-
-run the monte-carlo with new values set
-	mc:
-		3x greenhouse production 
-		(look into gh upper and lower bounds based on alaskan potato growing)
-		
-		industrial 60 140 is fine
-		
-		upper bound delay:
-			industrial: 6 months, gh: 4 months, seaweed: 2 months, crops rotation: 12 months
-
-		estimated delay:
-			industrial: 3 months, gh: 2 months, seaweed: 1 months, crops rotation: 9 months
-
-		lower bound delay:
-			industrial: 1, gh: 1 month, seaweed: 0 months, crops rotation: 7 months
-
 
 
 
@@ -211,10 +206,16 @@ run the monte-carlo with new values set
 
 === eventually... ===
 
+check with juan that industrial foods did not include any delays implicitly
+
+combine the 7 plots into a graphic and add captions
+
 
 fix how culled works when there's an excess of calories so that it doesn't magically add meat without taking it away
 
 double check everything...
+
+setting seaweed delay above around 11 months breaks the solve 
 
 if ricky gives me new baseline, update numbers
 

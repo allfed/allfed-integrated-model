@@ -31,7 +31,6 @@ class Optimizer:
 		pass
 
 	def optimize(self,constants):
-
 		maximize_constraints=[] #used only for validation
 
 		constant_loader = Constants()
@@ -152,7 +151,7 @@ class Optimizer:
 
 
 		# var_values = [x for x in v.values()]
-		print('pulp reports successful optimization')
+		print('optimization successful')
 		if(c['CHECK_CONSTRAINTS']):
 			print('')	
 			print('VALIDATION')	
@@ -189,8 +188,8 @@ class Optimizer:
 		# print(variable_output[39]*1e9/4e6/1e6* self.c["OG_ROTATION_FRACTION_KCALS"])
 		
 
-		print("excess_kcals")
-		print(self.s["excess_kcals"][39]*1e9/4e6/1e6)
+		# print("excess_kcals")
+		# print(self.s["excess_kcals"][39]*1e9/4e6/1e6)
 
 		# quit()
 		analysis = Analyzer(c)
@@ -299,8 +298,9 @@ class Optimizer:
 
 
 	def add_seaweed_to_model(self,model,v,m):
+		sd = self.c["inputs"]["DELAY"]["SEAWEED"]
 		sum_food_this_month=[]
-		if(m > 15):
+		if(m > 15+sd):
 			v["seaweed_food_produced_monthly"][m] = LpVariable(name="Seaweed_Food_Produced_Monthly_"+str(m)+"_Variable", lowBound=0)
 			return (model,v)
 

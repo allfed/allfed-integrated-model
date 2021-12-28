@@ -36,6 +36,10 @@ c['inputs']['SEAWEED_PRODUCTION_RATE'] = 10 # percent (seaweed)
 c['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1360e6
 
 c["inputs"]["OG_USE_BETTER_ROTATION"] = True
+c["inputs"]["ROTATION_IMPROVEMENTS"] = {}
+c["inputs"]["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"] = .808
+c["inputs"]["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.861
+c["inputs"]["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.062
 
 c['inputs']['INCLUDE_PROTEIN'] = True
 c['inputs']['INCLUDE_FAT'] = True
@@ -45,7 +49,8 @@ c['inputs']['GREENHOUSE_GAIN_PCT'] = 40
 c['inputs']['GREENHOUSE_SLOPE_MULTIPLIER'] = 1 #default values from greenhouse paper
 c['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1 #default values from CS paper
 
-c['inputs']['INITIAL_HARVEST_DURATION'] = 7 # months
+
+c['inputs']['INITIAL_HARVEST_DURATION'] = 7+1 # months
 
 c['inputs']['IS_NUCLEAR_WINTER'] = True
 c['inputs']['FLUCTUATION_LIMIT'] = 1.1
@@ -64,9 +69,14 @@ c['inputs']['ADD_SEAWEED'] = True
 c['inputs']['ADD_STORED_FOOD'] = True
 
 c["inputs"]["EXCESS_CALORIES"] = np.array([0]*c['inputs']['NMONTHS'])
-c['inputs']['FEED_SHUTOFF_DELAY'] = 0 # months
-c['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 0 # months
- 
+c['inputs']["DELAY"] = {}
+c['inputs']["DELAY"]['ROTATION_CHANGE'] = 2 # months
+c['inputs']["DELAY"]['INDUSTRIAL_FOODS'] = 3 # months
+c['inputs']["DELAY"]['GREENHOUSE'] = 2 # months
+c['inputs']["DELAY"]['SEAWEED'] = 1 # months
+c['inputs']["DELAY"]['FEED_SHUTOFF'] = 0 # months
+c['inputs']["DELAY"]['BIOFUEL_SHUTOFF'] = 0 # months
+
 c["inputs"]["CULL_DURATION"] = 0#np.nan # will be recalculated
 c['inputs']['RECALCULATE_CULL_DURATION'] = False #thousand tons
 
@@ -112,8 +122,8 @@ c['inputs']['WASTE']['SEAWEED'] = 14.37 #%
 
 excess_per_month = np.array([0]*c['inputs']['NMONTHS'])
 c["inputs"]["EXCESS_CALORIES"] = excess_per_month
-c['inputs']['FEED_SHUTOFF_DELAY'] = 2 # months
-c['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 1 # months
+c['inputs']["DELAY"]['FEED_SHUTOFF'] = 2 # months
+c['inputs']["DELAY"]['BIOFUEL_SHUTOFF`'] = 1 # months
  
 c["inputs"]["CULL_DURATION"] = 0#analysis.c["CULL_DURATION"]
 c['inputs']['RECALCULATE_CULL_DURATION'] = False #thousand tons
@@ -137,8 +147,8 @@ print("")
 #billions of kcals	
 # "Sources/summary" tab cell I14.  https://docs.google.com/spreadsheets/d/1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=0
 
-c['inputs']['INCLUDE_PROTEIN'] = False
-c['inputs']['INCLUDE_FAT'] = False
+c['inputs']['INCLUDE_PROTEIN'] = True
+c['inputs']['INCLUDE_FAT'] = True
 
 
 [time_months,time_months_middle,analysis]=optimizer.optimize(c)
@@ -156,10 +166,10 @@ print("")
 print("")
 print("")
 
-feed_delay = c['inputs']['FEED_SHUTOFF_DELAY']
+feed_delay = c['inputs']["DELAY"]['FEED_SHUTOFF']
 
 #these months are used to estimate the diet before the full scale-up of resilient foods makes there be way too much food to make sense economically
-N_MONTHS_TO_CALCULATE_DIET = 48
+N_MONTHS_TO_CALCULATE_DIET = 49
 
 #don't try to feed more animals in the  months before feed shutoff
 
@@ -186,8 +196,8 @@ while(True):
 	# plt.show()
 
 	#billions of kcals	
-	c['inputs']['FEED_SHUTOFF_DELAY'] = 2 # months
-	c['inputs']['BIOFUEL_SHUTOFF_DELAY'] = 1 # months
+	c['inputs']["DELAY"]['FEED_SHUTOFF'] = 2 # months
+	c['inputs']["DELAY"]['BIOFUEL_SHUTOFF'] = 1 # months
 	# "Sources/summary" tab cell I14.  https://docs.google.com/spreadsheets/d/1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=0
 
 	c["inputs"]["CULL_DURATION"] = 0#analysis.c["CULL_DURATION"]
@@ -207,18 +217,17 @@ while(True):
 	print("")
 
 	# the rebalancer is only responsible for balancing calories, and is unable to operate unless the assumption that fat and protein are limiting values is invalid.
-	c['inputs']['INCLUDE_PROTEIN'] = False
-	c['inputs']['INCLUDE_FAT'] = False
+	c['inputs']['INCLUDE_PROTEIN'] = True
+	c['inputs']['INCLUDE_FAT'] = True
 
 	kcals_fed = np.min(analysis.kcals_fed)
 	
-	feed_delay = c['inputs']['FEED_SHUTOFF_DELAY']
+	feed_delay = c['inputs']["DELAY"]['FEED_SHUTOFF']
 	
 	if(kcals_fed > 7.79 and kcals_fed < 7.81):
 		break
 
-	assert(feed_delay > c['inputs']['BIOFUEL_SHUTOFF_DELAY'])
-	print(excess_per_month)
+	assert(feed_delay > c['inputs']["DELAY"]['BIOFUEL_SHUTOFF'])
 	print()
 	#don't try to feed more animals in the  months before feed shutoff
 	# excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
