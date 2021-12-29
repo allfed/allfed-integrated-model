@@ -15,6 +15,7 @@ if module_path not in sys.path:
 from src.optimizer import Optimizer
 from src.plotter import Plotter
 import numpy as np
+from datetime import datetime
 c = {}
 c['CHECK_CONSTRAINTS'] = False
 
@@ -33,7 +34,7 @@ c['inputs']['NEW_AREA_PER_DAY'] = 4.153 # 1000 km^2 (seaweed)
 c['inputs']['SEAWEED_PRODUCTION_RATE'] = 10 # percent (seaweed)
 
 # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
-c['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1360e6
+c['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1360e6*0.96
 
 c["inputs"]["OG_USE_BETTER_ROTATION"] = True
 c["inputs"]["ROTATION_IMPROVEMENTS"] = {}
@@ -44,9 +45,9 @@ c["inputs"]["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.062
 c['inputs']['INCLUDE_PROTEIN'] = True
 c['inputs']['INCLUDE_FAT'] = True
 
-c['inputs']['GREENHOUSE_GAIN_PCT'] = 40
+c['inputs']['GREENHOUSE_GAIN_PCT'] = 56
 
-c['inputs']['GREENHOUSE_SLOPE_MULTIPLIER'] = 1 #default values from greenhouse paper
+c['inputs']['GREENHOUSE_AREA_MULTIPLIER'] = 1/2 #half values from greenhouse paper due to higher cost
 c['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1 #default values from CS paper
 
 
@@ -179,6 +180,7 @@ excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
 
 
 #=================
+tstart = datetime.now()
 
 n=0
 # kcals_fed = 0
@@ -251,6 +253,14 @@ while(True):
 
 	# if(n==3):
 	# 	c['CHECK_CONSTRAINTS'] = True
+
+tend = datetime.now()
+diff = tend-tstart
+print("duration seconds diet calculator")
+print(diff.seconds)
+print("duration microseconds diet calculator")
+print(diff.microseconds)
+
 plt.title("Excess kcals used for feed and biofuel")
 plt.ylabel("million dry caloric tons monthly")
 plt.xlabel("Months after May nuclear event")

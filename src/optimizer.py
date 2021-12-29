@@ -631,7 +631,7 @@ class Optimizer:
 		#seaweed_food_produced_monthly*seaweed_kcals is in units billions kcals
 		# kcals monthly is in units kcals
 		CROPS_WASTE = 1-self.c["inputs"]["WASTE"]["CROPS"]/100
-		
+
 		model += (v["humans_fed_kcals"][m] == \
 			(v["stored_food_eaten"][m]* CROPS_WASTE\
 			+ v["crops_food_eaten_no_rot"][m]* CROPS_WASTE\

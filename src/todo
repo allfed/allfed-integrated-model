@@ -153,10 +153,10 @@ Required changes to establish people fed present-day:
 write up remaining parts of paper:
 	[done] [morgan] explain the estimates made for crop growth (supplement)
 	[done] [morgan] update the results section to describe results
-	[morgan] explanation of seaweed growth algorithm (supplement)
-	[morgan] explanation of the software model architecture (main paper)
-	[morgan] monte carlo bounds (supplement)
-	[done][morgan] monte carlo results (main paper)
+	[done] [morgan] explanation of seaweed growth algorithm (supplement)
+	[done] [morgan] explanation of the software model architecture (main paper)
+	[done] [morgan] monte carlo bounds (supplement)
+	[done] [morgan] monte carlo results (main paper)
 
 [done]run the monte-carlo with new values set
 	mc:

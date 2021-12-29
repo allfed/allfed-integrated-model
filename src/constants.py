@@ -155,7 +155,7 @@ class Constants:
 		INITIAL_SEAWEED = 1 # 1000 tons (seaweed)
 		INITIAL_AREA = 1 # 1000 tons (seaweed)
 		MINIMUM_DENSITY = 400 #tons/km^2 (seaweed)
-		MAXIMUM_DENSITY = 4000 #tons/km^2 (seaweed)
+		MAXIMUM_DENSITY = 800 #tons/km^2 (seaweed)
 		MAXIMUM_AREA = 1000 # 1000 km^2 (seaweed)
 
 		SEAWEED_WASTE = c['inputs']['WASTE']['SEAWEED']
@@ -1123,8 +1123,6 @@ class Constants:
 		#assumption: greenhouse crop production is very similar in nutritional
 		# profile to stored food
 		# reference: see https://docs.google.com/spreadsheets/d/1f9eVD14Y2d9vmLFP3OsJPFA5d2JXBU-63MTz8MlB1rY/edit#gid=756212200
-		GREENHOUSE_SLOPE_MULTIPLIER = c['inputs']['GREENHOUSE_SLOPE_MULTIPLIER']
-		GREENHOUSE_LIMIT_AREA = 0.125e9
 		#greenhouse paper (scaling of greenhouses in low sunlight scenarios)
 		# At constant expansion for 36 months, the cumulative ground coverage 
 		# will equal 2.5 million km^2 (250 million hectares). 
@@ -1132,6 +1130,8 @@ class Constants:
 		# NOTE: the 5 months represents the delay from plant to harvest.
 
 		if(ADD_GREENHOUSES):
+			GREENHOUSE_AREA_MULTIPLIER = c['inputs']['GREENHOUSE_AREA_MULTIPLIER']
+			GREENHOUSE_LIMIT_AREA = 250e6*GREENHOUSE_AREA_MULTIPLIER
 			gd = c["inputs"]["DELAY"]["GREENHOUSE"] # past the 5 month delay till harvest 
 
 			greenhouse_area_long = \
@@ -1142,7 +1142,7 @@ class Constants:
 							np.linspace(0,GREENHOUSE_LIMIT_AREA,37)
 						),\
 						np.linspace(GREENHOUSE_LIMIT_AREA,GREENHOUSE_LIMIT_AREA,len(KCALS_GROWN)-42)\
-					)*GREENHOUSE_SLOPE_MULTIPLIER
+					)
 				)\
 
 			greenhouse_area = np.array(greenhouse_area_long[0:NMONTHS])
@@ -1173,10 +1173,15 @@ class Constants:
 				crops_food_produced=np.array([0]*NMONTHS)
 
 				hd = c['inputs']["INITIAL_HARVEST_DURATION"] + c['inputs']["DELAY"]["ROTATION_CHANGE"]
+
 				crops_food_produced[hd:] = \
-					np.array(KCALS_GROWN[hd:])
+					np.multiply(np.array(KCALS_GROWN[hd:]),\
+					(1-greenhouse_area[hd:]/TOTAL_CROP_AREA))
+
 				crops_food_produced[:hd] = \
-					np.array(NO_ROT_KCALS_GROWN[:hd])
+					np.multiply(np.array(NO_ROT_KCALS_GROWN[:hd]),\
+					(1-greenhouse_area[:hd]/TOTAL_CROP_AREA))
+
 			else:
 				crops_food_produced = \
 					np.array(NO_ROT_KCALS_GROWN)
@@ -1236,51 +1241,54 @@ class Constants:
 				rotation_fat_per_ha,\
 				rotation_protein_per_ha)
 		
-		(greenhouse_kcals_per_ha,\
-		greenhouse_fat_per_ha,\
-		greenhouse_protein_per_ha) \
-			= get_greenhouse_yield_per_ha(KCAL_RATIO_ROT,\
-				FAT_RATIO_ROT,\
-				PROTEIN_RATIO_ROT)
+		if(ADD_GREENHOUSES):
+
+			(greenhouse_kcals_per_ha,\
+			greenhouse_fat_per_ha,\
+			greenhouse_protein_per_ha) \
+				= get_greenhouse_yield_per_ha(KCAL_RATIO_ROT,\
+					FAT_RATIO_ROT,\
+					PROTEIN_RATIO_ROT)
+		else:
+			greenhouse_kcals_per_ha = [0]*NMONTHS
+			greenhouse_fat_per_ha = [0]*NMONTHS
+			greenhouse_protein_per_ha = [0]*NMONTHS
 
 		#### CONSTANTS FOR METHANE SINGLE CELL PROTEIN ####
-		SUGAR_WASTE = c['inputs']['WASTE']['SUGAR']
 
 		#apply sugar waste also to methane scp, for lack of better baseline
 
 		#in billions of kcals
-		INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = \
-			c['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER']
 		
-		if(c["inputs"]["ADD_METHANE_SCP"] or c["inputs"]["ADD_CELLULOSIC_SUGAR"]):
+		if(c["inputs"]["ADD_METHANE_SCP"]):
+			SCP_WASTE = c['inputs']['WASTE']['SUGAR']
+			INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = \
+				c['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER']
 			ind_delay_months = [0]*c['inputs']["DELAY"]['INDUSTRIAL_FOODS']
-		else:
-			ind_delay_months = [0]*100000
 
-		#billion kcals a month for 100% population.
-		INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER = 6793977/12 
-		METHANE_SCP_PERCENT_KCALS = list(np.array(ind_delay_months\
-			+ [0,0,0,0,0,0,0,0,0,0,0,0,2,2,\
-			2,2,2,4,7,7,7,7,7,9,11,11,11,11,11,11,13,15,15,15,15,\
-			15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15])/(1-0.12)*INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
-			# 15,17,20,20,\
-			# 20,20,20,22,22,24,24,24,24,24,26,28,28,28,28,28,30,30,33,33,33,33,
-			# 33,35,37,37,37,37,37,39,39,41,41,\
-			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
-			# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41])/(1-0.12)*INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
+			#billion kcals a month for 100% population.
+			INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER = 6793977/12 
+			METHANE_SCP_PERCENT_KCALS = list(np.array(ind_delay_months\
+				+ [0,0,0,0,0,0,0,0,0,0,0,0,2,2,\
+				2,2,2,4,7,7,7,7,7,9,11,11,11,11,11,11,13,15,15,15,15,\
+				15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15])/(1-0.12)*INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
+				# 15,17,20,20,\
+				# 20,20,20,22,22,24,24,24,24,24,26,28,28,28,28,28,30,30,33,33,33,33,
+				# 33,35,37,37,37,37,37,39,39,41,41,\
+				# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
+				# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
+				# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
+				# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
+				# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
+				# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
+				# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,\
+				# 41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41])/(1-0.12)*INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
 
-		if(ADD_METHANE_SCP):
 			production_kcals_scp_per_m_long = []
 			for x in METHANE_SCP_PERCENT_KCALS:
-				production_kcals_scp_per_m_long.append(x / 100 * INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER*(1-SUGAR_WASTE/100))
+				production_kcals_scp_per_m_long.append(x / 100 * INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER*(1-SCP_WASTE/100))
 		else:
-			production_kcals_scp_per_m_long=[0]*len(METHANE_SCP_PERCENT_KCALS)
+			production_kcals_scp_per_m_long=[0]*NMONTHS
 
 		production_kcals_scp_per_m = production_kcals_scp_per_m_long[0:NMONTHS]
 
@@ -1303,26 +1311,24 @@ class Constants:
 		#in billions of kcals
 		# CELL_SUGAR_PERCENT_KCALS = list(np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 19.57, 23.48, 24.58, 28.49, 28.49,29.59,31.64, 31.64, 31.64, 31.64, 33.69, 35.74, 35.74, 35.74, 35.74, 37.78, 38.70, 39.61,40.53,41.44, 42.35, 43.27, 44.18, 45.10, 46.01, 46.93, 47.84, 48.76, 49.67, 50.58, 51.50,52.41,53.33, 54.24, 55.16, 56.07, 56.99, 57.90, 58.81, 59.73, 60.64, 61.56, 62.47, 63.39,64.30,65.21, 66.13, 67.04, 67.96, 68.87, 69.79, 70.70, 71.62, 72.53, 73.44, 74.36, 75.27,76.19,77.10, 78.02, 78.93, 79.85, 80.76, 81.67]) * CELLULOSIC_SUGAR_SLOPE_MULTIPLIER*(1-12/100))
 		
-		if(c["inputs"]["ADD_METHANE_SCP"] or c["inputs"]["ADD_CELLULOSIC_SUGAR"]):
+		if(c["inputs"]["ADD_CELLULOSIC_SUGAR"]):
+			SUGAR_WASTE = c['inputs']['WASTE']['SUGAR']
+
 			ind_delay_months = [0]*c['inputs']["DELAY"]['INDUSTRIAL_FOODS']
-		else:
-			ind_delay_months = [0]*100000
 
+			CELL_SUGAR_PERCENT_KCALS = list(np.append(ind_delay_months,np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20])) *1/(1-0.12)* INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
 
-		CELL_SUGAR_PERCENT_KCALS = list(np.append(ind_delay_months,np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,20,20, 20, 20, 20, 20, 20])) *1/(1-0.12)* INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
-
-		# years = np.linspace(0,len(CELL_SUGAR_PERCENT_KCALS)-1,len(CELL_SUGAR_PERCENT_KCALS))/12
-		# plt.plot(years,np.array(CELL_SUGAR_PERCENT_KCALS)+np.array(METHANE_SCP_PERCENT_KCALS))
-		# plt.xlabel('years from may event')
-		# plt.ylabel('percent human kcal requirement')
-		# plt.show()
-		if(ADD_CELLULOSIC_SUGAR):
 			production_kcals_CS_per_m_long = []
 			for x in CELL_SUGAR_PERCENT_KCALS:
 				production_kcals_CS_per_m_long.append(x / 100 * INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER*(1-SUGAR_WASTE/100))
+			# years = np.linspace(0,len(CELL_SUGAR_PERCENT_KCALS)-1,len(CELL_SUGAR_PERCENT_KCALS))/12
+			# plt.plot(years,np.array(CELL_SUGAR_PERCENT_KCALS)+np.array(METHANE_SCP_PERCENT_KCALS))
+			# plt.xlabel('years from may event')
+			# plt.ylabel('percent human kcal requirement')
+			# plt.show()
 		else:
 			production_kcals_CS_per_m_long = \
-				[0]*len(CELL_SUGAR_PERCENT_KCALS)
+				[0]*NMONTHS
 
 		production_kcals_CS_per_m = production_kcals_CS_per_m_long[0:NMONTHS]
 
@@ -1352,29 +1358,28 @@ class Constants:
 			#1000 tons protein/fat per dry caloric ton
 			print("")
 			print("INITIAL_OG_KCALS million tons dry caloric monthly")
-			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6)
+			print(crops_food_produced[0]*1e9/4e6/1e6)
 			print("INITIAL_OG_FAT million tons monthly")
-			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_FAT/1e3)
+			print(crops_food_produced[0]*OG_FRACTION_FAT/1e3)
 			print("INITIAL_OG_PROTEIN million tons monthly")
-			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_PROTEIN/1e3)
+			print(crops_food_produced[0]*OG_FRACTION_PROTEIN/1e3)
 			print("")
 			print("INITIAL_OG_FAT percentage")
-			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_FAT/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6))
+			print(100*crops_food_produced[0]*OG_FRACTION_FAT/1e3/(crops_food_produced[0]*1e9/4e6/1e6))
 			print("INITIAL_OG_PROTEIN percentage")
-			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_FRACTION_PROTEIN/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*1e9/4e6/1e6))
+			print(100*crops_food_produced[0]*OG_FRACTION_PROTEIN/1e3/(crops_food_produced[0]*1e9/4e6/1e6))
 			print("")
 			print("INITIAL_OG_ROTATION_KCALS million tons dry caloric monthly")
-			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6)
+			print(crops_food_produced[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6)
 			print("INITIAL_OG_ROTATION_FAT million tons monthly")
-			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_FAT/1e3)
+			print(crops_food_produced[0]*OG_ROTATION_FRACTION_FAT/1e3)
 			print("INITIAL_OG_ROTATION_PROTEIN million tons monthly")
-			print(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_PROTEIN/1e3)
+			print(crops_food_produced[0]*OG_ROTATION_FRACTION_PROTEIN/1e3)
 			print("")
 			print("INITIAL_OG_ROTATION_FAT percentage")
-			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_FAT/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6))
+			print(100*crops_food_produced[0]*OG_ROTATION_FRACTION_FAT/1e3/(crops_food_produced[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6))
 			print("INITIAL_OG_ROTATION_PROTEIN percentage")
-			print(100*KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_PROTEIN/1e3/(KCALS_GROWN_MINUS_GREENHOUSE[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6))
-			#1000 tons protein/fat per dry caloric ton
+			print(100*crops_food_produced[0]*OG_ROTATION_FRACTION_PROTEIN/1e3/(crops_food_produced[0]*OG_ROTATION_FRACTION_KCALS*1e9/4e6/1e6))			#1000 tons protein/fat per dry caloric ton
 			print("")
 			print("INITIAL_SF_KCALS million tons dry caloric")
 			print(INITIAL_SF_KCALS*1e9/4e6/1e6)

@@ -84,7 +84,7 @@ def monte_carlo():
 	variables['SEAWEED_PRODUCTION_RATE'] = [5,10,15]
 	variables['SEAWEED_NEW_AREA'] = [4.153/2,4.153,4.153*2]
 	variables['GREENHOUSE_GAIN_PCT'] = [40/2,40,40*2]
-	variables['GREENHOUSE_SLOPE_MULTIPLIER'] = [0.5,1,2]
+	variables['GREENHOUSE_AREA_MULTIPLIER'] = [1/4,1/2,1]
 	variables['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = [0.6,1,1.4]
 	variables["DELAY"] = [\
 		{\
@@ -145,7 +145,9 @@ def monte_carlo():
 	[time_months,time_months_middle,analysis]=optimizer.optimize(sample_c)
 	tend = datetime.now()
 	diff = tend-tstart
-	print("diff.microseconds 1")
+	print("seconds worst case")
+	print(diff.seconds)
+	print("microseconds worst case")
 	print(diff.microseconds)
 
 	#best plausibly likely variables all in one case
@@ -157,7 +159,9 @@ def monte_carlo():
 	[time_months,time_months_middle,analysis]=optimizer.optimize(sample_c)
 	tend = datetime.now()
 	diff = tend-tstart
-	print("diff.microseconds 2")
+	print("seconds best case")
+	print(diff.seconds)
+	print("microseconds best case")
 	print(diff.microseconds)
 
 	input("Press enter to continue")
