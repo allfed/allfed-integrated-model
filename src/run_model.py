@@ -48,7 +48,7 @@ c["inputs"]["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.062
 c['inputs']['INCLUDE_PROTEIN'] = True
 c['inputs']['INCLUDE_FAT'] = True
 
-c['inputs']['GREENHOUSE_GAIN_PCT'] = 46
+c['inputs']['GREENHOUSE_GAIN_PCT'] = 50
 
 c['inputs']['GREENHOUSE_AREA_MULTIPLIER'] = 1/2 #half values from greenhouse paper due to higher cost
 c['inputs']['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1 #default values from CS and SCP papers

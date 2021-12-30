@@ -82,7 +82,7 @@ def monte_carlo():
 	variables['MAX_SEAWEED_AS_PERCENT_KCALS'] = [5,7,10,20,30]
 	variables['SEAWEED_PRODUCTION_RATE'] = [5,10,15]
 	variables['SEAWEED_NEW_AREA'] = [4.153/2,4.153,4.153*2]
-	variables['GREENHOUSE_GAIN_PCT'] = [46/2,46,46*2]
+	variables['GREENHOUSE_GAIN_PCT'] = [50/2,50,50*2]
 	variables['GREENHOUSE_AREA_MULTIPLIER'] = [1/4,1/2,1]
 	variables['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = [0.6,1,1.4]
 	variables["DELAY"] = [\
