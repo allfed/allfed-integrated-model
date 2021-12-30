@@ -1,8 +1,8 @@
-# this program runs the optimizer model, and ensures that all the results are 
-# reasonable using a couple useful checks to make sure there's nothing wacky 
-# going on.
-
-#check that as time increases, more people can be fed
+"""
+ this program runs the worst case and best case plausibly likely outcomes for 
+ the monte carlo model, and prints the outcomes for 1000 runs in a row, then 
+ plots a histogram of the results
+"""
 
 import os
 import sys
@@ -41,7 +41,6 @@ c["inputs"]["OG_USE_BETTER_ROTATION"] = True
 c['inputs']['INCLUDE_PROTEIN'] = True
 c['inputs']['INCLUDE_FAT'] = True
 c['inputs']['WASTE'] = {}
-# c['inputs']['WASTE']['CEREALS'] = 19.02 #%
 c['inputs']['WASTE']['SUGAR'] = 14.47 #%
 c['inputs']['WASTE']['MEAT'] = 15.17 #%
 c['inputs']['WASTE']['DAIRY'] = 16.49 #%
@@ -72,9 +71,6 @@ c['inputs']['INITIAL_HARVEST_DURATION'] = 7+1 # months
 c['inputs']['STORED_FOOD_SMOOTHING'] = False
 c['inputs']['KCAL_SMOOTHING'] = False
 c['inputs']['MEAT_SMOOTHING'] = False
-
-
-# 
 
 c['CHECK_CONSTRAINTS'] = False
 nsamples = 100
@@ -146,8 +142,6 @@ def monte_carlo():
 	
 	#worst plausibly likely variables all in one case
 	sample_c = c
-	# print(sample_c)
-	# print(sample_c["inputs"])
 	for i in variables.items():
 		sample_c["inputs"][i[0]] = i[1][0]
 	print("")
@@ -180,24 +174,14 @@ def monte_carlo():
 	all_keys = [list(variables.keys())]*nsamples
 	all_combos=list(itertools.product(*all_vars))
 	random_sample=random.sample(all_combos,nsamples)
-	# print(random_sample[0])
-	# print(all_keys[0])
-	# quit()
 	sample_c = c
 
 	all_fed = []
 	for i in range(0,len(random_sample)):
 
-		# print(c)
 		s = random_sample[i]
-		# print(s)
-		# print(all_keys)
-		# quit()
 		keylist=all_keys[i]
 		for j in range(0,len(keylist)):
-			# print(len(s))
-			# print(len(all_keys[j]))
-			# quit()
 			key = keylist[j]
 			value=s[j]
 			
@@ -212,16 +196,13 @@ def monte_carlo():
 
 	num_bins = int(nsamples/5)
 	plt.hist(all_fed, bins=num_bins, facecolor='blue', alpha=0.5)
-	# y = np.linspace(-4, 4, nsamples)
 	bin_width = (max(all_fed) - min(all_fed)) / num_bins
-	# plt.plot(y, stats.norm.pdf(y) * nsamples * bin_width)
 	plt.title("Food Available After Delayed Shutoff and Waste ")
 	plt.xlabel("Maximum people fed, billions")
 	plt.ylabel("Number of Scenarios")
 	ax = plt.gca()
 	ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 	plt.show()
-		# quit()
 
 monte_carlo()
 
