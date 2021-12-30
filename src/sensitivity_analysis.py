@@ -28,6 +28,9 @@ c['inputs']['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
 c['inputs']['NUTRITION'] = {\
 	'FAT_DAILY':47,'KCALS_DAILY':2100,'PROTEIN_DAILY':51}
 
+c['inputs']['INITIAL_SF_FAT'] = 166.07e3*0.96
+c['inputs']['INITIAL_SF_PROTEIN'] = 69.25e3*0.96
+
 c['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS'] = 10
 c['inputs']['NEW_AREA_PER_DAY'] = 4.153 # 1000 km^2 (seaweed)
 c['inputs']['SEAWEED_PRODUCTION_RATE'] = 10 # percent (seaweed)
@@ -80,10 +83,10 @@ def monte_carlo():
 
 	variables = {}
 
-	variables['MAX_SEAWEED_AS_PERCENT_KCALS'] = [5,10,30]
+	variables['MAX_SEAWEED_AS_PERCENT_KCALS'] = [5,7,10,20,30]
 	variables['SEAWEED_PRODUCTION_RATE'] = [5,10,15]
 	variables['SEAWEED_NEW_AREA'] = [4.153/2,4.153,4.153*2]
-	variables['GREENHOUSE_GAIN_PCT'] = [40/2,40,40*2]
+	variables['GREENHOUSE_GAIN_PCT'] = [46/2,46,46*2]
 	variables['GREENHOUSE_AREA_MULTIPLIER'] = [1/4,1/2,1]
 	variables['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = [0.6,1,1.4]
 	variables["DELAY"] = [\
@@ -94,6 +97,14 @@ def monte_carlo():
 			'FEED_SHUTOFF' : 4,
 			'BIOFUEL_SHUTOFF' : 2,
 			'ROTATION_CHANGE' : 4
+		},
+		{\
+			"SEAWEED" : 1,
+			'INDUSTRIAL_FOODS' : 4,
+			'GREENHOUSE' : 3,
+			'FEED_SHUTOFF' : 3,
+			'BIOFUEL_SHUTOFF' : 1,
+			'ROTATION_CHANGE' : 3
 		},
 		{\
 			"SEAWEED" : 1,

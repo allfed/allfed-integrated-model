@@ -34,6 +34,9 @@ c['inputs']['SEAWEED_PRODUCTION_RATE'] = 0
 
 # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
 c['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 0.96*351.433*1e6
+#these fat and protein values do not produce realistic outputs, so outdoor growing ratios were used instead
+# c['inputs']['INITIAL_SF_FAT'] = 166.07e3*351e6/1360e6
+# c['inputs']['INITIAL_SF_PROTEIN'] = 69.25e3*351e6/1360e6
 
 c["inputs"]["OG_USE_BETTER_ROTATION"] = False
 	
@@ -146,116 +149,3 @@ if(c['inputs']['ADD_OUTDOOR_GROWING']):
 
 Plotter.plot_people_fed_combined(time_months_middle,analysis)
 Plotter.plot_people_fed_kcals(time_months_middle,analysis,"Baseline around 2020 average diet")
-
-# if(c['inputs']['ADD_CELLULOSIC_SUGAR']):
-# 	Plotter.plot_CS(time_months_middle,analysis)
-
-# if(c['inputs']['ADD_FISH']):
-# 	Plotter.plot_fish(time_months_middle,analysis)
-
-# if(c['inputs']['ADD_GREENHOUSES']):
-# 	Plotter.plot_GH(time_months_middle,analysis)
-
-
-# if(c['inputs']['ADD_STORED_FOOD']):
-# 	Plotter.plot_stored_food(time_months,analysis)
-
-# if(c['inputs']['ADD_SEAWEED']):
-# 	Plotter.plot_seaweed(time_months_middle,analysis)
-
-# if(c['inputs']['ADD_MEAT']):
-# 	Plotter.plot_meat(time_months,analysis)
-
-# if(c['inputs']['ADD_DAIRY']):
-# 	Plotter.plot_dairy_cows(time_months_middle,analysis)
-# 	Plotter.plot_dairy(time_months_middle,analysis)
-
-# Plotter.plot_people_fed(time_months_middle,analysis)
-# Plotter.plot_people_fed_combined(time_months_middle,analysis)
-# Plotter.plot_people_fed_fat(time_months_middle,analysis)
-# Plotter.plot_people_fed_protein(time_months_middle,analysis)
-# Plotter.plot_people_fed_comparison(time_months_middle,analysis)
-# c['inputs']['ADD_SEAWEED'] = False
-# c['inputs']['ADD_CELLULOSIC_SUGAR'] = True
-# c['inputs']['ADD_GREENHOUSES'] = True
-# c['inputs']['ADD_MEAT'] = True
-# c['inputs']['ADD_DAIRY'] = True
-# c['inputs']['ADD_STORED_FOOD'] = True
-# c['inputs']['ADD_OUTDOOR_GROWING'] = True
-
-# seaweed_omitted=optimizer.optimize(c)
-# print('seaweed omitted')
-# print(seaweed_omitted-max_fed)
-
-
-# c['inputs']['ADD_SEAWEED'] = True
-# c['inputs']['ADD_CELLULOSIC_SUGAR'] = False
-# c['inputs']['ADD_GREENHOUSES'] = True
-# c['inputs']['ADD_MEAT'] = True
-# c['inputs']['ADD_DAIRY'] = True
-# c['inputs']['ADD_STORED_FOOD'] = True
-# c['inputs']['ADD_OUTDOOR_GROWING'] = True
-# cell_sugar_omitted=optimizer.optimize(c)
-# print('cellulosic sugar omitted')
-# print(cell_sugar_omitted-max_fed)
-
-
-# c['inputs']['ADD_SEAWEED'] = True
-# c['inputs']['ADD_CELLULOSIC_SUGAR'] = True
-# c['inputs']['ADD_GREENHOUSES'] = False
-# c['inputs']['ADD_MEAT'] = True
-# c['inputs']['ADD_DAIRY'] = True
-# c['inputs']['ADD_STORED_FOOD'] = True
-# c['inputs']['ADD_OUTDOOR_GROWING'] = True
-# greenhouses_omitted=optimizer.optimize(c)
-# print('greenhouses omitted')
-# print(greenhouses_omitted-max_fed)
-
-
-# c['inputs']['ADD_SEAWEED'] = False
-# c['inputs']['ADD_CELLULOSIC_SUGAR'] = False
-# c['inputs']['ADD_GREENHOUSES'] = False
-# c['inputs']['ADD_MEAT'] = True
-# c['inputs']['ADD_DAIRY'] = True
-# c['inputs']['ADD_STORED_FOOD'] = True
-# c['inputs']['ADD_OUTDOOR_GROWING'] = True
-# no_intervention=optimizer.optimize(c)
-# print('no intervention')
-# print(no_intervention)
-
-
-# c['inputs']['ADD_SEAWEED'] = True
-# c['inputs']['ADD_CELLULOSIC_SUGAR'] = False
-# c['inputs']['ADD_GREENHOUSES'] = False
-# c['inputs']['ADD_MEAT'] = True
-# c['inputs']['ADD_DAIRY'] = True
-# c['inputs']['ADD_STORED_FOOD'] = True
-# c['inputs']['ADD_OUTDOOR_GROWING'] = True
-# just_seaweed=optimizer.optimize(c)
-# print('just seaweed')
-# print(just_seaweed-no_intervention)
-
-
-# c['inputs']['ADD_SEAWEED'] = False
-# c['inputs']['ADD_CELLULOSIC_SUGAR'] = True
-# c['inputs']['ADD_GREENHOUSES'] = False
-# c['inputs']['ADD_MEAT'] = True
-# c['inputs']['ADD_DAIRY'] = True
-# c['inputs']['ADD_STORED_FOOD'] = True
-# c['inputs']['ADD_OUTDOOR_GROWING'] = True
-# just_cell_sugar=optimizer.optimize(c)
-# print('just CS')
-# print(just_cell_sugar-no_intervention)
-
-
-
-# c['inputs']['ADD_SEAWEED'] = False
-# c['inputs']['ADD_CELLULOSIC_SUGAR'] = False
-# c['inputs']['ADD_GREENHOUSES'] = True
-# c['inputs']['ADD_MEAT'] = True
-# c['inputs']['ADD_DAIRY'] = True
-# c['inputs']['ADD_STORED_FOOD'] = True
-# c['inputs']['ADD_OUTDOOR_GROWING'] = True
-# just_greenhouses=optimizer.optimize(c)
-# print('just Greenhouses')
-# print(just_greenhouses-no_intervention)

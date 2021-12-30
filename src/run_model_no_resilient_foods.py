@@ -33,7 +33,7 @@ c['inputs']['NEW_AREA_PER_DAY'] = 4.153 # 1000 km^2 (seaweed)
 c['inputs']['SEAWEED_PRODUCTION_RATE'] = 10 # percent (seaweed)
 
 # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
-c['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1360e6
+c['inputs']['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1360e6*0.96
 
 c["inputs"]["OG_USE_BETTER_ROTATION"] = False
 

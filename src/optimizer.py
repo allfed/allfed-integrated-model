@@ -197,7 +197,9 @@ class Optimizer:
 		show_output=False
 
 		analysis.compute_excess_after_run(model)
-
+		
+		analysis.scenario_is_impossible = False
+		
 		analysis.calc_fraction_OG_SF_to_humans(\
 			model,
 			v["crops_food_eaten_no_rot"],
@@ -208,6 +210,12 @@ class Optimizer:
 			s["excess_protein_used"]
 		)
 
+		if(analysis.scenario_is_impossible):
+			print("")
+			print("Scenario is impossible")
+			print("")
+			analysis.people_fed_billions = np.nan
+			return [np.nan,np.nan,analysis]
 
 		# if no stored food, will be zero
 		analysis.analyze_SF_results(

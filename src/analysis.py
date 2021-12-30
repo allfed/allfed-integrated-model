@@ -905,6 +905,11 @@ class Analyzer:
 
 		# print("OG_SF_fraction_kcals_to_feed")
 		# print(OG_SF_fraction_kcals_to_feed)
+		if(not (OG_SF_fraction_kcals_to_feed <= 1+ 1e-5).all()\
+			or not (OG_SF_fraction_kcals_to_feed >= 0).all()):
+			print("WARNING: Attempted to feed more food to animals than exists available outdoor growing fat, calories, or protein. Scenario is impossible.")
+			self.scenario_is_impossible = True
+			return
 		assert((OG_SF_fraction_kcals_to_feed <= 1+ 1e-5).all())
 
 		if((OG_SF_fraction_kcals_to_feed>=1).any()):
