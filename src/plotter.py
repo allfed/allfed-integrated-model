@@ -7,12 +7,13 @@ from cycler import cycler
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+from matplotlib.ticker import MaxNLocator
 import os
 import sys
 module_path = os.path.abspath(os.path.join('..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
-
+import seaborn as sns
 matplotlib.use('Svg')
 
 
@@ -38,7 +39,7 @@ class Plotter:
         plt.plot(time_months_middle, np.array(analysis.billions_fed_SF_fat))
         plt.plot(time_months_middle, np.array(analysis.billions_fed_SF_protein))
         plt.title('Stored Food')
-        plt.xlabel('Months Since May Sunlight Reduction Event')
+        plt.xlabel('Months Since May ASRS')
         plt.ylabel('Billion Person-Years')
         plt.legend(['kcals available', 'fat available', 'protein available'])
 
@@ -65,7 +66,7 @@ class Plotter:
         plt.plot(time_months_middle, np.array(
             analysis.billions_fed_CS_kcals), marker='o', markersize=3)
         plt.title('Industrial Foods')
-        plt.xlabel('Months Since May Sunlight Reduction Event')
+        plt.xlabel('Months Since May ASRS')
         plt.ylabel('Billions fed from CS')
 
         plt.rcParams["figure.figsize"] = [17.50, 9]
@@ -94,7 +95,7 @@ class Plotter:
         plt.legend(['kcals available', 'fat available', 'protein available'])
 
         plt.title('Fish')
-        plt.xlabel('Months Since May Sunlight Reduction Event')
+        plt.xlabel('Months Since May ASRS')
         plt.ylabel('Billions fed from fish')
 
         plt.rcParams["figure.figsize"] = [17.50, 9]
@@ -124,7 +125,7 @@ class Plotter:
         plt.plot(time_months_middle, np.array(
             analysis.billions_fed_GH_protein), marker='o', markersize=3)
         plt.title('Greenhouses')
-        plt.xlabel('Months Since May Sunlight Reduction Event')
+        plt.xlabel('Months Since May ASRS')
         plt.ylabel('Billions Fed from Greenhouses')
         plt.legend(['kcals available', 'fat available', 'protein available'])
 
@@ -147,7 +148,7 @@ class Plotter:
         # new_cycler = color_cycler + ls_cycler
         # plt.rc('axes',prop_cycle=new_cycler)
         plt.title('Outdoor Growing, Resilient Foods Deployment')
-        plt.xlabel('Months Since May Sunlight Reduction Event')
+        plt.xlabel('Months Since May ASRS')
 
         ax = plt.gca()
         ax2 = ax.twinx()
@@ -214,9 +215,6 @@ class Plotter:
         ax.plot(time_months_middle, np.array(analysis.
                                              billions_fed_OG_produced_protein), marker='o', markersize=3, color='blue', linestyle='dotted')
         ax.legend(['kcals available', 'fat available', 'protein available'], loc=2)
-        # ax.set_ylabel('Grams per Capita per Day')
-        # ax.set_ylim([0,50])
-        # ax2.legend(['fat available','protein available'],loc=1)
 
         plt.rcParams["figure.figsize"] = [17.50, 9]
         # plt.tight_layout()
@@ -229,7 +227,7 @@ class Plotter:
         plt.plot(time_months_middle, np.array(analysis.billions_fed_meat_fat))
         plt.plot(time_months_middle, np.array(analysis.billions_fed_meat_protein))
         plt.title('Meat')
-        plt.xlabel('Months Since May Sunlight Reduction Event')
+        plt.xlabel('Months Since May ASRS')
         plt.ylabel('Billion Person-Years')
         plt.legend(['kcals available', 'fat available', 'protein available'])
 
@@ -242,7 +240,7 @@ class Plotter:
         plt.plot(time_months_middle, np.array(
             analysis.millions_dairy_animals_midmonth), marker='o', markersize=3)
         plt.title('Millions of Dairy Animals')
-        plt.xlabel('Months Since May Sunlight Reduction Event')
+        plt.xlabel('Months Since May ASRS')
         plt.ylabel('Livestock Population, Millions')
 
         plt.rcParams["figure.figsize"] = [17.50, 9]
@@ -275,7 +273,7 @@ class Plotter:
         # plt.plot(time_months,np.array(analysis.billions_fed_dairy_meat_fat))
         # plt.plot(time_months,np.array(analysis.billions_fed_dairy_meat_protein))
         plt.title('Billions Fed from Milk and Eating Dairy Animals')
-        plt.xlabel('Months Since May Sunlight Reduction Event')
+        plt.xlabel('Months Since May ASRS')
         plt.ylabel('Billion Person-Years')
         plt.legend([
             'kcals available, milk',
@@ -290,14 +288,16 @@ class Plotter:
         plt.savefig("plot.svg")
         os.system('xdg-open plot.svg')
 
-    def plot_people_fed_kcals(time_months_middle, analysis, title):
+    def plot_people_fed_kcals(time_months_middle, analysis, title, xlim):
 
         font = {'family': 'normal',
                 'weight': 'bold',
                 'size': 16}
 
+        plt.rcParams["figure.figsize"] = [17.50, 9]
         matplotlib.rc('font', **font)
-        fig = plt.figure()
+        plt.close()
+        plt.figure()
         ax = plt.subplot(111)
         legend = []
 
@@ -397,9 +397,9 @@ class Plotter:
         plt.ylabel('Calories per capita per day')
 
         if(not analysis.c['inputs']['IS_NUCLEAR_WINTER']):
-            plt.xlabel('Months since may, baseline around 2020')
+            plt.xlabel('Months since May, baseline around 2020')
         else:
-            plt.xlabel('Months since may sunlight reduction event')
+            plt.xlabel('Months since May ASRS onset')
         # plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05),
         #   ncol=3, fancybox=True, shadow=True)
         ax.set_ylim([0, (analysis.billions_fed_immediate_OG_kcals[-1]
@@ -414,8 +414,8 @@ class Plotter:
                          + analysis.billions_fed_seaweed_kcals[-1]
                          + analysis.billions_fed_CS_kcals[-1]
                          + analysis.billions_fed_SCP_kcals[-1])/analysis.c["CONVERT_TO_KCALS"]])
-        # ax.set_xlim([0,84])
-        ax.set_xlim([0, 48])
+        ax.set_xlim([0,xlim])
+        # ax.set_xlim([0, 48])
         ax.set_ylim([0, (analysis.billions_fed_immediate_OG_kcals[48]
                          + analysis.billions_fed_new_stored_OG_kcals[48]
                          + analysis.billions_fed_SF_kcals[48]
@@ -485,7 +485,7 @@ class Plotter:
                   handles=reversed(handles), labels=reversed(labels))
         plt.title('Primary Caloric Monthly Sources, Present-Day')
         plt.ylabel('Calories per Capita per Day')
-        plt.xlabel('Months Since May Sunlight Reduction Event')
+        plt.xlabel('Months Since May ASRS onset')
         # plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05),
         #   ncol=3, fancybox=True, shadow=True)
         ax.set_xlim([0, 48])
@@ -506,70 +506,6 @@ class Plotter:
         # plt.tight_layout()
         plt.savefig("plot.svg")
         os.system('xdg-open plot.svg')
-
-    def plot_people_fed_kcals_no_resilient(time_months_middle, analysis):
-
-        font = {'family': 'normal',
-                'weight': 'bold',
-                'size': 16}
-
-        matplotlib.rc('font', **font)
-        fig = plt.figure()
-        ax = plt.subplot(111)
-        # https://jacksonlab.agronomy.wisc.edu/2016/05/23/15-level-colorblind-friendly-palette/
-        #   "#000000","#004949","#009292","#ff6db6","#ffb6db",
-        # "#490092","#006ddb","#b66dff","#6db6ff","#b6dbff",
-        # "#920000","#924900","#db6d00","#24ff24","#ffff6d"
-        # patterns = [ "/" , "\\" , "|" , "-" , "+" , "x", "o", "O", ".", "*" ]
-        patterns = ["/", "\\", "|", "-", "+", "x", "o", "O"]
-        pal = ["#006ddb", "#b66dff", "6db6ff", "#b6dbff",
-               "#920000", "#924900", "#db6d00", "#24ff24", "#ffff6d"]
-
-        stacks = ax.stackplot(time_months_middle,
-                              analysis.billions_fed_fish_kcals/analysis.c["CONVERT_TO_KCALS"],
-                              analysis.billions_fed_immediate_OG_kcals /
-                              analysis.c["CONVERT_TO_KCALS"],
-                              analysis.billions_fed_new_stored_OG_kcals /
-                              analysis.c["CONVERT_TO_KCALS"],
-                              analysis.billions_fed_SF_kcals/analysis.c["CONVERT_TO_KCALS"],
-                              (analysis.billions_fed_milk_kcals
-                               + analysis.billions_fed_h_e_milk_kcals)/analysis.c["CONVERT_TO_KCALS"],
-                              (np.array(analysis.billions_fed_meat_kcals)
-                               + analysis.billions_fed_h_e_meat_kcals)/analysis.c["CONVERT_TO_KCALS"],
-                              analysis.billions_fed_GH_kcals/analysis.c["CONVERT_TO_KCALS"],
-                              analysis.billions_fed_seaweed_kcals /
-                              analysis.c["CONVERT_TO_KCALS"],
-                              (np.array(analysis.billions_fed_CS_kcals) +
-                                  np.array(analysis.billions_fed_SCP_kcals))/analysis.c["CONVERT_TO_KCALS"],
-                              labels=[
-                                  'Marine Fish',
-                                  'Outdoor Crops consumed \n immediately',
-                                  'Crops consumed that month \n that were stored \n after sunlight reduction',
-                                  'Crops consumed that month \n that were stored \n before sunlight reduction',
-                                  'Dairy Milk',
-                                  'Meat',
-                              ], colors=pal)
-        for stack, hatch in zip(stacks, patterns):
-            stack.set_hatch(hatch)
-        box = ax.get_position()
-        ax.set_position([box.x0, box.y0, box.width * 0.695, box.height])
-        handles, labels = ax.get_legend_handles_labels()  # get the handles
-        ax.legend()
-        ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),
-                  handles=reversed(handles), labels=reversed(labels))
-        plt.title('Primary Caloric Monthly Sources, No Deployment')
-        plt.ylabel('Calories per Capita per Day')
-        plt.xlabel('Months Since May Sunlight Reduction Event')
-        # plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05),
-        #   ncol=3, fancybox=True, shadow=True)
-        ax.set_ylim([0, 2100])
-        ax.set_xlim([0, 66])
-
-        plt.rcParams["figure.figsize"] = [17.50, 9]
-        # plt.tight_layout()
-        plt.savefig("plot.svg")
-        os.system('xdg-open plot.svg')
-
 
     def plot_people_fed_combined(time_months_middle, analysis):
         fig = plt.figure()
@@ -593,7 +529,7 @@ class Plotter:
             title = title + "Fish, "
         title = title + "Population Fed"
         plt.title(title)
-        plt.xlabel('Months Since May Sunlight Reduction Event')
+        plt.xlabel('Months Since May ASRS onset')
 
         ax = plt.gca()
         # ax2 = ax.twinx()
@@ -704,7 +640,7 @@ class Plotter:
             'if added, Seaweed+CS+GH, protein'
         ]
         plt.ylabel('billions of people')
-        plt.xlabel('Months Since May Sunlight Reduction Event')
+        plt.xlabel('Months Since May ASRS onset')
         plt.legend(legend)
 
         plt.rcParams["figure.figsize"] = [17.50, 9]
@@ -733,7 +669,7 @@ class Plotter:
         plt.plot(time_months_middle, np.array(
             analysis.billions_fed_seaweed_protein), marker='o', markersize=3)
         plt.title('Seaweed People Fed')
-        plt.xlabel('Months Since May Sunlight Reduction Event')
+        plt.xlabel('Months Since May ASRS')
         plt.ylabel('Billion People Fed by macronutrient')
         plt.legend(['kcals available', 'fat available', 'protein available'])
 
@@ -774,7 +710,7 @@ class Plotter:
             'Optimizer Estimate Wet On Farm'
         ])
         plt.title('Seaweed Wet, 1000s of tons')
-        plt.xlabel('Days since May Sunlight Reduction Event')
+        plt.xlabel('Days since May ASRS')
         plt.yscale('log')
 
         plt.rcParams["figure.figsize"] = [17.50, 9]
@@ -792,7 +728,7 @@ class Plotter:
         ]
 
         plt.legend(legend)
-        plt.xlabel('Days since May Sunlight Reduction Event')
+        plt.xlabel('Days since May ASRS')
         plt.title('Cumulative Seaweed Harvest, 1000s Tons Wet')
         # plt.yscale('log')
 
@@ -800,3 +736,35 @@ class Plotter:
         # plt.tight_layout()
         plt.savefig("plot.svg")
         os.system('xdg-open plot.svg')
+
+    def plot_histogram(ax,data,N,xlabel,ylabel,title):
+        num_bins = int(N / 10)
+        # plt.title("Food Available After Delayed Shutoff and Waste ")
+        # ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+        ax.hist(data, bins=num_bins, facecolor='blue', alpha=0.5)
+        ax.set_xlabel(xlabel)
+        # ax.set_title(title)
+        # ax.set_ylabel()
+
+
+    def plot_histogram_with_boxplot(data,N,xlabel,title):
+        # https://www.python-graph-gallery.com/24-histogram-with-a-boxplot-on-top-seaborn
+        # set a grey background (use sns.set_theme() if seaborn
+        # version 0.11.0 or above)
+        sns.set(style="darkgrid")
+
+        # creating a figure composed of two matplotlib.Axes objects
+        # (ax_box and ax_hist)
+        f, (ax_box, ax_hist) = plt.subplots(2, sharex=True,
+            gridspec_kw={"height_ratios": (.15, .85)})
+
+        # assigning a graph to each ax
+        sns.boxplot(data, ax=ax_box)
+        sns.histplot(data=data, ax=ax_hist)
+
+        # Remove x axis name for the boxplot
+        ax_hist.set(xlabel=xlabel)
+        ax_box.set(title=title)
+        plt.savefig("plot.svg")
+        os.system('xdg-open plot.svg')
+

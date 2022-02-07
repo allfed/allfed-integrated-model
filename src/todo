@@ -3,8 +3,8 @@
 [done] try to figure out how to smooth no resilient foods graph
 [done] change everything to calories per person per day
 [done] double check greenhouses are correctly tripled month 42 to 80ish
-	42: 438 calories (times 3 equals 1314)
-	80ish: 1287 to 1879
+    42: 438 calories (times 3 equals 1314)
+    80ish: 1287 to 1879
 [done] use 2 months at 7.8 in dry caloric tons witheld for transit [mike will do this]
 [done] 3 years of industrial foods, then stop.
 [done] limit plots to roughly 60 months
@@ -26,8 +26,8 @@
 h_e_fed_balance_kcals[m] = -excess_kcals[m] + meat_kcals[m]+ h_e_fed_dairy_kcals[m]
 
 [done]module(dairy_cows_from_grass[m],excess_kcals[m],constants)
-	...
-	return (meat_kcals[m],meat_fat[m],meat_protein[m], h_e_fed_dairy_kcals[m], h_e_fed_dairy_fat[m], h_e_fed_dairy_protein[m])
+    ...
+    return (meat_kcals[m],meat_fat[m],meat_protein[m], h_e_fed_dairy_kcals[m], h_e_fed_dairy_fat[m], h_e_fed_dairy_protein[m])
 
 [done]make monthly
 
@@ -60,9 +60,9 @@ caption: food production not using human edible sources, only on-farm waste inco
 caption:caloric supply per capita assuming culling of all animals after X months and biofuel shutoff after Y months. Waste is assumed to reduce from present-day levels.
 
 [done]make the run model before work with present-day values and biofuels, so that we reflect present-day diets with the model. This allows me to check whether my calculations spit something reasonable out. We can get a better sense of the improvement in terms of actual usage by swapping meat products over to other more efficient systems (dairy/milk).
-	[done]fix inedible over time
-	[done]add biofuels as a monthly value that can be used to turn off things
-	[done]change ordering of meat feed for animals and meat feed for residue
+    [done]fix inedible over time
+    [done]add biofuels as a monthly value that can be used to turn off things
+    [done]change ordering of meat feed for animals and meat feed for residue
 [done] title: Baseline around 2020 average diet
 caption: present-day average diet predicted by the optimizer based on year 2020 (2019?) values. Availability was determined by subtracting feed and biofuel usage as well as waste from production numbers.
 
@@ -83,7 +83,7 @@ caption: present-day average diet predicted by the optimizer based on year 2020 
 [done]fix issue with fat taking more than 100% of production
 
 [done]run the simulation for present-day to check that a similar number of people eating meat is predicted as actually do
-	
+    
 [done] add a separate run where biofuels and feed are added in
 
 [done] Add up the flows and make it work so primary demand from people plus waste, plus human edible feed, plus biofuels adds to the primary production.
@@ -93,40 +93,40 @@ caption: expected global average diet, assuming biofuels shutoff after X months 
 
 
 Required changes to establish people fed present-day:
-	analysis:
+    analysis:
 
-		[done]remove h_e_fraction_X_fed_to_humans from:
-			[done] billions_fed_GH
-			[done] billions_fed_fish
-			[done] billions_fed_CS
-			[done] billions_fed_SCP
-			[done] billions_fed_meat
-			[done] billions_fed_milk
-			[done] billions_fed_seaweed
-			
-		[done] update h_e_fraction_X by only including OG and SF instead of humans_fed_X
+        [done]remove h_e_fraction_X_fed_to_humans from:
+            [done] billions_fed_GH
+            [done] billions_fed_fish
+            [done] billions_fed_CS
+            [done] billions_fed_SCP
+            [done] billions_fed_meat
+            [done] billions_fed_milk
+            [done] billions_fed_seaweed
+            
+        [done] update h_e_fraction_X by only including OG and SF instead of humans_fed_X
 
-		[done] update h_e_fraction_X to OG_SF_fraction_X
+        [done] update h_e_fraction_X to OG_SF_fraction_X
 
-		[done] only including OG and SF in sum_sources
+        [done] only including OG and SF in sum_sources
 
-		[done] write function to calculate part of the OG and SF result before the reduction from use
+        [done] write function to calculate part of the OG and SF result before the reduction from use
 
-	optimizer:
-		[done] change compute_excess_after_run function call
-		[done] change excess constraint to only include og + sf 
+    optimizer:
+        [done] change compute_excess_after_run function call
+        [done] change excess constraint to only include og + sf 
 
 
 Required changes to establish people fed present-day:
-	[done]remove waste from the SF and OG constants
-	[done]split any analysis mention of balance into excess and h_e_food
-	[done]apply crops waste to any independent excess value in optimizer 
-	[done]apply crops waste to any independent excess value in analysis 
-	add waste and subtract biofuels from the people_fed variables
-		[done] for kcals
-		[done] for fat
-		[done] for protein
-	[done] add the waste into the analysis section for SF and OG
+    [done]remove waste from the SF and OG constants
+    [done]split any analysis mention of balance into excess and h_e_food
+    [done]apply crops waste to any independent excess value in optimizer 
+    [done]apply crops waste to any independent excess value in analysis 
+    add waste and subtract biofuels from the people_fed variables
+        [done] for kcals
+        [done] for fat
+        [done] for protein
+    [done] add the waste into the analysis section for SF and OG
  
 [done]figure out why fat doesn't add up to around 8 billion
 [done]figure out why protein doesn't add up to around 8 billion
@@ -139,53 +139,53 @@ Required changes to establish people fed present-day:
 
 
 [done]Required changes to properly incorporate new yields for outdoor growing:
-	[done]Determine maize, canola, potato, and wheat mass per dry matter or kcals per dry matter
+    [done]Determine maize, canola, potato, and wheat mass per dry matter or kcals per dry matter
 
-	[done]Multiply by the percent reduction in these crops to get the actual kcals fat, protein
-	[done]Multiply by the percent reduction in a rotation with maize, soybean, wheat, rice and get the percent reduction.
-	[done]Put in the new numbers for the rotation 
-	[done]Add an updated rotation of the crops with 33/33/17/17.
+    [done]Multiply by the percent reduction in these crops to get the actual kcals fat, protein
+    [done]Multiply by the percent reduction in a rotation with maize, soybean, wheat, rice and get the percent reduction.
+    [done]Put in the new numbers for the rotation 
+    [done]Add an updated rotation of the crops with 33/33/17/17.
 
 [done] figure out crops that allow enough protein so protein and fat are not the limiting factors.
 
 
 
 write up remaining parts of paper:
-	[done] [morgan] explain the estimates made for crop growth (supplement)
-	[done] [morgan] update the results section to describe results
-	[done] [morgan] explanation of seaweed growth algorithm (supplement)
-	[done] [morgan] explanation of the software model architecture (main paper)
-	[done] [morgan] monte carlo bounds (supplement)
-	[done] [morgan] monte carlo results (main paper)
+    [done] [morgan] explain the estimates made for crop growth (supplement)
+    [done] [morgan] update the results section to describe results
+    [done] [morgan] explanation of seaweed growth algorithm (supplement)
+    [done] [morgan] explanation of the software model architecture (main paper)
+    [done] [morgan] monte carlo bounds (supplement)
+    [done] [morgan] monte carlo results (main paper)
 
 [done]run the monte-carlo with new values set
-	mc:
-		3x greenhouse production 
-		(look into gh upper and lower bounds based on alaskan potato growing)
-		
-		industrial 60 140 is fine
-		
-		upper bound delay:
-			industrial: 6 months, gh: 4 months, seaweed: 2 months, crops rotation: 11 months
+    mc:
+        3x greenhouse production 
+        (look into gh upper and lower bounds based on alaskan potato growing)
+        
+        industrial 60 140 is fine
+        
+        upper bound delay:
+            industrial: 6 months, gh: 4 months, seaweed: 2 months, crops rotation: 11 months
 
-		estimated delay:
-			industrial: 3 months, gh: 2 months, seaweed: 1 months, crops rotation: 9 months
+        estimated delay:
+            industrial: 3 months, gh: 2 months, seaweed: 1 months, crops rotation: 9 months
 
-		lower bound delay:
-			industrial: 1, gh: 1 month, seaweed: 0 months, crops rotation: 8 months
-
-
-	[morgan] Send email to people we'd like to review the paper before submission
-		Tony Barrett monte-carlo
-		IFPRI people?
-		Joshua
+        lower bound delay:
+            industrial: 1, gh: 1 month, seaweed: 0 months, crops rotation: 8 months
 
 
-	[morgan] determine who to suggest as reviewers
-		Gal rutgers lead
-		Heinan grad student of gal
-		cer76@cam.ac.uk
-		Catherine Richards
+    [morgan] Send email to people we'd like to review the paper before submission
+        Tony Barrett monte-carlo
+        IFPRI people?
+        Joshua
+
+
+    [morgan] determine who to suggest as reviewers
+        Gal rutgers lead
+        Heinan grad student of gal
+        cer76@cam.ac.uk
+        Catherine Richards
 
 
 
@@ -194,21 +194,68 @@ write up remaining parts of paper:
 [done] Finish this message: Another piece of evidence something fishy is going on is when I run the before_resilient_foods case with the full 23.48 billion fed before waste including fish, primary meat production, and outdoor growing, I only get enough fat to feed 14.5 billion, so then the question is where is all the fat coming from to feed animals, biofuels, and 7.8 billion people 
 
 
+[done] add culled meat
 
 
 
 
+[done] update monte carlo to produce random values along lognormal and normal distributions
+
+    run and update manuscript with monte carlo changes
+
+add in feed delay for monte carlo for culled meat
+double check culled meat is properly working
+    in run_model.py => 12 months evenly
+    in run_model.py => correct fraction (all meat) is used
+    in run_model_no_resilient_foods.py => 12 months evenly
+    in run_model_no_resilient_foods.py => correct fraction (all meat) is used
 
 
+[done] add statistical box and whiskers for monte carlo results
+add per month in lognormal plots
+add colors to monte carlo results 
+[done] industrial foods scale factor
+
+update plot title to include 50% rather than "bad"
+
+ask juan to check confidence bars are consistent
+
+clarify we are not considering relocation to tobacco crop areas
+
+table with:
+    95% confidence
+    mean
+    max
+    min
+    standard deviation
+    type of distribution
 
 
+create the jupyter notebooks for the integrated model
+
+code cleanup on integrated model from jaz
+- Python constants code could use better documentation of units
+- Should use logger to control printouts instead of commenting code
+- Would be helpful to distinguish between raw input values, calculated values, and model input values
+- Consider for loops for annual/month calculations
+- at the very least, make the sections have clear and long start/end comments to visually break up the code
+- Document functions (inputs, outputs, operations)
+- Consider using conversion constants instead of magic numbers
+- Need more descriptive variable constants (single letter ones like "s" and "c" are unclear)
 
 
 === eventually... ===
 
+cleanup on integrated model code from Jaz
+- Prefer to not return large arrays from internal functions  (get_meat_milk_from_excess) - set member values instead
+- Consider breaking calculations up into objects or files instead of breaking up by comments
+- Prefer objects with fields instead of string-based dictionaries (will help with code completion too)
+
+figure out why optimizer fails occasionally on monte carlo (but not old sensitivity analysis)
+
 check with juan that industrial foods did not include any delays implicitly
 
-combine the 7 plots into a graphic and add captions
+[done] combine the 7 plots into a graphic and add captions
 
 
 fix how culled works when there's an excess of calories so that it doesn't magically add meat without taking it away

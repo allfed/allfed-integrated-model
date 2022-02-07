@@ -66,15 +66,11 @@ class Optimizer:
         v["crops_food_eaten_rot"] = [0] * NMONTHS
         v["crops_food_eaten_no_rot"] = [0] * NMONTHS
 
-        s["meat_eaten"] = [0] * NMONTHS
-
         v["humans_fed_kcals"] = [0] * NMONTHS
         v["humans_fed_fat"] = [0] * NMONTHS
         v["humans_fed_protein"] = [0] * NMONTHS
 
         for m in range(0, self.c["NMONTHS"]):
-            # if(m > 0):
-            #   continue
             self.time_days_middle.append(c["DAYS_IN_MONTH"] * (m + 0.5))
             self.time_days_monthly.append(c["DAYS_IN_MONTH"] * m)
             self.time_days_monthly.append(c["DAYS_IN_MONTH"] * (m + 1))
@@ -97,7 +93,8 @@ class Optimizer:
         obj_func = z
         model += obj_func
 
-        status = model.solve(pulp.PULP_CBC_CMD(fracGap=0.0001, msg=c["VERBOSE"]))
+        status = model.solve(pulp.PULP_CBC_CMD(fracGap=0.0001,
+            msg=c["VERBOSE"]))
         assert(status == 1)
 
         print('optimization successful')
@@ -430,7 +427,7 @@ class Optimizer:
             # else:
             model += (v["seaweed_food_produced_monthly"][m] * self.c["SEAWEED_KCALS"] <=
                       (self.c["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"]/100)
-                      * (self.c["WORLD_POP"]/1e9*self.c["KCALS_MONTHLY"]),
+                      * (self.c["WORLD_POP"] / 1e9 * self.c["KCALS_MONTHLY"]),
                       "Seaweed_Limit_Kcals_" + str(m) + "_Constraint")
 
         # finds billions of people fed that month per nutrient
@@ -439,6 +436,7 @@ class Optimizer:
         # seaweed_food_produced_monthly*seaweed_kcals is in units billions kcals
         # kcals monthly is in units kcals
         CROPS_WASTE = 1-self.c["inputs"]["WASTE"]["CROPS"]/100
+
 
         model += (v["humans_fed_kcals"][m]
                   == (v["stored_food_eaten"][m] * CROPS_WASTE
@@ -457,6 +455,7 @@ class Optimizer:
                       + self.s["h_e_created_kcals"][m]
                       )/self.c["KCALS_MONTHLY"],
                   "Kcals_Fed_Month_" + str(m) + "_Constraint")
+
 
         if(self.c['inputs']['INCLUDE_FAT']):
             # fat monthly is in units thousand tons
@@ -477,7 +476,7 @@ class Optimizer:
                        + self.s["greenhouse_area"][m] * self.s["greenhouse_fat_per_ha"][m]
                        + self.s["production_fat_fish_per_m"][m]
                        + self.s["h_e_created_fat"][m])
-                      / self.c["FAT_MONTHLY"]/1e9,
+                      / self.c["FAT_MONTHLY"] / 1e9,
                       "Fat_Fed_Month_" + str(m) + "_Constraint")
 
         if(self.c['inputs']['INCLUDE_PROTEIN']):
@@ -498,7 +497,7 @@ class Optimizer:
                        + self.s["greenhouse_area"][m] * self.s["greenhouse_protein_per_ha"][m]
                        + self.s["production_protein_fish_per_m"][m]
                        + self.s["h_e_created_protein"][m])
-                      / self.c["PROTEIN_MONTHLY"]/1e9,
+                      / self.c["PROTEIN_MONTHLY"] / 1e9,
                       "Protein_Fed_Month_" + str(m) + "_Constraint")
 
         # no feeding human edible maintained meat or dairy to animals or biofuels

@@ -18,6 +18,11 @@ if module_path not in sys.path:
 from src.optimizer import Optimizer
 from src.plotter import Plotter
 import matplotlib
+
+from scipy.stats import uniform
+from scipy.stats import norm
+from scipy.stats import lognorm  
+
 matplotlib.use('Svg')
 
 
@@ -34,7 +39,7 @@ c['inputs']['INITIAL_SF_FAT'] = 166.07e3 * 0.96
 c['inputs']['INITIAL_SF_PROTEIN'] = 69.25e3 * 0.96
 
 c['inputs']['MAX_SEAWEED_AS_PERCENT_KCALS'] = 10
-c['inputs']['NEW_AREA_PER_DAY'] = 2.0765 / 2  # 1000 km^2 (seaweed)
+c['inputs']['SEAWEED_NEW_AREA_PER_DAY'] = 2.0765 / 2  # 1000 km^2 (seaweed)
 c['inputs']['SEAWEED_PRODUCTION_RATE'] = 10  # percent (seaweed)
 
 # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
