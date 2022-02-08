@@ -42,8 +42,6 @@ Select 'OK'.
 
 For the repository, select 'allfed/allfed-integrated-model' branch 'main', then click on the item labelled under Path, 'notebooks/example_optimize.ipynb'.
 
-![step7](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/readme_content/step7.png)
-
 Now follow the instructions in the Jupyter notebook. Run each line of the Jupyter notebook in succession to view results of the paper.
 
 Please let me know if any of these steps go awry! (contact morgan [at] allfed [dot] info)
