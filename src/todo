@@ -216,19 +216,21 @@ add per month in lognormal plots
 add colors to monte carlo results 
 [done] industrial foods scale factor
 
-update plot title to include 50% rather than "bad"
+[done] update plot title to include 50% rather than "bad"
 
-ask juan to check confidence bars are consistent
+[done] ask juan to check confidence bars are consistent
 
 clarify we are not considering relocation to tobacco crop areas
 
-table with:
+[done] table with:
     95% confidence
     mean
     max
     min
     standard deviation
     type of distribution
+
+add title and labels of plots to be similar size to text
 
 
 create the jupyter notebooks for the integrated model
@@ -243,8 +245,33 @@ code cleanup on integrated model from jaz
 - Consider using conversion constants instead of magic numbers
 - Need more descriptive variable constants (single letter ones like "s" and "c" are unclear)
 
+comments from feb 6
+ - I know we already discussed this, another advantage of using objects instead of dictionaries for storing constants is that it makes it easy to look up the documentation for a given field (especially in an IDE like VSCode where you can hover to see the documentation for any member variable)
+ - Also already discussed, but there’s some commented code in the run_model files
+ - in run_model_before_catastrophe.py  on line 129, the CULL_DURATION is set to nan since it’s not a nuclear winter scenario - this seems odd, I would think you should just set the IS_NUCLEAR_WINTER option to handle those considerations
+ - I see a lot of conversion values spread throughout the constants file, some of them even appearing the same way as the input constants to the model. I’d suggest keeping those kinds of values somewhere else to not confuse them as inputs to the model. not a big deal though, just another thing to try and make it clear what’s input and what’s output (and what’s an intermediate calculation)
+ - in optimizer - this line is unclear and the name doesn’t provide more context:
+    v["z"] = z  # used only for validation
+- After reading more, I realize this is the variable we’re optimizing for, and I think z is not a good name for such an important variable
+
+- again I’m finding it hard to keep mental track of the structure of the dictionary v in the optimizer.
+- (minor) for a while I thought the _rot suffix indicated food rotting, not rotation (i see there is a comment explaining that though)
+- on line 69 of the optimizer - should this be updating the dictionary for v, not s? All the surrounding lines are updates to the v dictionary:
+
+    s["meat_eaten"] = [0] * NMONTHS
+    
+    if not, there should at least be a comment explaining why this line is different (or move it elsewhere)
+
+After reading through the optimizer model, I realize there actually aren’t that many inputs to the model. the constants function is by contrast rather overwhelming. I think it would be helpful to make it more explicit which ultimate constants the constants file is generating for the model. A lot of the “constants” are indeed constant, but not necessarily direct inputs to the model.
+After looking at the documentation for the PuLP library, I understand more what’s going on in the add_objectives_to_model function. I think it would be helpful to explain for each of the constaints that you’re applying with a small comment. (it’s possible this is covered in the paper, so maybe it’s less necessary. I just like being able to read the code and understand things without needing an accompanying document)
+
+check density and growth rates for Porphyra Amplissima and add to paper
+
+switch from wheat to sugar beet or potato
 
 === eventually... ===
+
+are fish more efficient use of human edible for chicken/pork
 
 cleanup on integrated model code from Jaz
 - Prefer to not return large arrays from internal functions  (get_meat_milk_from_excess) - set member values instead

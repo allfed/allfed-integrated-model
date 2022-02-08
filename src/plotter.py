@@ -14,6 +14,7 @@ module_path = os.path.abspath(os.path.join('..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
 import seaborn as sns
+from scipy.stats import t
 matplotlib.use('Svg')
 
 
@@ -416,18 +417,7 @@ class Plotter:
                          + analysis.billions_fed_SCP_kcals[-1])/analysis.c["CONVERT_TO_KCALS"]])
         ax.set_xlim([0,xlim])
         # ax.set_xlim([0, 48])
-        ax.set_ylim([0, (analysis.billions_fed_immediate_OG_kcals[48]
-                         + analysis.billions_fed_new_stored_OG_kcals[48]
-                         + analysis.billions_fed_SF_kcals[48]
-                         + analysis.billions_fed_fish_kcals[48]
-                         + analysis.billions_fed_milk_kcals[48]
-                         + analysis.billions_fed_meat_kcals[48]
-                         + analysis.billions_fed_h_e_milk_kcals[48]
-                         + analysis.billions_fed_h_e_meat_kcals[48]
-                         + analysis.billions_fed_GH_kcals[48]
-                         + analysis.billions_fed_seaweed_kcals[48]
-                         + analysis.billions_fed_CS_kcals[48]
-                         + analysis.billions_fed_SCP_kcals[48])/analysis.c["CONVERT_TO_KCALS"]])
+        ax.set_ylim([0, 4000])
 
         plt.rcParams["figure.figsize"] = [17.50, 9]
         # plt.tight_layout()
@@ -767,4 +757,7 @@ class Plotter:
         ax_box.set(title=title)
         plt.savefig("plot.svg")
         os.system('xdg-open plot.svg')
-
+        print("95% lower")
+        print(np.percentile(np.array(data),2.5))
+        print("95% upper")
+        print(np.percentile(np.array(data),97.5))

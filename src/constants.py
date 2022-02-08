@@ -185,8 +185,6 @@ class Constants:
         FISH_ESTIMATE = FISH_TONS_WET_2018 * (1 - FISH_WASTE / 100)
         # billions of kcals per month
         FISH_KCALS = FISH_ESTIMATE / 12 * FISH_KCALS_PER_TON / 1e9
-        print("FISH_KCALS")
-        print(FISH_KCALS)
 
         FISH_KG_MONTHLY = FISH_ESTIMATE / 12 * 1e3
 
@@ -497,10 +495,7 @@ class Constants:
             ratio_maintained_cattle = (np.array(
                 cattle_maintained) + np.array(cattle_h_e_maintained)) / present_day_tons_per_m_cattle
             ratio_not_maintained_cattle = 1 - ratio_maintained_cattle
-            
-            print("ratio_not_maintained_cattle")
-            print(ratio_not_maintained_cattle)
-            
+
             # make sure for the months we really care about we're not exceeding present-day cattle meat maintained production
             # assert((ratio_maintained_cattle <= 1)[0:47].all())
             if((ratio_maintained_cattle[0:47] >= 1).any()):
@@ -667,11 +662,6 @@ class Constants:
         INITIAL_MEAT = INIT_MEAT_KCALS \
             * (1 - MEAT_WASTE / 100)
 
-        print("INIT_LARGE_ANIMALS_CULLED")
-        print(INIT_LARGE_ANIMALS_CULLED)
-        print("INIT_MEAT_KCALS")
-        print(INIT_MEAT_KCALS)
-
         if(INITIAL_MEAT > 0):
             MEAT_FRACTION_FAT = INIT_MEAT_FAT \
                 / INIT_MEAT_KCALS
@@ -693,7 +683,7 @@ class Constants:
                 meat_culled = [0] * NMONTHS
         else:
             CULL_DURATION = 0
-            meat_culled = [0] * [NMONTHS]
+            meat_culled = [0] * NMONTHS
 
         if(VERBOSE):
             print("CULL_DURATION")

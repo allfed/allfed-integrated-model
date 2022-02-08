@@ -177,7 +177,7 @@ def monte_carlo():
     Plotter.plot_histogram(axs[0,0], seaweed_production_rate, N, "seaweed growth per day\n (%)","number of scenarios","")
     Plotter.plot_histogram(axs[0,1], seaweed_new, N, "seaweed area built \n(1000s km^2/month)","number of scenarios","seaweed new area built monthly")
     Plotter.plot_histogram(axs[0,2], max_seaweed, N, "seaweed calories in diet \n (%)","number of scenarios","Seaweed percent dietary calories ")
-    Plotter.plot_histogram(axs[0,3], rotation_outcome, 100, "rotation outcome\n (0=50\% relocated, 1=80\% relocated, 2=100\% relocated)","number of scenarios","")
+    Plotter.plot_histogram(axs[0,3], rotation_outcome, 100, "rotation outcome\n 0=50% relocated\n1=80% relocated\n2=100% relocated","number of scenarios","")
     Plotter.plot_histogram(axs[1,0], greenhouse_gain, N, "greenhouse yield gain \n(%)","number of scenarios","gain (%)")
     Plotter.plot_histogram(axs[1,1], greenhouse_area, N, "greenhouse area scale factor","number of scenarios","seaweed new area built monthly")
     Plotter.plot_histogram(axs[1,2], industrial_foods, N, "industrial foods scale factor","number of scenarios","")
@@ -187,8 +187,8 @@ def monte_carlo():
     plt.savefig("plot.svg")
     os.system('xdg-open plot.svg')
 
-
     all_fed = []
+    failed_to_optimize = 0
     for i in range(0, N):
         print("i")
         print(i)
@@ -233,6 +233,7 @@ def monte_carlo():
                 optimizer.optimize(constants)
         except:
             print(cin)
+            failed_to_optimize = failed_to_optimize + 1
             print("Warning: Optimization failed. Continuing.")
             continue
 
@@ -243,11 +244,15 @@ def monte_carlo():
             Plotter.plot_people_fed_kcals(time_months_middle, analysis,
                 'People fed minus waste and biofuels')
 
+        fed = analysis.people_fed_billions
+        if(np.isnan(fed)):
+            failed_to_optimize = failed_to_optimize + 1
+            print("Warning: Total people fed could not be calculated. Continuing.")
+            continue
         # convert people fed to calories per capita in 2020
-        all_fed.append(analysis.people_fed_billions / 7.8 * 2100)
+        all_fed.append(fed / 7.8 * 2100)
 
     title = "Monte Carlo results"
-    ylabel = "number of scenarios"
     xlabel = "kcals per capita per day"
     Plotter.plot_histogram_with_boxplot(
         all_fed,
@@ -256,14 +261,8 @@ def monte_carlo():
         title
     )
 
-    #create Q-Q plot with 45-degree line added to plot
-    fig = sm.qqplot(all_fed, line='45')
-    plt.savefig("plot.svg")
-    os.system('xdg-open plot.svg')
-
-    # https://stackoverflow.com/questions/61940618/how-do-i-draw-a-histogram-for-a-normal-distribution-using-python-matplotlib
-    # https://stackoverflow.com/questions/12050393/how-to-force-the-y-axis-to-only-use-integers-in-matplotlib
-    # plt.show()
+    print("number failed to optimize")
+    print(failed_to_optimize)
 
 
 monte_carlo()

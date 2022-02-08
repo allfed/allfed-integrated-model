@@ -16,7 +16,7 @@ from src.optimizer import Optimizer
 from src.plotter import Plotter
 import numpy as np
 
-constants = {} #c = constants
+constants = {}
 
 constants['CHECK_CONSTRAINTS'] = False
 

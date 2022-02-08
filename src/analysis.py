@@ -162,24 +162,6 @@ class Analyzer:
                 * 1/self.c["PROTEIN_MONTHLY"]/1e9
             )
 
-    # #if greenhouses aren't included, these results will be zero
-    # def analyze_GH_results(
-    #   self,
-    #   production_kcals_greenhouses_per_m,
-    #   production_fat_greenhouses_per_m,
-    #   production_protein_greenhouses_per_m,
-    #   show_output
-    #   ):
-
-    #   self.billions_fed_GH_kcals = \
-    #       np.array(production_kcals_greenhouses_per_m) \
-    #       / self.c["KCALS_MONTHLY"]
-    #   self.billions_fed_GH_fat= \
-    #       np.array(production_fat_greenhouses_per_m) \
-    #       / self.c["FAT_MONTHLY"]/1e9
-    #   self.billions_fed_GH_protein = \
-    #       np.array(production_protein_greenhouses_per_m) \
-    #       / self.c["PROTEIN_MONTHLY"]/1e9
 
     # if fish aren't included, these results will be zero
 
@@ -220,10 +202,6 @@ class Analyzer:
             crops_food_eaten_rot,
             self.c["OG_ROTATION_FRACTION_KCALS"],
             show_output)
-        # print("no_rot")
-        # print(self.no_rot*1e9/4e6/1e6)
-        # print("rot")
-        # print(self.rot*1e9/4e6/1e6)
 
         CROPS_WASTE = 1-self.c["inputs"]["WASTE"]["CROPS"]/100
         self.billions_fed_OG_storage_no_rot = self.makeMidMonthlyVars(
@@ -408,8 +386,6 @@ class Analyzer:
 
         self.billions_fed_meat_kcals_tmp = np.divide(meat_eaten, self.c["KCALS_MONTHLY"])
 
-        print("self.billions_fed_meat_kcals_tmp")
-        print(self.billions_fed_meat_kcals_tmp)
         self.billions_fed_meat_kcals = \
             self.billions_fed_meat_kcals_tmp \
             + np.array(cattle_maintained_kcals)\

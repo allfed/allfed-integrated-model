@@ -16,6 +16,7 @@ if module_path not in sys.path:
     sys.path.append(module_path)
 from src.plotter import Plotter
 from src.optimizer import Optimizer
+
 constants = {}
 constants['CHECK_CONSTRAINTS'] = False
 
@@ -137,7 +138,7 @@ constants['inputs'] = cin
 
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
 Plotter.plot_people_fed_kcals(time_months_middle, analysis,
-                              "Food available after waste, feed ramp down \n and biofuel ramp down, + resilient foods",48)
+                              "Food available after waste, feed ramp down \n and biofuel ramp down, + resilient foods",72)
 print("")
 print("")
 print("")
@@ -188,17 +189,6 @@ tstart = datetime.now()
 n = 0
 # people_fed = 0
 while(True):
-    import matplotlib.pyplot as plt
-    # plt.plot(excess_per_month*1e9/4e6/1e6)
-    # plt.show()
-    # Plotter.plot_people_fed_combined(time_months_middle,analysis)
-    # Plotter.plot_people_fed_kcals(time_months_middle,analysis,"dumb stuff")
-
-    # import matplotlib.pyplot as plt
-    # # print("excess_per_month")
-    # # print(excess_per_month)
-    # plt.plot(excess_per_month)
-    # plt.show()
 
     # billions of kcals
     cin["DELAY"]['FEED_SHUTOFF'] = 2  # months
@@ -247,29 +237,18 @@ while(True):
             + np.linspace(5000, 5000, N_MONTHS_TO_CALCULATE_DIET - feed_delay)
         # /+ analysis.excess_after_run[feed_delay:N_MONTHS_TO_CALCULATE_DIET]
 
-    print("excess_per_month")
-    print(excess_per_month)
     # excess_per_month = excess_per_month+ analysis.excess_after_run
 
-    # if(n>30):
-    #   break
     n = n + 1
-
-    # if(n==3):
-    #   c['CHECK_CONSTRAINTS'] = True
 
 tend = datetime.now()
 diff = tend - tstart
-print("duration seconds diet calculator")
-print(diff.seconds)
-print("duration microseconds diet calculator")
-print(diff.microseconds)
 
 plt.title("Excess kcals used for feed and biofuel")
 plt.ylabel("million dry caloric tons monthly")
 plt.xlabel("Months after May nuclear event")
 plt.plot(np.array(optimizer.s["excess_kcals"]) * 1e9 / 4e6 / 1e6)
 plt.show()
-# Plotter.plot_people_fed_combined(time_months_middle, analysis)
+
 Plotter.plot_people_fed_kcals(time_months_middle, analysis,
-                              "Average diet, excess production used for feed, + resilient foods",48)
+                              "Average diet, excess production used for feed, + resilient foods",72)
