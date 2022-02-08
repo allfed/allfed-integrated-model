@@ -96,7 +96,7 @@ print("")
 print("")
 print("")
 print("")
-Plotter.plot_people_fed_combined(time_months_middle, analysis)
+# Plotter.plot_people_fed_combined(time_months_middle, analysis)
 Plotter.plot_people_fed_kcals(time_months_middle, analysis,
     'Primary production before waste, baseline',78)
 
@@ -133,8 +133,5 @@ print("")
 print("")
 print("")
 
-if(cin['ADD_OUTDOOR_GROWING']):
-    Plotter.plot_OG_before_nuclear_event(time_months_middle, analysis)
-
-Plotter.plot_people_fed_combined(time_months_middle, analysis)
+# Plotter.plot_people_fed_combined(time_months_middle, analysis)
 Plotter.plot_people_fed_kcals(time_months_middle, analysis, "Baseline around 2020 average diet", cin['NMONTHS'])
