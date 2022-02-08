@@ -56,7 +56,7 @@ python src/cheri.py
 ```bash
 poetry run jupyter lab
 ```
-Then navigate to the `notebooks` folder, open `1.0-example-run-cheri.ipynb`, and
+Then navigate to the `notebooks` folder, run `jupyter notebook example_optimizer.ipynb`, and
 execute each cell in order, ignoring the first cell
 
 # Project Tree
