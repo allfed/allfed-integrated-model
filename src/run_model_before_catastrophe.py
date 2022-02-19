@@ -32,7 +32,7 @@ cin['NUTRITION']['PROTEIN_DAILY'] = 59.5  # 51#46 #grams per person per day
 cin['MAX_SEAWEED_AS_PERCENT_KCALS'] = 0
 cin['SEAWEED_NEW_AREA_PER_DAY'] = 0
 cin['SEAWEED_PRODUCTION_RATE'] = 0
-
+cin['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 0
 # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
 cin['TONS_DRY_CALORIC_EQIVALENT_SF'] = 0.96 * 351.433 * 1e6
 

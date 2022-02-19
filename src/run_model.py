@@ -97,21 +97,14 @@ cin['WASTE']['SEAWEED'] = 0  # %
 optimizer = Optimizer()
 constants['inputs'] = cin
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
-
 print("")
-print("")
-print("")
-print("")
-print("people_fed_billions")
+print("no waste estimated people fed")
 print(analysis.people_fed_billions)
-print("")
-print("")
-print("")
 print("")
 
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
-Plotter.plot_people_fed_kcals(time_months_middle, analysis,
-        'Primary production before waste, + resilient foods', 79)
+# Plotter.plot_people_fed_kcals(time_months_middle, analysis,
+#         'Primary production before waste, + resilient foods', 79)
 
 # nuclear winter 150 tab, cell G30-G38  https://docs.google.com/spreadsheets/d/14t3_PUIky6aNiBvw8q24sj6QYxCN9s_VddLY2-eJuPE/edit#gid=1637082097
 # overall waste, on farm+distribution+retail
@@ -136,19 +129,22 @@ optimizer = Optimizer()
 constants['inputs'] = cin
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
 
-# Plotter.plot_people_fed_combined(time_months_middle, analysis)
-Plotter.plot_people_fed_kcals(time_months_middle, analysis,
-                              "Food available after waste, feed ramp down \n and biofuel ramp down, + resilient foods",72)
+analysis1 = analysis
+print("Food available after waste, feed ramp down and biofuel ramp down, with resilient foods")
+print(analysis.people_fed_billions)
 print("")
-print("")
-print("")
-print("")
-print("")
-print("")
-print("==========Running diet balancer=========")
-print("")
-print("")
-print("")
+if(constants["VERBOSE"]):
+
+    print("")
+    print("")
+    print("")
+    print("")
+    print("")
+    print("")
+    print("==========Running diet balancer=========")
+    print("")
+    print("")
+    print("")
 
 # billions of kcals
 # "Sources/summary" tab cell I14.  https://docs.google.com/spreadsheets/d/1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=0
@@ -160,18 +156,24 @@ constants['inputs'] = cin
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
 
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
+# Plotter.plot_people_fed_kcals(time_months_middle, analysis,
+                              # "Food available after waste, feed ramp down \n and biofuel ramp down, + resilient foods",72)
+
+# Plotter.plot_people_fed_combined(time_months_middle, analysis)
 
 people_fed = analysis.people_fed_billions  # np.min(analysis.people_fed)
-print("")
-print("")
-print("")
-print("")
-print("billions of people fed from kcals")
-print(people_fed)
-print("")
-print("")
-print("")
-print("")
+if(constants["VERBOSE"]):
+
+    print("")
+    print("")
+    print("")
+    print("")
+    print("billions of people fed from kcals")
+    print(people_fed)
+    print("")
+    print("")
+    print("")
+    print("")
 
 feed_delay = cin["DELAY"]['FEED_SHUTOFF']
 
@@ -187,6 +189,7 @@ excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
 # =================
 tstart = datetime.now()
 n = 0
+print("Calculating 2100 calorie diet, excess feed to animals")
 # people_fed = 0
 while(True):
 
@@ -200,17 +203,17 @@ while(True):
     constants['inputs'] = cin
     [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
     people_fed = analysis.people_fed_billions  # np.min(analysis.people_fed)
-
-    print("")
-    print("")
-    print("")
-    print("")
-    print("people_fed")
-    print(people_fed)
-    print("")
-    print("")
-    print("")
-    print("")
+    if(constants["VERBOSE"]):
+        print("")
+        print("")
+        print("")
+        print("")
+        print("people_fed")
+        print(people_fed)
+        print("")
+        print("")
+        print("")
+        print("")
 
     # the rebalancer is only responsible for balancing calories, and is unable to operate unless the assumption that fat and protein are limiting values is invalid.
     cin['INCLUDE_PROTEIN'] = True
@@ -244,11 +247,16 @@ while(True):
 tend = datetime.now()
 diff = tend - tstart
 
-plt.title("Excess kcals used for feed and biofuel")
-plt.ylabel("million dry caloric tons monthly")
-plt.xlabel("Months after May nuclear event")
-plt.plot(np.array(optimizer.s["excess_kcals"]) * 1e9 / 4e6 / 1e6)
-plt.show()
+# plt.title("Excess kcals used for feed and biofuel")
+# plt.ylabel("million dry caloric tons monthly")
+# plt.xlabel("Months after May nuclear event")
+# plt.plot(np.array(optimizer.s["excess_kcals"]) * 1e9 / 4e6 / 1e6)
+# plt.show()
 
-Plotter.plot_people_fed_kcals(time_months_middle, analysis,
-                              "Average diet, excess production used for feed, + resilient foods",72)
+# Plotter.plot_people_fed_kcals(time_months_middle, analysis,
+                              # "Average diet, excess production used for feed, + resilient foods",72)
+analysis2 = analysis
+print("Diet computation complete")
+Plotter.plot_fig_1abcd(time_months_middle, analysis1, analysis2, 48)
+
+# Plotter.plot_fig_1ab(time_months_middle,analysis1,analysis2,48)

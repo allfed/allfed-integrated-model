@@ -86,19 +86,13 @@ constants['inputs'] = cin
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
 
 print("")
-print("")
-print("")
-print("")
-print("people_fed_billions")
+print("Estimated people fed, no resilient foods, no waste")
 print(analysis.people_fed_billions)
-print("")
-print("")
-print("")
 print("")
 
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
-Plotter.plot_people_fed_kcals(time_months_middle, analysis, \
-    'Primary production before waste, no resilient foods',79)
+# Plotter.plot_people_fed_kcals(time_months_middle, analysis, \
+#     'Primary production before waste, no resilient foods',79)
 
 # nuclear winter 150 tab, cell G30-G38  https://docs.google.com/spreadsheets/d/14t3_PUIky6aNiBvw8q24sj6QYxCN9s_VddLY2-eJuPE/edit#gid=1637082097
 #overall waste, on farm+distribution+retail
@@ -121,17 +115,11 @@ cin['RECALCULATE_CULL_DURATION'] = False  # thousand tons
 
 constants['inputs'] = cin
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
-
-print("")
-print("")
-print("")
-print("")
-print("people_fed_billions")
+print("Estimated people fed, no resilient foods, minus waste & delayed halt of nonhuman consumption ")
 print(analysis.people_fed_billions)
-print("")
-print("")
-print("")
 print("")
 
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
-Plotter.plot_people_fed_kcals(time_months_middle, analysis, "Food minus waste & delayed halt \nof nonhuman consumption, no resilient foods",79)
+Plotter.plot_figure_2ab(time_months_middle, analysis, 79)
+
+# Plotter.plot_people_fed_kcals(time_months_middle, analysis, "Food minus waste & delayed halt \nof nonhuman consumption, no resilient foods",79)

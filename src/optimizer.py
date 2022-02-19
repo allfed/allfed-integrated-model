@@ -94,10 +94,12 @@ class Optimizer:
         model += obj_func
 
         status = model.solve(pulp.PULP_CBC_CMD(fracGap=0.0001,
-            msg=c["VERBOSE"]))
+            msg = c["VERBOSE"]))
         assert(status == 1)
 
-        print('optimization successful')
+        if(c["VERBOSE"]):
+            print('optimization successful')
+
         if(c['CHECK_CONSTRAINTS']):
             print('')
             print('VALIDATION')
@@ -129,9 +131,10 @@ class Optimizer:
         )
 
         if(analysis.scenario_is_impossible):
-            print("")
-            print("Scenario is impossible")
-            print("")
+            if(c["VERBOSE"]):
+                print("")
+                print("Scenario is impossible")
+                print("")
             analysis.people_fed_billions = np.nan
             return [np.nan, np.nan, analysis]
 

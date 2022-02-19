@@ -213,14 +213,13 @@ double check culled meat is properly working
 
 [done] add statistical box and whiskers for monte carlo results
 add per month in lognormal plots
-add colors to monte carlo results 
+[done] add colors to monte carlo results (did other things to make fancy too) 
 [done] industrial foods scale factor
 
 [done] update plot title to include 50% rather than "bad"
 
 [done] ask juan to check confidence bars are consistent
 
-clarify we are not considering relocation to tobacco crop areas
 
 [done] table with:
     95% confidence
@@ -230,10 +229,30 @@ clarify we are not considering relocation to tobacco crop areas
     standard deviation
     type of distribution
 
+
+[done] clarify we are not considering relocation to tobacco crop areas
+
+[done] create the jupyter notebooks for the integrated model
+
+[done] make the plots of contributions of resilient foods alone vs with all others
+
+[done] run monte carlo at N=10,000 and save data
+
+[done] run contributions at N=1,000 and save data
+
+update captions with correct values
+
+minimum safe remove markers
+fat equivalent, protein equivalent
+
+figure 3 "human diet composition"
+
 add title and labels of plots to be similar size to text
 
+replot "primary production before waste" resilient food graph
 
-create the jupyter notebooks for the integrated model
+make the jupyter notebooks for the integrated model able to be run from any computer
+    get jupyter notebook to be operating properly with plots
 
 code cleanup on integrated model from jaz
 - Python constants code could use better documentation of units
@@ -249,7 +268,7 @@ comments from feb 6
  - I know we already discussed this, another advantage of using objects instead of dictionaries for storing constants is that it makes it easy to look up the documentation for a given field (especially in an IDE like VSCode where you can hover to see the documentation for any member variable)
  - Also already discussed, but there’s some commented code in the run_model files
  - in run_model_before_catastrophe.py  on line 129, the CULL_DURATION is set to nan since it’s not a nuclear winter scenario - this seems odd, I would think you should just set the IS_NUCLEAR_WINTER option to handle those considerations
- - I see a lot of conversion values spread throughout the constants file, some of them even appearing the same way as the input constants to the model. I’d suggest keeping those kinds of values somewhere else to not confuse them as inputs to the model. not a big deal though, just another thing to try and make it clear what’s input and what’s output (and what’s an intermediate calculation)
+ - I see a lot of conversion values spread throughout the constants file, some of them even appearing the same way as the input constants to the model. I’d suggest keeping those kinds of values somewhere else to not confuse them as inputs to the model. not a big deal though, just another thing to try and make it clear what’s input and what’s output (and what’s an intermediate calc ulation)
  - in optimizer - this line is unclear and the name doesn’t provide more context:
     v["z"] = z  # used only for validation
 - After reading more, I realize this is the variable we’re optimizing for, and I think z is not a good name for such an important variable
@@ -262,12 +281,14 @@ comments from feb 6
     
     if not, there should at least be a comment explaining why this line is different (or move it elsewhere)
 
-After reading through the optimizer model, I realize there actually aren’t that many inputs to the model. the constants function is by contrast rather overwhelming. I think it would be helpful to make it more explicit which ultimate constants the constants file is generating for the model. A lot of the “constants” are indeed constant, but not necessarily direct inputs to the model.
-After looking at the documentation for the PuLP library, I understand more what’s going on in the add_objectives_to_model function. I think it would be helpful to explain for each of the constaints that you’re applying with a small comment. (it’s possible this is covered in the paper, so maybe it’s less necessary. I just like being able to read the code and understand things without needing an accompanying document)
+- After reading through the optimizer model, I realize there actually aren’t that many inputs to the model. the constants function is by contrast rather overwhelming. I think it would be helpful to make it more explicit which ultimate constants the constants file is generating for the model. A lot of the “constants” are indeed constant, but not necessarily direct inputs to the model.
+- After looking at the documentation for the PuLP library, I understand more what’s going on in the add_objectives_to_model function. I think it would be helpful to explain for each of the constaints that you’re applying with a small comment. (it’s possible this is covered in the paper, so maybe it’s less necessary. I just like being able to read the code and understand things without needing an accompanying document)
 
 check density and growth rates for Porphyra Amplissima and add to paper
 
-switch from wheat to sugar beet or potato
+[done] switch from wheat to sugar beet or potato (decided wheat is still best to minimize crop switch)
+
+
 
 === eventually... ===
 
@@ -355,3 +376,5 @@ alter code so that the case of non-limiting fat and protein would still work wit
 figure out optimizer to determine optimal rotation percentages.
 
 appears to be some  edge case where get bug in code analysis line 908 assert((OG_SF_fraction_kcals_to_feed <= 1+ 1e-5).all())
+
+deal with constants.py condition for run_model:

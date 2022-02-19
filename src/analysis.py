@@ -918,10 +918,12 @@ class Analyzer:
         mins = [key for key in fed if
                 all(fed[temp] >= fed[key]
                     for temp in fed)]
-        print(fed)
 
-        print("Nutrients with constraining values are: " + str(mins))
-        print('Estimated people fed is ' + str(self.people_fed_billions)+' billion')
+        if(self.c["VERBOSE"]):
+            print(fed)
+
+            print("Nutrients with constraining values are: " + str(mins))
+            print('Estimated people fed is ' + str(self.people_fed_billions)+' billion')
         return [self.people_fed_billions, mins]
 
     # billions of kcals

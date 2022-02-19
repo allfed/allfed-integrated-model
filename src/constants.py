@@ -47,9 +47,6 @@ class Constants:
         ADD_OUTDOOR_GROWING = cin['ADD_OUTDOOR_GROWING']
         LIMIT_SEAWEED_AS_PERCENT_KCALS = \
             cin['LIMIT_SEAWEED_AS_PERCENT_KCALS']
-        # max percent of kcals from seaweed  per person
-        MAX_SEAWEED_AS_PERCENT_KCALS = \
-            cin['MAX_SEAWEED_AS_PERCENT_KCALS']
 
         # or, should this be 1543e6?? cell L8 https://docs.google.com/spreadsheets/d / 1rYcxSe-Z7ztvW-QwTBXT8GABaRmVdDuQ05HXmTHbQ8I/edit#gid=1141282747
         FEED_MONTHLY_USAGE_KCALS = 1385e6 / 12 * 4e6 / 1e9  # billions kcals
@@ -89,9 +86,6 @@ class Constants:
         KCALS_MONTHLY = KCALS_DAILY * DAYS_IN_MONTH  # in kcals per person
         PROTEIN_MONTHLY = PROTEIN_DAILY * DAYS_IN_MONTH / 1e9  # in thousands of tons
         FAT_MONTHLY = FAT_DAILY * DAYS_IN_MONTH / 1e9  # in thousands of tons
-
-        # MILK_INIT_TONS_ANNUAL=cin['MILK_INIT_TONS_ANNUAL']
-        # MILK_INIT_TONS_DRY_CALORIC_EQIVALENT=MILK_INIT_TONS_ANNUAL * 1e6 / 12 #first month
 
         ####SEAWEED INITIAL VARIABLES####
 
@@ -388,9 +382,6 @@ class Constants:
             [FEED_MONTHLY_USAGE_FAT] * feed_shutoff_delay + [0] * (NMONTHS-feed_shutoff_delay))
         feed_shutoff_protein = np.array(
             [FEED_MONTHLY_USAGE_PROTEIN] * feed_shutoff_delay + [0] * (NMONTHS-feed_shutoff_delay))
-
-        # if not true, then the rebalancing won't work and so this is not dealt with as an edge case
-        assert(feed_shutoff_delay >= biofuel_delay)
 
         KCALS_PER_SMALL_ANIMAL = SMALL_ANIMAL_KCALS_PER_KG * KG_PER_SMALL_ANIMAL / 1e9
         FAT_PER_SMALL_ANIMAL = SMALL_ANIMAL_FAT_PER_KG * \
@@ -1056,10 +1047,10 @@ class Constants:
 
         # apply sugar waste also to methane scp, for lack of better baseline
 
+        INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = \
+            cin['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER']
         if(cin["ADD_METHANE_SCP"]):
             SCP_WASTE = cin['WASTE']['SUGAR']
-            INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = \
-                cin['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER']
             ind_delay_months = [0] * cin["DELAY"]['INDUSTRIAL_FOODS']
 
             # billion kcals a month for 100% population.
@@ -1097,6 +1088,8 @@ class Constants:
 
             ind_delay_months = [0] * cin["DELAY"]['INDUSTRIAL_FOODS']
 
+
+            INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER = 6793977 / 12
             CELL_SUGAR_PERCENT_KCALS = list(np.append(ind_delay_months, np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
                 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20])) * 1 / (1 - 0.12) * INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
 
@@ -1330,9 +1323,9 @@ class Constants:
 
         #### OTHER VARIABLES ####
 
-        CONVERT_TO_KCALS = WORLD_POP / 1e9/KCALS_DAILY
-        CONVERT_TO_FAT = 1 / WORLD_POP * FAT_DAILY / 1e9
-        CONVERT_TO_PROTEIN = 1 / WORLD_POP * PROTEIN_DAILY / 1e9
+        CONVERT_TO_KCALS = WORLD_POP / 1e9/ KCALS_DAILY
+        CONVERT_TO_FAT = WORLD_POP / 1e9 / FAT_DAILY
+        CONVERT_TO_PROTEIN = WORLD_POP / 1e9 / PROTEIN_DAILY
 
         time_consts = {}  # time dependent constants as inputs to the optimizer
 
@@ -1399,6 +1392,8 @@ class Constants:
         constants['FAT_DAILY'] = FAT_DAILY
         constants['PROTEIN_DAILY'] = PROTEIN_DAILY
         constants['CONVERT_TO_KCALS'] = CONVERT_TO_KCALS
+        constants['CONVERT_TO_FAT'] = CONVERT_TO_FAT
+        constants['CONVERT_TO_PROTEIN'] = CONVERT_TO_PROTEIN
 
         constants['KCALS_MONTHLY'] = KCALS_MONTHLY
         constants['PROTEIN_MONTHLY'] = PROTEIN_MONTHLY
