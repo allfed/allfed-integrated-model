@@ -90,6 +90,10 @@ print("Estimated people fed, no resilient foods, no waste")
 print(analysis.people_fed_billions)
 print("")
 
+np.save('../data/no_resilient_food_primary_analysis.npy',
+        analysis,
+        allow_pickle=True)
+
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
 # Plotter.plot_people_fed_kcals(time_months_middle, analysis, \
 #     'Primary production before waste, no resilient foods',79)
@@ -120,6 +124,6 @@ print(analysis.people_fed_billions)
 print("")
 
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
-Plotter.plot_figure_2ab(time_months_middle, analysis, 79)
+Plotter.plot_figure_2ab(analysis, 77)
 
 # Plotter.plot_people_fed_kcals(time_months_middle, analysis, "Food minus waste & delayed halt \nof nonhuman consumption, no resilient foods",79)

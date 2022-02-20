@@ -1,4 +1,4 @@
-# this program runs the optimizer model, and ensures that all the results are
+# this program runs the optimizer model, and ensu821s that all the results are
 # reasonable using a couple useful checks to make sure there's nothing wacky
 # going on.
 
@@ -102,6 +102,10 @@ print("no waste estimated people fed")
 print(analysis.people_fed_billions)
 print("")
 
+np.save('../data/resilient_food_primary_analysis.npy',
+        analysis,
+        allow_pickle=True)
+
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
 # Plotter.plot_people_fed_kcals(time_months_middle, analysis,
 #         'Primary production before waste, + resilient foods', 79)
@@ -185,7 +189,6 @@ N_MONTHS_TO_CALCULATE_DIET = 49
 excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
     excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]\
     + analysis.excess_after_run[feed_delay:N_MONTHS_TO_CALCULATE_DIET]
-
 # =================
 tstart = datetime.now()
 n = 0
@@ -256,7 +259,9 @@ diff = tend - tstart
 # Plotter.plot_people_fed_kcals(time_months_middle, analysis,
                               # "Average diet, excess production used for feed, + resilient foods",72)
 analysis2 = analysis
+
+#last month plotted is month 48
+Plotter.plot_fig_1abcd(analysis1, analysis2, 48)
 print("Diet computation complete")
-Plotter.plot_fig_1abcd(time_months_middle, analysis1, analysis2, 48)
 
 # Plotter.plot_fig_1ab(time_months_middle,analysis1,analysis2,48)

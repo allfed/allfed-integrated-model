@@ -29,7 +29,7 @@ class MonteCarlo:
     def __init__(self):
         pass
 
-    def run_all_scenarios():
+    def run_all_scenarios(N_monte_carlo, N_comparison, load_saved_run):
         cin = {}  # constants as inputs to optimizer
 
         cin['NMONTHS'] = 84
@@ -81,27 +81,58 @@ class MonteCarlo:
         cin['KCAL_SMOOTHING'] = False
         cin['MEAT_SMOOTHING'] = True
         cin['STORED_FOOD_SMOOTHING'] = True
-        foods = ("methane SCP", "greenhouses", "cellulosic sugar", 'seaweed', "relocation")
 
-        N = 1000  # number of scenarios simulated in the monte carlo
+        #resilient foods used for simulation
+        res_foods = ("methane SCP",
+                     "greenhouses",
+                     "cellulosic sugar",
+                     'seaweed',
+                     "relocation")
 
-        #variables = MonteCarlo.get_variables(N,cin)
+        if(load_saved_run):
+            mc_variables = np.load(
+                '../data/mc_variables_'+str(N_monte_carlo)+'.npy',
+                allow_pickle=True).item()
+            comp_variables = np.load(
+                '../data/comp_variables_'+str(N_comparison)+'.npy',
+                allow_pickle=True).item()
+        else:
+            print("Computing input variables")
+            mc_variables = MonteCarlo.get_variables(N_monte_carlo, cin)
+            comp_variables = MonteCarlo.get_variables(N_comparison, cin)
 
-        #np.save('variables_1000.npy', variables, allow_pickle=True)
-        variables = np.load('../reports/variables_1000.npy', allow_pickle=True).item()
+            Plotter.plot_all_histograms(mc_variables, N_monte_carlo)
 
-        #all_fed = MonteCarlo.monte_carlo(variables, N, cin)
-        #np.save('all_fed_1000.npy', all_fed, allow_pickle=True)
-        all_fed = np.load('../reports/all_fed_10000.npy', allow_pickle=True)
+            np.save('mc_variables_'+str(N_monte_carlo)+'.npy',
+                    mc_variables, allow_pickle=True)
+            np.save('comp_variables_'+str(N_comparison)+'.npy',
+                    comp_variables, allow_pickle=True)
 
-        #removed, added = MonteCarlo.compare_resilient_foods(variables,
-        #                                         N, cin, foods)
-        #np.save('removed_1000.npy', removed, allow_pickle=True)
-        removed = np.load('../reports/removed_1000.npy', allow_pickle=True).item()
-        #np.save('added_1000.npy', added, allow_pickle=True)
-        added = np.load('../reports/added_1000.npy', allow_pickle=True).item()
+        if(load_saved_run):
+            all_fed = np.load('../data/all_fed_'+str(N_monte_carlo)+'.npy',
+                              allow_pickle=True)
+        else:
+            print("Running Monte Carlo")
+            all_fed = MonteCarlo.monte_carlo(mc_variables, N_monte_carlo, cin)
+            np.save('all_fed_'+str(N_monte_carlo)+'.npy', all_fed,
+                    allow_pickle=True)
 
-        Plotter.plot_fig_4ab(all_fed, N, foods, removed, added)
+        if(load_saved_run):
+            removed = np.load('../data/removed_'+str(N_comparison)+'.npy',
+                              allow_pickle=True).item()
+            added = np.load('../data/added_'+str(N_comparison)+'.npy',
+                            allow_pickle=True).item()
+        else:
+            print("Running Comparison")
+            removed, added = MonteCarlo.compare_resilient_foods(comp_variables,
+                                                                N_comparison,
+                                                                cin,
+                                                                res_foods)
+
+            np.save('removed.npy', removed, allow_pickle=True)
+            np.save('added.npy', added, allow_pickle=True)
+
+        Plotter.plot_fig_4ab(all_fed, res_foods, removed, added)
 
     def get_variables(N, cin):
 
@@ -225,8 +256,6 @@ class MonteCarlo:
 
 
     def run_scenario(variables, cin, i):
-        print("i")
-        print(i)
         cin['MAX_SEAWEED_AS_PERCENT_KCALS'] = variables['max_seaweed'][i]
         cin['SEAWEED_PRODUCTION_RATE'] = variables['seaweed_production_rate'][i]
         cin['SEAWEED_NEW_AREA_PER_DAY'] = variables['seaweed_new'][i]
@@ -284,8 +313,8 @@ class MonteCarlo:
 
         PLOT_EACH_SCENARIO = False
         if(PLOT_EACH_SCENARIO):
-            Plotter.plot_people_fed_combined(time_months_middle, analysis)
-            Plotter.plot_people_fed_kcals(time_months_middle, analysis,
+            Plotter.plot_people_fed_combined(analysis)
+            Plotter.plot_people_fed_kcals(analysis,
                                           'People fed minus waste and biofuels')
 
         fed = analysis.people_fed_billions
@@ -313,8 +342,6 @@ class MonteCarlo:
         return all_fed, failed_indices
 
     def monte_carlo(variables, N, cin):
-
-        Plotter.plot_all_histograms(variables, N)
 
         all_fed, failed_indices = MonteCarlo.run_scenarios(variables, cin, N)
         succeeded = np.delete(all_fed, np.array(failed_indices).astype(int))
@@ -394,62 +421,4 @@ class MonteCarlo:
 
         return removed, added
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-MonteCarlo.run_all_scenarios()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# MonteCarlo.run_all_scenarios(10000, 1000, False)

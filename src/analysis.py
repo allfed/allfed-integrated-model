@@ -747,6 +747,11 @@ class Analyzer:
         self.OG_SF_fraction_protein_to_humans = OG_SF_fraction_protein_to_humans
 
     def analyze_results(self, model, time_months_middle):
+
+        # number of months after ASRS onset which the variables are represented
+        # in data arrays
+        self.time_months_middle = time_months_middle
+
         if(not ((self.sf + self.rot + self.no_rot - self.excess)*1e9/4e6/1e6 >= -1e-5).all()):
             print("There are too few calories available to meet the caloric excess provided to the simulator. This is probably because the optimizer seems to have failed to sufficiently meet the constraint to limit total food fed to animals to the sum of stored food and outdoor growing within a reasonable degree of precision. Consider reducing precision. Quitting.")
             quit()
@@ -795,7 +800,8 @@ class Analyzer:
             + self.billions_fed_h_e_milk_protein
 
         assert((abs(np.divide(self.kcals_fed
-                              - np.array(self.humans_fed_kcals_optimizer), self.kcals_fed)) < 1e-6).all())
+                              - np.array(self.humans_fed_kcals_optimizer),
+                              self.kcals_fed)) < 1e-6).all())
         if(self.c["inputs"]["INCLUDE_FAT"]):
             assert((abs(np.divide(self.fat_fed
                                   - np.array(self.humans_fed_fat_optimizer), self.fat_fed)) < 1e-6).all())

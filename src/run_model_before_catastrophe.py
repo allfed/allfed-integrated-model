@@ -83,9 +83,6 @@ optimizer = Optimizer()
 constants['inputs'] = cin
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
 
-if(cin['ADD_OUTDOOR_GROWING']):
-    Plotter.plot_OG_before_nuclear_event(time_months_middle, analysis)
-
 print("")
 print("")
 print("")
@@ -96,9 +93,12 @@ print("")
 print("")
 print("")
 print("")
+
+analysis1 = analysis
+
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
-Plotter.plot_people_fed_kcals(time_months_middle, analysis,
-    'Primary production before waste, baseline',78)
+# Plotter.plot_people_fed_kcals(time_months_middle, analysis,
+    # 'Primary production before waste, baseline',78)
 
 # nuclear winter 150 tab, cell G30-G38  https://docs.google.com/spreadsheets/d/14t3_PUIky6aNiBvw8q24sj6QYxCN9s_VddLY2-eJuPE/edit#gid=1637082097
 #overall waste, on farm+distribution+retail
@@ -133,5 +133,9 @@ print("")
 print("")
 print("")
 
+analysis2 = analysis
+
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
-Plotter.plot_people_fed_kcals(time_months_middle, analysis, "Baseline around 2020 average diet", cin['NMONTHS'])
+# Plotter.plot_people_fed_kcals(time_months_middle, analysis, "Baseline around 2020 average diet", cin['NMONTHS'])
+
+Plotter.plot_figure_supplement_before_catastrophe_abcd(analysis1, analysis2, 72)

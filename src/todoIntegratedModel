@@ -242,14 +242,15 @@ add per month in lognormal plots
 
 update captions with correct values
 
-minimum safe remove markers
-fat equivalent, protein equivalent
+[done] minimum safe remove markers
 
-figure 3 "human diet composition"
+[done] fat equivalent, protein equivalent
 
-add title and labels of plots to be similar size to text
+[done] figure 3 "human diet composition"
 
-replot "primary production before waste" resilient food graph
+[done] add title and labels of plots to be similar size to text
+
+[done] replot "primary production before waste" resilient food graph
 
 make the jupyter notebooks for the integrated model able to be run from any computer
     get jupyter notebook to be operating properly with plots

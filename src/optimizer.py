@@ -483,7 +483,6 @@ class Optimizer:
                       "Fat_Fed_Month_" + str(m) + "_Constraint")
 
         if(self.c['inputs']['INCLUDE_PROTEIN']):
-
             model += (v["humans_fed_protein"][m] ==
                       (v["stored_food_eaten"][m] * self.c["SF_FRACTION_PROTEIN"]
                        * CROPS_WASTE
