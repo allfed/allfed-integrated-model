@@ -252,8 +252,12 @@ update captions with correct values
 
 [done] replot "primary production before waste" resilient food graph
 
+[done] alter caption s4 s3
+
+[done] switch from wheat to sugar beet or potato (decided wheat is still best to minimize crop switch)
+
 make the jupyter notebooks for the integrated model able to be run from any computer
-    get jupyter notebook to be operating properly with plots
+    [done] get jupyter notebook to be operating properly with plots
 
 code cleanup on integrated model from jaz
 - Python constants code could use better documentation of units
@@ -285,13 +289,22 @@ comments from feb 6
 - After reading through the optimizer model, I realize there actually aren’t that many inputs to the model. the constants function is by contrast rather overwhelming. I think it would be helpful to make it more explicit which ultimate constants the constants file is generating for the model. A lot of the “constants” are indeed constant, but not necessarily direct inputs to the model.
 - After looking at the documentation for the PuLP library, I understand more what’s going on in the add_objectives_to_model function. I think it would be helpful to explain for each of the constaints that you’re applying with a small comment. (it’s possible this is covered in the paper, so maybe it’s less necessary. I just like being able to read the code and understand things without needing an accompanying document)
 
+
+
 check density and growth rates for Porphyra Amplissima and add to paper
 
-[done] switch from wheat to sugar beet or potato (decided wheat is still best to minimize crop switch)
+loss is warning color
 
+reorder legend
+
+delay plot
+
+scp check why no variation
 
 
 === eventually... ===
+
+change figure "relocation" to "crop relocation"
 
 are fish more efficient use of human edible for chicken/pork
 

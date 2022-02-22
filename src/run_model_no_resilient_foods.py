@@ -124,6 +124,6 @@ print(analysis.people_fed_billions)
 print("")
 
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
-Plotter.plot_figure_2ab(analysis, 77)
+Plotter.plot_fig_1ab(analysis, 77)
 
 # Plotter.plot_people_fed_kcals(time_months_middle, analysis, "Food minus waste & delayed halt \nof nonhuman consumption, no resilient foods",79)

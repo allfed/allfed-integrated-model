@@ -261,7 +261,7 @@ diff = tend - tstart
 analysis2 = analysis
 
 #last month plotted is month 48
-Plotter.plot_fig_1abcd(analysis1, analysis2, 48)
+Plotter.plot_fig_2abcd(analysis1, analysis2, 48)
 print("Diet computation complete")
 
 # Plotter.plot_fig_1ab(time_months_middle,analysis1,analysis2,48)

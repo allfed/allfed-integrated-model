@@ -138,4 +138,4 @@ analysis2 = analysis
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
 # Plotter.plot_people_fed_kcals(time_months_middle, analysis, "Baseline around 2020 average diet", cin['NMONTHS'])
 
-Plotter.plot_figure_supplement_before_catastrophe_abcd(analysis1, analysis2, 72)
+Plotter.plot_fig_s3abcd(analysis1, analysis2, 72)

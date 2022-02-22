@@ -101,7 +101,7 @@ class MonteCarlo:
             mc_variables = MonteCarlo.get_variables(N_monte_carlo, cin)
             comp_variables = MonteCarlo.get_variables(N_comparison, cin)
 
-            Plotter.plot_all_histograms(mc_variables, N_monte_carlo)
+            Plotter.plot_fig_s1(mc_variables, N_monte_carlo)
 
             np.save('mc_variables_'+str(N_monte_carlo)+'.npy',
                     mc_variables, allow_pickle=True)
@@ -132,7 +132,7 @@ class MonteCarlo:
             np.save('removed.npy', removed, allow_pickle=True)
             np.save('added.npy', added, allow_pickle=True)
 
-        Plotter.plot_fig_4ab(all_fed, res_foods, removed, added)
+        Plotter.plot_fig_3ab(all_fed, res_foods, removed, added)
 
     def get_variables(N, cin):
 
@@ -311,7 +311,7 @@ class MonteCarlo:
             print("Warning: Optimization failed. Continuing.")
             return (np.nan, i)
 
-        PLOT_EACH_SCENARIO = False
+        PLOT_EACH_SCENARIO = True
         if(PLOT_EACH_SCENARIO):
             Plotter.plot_people_fed_combined(analysis)
             Plotter.plot_people_fed_kcals(analysis,
@@ -356,69 +356,90 @@ class MonteCarlo:
     def compare_resilient_foods(variables, N, cin, foods):
         # try removing each resilient food and see
         # the effect size on total people fed
-        removed = {}
-        for i, label in enumerate(foods):
-            cin['ADD_SEAWEED'] = True
-            cin['ADD_CELLULOSIC_SUGAR'] = True
-            cin['ADD_METHANE_SCP'] = True
-            cin['ADD_GREENHOUSES'] = True
-            cin['OG_USE_BETTER_ROTATION'] = True
+        # removed = {}
+        # for i, label in enumerate(foods):
+        #     if('methane' in label):
+        #         print(i)
+        #         # run a baseline scenario
+        #         cin['ADD_SEAWEED'] = True
+        #         cin['ADD_CELLULOSIC_SUGAR'] = True
+        #         cin['ADD_METHANE_SCP'] = True
+        #         cin['ADD_GREENHOUSES'] = True
+        #         cin['OG_USE_BETTER_ROTATION'] = True
 
-            baseline_fed, failed_runs_baseline_r = MonteCarlo.run_scenarios(variables, cin, N)
+        #         baseline_fed, failed_runs_baseline_r = MonteCarlo.run_scenarios(variables, cin, N)
 
-            cin['ADD_SEAWEED'] = ('seaweed' not in label)
-            cin['ADD_CELLULOSIC_SUGAR'] = ('sugar' not in label)
-            cin['ADD_METHANE_SCP'] = ('methane' not in label)
-            cin['ADD_GREENHOUSES'] = ('greenhouse' not in label)
-            cin['OG_USE_BETTER_ROTATION'] = ('relocation' not in label)
+        #         #run a scenario not involving
+        #         cin['ADD_SEAWEED'] = ('seaweed' not in label)
+        #         cin['ADD_CELLULOSIC_SUGAR'] = ('sugar' not in label)
+        #         cin['ADD_METHANE_SCP'] = ('methane' not in label)
+        #         cin['ADD_GREENHOUSES'] = ('greenhouse' not in label)
+        #         cin['OG_USE_BETTER_ROTATION'] = ('relocation' not in label)
 
-            removed_fed, failed_runs_r = MonteCarlo.run_scenarios(variables, cin, N)
+        #         removed_fed, failed_runs_r = MonteCarlo.run_scenarios(variables, cin, N)
 
-            print("failed_indices")
-            print(failed_runs_baseline_r)
-            print(failed_runs_r)
+        #         print("failed_indices")
+        #         print(failed_runs_baseline_r)
+        #         print(failed_runs_r)
 
-            baseline_fed = np.delete(baseline_fed,
-                                     np.append(failed_runs_baseline_r,
-                                               failed_runs_r).astype(int))
-            removed_fed = np.delete(removed_fed, 
-                                    np.append(failed_runs_baseline_r,
-                                              failed_runs_r).astype(int))
+        #         baseline_fed = np.delete(baseline_fed,
+        #                                  np.append(failed_runs_baseline_r,
+        #                                            failed_runs_r).astype(int))
+        #         removed_fed = np.delete(removed_fed, 
+        #                                 np.append(failed_runs_baseline_r,
+        #                                           failed_runs_r).astype(int))
 
-            removed[label] = np.subtract(np.array(baseline_fed),
-                                         np.array(removed_fed))
+        #         removed[label] = np.subtract(np.array(baseline_fed),
+        #                                      np.array(removed_fed))
+        #         plt.figure()
+        #         plt.plot(baseline_fed)
+        #         plt.plot(removed_fed)
+        #         plt.plot(removed[label])
+        #         plt.savefig("plot.svg")
+        #         os.system('firefox-esr plot.svg')
 
         # try removing all but this resilient food and adding only this one and see
         # the effect size on total people fed
         added = {}
         for i, label in enumerate(foods):
 
-            cin['ADD_SEAWEED'] = False
-            cin['ADD_CELLULOSIC_SUGAR'] = False
-            cin['ADD_METHANE_SCP'] = False
-            cin['ADD_GREENHOUSES'] = False
-            cin['OG_USE_BETTER_ROTATION'] = False
+            if('methane' in label):
+                print(i)
+                cin['ADD_SEAWEED'] = False
+                cin['ADD_CELLULOSIC_SUGAR'] = False
+                cin['ADD_METHANE_SCP'] = False
+                cin['ADD_GREENHOUSES'] = False
+                cin['OG_USE_BETTER_ROTATION'] = False
 
-            baseline_fed, failed_runs_baseline_a = MonteCarlo.run_scenarios(variables, cin, N)
+                baseline_fed, failed_runs_baseline_a = MonteCarlo.run_scenarios(variables, cin, N)
 
-            cin['ADD_SEAWEED'] = ('seaweed' in label)
-            cin['ADD_CELLULOSIC_SUGAR'] = ('sugar' in label)
-            cin['ADD_METHANE_SCP'] = ('methane' in label)
-            cin['ADD_GREENHOUSES'] = ('greenhouse' in label)
-            cin['OG_USE_BETTER_ROTATION'] = ('relocation' in label)
+                cin['ADD_SEAWEED'] = ('seaweed' in label)
+                cin['ADD_CELLULOSIC_SUGAR'] = ('sugar' in label)
+                cin['ADD_METHANE_SCP'] = ('methane' in label)
+                cin['ADD_GREENHOUSES'] = ('greenhouse' in label)
+                cin['OG_USE_BETTER_ROTATION'] = ('relocation' in label)
 
-            added_fed, failed_runs_a = MonteCarlo.run_scenarios(variables, cin, N)
+                added_fed, failed_runs_a = MonteCarlo.run_scenarios(variables, cin, N)
 
-            baseline_fed = np.delete(baseline_fed,
-                                     np.append(failed_runs_baseline_a,
-                                               failed_runs_a).astype(int))
-            added_fed = np.delete(added_fed,
-                                  np.append(failed_runs_baseline_a,
-                                            failed_runs_a).astype(int))
+                baseline_fed = np.delete(baseline_fed,
+                                         np.append(failed_runs_baseline_a,
+                                                   failed_runs_a).astype(int))
+                added_fed = np.delete(added_fed,
+                                      np.append(failed_runs_baseline_a,
+                                                failed_runs_a).astype(int))
 
-            added[label] = np.subtract(np.array(added_fed),
-                                       np.array(baseline_fed))
+                added[label] = np.subtract(np.array(added_fed),
+                                           np.array(baseline_fed))
+                if(i==0):
+                    Plotter.plot_fig_1ab(analysis1, xlim)
 
+                plt.figure()
+                plt.plot(baseline_fed)
+                plt.plot(added_fed)
+                plt.plot(added[label])
+                plt.savefig("plot.svg")
+                os.system('firefox-esr plot.svg')
+                quit()
         return removed, added
 
-# MonteCarlo.run_all_scenarios(10000, 1000, False)
+MonteCarlo.run_all_scenarios(10, 100, False)
