@@ -395,7 +395,7 @@ class Plotter:
         # os.system('firefox-esr plot.svg')
         plt.show()
 
-    def plot_figure_s3abcd(analysis1,
+    def plot_fig_s3abcd(analysis1,
                        analysis2,
                        xlim1,
                        xlim2):
