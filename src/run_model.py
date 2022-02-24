@@ -260,7 +260,7 @@ diff = tend - tstart
                               # "Average diet, excess production used for feed, + resilient foods",72)
 analysis2 = analysis
 
-#last month plotted is month 48
+# last month plotted is month 48
 Plotter.plot_fig_2abcd(analysis1, analysis2, 48)
 print("Diet computation complete")
 

@@ -17,7 +17,7 @@ import pandas as pd
 module_path = os.path.abspath(os.path.join('..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
-matplotlib.use('Svg')
+# matplotlib.use('Svg')
 # matplotlib.use('QtAgg')
 
 
@@ -138,7 +138,8 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         plt.savefig("plot.svg")
-        os.system('firefox-esr plot.svg')
+        # os.system('firefox-esr plot.svg')
+        plt.show()
 
     def plot_fig_2abcd(analysis1, analysis2, xlim):
         legend = Plotter.get_people_fed_legend(analysis1)
@@ -263,7 +264,8 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         plt.savefig("plot.svg")
-        os.system('firefox-esr plot.svg')
+        # os.system('firefox-esr plot.svg')
+        plt.show()
 
     def plot_fig_3ab(monte_carlo_data, food_names, removed, added):
         # fig = plt.figure()
@@ -331,7 +333,8 @@ class Plotter:
         plt.tight_layout()
         plt.savefig("plot.svg")
         plt.rcParams["figure.figsize"] = [15, 8]
-        os.system('firefox-esr plot.svg')
+        # os.system('firefox-esr plot.svg')
+        plt.show()
 
     def plot_fig_s1(variables, N):
         # create histogram of variables
@@ -389,7 +392,8 @@ class Plotter:
 
         plt.rcParams["figure.figsize"] = [12, 9]
         plt.savefig("plot.svg")
-        os.system('firefox-esr plot.svg')
+        # os.system('firefox-esr plot.svg')
+        plt.show()
 
     def plot_figure_s3abcd(analysis1,
                        analysis2,
@@ -523,7 +527,8 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         plt.savefig("plot.svg")
-        os.system('firefox-esr plot.svg')
+        # os.system('firefox-esr plot.svg')
+        plt.show()
 
     def plot_fig_s4abcd(analysis1,
                         analysis2,
@@ -650,7 +655,8 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         plt.savefig("plot.svg")
-        os.system('firefox-esr plot.svg')
+        # os.system('firefox-esr plot.svg')
+        plt.show()
 
     def plot_people_fed_kcals(analysis, title, xlim):
 
@@ -732,7 +738,8 @@ class Plotter:
         plt.rcParams["figure.figsize"] = [17.50, 9]
         plt.tight_layout()
         plt.savefig("plot.svg")
-        os.system('firefox-esr plot.svg')
+        # os.system('firefox-esr plot.svg')
+        plt.show()
 
     def plot_histogram(ax, data, N, xlabel, ylabel, title):
         num_bins = int(N / 10)
@@ -766,7 +773,8 @@ class Plotter:
         ax_hist.set(xlabel=xlabel)
         ax_box.set(title=title)
         plt.savefig("plot.svg")
-        os.system('firefox-esr plot.svg')
+        # os.system('firefox-esr plot.svg')
+        plt.show()
         print("95% lower")
         print(np.percentile(np.array(data), 2.5))
         print("95% upper")
@@ -893,4 +901,5 @@ class Plotter:
         plt.rcParams["figure.figsize"] = [17.50, 9]
         # plt.tight_layout()
         plt.savefig("plot.svg")
-        os.system('firefox-esr plot.svg')
+        # os.system('firefox-esr plot.svg')
+        plt.show()
