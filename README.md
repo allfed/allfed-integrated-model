@@ -3,16 +3,6 @@ allfed-integrated-model
 
 An integrated economic model for resilient foods
 
-# Installation
-Dependencies are managed using Poetry - install it if you don't have it: https://python-poetry.org/
-To install:
-```bash
-poetry install
-```
-Note: windows users will probably have more success installing each dependency u
-sing conda, rather than using poetry for dependency management.
-
-
 # Run the model
 
 ### Using Colab (most users use this):
