@@ -461,7 +461,6 @@ class Optimizer:
                       )/self.c["KCALS_MONTHLY"],
                   "Kcals_Fed_Month_" + str(m) + "_Constraint")
 
-
         if(self.c['inputs']['INCLUDE_FAT']):
             # fat monthly is in units thousand tons
             model += (v["humans_fed_fat"][m] ==
