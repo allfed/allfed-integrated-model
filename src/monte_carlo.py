@@ -362,7 +362,7 @@ class MonteCarlo:
     def run_scenarios(variables, cin, N):
         all_fed = []
         failed_indices = []
-        USE_MULTICORES = True
+        USE_MULTICORES = False
         # latest time test on my machine: 21.5 seconds for 100 items
         if(USE_MULTICORES):
             pool = mp.Pool(processes=mp.cpu_count())
