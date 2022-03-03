@@ -33,7 +33,7 @@ class Plotter:
                "#76d7ea",
                "#056608",
                "#fdfff5",
-               "#f9906f",
+               "#ff0606",
                "#a5d610",
                "#ffeb7a",
                "#e7d2ad"]
@@ -102,7 +102,7 @@ class Plotter:
                         linestyle='dashed')
 
                 ax.set_ylabel('Fraction of minimum recommendation')
-                ax.set_ylim([0.6, 1.7])
+                ax.set_ylim(Plotter.getylim_nutrients(analysis, xlim))
 
             if(label == 'a'):
                 # get the handles
@@ -137,8 +137,8 @@ class Plotter:
         fig.set_figheight(8)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig("plot.svg")
-        # os.system('firefox-esr plot.svg')
+        plt.savefig('../reports/fig_1ab.png')
+        print('saved figure 1ab')
         plt.show()
 
     def plot_fig_2abcd(analysis1, analysis2, xlim):
@@ -149,7 +149,7 @@ class Plotter:
                "#76d7ea",
                "#056608",
                "#fdfff5",
-               "#f9906f",
+               "#ff0606",
                "#a5d610",
                "#ffeb7a",
                "#e7d2ad"]
@@ -232,7 +232,7 @@ class Plotter:
                         linestyle='dashed')
 
                 ax.set_ylabel('Fraction of minimum recommendation')
-                ax.set_ylim([1.3, 2.4])
+                ax.set_ylim(Plotter.getylim_nutrients(analysis, xlim))
 
 
             if(label == 'c'):
@@ -256,14 +256,16 @@ class Plotter:
                     labels=['Calories',
                             'Fat',
                             'Protein'])
-                ax.set_ylim([0.9, 2.1])
+                ax.set_ylim(Plotter.getylim_nutrients(analysis, xlim))
 
             plt.xlabel('Months since May ASRS onset')
 
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig("plot.svg")
+        plt.savefig('../reports/fig_2abcd.png')
+        print('saved figure 2abcd')
+        # plt.savefig("plot.svg")
         # os.system('firefox-esr plot.svg')
         plt.show()
 
@@ -331,7 +333,9 @@ class Plotter:
                 ax_box.set(title="Monte Carlo outcomes")
 
         plt.tight_layout()
-        plt.savefig("plot.svg")
+        plt.savefig('../reports/fig_3ab.png')
+        print('saved figure 3ab')
+        # plt.savefig("plot.svg")
         plt.rcParams["figure.figsize"] = [15, 8]
         # os.system('firefox-esr plot.svg')
         plt.show()
@@ -358,10 +362,14 @@ class Plotter:
                                "seaweed max calories\n (% of diet)",
                                "number of scenarios",
                                "Seaweed percent dietary calories")
+        #divide by the baseline from Xia et al
+        no_relocation_nuclear_winter = 0.89
         Plotter.plot_histogram(axs[0, 3],
-                               variables['rotation_outcome'],
-                               100,
-                               "rotation outcome\n 0=50% relocated\n1=80% relocated\n2=100% relocated",
+                               (1 - variables['rotation_outcome_kcals']
+                                * no_relocation_nuclear_winter)
+                               / (1 - no_relocation_nuclear_winter),
+                               1000,
+                               "ratio to baseline calories\nrelocation outcome year 3",
                                "number of scenarios",
                                "")
         Plotter.plot_histogram(axs[1, 0],
@@ -391,8 +399,10 @@ class Plotter:
         plt.tight_layout()
 
         plt.rcParams["figure.figsize"] = [12, 9]
-        plt.savefig("plot.svg")
+        # plt.savefig("plot.svg")
         # os.system('firefox-esr plot.svg')
+        plt.savefig('../reports/fig_s1.png')
+        print('saved figure s1')
         plt.show()
 
     def plot_fig_s3abcd(analysis1,
@@ -406,7 +416,7 @@ class Plotter:
                "#76d7ea",
                "#056608",
                "#fdfff5",
-               "#f9906f",
+               "#ff0606",
                "#a5d610",
                "#ffeb7a",
                "#e7d2ad"]
@@ -422,17 +432,20 @@ class Plotter:
                 analysis = analysis2
             ax = fig.add_subplot(2, 2, i + 1)
             if(label == 'a'):
-                ax.set_xlim([0.5, xlim1])
+                xlim = xlim1
                 plt.title("Resilient food availability")
             if(label == 'b'):
-                ax.set_xlim([0.5, xlim1])
+                xlim = xlim1
                 plt.title("Resilient food macronutrition")
             if(label == 'c'):
-                ax.set_xlim([0.5, xlim2])
+                xlim = xlim2
                 plt.title('No resilient food availability')
             if(label == 'd'):
-                ax.set_xlim([0.5, xlim2])
+                xlim = xlim2
                 plt.title('No resilient food macronutrition')
+
+            ax.set_xlim([0.5, xlim])
+
             if(label == 'a' or label == 'c'):
 
                 ykcals = []
@@ -487,7 +500,7 @@ class Plotter:
                         linestyle='dashed')
 
                 ax.set_ylabel('Fraction of minimum recommendation')
-                ax.set_ylim([1.6, 2.9])
+                ax.set_ylim(Plotter.getylim_nutrients(analysis, xlim))
 
 
             if(label == 'c'):
@@ -511,7 +524,7 @@ class Plotter:
                     labels=['Calories',
                             'Fat',
                             'Protein'])
-                ax.set_ylim([0.8, 1.3])
+                ax.set_ylim(Plotter.getylim_nutrients(analysis, xlim))
 
             if(label == 'a'):
                 maxy = max(sum([x[0:xlim1] for x in ykcals]))
@@ -526,7 +539,9 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig("plot.svg")
+        plt.savefig('../reports/fig_s3abcd.png')
+        print('saved figure s3abcd')
+        # plt.savefig("plot.svg")
         # os.system('firefox-esr plot.svg')
         plt.show()
 
@@ -540,7 +555,7 @@ class Plotter:
                "#76d7ea",
                "#056608",
                "#fdfff5",
-               "#f9906f",
+               "#ff0606",
                "#a5d610",
                "#ffeb7a",
                "#e7d2ad"]
@@ -623,7 +638,8 @@ class Plotter:
                         linestyle='dashed')
 
                 ax.set_ylabel('Fraction of minimum recommendation')
-                ax.set_ylim([2, 3])
+
+                ax.set_ylim(Plotter.getylim_nutrients(analysis, xlim))
 
 
             if(label == 'c'):
@@ -647,16 +663,38 @@ class Plotter:
                     labels=['Calories',
                             'Fat',
                             'Protein'])
-                ax.set_ylim([0.95, 1.05])
+                ax.set_ylim(Plotter.getylim_nutrients(analysis, xlim))
 
             plt.xlabel('Months since May')
 
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig("plot.svg")
+        plt.savefig('../reports/fig_s4abcd.png')
+        print('saved figure s4abcd')
+        # plt.savefig("plot.svg")
         # os.system('firefox-esr plot.svg')
         plt.show()
+
+    def getylim_nutrients(analysis, xlim):
+        kcals = analysis.kcals_fed / analysis.c["CONVERT_TO_KCALS"] \
+            / analysis.c["inputs"]['NUTRITION']['KCALS_DAILY']
+
+        protein = analysis.protein_fed / analysis.c["CONVERT_TO_PROTEIN"] \
+            / analysis.c["inputs"]['NUTRITION']['PROTEIN_DAILY']
+
+        fat = analysis.fat_fed / analysis.c["CONVERT_TO_FAT"]\
+            / analysis.c["inputs"]['NUTRITION']['FAT_DAILY']
+
+        min_plot = min([min(fat[0:xlim]),
+                        min(protein[0:xlim]),
+                        min(kcals[0:xlim])]) - 0.2
+
+        max_plot = max([max(fat[0:xlim]),
+                        max(protein[0:xlim]),
+                        max(kcals[0:xlim])]) + 0.2
+
+        return [min_plot, max_plot]
 
     def plot_people_fed_kcals(analysis, title, xlim):
 
@@ -737,8 +775,44 @@ class Plotter:
 
         plt.rcParams["figure.figsize"] = [17.50, 9]
         plt.tight_layout()
-        plt.savefig("plot.svg")
+        # plt.savefig("plot.svg")
         # os.system('firefox-esr plot.svg')
+        plt.show()
+
+    def plot_people_fed_combined(analysis):
+        fig = plt.figure()
+        ax = plt.subplot(111)
+        title = "Population Fed"
+        plt.title(title)
+        plt.xlabel('Months since May ASRS onset')
+        ax = plt.gca()
+        ax.set_ylabel('Fraction minimum recommended')
+        ax.plot(analysis.time_months_middle,
+                analysis.kcals_fed / analysis.c["CONVERT_TO_KCALS"]
+                / analysis.c["inputs"]['NUTRITION']['KCALS_DAILY'],
+                marker='o',
+                markersize=6,
+                color='blue',
+                linestyle='solid')
+
+        ax.plot(analysis.time_months_middle,
+                analysis.protein_fed / analysis.c["CONVERT_TO_PROTEIN"]
+                / analysis.c["inputs"]['NUTRITION']['PROTEIN_DAILY'],
+                marker='^',
+                markersize=6,
+                color='red',
+                linestyle='dotted')
+
+        ax.plot(analysis.time_months_middle,
+                analysis.fat_fed / analysis.c["CONVERT_TO_FAT"]
+                / analysis.c["inputs"]['NUTRITION']['FAT_DAILY'],
+                marker='x',
+                markersize=6,
+                color='green',
+                linestyle='dashed')
+
+        ax.legend(['kcals_available', 'protein available', 'fat available'], loc=1)
+        plt.rcParams["figure.figsize"] = [17.50, 9]
         plt.show()
 
     def plot_histogram(ax, data, N, xlabel, ylabel, title):
@@ -751,8 +825,6 @@ class Plotter:
         # ax.set_ylabel()
 
     def plot_histogram_with_boxplot(data, N, xlabel, title):
-        print("data")
-        print(data)
         # https://www.python-graph-gallery.com/24-histogram-with-a-boxplot-on-top-seaborn
         # set a grey background (use sns.set_theme() if seaborn
         # version 0.11.0 or above)
@@ -767,12 +839,12 @@ class Plotter:
 
         # assigning a graph to each ax
         sns.boxplot(data, ax=ax_box, showfliers=True)
-        sns.histplot(data=data, ax=ax_hist)
+        sns.histplot(data = data, ax = ax_hist)
 
         # Remove x axis name for the boxplot
         ax_hist.set(xlabel=xlabel)
         ax_box.set(title=title)
-        plt.savefig("plot.svg")
+        # plt.savefig("plot.svg")
         # os.system('firefox-esr plot.svg')
         plt.show()
         print("95% lower")
@@ -900,6 +972,6 @@ class Plotter:
 
         plt.rcParams["figure.figsize"] = [17.50, 9]
         # plt.tight_layout()
-        plt.savefig("plot.svg")
+        # plt.savefig("plot.svg")
         # os.system('firefox-esr plot.svg')
         plt.show()

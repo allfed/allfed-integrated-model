@@ -84,14 +84,8 @@ constants['inputs'] = cin
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
 
 print("")
-print("")
-print("")
-print("")
-print("people_fed_billions")
+print("Maximum people fed 2020, no waste, primary production")
 print(analysis.people_fed_billions)
-print("")
-print("")
-print("")
 print("")
 
 analysis1 = analysis
@@ -122,15 +116,8 @@ optimizer = Optimizer()
 constants['inputs'] = cin
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
 
-print("")
-print("")
-print("")
-print("")
-print("people_fed_billions")
+print("Estimated average diet 2020")
 print(analysis.people_fed_billions)
-print("")
-print("")
-print("")
 print("")
 
 analysis2 = analysis
@@ -138,4 +125,4 @@ analysis2 = analysis
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
 # Plotter.plot_people_fed_kcals(time_months_middle, analysis, "Baseline around 2020 average diet", cin['NMONTHS'])
 
-Plotter.plot_fig_s3abcd(analysis1, analysis2, 72)
+Plotter.plot_fig_s3abcd(analysis1, analysis2, 72, 72)

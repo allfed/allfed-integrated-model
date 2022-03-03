@@ -36,7 +36,10 @@ class Constants:
 
         # tonnes dry carb equivalent
         ANNUAL_YIELD = 0.96 * 3898e6 * (1 - SEED_PERCENT / 100)
+
+        # 1000 tons fat per billion kcals
         OG_FRACTION_FAT = 1.02 * (322 * 1e3) / (ANNUAL_YIELD * 4e6 / 1e9)
+
         # 1000 tons protein per billion kcals
         OG_FRACTION_PROTEIN = 0.93 * (350 * 1e3) / (ANNUAL_YIELD * 4e6 / 1e9)
 
@@ -890,8 +893,8 @@ class Constants:
 
             KCALS_GROWN.append(
                 month_kcals * (1 - (
-                    (1 - all_months_reductions[i+4])
-                    * OG_KCAL_REDUCED
+                    OG_KCAL_REDUCED
+                    * (1 - all_months_reductions[i+4])
                 ))
             )
             NO_ROT_KCALS_GROWN.append(
@@ -1053,7 +1056,7 @@ class Constants:
             SCP_WASTE = cin['WASTE']['SUGAR']
             ind_delay_months = [0] * cin["DELAY"]['INDUSTRIAL_FOODS']
 
-            # billion kcals a month for 100% population.
+            # billion kcals a month for 100% population (7.8 billion people).
             INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER = 6793977 / 12
             METHANE_SCP_PERCENT_KCALS = list(np.array(ind_delay_months
             + [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,
@@ -1073,13 +1076,21 @@ class Constants:
         SCP_FRAC_PROTEIN = 0.650
         SCP_FRAC_FAT = 0.09
 
+        #billions of kcals converted to 1000s of tons protein
         production_protein_scp_per_m = \
             list(np.array(production_kcals_scp_per_m)
-                 * SCP_FRAC_PROTEIN / SCP_KCALS_PER_KG)
+                 * 1e9
+                 * SCP_FRAC_PROTEIN
+                 / SCP_KCALS_PER_KG
+                 / 1e6)
 
+        #billions of kcals converted to 1000s of tons fat
         production_fat_scp_per_m = \
             list(np.array(production_kcals_scp_per_m)
-                 * SCP_FRAC_FAT / SCP_KCALS_PER_KG)
+                 * 1e9
+                 * SCP_FRAC_FAT
+                 / SCP_KCALS_PER_KG
+                 / 1e6)
 
         #### CONSTANTS FOR CELLULOSIC SUGAR ####
 
@@ -1320,6 +1331,16 @@ class Constants:
             else:
                 print("No biofuel usage")
                 print("")
+
+            if(ADD_METHANE_SCP):
+                print("daily calories SCP")
+                print(np.array(production_kcals_scp_per_m)*1e9/30/7.8e9)
+                print("daily kg SCP")
+                print(np.array(production_kcals_scp_per_m)*1e9/30/7.8e9/SCP_KCALS_PER_KG)
+                print("daily grams protein SCP")
+                print(np.array(production_kcals_scp_per_m)*1e9/30/7.8e9/SCP_KCALS_PER_KG*SCP_FRAC_PROTEIN*1000)
+                print("1000 tons per month protein SCP")
+                print(np.array(production_kcals_scp_per_m)*1e9/SCP_KCALS_PER_KG*SCP_FRAC_PROTEIN/1e6)
 
         #### OTHER VARIABLES ####
 

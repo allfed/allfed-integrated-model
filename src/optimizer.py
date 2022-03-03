@@ -225,52 +225,54 @@ class Optimizer:
     def add_seaweed_to_model(self, model, v, m):
         sd = self.c["inputs"]["DELAY"]["SEAWEED"]
         sum_food_this_month = []
-        if(m > 15+sd):
-            v["seaweed_food_produced_monthly"][m] = LpVariable(
-                name="Seaweed_Food_Produced_Monthly_" + str(m) + "_Variable", lowBound=0)
-            return (model, v)
+        #assume that the only harvest opportunity is once a month
 
-        else:
-            for d in np.arange(m*self.c["DAYS_IN_MONTH"], (m + 1)*self.c["DAYS_IN_MONTH"]):
-                self.time_days_daily.append(d)
-                v["seaweed_wet_on_farm"][d] = LpVariable("Seaweed_Wet_On_Farm_"+str(
-                    d)+"_Variable", self.c["INITIAL_SEAWEED"], self.c["MAXIMUM_DENSITY"] * self.s["built_area"][d])
-                # food production (using resources)
-                v["seaweed_food_produced"][d] = LpVariable(
-                    name="Seaweed_Food_Produced_During_Day_"+str(d)+"_Variable", lowBound=0)
+        for d in np.arange(m*self.c["DAYS_IN_MONTH"], (m + 1)*self.c["DAYS_IN_MONTH"]):
+            self.time_days_daily.append(d)
+            v["seaweed_wet_on_farm"][d] = LpVariable(
+                "Seaweed_Wet_On_Farm_"
+                + str(d)
+                + "_Variable",
+                self.c["INITIAL_SEAWEED"],
+                self.c["MAXIMUM_DENSITY"] * self.s["built_area"][d])
 
-                v["used_area"][d] = LpVariable(
-                    "Used_Area_"+str(d)+"_Variable", self.c["INITIAL_AREA"], self.s["built_area"][d])
+            # food production (using resources)
+            v["seaweed_food_produced"][d] = LpVariable(
+                name="Seaweed_Food_Produced_During_Day_"+str(d)+"_Variable", lowBound=0)
 
-                if(d == 0):  # first Day
-                    model += (v["seaweed_wet_on_farm"][0] == self.c["INITIAL_SEAWEED"],
-                              "Seaweed_Wet_On_Farm_0_Constraint")
-                    model += (v["used_area"][0] == self.c["INITIAL_AREA"],
-                              "Used_Area_Day_0_Constraint")
-                    model += (v["seaweed_food_produced"][0] == 0,
-                              "Seaweed_Food_Produced_Day_0_Constraint")
+            v["used_area"][d] = LpVariable(
+                "Used_Area_"+str(d)+"_Variable", self.c["INITIAL_AREA"], self.s["built_area"][d])
 
-                else:  # later Days
-                    model += (v["seaweed_wet_on_farm"][d] <= v["used_area"]
-                              [d] * self.c["MAXIMUM_DENSITY"])
+            if(d == 0):  # first Day
+                model += (v["seaweed_wet_on_farm"][0] == self.c["INITIAL_SEAWEED"],
+                          "Seaweed_Wet_On_Farm_0_Constraint")
+                model += (v["used_area"][0] == self.c["INITIAL_AREA"],
+                          "Used_Area_Day_0_Constraint")
+                model += (v["seaweed_food_produced"][0] == 0,
+                          "Seaweed_Food_Produced_Day_0_Constraint")
 
-                    model += (v["seaweed_wet_on_farm"][d] ==
-                              v["seaweed_wet_on_farm"][d-1] *
-                              (1+self.c["inputs"]["SEAWEED_PRODUCTION_RATE"]/100.)
-                              - v["seaweed_food_produced"][d]
-                              - (v["used_area"][d]-v["used_area"][d-1]) *
-                              self.c["MINIMUM_DENSITY"] * (self.c["HARVEST_LOSS"]/100),
-                              "Seaweed_Wet_On_Farm_"+str(d)+"_Constraint")
+            else:  # later Days
+                model += (v["seaweed_wet_on_farm"][d] <= v["used_area"]
+                          [d] * self.c["MAXIMUM_DENSITY"])
 
-                sum_food_this_month.append(v["seaweed_food_produced"][d])
+                model += (v["seaweed_wet_on_farm"][d] ==
+                          v["seaweed_wet_on_farm"][d-1] *
+                          (1+self.c["inputs"]["SEAWEED_PRODUCTION_RATE"]/100.)
+                          - v["seaweed_food_produced"][d]
+                          - (v["used_area"][d]-v["used_area"][d-1]) *
+                          self.c["MINIMUM_DENSITY"]
+                          * (self.c["HARVEST_LOSS"] / 100),
+                          "Seaweed_Wet_On_Farm_"+str(d)+"_Constraint")
 
-            v["seaweed_food_produced_monthly"][m] = LpVariable(
-                name="Seaweed_Food_Produced_Monthly_" + str(m) + "_Variable", lowBound=0)
+            sum_food_this_month.append(v["seaweed_food_produced"][d])
 
-            model += (v["seaweed_food_produced_monthly"][m] == np.sum(sum_food_this_month),
-                      "Seaweed_Food_Produced_Monthly_" + str(m) + "_Constraint")
+        v["seaweed_food_produced_monthly"][m] = LpVariable(
+            name="Seaweed_Food_Produced_Monthly_" + str(m) + "_Variable", lowBound=0)
 
-            return (model, v)
+        model += (v["seaweed_food_produced_monthly"][m] == np.sum(sum_food_this_month),
+                  "Seaweed_Food_Produced_Monthly_" + str(m) + "_Constraint")
+
+        return (model, v)
 
     # incorporate linear constraints for stored food consumption each month
     def add_stored_food_to_model(self, model, v, m):
@@ -483,6 +485,7 @@ class Optimizer:
                       "Fat_Fed_Month_" + str(m) + "_Constraint")
 
         if(self.c['inputs']['INCLUDE_PROTEIN']):
+
             model += (v["humans_fed_protein"][m] ==
                       (v["stored_food_eaten"][m] * self.c["SF_FRACTION_PROTEIN"]
                        * CROPS_WASTE

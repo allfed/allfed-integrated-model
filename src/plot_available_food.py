@@ -11,5 +11,4 @@ no_resilient_food_primary_production_analysis = np.load('../data/no_resilient_fo
 Plotter.plot_fig_s4abcd(
     resilient_food_primary_production_analysis,
     no_resilient_food_primary_production_analysis,
-    48,
     72)

@@ -150,7 +150,7 @@ Required changes to establish people fed present-day:
 
 
 
-write up remaining parts of paper:
+[done] write up remaining parts of paper:
     [done] [morgan] explain the estimates made for crop growth (supplement)
     [done] [morgan] update the results section to describe results
     [done] [morgan] explanation of seaweed growth algorithm (supplement)
@@ -203,12 +203,12 @@ write up remaining parts of paper:
 
     run and update manuscript with monte carlo changes
 
-add in feed delay for monte carlo for culled meat
-double check culled meat is properly working
-    in run_model.py => 12 months evenly
-    in run_model.py => correct fraction (all meat) is used
-    in run_model_no_resilient_foods.py => 12 months evenly
-    in run_model_no_resilient_foods.py => correct fraction (all meat) is used
+[done] add in feed delay for monte carlo for culled meat
+[done] double check culled meat is properly working
+    [done] in run_model.py => 12 months evenly
+    [done] in run_model.py => correct fraction (all meat) is used
+    [done] in run_model_no_resilient_foods.py => 12 months evenly
+    [done] in run_model_no_resilient_foods.py => correct fraction (all meat) is used
 
 
 [done] add statistical box and whiskers for monte carlo results
@@ -222,12 +222,12 @@ add per month in lognormal plots
 
 
 [done] table with:
-    95% confidence
-    mean
-    max
-    min
-    standard deviation
-    type of distribution
+    [done] 95% confidence
+    [done] mean
+    [done] max
+    [done] min
+    [done] standard deviation
+    [done] type of distribution
 
 
 [done] clarify we are not considering relocation to tobacco crop areas
@@ -288,8 +288,6 @@ comments from feb 6
 
 - After reading through the optimizer model, I realize there actually aren’t that many inputs to the model. the constants function is by contrast rather overwhelming. I think it would be helpful to make it more explicit which ultimate constants the constants file is generating for the model. A lot of the “constants” are indeed constant, but not necessarily direct inputs to the model.
 - After looking at the documentation for the PuLP library, I understand more what’s going on in the add_objectives_to_model function. I think it would be helpful to explain for each of the constaints that you’re applying with a small comment. (it’s possible this is covered in the paper, so maybe it’s less necessary. I just like being able to read the code and understand things without needing an accompanying document)
-
-
 
 check density and growth rates for Porphyra Amplissima and add to paper
 

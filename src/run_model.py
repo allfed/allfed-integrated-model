@@ -42,9 +42,9 @@ cin['INITIAL_SF_PROTEIN'] = 69.25e3 * 0.96
 
 cin["OG_USE_BETTER_ROTATION"] = True
 cin["ROTATION_IMPROVEMENTS"] = {}
-cin["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"] = .808
-cin["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.861
-cin["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.062
+cin["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"] = .933
+cin["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.718
+cin["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.413
 
 cin['INCLUDE_PROTEIN'] = True
 cin['INCLUDE_FAT'] = True
@@ -98,7 +98,7 @@ optimizer = Optimizer()
 constants['inputs'] = cin
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
 print("")
-print("no waste estimated people fed")
+print("no waste estimated people fed (billions)")
 print(analysis.people_fed_billions)
 print("")
 
@@ -106,13 +106,6 @@ np.save('../data/resilient_food_primary_analysis.npy',
         analysis,
         allow_pickle=True)
 
-# Plotter.plot_people_fed_combined(time_months_middle, analysis)
-# Plotter.plot_people_fed_kcals(time_months_middle, analysis,
-#         'Primary production before waste, + resilient foods', 79)
-
-# nuclear winter 150 tab, cell G30-G38  https://docs.google.com/spreadsheets/d/14t3_PUIky6aNiBvw8q24sj6QYxCN9s_VddLY2-eJuPE/edit#gid=1637082097
-# overall waste, on farm+distribution+retail
-# 3x prices (note, currently set to 2019, not 2020)
 cin['WASTE'] = {}
 # cin['WASTE']['CEREALS'] = 19.02 #%
 cin['WASTE']['SUGAR'] = 14.47  # %
@@ -134,7 +127,7 @@ constants['inputs'] = cin
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
 
 analysis1 = analysis
-print("Food available after waste, feed ramp down and biofuel ramp down, with resilient foods")
+print("Food available after waste, feed ramp down and biofuel ramp down, with resilient foods (people fed in billions)")
 print(analysis.people_fed_billions)
 print("")
 if(constants["VERBOSE"]):
@@ -229,10 +222,6 @@ while(True):
 
     assert(feed_delay > cin["DELAY"]['BIOFUEL_SHUTOFF'])
 
-    # don't try to feed more animals in the  months before feed shutoff
-    # excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
-    #   excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]\
-    #   + analysis.excess_after_run[feed_delay:N_MONTHS_TO_CALCULATE_DIET]
     if(people_fed < 8.0 and people_fed > 7.8):
         excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
             excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]\
@@ -250,18 +239,8 @@ while(True):
 tend = datetime.now()
 diff = tend - tstart
 
-# plt.title("Excess kcals used for feed and biofuel")
-# plt.ylabel("million dry caloric tons monthly")
-# plt.xlabel("Months after May nuclear event")
-# plt.plot(np.array(optimizer.s["excess_kcals"]) * 1e9 / 4e6 / 1e6)
-# plt.show()
-
-# Plotter.plot_people_fed_kcals(time_months_middle, analysis,
-                              # "Average diet, excess production used for feed, + resilient foods",72)
 analysis2 = analysis
 
 # last month plotted is month 48
 Plotter.plot_fig_2abcd(analysis1, analysis2, 48)
 print("Diet computation complete")
-
-# Plotter.plot_fig_1ab(time_months_middle,analysis1,analysis2,48)
