@@ -3,16 +3,6 @@ allfed-integrated-model
 
 An integrated economic model for resilient foods
 
-# Installation
-Dependencies are managed using Poetry - install it if you don't have it: https://python-poetry.org/
-To install:
-```bash
-poetry install
-```
-Note: windows users will probably have more success installing each dependency u
-sing conda, rather than using poetry for dependency management.
-
-
 # Run the model
 
 ### Using Colab (most users use this):
@@ -47,36 +37,40 @@ Now follow the instructions in the Jupyter notebook. Run each line of the Jupyte
 Please let me know if any of these steps go awry! (contact morgan [at] allfed [dot] info)
 
 ### From the command line (requires cloned repo):
+The integrated model is written in python 3, ensure you have some version of python3, although it has only been tested with python 3.7 or later. Then, install the required packages using pip if not already installed:
+
 ```bash
-poetry shell
-python src/cheri.py
+pip install PuLP
+pip install numpy
+pip install matplotlib
+```
+
+results from the paper can be rerun using the following commands in the src/ folder
+
+```bash
+python run_model.py
+python run_model_no_resilient_foods.py
+python run_model_before_catastrophe.py
+python plot_available_food.py
 ```
 
 ### Using Jupyter (requires cloned repo):
+In the notebooks/ folder run:
+
 ```bash
-poetry run jupyter lab
+jupyter notebook example_optimize.ipynb
 ```
-Then navigate to the `notebooks` folder, open `example_optimizer.ipynb`, and
-execute each cell in order, ignoring the first cell
+
+Then skip the colab section and execute every other cell in order.
 
 # Project Tree
 
     ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
+    ├── data               <- Data from Monte Carlo runs.
     ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
     │                         the creator's initials, and a short `-` delimited description, e.g.
     │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── pyproject.toml   <- The dependencies file for reproducing the modelling environment using poetry
-    ├── poetry.lock   <- Fixed versions for each dependency
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
+    ├── figures            <- Generated graphics and figures to be used in reporting
     ├── src                <- Source code for use in this project.
         └── __init__.py    <- Makes src a Python module
 
