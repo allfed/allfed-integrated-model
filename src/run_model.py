@@ -11,6 +11,7 @@ from datetime import datetime
 import numpy as np
 import os
 import sys
+import copy
 module_path = os.path.abspath(os.path.join('..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
@@ -59,7 +60,7 @@ cin['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1  # default values from CS and SCP p
 cin['INITIAL_HARVEST_DURATION'] = 7 + 1  # months
 
 cin['IS_NUCLEAR_WINTER'] = True
-cin['FLUCTUATION_LIMIT'] = 1.1
+cin['FLUCTUATION_LIMIT'] = 1.5
 cin['KCAL_SMOOTHING'] = True
 cin['MEAT_SMOOTHING'] = True
 cin['STORED_FOOD_SMOOTHING'] = True
@@ -96,10 +97,11 @@ cin['WASTE']['SEAWEED'] = 0  # %
 
 optimizer = Optimizer()
 constants['inputs'] = cin
-[time_months, time_months_middle, analysis] = optimizer.optimize(constants)
+constants_for_optimizer = copy.deepcopy(constants)
+[time_months, time_months_middle, analysis] = optimizer.optimize(constants_for_optimizer)
 print("")
-print("no waste estimated people fed (billions)")
-print(analysis.people_fed_billions)
+print("no waste estimated people fed (kcals/capita/day)")
+print(analysis.people_fed_billions/7.8*2100)
 print("")
 
 np.save('../data/resilient_food_primary_analysis.npy',
@@ -120,37 +122,31 @@ cin["EXCESS_CALORIES"] = excess_per_month
 cin["DELAY"]['FEED_SHUTOFF'] = 2  # months
 cin["DELAY"]['BIOFUEL_SHUTOFF'] = 1  # months
 
-cin["CULL_DURATION"] = cin['NMONTHS'] - cin["DELAY"]['FEED_SHUTOFF']
+cin["CULL_DURATION"] = 60
 
 optimizer = Optimizer()
 constants['inputs'] = cin
-[time_months, time_months_middle, analysis] = optimizer.optimize(constants)
+constants_for_optimizer = copy.deepcopy(constants)
+[time_months, time_months_middle, analysis] = optimizer.optimize(constants_for_optimizer)
 
 analysis1 = analysis
-print("Food available after waste, feed ramp down and biofuel ramp down, with resilient foods (people fed in billions)")
-print(analysis.people_fed_billions)
+print("Food available after waste, feed ramp down and biofuel ramp down, with resilient foods (kcals per capita per day)")
+print(analysis.people_fed_billions/7.8*2100)
 print("")
-if(constants["VERBOSE"]):
-
-    print("")
-    print("")
-    print("")
-    print("")
-    print("")
-    print("")
-    print("==========Running diet balancer=========")
-    print("")
-    print("")
-    print("")
 
 # billions of kcals
 # "Sources/summary" tab cell I14.  https://docs.google.com/spreadsheets/d/1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=0
 
 cin['INCLUDE_PROTEIN'] = True
 cin['INCLUDE_FAT'] = True
+# Plotter.plot_people_fed_combined(analysis)
+# Plotter.plot_people_fed_kcals(analysis,
+#                               'People fed minus waste and biofuels',
+#                               84)
 
 constants['inputs'] = cin
-[time_months, time_months_middle, analysis] = optimizer.optimize(constants)
+constants_for_optimizer = copy.deepcopy(constants)
+[time_months, time_months_middle, analysis] = optimizer.optimize(constants_for_optimizer)
 
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
 # Plotter.plot_people_fed_kcals(time_months_middle, analysis,
@@ -159,19 +155,6 @@ constants['inputs'] = cin
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)
 
 people_fed = analysis.people_fed_billions  # np.min(analysis.people_fed)
-if(constants["VERBOSE"]):
-
-    print("")
-    print("")
-    print("")
-    print("")
-    print("billions of people fed from kcals")
-    print(people_fed)
-    print("")
-    print("")
-    print("")
-    print("")
-
 feed_delay = cin["DELAY"]['FEED_SHUTOFF']
 
 # these months are used to estimate the diet before the full scale-up of resilient foods makes there be way too much food to make sense economically
@@ -199,18 +182,7 @@ while(True):
     constants['inputs'] = cin
     [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
     people_fed = analysis.people_fed_billions  # np.min(analysis.people_fed)
-    if(constants["VERBOSE"]):
-        print("")
-        print("")
-        print("")
-        print("")
-        print("people_fed")
-        print(people_fed)
-        print("")
-        print("")
-        print("")
-        print("")
-
+    
     # the rebalancer is only responsible for balancing calories, and is unable to operate unless the assumption that fat and protein are limiting values is invalid.
     cin['INCLUDE_PROTEIN'] = True
     cin['INCLUDE_FAT'] = True
@@ -222,6 +194,8 @@ while(True):
 
     assert(feed_delay > cin["DELAY"]['BIOFUEL_SHUTOFF'])
 
+    # rapidly feed more to people until it's close to 2100 kcals, then
+    # slowly feed more to people 
     if(people_fed < 8.0 and people_fed > 7.8):
         excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
             excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]\
@@ -230,9 +204,6 @@ while(True):
         excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = \
             excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]\
             + np.linspace(5000, 5000, N_MONTHS_TO_CALCULATE_DIET - feed_delay)
-        # /+ analysis.excess_after_run[feed_delay:N_MONTHS_TO_CALCULATE_DIET]
-
-    # excess_per_month = excess_per_month+ analysis.excess_after_run
 
     n = n + 1
 

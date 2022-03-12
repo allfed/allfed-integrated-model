@@ -86,8 +86,8 @@ constants['inputs'] = cin
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
 
 print("")
-print("Estimated people fed, no resilient foods, no waste")
-print(analysis.people_fed_billions)
+print("Estimated Kcals/capita/day, no resilient foods, no waste")
+print(analysis.people_fed_billions/7.8*2100)
 print("")
 
 np.save('../data/no_resilient_food_primary_analysis.npy',
@@ -114,13 +114,15 @@ cin["EXCESS_CALORIES"] = np.array([0] * cin['NMONTHS'])
 cin['DELAY']['FEED_SHUTOFF'] = 3  # months
 cin['DELAY']['BIOFUEL_SHUTOFF'] = 2  # months
 
-cin["CULL_DURATION"] = cin['NMONTHS'] - cin["DELAY"]['FEED_SHUTOFF']
+cin["CULL_DURATION"] = 60#cin['NMONTHS'] - cin["DELAY"]['FEED_SHUTOFF']
 cin['RECALCULATE_CULL_DURATION'] = False  # thousand tons
 
 constants['inputs'] = cin
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
-print("Estimated people fed, no resilient foods, minus waste & delayed halt of nonhuman consumption ")
-print(analysis.people_fed_billions)
+print("Estimated Kcals/capita/day, no resilient foods, minus waste & delayed halt of nonhuman consumption ")
+
+print(analysis.people_fed_billions/7.8*2100)
+
 print("")
 
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)

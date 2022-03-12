@@ -265,8 +265,6 @@ class Plotter:
         plt.tight_layout()
         plt.savefig('../reports/fig_2abcd.png')
         print('saved figure 2abcd')
-        # plt.savefig("plot.svg")
-        # os.system('firefox-esr plot.svg')
         plt.show()
 
     def plot_fig_3ab(monte_carlo_data, food_names, removed, added):
@@ -292,11 +290,12 @@ class Plotter:
                 ax4.spines['left'].set_visible(False)
 
             if(label == 'b'):
-                ax_box = fig.add_subplot(gs[0, 1])
-                ax_box.text(-0.06, 1.35, label, transform=ax_box.transAxes,
+                # ax_box = fig.add_subplot(gs[0, 1])
+                # ax_box.text(-0.06, 1.35, label, transform=ax_box.transAxes,
+                ax_hist = fig.add_subplot(gs[0:3, 1])
+                ax_hist.text(-0.06, 1.1, label, transform=ax_hist.transAxes,
                             fontsize=11, fontweight='bold', va='top', ha='right')
-                ax_hist = fig.add_subplot(gs[1:3, 1])
-                ax_box.axis("off")
+                # ax_box.axis("off")
 
             if(label == 'a'):
                 dict = {}
@@ -317,7 +316,8 @@ class Plotter:
                     dict['calories'] = np.append(dict['calories'], added[f])
                 df = pd.DataFrame.from_dict(dict)
                 sns.boxplot(data=df, x='calories', y='food',
-                            hue='category', ax=ax3, showfliers=False)
+                            hue='category', ax=ax3, showfliers=False,
+                            palette=sns.color_palette(['#ff0000','#00ff00']))
                 ax3.get_legend().remove()
                 ax3.set(title="Comparative evaluation")
                 plt.legend(bbox_to_anchor=(.0, -.1), )
@@ -327,16 +327,14 @@ class Plotter:
                 ax4.legend(handles, labels, frameon=False, bbox_to_anchor=(.8, .8))
                 ax4.axis("off")
             if(label == 'b'):
-                sns.boxplot(monte_carlo_data, ax=ax_box, showfliers=False)
+                # sns.boxplot(monte_carlo_data, ax=ax_box, showfliers=False)
                 sns.histplot(data=monte_carlo_data, ax=ax_hist)
                 ax_hist.set(xlabel="mean caloric availability (Kcals / person / day)")
-                ax_box.set(title="Monte Carlo outcomes")
+                ax_hist.set(title="Monte Carlo outcomes")
 
         plt.tight_layout()
         plt.savefig('../reports/fig_3ab.png')
         print('saved figure 3ab')
-        # plt.savefig("plot.svg")
-        plt.rcParams["figure.figsize"] = [15, 8]
         # os.system('firefox-esr plot.svg')
         plt.show()
 
@@ -399,8 +397,6 @@ class Plotter:
         plt.tight_layout()
 
         plt.rcParams["figure.figsize"] = [12, 9]
-        # plt.savefig("plot.svg")
-        # os.system('firefox-esr plot.svg')
         plt.savefig('../reports/fig_s1.png')
         print('saved figure s1')
         plt.show()
@@ -541,8 +537,6 @@ class Plotter:
         plt.tight_layout()
         plt.savefig('../reports/fig_s3abcd.png')
         print('saved figure s3abcd')
-        # plt.savefig("plot.svg")
-        # os.system('firefox-esr plot.svg')
         plt.show()
 
     def plot_fig_s4abcd(analysis1,
@@ -672,8 +666,6 @@ class Plotter:
         plt.tight_layout()
         plt.savefig('../reports/fig_s4abcd.png')
         print('saved figure s4abcd')
-        # plt.savefig("plot.svg")
-        # os.system('firefox-esr plot.svg')
         plt.show()
 
     def getylim_nutrients(analysis, xlim):
@@ -715,13 +707,6 @@ class Plotter:
 
         legend = Plotter.get_people_fed_legend(analysis)
 
-        # https://jacksonlab.agronomy.wisc.edu/2016/05/23/15-level-colorblind-friendly-palette/
-        #   "#000000","#004949","#009292","#ff6db6","#ffb6db",
-        # "#490092","#006ddb","#b66dff","#6db6ff","#b6dbff",
-        # "#920000","#924900","#db6d00","#24ff24","#ffff6d"
-        # patterns = [ "/" , "\\" , "|" , "-" , "+" , "x", "o", "O", ".", "*" ]
-
-        # print(analysis.billions_fed_h_e_meat_kcals)
         ydata = []
         ydata.append(analysis.billions_fed_fish_kcals /
                      analysis.c["CONVERT_TO_KCALS"])
@@ -775,8 +760,6 @@ class Plotter:
 
         plt.rcParams["figure.figsize"] = [17.50, 9]
         plt.tight_layout()
-        # plt.savefig("plot.svg")
-        # os.system('firefox-esr plot.svg')
         plt.show()
 
     def plot_people_fed_combined(analysis):
@@ -844,8 +827,6 @@ class Plotter:
         # Remove x axis name for the boxplot
         ax_hist.set(xlabel=xlabel)
         ax_box.set(title=title)
-        # plt.savefig("plot.svg")
-        # os.system('firefox-esr plot.svg')
         plt.show()
         print("95% lower")
         print(np.percentile(np.array(data), 2.5))
@@ -972,6 +953,4 @@ class Plotter:
 
         plt.rcParams["figure.figsize"] = [17.50, 9]
         # plt.tight_layout()
-        # plt.savefig("plot.svg")
-        # os.system('firefox-esr plot.svg')
         plt.show()

@@ -24,7 +24,7 @@ import statsmodels.api as sm
 import matplotlib.pyplot as plt
 import multiprocessing as mp
 from multiprocessing import Pool
-from multiprocessing import set_start_method
+
 # matplotlib.use('Svg')
 
 class MonteCarlo:
@@ -34,6 +34,7 @@ class MonteCarlo:
     def run_all_scenarios(N_monte_carlo, N_comparison, load_saved_mc, load_saved_comp):
         cin = {}  # constants as inputs to optimizer
 
+        cin['SAVE_COMPUTE_TIME'] = True
         cin['NMONTHS'] = 84
         cin['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
 
@@ -45,7 +46,7 @@ class MonteCarlo:
 
 
         # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
-        cin['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1360e6 * 0.96
+        cin['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1360e6
         cin['INCLUDE_PROTEIN'] = True
         cin['INCLUDE_FAT'] = True
         cin['WASTE'] = {}
@@ -55,7 +56,8 @@ class MonteCarlo:
         cin['WASTE']['SEAFOOD'] = 14.55  # %
         cin['WASTE']['CROPS'] = 19.33  # %
         cin['WASTE']['SEAWEED'] = 14.37  # %
-        cin["CULL_DURATION"] = 60
+        cin["CULL_DURATION"] = 12  # analysis.c["CULL_DURATION"]
+        cin['RECALCULATE_CULL_DURATION'] = False  # thousand tons
 
         cin['IS_NUCLEAR_WINTER'] = True
         excess_per_month = np.array([0] * cin['NMONTHS'])
@@ -73,7 +75,7 @@ class MonteCarlo:
         cin['OG_USE_BETTER_ROTATION'] = True
         cin['INITIAL_HARVEST_DURATION'] = 8
         cin['FLUCTUATION_LIMIT'] = 1.5
-        cin['KCAL_SMOOTHING'] = True
+        cin['KCAL_SMOOTHING'] = False
         cin['MEAT_SMOOTHING'] = True
         cin['STORED_FOOD_SMOOTHING'] = True
         cin['ROTATION_IMPROVEMENTS'] = {}
@@ -96,6 +98,7 @@ class MonteCarlo:
                     mc_variables, allow_pickle=True)
             print('MonteCarlo variables')
             Plotter.plot_fig_s1(mc_variables, N_monte_carlo)
+            quit()
         if(load_saved_comp):
             comp_variables = np.load(
                 '../data/comp_variables_'+str(N_comparison)+'.npy',
@@ -168,6 +171,7 @@ class MonteCarlo:
         mean_value = 2.0765
         normal_dist = norm.rvs(size=N, scale=np.log(M), loc=0)
         seaweed_new = np.exp(normal_dist) * mean_value
+
         M = 2
         mean_value = 50
         normal_dist = norm.rvs(size=N, scale=np.log(M), loc=0)
@@ -198,32 +202,42 @@ class MonteCarlo:
         # delays are assumed to be perfectly correlated
 
         M = 2
-        delay_normal = norm.rvs(size=N, scale=np.log(M), loc=0)
-        # delay_normal = np.array([0]*N)
-        # round distributions
-        # generate std of 2 data, mean of 2
-        delay_2 = 2 * np.exp(delay_normal)
-        # generate std of 3 data, mean of 3
-        delay_3 = 3 * np.exp(delay_normal * 3/2)
+        delay_normal_2 = norm.rvs(size=N, scale=np.log(M), loc=0)
 
-        # set the max value so industrial foods delay doesn't exceed NMONTHS/2
-        max_value = cin["NMONTHS"]/2
+        mean_value = 2  # this is e^(mean(underlying normal distribution))
+        # set the max value so industrial foods delay doesn't exceed NMONTHS
+        max_value = cin["NMONTHS"] / 2  # scaled by max 1.5, or min 1/2
+
+        b = np.log((max_value - mean_value)/6)
+        delay_normal_2 = truncnorm.rvs(
+            -1e9,
+            b,
+            size=N,
+            loc=0
+        )
+        # round distributions
+        delay_2 = np.exp(delay_normal_2)  # generate std of 2 data
+        delay_3 = np.exp(delay_normal_2 * 1.5)  # generate std of 3 data
 
         # set the mean value (in months), and round to an integer
-
-        industrial_foods_delay = (np.rint(delay_3)).astype(int)
+        industrial_foods_delay = (np.rint(delay_3 * 1.5)).astype(int)
+        assert((industrial_foods_delay <= cin["NMONTHS"]/2*1.5+1).all())
         greenhouse_delay = (np.rint(delay_2)).astype(int)
         feed_shutoff_delay = (np.rint(delay_2)).astype(int)
         rotation_change_delay = (np.rint(delay_2)).astype(int)
         seaweed_delay = (np.rint(delay_2 / 2)).astype(int)
         biofuel_shutoff_delay = (np.rint(delay_2 / 2)).astype(int)
 
-        industrial_foods_delay[industrial_foods_delay > max_value] = max_value
-        greenhouse_delay[greenhouse_delay > max_value] = max_value
-        feed_shutoff_delay[feed_shutoff_delay > max_value] = max_value
-        rotation_change_delay[rotation_change_delay > max_value] = max_value
-        seaweed_delay[seaweed_delay > max_value] = max_value
-        biofuel_shutoff_delay[biofuel_shutoff_delay > max_value] = max_value
+        M = 2
+        mean_value = 10
+        max_value = 20  # so 1/10th of this value rounds to 2
+        truncnorm_dist = truncnorm.rvs(
+            -1e9,
+            np.log(max_value) / np.log(mean_value),
+            size=N,
+            scale=np.log(M),
+            loc=0
+        )
 
         one_standard_deviation = 1
         mean_value = 0
@@ -302,7 +316,7 @@ class MonteCarlo:
         constants['CHECK_CONSTRAINTS'] = False
         failed_to_optimize = False  # until proven otherwise
         optimizer = Optimizer()
-        print(constants)
+
         try:
             [time_months, time_months_middle, analysis] = \
                 optimizer.optimize(constants)
@@ -320,7 +334,7 @@ class MonteCarlo:
             print("Warning: Optimization failed. Continuing.")
             return (np.nan, i)
 
-        PLOT_EACH_SCENARIO = True
+        PLOT_EACH_SCENARIO = False
         if(PLOT_EACH_SCENARIO):
             Plotter.plot_people_fed_combined(analysis)
             Plotter.plot_people_fed_kcals(analysis,
@@ -350,7 +364,7 @@ class MonteCarlo:
     def run_scenarios(variables, cin, N):
         all_fed = []
         failed_indices = []
-        USE_MULTICORES = False
+        USE_MULTICORES = True
         # latest time test on my machine: 21.5 seconds for 100 items
         if(USE_MULTICORES):
             pool = mp.Pool(processes=mp.cpu_count())
@@ -365,6 +379,7 @@ class MonteCarlo:
                     continue
                 # convert people fed to calories per capita in 2020
                 all_fed.append(fed / 7.8 * 2100)
+
         else:  # latest time test on my machine: 94.41 seconds for 100 items
             for i in range(0, N):
                 (fed, failed_index) = MonteCarlo.run_scenario(variables, cin, i, N)
@@ -433,15 +448,16 @@ class MonteCarlo:
         # the effect size on total people fed
         added = {}
         for i, label in enumerate(foods):
-            if('cell' not in label):
+            if('relocated' not in label):
                 continue
+
             cin['ADD_SEAWEED'] = False
             cin['ADD_CELLULOSIC_SUGAR'] = False
             cin['ADD_METHANE_SCP'] = False
             cin['ADD_GREENHOUSES'] = False
             cin['OG_USE_BETTER_ROTATION'] = False
 
-            print("Added baseline " + label)
+            print("Added baseline "+label)
 
             baseline_fed, failed_runs_baseline_a = MonteCarlo.run_scenarios(variables, cin, N)
 
@@ -451,7 +467,7 @@ class MonteCarlo:
             cin['ADD_GREENHOUSES'] = ('greenhouse' in label)
             cin['OG_USE_BETTER_ROTATION'] = ('relocated' in label)
 
-            print("Added trial " + label)
+            print("Added trial "+label)
             added_fed, failed_runs_a = MonteCarlo.run_scenarios(variables, cin, N)
 
             baseline_fed = np.delete(baseline_fed,
@@ -461,8 +477,9 @@ class MonteCarlo:
                                   np.append(failed_runs_baseline_a,
                                             failed_runs_a).astype(int))
 
-            # added[label] = np.subtract(np.array(added_fed),
-            #                            np.array(baseline_fed))
+            added[label] = np.subtract(np.array(added_fed),
+                                       np.array(baseline_fed))
+
         return removed, added
 
-MonteCarlo.run_all_scenarios(10,10,True,False)
+MonteCarlo.run_all_scenarios(10,100,True,False)

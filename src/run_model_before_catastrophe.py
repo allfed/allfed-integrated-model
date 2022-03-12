@@ -116,10 +116,6 @@ optimizer = Optimizer()
 constants['inputs'] = cin
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
 
-print("Estimated average diet 2020")
-print(analysis.people_fed_billions)
-print("")
-
 analysis2 = analysis
 
 # Plotter.plot_people_fed_combined(time_months_middle, analysis)

@@ -92,7 +92,6 @@ class Optimizer:
 
         obj_func = z
         model += obj_func
-
         status = model.solve(pulp.PULP_CBC_CMD(fracGap=0.0001,
             msg = c["VERBOSE"]))
         assert(status == 1)
@@ -226,45 +225,49 @@ class Optimizer:
         sd = self.c["inputs"]["DELAY"]["SEAWEED"]
         sum_food_this_month = []
         #assume that the only harvest opportunity is once a month
+        if(m > 15+sd):
+            v["seaweed_food_produced_monthly"][m] = LpVariable(name="Seaweed_Food_Produced_Monthly_"+str(m)+"_Variable", lowBound=0)
+            return (model,v)
 
-        for d in np.arange(m*self.c["DAYS_IN_MONTH"], (m + 1)*self.c["DAYS_IN_MONTH"]):
-            self.time_days_daily.append(d)
-            v["seaweed_wet_on_farm"][d] = LpVariable(
-                "Seaweed_Wet_On_Farm_"
-                + str(d)
-                + "_Variable",
-                self.c["INITIAL_SEAWEED"],
-                self.c["MAXIMUM_DENSITY"] * self.s["built_area"][d])
+        else:
+            for d in np.arange(m*self.c["DAYS_IN_MONTH"], (m + 1)*self.c["DAYS_IN_MONTH"]):
+                self.time_days_daily.append(d)
+                v["seaweed_wet_on_farm"][d] = LpVariable(
+                    "Seaweed_Wet_On_Farm_"
+                    + str(d)
+                    + "_Variable",
+                    self.c["INITIAL_SEAWEED"],
+                    self.c["MAXIMUM_DENSITY"] * self.s["built_area"][d])
 
-            # food production (using resources)
-            v["seaweed_food_produced"][d] = LpVariable(
-                name="Seaweed_Food_Produced_During_Day_"+str(d)+"_Variable", lowBound=0)
+                # food production (using resources)
+                v["seaweed_food_produced"][d] = LpVariable(
+                    name="Seaweed_Food_Produced_During_Day_"+str(d)+"_Variable", lowBound=0)
 
-            v["used_area"][d] = LpVariable(
-                "Used_Area_"+str(d)+"_Variable", self.c["INITIAL_AREA"], self.s["built_area"][d])
+                v["used_area"][d] = LpVariable(
+                    "Used_Area_"+str(d)+"_Variable", self.c["INITIAL_AREA"], self.s["built_area"][d])
 
-            if(d == 0):  # first Day
-                model += (v["seaweed_wet_on_farm"][0] == self.c["INITIAL_SEAWEED"],
-                          "Seaweed_Wet_On_Farm_0_Constraint")
-                model += (v["used_area"][0] == self.c["INITIAL_AREA"],
-                          "Used_Area_Day_0_Constraint")
-                model += (v["seaweed_food_produced"][0] == 0,
-                          "Seaweed_Food_Produced_Day_0_Constraint")
+                if(d == 0):  # first Day
+                    model += (v["seaweed_wet_on_farm"][0] == self.c["INITIAL_SEAWEED"],
+                              "Seaweed_Wet_On_Farm_0_Constraint")
+                    model += (v["used_area"][0] == self.c["INITIAL_AREA"],
+                              "Used_Area_Day_0_Constraint")
+                    model += (v["seaweed_food_produced"][0] == 0,
+                              "Seaweed_Food_Produced_Day_0_Constraint")
 
-            else:  # later Days
-                model += (v["seaweed_wet_on_farm"][d] <= v["used_area"]
-                          [d] * self.c["MAXIMUM_DENSITY"])
+                else:  # later Days
+                    model += (v["seaweed_wet_on_farm"][d] <= v["used_area"]
+                              [d] * self.c["MAXIMUM_DENSITY"])
 
-                model += (v["seaweed_wet_on_farm"][d] ==
-                          v["seaweed_wet_on_farm"][d-1] *
-                          (1+self.c["inputs"]["SEAWEED_PRODUCTION_RATE"]/100.)
-                          - v["seaweed_food_produced"][d]
-                          - (v["used_area"][d]-v["used_area"][d-1]) *
-                          self.c["MINIMUM_DENSITY"]
-                          * (self.c["HARVEST_LOSS"] / 100),
-                          "Seaweed_Wet_On_Farm_"+str(d)+"_Constraint")
+                    model += (v["seaweed_wet_on_farm"][d] ==
+                              v["seaweed_wet_on_farm"][d-1] *
+                              (1+self.c["inputs"]["SEAWEED_PRODUCTION_RATE"]/100.)
+                              - v["seaweed_food_produced"][d]
+                              - (v["used_area"][d]-v["used_area"][d-1]) *
+                              self.c["MINIMUM_DENSITY"]
+                              * (self.c["HARVEST_LOSS"] / 100),
+                              "Seaweed_Wet_On_Farm_"+str(d)+"_Constraint")
 
-            sum_food_this_month.append(v["seaweed_food_produced"][d])
+                sum_food_this_month.append(v["seaweed_food_produced"][d])
 
         v["seaweed_food_produced_monthly"][m] = LpVariable(
             name="Seaweed_Food_Produced_Monthly_" + str(m) + "_Variable", lowBound=0)
@@ -424,16 +427,18 @@ class Optimizer:
         if(self.c["ADD_SEAWEED"] and self.c["LIMIT_SEAWEED_AS_PERCENT_KCALS"]):
             # after month 10, enforce maximum seaweed production to prevent
             # a rounding error from producing full quantity of seaweed
-            # if(m > 10):
-            #     model += (v["seaweed_food_produced_monthly"][m] * self.c["SEAWEED_KCALS"] ==
-            #               (self.c["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"]/100)
-            #               * (self.c["WORLD_POP"]/1e9*self.c["KCALS_MONTHLY"]),
-            #               "Seaweed_Limit_Kcals_" + str(m) + "_Constraint")
-            # else:
-            model += (v["seaweed_food_produced_monthly"][m] * self.c["SEAWEED_KCALS"] <=
-                      (self.c["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"]/100)
-                      * (self.c["WORLD_POP"] / 1e9 * self.c["KCALS_MONTHLY"]),
-                      "Seaweed_Limit_Kcals_" + str(m) + "_Constraint")
+            sd = self.c["inputs"]["DELAY"]["SEAWEED"]
+
+            if(m > 15+sd):
+               model += (v["seaweed_food_produced_monthly"][m] * self.c["SEAWEED_KCALS"] ==
+                         (self.c["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"]/100)
+                          * (self.c["WORLD_POP"] / 1e9 * self.c["KCALS_MONTHLY"]),
+                          "Seaweed_Limit_Kcals_" + str(m) + "_Constraint")
+            else:
+                model += (v["seaweed_food_produced_monthly"][m] * self.c["SEAWEED_KCALS"] <=
+                          (self.c["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"]/100)
+                          * (self.c["WORLD_POP"] / 1e9 * self.c["KCALS_MONTHLY"]),
+                          "Seaweed_Limit_Kcals_" + str(m) + "_Constraint")
 
         # finds billions of people fed that month per nutrient
 
@@ -441,7 +446,6 @@ class Optimizer:
         # seaweed_food_produced_monthly*seaweed_kcals is in units billions kcals
         # kcals monthly is in units kcals
         CROPS_WASTE = 1-self.c["inputs"]["WASTE"]["CROPS"]/100
-
 
         model += (v["humans_fed_kcals"][m]
                   == (v["stored_food_eaten"][m] * CROPS_WASTE

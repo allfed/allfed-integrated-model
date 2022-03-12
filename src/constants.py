@@ -590,7 +590,6 @@ class Constants:
                     ratio_not_maintained_cattle,
                     cattle_h_e_maintained)
 
-        
         # assume animals need and use human levels of fat and protein per kcal
         # units grams per kcal same as units 1000s tons per billion kcals
         fat_used_ls = cin['NUTRITION']['FAT_DAILY'] / \
