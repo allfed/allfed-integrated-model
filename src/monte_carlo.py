@@ -302,7 +302,6 @@ class MonteCarlo:
         constants['CHECK_CONSTRAINTS'] = False
         failed_to_optimize = False  # until proven otherwise
         optimizer = Optimizer()
-        print(constants)
         try:
             [time_months, time_months_middle, analysis] = \
                 optimizer.optimize(constants)
@@ -320,7 +319,7 @@ class MonteCarlo:
             print("Warning: Optimization failed. Continuing.")
             return (np.nan, i)
 
-        PLOT_EACH_SCENARIO = True
+        PLOT_EACH_SCENARIO = False
         if(PLOT_EACH_SCENARIO):
             Plotter.plot_people_fed_combined(analysis)
             Plotter.plot_people_fed_kcals(analysis,
@@ -347,24 +346,54 @@ class MonteCarlo:
                   + ' kcals')
         return (analysis.people_fed_billions, failed_index)
 
+    # https://www.kth.se/blogs/pdc/2019/02/parallel-programming-in-python-multiprocessing-part-1/
+    def slice_data(data, nprocs):
+        aver, res = divmod(len(data), nprocs)
+        nums = []
+        for proc in range(nprocs):
+            if proc < res:
+                nums.append(aver + 1)
+            else:
+                nums.append(aver)
+        count = 0
+        slices = []
+        for proc in range(nprocs):
+            slices.append(data[count: count+nums[proc]])
+            count += nums[proc]
+        return slices
+
     def run_scenarios(variables, cin, N):
         all_fed = []
         failed_indices = []
         USE_MULTICORES = False
         # latest time test on my machine: 21.5 seconds for 100 items
-        if(USE_MULTICORES):
-            pool = mp.Pool(processes=mp.cpu_count())
-            result = pool.starmap(MonteCarlo.run_scenario,
-                                  [(variables, cin, i, N) for i in range(N)])
-            for i in range(0, len(result)):
-                (fed, failed_index) = result[i]
 
-                if(failed_index != -1):
-                    failed_indices.append(failed_index)
-                    all_fed.append(np.nan)
-                    continue
-                # convert people fed to calories per capita in 2020
-                all_fed.append(fed / 7.8 * 2100)
+        # easiest way to do this is to run 100 at a time
+        if(USE_MULTICORES):
+            all_fed = []
+            pool = mp.Pool(processes=mp.cpu_count())
+            inp_lists = MonteCarlo.slice_data(range(N), 100)
+            print(inp_lists)
+            for ilist in inp_lists:
+                result = pool.starmap(MonteCarlo.run_scenario,
+                                  [(variables, cin, i, N) for i in list(ilist)])
+
+                # multi_result = [pool.apply_async(MonteCarlo.run_scenario, ( variables, cin, inp, N)) for inp in inp_lists]
+                # result = [x for p in multi_result for x in p.get()]
+                print(result)
+                # print(result)
+                # quit()
+                fed_list=[]
+                for i in range(0, len(result)):
+                    (fed, failed_index) = result[i]
+
+                    if(failed_index != -1):
+                        failed_indices.append(failed_index)
+                        fed_list.append(np.nan)
+                        continue
+                    # convert people fed to calories per capita in 2020
+                    fed_list.append(fed / 7.8 * 2100)
+            all_fed = all_fed + fed_list
         else:  # latest time test on my machine: 94.41 seconds for 100 items
             for i in range(0, N):
                 (fed, failed_index) = MonteCarlo.run_scenario(variables, cin, i, N)
@@ -374,7 +403,6 @@ class MonteCarlo:
                     continue
                 # convert people fed to calories per capita in 2020
                 all_fed.append(fed / 7.8 * 2100)
-
         return all_fed, failed_indices
 
     def monte_carlo(variables, N, cin):
@@ -391,50 +419,48 @@ class MonteCarlo:
     def compare_resilient_foods(variables, N, cin, foods):
         # try removing each resilient food and see
         # the effect size on total people fed
-        # removed = {}
-        # for i, label in enumerate(foods):
-        #     # run a baseline scenario
-        #     cin['ADD_SEAWEED'] = True
-        #     cin['ADD_CELLULOSIC_SUGAR'] = True
-        #     cin['ADD_METHANE_SCP'] = True
-        #     cin['ADD_GREENHOUSES'] = True
-        #     cin['OG_USE_BETTER_ROTATION'] = True
+        removed = {}
+        for i, label in enumerate(foods):
+            # run a baseline scenario
+            cin['ADD_SEAWEED'] = True
+            cin['ADD_CELLULOSIC_SUGAR'] = True
+            cin['ADD_METHANE_SCP'] = True
+            cin['ADD_GREENHOUSES'] = True
+            cin['OG_USE_BETTER_ROTATION'] = True
 
-        #     print("Remove baseline " + label)
+            print("Remove baseline " + label)
 
-        #     baseline_fed, failed_runs_baseline_r = MonteCarlo.run_scenarios(variables, cin, N)
+            baseline_fed, failed_runs_baseline_r = MonteCarlo.run_scenarios(variables, cin, N)
 
-        #     #run a scenario not involving
-        #     cin['ADD_SEAWEED'] = ('seaweed' not in label)
-        #     cin['ADD_CELLULOSIC_SUGAR'] = ('sugar' not in label)
-        #     cin['ADD_METHANE_SCP'] = ('methane' not in label)
-        #     cin['ADD_GREENHOUSES'] = ('greenhouse' not in label)
-        #     cin['OG_USE_BETTER_ROTATION'] = ('relocated' not in label)
+            #run a scenario not involving
+            cin['ADD_SEAWEED'] = ('seaweed' not in label)
+            cin['ADD_CELLULOSIC_SUGAR'] = ('sugar' not in label)
+            cin['ADD_METHANE_SCP'] = ('methane' not in label)
+            cin['ADD_GREENHOUSES'] = ('greenhouse' not in label)
+            cin['OG_USE_BETTER_ROTATION'] = ('relocated' not in label)
 
-        #     print("Remove trial " + label)
-        #     removed_fed, failed_runs_r = MonteCarlo.run_scenarios(variables, cin, N)
+            print("Remove trial " + label)
+            removed_fed, failed_runs_r = MonteCarlo.run_scenarios(variables, cin, N)
 
-        #     print("failed_indices")
-        #     print(failed_runs_baseline_r)
-        #     print(failed_runs_r)
+            print("failed_indices")
+            print(failed_runs_baseline_r)
+            print(failed_runs_r)
 
-        #     baseline_fed = np.delete(baseline_fed,
-        #                              np.append(failed_runs_baseline_r,
-        #                                        failed_runs_r).astype(int))
-        #     removed_fed = np.delete(removed_fed, 
-        #                             np.append(failed_runs_baseline_r,
-        #                                       failed_runs_r).astype(int))
-        #     assert(not np.isnan(np.array(removed_fed)).any())
-        #     assert(not np.isnan(np.array(baseline_fed)).any())
-        #     removed[label] = np.subtract(np.array(baseline_fed),
-        #                                  np.array(removed_fed))
+            baseline_fed = np.delete(baseline_fed,
+                                     np.append(failed_runs_baseline_r,
+                                               failed_runs_r).astype(int))
+            removed_fed = np.delete(removed_fed, 
+                                    np.append(failed_runs_baseline_r,
+                                              failed_runs_r).astype(int))
+            assert(not np.isnan(np.array(removed_fed)).any())
+            assert(not np.isnan(np.array(baseline_fed)).any())
+            removed[label] = np.subtract(np.array(baseline_fed),
+                                         np.array(removed_fed))
 
         # try removing all but this resilient food and adding only this one and see
         # the effect size on total people fed
         added = {}
         for i, label in enumerate(foods):
-            if('cell' not in label):
-                continue
             cin['ADD_SEAWEED'] = False
             cin['ADD_CELLULOSIC_SUGAR'] = False
             cin['ADD_METHANE_SCP'] = False
@@ -461,8 +487,6 @@ class MonteCarlo:
                                   np.append(failed_runs_baseline_a,
                                             failed_runs_a).astype(int))
 
-            # added[label] = np.subtract(np.array(added_fed),
-            #                            np.array(baseline_fed))
+            added[label] = np.subtract(np.array(added_fed),
+                                       np.array(baseline_fed))
         return removed, added
-
-MonteCarlo.run_all_scenarios(10,10,True,False)
