@@ -70,7 +70,7 @@ cin["DELAY"] = {}
 cin["DELAY"]['FEED_SHUTOFF'] = 0  # months
 cin["DELAY"]['BIOFUEL_SHUTOFF'] = 0  # months
 
-cin["CULL_DURATION"] = cin['NMONTHS'] - cin["DELAY"]['FEED_SHUTOFF']
+cin["CULL_DURATION"] = 60
 
 cin['WASTE'] = {}
 # cin['WASTE']['CEREALS'] = 0  # %

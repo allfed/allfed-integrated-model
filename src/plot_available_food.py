@@ -8,7 +8,8 @@ import numpy as np
 from src.plotter import Plotter
 resilient_food_primary_production_analysis = np.load('../data/resilient_food_primary_analysis.npy',allow_pickle=True).item()
 no_resilient_food_primary_production_analysis = np.load('../data/no_resilient_food_primary_analysis.npy',allow_pickle=True).item()
-Plotter.plot_fig_s4abcd(
+Plotter.plot_fig_s2abcd(
     resilient_food_primary_production_analysis,
     no_resilient_food_primary_production_analysis,
+    48,
     72)

@@ -84,7 +84,7 @@ cin["DELAY"]['SEAWEED'] = 1  # months
 cin["DELAY"]['FEED_SHUTOFF'] = 0  # months
 cin["DELAY"]['BIOFUEL_SHUTOFF'] = 0  # months
 
-cin["CULL_DURATION"] = 0
+cin["CULL_DURATION"] = 60
 
 cin['WASTE'] = {}
 # cin['WASTE']['CEREALS'] = 0 #%
@@ -177,7 +177,7 @@ while(True):
     cin["DELAY"]['BIOFUEL_SHUTOFF'] = 1  # months
     # "Sources/summary" tab cell I14.  https://docs.google.com/spreadsheets/d/1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=0
 
-    cin["CULL_DURATION"] =cin['NMONTHS'] - cin["DELAY"]['FEED_SHUTOFF']
+    cin["CULL_DURATION"] =60
 
     constants['inputs'] = cin
     [time_months, time_months_middle, analysis] = optimizer.optimize(constants)

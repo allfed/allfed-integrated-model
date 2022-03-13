@@ -401,7 +401,7 @@ class Plotter:
         print('saved figure s1')
         plt.show()
 
-    def plot_fig_s3abcd(analysis1,
+    def plot_fig_s2abcd(analysis1,
                        analysis2,
                        xlim1,
                        xlim2):
@@ -535,11 +535,11 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig('../reports/fig_s3abcd.png')
-        print('saved figure s3abcd')
+        plt.savefig('../reports/fig_s2abcd.png')
+        print('saved figure s2abcd')
         plt.show()
 
-    def plot_fig_s4abcd(analysis1,
+    def plot_fig_s1abcd(analysis1,
                         analysis2,
                         xlim):
         legend = Plotter.get_people_fed_legend(analysis1)
@@ -664,8 +664,8 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig('../reports/fig_s4abcd.png')
-        print('saved figure s4abcd')
+        plt.savefig('../reports/fig_s1abcd.png')
+        print('saved figure s1abcd')
         plt.show()
 
     def getylim_nutrients(analysis, xlim):
