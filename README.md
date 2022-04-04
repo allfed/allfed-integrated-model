@@ -8,9 +8,7 @@ An integrated economic model for resilient foods
 ### Using Colab (most users use this):
 The interactive model runs off colab. It doesn't require any downloading or code, you just need to hit the right buttons as they show up. Here's a demo:
 
-First click on the "notebooks" folder, highlighted in the image below:
-
-![step1](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/readme_content/step1.png)
+First click on the "notebooks" folder in the allfed-integrated-model directory.
 
 ![step2](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/readme_content/step2.png)
 
