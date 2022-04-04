@@ -490,3 +490,5 @@ class MonteCarlo:
             added[label] = np.subtract(np.array(added_fed),
                                        np.array(baseline_fed))
         return removed, added
+
+#MonteCarlo.run_all_scenarios(10,100,False,False)

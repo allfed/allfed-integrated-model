@@ -35,9 +35,13 @@ cin['SEAWEED_NEW_AREA_PER_DAY'] = 0  # 1000 km^2 (seaweed)
 cin['SEAWEED_PRODUCTION_RATE'] = 0  # percent (seaweed)
 
 # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
-cin['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1360e6 * 0.96
+cin['TONS_DRY_CALORIC_EQIVALENT_SF'] = 0*1360e6 * 0.96
 
 cin["OG_USE_BETTER_ROTATION"] = False
+# cin["ROTATION_IMPROVEMENTS"] = {}
+# cin["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"] = .93
+# cin["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.487
+# cin["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
 
 cin['INCLUDE_PROTEIN'] = True
 cin['INCLUDE_FAT'] = True
@@ -56,11 +60,11 @@ cin['MEAT_SMOOTHING'] = True
 cin['STORED_FOOD_SMOOTHING'] = True
 
 cin['ADD_CELLULOSIC_SUGAR'] = False
-cin['ADD_DAIRY'] = True
+cin['ADD_DAIRY'] = False
 cin['ADD_FISH'] = True
 cin['ADD_GREENHOUSES'] = False
 cin['ADD_OUTDOOR_GROWING'] = True
-cin['ADD_MEAT'] = True
+cin['ADD_MEAT'] = False
 cin['ADD_METHANE_SCP'] = False
 cin['ADD_SEAWEED'] = False
 cin['ADD_STORED_FOOD'] = True
@@ -69,6 +73,7 @@ cin["EXCESS_CALORIES"] = np.array([0] * cin['NMONTHS'])
 cin["DELAY"] = {}
 cin["DELAY"]['FEED_SHUTOFF'] = 0  # months
 cin["DELAY"]['BIOFUEL_SHUTOFF'] = 0  # months
+cin["DELAY"]['ROTATION_CHANGE'] = 2  # months
 
 cin["CULL_DURATION"] = 60
 

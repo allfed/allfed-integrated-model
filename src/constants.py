@@ -686,7 +686,10 @@ class Constants:
             h_e_meat_kcals = np.array([0] * NMONTHS)
             h_e_meat_fat = np.array([0] * NMONTHS)
             h_e_meat_protein = np.array([0] * NMONTHS)
+            CULL_DURATION = 0
+            meat_culled = [0] * NMONTHS
 
+            
         if(not ADD_DAIRY):
             h_e_fed_dairy_produced = np.array([0] * NMONTHS)
 
