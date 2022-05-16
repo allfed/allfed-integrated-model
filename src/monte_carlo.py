@@ -32,51 +32,51 @@ class MonteCarlo:
         pass
 
     def run_all_scenarios(N_monte_carlo, N_comparison, load_saved_mc, load_saved_comp):
-        cin = {}  # constants as inputs to optimizer
+        inputs_to_optimizer = {}  # constants as inputs to optimizer
 
-        cin['NMONTHS'] = 84
-        cin['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
+        inputs_to_optimizer['NMONTHS'] = 84
+        inputs_to_optimizer['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
 
-        cin['NUTRITION'] = {
+        inputs_to_optimizer['NUTRITION'] = {
             'FAT_DAILY': 47, 'KCALS_DAILY': 2100, 'PROTEIN_DAILY': 51}
 
-        cin['INITIAL_SF_FAT'] = 166.07e3 * 0.96
-        cin['INITIAL_SF_PROTEIN'] = 69.25e3 * 0.96
+        inputs_to_optimizer['INITIAL_SF_FAT'] = 166.07e3 * 0.96
+        inputs_to_optimizer['INITIAL_SF_PROTEIN'] = 69.25e3 * 0.96
 
 
         # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
-        cin['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1360e6 * 0.96
-        cin['INCLUDE_PROTEIN'] = True
-        cin['INCLUDE_FAT'] = True
-        cin['WASTE'] = {}
-        cin['WASTE']['SUGAR'] = 14.47  # %
-        cin['WASTE']['MEAT'] = 15.17  # %
-        cin['WASTE']['DAIRY'] = 16.49  # %
-        cin['WASTE']['SEAFOOD'] = 14.55  # %
-        cin['WASTE']['CROPS'] = 19.33  # %
-        cin['WASTE']['SEAWEED'] = 14.37  # %
-        cin["CULL_DURATION"] = 60
+        inputs_to_optimizer['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1360e6 * 0.96
+        inputs_to_optimizer['INCLUDE_PROTEIN'] = True
+        inputs_to_optimizer['INCLUDE_FAT'] = True
+        inputs_to_optimizer['WASTE'] = {}
+        inputs_to_optimizer['WASTE']['SUGAR'] = 14.47  # %
+        inputs_to_optimizer['WASTE']['MEAT'] = 15.17  # %
+        inputs_to_optimizer['WASTE']['DAIRY'] = 16.49  # %
+        inputs_to_optimizer['WASTE']['SEAFOOD'] = 14.55  # %
+        inputs_to_optimizer['WASTE']['CROPS'] = 19.33  # %
+        inputs_to_optimizer['WASTE']['SEAWEED'] = 14.37  # %
+        inputs_to_optimizer["CULL_DURATION_MONTHS"] = 60
 
-        cin['IS_NUCLEAR_WINTER'] = True
-        excess_per_month = np.array([0] * cin['NMONTHS'])
-        cin["EXCESS_CALORIES"] = excess_per_month
+        inputs_to_optimizer['IS_NUCLEAR_WINTER'] = True
+        excess_per_month = np.array([0] * inputs_to_optimizer['NMONTHS'])
+        inputs_to_optimizer["EXCESS_CALORIES"] = excess_per_month
 
-        cin['ADD_STORED_FOOD'] = True
-        cin['ADD_OUTDOOR_GROWING'] = True
-        cin['ADD_MEAT'] = True
-        cin['ADD_FISH'] = True
-        cin['ADD_SEAWEED'] = True
-        cin['ADD_CELLULOSIC_SUGAR'] = True
-        cin['ADD_METHANE_SCP'] = True
-        cin['ADD_GREENHOUSES'] = True
-        cin['ADD_DAIRY'] = True
-        cin['OG_USE_BETTER_ROTATION'] = True
-        cin['INITIAL_HARVEST_DURATION'] = 8
-        cin['FLUCTUATION_LIMIT'] = 1.5
-        cin['KCAL_SMOOTHING'] = True
-        cin['MEAT_SMOOTHING'] = True
-        cin['STORED_FOOD_SMOOTHING'] = True
-        cin['ROTATION_IMPROVEMENTS'] = {}
+        inputs_to_optimizer['ADD_STORED_FOOD'] = True
+        inputs_to_optimizer['ADD_OUTDOOR_GROWING'] = True
+        inputs_to_optimizer['ADD_MEAT'] = True
+        inputs_to_optimizer['ADD_FISH'] = True
+        inputs_to_optimizer['ADD_SEAWEED'] = True
+        inputs_to_optimizer['ADD_CELLULOSIC_SUGAR'] = True
+        inputs_to_optimizer['ADD_METHANE_SCP'] = True
+        inputs_to_optimizer['ADD_GREENHOUSES'] = True
+        inputs_to_optimizer['ADD_DAIRY'] = True
+        inputs_to_optimizer['OG_USE_BETTER_ROTATION'] = True
+        inputs_to_optimizer['INITIAL_HARVEST_DURATION_IN_MONTHS'] = 8
+        inputs_to_optimizer['FLUCTUATION_LIMIT'] = 1.5
+        inputs_to_optimizer['KCAL_SMOOTHING'] = True
+        inputs_to_optimizer['MEAT_SMOOTHING'] = True
+        inputs_to_optimizer['STORED_FOOD_SMOOTHING'] = True
+        inputs_to_optimizer['ROTATION_IMPROVEMENTS'] = {}
 
         # resilient foods used for simulation
         res_foods = ("greenhouses",
@@ -91,7 +91,7 @@ class MonteCarlo:
                 allow_pickle=True).item()
             print("Computing input variables")
         else:
-            mc_variables = MonteCarlo.get_variables(N_monte_carlo, cin)
+            mc_variables = MonteCarlo.get_variables(N_monte_carlo, inputs_to_optimizer)
             np.save('../data/mc_variables_'+str(N_monte_carlo)+'.npy',
                     mc_variables, allow_pickle=True)
             print('MonteCarlo variables')
@@ -102,7 +102,7 @@ class MonteCarlo:
                 allow_pickle=True).item()
         else:
             print("Computing input variables")
-            comp_variables = MonteCarlo.get_variables(N_comparison, cin)
+            comp_variables = MonteCarlo.get_variables(N_comparison, inputs_to_optimizer)
             np.save('../data/comp_variables_'+str(N_comparison)+'.npy',
                     comp_variables, allow_pickle=True)
             print('Comparison variables')
@@ -119,7 +119,7 @@ class MonteCarlo:
                               allow_pickle=True)
         else:
             print("Running Monte Carlo")
-            all_fed = MonteCarlo.monte_carlo(mc_variables, N_monte_carlo, cin)
+            all_fed = MonteCarlo.monte_carlo(mc_variables, N_monte_carlo, inputs_to_optimizer)
             np.save('../data/all_fed_'+str(N_monte_carlo)+'.npy', all_fed,
                     allow_pickle=True)
 
@@ -132,7 +132,7 @@ class MonteCarlo:
             print("Running Comparison")
             removed, added = MonteCarlo.compare_resilient_foods(comp_variables,
                                                                 N_comparison,
-                                                                cin,
+                                                                inputs_to_optimizer,
                                                                 res_foods)
 
             np.save('../data/removed_'+str(N_comparison)+'.npy', removed, allow_pickle=True)
@@ -140,7 +140,7 @@ class MonteCarlo:
 
         Plotter.plot_fig_3ab(all_fed, res_foods, removed, added)
 
-    def get_variables(N, cin):
+    def get_variables(N, inputs_to_optimizer):
 
         # NOTE ON DISTRIBUTION PROBABILITIES
         # if r=norm.rvs(size=N,scale=np.log(M),loc=0),
@@ -207,23 +207,23 @@ class MonteCarlo:
         delay_3 = 3 * np.exp(delay_normal * 3/2)
 
         # set the max value so industrial foods delay doesn't exceed NMONTHS/2
-        max_value = cin["NMONTHS"]/2
+        max_value = inputs_to_optimizer["NMONTHS"]/2
 
         # set the mean value (in months), and round to an integer
 
         industrial_foods_delay = (np.rint(delay_3)).astype(int)
         greenhouse_delay = (np.rint(delay_2)).astype(int)
-        feed_shutoff_delay = (np.rint(delay_2)).astype(int)
-        rotation_change_delay = (np.rint(delay_2)).astype(int)
+        feed_shutoff_delay_months = (np.rint(delay_2)).astype(int)
+        ROTATION_CHANGE_IN_MONTHS_delay = (np.rint(delay_2)).astype(int)
         seaweed_delay = (np.rint(delay_2 / 2)).astype(int)
-        biofuel_shutoff_delay = (np.rint(delay_2 / 2)).astype(int)
+        BIOFUEL_SHUTOFF_MONTHS_delay = (np.rint(delay_2 / 2)).astype(int)
 
         industrial_foods_delay[industrial_foods_delay > max_value] = max_value
         greenhouse_delay[greenhouse_delay > max_value] = max_value
-        feed_shutoff_delay[feed_shutoff_delay > max_value] = max_value
-        rotation_change_delay[rotation_change_delay > max_value] = max_value
+        feed_shutoff_delay_months[feed_shutoff_delay_months > max_value] = max_value
+        ROTATION_CHANGE_IN_MONTHS_delay[ROTATION_CHANGE_IN_MONTHS_delay > max_value] = max_value
         seaweed_delay[seaweed_delay > max_value] = max_value
-        biofuel_shutoff_delay[biofuel_shutoff_delay > max_value] = max_value
+        BIOFUEL_SHUTOFF_MONTHS_delay[BIOFUEL_SHUTOFF_MONTHS_delay > max_value] = max_value
 
         one_standard_deviation = 1
         mean_value = 0
@@ -269,36 +269,36 @@ class MonteCarlo:
         variables['industrial_foods'] = industrial_foods
         variables['industrial_foods_delay'] = industrial_foods_delay
         variables['greenhouse_delay'] = greenhouse_delay
-        variables['feed_shutoff_delay'] = feed_shutoff_delay
-        variables['rotation_change_delay'] = rotation_change_delay
+        variables['feed_shutoff_delay_months'] = feed_shutoff_delay_months
+        variables['ROTATION_CHANGE_IN_MONTHS_delay'] = ROTATION_CHANGE_IN_MONTHS_delay
         variables['seaweed_delay'] = seaweed_delay
-        variables['biofuel_shutoff_delay'] = biofuel_shutoff_delay
+        variables['BIOFUEL_SHUTOFF_MONTHS_delay'] = BIOFUEL_SHUTOFF_MONTHS_delay
         return variables
  
-    def run_scenario(variables, cin, i, N):
-        cin['MAX_SEAWEED_AS_PERCENT_KCALS'] = variables['max_seaweed'][i]
-        cin['SEAWEED_PRODUCTION_RATE'] = variables['seaweed_production_rate'][i]
-        cin['SEAWEED_NEW_AREA_PER_DAY'] = variables['seaweed_new'][i]
-        cin['GREENHOUSE_GAIN_PCT'] = variables['greenhouse_gain'][i]
-        cin['GREENHOUSE_AREA_MULTIPLIER'] = variables['greenhouse_area'][i]
-        cin['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = variables['industrial_foods'][i]
-        cin['ROTATION_IMPROVEMENTS']['KCALS_REDUCTION'] = \
+    def run_scenario(variables, inputs_to_optimizer, i, N):
+        inputs_to_optimizer['MAX_SEAWEED_AS_PERCENT_KCALS'] = variables['max_seaweed'][i]
+        inputs_to_optimizer['SEAWEED_PRODUCTION_RATE'] = variables['seaweed_production_rate'][i]
+        inputs_to_optimizer['SEAWEED_NEW_AREA_PER_DAY'] = variables['seaweed_new'][i]
+        inputs_to_optimizer['GREENHOUSE_GAIN_PCT'] = variables['greenhouse_gain'][i]
+        inputs_to_optimizer['GREENHOUSE_AREA_MULTIPLIER'] = variables['greenhouse_area'][i]
+        inputs_to_optimizer['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = variables['industrial_foods'][i]
+        inputs_to_optimizer['ROTATION_IMPROVEMENTS']['KCALS_REDUCTION'] = \
             variables['rotation_outcome_kcals'][i]
-        cin['ROTATION_IMPROVEMENTS']['FAT_RATIO'] = \
+        inputs_to_optimizer['ROTATION_IMPROVEMENTS']['FAT_RATIO'] = \
             variables['rotation_outcome_fat'][i]
-        cin['ROTATION_IMPROVEMENTS']['PROTEIN_RATIO'] = \
+        inputs_to_optimizer['ROTATION_IMPROVEMENTS']['PROTEIN_RATIO'] = \
             variables['rotation_outcome_protein'][i]
 
-        cin["DELAY"] = {}
-        cin["DELAY"]["INDUSTRIAL_FOODS"] = variables['industrial_foods_delay'][i]
-        cin["DELAY"]["GREENHOUSE"] = variables['greenhouse_delay'][i]
-        cin["DELAY"]["FEED_SHUTOFF"] = variables['feed_shutoff_delay'][i]
-        cin["DELAY"]["ROTATION_CHANGE"] = variables['rotation_change_delay'][i]
-        cin["DELAY"]["SEAWEED"] = variables['seaweed_delay'][i]
-        cin["DELAY"]["BIOFUEL_SHUTOFF"] = variables['biofuel_shutoff_delay'][i]
+        inputs_to_optimizer["DELAY"] = {}
+        inputs_to_optimizer["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = variables['industrial_foods_delay'][i]
+        inputs_to_optimizer["DELAY"]["GREENHOUSE_MONTHS"] = variables['greenhouse_delay'][i]
+        inputs_to_optimizer["DELAY"]["FEED_SHUTOFF_MONTHS"] = variables['feed_shutoff_delay_months'][i]
+        inputs_to_optimizer["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = variables['ROTATION_CHANGE_IN_MONTHS_delay'][i]
+        inputs_to_optimizer["DELAY"]["SEAWEED_MONTHS"] = variables['seaweed_delay'][i]
+        inputs_to_optimizer["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = variables['BIOFUEL_SHUTOFF_MONTHS_delay'][i]
 
         constants = {}
-        constants['inputs'] = cin
+        constants['inputs'] = inputs_to_optimizer
         constants['CHECK_CONSTRAINTS'] = False
         failed_to_optimize = False  # until proven otherwise
         optimizer = Optimizer()
@@ -362,7 +362,7 @@ class MonteCarlo:
             count += nums[proc]
         return slices
 
-    def run_scenarios(variables, cin, N):
+    def run_scenarios(variables, inputs_to_optimizer, N):
         all_fed = []
         failed_indices = []
         USE_MULTICORES = False
@@ -376,9 +376,9 @@ class MonteCarlo:
             print(inp_lists)
             for ilist in inp_lists:
                 result = pool.starmap(MonteCarlo.run_scenario,
-                                  [(variables, cin, i, N) for i in list(ilist)])
+                                  [(variables, inputs_to_optimizer, i, N) for i in list(ilist)])
 
-                # multi_result = [pool.apply_async(MonteCarlo.run_scenario, ( variables, cin, inp, N)) for inp in inp_lists]
+                # multi_result = [pool.apply_async(MonteCarlo.run_scenario, ( variables, inputs_to_optimizer, inp, N)) for inp in inp_lists]
                 # result = [x for p in multi_result for x in p.get()]
                 print(result)
                 # print(result)
@@ -396,7 +396,7 @@ class MonteCarlo:
             all_fed = all_fed + fed_list
         else:  # latest time test on my machine: 94.41 seconds for 100 items
             for i in range(0, N):
-                (fed, failed_index) = MonteCarlo.run_scenario(variables, cin, i, N)
+                (fed, failed_index) = MonteCarlo.run_scenario(variables, inputs_to_optimizer, i, N)
                 if(failed_index != -1):
                     failed_indices.append(failed_index)
                     all_fed.append(np.nan)
@@ -405,8 +405,8 @@ class MonteCarlo:
                 all_fed.append(fed / 7.8 * 2100)
         return all_fed, failed_indices
 
-    def monte_carlo(variables, N, cin):
-        all_fed, failed_indices = MonteCarlo.run_scenarios(variables, cin, N)
+    def monte_carlo(variables, N, inputs_to_optimizer):
+        all_fed, failed_indices = MonteCarlo.run_scenarios(variables, inputs_to_optimizer, N)
         succeeded = np.delete(all_fed, np.array(failed_indices).astype(int))
 
         print("fraction failed to optimize")
@@ -416,31 +416,31 @@ class MonteCarlo:
 
         return succeeded
 
-    def compare_resilient_foods(variables, N, cin, foods):
+    def compare_resilient_foods(variables, N, inputs_to_optimizer, foods):
         # try removing each resilient food and see
         # the effect size on total people fed
         removed = {}
         for i, label in enumerate(foods):
             # run a baseline scenario
-            cin['ADD_SEAWEED'] = True
-            cin['ADD_CELLULOSIC_SUGAR'] = True
-            cin['ADD_METHANE_SCP'] = True
-            cin['ADD_GREENHOUSES'] = True
-            cin['OG_USE_BETTER_ROTATION'] = True
+            inputs_to_optimizer['ADD_SEAWEED'] = True
+            inputs_to_optimizer['ADD_CELLULOSIC_SUGAR'] = True
+            inputs_to_optimizer['ADD_METHANE_SCP'] = True
+            inputs_to_optimizer['ADD_GREENHOUSES'] = True
+            inputs_to_optimizer['OG_USE_BETTER_ROTATION'] = True
 
             print("Remove baseline " + label)
 
-            baseline_fed, failed_runs_baseline_r = MonteCarlo.run_scenarios(variables, cin, N)
+            baseline_fed, failed_runs_baseline_r = MonteCarlo.run_scenarios(variables, inputs_to_optimizer, N)
 
             #run a scenario not involving
-            cin['ADD_SEAWEED'] = ('seaweed' not in label)
-            cin['ADD_CELLULOSIC_SUGAR'] = ('sugar' not in label)
-            cin['ADD_METHANE_SCP'] = ('methane' not in label)
-            cin['ADD_GREENHOUSES'] = ('greenhouse' not in label)
-            cin['OG_USE_BETTER_ROTATION'] = ('relocated' not in label)
+            inputs_to_optimizer['ADD_SEAWEED'] = ('seaweed' not in label)
+            inputs_to_optimizer['ADD_CELLULOSIC_SUGAR'] = ('sugar' not in label)
+            inputs_to_optimizer['ADD_METHANE_SCP'] = ('methane' not in label)
+            inputs_to_optimizer['ADD_GREENHOUSES'] = ('greenhouse' not in label)
+            inputs_to_optimizer['OG_USE_BETTER_ROTATION'] = ('relocated' not in label)
 
             print("Remove trial " + label)
-            removed_fed, failed_runs_r = MonteCarlo.run_scenarios(variables, cin, N)
+            removed_fed, failed_runs_r = MonteCarlo.run_scenarios(variables, inputs_to_optimizer, N)
 
             print("failed_indices")
             print(failed_runs_baseline_r)
@@ -461,24 +461,24 @@ class MonteCarlo:
         # the effect size on total people fed
         added = {}
         for i, label in enumerate(foods):
-            cin['ADD_SEAWEED'] = False
-            cin['ADD_CELLULOSIC_SUGAR'] = False
-            cin['ADD_METHANE_SCP'] = False
-            cin['ADD_GREENHOUSES'] = False
-            cin['OG_USE_BETTER_ROTATION'] = False
+            inputs_to_optimizer['ADD_SEAWEED'] = False
+            inputs_to_optimizer['ADD_CELLULOSIC_SUGAR'] = False
+            inputs_to_optimizer['ADD_METHANE_SCP'] = False
+            inputs_to_optimizer['ADD_GREENHOUSES'] = False
+            inputs_to_optimizer['OG_USE_BETTER_ROTATION'] = False
 
             print("Added baseline " + label)
 
-            baseline_fed, failed_runs_baseline_a = MonteCarlo.run_scenarios(variables, cin, N)
+            baseline_fed, failed_runs_baseline_a = MonteCarlo.run_scenarios(variables, inputs_to_optimizer, N)
 
-            cin['ADD_SEAWEED'] = ('seaweed' in label)
-            cin['ADD_CELLULOSIC_SUGAR'] = ('sugar' in label)
-            cin['ADD_METHANE_SCP'] = ('methane' in label)
-            cin['ADD_GREENHOUSES'] = ('greenhouse' in label)
-            cin['OG_USE_BETTER_ROTATION'] = ('relocated' in label)
+            inputs_to_optimizer['ADD_SEAWEED'] = ('seaweed' in label)
+            inputs_to_optimizer['ADD_CELLULOSIC_SUGAR'] = ('sugar' in label)
+            inputs_to_optimizer['ADD_METHANE_SCP'] = ('methane' in label)
+            inputs_to_optimizer['ADD_GREENHOUSES'] = ('greenhouse' in label)
+            inputs_to_optimizer['OG_USE_BETTER_ROTATION'] = ('relocated' in label)
 
             print("Added trial " + label)
-            added_fed, failed_runs_a = MonteCarlo.run_scenarios(variables, cin, N)
+            added_fed, failed_runs_a = MonteCarlo.run_scenarios(variables, inputs_to_optimizer, N)
 
             baseline_fed = np.delete(baseline_fed,
                                      np.append(failed_runs_baseline_a,

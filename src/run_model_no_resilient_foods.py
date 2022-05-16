@@ -1,11 +1,11 @@
-# this program runs the optimizer model, and ensures that all the results are 
-# reasonable using a couple useful checks to make sure there's nothing wacky 
-# going on.
+# this program runs the optimizer model, and ensures that all the results are
+# reasonable using a couple useful checks to make sure there's nothing wacky
+# going on:
 
-#check that as time increases, more people can be fed
+# 1) check that as time increases, more people can be fed
 
-#check that stored food plus meat is always used at the 
-#highest rate during the largest food shortage.
+# 2) check that stored food plus meat is always used at the
+# highest rate during the largest food shortage.
 
 import os
 import sys
@@ -20,74 +20,74 @@ constants = {}
 
 constants['CHECK_CONSTRAINTS'] = False
 
-cin = {}
+inputs_to_optimizer = {}
 
-cin['NMONTHS'] = 84
-cin['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
+inputs_to_optimizer['NMONTHS'] = 84
+inputs_to_optimizer['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
 
-cin['NUTRITION'] = {}
-cin['NUTRITION']['KCALS_DAILY'] = 2100  #kcals per person per day
-cin['NUTRITION']['FAT_DAILY'] = 47  # 35 #grams per person per day
-cin['NUTRITION']['PROTEIN_DAILY'] = 51  # 46 #grams per person per day
+inputs_to_optimizer['NUTRITION'] = {}
+inputs_to_optimizer['NUTRITION']['KCALS_DAILY'] = 2100  #kcals per person per day
+inputs_to_optimizer['NUTRITION']['FAT_DAILY'] = 47  # 35 #grams per person per day
+inputs_to_optimizer['NUTRITION']['PROTEIN_DAILY'] = 51  # 46 #grams per person per day
 
-cin['MAX_SEAWEED_AS_PERCENT_KCALS'] = 0
-cin['SEAWEED_NEW_AREA_PER_DAY'] = 0  # 1000 km^2 (seaweed)
-cin['SEAWEED_PRODUCTION_RATE'] = 0  # percent (seaweed)
+inputs_to_optimizer['MAX_SEAWEED_AS_PERCENT_KCALS'] = 0
+inputs_to_optimizer['SEAWEED_NEW_AREA_PER_DAY'] = 0  # 1000 km^2 (seaweed)
+inputs_to_optimizer['SEAWEED_PRODUCTION_RATE'] = 0  # percent (seaweed)
 
 # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
-cin['TONS_DRY_CALORIC_EQIVALENT_SF'] = 0*1360e6 * 0.96
+inputs_to_optimizer['TONS_DRY_CALORIC_EQIVALENT_SF'] = 0*1360e6 * 0.96
 
-cin["OG_USE_BETTER_ROTATION"] = False
-# cin["ROTATION_IMPROVEMENTS"] = {}
-# cin["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"] = .93
-# cin["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.487
-# cin["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
+inputs_to_optimizer["OG_USE_BETTER_ROTATION"] = False
+# inputs_to_optimizer["ROTATION_IMPROVEMENTS"] = {}
+# inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"] = .93
+# inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.487
+# inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
 
-cin['INCLUDE_PROTEIN'] = True
-cin['INCLUDE_FAT'] = True
+inputs_to_optimizer['INCLUDE_PROTEIN'] = True
+inputs_to_optimizer['INCLUDE_FAT'] = True
 
-cin['GREENHOUSE_GAIN_PCT'] = 0
+inputs_to_optimizer['GREENHOUSE_GAIN_PCT'] = 0
 
-cin['GREENHOUSE_SLOPE_MULTIPLIER'] = 1  # default values from greenhouse paper
-cin['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1  # default values from CS paper
+inputs_to_optimizer['GREENHOUSE_SLOPE_MULTIPLIER'] = 1  # default values from greenhouse paper
+inputs_to_optimizer['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER'] = 1  # default values from CS paper
 
-cin['INITIAL_HARVEST_DURATION'] = 7  # months
+inputs_to_optimizer['INITIAL_HARVEST_DURATION_IN_MONTHS'] = 7
 
-cin['IS_NUCLEAR_WINTER'] = True
-cin['FLUCTUATION_LIMIT'] = 1.5
-cin['KCAL_SMOOTHING'] = False
-cin['MEAT_SMOOTHING'] = True
-cin['STORED_FOOD_SMOOTHING'] = True
+inputs_to_optimizer['IS_NUCLEAR_WINTER'] = True
+inputs_to_optimizer['FLUCTUATION_LIMIT'] = 1.5
+inputs_to_optimizer['KCAL_SMOOTHING'] = False
+inputs_to_optimizer['MEAT_SMOOTHING'] = True
+inputs_to_optimizer['STORED_FOOD_SMOOTHING'] = True
 
-cin['ADD_CELLULOSIC_SUGAR'] = False
-cin['ADD_DAIRY'] = False
-cin['ADD_FISH'] = True
-cin['ADD_GREENHOUSES'] = False
-cin['ADD_OUTDOOR_GROWING'] = True
-cin['ADD_MEAT'] = False
-cin['ADD_METHANE_SCP'] = False
-cin['ADD_SEAWEED'] = False
-cin['ADD_STORED_FOOD'] = True
+inputs_to_optimizer['ADD_CELLULOSIC_SUGAR'] = False
+inputs_to_optimizer['ADD_DAIRY'] = False
+inputs_to_optimizer['ADD_FISH'] = True
+inputs_to_optimizer['ADD_GREENHOUSES'] = False
+inputs_to_optimizer['ADD_OUTDOOR_GROWING'] = True
+inputs_to_optimizer['ADD_MEAT'] = False
+inputs_to_optimizer['ADD_METHANE_SCP'] = False
+inputs_to_optimizer['ADD_SEAWEED'] = False
+inputs_to_optimizer['ADD_STORED_FOOD'] = True
 
-cin["EXCESS_CALORIES"] = np.array([0] * cin['NMONTHS'])
-cin["DELAY"] = {}
-cin["DELAY"]['FEED_SHUTOFF'] = 0  # months
-cin["DELAY"]['BIOFUEL_SHUTOFF'] = 0  # months
-cin["DELAY"]['ROTATION_CHANGE'] = 2  # months
+inputs_to_optimizer["EXCESS_CALORIES"] = np.array([0] * inputs_to_optimizer['NMONTHS'])
+inputs_to_optimizer["DELAY"] = {}
+inputs_to_optimizer["DELAY"]['FEED_SHUTOFF_MONTHS'] = 0
+inputs_to_optimizer["DELAY"]['BIOFUEL_SHUTOFF_MONTHS'] = 0
+inputs_to_optimizer["DELAY"]['ROTATION_CHANGE_IN_MONTHS'] = 2
 
-cin["CULL_DURATION"] = 60
+inputs_to_optimizer["CULL_DURATION_MONTHS"] = 60
 
-cin['WASTE'] = {}
-# cin['WASTE']['CEREALS'] = 0  # %
-cin['WASTE']['SUGAR'] = 0  # %
-cin['WASTE']['MEAT'] = 0  # %
-cin['WASTE']['DAIRY'] = 0  # %
-cin['WASTE']['SEAFOOD'] = 0  # %
-cin['WASTE']['CROPS'] = 0  # %
-cin['WASTE']['SEAWEED'] = 0  # %
+inputs_to_optimizer['WASTE'] = {}
+# inputs_to_optimizer['WASTE']['CEREALS'] = 0  # %
+inputs_to_optimizer['WASTE']['SUGAR'] = 0  # %
+inputs_to_optimizer['WASTE']['MEAT'] = 0  # %
+inputs_to_optimizer['WASTE']['DAIRY'] = 0  # %
+inputs_to_optimizer['WASTE']['SEAFOOD'] = 0  # %
+inputs_to_optimizer['WASTE']['CROPS'] = 0  # %
+inputs_to_optimizer['WASTE']['SEAWEED'] = 0  # %
 
 optimizer = Optimizer()
-constants['inputs'] = cin
+constants['inputs'] = inputs_to_optimizer
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
 
 print("")
@@ -104,25 +104,25 @@ np.save('../data/no_resilient_food_primary_analysis.npy',
 #     'Primary production before waste, no resilient foods',79)
 
 # nuclear winter 150 tab, cell G30-G38  https://docs.google.com/spreadsheets/d/14t3_PUIky6aNiBvw8q24sj6QYxCN9s_VddLY2-eJuPE/edit#gid=1637082097
-#overall waste, on farm+distribution+retail
-#2x prices (note, currently set to 2019, not 2020)
-cin['WASTE'] = {}
-# cin['WASTE']['CEREALS'] = 14.46  # %
-cin['WASTE']['SUGAR'] = 9.91  # %
-cin['WASTE']['MEAT'] = 10.61  # %
-cin['WASTE']['DAIRY'] = 11.93  # %
-cin['WASTE']['SEAFOOD'] = 9.99  # %
-cin['WASTE']['CROPS'] = 14.78  # %
-cin['WASTE']['SEAWEED'] = 9.81  # %
+# overall waste, on farm + distribution + retail
+# 2x prices (note, currently set to 2019, not 2020)
+inputs_to_optimizer['WASTE'] = {}
+# inputs_to_optimizer['WASTE']['CEREALS'] = 14.46  # %
+inputs_to_optimizer['WASTE']['SUGAR'] = 9.91  # %
+inputs_to_optimizer['WASTE']['MEAT'] = 10.61  # %
+inputs_to_optimizer['WASTE']['DAIRY'] = 11.93  # %
+inputs_to_optimizer['WASTE']['SEAFOOD'] = 9.99  # %
+inputs_to_optimizer['WASTE']['CROPS'] = 14.78  # %
+inputs_to_optimizer['WASTE']['SEAWEED'] = 9.81  # %
 
-cin["EXCESS_CALORIES"] = np.array([0] * cin['NMONTHS'])
-cin['DELAY']['FEED_SHUTOFF'] = 3  # months
-cin['DELAY']['BIOFUEL_SHUTOFF'] = 2  # months
+inputs_to_optimizer["EXCESS_CALORIES"] = np.array([0] * inputs_to_optimizer['NMONTHS'])
+inputs_to_optimizer['DELAY']['FEED_SHUTOFF_MONTHS'] = 3
+inputs_to_optimizer['DELAY']['BIOFUEL_SHUTOFF_MONTHS'] = 2
 
-cin["CULL_DURATION"] = 60#cin['NMONTHS'] - cin["DELAY"]['FEED_SHUTOFF']
-cin['RECALCULATE_CULL_DURATION'] = False  # thousand tons
+inputs_to_optimizer["CULL_DURATION_MONTHS"] = 60 # inputs_to_optimizer['NMONTHS'] - inputs_to_optimizer["DELAY"]['FEED_SHUTOFF_MONTHS']
+inputs_to_optimizer['RECALCULATE_CULL_DURATION_MONTHS'] = False  # thousand tons
 
-constants['inputs'] = cin
+constants['inputs'] = inputs_to_optimizer
 [time_months, time_months_middle, analysis] = optimizer.optimize(constants)
 print("Estimated Kcals/capita/day, no resilient foods, minus waste & delayed halt of nonhuman consumption ")
 

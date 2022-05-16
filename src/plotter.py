@@ -807,7 +807,7 @@ class Plotter:
         # ax.set_title(title)
         # ax.set_ylabel()
 
-    def plot_histogram_with_boxplot(data, N, xlabel, title):
+    def plot_histogram_with_boxplot(data, xlabel, title):
         # https://www.python-graph-gallery.com/24-histogram-with-a-boxplot-on-top-seaborn
         # set a grey background (use sns.set_theme() if seaborn
         # version 0.11.0 or above)

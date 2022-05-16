@@ -6,19 +6,19 @@ class Constants:
         pass
 
     def computeConstants(self, constants):
-        cin = constants['inputs']  # single valued inputs to optimizer
+        inputs_to_optimizer = constants['inputs']  # single valued inputs to optimizer
 
         # full months duration of simulation
         VERBOSE = False
         WORLD_POP = 7.8e9
         KG_TO_1000_TONS = 1 / (1e6)
-        NMONTHS = cin['NMONTHS']
+        NMONTHS = inputs_to_optimizer['NMONTHS']
         DAYS_IN_MONTH = 30
         NDAYS = NMONTHS * DAYS_IN_MONTH
-        ADD_FISH = cin['ADD_FISH']
-        ADD_SEAWEED = cin['ADD_SEAWEED']
-        ADD_MEAT = cin['ADD_MEAT']
-        ADD_DAIRY = cin['ADD_DAIRY']
+        ADD_FISH = inputs_to_optimizer['ADD_FISH']
+        ADD_SEAWEED = inputs_to_optimizer['ADD_SEAWEED']
+        ADD_MEAT = inputs_to_optimizer['ADD_MEAT']
+        ADD_DAIRY = inputs_to_optimizer['ADD_DAIRY']
 
         # FAO ALL SUPPLY UTILIZATION SHEET
         # units are millions tons (dry caloric, fat, protein)
@@ -43,13 +43,13 @@ class Constants:
         # 1000 tons protein per billion kcals
         OG_FRACTION_PROTEIN = 0.93 * (350 * 1e3) / (ANNUAL_YIELD * 4e6 / 1e9)
 
-        ADD_STORED_FOOD = cin['ADD_STORED_FOOD']
-        ADD_METHANE_SCP = cin['ADD_METHANE_SCP']
-        ADD_CELLULOSIC_SUGAR = cin['ADD_CELLULOSIC_SUGAR']
-        ADD_GREENHOUSES = cin['ADD_GREENHOUSES']
-        ADD_OUTDOOR_GROWING = cin['ADD_OUTDOOR_GROWING']
+        ADD_STORED_FOOD = inputs_to_optimizer['ADD_STORED_FOOD']
+        ADD_METHANE_SCP = inputs_to_optimizer['ADD_METHANE_SCP']
+        ADD_CELLULOSIC_SUGAR = inputs_to_optimizer['ADD_CELLULOSIC_SUGAR']
+        ADD_GREENHOUSES = inputs_to_optimizer['ADD_GREENHOUSES']
+        ADD_OUTDOOR_GROWING = inputs_to_optimizer['ADD_OUTDOOR_GROWING']
         LIMIT_SEAWEED_AS_PERCENT_KCALS = \
-            cin['LIMIT_SEAWEED_AS_PERCENT_KCALS']
+            inputs_to_optimizer['LIMIT_SEAWEED_AS_PERCENT_KCALS']
 
         # or, should this be 1543e6?? cell L8 https://docs.google.com/spreadsheets/d / 1rYcxSe-Z7ztvW-QwTBXT8GABaRmVdDuQ05HXmTHbQ8I/edit#gid=1141282747
         FEED_MONTHLY_USAGE_KCALS = 1385e6 / 12 * 4e6 / 1e9  # billions kcals
@@ -61,17 +61,17 @@ class Constants:
         BIOFUEL_MONTHLY_USAGE_PROTEIN = 32 / 12 * 1e3  # thousand tons
 
         # "outputs" tab https://docs.google.com/spreadsheets/d / 19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=25523129
-        if(cin["IS_NUCLEAR_WINTER"]):
+        if(inputs_to_optimizer["IS_NUCLEAR_WINTER"]):
             # tropics seasonality present-day (average 2000 to 2018)
-            cin['SEASONALITY'] =\
+            inputs_to_optimizer['SEASONALITY'] =\
                 [0.1564, 0.0461, 0.0650, 0.1017, 0.0772, 0.0785,
                  0.0667, 0.0256, 0.0163, 0.1254, 0.1183, 0.1228]
-            # cin['SEASONALITY']=\
+            # inputs_to_optimizer['SEASONALITY']=\
             #     [1 / 12,1 / 12,1 / 12,1 / 12,1 / 12,1 / 12,\
             #     1 / 12,1 / 12,1 / 12,1 / 12,1 / 12,1 / 12]
         else:
             # normal times present-day global seasonality (average 2000 to 2018)
-            cin['SEASONALITY'] =\
+            inputs_to_optimizer['SEASONALITY'] =\
                 [0.1121, 0.0178, 0.0241, 0.0344, 0.0338, 0.0411,
                  0.0882, 0.0791, 0.1042, 0.1911, 0.1377, 0.1365]
 
@@ -82,9 +82,9 @@ class Constants:
         # we will assume a 2100 kcals diet, and scale the "upper safe" nutrition
         # from the spreadsheet down to this "standard" level.
         # we also add 20% loss, according to the sorts of loss seen in this spreadsheet
-        KCALS_DAILY = cin['NUTRITION']['KCALS_DAILY']
-        PROTEIN_DAILY = cin['NUTRITION']['PROTEIN_DAILY']
-        FAT_DAILY = cin['NUTRITION']['FAT_DAILY']
+        KCALS_DAILY = inputs_to_optimizer['NUTRITION']['KCALS_DAILY']
+        PROTEIN_DAILY = inputs_to_optimizer['NUTRITION']['PROTEIN_DAILY']
+        FAT_DAILY = inputs_to_optimizer['NUTRITION']['FAT_DAILY']
 
         KCALS_MONTHLY = KCALS_DAILY * DAYS_IN_MONTH  # in kcals per person
         PROTEIN_MONTHLY = PROTEIN_DAILY * DAYS_IN_MONTH / 1e9  # in thousands of tons
@@ -120,7 +120,7 @@ class Constants:
         MAXIMUM_DENSITY = 800  # tons/km^2 (seaweed)
         MAXIMUM_AREA = 1000  # 1000 km^2 (seaweed)
 
-        SEAWEED_WASTE = cin['WASTE']['SEAWEED']
+        SEAWEED_WASTE = inputs_to_optimizer['WASTE']['SEAWEED']
 
         # seaweed billion kcals per 1000 tons wet
         # convert 1000 tons to kg
@@ -141,11 +141,11 @@ class Constants:
             * WET_TO_DRY_MASS_CONVERSION \
             * (1 - SEAWEED_WASTE / 100)
 
-        SEAWEED_NEW_AREA_PER_DAY = cin['SEAWEED_NEW_AREA_PER_DAY']
-        SEAWEED_PRODUCTION_RATE = cin['SEAWEED_PRODUCTION_RATE']
+        SEAWEED_NEW_AREA_PER_DAY = inputs_to_optimizer['SEAWEED_NEW_AREA_PER_DAY']
+        SEAWEED_PRODUCTION_RATE = inputs_to_optimizer['SEAWEED_PRODUCTION_RATE']
 
-        if(cin["ADD_SEAWEED"]):
-            sd = [INITIAL_AREA] * cin["DELAY"]["SEAWEED"] * DAYS_IN_MONTH
+        if(inputs_to_optimizer["ADD_SEAWEED"]):
+            sd = [INITIAL_AREA] * inputs_to_optimizer["DELAY"]["SEAWEED_MONTHS"] * DAYS_IN_MONTH
         else:
             sd = [INITIAL_AREA] * 100000
 
@@ -165,7 +165,7 @@ class Constants:
         # mike's spreadsheet: https://docs.google.com/spreadsheets/d / 19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=806987252
 
         TONS_DRY_CALORIC_EQIVALENT_SF = \
-            cin['TONS_DRY_CALORIC_EQIVALENT_SF']
+            inputs_to_optimizer['TONS_DRY_CALORIC_EQIVALENT_SF']
         INITIAL_SF_KCALS = TONS_DRY_CALORIC_EQIVALENT_SF * \
             4e6 / 1e9  # billion kcals per unit mass initial
         SF_FRACTION_FAT = OG_FRACTION_FAT
@@ -178,7 +178,7 @@ class Constants:
         FISH_PROTEIN_PER_KG = 0.0204
         FISH_FAT_PER_KG = 0.0048
 
-        FISH_WASTE = cin['WASTE']['SEAFOOD']
+        FISH_WASTE = inputs_to_optimizer['WASTE']['SEAFOOD']
         FISH_ESTIMATE = FISH_TONS_WET_2018 * (1 - FISH_WASTE / 100)
         # billions of kcals per month
         FISH_KCALS = FISH_ESTIMATE / 12 * FISH_KCALS_PER_TON / 1e9
@@ -222,23 +222,23 @@ class Constants:
              ]) + 100)
         FISH_PERCENT_EACH_MONTH = FISH_PERCENT_EACH_MONTH_LONG[0:NMONTHS]
         if(ADD_FISH):
-            production_kcals_fish_per_m = []
-            production_protein_fish_per_m = []
-            production_fat_fish_per_m = []
+            production_kcals_fish_per_month = []
+            production_protein_fish_per_month = []
+            production_fat_fish_per_month = []
             for x in FISH_PERCENT_EACH_MONTH:
-                if(cin['IS_NUCLEAR_WINTER']):
-                    production_kcals_fish_per_m.append(x / 100 * FISH_KCALS)
-                    production_protein_fish_per_m.append(
+                if(inputs_to_optimizer['IS_NUCLEAR_WINTER']):
+                    production_kcals_fish_per_month.append(x / 100 * FISH_KCALS)
+                    production_protein_fish_per_month.append(
                         x / 100 * FISH_PROTEIN)
-                    production_fat_fish_per_m.append(x / 100 * FISH_FAT)
+                    production_fat_fish_per_month.append(x / 100 * FISH_FAT)
                 else:
-                    production_kcals_fish_per_m.append(FISH_KCALS)
-                    production_protein_fish_per_m.append(FISH_PROTEIN)
-                    production_fat_fish_per_m.append(FISH_FAT)
+                    production_kcals_fish_per_month.append(FISH_KCALS)
+                    production_protein_fish_per_month.append(FISH_PROTEIN)
+                    production_fat_fish_per_month.append(FISH_FAT)
         else:
-            production_kcals_fish_per_m = [0] * len(FISH_PERCENT_EACH_MONTH)
-            production_protein_fish_per_m = [0] * len(FISH_PERCENT_EACH_MONTH)
-            production_fat_fish_per_m = [0] * len(FISH_PERCENT_EACH_MONTH)
+            production_kcals_fish_per_month = [0] * len(FISH_PERCENT_EACH_MONTH)
+            production_protein_fish_per_month = [0] * len(FISH_PERCENT_EACH_MONTH)
+            production_fat_fish_per_month = [0] * len(FISH_PERCENT_EACH_MONTH)
 
         ####LIVESTOCK, EGG, DAIRY INITIAL VARIABLES####
 
@@ -248,7 +248,7 @@ class Constants:
         # we use this spreadsheeet https://docs.google.com/spreadsheets/d / 1ZyDrGI84TwhXj_QNicwjj9EPWLJ-r3xnAYMzKSAfWc0/edit#gid=824870019
 
         # edible meat, organs, and fat added
-        MEAT_WASTE = cin['WASTE']['MEAT']
+        MEAT_WASTE = inputs_to_optimizer['WASTE']['MEAT']
 
         KG_PER_SMALL_ANIMAL = 2.36
         KG_PER_MEDIUM_ANIMAL = 24.6
@@ -269,8 +269,8 @@ class Constants:
         MEDIUM_ANIMAL_FAT_PER_KG = .34
         MEDIUM_ANIMAL_PROTEIN_PER_KG = .11
 
-        # DAIRY_PRODUCTION = cin['DAIRY_PRODUCTION']
-        # DAIRY_WASTE = cin['WASTE']['DAIRY']
+        # DAIRY_PRODUCTION = inputs_to_optimizer['DAIRY_PRODUCTION']
+        # DAIRY_WASTE = inputs_to_optimizer['WASTE']['DAIRY']
         # billions of kcals
         # MILK_KCALS_PER_1000_COWS_PER_MONTH = ANNUAL_LITERS_PER_COW \
         #     * KCALS_PER_LITER \
@@ -291,7 +291,7 @@ class Constants:
         # 'integrated model 150 tg' tab https://docs.google.com/spreadsheets/d / 1rYcxSe-Z7ztvW-QwTBXT8GABaRmVdDuQ05HXmTHbQ8I/edit#gid=1141282747
 
         # monthly dry caloric tons, globally
-        if(cin['IS_NUCLEAR_WINTER']):
+        if(inputs_to_optimizer['IS_NUCLEAR_WINTER']):
             human_inedible_feed = np.array([
                 2728, 2728, 2728, 2728, 2728, 2728, 2728, 2728,
                 972, 972, 972, 972, 972, 972, 972, 972, 972, 972, 972, 972,
@@ -370,7 +370,7 @@ class Constants:
         #### Delayed shutoff BIOFUELS and FEED ####
         # "Monthly flows" tab https://docs.google.com/spreadsheets/d / 1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=1714403726
 
-        biofuel_delay = cin["DELAY"]["BIOFUEL_SHUTOFF"]
+        biofuel_delay = inputs_to_optimizer["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
         biofuels_kcals = [BIOFUEL_MONTHLY_USAGE_KCALS] * \
             biofuel_delay + [0] * (NMONTHS-biofuel_delay)
         biofuels_fat = [BIOFUEL_MONTHLY_USAGE_FAT] * \
@@ -378,13 +378,13 @@ class Constants:
         biofuels_protein = [BIOFUEL_MONTHLY_USAGE_PROTEIN] * \
             biofuel_delay + [0] * (NMONTHS-biofuel_delay)
 
-        feed_shutoff_delay = cin["DELAY"]["FEED_SHUTOFF"]
+        feed_shutoff_delay_months = inputs_to_optimizer["DELAY"]["FEED_SHUTOFF_MONTHS"]
         feed_shutoff_kcals = np.array(
-            [FEED_MONTHLY_USAGE_KCALS] * feed_shutoff_delay + [0] * (NMONTHS-feed_shutoff_delay))
+            [FEED_MONTHLY_USAGE_KCALS] * feed_shutoff_delay_months + [0] * (NMONTHS-feed_shutoff_delay_months))
         feed_shutoff_fat = np.array(
-            [FEED_MONTHLY_USAGE_FAT] * feed_shutoff_delay + [0] * (NMONTHS-feed_shutoff_delay))
+            [FEED_MONTHLY_USAGE_FAT] * feed_shutoff_delay_months + [0] * (NMONTHS-feed_shutoff_delay_months))
         feed_shutoff_protein = np.array(
-            [FEED_MONTHLY_USAGE_PROTEIN] * feed_shutoff_delay + [0] * (NMONTHS-feed_shutoff_delay))
+            [FEED_MONTHLY_USAGE_PROTEIN] * feed_shutoff_delay_months + [0] * (NMONTHS-feed_shutoff_delay_months))
 
         KCALS_PER_SMALL_ANIMAL = SMALL_ANIMAL_KCALS_PER_KG * KG_PER_SMALL_ANIMAL / 1e9
         FAT_PER_SMALL_ANIMAL = SMALL_ANIMAL_FAT_PER_KG * \
@@ -395,7 +395,7 @@ class Constants:
         KCALS_PER_MEDIUM_ANIMAL = MEDIUM_ANIMAL_KCALS_PER_KG * KG_PER_MEDIUM_ANIMAL / 1e9
         FAT_PER_MEDIUM_ANIMAL = MEDIUM_ANIMAL_FAT_PER_KG * \
             KG_PER_MEDIUM_ANIMAL * KG_TO_1000_TONS
-        PROTEIN_PER_MEDIUM_ANIMAL = MEDIUM_ANIMAL_PROTEIN_PER_KG * \
+        PROTEIN_MEDIUM_ANIMAL = MEDIUM_ANIMAL_PROTEIN_PER_KG * \
             KG_PER_MEDIUM_ANIMAL * KG_TO_1000_TONS
 
         KCALS_PER_LARGE_ANIMAL = LARGE_ANIMAL_KCALS_PER_KG * KG_PER_LARGE_ANIMAL / 1e9
@@ -481,13 +481,13 @@ class Constants:
                     for_cattle/EDIBLE_TO_CATTLE_CONVERSION)
                 # cattle_h_e_maintained.append(0)
 
-            present_day_tons_per_m_cattle = 74.2e6 / 12  # tons a month meat
-            present_day_tons_per_m_chicken_pork = \
+            present_day_tons_per_month_cattle = 74.2e6 / 12  # tons a month meat
+            present_day_tons_per_month_chicken_pork = \
                 CHICKEN_AND_PORK_LIMIT  # tons a month
 
             # does not consider waste
             ratio_maintained_cattle = (np.array(
-                cattle_maintained) + np.array(cattle_h_e_maintained)) / present_day_tons_per_m_cattle
+                cattle_maintained) + np.array(cattle_h_e_maintained)) / present_day_tons_per_month_cattle
             ratio_not_maintained_cattle = 1 - ratio_maintained_cattle
 
             # make sure for the months we really care about we're not exceeding present-day cattle meat maintained production
@@ -505,7 +505,7 @@ class Constants:
 
             # does not consider waste
             ratio_maintained_chicken_pork = np.array(
-                chicken_pork_maintained) / present_day_tons_per_m_chicken_pork
+                chicken_pork_maintained) / present_day_tons_per_month_chicken_pork
 
             assert((ratio_maintained_chicken_pork <= 1).all())
             assert((np.array(dairy_h_e) >= 0).all())
@@ -559,7 +559,7 @@ class Constants:
                 np.array(cattle_h_e_maintained_protein + chicken_pork_protein)\
                 * (1 - MEAT_WASTE / 100)
 
-            if(cin["IS_NUCLEAR_WINTER"]):
+            if(inputs_to_optimizer["IS_NUCLEAR_WINTER"]):
                 INIT_SMALL_ANIMALS_CULLED  \
                     = INIT_SMALL_ANIMALS \
                     * (1 - np.min(ratio_maintained_chicken_pork))
@@ -592,22 +592,22 @@ class Constants:
 
         # assume animals need and use human levels of fat and protein per kcal
         # units grams per kcal same as units 1000s tons per billion kcals
-        fat_used_ls = cin['NUTRITION']['FAT_DAILY'] / \
-            cin['NUTRITION']['KCALS_DAILY']
+        fat_used_ls = inputs_to_optimizer['NUTRITION']['FAT_DAILY'] / \
+            inputs_to_optimizer['NUTRITION']['KCALS_DAILY']
 
-        protein_used_ls = cin['NUTRITION']['PROTEIN_DAILY'] / \
-            cin['NUTRITION']['KCALS_DAILY']
+        protein_used_ls = inputs_to_optimizer['NUTRITION']['PROTEIN_DAILY'] / \
+            inputs_to_optimizer['NUTRITION']['KCALS_DAILY']
 
         nonshutoff_excess_fat_used = fat_used_ls * \
-            cin["EXCESS_CALORIES"]
+            inputs_to_optimizer["EXCESS_CALORIES"]
 
         nonshutoff_excess_protein_used = protein_used_ls * \
-            cin["EXCESS_CALORIES"]
+            inputs_to_optimizer["EXCESS_CALORIES"]
 
         # totals human edible used for animal feed and biofuels
         # excess is directly supplied separately from the feed_shutoff used.
 
-        excess_kcals = cin["EXCESS_CALORIES"] \
+        excess_kcals = inputs_to_optimizer["EXCESS_CALORIES"] \
             + biofuels_kcals \
             + feed_shutoff_kcals
 
@@ -619,7 +619,7 @@ class Constants:
             + biofuels_protein \
             + feed_shutoff_protein
 
-        kcals_fed_to_animals = cin["EXCESS_CALORIES"]\
+        kcals_fed_to_animals = inputs_to_optimizer["EXCESS_CALORIES"]\
             + feed_shutoff_kcals
 
         (small_to_medium_ratio,
@@ -649,7 +649,7 @@ class Constants:
             + INIT_LARGE_ANIMALS_CULLED * FAT_PER_LARGE_ANIMAL
         INIT_MEAT_PROTEIN = \
             INIT_SMALL_ANIMALS_CULLED * PROTEIN_PER_SMALL_ANIMAL \
-            + INIT_MEDIUM_ANIMALS_CULLED * PROTEIN_PER_MEDIUM_ANIMAL \
+            + INIT_MEDIUM_ANIMALS_CULLED * PROTEIN_MEDIUM_ANIMAL \
             + INIT_LARGE_ANIMALS_CULLED * PROTEIN_PER_LARGE_ANIMAL
 
         INITIAL_MEAT = INIT_MEAT_KCALS \
@@ -664,36 +664,36 @@ class Constants:
             MEAT_FRACTION_FAT = 0
             MEAT_FRACTION_PROTEIN = 0
 
-        if(cin['IS_NUCLEAR_WINTER']):
-            CULL_DURATION = cin["CULL_DURATION"]
-            if(CULL_DURATION != 0):
+        if(inputs_to_optimizer['IS_NUCLEAR_WINTER']):
+            CULL_DURATION_MONTHS = inputs_to_optimizer["CULL_DURATION_MONTHS"]
+            if(CULL_DURATION_MONTHS != 0):
                 meat_culled =\
-                    [0] * feed_shutoff_delay\
-                    + [INITIAL_MEAT / CULL_DURATION] * CULL_DURATION\
-                    + [0] * (NMONTHS - CULL_DURATION - feed_shutoff_delay)
+                    [0] * feed_shutoff_delay_months\
+                    + [INITIAL_MEAT / CULL_DURATION_MONTHS] * CULL_DURATION_MONTHS\
+                    + [0] * (NMONTHS - CULL_DURATION_MONTHS - feed_shutoff_delay_months)
 
             else:
                 meat_culled = [0] * NMONTHS
         else:
-            CULL_DURATION = 0
+            CULL_DURATION_MONTHS = 0
             meat_culled = [0] * NMONTHS
 
         if(VERBOSE):
-            print("CULL_DURATION")
-            print(CULL_DURATION)
+            print("CULL_DURATION_MONTHS")
+            print(CULL_DURATION_MONTHS)
 
         if(not ADD_MEAT):
             h_e_meat_kcals = np.array([0] * NMONTHS)
             h_e_meat_fat = np.array([0] * NMONTHS)
             h_e_meat_protein = np.array([0] * NMONTHS)
-            CULL_DURATION = 0
+            CULL_DURATION_MONTHS = 0
             meat_culled = [0] * NMONTHS
 
             
         if(not ADD_DAIRY):
             h_e_fed_dairy_produced = np.array([0] * NMONTHS)
 
-        DAIRY_WASTE = cin['WASTE']['DAIRY']
+        DAIRY_WASTE = inputs_to_optimizer['WASTE']['DAIRY']
         if(ADD_DAIRY):
 
             # billions kcals
@@ -730,7 +730,7 @@ class Constants:
         h_e_created_fat = h_e_meat_fat + h_e_milk_fat
         h_e_created_protein = h_e_meat_protein + h_e_milk_protein
 
-        CROP_WASTE = 1 - cin["WASTE"]["CROPS"] / 100
+        CROP_WASTE = 1 - inputs_to_optimizer["WASTE"]["CROPS"] / 100
 
         h_e_balance_kcals = -excess_kcals * CROP_WASTE \
             + h_e_created_kcals
@@ -744,18 +744,18 @@ class Constants:
         # profile to stored food
         # reference: row 11, 'outputs' tab  https://docs.google.com/spreadsheets/d / 19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673
 
-        JAN_FRACTION = cin['SEASONALITY'][0]
-        FEB_FRACTION = cin['SEASONALITY'][1]
-        MAR_FRACTION = cin['SEASONALITY'][2]
-        APR_FRACTION = cin['SEASONALITY'][3]
-        MAY_FRACTION = cin['SEASONALITY'][4]
-        JUN_FRACTION = cin['SEASONALITY'][5]
-        JUL_FRACTION = cin['SEASONALITY'][6]
-        AUG_FRACTION = cin['SEASONALITY'][7]
-        SEP_FRACTION = cin['SEASONALITY'][8]
-        OCT_FRACTION = cin['SEASONALITY'][9]
-        NOV_FRACTION = cin['SEASONALITY'][10]
-        DEC_FRACTION = cin['SEASONALITY'][11]
+        JAN_FRACTION = inputs_to_optimizer['SEASONALITY'][0]
+        FEB_FRACTION = inputs_to_optimizer['SEASONALITY'][1]
+        MAR_FRACTION = inputs_to_optimizer['SEASONALITY'][2]
+        APR_FRACTION = inputs_to_optimizer['SEASONALITY'][3]
+        MAY_FRACTION = inputs_to_optimizer['SEASONALITY'][4]
+        JUN_FRACTION = inputs_to_optimizer['SEASONALITY'][5]
+        JUL_FRACTION = inputs_to_optimizer['SEASONALITY'][6]
+        AUG_FRACTION = inputs_to_optimizer['SEASONALITY'][7]
+        SEP_FRACTION = inputs_to_optimizer['SEASONALITY'][8]
+        OCT_FRACTION = inputs_to_optimizer['SEASONALITY'][9]
+        NOV_FRACTION = inputs_to_optimizer['SEASONALITY'][10]
+        DEC_FRACTION = inputs_to_optimizer['SEASONALITY'][11]
 
         JAN_YIELD = JAN_FRACTION * ANNUAL_YIELD  # tonnes dry carb equivalent
         FEB_YIELD = FEB_FRACTION * ANNUAL_YIELD  # tonnes dry carb equivalent
@@ -793,7 +793,7 @@ class Constants:
             JUN_KCALS_OG+JUL_KCALS_OG+AUG_KCALS_OG+SEP_KCALS_OG + \
             OCT_KCALS_OG+NOV_KCALS_OG+DEC_KCALS_OG
 
-        if(cin['IS_NUCLEAR_WINTER']):
+        if(inputs_to_optimizer['IS_NUCLEAR_WINTER']):
             RATIO_KCALS_POSTDISASTER_1Y = 1 - .53
             RATIO_KCALS_POSTDISASTER_2Y = 1 - 0.82
             RATIO_KCALS_POSTDISASTER_3Y = 1 - .89
@@ -860,16 +860,16 @@ class Constants:
                         OCT_KCALS_OG, NOV_KCALS_OG, DEC_KCALS_OG, JAN_KCALS_OG, FEB_KCALS_OG, MAR_KCALS_OG, APR_KCALS_OG]
 
         # need to use the multiplier on units of kcals to get fat and protein
-        if(cin["OG_USE_BETTER_ROTATION"]):
+        if(inputs_to_optimizer["OG_USE_BETTER_ROTATION"]):
 
             # deals with the issue of caloric improvement being more than present-day production during the beginning months of the simulation.
-            OG_KCAL_REDUCED = cin["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"]
+            OG_KCAL_REDUCED = inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"]
 
             OG_ROTATION_FRACTION_KCALS = 1
 
             KCAL_RATIO_ROT = 1
-            FAT_ROTATION_RATIO = cin["ROTATION_IMPROVEMENTS"]["FAT_RATIO"]
-            PROTEIN_ROTATION_RATIO = cin["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"]
+            FAT_ROTATION_RATIO = inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["FAT_RATIO"]
+            PROTEIN_ROTATION_RATIO = inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"]
 
             OG_ROTATION_FRACTION_FAT = OG_FRACTION_FAT * FAT_ROTATION_RATIO
             OG_ROTATION_FRACTION_PROTEIN = OG_FRACTION_PROTEIN * PROTEIN_ROTATION_RATIO
@@ -905,7 +905,7 @@ class Constants:
                 ))
             )
 
-        CROP_WASTE = cin['WASTE']['CROPS']
+        CROP_WASTE = inputs_to_optimizer['WASTE']['CROPS']
 
         TOTAL_CROP_AREA = 500e6  # 500 million hectares in tropics
 
@@ -933,16 +933,16 @@ class Constants:
         # NOTE: the 5 months represents the delay from plant to harvest.
 
         if(ADD_GREENHOUSES):
-            GREENHOUSE_AREA_MULTIPLIER = cin['GREENHOUSE_AREA_MULTIPLIER']
+            GREENHOUSE_AREA_MULTIPLIER = inputs_to_optimizer['GREENHOUSE_AREA_MULTIPLIER']
             GREENHOUSE_LIMIT_AREA = 250e6 * GREENHOUSE_AREA_MULTIPLIER
             # past the 5 month delay till harvest
-            gd = cin["DELAY"]["GREENHOUSE"]
+            greenhouse_delay = inputs_to_optimizer["DELAY"]["GREENHOUSE_MONTHS"]
 
             greenhouse_area_long = \
                 list(
                     np.append(
                         np.append(
-                            np.append(np.linspace(0, 0, gd),
+                            np.append(np.linspace(0, 0, greenhouse_delay),
                                       np.linspace(0, 0, 5)),
                             np.linspace(0, GREENHOUSE_LIMIT_AREA, 37)
                         ),
@@ -968,11 +968,11 @@ class Constants:
             greenhouse_area = np.array([0] * NMONTHS)
 
         if(ADD_OUTDOOR_GROWING):
-            if(cin["OG_USE_BETTER_ROTATION"]):
+            if(inputs_to_optimizer["OG_USE_BETTER_ROTATION"]):
                 crops_food_produced = np.array([0] * NMONTHS)
 
-                hd = cin["INITIAL_HARVEST_DURATION"] + \
-                    cin["DELAY"]["ROTATION_CHANGE"]
+                hd = inputs_to_optimizer["INITIAL_HARVEST_DURATION_IN_MONTHS"] + \
+                    inputs_to_optimizer["DELAY"]["ROTATION_CHANGE_IN_MONTHS"]
 
                 crops_food_produced[hd:] = \
                     np.multiply(np.array(KCALS_GROWN[hd:]),
@@ -1019,7 +1019,7 @@ class Constants:
             rotation_kcals_per_ha_long = []
             for kcals_per_month in KCALS_GROWN_PER_HECTARE:
                 gh_kcals = kcals_per_month * KCAL_RATIO \
-                    * (1+cin["GREENHOUSE_GAIN_PCT"] / 100)
+                    * (1+inputs_to_optimizer["GREENHOUSE_GAIN_PCT"] / 100)
 
                 rotation_kcals_per_ha_long.append(gh_kcals)
 
@@ -1053,42 +1053,42 @@ class Constants:
         # apply sugar waste also to methane scp, for lack of better baseline
 
         INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = \
-            cin['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER']
-        if(cin["ADD_METHANE_SCP"]):
-            SCP_WASTE = cin['WASTE']['SUGAR']
-            ind_delay_months = [0] * cin["DELAY"]['INDUSTRIAL_FOODS']
+            inputs_to_optimizer['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER']
+        if(inputs_to_optimizer['ADD_METHANE_SCP']):
+            SCP_WASTE = inputs_to_optimizer['WASTE']['SUGAR']
+            industrial_delay_months = [0] * inputs_to_optimizer['DELAY']['INDUSTRIAL_FOODS_MONTHS']
 
             # billion kcals a month for 100% population (7.8 billion people).
             INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER = 6793977 / 12
-            METHANE_SCP_PERCENT_KCALS = list(np.array(ind_delay_months
+            METHANE_SCP_PERCENT_KCALS = list(np.array(industrial_delay_months
             + [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,
             2, 2, 2, 4, 7, 7, 7, 7, 7, 9, 11, 11, 11, 11, 11, 11, 13, 15, 15, 15, 15,
             15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15]) / (1 - 0.12) * INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
 
-            production_kcals_scp_per_m_long = []
+            production_kcals_scp_per_month_long = []
             for x in METHANE_SCP_PERCENT_KCALS:
-                production_kcals_scp_per_m_long.append(
+                production_kcals_scp_per_month_long.append(
                     x / 100 * INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER * (1 - SCP_WASTE / 100))
         else:
-            production_kcals_scp_per_m_long = [0] * NMONTHS
+            production_kcals_scp_per_month_long = [0] * NMONTHS
 
-        production_kcals_scp_per_m = production_kcals_scp_per_m_long[0:NMONTHS]
+        production_kcals_scp_per_month = production_kcals_scp_per_month_long[0:NMONTHS]
 
         SCP_KCALS_PER_KG = 5350
         SCP_FRAC_PROTEIN = 0.650
         SCP_FRAC_FAT = 0.09
 
         #billions of kcals converted to 1000s of tons protein
-        production_protein_scp_per_m = \
-            list(np.array(production_kcals_scp_per_m)
+        production_protein_scp_per_month = \
+            list(np.array(production_kcals_scp_per_month)
                  * 1e9
                  * SCP_FRAC_PROTEIN
                  / SCP_KCALS_PER_KG
                  / 1e6)
 
         #billions of kcals converted to 1000s of tons fat
-        production_fat_scp_per_m = \
-            list(np.array(production_kcals_scp_per_m)
+        production_fat_scp_per_month = \
+            list(np.array(production_kcals_scp_per_month)
                  * 1e9
                  * SCP_FRAC_FAT
                  / SCP_KCALS_PER_KG
@@ -1096,25 +1096,25 @@ class Constants:
 
         #### CONSTANTS FOR CELLULOSIC SUGAR ####
 
-        if(cin["ADD_CELLULOSIC_SUGAR"]):
-            SUGAR_WASTE = cin['WASTE']['SUGAR']
+        if(inputs_to_optimizer["ADD_CELLULOSIC_SUGAR"]):
+            SUGAR_WASTE = inputs_to_optimizer['WASTE']['SUGAR']
 
-            ind_delay_months = [0] * cin["DELAY"]['INDUSTRIAL_FOODS']
+            industrial_delay_months = [0] * inputs_to_optimizer["DELAY"]['INDUSTRIAL_FOODS_MONTHS']
 
 
             INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER = 6793977 / 12
-            CELL_SUGAR_PERCENT_KCALS = list(np.append(ind_delay_months, np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
+            CELL_SUGAR_PERCENT_KCALS = list(np.append(industrial_delay_months, np.array([0.00, 0.00, 0.00, 0.00, 0.00, 9.79, 9.79, 9.79, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
                 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20])) * 1 / (1 - 0.12) * INDUSTRIAL_FOODS_SLOPE_MULTIPLIER)
 
-            production_kcals_CS_per_m_long = []
+            production_kcals_CS_per_month_long = []
             for x in CELL_SUGAR_PERCENT_KCALS:
-                production_kcals_CS_per_m_long.append(
+                production_kcals_CS_per_month_long.append(
                     x / 100 * INDUSTRIAL_FOODS_MONTHLY_KCAL_MULTIPLIER * (1 - SUGAR_WASTE / 100))
         else:
-            production_kcals_CS_per_m_long = \
+            production_kcals_CS_per_month_long = \
                 [0] * NMONTHS
 
-        production_kcals_CS_per_m = production_kcals_CS_per_m_long[0:NMONTHS]
+        production_kcals_CS_per_month = production_kcals_CS_per_month_long[0:NMONTHS]
 
         if(VERBOSE):
             # used by world population
@@ -1243,7 +1243,7 @@ class Constants:
                     print("")
                     print("culled chicken, pork, and cattle per month.")
                     print("reaches minimum after " +
-                          str(CULL_DURATION)+"  months")
+                          str(CULL_DURATION_MONTHS)+" months")
                 else:
                     print("no cattle maintained from human edible")
                     print("")
@@ -1270,7 +1270,7 @@ class Constants:
                     print("")
 
                 print("")
-                if(cin["IS_NUCLEAR_WINTER"]):
+                if(inputs_to_optimizer["IS_NUCLEAR_WINTER"]):
                     print("INITIAL_CULLED_KCALS million tons dry caloric monthly")
                     print("INITIAL_CULLED_FAT million tons monthly")
                     print("INITIAL_CULLED_PROTEIN million tons monthly")
@@ -1301,19 +1301,19 @@ class Constants:
             if(ADD_FISH):
                 print("INITIAL_FISH_KCALS million tons dry caloric monthly")
                 print(
-                    production_kcals_fish_per_m[0] / (1 - FISH_WASTE / 100) * 1e9 / 4e6 / 1e6)
+                    production_kcals_fish_per_month[0] / (1 - FISH_WASTE / 100) * 1e9 / 4e6 / 1e6)
 
                 print("INITIAL_FISH_FAT million tons monthly")
-                print(production_protein_fish_per_m[0] / (1 - FISH_WASTE / 100) / 1e3)
+                print(production_protein_fish_per_month[0] / (1 - FISH_WASTE / 100) / 1e3)
                 print("INITIAL_FISH_PROTEIN million tons monthly")
-                print(production_fat_fish_per_m[0] / (1 - FISH_WASTE / 100) / 1e3)
+                print(production_fat_fish_per_month[0] / (1 - FISH_WASTE / 100) / 1e3)
                 print("")
                 print("INITIAL_FISH_FAT percentage")
-                print(100 * production_fat_fish_per_m[0] / (1 - FISH_WASTE / 100) / 1e3 / (
-                    production_kcals_fish_per_m[0] / (1 - FISH_WASTE / 100) * 1e9 / 4e6 / 1e6))
+                print(100 * production_fat_fish_per_month[0] / (1 - FISH_WASTE / 100) / 1e3 / (
+                    production_kcals_fish_per_month[0] / (1 - FISH_WASTE / 100) * 1e9 / 4e6 / 1e6))
                 print("INITIAL_FISH_PROTEIN percentage")
-                print(100 * production_protein_fish_per_m[0] / (1 - FISH_WASTE / 100) / 1e3 / (
-                    production_kcals_fish_per_m[0] / (1 - FISH_WASTE / 100) * 1e9 / 4e6 / 1e6))
+                print(100 * production_protein_fish_per_month[0] / (1 - FISH_WASTE / 100) / 1e3 / (
+                    production_kcals_fish_per_month[0] / (1 - FISH_WASTE / 100) * 1e9 / 4e6 / 1e6))
                 print("")
                 print("")
             if(biofuels_kcals[0] > 0):
@@ -1336,13 +1336,13 @@ class Constants:
 
             if(ADD_METHANE_SCP):
                 print("daily calories SCP")
-                print(np.array(production_kcals_scp_per_m)*1e9/30/7.8e9)
+                print(np.array(production_kcals_scp_per_month)*1e9/30/7.8e9)
                 print("daily kg SCP")
-                print(np.array(production_kcals_scp_per_m)*1e9/30/7.8e9/SCP_KCALS_PER_KG)
+                print(np.array(production_kcals_scp_per_month)*1e9/30/7.8e9/SCP_KCALS_PER_KG)
                 print("daily grams protein SCP")
-                print(np.array(production_kcals_scp_per_m)*1e9/30/7.8e9/SCP_KCALS_PER_KG*SCP_FRAC_PROTEIN*1000)
+                print(np.array(production_kcals_scp_per_month)*1e9/30/7.8e9/SCP_KCALS_PER_KG*SCP_FRAC_PROTEIN*1000)
                 print("1000 tons per month protein SCP")
-                print(np.array(production_kcals_scp_per_m)*1e9/SCP_KCALS_PER_KG*SCP_FRAC_PROTEIN/1e6)
+                print(np.array(production_kcals_scp_per_month)*1e9/SCP_KCALS_PER_KG*SCP_FRAC_PROTEIN/1e6)
 
         #### OTHER VARIABLES ####
 
@@ -1360,15 +1360,15 @@ class Constants:
         time_consts["greenhouse_kcals_per_ha"] = greenhouse_kcals_per_ha
         time_consts["greenhouse_fat_per_ha"] = greenhouse_fat_per_ha
         time_consts["greenhouse_protein_per_ha"] = greenhouse_protein_per_ha
-        time_consts["production_kcals_scp_per_m"] = production_kcals_scp_per_m
-        time_consts["production_protein_scp_per_m"] = \
-        production_protein_scp_per_m
-        time_consts["production_fat_scp_per_m"] = production_fat_scp_per_m
-        time_consts["production_kcals_fish_per_m"] = production_kcals_fish_per_m
-        time_consts["production_protein_fish_per_m"] = \
-        production_protein_fish_per_m
-        time_consts["production_fat_fish_per_m"] = production_fat_fish_per_m
-        time_consts["production_kcals_CS_per_m"] = production_kcals_CS_per_m
+        time_consts["production_kcals_scp_per_month"] = production_kcals_scp_per_month
+        time_consts["production_protein_scp_per_month"] = \
+        production_protein_scp_per_month
+        time_consts["production_fat_scp_per_month"] = production_fat_scp_per_month
+        time_consts["production_kcals_fish_per_month"] = production_kcals_fish_per_month
+        time_consts["production_protein_fish_per_month"] = \
+        production_protein_fish_per_month
+        time_consts["production_fat_fish_per_month"] = production_fat_fish_per_month
+        time_consts["production_kcals_CS_per_month"] = production_kcals_CS_per_month
         time_consts["dairy_milk_kcals"] = dairy_milk_kcals
         time_consts["dairy_milk_fat"] = dairy_milk_fat
         time_consts["dairy_milk_protein"] = dairy_milk_protein
@@ -1438,7 +1438,7 @@ class Constants:
         constants['MEAT_FRACTION_FAT'] = MEAT_FRACTION_FAT
         constants['MEAT_FRACTION_PROTEIN'] = MEAT_FRACTION_PROTEIN
 
-        constants['CULL_DURATION'] = CULL_DURATION
+        constants['CULL_DURATION_MONTHS'] = CULL_DURATION_MONTHS
 
         constants['INITIAL_SEAWEED'] = INITIAL_SEAWEED
         constants['SEAWEED_KCALS'] = SEAWEED_KCALS
@@ -1474,6 +1474,6 @@ class Constants:
         constants["SMALL_ANIMAL_FAT_PER_KG"] = SMALL_ANIMAL_FAT_PER_KG
         constants["SMALL_ANIMAL_PROTEIN_PER_KG"] = SMALL_ANIMAL_PROTEIN_PER_KG
 
-        constants['inputs'] = cin
+        constants['inputs'] = inputs_to_optimizer
 
         return (constants, time_consts)

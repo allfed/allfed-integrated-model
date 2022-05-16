@@ -17,15 +17,15 @@ class Validator:
 		pass
 
 	# passing in the variables explicitly to the constraint checker here
-	#ensures that the final values that are used in reports are explicitly
-	#validated against all the constraints.
-	def checkConstraintsSatisfied(model,status,maximize_constraints,all_variables,SHOW_CONSTRAINT_CHECK):
+	# ensures that the final values that are used in reports are explicitly
+	# validated against all the constraints.
+	def checkConstraintsSatisfied(model,status,maximize_constraints,variables,SHOW_CONSTRAINT_CHECK):
 		if(SHOW_CONSTRAINT_CHECK):
 			print(status)
 		assert(status==1)
 
 		constraints_dict={}
-		for c in all_variables:
+		for c in variables:
 			# if("Humans_Fed_Fat" in c.name):
 			# 	print(c.name)
 			# 	print(c.varValue)
