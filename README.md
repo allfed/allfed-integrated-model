@@ -41,6 +41,8 @@ The integrated model is written in python 3, ensure you have some version of pyt
 pip install PuLP
 pip install numpy
 pip install matplotlib
+pip install seaborn
+pip install scipy
 ```
 
 results from the paper can be rerun using the following commands in the src/ folder
