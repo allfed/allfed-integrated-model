@@ -43,6 +43,7 @@ pip install numpy
 pip install matplotlib
 pip install seaborn
 pip install scipy
+pip install geopandas
 ```
 
 results from the paper can be rerun using the following commands in the src/ folder
