@@ -1,3 +1,13 @@
+################################## Analyzer ###################################
+##                                                                            #
+##            Extracts the results from the optimizer for                     #
+##        plotting. It also converts from a given production excess           #
+##       into an expected diet, if all of that excess is used                 #
+##                           for feeding animals                              #
+##                                                                            #
+###############################################################################
+
+
 import numpy as np
 import os
 import sys
@@ -570,11 +580,11 @@ class Analyzer:
         self.humans_fed_protein_optimizer = [element for _, element in sorted_zipped_lists]
         feed_delay = self.constants['inputs']["DELAY"]['FEED_SHUTOFF_MONTHS']
         sum_before = np.sum((np.array(self.humans_fed_kcals_optimizer)
-                             [:feed_delay] - self.constants["WORLD_POP"]/1e9))
+                             [:feed_delay] - self.constants["POP"]/1e9))
 
         if(feed_delay >= self.constants["NMONTHS"]):
             self.excess_after_run = (np.array(self.humans_fed_kcals_optimizer) -
-                                     self.constants["WORLD_POP"]/1e9)*self.constants["KCALS_MONTHLY"]/10
+                                     self.constants["POP"]/1e9)*self.constants["KCALS_MONTHLY"]/10
         else:
             # any consistent monthly excess is subtracted
             # also spread out excess calories in pre-"feed shutoff" months
@@ -583,7 +593,7 @@ class Analyzer:
             self.excess_after_run = \
                 (
                     np.array(self.humans_fed_kcals_optimizer)
-                    - self.constants["WORLD_POP"]/1e9 \
+                    - self.constants["POP"]/1e9 \
                     # + (sum_before)/(self.constants["NMONTHS"]-feed_delay)
                 )*self.constants["KCALS_MONTHLY"]/10
 

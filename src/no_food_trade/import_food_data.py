@@ -10,25 +10,18 @@ import geopandas as gpd
 import geoplot as gplt
 import copy 
 
-NUTRITION_XLS = '../../Supplemental_Data.xlsx'
-PRODUCTION_CSV = '../../data/no_food_trade/FAOSTAT_food_production_2020.csv'
-POP_CSV = '../../data/no_food_trade/FAOSTAT_population_2020.csv'
-
-TONS_TO_KG = 1e3
-TONS_TO_GRAMS = 1e6
-
-KCALS_PER_PERSON = 2100
-FAT_PER_PERSON = 47
-PROTEIN_PER_PERSON = 53 
+NO_TRADE_XLS = '../../data/no_food_trade/No_Food_Trade_Data.xlsx'
 
 # Data Inspection
 
-xls = pd.ExcelFile(NUTRITION_XLS)
-nutrition = pd.read_excel(xls, 'Nutrition')[['Item','Calories','Protein','Fat']]
+xls = pd.ExcelFile(NO_TRADE_XLS)
+aquaculture = pd.read_excel(xls, 'Seafood - excluding seaweeds')[['ISO3 Country Code',"Seafood calories - million tonnes dry caloric, 2020","Seafood fat - million tonnes, 2020","Seafood protein - million tonnes, 2020"]]
+grasses = pd.read_excel(xls, 'Outdoor Crop Production Baseline')[['ISO3 Country Code',"Outdoor crop caloric production in 2020 (dry caloric tons)","Outdoor crop fat production in 2020 (tonnes)","Outdoor crop protein production in 2020 (tonnes)"]]
+dairy = pd.read_excel(xls, 'Grazing')[['ISO3 Country Code',"Current milk output - '000 tonnes wet value'"]]
+population = pd.read_excel(xls, 'Macro data')[['ISO3 Country Code',"Country Population (millions), 2020"]]
 
-df_pop = pd.read_csv(POP_CSV)[['Area Code (ISO3)', 'Value']]
-df_pop['Population'] = df_pop['Value'] * 1000
-df_pop.drop(columns='Value', inplace=True)
+df_pop['Population'] = population["Country Population (millions), 2020"] * 1e6
+df_pop.drop(columns="Country Population (millions), 2020", inplace=True)
 
 df_prod = pd.read_csv(PRODUCTION_CSV)[['Area Code (ISO3)', 'Area', 'Element', 'Item Code (FAO)', 'Item', 'Unit', 'Value']]
             #.rename(columns={'Value': 'Production Value'})
@@ -40,43 +33,13 @@ countries = list(df_prod['Area Code (ISO3)'].unique())
 df_dict = {k: df_prod[df_prod['Area Code (ISO3)'] == k].drop(columns='Area Code (ISO3)') for k in countries}
 
 sum_pop = 0
+#import the visual map
 world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+#for each 
 for country, products in df_dict.items(): 
     kcals_sum = 0
     fat_sum = 0
     protein_sum = 0
-    for index, product in products.iterrows(): 
-        #find the particular item.
-        n = nutrition[nutrition['Item'] == product['Item']]
-
-        #if the match could not be found, continue
-        if(len(n)==0):
-            # print("and... another.")
-            continue
-
-        # there should never be any duplicate nutrition items
-        assert(len(n)==1)
-
-
-        kcals_nut = float(n['Calories'])
-        fat_nut = float(n['Fat'])
-        protein_nut = float(n['Protein'])
-
-        # nutrition Calories is units kcals/kg
-        if(np.isnan(product['Value'])):
-            tons = 0
-        else:
-            tons = product['Value']
-
-        kcals = tons / 365 * TONS_TO_KG * kcals_nut 
-
-        # nutrition Fat and protein are percent by weight, converting to grams
-        fat = tons / 365 * TONS_TO_GRAMS * fat_nut
-        protein = tons / 365 * TONS_TO_GRAMS * protein_nut
-
-        kcals_sum += kcals
-        fat_sum += fat
-        protein_sum += protein
 
 
     # population = world[world['iso_a3'].apply(lambda x: x == country)]

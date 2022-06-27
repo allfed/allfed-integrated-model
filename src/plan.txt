@@ -1,0 +1,62 @@
+IMPORTS:
+
+
+meat from chicken and pork
+meat from cattle
+dairy
+
+
+STRUCTURE:
+
+scenarios
+    init
+
+    set waste to zero
+    set waste to baseline
+
+    set delays
+
+    etc
+
+    scenario - global baseline
+    scenario - global nuclear winter
+    scenario - global nuclear winter no resilient foods
+
+    scenarios - country baseline
+        called with inputs for that country
+    scenarios - country nuclear winter
+        called with inputs for that country
+    scenarios - country nuclear winter no resilient foods
+        called with inputs for that country
+
+parameters (was constants)
+
+    imports all the components
+
+    def infer parameters
+        calls components to get all the different values 
+
+components (it's a new folder)
+    cellulosic_sugar.py
+    methane_scp.py
+    meat.py
+    fish.py
+    greenhouses.py
+    seaweed.py
+    etc
+    
+
+right now constant's computeConstants(constants) takes constants, including things like ADD_FISH, and spits out the exact thing,
+     ADD_FISH = constants["ADD_FISH"]
+     ...
+     constants["ADD_FISH"] = ADD_FISH
+
+so we will just set params.ADD_FISH to true, then use it in the infer_params function
+
+also, optimizer is resetting values in constants somehow.
+better would be that optimizer 
+
+plotter uses is_nuclear_winter...
+
+infer 
+returns params_single and params_list 

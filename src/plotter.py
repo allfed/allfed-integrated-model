@@ -1,8 +1,9 @@
-'''
+################################ plotter.py ###################################
+##                                                                            #
+##            A set of utility functions useful for plotting                  #
+##                                                                            #
+###############################################################################
 
-A set of utility functions useful for plotting 
-
-'''
 from scipy.stats import t
 import seaborn as sns
 from cycler import cycler
@@ -26,7 +27,7 @@ class Plotter:
         pass
 
     def plot_fig_1ab(analysis1, xlim):
-        legend = Plotter.get_people_fed_legend(analysis1)
+        legend = Plotter.get_people_fed_legend(analysis1,True)
         fig = plt.figure()
         pal = ["#1e7ecd",
                "#71797E",
@@ -63,12 +64,12 @@ class Plotter:
                 ax.text(-0.06, 1.1, label, transform=ax.transAxes,
                         fontsize=11, fontweight='bold', va='top', ha='right')
                 ax.stackplot(analysis.time_months_middle,
-                             np.array(ykcals) / analysis.c["CONVERT_TO_KCALS"],
+                             np.array(ykcals) / analysis.constants["CONVERSION_TO_KCALS"],
                              labels=legend, colors=pal)
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
                 maxy = max(sum([x[0:xlim] for x in ykcals]))
-                ax.set_ylim([0, maxy/ analysis.c["CONVERT_TO_KCALS"]])
+                ax.set_ylim([0, maxy/ analysis.constants["CONVERSION_TO_KCALS"]])
 
                 plt.ylabel('Calories / capita / day')
             if(label == 'b'):
@@ -77,16 +78,16 @@ class Plotter:
                 plt.xlabel('Months since May ASRS onset')
 
                 ax.plot(analysis.time_months_middle,
-                        analysis.kcals_fed / analysis.c["CONVERT_TO_KCALS"]
-                        / analysis.c["inputs"]['NUTRITION']['KCALS_DAILY'],
+                        analysis.kcals_fed / analysis.constants["CONVERSION_TO_KCALS"]
+                        / analysis.constants["inputs"]['NUTRITION']['KCALS_DAILY'],
                         marker='o',
                         markersize=6,
                         color='blue',
                         linestyle='solid')
 
                 ax.plot(analysis.time_months_middle,
-                        analysis.protein_fed / analysis.c["CONVERT_TO_PROTEIN"]
-                        / analysis.c["inputs"]['NUTRITION']['PROTEIN_DAILY'],
+                        analysis.protein_fed / analysis.constants["CONVERSION_TO_PROTEIN"]
+                        / analysis.constants["inputs"]['NUTRITION']['PROTEIN_DAILY'],
                         marker='^',
                         markersize=6,
                         color='red',
@@ -94,8 +95,8 @@ class Plotter:
 
                 # 1 gram of fat is 9 kcals.
                 ax.plot(analysis.time_months_middle,
-                        analysis.fat_fed / analysis.c["CONVERT_TO_FAT"]
-                        / analysis.c["inputs"]['NUTRITION']['FAT_DAILY'],
+                        analysis.fat_fed / analysis.constants["CONVERSION_TO_FAT"]
+                        / analysis.constants["inputs"]['NUTRITION']['FAT_DAILY'],
                         marker='x',
                         markersize=6,
                         color='green',
@@ -142,7 +143,7 @@ class Plotter:
         plt.show()
 
     def plot_fig_2abcd(analysis1, analysis2, xlim):
-        legend = Plotter.get_people_fed_legend(analysis1)
+        legend = Plotter.get_people_fed_legend(analysis1,True)
         fig = plt.figure()
         pal = ["#1e7ecd",
                "#71797E",
@@ -193,13 +194,13 @@ class Plotter:
                         fontsize=11, fontweight='bold', va='top', ha='right')
                 ax.stackplot(analysis.time_months_middle,
                              np.array(ykcals)
-                             / analysis.c["CONVERT_TO_KCALS"],
+                             / analysis.constants["CONVERSION_TO_KCALS"],
                              labels=legend, colors=pal)
 
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
                 maxy = max(sum([x[0:xlim] for x in ykcals]))
-                ax.set_ylim([0, maxy/ analysis.c["CONVERT_TO_KCALS"]])
+                ax.set_ylim([0, maxy/ analysis.constants["CONVERSION_TO_KCALS"]])
 
                 plt.ylabel('Calories / capita / day')
             if(label == 'b' or label == 'd'):
@@ -208,24 +209,24 @@ class Plotter:
                 plt.xlabel('Months since May ASRS onset')
 
                 ax.plot(analysis.time_months_middle,
-                        analysis.kcals_fed / analysis.c["CONVERT_TO_KCALS"]
-                        / analysis.c["inputs"]['NUTRITION']['KCALS_DAILY'],
+                        analysis.kcals_fed / analysis.constants["CONVERSION_TO_KCALS"]
+                        / analysis.constants["inputs"]['NUTRITION']['KCALS_DAILY'],
                         marker='o',
                         markersize=6,
                         color='blue',
                         linestyle='solid')
 
                 ax.plot(analysis.time_months_middle,
-                        analysis.protein_fed / analysis.c["CONVERT_TO_PROTEIN"]
-                        / analysis.c["inputs"]['NUTRITION']['PROTEIN_DAILY'],
+                        analysis.protein_fed / analysis.constants["CONVERSION_TO_PROTEIN"]
+                        / analysis.constants["inputs"]['NUTRITION']['PROTEIN_DAILY'],
                         marker='^',
                         markersize=6,
                         color='red',
                         linestyle='dotted')
 
                 ax.plot(analysis.time_months_middle,
-                        analysis.fat_fed / analysis.c["CONVERT_TO_FAT"]
-                        / analysis.c["inputs"]['NUTRITION']['FAT_DAILY'],
+                        analysis.fat_fed / analysis.constants["CONVERSION_TO_FAT"]
+                        / analysis.constants["inputs"]['NUTRITION']['FAT_DAILY'],
                         marker='x',
                         markersize=6,
                         color='green',
@@ -405,7 +406,7 @@ class Plotter:
                        analysis2,
                        xlim1,
                        xlim2):
-        legend = Plotter.get_people_fed_legend(analysis1)
+        legend = Plotter.get_people_fed_legend(analysis1,True)
         fig = plt.figure()
         pal = ["#1e7ecd",
                "#71797E",
@@ -462,7 +463,7 @@ class Plotter:
                         fontsize=11, fontweight='bold', va='top', ha='right')
                 ax.stackplot(analysis.time_months_middle,
                              np.array(ykcals)
-                             / analysis.c["CONVERT_TO_KCALS"],
+                             / analysis.constants["CONVERSION_TO_KCALS"],
                              labels=legend, colors=pal)
 
                 plt.ylabel('Calories / capita / day')
@@ -472,24 +473,24 @@ class Plotter:
                 plt.xlabel('Months since May ASRS onset')
 
                 ax.plot(analysis.time_months_middle,
-                        analysis.kcals_fed / analysis.c["CONVERT_TO_KCALS"]
-                        / analysis.c["inputs"]['NUTRITION']['KCALS_DAILY'],
+                        analysis.kcals_fed / analysis.constants["CONVERSION_TO_KCALS"]
+                        / analysis.constants["inputs"]['NUTRITION']['KCALS_DAILY'],
                         marker='o',
                         markersize=6,
                         color='blue',
                         linestyle='solid')
 
                 ax.plot(analysis.time_months_middle,
-                        analysis.protein_fed / analysis.c["CONVERT_TO_PROTEIN"]
-                        / analysis.c["inputs"]['NUTRITION']['PROTEIN_DAILY'],
+                        analysis.protein_fed / analysis.constants["CONVERSION_TO_PROTEIN"]
+                        / analysis.constants["inputs"]['NUTRITION']['PROTEIN_DAILY'],
                         marker='^',
                         markersize=6,
                         color='red',
                         linestyle='dotted')
 
                 ax.plot(analysis.time_months_middle,
-                        analysis.fat_fed / analysis.c["CONVERT_TO_FAT"]
-                        / analysis.c["inputs"]['NUTRITION']['FAT_DAILY'],
+                        analysis.fat_fed / analysis.constants["CONVERSION_TO_FAT"]
+                        / analysis.constants["inputs"]['NUTRITION']['FAT_DAILY'],
                         marker='x',
                         markersize=6,
                         color='green',
@@ -524,10 +525,10 @@ class Plotter:
 
             if(label == 'a'):
                 maxy = max(sum([x[0:xlim1] for x in ykcals]))
-                ax.set_ylim([0, maxy / analysis.c["CONVERT_TO_KCALS"]])
+                ax.set_ylim([0, maxy / analysis.constants["CONVERSION_TO_KCALS"]])
             if(label == 'c'):
                 maxy = max(sum([x[0:xlim2] for x in ykcals]))
-                ax.set_ylim([0, maxy / analysis.c["CONVERT_TO_KCALS"]])
+                ax.set_ylim([0, maxy / analysis.constants["CONVERSION_TO_KCALS"]])
 
 
             plt.xlabel('Months since May ASRS')
@@ -542,7 +543,7 @@ class Plotter:
     def plot_fig_s1abcd(analysis1,
                         analysis2,
                         xlim):
-        legend = Plotter.get_people_fed_legend(analysis1)
+        legend = Plotter.get_people_fed_legend(analysis1,False)
         fig = plt.figure()
         pal = ["#1e7ecd",
                "#71797E",
@@ -593,13 +594,13 @@ class Plotter:
                         fontsize=11, fontweight='bold', va='top', ha='right')
                 ax.stackplot(analysis.time_months_middle,
                              np.array(ykcals)
-                             / analysis.c["CONVERT_TO_KCALS"],
+                             / analysis.constants["CONVERSION_TO_KCALS"],
                              labels=legend, colors=pal)
 
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
                 maxy = max(sum([x[0:xlim] for x in ykcals]))
-                ax.set_ylim([0, maxy/ analysis.c["CONVERT_TO_KCALS"]])
+                ax.set_ylim([0, maxy/ analysis.constants["CONVERSION_TO_KCALS"]])
 
                 plt.ylabel('Calories / capita / day')
             if(label == 'b' or label == 'd'):
@@ -608,24 +609,24 @@ class Plotter:
                 plt.xlabel('Months since May ASRS onset')
 
                 ax.plot(analysis.time_months_middle,
-                        analysis.kcals_fed / analysis.c["CONVERT_TO_KCALS"]
-                        / analysis.c["inputs"]['NUTRITION']['KCALS_DAILY'],
+                        analysis.kcals_fed / analysis.constants["CONVERSION_TO_KCALS"]
+                        / analysis.constants["inputs"]['NUTRITION']['KCALS_DAILY'],
                         marker='o',
                         markersize=6,
                         color='blue',
                         linestyle='solid')
 
                 ax.plot(analysis.time_months_middle,
-                        analysis.protein_fed / analysis.c["CONVERT_TO_PROTEIN"]
-                        / analysis.c["inputs"]['NUTRITION']['PROTEIN_DAILY'],
+                        analysis.protein_fed / analysis.constants["CONVERSION_TO_PROTEIN"]
+                        / analysis.constants["inputs"]['NUTRITION']['PROTEIN_DAILY'],
                         marker='^',
                         markersize=6,
                         color='red',
                         linestyle='dotted')
 
                 ax.plot(analysis.time_months_middle,
-                        analysis.fat_fed / analysis.c["CONVERT_TO_FAT"]
-                        / analysis.c["inputs"]['NUTRITION']['FAT_DAILY'],
+                        analysis.fat_fed / analysis.constants["CONVERSION_TO_FAT"]
+                        / analysis.constants["inputs"]['NUTRITION']['FAT_DAILY'],
                         marker='x',
                         markersize=6,
                         color='green',
@@ -669,14 +670,14 @@ class Plotter:
         plt.show()
 
     def getylim_nutrients(analysis, xlim):
-        kcals = analysis.kcals_fed / analysis.c["CONVERT_TO_KCALS"] \
-            / analysis.c["inputs"]['NUTRITION']['KCALS_DAILY']
+        kcals = analysis.kcals_fed / analysis.constants["CONVERSION_TO_KCALS"] \
+            / analysis.constants["inputs"]['NUTRITION']['KCALS_DAILY']
 
-        protein = analysis.protein_fed / analysis.c["CONVERT_TO_PROTEIN"] \
-            / analysis.c["inputs"]['NUTRITION']['PROTEIN_DAILY']
+        protein = analysis.protein_fed / analysis.constants["CONVERSION_TO_PROTEIN"] \
+            / analysis.constants["inputs"]['NUTRITION']['PROTEIN_DAILY']
 
-        fat = analysis.fat_fed / analysis.c["CONVERT_TO_FAT"]\
-            / analysis.c["inputs"]['NUTRITION']['FAT_DAILY']
+        fat = analysis.fat_fed / analysis.constants["CONVERSION_TO_FAT"]\
+            / analysis.constants["inputs"]['NUTRITION']['FAT_DAILY']
 
         min_plot = min([min(fat[0:xlim]),
                         min(protein[0:xlim]),
@@ -688,79 +689,79 @@ class Plotter:
 
         return [min_plot, max_plot]
 
-    def plot_people_fed_kcals(analysis, title, xlim):
+    # def plot_people_fed_kcals(analysis, title, xlim):
 
-        font = {'family': 'normal',
-                'weight': 'bold',
-                'size': 16}
+    #     font = {'family': 'normal',
+    #             'weight': 'bold',
+    #             'size': 16}
 
-        plt.rcParams["figure.figsize"] = [17.50, 9]
-        matplotlib.rc('font', **font)
-        plt.close()
-        plt.figure()
-        ax = plt.subplot(111)
-        legend = []
+    #     plt.rcParams["figure.figsize"] = [17.50, 9]
+    #     matplotlib.rc('font', **font)
+    #     plt.close()
+    #     plt.figure()
+    #     ax = plt.subplot(111)
+    #     legend = []
 
-        patterns = ["/", "\\", "|", "-", "+", "x", "o", "O"]
-        pal = ["#006ddb", "#b66dff", "6db6ff", "#b6dbff",
-               "#920000", "#924900", "#db6d00", "#24ff24", "#ffff6d"]
+    #     patterns = ["/", "\\", "|", "-", "+", "x", "o", "O"]
+    #     pal = ["#006ddb", "#b66dff", "6db6ff", "#b6dbff",
+    #            "#920000", "#924900", "#db6d00", "#24ff24", "#ffff6d"]
 
-        legend = Plotter.get_people_fed_legend(analysis)
+    #     legend = Plotter.get_people_fed_legend(analysis)
 
-        ydata = []
-        ydata.append(analysis.billions_fed_fish_kcals /
-                     analysis.c["CONVERT_TO_KCALS"])
-        ydata.append((np.array(analysis.billions_fed_CS_kcals) +
-                      np.array(analysis.billions_fed_SCP_kcals)) /
-                     analysis.c["CONVERT_TO_KCALS"])
-        ydata.append(analysis.billions_fed_GH_kcals /
-                     analysis.c["CONVERT_TO_KCALS"])
-        ydata.append(analysis.billions_fed_seaweed_kcals /
-                     analysis.c["CONVERT_TO_KCALS"])
-        ydata.append((analysis.billions_fed_milk_kcals +
-                      analysis.billions_fed_h_e_milk_kcals) /
-                     analysis.c["CONVERT_TO_KCALS"])
-        ydata.append((analysis.billions_fed_meat_kcals +
-                      analysis.billions_fed_h_e_meat_kcals) / analysis.c["CONVERT_TO_KCALS"])
-        ydata.append(analysis.billions_fed_immediate_OG_kcals /
-                     analysis.c["CONVERT_TO_KCALS"])
-        ydata.append(analysis.billions_fed_new_stored_OG_kcals /
-                     analysis.c["CONVERT_TO_KCALS"])
-        ydata.append(analysis.billions_fed_SF_kcals /
-                     analysis.c["CONVERT_TO_KCALS"])
+    #     ydata = []
+    #     ydata.append(analysis.billions_fed_fish_kcals /
+    #                  analysis.constants["CONVERSION_TO_KCALS"])
+    #     ydata.append((np.array(analysis.billions_fed_CS_kcals) +
+    #                   np.array(analysis.billions_fed_SCP_kcals)) /
+    #                  analysis.constants["CONVERSION_TO_KCALS"])
+    #     ydata.append(analysis.billions_fed_GH_kcals /
+    #                  analysis.constants["CONVERSION_TO_KCALS"])
+    #     ydata.append(analysis.billions_fed_seaweed_kcals /
+    #                  analysis.constants["CONVERSION_TO_KCALS"])
+    #     ydata.append((analysis.billions_fed_milk_kcals +
+    #                   analysis.billions_fed_h_e_milk_kcals) /
+    #                  analysis.constants["CONVERSION_TO_KCALS"])
+    #     ydata.append((analysis.billions_fed_meat_kcals +
+    #                   analysis.billions_fed_h_e_meat_kcals) / analysis.constants["CONVERSION_TO_KCALS"])
+    #     ydata.append(analysis.billions_fed_immediate_OG_kcals /
+    #                  analysis.constants["CONVERSION_TO_KCALS"])
+    #     ydata.append(analysis.billions_fed_new_stored_OG_kcals /
+    #                  analysis.constants["CONVERSION_TO_KCALS"])
+    #     ydata.append(analysis.billions_fed_SF_kcals /
+    #                  analysis.constants["CONVERSION_TO_KCALS"])
 
-        stacks = ax.stackplot(analysis.time_months_middle,
-                              ydata,
-                              labels=legend,
-                              colors=pal)
-        for stack, hatch in zip(stacks, patterns):
-            stack.set_hatch(hatch)
+    #     stacks = ax.stackplot(analysis.time_months_middle,
+    #                           ydata,
+    #                           labels=legend,
+    #                           colors=pal)
+    #     for stack, hatch in zip(stacks, patterns):
+    #         stack.set_hatch(hatch)
 
-        box = ax.get_position()
-        ax.set_position([box.x0, box.y0, box.width * 0.695, box.height])
-        handles, labels = ax.get_legend_handles_labels()  # get the handles
-        ax.legend()
-        ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),
-                  handles=reversed(handles), labels=reversed(labels))
-        # plt.title('Caloric Availability, Nuclear Winter, No Resilient Foods')
-        plt.title(title)
-        plt.ylabel('Calories per capita per day')
+    #     box = ax.get_position()
+    #     ax.set_position([box.x0, box.y0, box.width * 0.695, box.height])
+    #     handles, labels = ax.get_legend_handles_labels()  # get the handles
+    #     ax.legend()
+    #     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),
+    #               handles=reversed(handles), labels=reversed(labels))
+    #     # plt.title('Caloric Availability, Nuclear Winter, No Resilient Foods')
+    #     plt.title(title)
+    #     plt.ylabel('Calories per capita per day')
 
-        if(not analysis.c['inputs']['IS_NUCLEAR_WINTER']):
-            plt.xlabel('Months since May, baseline around 2020')
-        else:
-            plt.xlabel('Months since May ASRS onset')
+    #     if(not analysis.constants['inputs']['IS_NUCLEAR_WINTER']):
+    #         plt.xlabel('Months since May, baseline around 2020')
+    #     else:
+    #         plt.xlabel('Months since May ASRS onset')
 
-        ax.set_xlim([0, xlim])
+    #     ax.set_xlim([0, xlim])
 
-        # sometimes values later than month 70 are nonsense
-        # get the sum of all the ydata up to month 70, then find max month
-        maxy = max(sum([x[0:70] for x in ydata]))
-        ax.set_ylim([0, maxy])
+    #     # sometimes values later than month 70 are nonsense
+    #     # get the sum of all the ydata up to month 70, then find max month
+    #     maxy = max(sum([x[0:70] for x in ydata]))
+    #     ax.set_ylim([0, maxy])
 
-        plt.rcParams["figure.figsize"] = [17.50, 9]
-        plt.tight_layout()
-        plt.show()
+    #     plt.rcParams["figure.figsize"] = [17.50, 9]
+    #     plt.tight_layout()
+    #     plt.show()
 
     def plot_people_fed_combined(analysis):
         fig = plt.figure()
@@ -771,24 +772,24 @@ class Plotter:
         ax = plt.gca()
         ax.set_ylabel('Fraction minimum recommended')
         ax.plot(analysis.time_months_middle,
-                analysis.kcals_fed / analysis.c["CONVERT_TO_KCALS"]
-                / analysis.c["inputs"]['NUTRITION']['KCALS_DAILY'],
+                analysis.kcals_fed / analysis.constants["CONVERSION_TO_KCALS"]
+                / analysis.constants["inputs"]['NUTRITION']['KCALS_DAILY'],
                 marker='o',
                 markersize=6,
                 color='blue',
                 linestyle='solid')
 
         ax.plot(analysis.time_months_middle,
-                analysis.protein_fed / analysis.c["CONVERT_TO_PROTEIN"]
-                / analysis.c["inputs"]['NUTRITION']['PROTEIN_DAILY'],
+                analysis.protein_fed / analysis.constants["CONVERSION_TO_PROTEIN"]
+                / analysis.constants["inputs"]['NUTRITION']['PROTEIN_DAILY'],
                 marker='^',
                 markersize=6,
                 color='red',
                 linestyle='dotted')
 
         ax.plot(analysis.time_months_middle,
-                analysis.fat_fed / analysis.c["CONVERT_TO_FAT"]
-                / analysis.c["inputs"]['NUTRITION']['FAT_DAILY'],
+                analysis.fat_fed / analysis.constants["CONVERSION_TO_FAT"]
+                / analysis.constants["inputs"]['NUTRITION']['FAT_DAILY'],
                 marker='x',
                 markersize=6,
                 color='green',
@@ -833,8 +834,8 @@ class Plotter:
         print("95% upper")
         print(np.percentile(np.array(data), 97.5))
 
-    def get_people_fed_legend(analysis):
-        if(not analysis.c['inputs']['IS_NUCLEAR_WINTER']):
+    def get_people_fed_legend(analysis,is_nuclear_winter):
+        if(not is_nuclear_winter):
             stored_food_label = 'Crops consumed that month that were\nstored before simulation'
             OG_stored_label = 'Crops consumed that month that were\nstored after simulation start'
         else:
@@ -842,48 +843,48 @@ class Plotter:
             OG_stored_label = 'Crops consumed that month that were\nstored after ASRS onset'
 
         legend = []
-        if(analysis.c['ADD_FISH']):
+        if(analysis.constants['ADD_FISH']):
             legend = legend + ['Marine Fish']
         else:
             legend = legend + ['']
 
-        if(analysis.c['ADD_CELLULOSIC_SUGAR'] or analysis.c['ADD_METHANE_SCP']):
+        if(analysis.constants['ADD_CELLULOSIC_SUGAR'] or analysis.constants['ADD_METHANE_SCP']):
             legend = legend + ['Industrial Foods']
         else:
             legend = legend + ['']
 
-        if(analysis.c['ADD_GREENHOUSES']):
+        if(analysis.constants['ADD_GREENHOUSES']):
             legend = legend + ['Greenhouses']
         else:
             legend = legend + ['']
 
-        if(analysis.c['ADD_SEAWEED']):
+        if(analysis.constants['ADD_SEAWEED']):
             legend = legend + ['Seaweed']
         else:
             legend = legend + ['']
 
-        if(analysis.c['ADD_DAIRY']):
+        if(analysis.constants['ADD_DAIRY']):
             legend = legend + ['Dairy Milk']
         else:
             legend = legend + ['']
 
-        if(analysis.c['ADD_MEAT']):
+        if(analysis.constants['ADD_MEAT']):
             legend = legend + ['Meat']
         else:
             legend = legend + ['']
 
-        if(analysis.c['ADD_OUTDOOR_GROWING']):
+        if(analysis.constants['ADD_OUTDOOR_GROWING']):
             legend = legend + [
                 'Outdoor Crops consumed immediately']
         else:
             legend = legend + ['']
 
-        if(analysis.c['ADD_OUTDOOR_GROWING']):
+        if(analysis.constants['ADD_OUTDOOR_GROWING']):
             legend = legend + [OG_stored_label]
         else:
             legend = legend + ['']
 
-        if(analysis.c['ADD_STORED_FOOD']):
+        if(analysis.constants['ADD_STORED_FOOD']):
             legend = legend + [stored_food_label]
         else:
             legend = legend + ['']
