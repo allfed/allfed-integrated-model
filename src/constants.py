@@ -1494,7 +1494,7 @@ class Constants:
 
         production_kcals_CS_per_month = production_kcals_CS_per_month_long[0:NMONTHS]
 
-        if(True):
+        if(VERBOSE):
             # used by world population
             print("")
             print("calories consumed per day")

@@ -22,9 +22,10 @@ countries_unique = list(df_meat['Area Code (ISO3)'].unique())
 df_dict = {k: df_meat[df_meat['Area Code (ISO3)'] == k].drop(columns='Area Code (ISO3)') for k in countries_unique}
 
 #for each country create a list of macronutrient values
-meat_csv=np.array(["ISO3 Country Code","Country","Beef production in 2020 (tonnes)",
+meat_csv=np.array(["ISO3 Country Code","Country",
     "Chicken production in 2020 (tonnes)",
-    "Pork production in 2020 (tonnes)"])
+    "Pork production in 2020 (tonnes)",
+    "Beef production in 2020 (tonnes)"])
 
 chicken_sum_global = 0
 pork_sum_global = 0
@@ -36,13 +37,13 @@ for i in range(0,len(countries)):
         print("missing" + country)
         continue
 
-    meat = df_dict[country]
+    meat_for_country = df_dict[country]
     chicken = 0
     beef = 0
     pork = 0
 
     #for each food product, add to each macronutrient total
-    for index, meat in df_meat.iterrows(): 
+    for index, meat in meat_for_country.iterrows(): 
 
         assert(meat["Unit"]=="tonnes")
 
@@ -63,6 +64,7 @@ for i in range(0,len(countries)):
 
     meat_csv = np.vstack([meat_csv,[country,country_name,chicken,pork,beef]])
 
+#TODO: these don't add up...
 
 print("chicken")
 print(chicken_sum_global/1e9)
@@ -77,14 +79,20 @@ print(beef_sum_global/1e9)
 F5707_index = np.where(meat_csv[:,0] == "F5707")
 GBR_index = np.where(meat_csv[:,0] == "GBR")
 F5707_name = meat_csv[F5707_index][0][1]
-F5707_tons = float(meat_csv[F5707_index][0][2])
+F5707_chicken = float(meat_csv[F5707_index][0][2])
+F5707_pork = float(meat_csv[F5707_index][0][3])
+F5707_beef = float(meat_csv[F5707_index][0][4])
 
 GBR_name = meat_csv[GBR_index][0][1]
-GBR_tons = float(meat_csv[GBR_index][0][2])
+GBR_chicken = float(meat_csv[GBR_index][0][2])
+GBR_pork = float(meat_csv[GBR_index][0][3])
+GBR_beef = float(meat_csv[GBR_index][0][4])
 
 
 meat_csv[F5707_index,0] = "F5707+GBR" 
-meat_csv[F5707_index,2] = str(F5707_tons+GBR_tons)
+meat_csv[F5707_index,2] = str(F5707_chicken+GBR_chicken)
+meat_csv[F5707_index,3] = str(F5707_pork+GBR_pork)
+meat_csv[F5707_index,4] = str(F5707_beef+GBR_beef)
 
 
 swaziland_index = np.where(meat_csv[:,0]=="SWZ")

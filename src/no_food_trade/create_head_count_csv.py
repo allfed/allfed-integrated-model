@@ -40,11 +40,11 @@ df_merge = df_head_counts.merge(df_dairy_cow_counts,
 countries_unique = list(df_merge['Area Code (ISO3)'].unique())
 # create dictionary containing each table, remove Area column
 df_dict = {k: df_merge[df_merge['Area Code (ISO3)'] == k].drop(columns='Area Code (ISO3)') for k in countries_unique}
+print("countries_unique")
+print(countries_unique)
 
 #for each country create a list of macronutrient values
-macros_csv=np.array(["ISO3 Country Code","Country","Outdoor crop caloric production in 2020 (dry caloric tons)",
-    "Outdoor crop fat production in 2020 (tonnes)",
-    "Outdoor crop protein production in 2020 (tonnes)"])
+head_count_csv=np.array(["ISO3 Country Code","Country","Small animal count","Medium animal count","Large animal count","Dairy cow count"])
 
 large_animals = ["Asses","Buffaloes","Camels","Cattle","Horses","Mules"]
 
@@ -63,15 +63,15 @@ for i in range(0,len(countries)):
     if(country not in df_dict.keys()):
         print("missing" + country)
         continue
-
+    # print("df_dict")
+    # print(df_dict)
     head_counts = df_dict[country]
     small_animal_sum = 0
     medium_animal_sum = 0
     large_animal_sum = 0
     #for each food product, add to each macronutrient total
-    for index, head_count in df_merge.iterrows(): 
-        # print(head_count)
-        # print(type(head_count['Value']))
+    for index, head_count in head_counts.iterrows(): 
+        # quit()
         if("1000" in head_count['Unit_x']):
             multiplier = 1000
         else:
@@ -96,49 +96,50 @@ for i in range(0,len(countries)):
     else:
         dairy_cow_count = head_counts.iloc[0]["Value_y"]
         dairy_cow_count_global += head_counts.iloc[0]["Value_y"]
-print("dairy_cow_count_global")
-print(dairy_cow_count_global/1e9)
+
+    head_count_csv = np.vstack([head_count_csv,[country,country_name,small_animal_sum,medium_animal_sum,large_animal_sum,dairy_cow_count]])
+
+
 print("small_animal_sum_global")
 print(small_animal_sum_global/1e9)
 print("medium_animal_sum_global")
 print(medium_animal_sum_global/1e9)
 print("large_animal_sum_global")
 print(large_animal_sum_global/1e9)
-quit()
-
-    # pulp_country = pulp_countries[i]
-    # country_name = country_names[i]
-    # if(pulp_country not in list(df_pulp_countries["Area Code (ISO3)"])):
-    #     print("missing " + country_name)
-    #     pulp = 0
-    # else:
-    #     pulp = float(df_pulp_countries[df_pulp_countries["Area Code (ISO3)"] == pulp_country]["Value"])
-    #     # print(pulp)
-    # pulp_csv = np.vstack([pulp_csv,[pulp_country,country_name,pulp]])
+print("dairy_cow_count_global")
+print(dairy_cow_count_global/1e9)
 
 
 #add up GBR and F5707 (EU+27) to incorporate GBR (which is the UK),
 # and delete GBR
 
-F5707_index = np.where(pulp_csv[:,0] == "F5707")
-GBR_index = np.where(pulp_csv[:,0] == "GBR")
-F5707_name = pulp_csv[F5707_index][0][1]
-F5707_tons = float(pulp_csv[F5707_index][0][2])
+F5707_index = np.where(head_count_csv[:,0] == "F5707")
+GBR_index = np.where(head_count_csv[:,0] == "GBR")
+F5707_name = head_count_csv[F5707_index][0][1]
+F5707_small = float(head_count_csv[F5707_index][0][2])
+F5707_medium = float(head_count_csv[F5707_index][0][3])
+F5707_large = float(head_count_csv[F5707_index][0][4])
+F5707_dairy = float(head_count_csv[F5707_index][0][5])
 
-GBR_name = pulp_csv[GBR_index][0][1]
-GBR_tons = float(pulp_csv[GBR_index][0][2])
+GBR_name = head_count_csv[GBR_index][0][1]
+GBR_small = float(head_count_csv[GBR_index][0][2])
+GBR_medium = float(head_count_csv[GBR_index][0][3])
+GBR_large = float(head_count_csv[GBR_index][0][4])
+GBR_dairy = float(head_count_csv[GBR_index][0][5])
 
 
-pulp_csv[F5707_index,0] = "F5707+GBR" 
-pulp_csv[F5707_index,2] = str(F5707_tons+GBR_tons)
+head_count_csv[F5707_index,0] = "F5707+GBR" 
+head_count_csv[F5707_index,2] = str(F5707_small+GBR_small)
+head_count_csv[F5707_index,3] = str(F5707_medium+GBR_medium)
+head_count_csv[F5707_index,4] = str(F5707_large+GBR_large)
+head_count_csv[F5707_index,5] = str(F5707_dairy+GBR_dairy)
 
-
-swaziland_index = np.where(pulp_csv[:,0]=="SWZ")
+swaziland_index = np.where(head_count_csv[:,0]=="SWZ")
 # eswatini recently changed from swaziland 
-pulp_csv[swaziland_index,0] = "SWT" 
-pulp_csv = np.delete(pulp_csv,(GBR_index),axis=0)
+head_count_csv[swaziland_index,0] = "SWT" 
+head_count_csv = np.delete(head_count_csv,(GBR_index),axis=0)
 
 
-print("pulp_csv")
-print(pulp_csv)
-np.savetxt('../../data/no_food_trade/pulp_csv.csv',pulp_csv,delimiter=",",fmt='%s')
+print("head_count_csv")
+print(head_count_csv)
+np.savetxt('../../data/no_food_trade/head_count_csv.csv',head_count_csv,delimiter=",",fmt='%s')
