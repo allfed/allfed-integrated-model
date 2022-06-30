@@ -16,30 +16,52 @@ if module_path not in sys.path:
 from src.optimizer import Optimizer
 from src.plotter import Plotter
 from src.constants import Constants
+from src.scenarios import Scenarios
 
-constants_loader = Constants()
-optimizer = Optimizer()
+scenarios_loader = Scenarios()
 
 constants = {}
 constants['CHECK_CONSTRAINTS'] = False
 
-inputs_to_optimizer = constants_loader.init_global_food_system_properties()
-constants = constants_loader.get_baseline_scenario(inputs_to_optimizer)
-constants = constants_loader.set_baseline_nutrition_profile(inputs_to_optimizer)
-constants = constants_loader.set_stored_food_usage_as_may_till_minimum(inputs_to_optimizer)
-inputs_to_optimizer = constants_loader.set_global_seasonality_baseline(inputs_to_optimizer)
-inputs_to_optimizer = constants_loader.set_fish_baseline(inputs_to_optimizer)
+# initialize global food system properties
+inputs_to_optimizer = \
+    scenarios_loader.init_global_food_system_properties()
 
-inputs_to_optimizer = constants_loader.set_waste_to_zero(inputs_to_optimizer)
+#set params that are true for baseline regardless of whether country or global
 
-inputs_to_optimizer = constants_loader.set_immediate_shutoff(inputs_to_optimizer)
+inputs_to_optimizer = \
+    scenarios_loader.get_baseline_scenario(inputs_to_optimizer)
 
-inputs_to_optimizer = constants_loader.set_global_disruption_to_crops_to_zero(inputs_to_optimizer)
+inputs_to_optimizer = \
+    scenarios_loader.set_baseline_nutrition_profile(inputs_to_optimizer)
+
+inputs_to_optimizer = \
+    scenarios_loader.set_stored_food_usage_as_may_till_minimum(
+        inputs_to_optimizer
+    )
+
+inputs_to_optimizer = \
+    scenarios_loader.set_global_seasonality_baseline(inputs_to_optimizer)
+
+inputs_to_optimizer = \
+    scenarios_loader.set_fish_baseline(inputs_to_optimizer)
+
+inputs_to_optimizer = \
+    scenarios_loader.set_waste_to_zero(inputs_to_optimizer)
+
+inputs_to_optimizer = \
+    scenarios_loader.set_immediate_shutoff(inputs_to_optimizer)
+
+inputs_to_optimizer = \
+    scenarios_loader.set_disruption_to_crops_to_zero(inputs_to_optimizer)
 
 
 # No excess calories
 inputs_to_optimizer["EXCESS_CALORIES"] = \
     np.array([0] * inputs_to_optimizer['NMONTHS'])
+
+constants_loader = Constants()
+optimizer = Optimizer()
 
 constants['inputs'] = inputs_to_optimizer
 single_valued_constants, multi_valued_constants = \
@@ -56,10 +78,10 @@ print("")
 
 analysis1 = analysis
 
-inputs_to_optimizer = constants_loader.set_continued_feed_biofuels(inputs_to_optimizer)
+inputs_to_optimizer = scenarios_loader.set_continued_feed_biofuels(inputs_to_optimizer)
 
 inputs_to_optimizer = \
-    constants_loader.set_waste_to_baseline_prices(inputs_to_optimizer)
+    scenarios_loader.set_waste_to_baseline_prices(inputs_to_optimizer)
 
 # No excess calories -- excess calories is set when the model is run and needs to be reset each time.
 inputs_to_optimizer["EXCESS_CALORIES"] = \
@@ -68,8 +90,11 @@ inputs_to_optimizer["EXCESS_CALORIES"] = \
 
 optimizer = Optimizer()
 constants['inputs'] = inputs_to_optimizer
+# og = \
 single_valued_constants, multi_valued_constants = \
     constants_loader.computeConstants(constants)
+# print(og)
+# quit()
 single_valued_constants['CHECK_CONSTRAINTS'] = False
 [time_months, time_months_middle, analysis] = optimizer.optimize(single_valued_constants, multi_valued_constants)
 

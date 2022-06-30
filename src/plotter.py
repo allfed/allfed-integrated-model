@@ -138,7 +138,7 @@ class Plotter:
         fig.set_figheight(8)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig('../reports/fig_1ab.png')
+        # plt.savefig('../reports/fig_1ab.png')
         print('saved figure 1ab')
         plt.show()
 
@@ -665,7 +665,7 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig('../reports/fig_s1abcd.png')
+        # plt.savefig('../reports/fig_s1abcd.png')
         print('saved figure s1abcd')
         plt.show()
 

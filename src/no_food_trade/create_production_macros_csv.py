@@ -47,7 +47,8 @@ for i in range(0,len(prod_iso3)):
     for index, product in products.iterrows(): 
         #find the particular icountry_names = [tem.
         n = nutrition[nutrition['Item'] == product['Item']]
-
+        # print('Unit')
+        # print(product['Unit'])
         #if the match could not be found, continue
         if(len(n)==0):
             continue
@@ -59,22 +60,23 @@ for i in range(0,len(prod_iso3)):
         kcals_per_kg = float(n['Calories']) # kcals / kg
         fat_frac = float(n['Fat']) # fraction by weight
         protein_frac = float(n['Protein']) # fraction by weight
-
+        # print("fat_frac")
+        # print(fat_frac)
         # production Calories is units tons per year
         if(np.isnan(product['Value'])):
             tons = 0
         else:
             tons = product['Value']
 
-        # dry caloric tons per day
-        kcals = tons / 365 \
+        # dry caloric tons per year
+        kcals = tons \
             * TONS_TO_KG \
             * kcals_per_kg \
             * KCALS_TO_DRY_CALORIC_TONS 
 
         # nutrition Fat and protein are percent by weight, converting to grams
-        fat = tons / 365 * fat_frac #tons per day
-        protein = tons / 365 * protein_frac #tons per day
+        fat = tons * fat_frac #tons per year
+        protein = tons * protein_frac #tons per year
 
         kcals_sum += kcals
         fat_sum += fat

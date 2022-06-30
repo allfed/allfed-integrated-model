@@ -16,29 +16,51 @@ from src.optimizer import Optimizer
 from src.plotter import Plotter
 import numpy as np
 from src.constants import Constants 
-constants_loader = Constants()
+from src.scenarios import Scenarios 
+
+scenarios_loader = Scenarios()
 
 constants = {}
 
 constants['CHECK_CONSTRAINTS'] = False
 
-inputs_to_optimizer = constants_loader.init_global_food_system_properties()
-inputs_to_optimizer = constants_loader.get_no_resilient_food_scenario(inputs_to_optimizer)
-inputs_to_optimizer = constants_loader.set_catastrophe_nutrition_profile(inputs_to_optimizer)
-inputs_to_optimizer = constants_loader.set_global_seasonality_nuclear_winter(inputs_to_optimizer)
-inputs_to_optimizer = constants_loader.set_stored_food_all_used(inputs_to_optimizer)
-inputs_to_optimizer = constants_loader.set_fish_nuclear_winter_reduction(inputs_to_optimizer)
-inputs_to_optimizer = constants_loader.set_nuclear_winter_global_disruption_to_crops(inputs_to_optimizer)
+inputs_to_optimizer = \
+    scenarios_loader.init_global_food_system_properties()
+
+inputs_to_optimizer = \
+    scenarios_loader.get_no_resilient_food_scenario(inputs_to_optimizer)
+
+inputs_to_optimizer = \
+    scenarios_loader.set_catastrophe_nutrition_profile(inputs_to_optimizer)
+
+inputs_to_optimizer = \
+    scenarios_loader.set_global_seasonality_nuclear_winter(inputs_to_optimizer)
+
+inputs_to_optimizer = \
+    scenarios_loader.set_global_stored_food_all_used(inputs_to_optimizer)
+
+inputs_to_optimizer = \
+    scenarios_loader.set_fish_nuclear_winter_reduction(inputs_to_optimizer)
+
+inputs_to_optimizer = \
+    scenarios_loader.set_nuclear_winter_global_disruption_to_crops(\
+        inputs_to_optimizer
+    )
 
 
 inputs_to_optimizer["EXCESS_CALORIES"] = \
     np.array([0] * inputs_to_optimizer['NMONTHS'])
 
-inputs_to_optimizer = constants_loader.get_no_resilient_food_scenario(inputs_to_optimizer)
-inputs_to_optimizer = constants_loader.set_immediate_shutoff(inputs_to_optimizer)
+inputs_to_optimizer = \
+    scenarios_loader.get_no_resilient_food_scenario(inputs_to_optimizer)
 
-inputs_to_optimizer = constants_loader.set_waste_to_zero(inputs_to_optimizer)
+inputs_to_optimizer = \
+    scenarios_loader.set_immediate_shutoff(inputs_to_optimizer)
 
+inputs_to_optimizer = \
+    scenarios_loader.set_waste_to_zero(inputs_to_optimizer)
+
+constants_loader = Constants()
 optimizer = Optimizer()
 constants['inputs'] = inputs_to_optimizer
 single_valued_constants, multi_valued_constants = \

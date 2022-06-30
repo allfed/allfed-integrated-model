@@ -1,9 +1,12 @@
-IMPORTS:
+IMPORTS BY COUNTRY:
 
+[done]sort animals by size
+[done]meat from chicken and pork
+[done]meat from cattle
+[done]dairy
+food balances -> For later
+food balances (meals) -> For later
 
-meat from chicken and pork
-meat from cattle
-dairy
 
 
 STRUCTURE:
