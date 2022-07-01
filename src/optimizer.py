@@ -450,7 +450,7 @@ class Optimizer:
                       + self.multi_valued_constants["greenhouse_area"][month] * self.multi_valued_constants["greenhouse_kcals_per_ha"][month]
                       + self.multi_valued_constants["production_kcals_fish_per_month"][month]
                       + self.multi_valued_constants["h_e_created_kcals"][month]
-                      )/self.single_valued_constants["KCALS_MONTHLY"],
+                      )/self.single_valued_constants["POP_MILLIONS"],
                   "Kcals_Fed_Month_" + str(month) + "_Constraint")
 
         if(self.single_valued_constants['inputs']['INCLUDE_FAT']):

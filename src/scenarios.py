@@ -576,8 +576,8 @@ class Scenarios:
 
         inputs_to_optimizer["OG_USE_BETTER_ROTATION"] = False
 
-        inputs_to_optimizer['INCLUDE_PROTEIN'] = True
-        inputs_to_optimizer['INCLUDE_FAT'] = True
+        inputs_to_optimizer['INCLUDE_PROTEIN'] = False
+        inputs_to_optimizer['INCLUDE_FAT'] = False
 
 
         inputs_to_optimizer['INITIAL_HARVEST_DURATION_IN_MONTHS'] = 7  # (no difference between harvests!)
@@ -588,11 +588,11 @@ class Scenarios:
         inputs_to_optimizer['STORED_FOOD_SMOOTHING'] = False
 
         inputs_to_optimizer['ADD_CELLULOSIC_SUGAR'] = False
-        inputs_to_optimizer['ADD_DAIRY'] = True
-        inputs_to_optimizer['ADD_FISH'] = True
+        inputs_to_optimizer['ADD_DAIRY'] = False
+        inputs_to_optimizer['ADD_FISH'] = False
         inputs_to_optimizer['ADD_GREENHOUSES'] = False
         inputs_to_optimizer['ADD_OUTDOOR_GROWING'] = True
-        inputs_to_optimizer['ADD_MEAT'] = True
+        inputs_to_optimizer['ADD_MEAT'] = False
         inputs_to_optimizer['ADD_METHANE_SCP'] = False
         inputs_to_optimizer['ADD_SEAWEED'] = False
         inputs_to_optimizer['ADD_STORED_FOOD'] = True

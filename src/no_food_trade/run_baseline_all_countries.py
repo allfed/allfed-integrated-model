@@ -19,10 +19,10 @@ if module_path not in sys.path:
     sys.path.append(module_path)
 
 import geopandas as gpd
-import geoplot as gplt
+# import geoplot as gplt
 
 from src.optimizer import Optimizer
-from src.plotter import Plotter
+# from src.plotter import Plotter
 from src.constants import Constants
 from src.scenarios import Scenarios
 

@@ -39,8 +39,12 @@ class Constants:
 
         inputs_to_optimizer = constants['inputs']  # single valued inputs to optimizer
 
-        # full months duration of simulation
+        # population
         self.POP = inputs_to_optimizer['POP']
+        # population in units of millions of people
+        self.POP_MILLIONS = inputs_to_optimizer['POP']/1e6
+
+        # full months duration of simulation
         NMONTHS = inputs_to_optimizer['NMONTHS']
         NDAYS = NMONTHS * self.DAYS_IN_MONTH
         ADD_FISH = inputs_to_optimizer['ADD_FISH']
@@ -1120,7 +1124,7 @@ class Constants:
         production_kcals_CS_per_month = production_kcals_CS_per_month_long[0:NMONTHS]
 
         #### OTHER VARIABLES ####
-
+        
         CONVERSION_TO_KCALS = self.POP / 1e9/ KCALS_DAILY
         CONVERSION_TO_FAT = self.POP / 1e9 / FAT_DAILY
         CONVERSION_TO_PROTEIN = self.POP / 1e9 / PROTEIN_DAILY
@@ -1194,6 +1198,7 @@ class Constants:
         constants['CONVERSION_TO_FAT'] = CONVERSION_TO_FAT
         constants['CONVERSION_TO_PROTEIN'] = CONVERSION_TO_PROTEIN
 
+        constants['POP_MILLIONS'] = self.POP_MILLIONS
         constants['KCALS_MONTHLY'] = self.KCALS_MONTHLY
         constants['PROTEIN_MONTHLY'] = self.PROTEIN_MONTHLY
         constants['FAT_MONTHLY'] = self.FAT_MONTHLY
@@ -1249,7 +1254,7 @@ class Constants:
 
         constants['inputs'] = inputs_to_optimizer
 
-        self.print_constants(constants,time_consts)
+        # self.print_constants(constants,time_consts)
 
         return (constants, time_consts)
 
