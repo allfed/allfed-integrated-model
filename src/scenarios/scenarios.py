@@ -196,16 +196,10 @@ class Scenarios:
         inputs_to_optimizer['FISH_DRY_CALORIC_ANNUAL'] = FISH_TONS_WET_2018 \
                                                          * FISH_KCALS_PER_TON \
                                                          / 4e6
-        print(inputs_to_optimizer['FISH_DRY_CALORIC_ANNUAL'])
-
         inputs_to_optimizer['FISH_FAT_TONS_ANNUAL'] = FISH_TONS_WET_2018 \
                                                       * FISH_FAT_RATIO
-        print(inputs_to_optimizer['FISH_FAT_TONS_ANNUAL'])
-
         inputs_to_optimizer['FISH_PROTEIN_TONS_ANNUAL'] = FISH_TONS_WET_2018 \
                                                           * FISH_PROTEIN_RATIO
-        print(inputs_to_optimizer['FISH_PROTEIN_TONS_ANNUAL'])                                                  
-
         # annual tons milk production
         inputs_to_optimizer['TONS_DAIRY_ANNUAL'] = 879e6
 
@@ -576,8 +570,8 @@ class Scenarios:
 
         inputs_to_optimizer["OG_USE_BETTER_ROTATION"] = False
 
-        inputs_to_optimizer['INCLUDE_PROTEIN'] = False
-        inputs_to_optimizer['INCLUDE_FAT'] = False
+        inputs_to_optimizer['INCLUDE_PROTEIN'] = True
+        inputs_to_optimizer['INCLUDE_FAT'] = True
 
 
         inputs_to_optimizer['INITIAL_HARVEST_DURATION_IN_MONTHS'] = 7  # (no difference between harvests!)
@@ -588,11 +582,11 @@ class Scenarios:
         inputs_to_optimizer['STORED_FOOD_SMOOTHING'] = False
 
         inputs_to_optimizer['ADD_CELLULOSIC_SUGAR'] = False
-        inputs_to_optimizer['ADD_DAIRY'] = False
-        inputs_to_optimizer['ADD_FISH'] = False
+        inputs_to_optimizer['ADD_DAIRY'] = True
+        inputs_to_optimizer['ADD_FISH'] = True
         inputs_to_optimizer['ADD_GREENHOUSES'] = False
         inputs_to_optimizer['ADD_OUTDOOR_GROWING'] = True
-        inputs_to_optimizer['ADD_MEAT'] = False
+        inputs_to_optimizer['ADD_MEAT'] = True
         inputs_to_optimizer['ADD_METHANE_SCP'] = False
         inputs_to_optimizer['ADD_SEAWEED'] = False
         inputs_to_optimizer['ADD_STORED_FOOD'] = True
@@ -616,9 +610,6 @@ class Scenarios:
         inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"] = .93
         inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.487
         inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
-
-        inputs_to_optimizer['INCLUDE_PROTEIN'] = True
-        inputs_to_optimizer['INCLUDE_FAT'] = True
 
         inputs_to_optimizer['GREENHOUSE_GAIN_PCT'] = 50
 

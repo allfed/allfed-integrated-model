@@ -9,11 +9,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import sys
-module_path = os.path.abspath(os.path.join('..'))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-from src.optimizer import Optimizer
-from src.plotter import Plotter
 
 from scipy.stats import uniform
 from scipy.stats import norm
@@ -26,6 +21,15 @@ import multiprocessing as mp
 from multiprocessing import Pool
 from multiprocessing import set_start_method
 # matplotlib.use('Svg')
+
+module_path = os.path.abspath(os.path.join('../..'))
+if module_path not in sys.path:
+    sys.path.append(module_path)
+
+#import some python files from this integrated model repository
+from src.optimizer.optimizer import Optimizer
+from src.utilities.plotter import Plotter
+
 
 class MonteCarlo:
     def __init__(self):

@@ -10,13 +10,15 @@
 import os
 import sys
 import numpy as np
-module_path = os.path.abspath(os.path.join('..'))
+module_path = os.path.abspath(os.path.join('../..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
-from src.optimizer import Optimizer
-from src.plotter import Plotter
-from src.constants import Constants
-from src.scenarios import Scenarios
+
+#import some python files from this integrated model repository
+from src.utilities.plotter import Plotter
+from src.optimizer.optimizer import Optimizer
+from src.optimizer.parameters import Parameters
+from src.scenarios.scenarios import Scenarios 
 
 scenarios_loader = Scenarios()
 
@@ -60,12 +62,12 @@ inputs_to_optimizer = \
 inputs_to_optimizer["EXCESS_CALORIES"] = \
     np.array([0] * inputs_to_optimizer['NMONTHS'])
 
-constants_loader = Constants()
+constants_loader = Parameters()
 optimizer = Optimizer()
 
 constants['inputs'] = inputs_to_optimizer
 single_valued_constants, multi_valued_constants = \
-    constants_loader.computeConstants(constants)
+    constants_loader.computeParameters(constants)
 
 single_valued_constants["CHECK_CONSTRAINTS"] = False
 [time_months, time_months_middle, analysis] = \
@@ -73,7 +75,7 @@ single_valued_constants["CHECK_CONSTRAINTS"] = False
 
 print("")
 print("Maximum usable kcals/capita/day 2020, no waste, primary production")
-print(analysis.people_fed_billions/7.8*2100)
+print(analysis.percent_people_fed/100*2100)
 print("")
 
 analysis1 = analysis
@@ -92,7 +94,7 @@ optimizer = Optimizer()
 constants['inputs'] = inputs_to_optimizer
 # og = \
 single_valued_constants, multi_valued_constants = \
-    constants_loader.computeConstants(constants)
+    constants_loader.computeParameters(constants)
 # print(og)
 # quit()
 single_valued_constants['CHECK_CONSTRAINTS'] = False

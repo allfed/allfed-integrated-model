@@ -11,7 +11,7 @@
 import numpy as np
 import os
 import sys
-module_path = os.path.abspath(os.path.join('..'))
+module_path = os.path.abspath(os.path.join('../..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
@@ -66,7 +66,8 @@ class Analyzer:
             cf_produced = crops_kcals_produced[month]
             cf_produced_output.append(cf_produced)
             cf_eaten = crops_food_eaten_no_rotation[month].varValue + \
-                crops_food_eaten_with_rotation[month].varValue * self.constants["OG_ROTATION_FRACTION_KCALS"]
+                crops_food_eaten_with_rotation[month].varValue \
+                * self.constants["OG_ROTATION_FRACTION_KCALS"]
             cf_eaten_output.append(cf_eaten)
 
             if(cf_produced <= cf_eaten):
@@ -290,6 +291,42 @@ class Analyzer:
             self.OG_SF_fraction_fat_to_humans
         )
 
+
+        # EACH MONTH: 1218263.5 billion kcals per person
+        # 1000s tons protein equivalent:
+        #
+
+        #CROPS FOOD EATEN BILLION KCALS PER PERSON PER MONTH 1094666.5
+        #OG_FRACTION_PROTEIN: 1000 tons protein per billion kcals
+        # THOU_TONS_PROTEIN_NEEDED: thousands of tons per month for population
+        # OG_FRACTION_PROTEIN: 1000tons/billion kcals
+        #PROTEIN_MONTHLY: 1000 tons protein per month per person
+
+        #crops_food_eaten_no_rotation: 
+        #   crops_food_eaten_no_rotation * OG_FRACTION_PROTEIN 
+        #   / self.single_valued_constants["THOU_TONS_PROTEIN_NEEDED"]
+
+        #   gives a fraction, So
+
+        #   [crops_food_eaten_no_rotation] == [?]
+        #   [OG_FRACTION_PROTEIN] = 1000 tons protein per billion kcals
+        #   [THOU_TONS_PROTEIN_NEEDED] = thousands of tons per month for population
+        #   so, [?] = [thousands of tons per month for population]/[1000 tons protein per billion kcals]
+        #   [?] = [billion kcals per month for population]
+        #   [crops_food_eaten_no_rotation] = [billion kcals per month for population]
+        #   therefore,
+        #   [crops_food_eaten_no_rotation] 
+        #    * [OG_FRACTION_PROTEIN]
+        #    / [PROTEIN_MONTHLY]
+        #   gives us
+        #   [billions_fed_OG_protein] ==
+        #   [billion kcals per month for population]
+        #   * [1000tons protein/billion kcals]
+        #   / [1000 tons protein per month per person]
+        #   so
+        #   [billions_fed_OG_protein] ==
+        #   [people]
+
         self.billions_fed_OG_protein = np.multiply(
             np.array(self.makeMidMonthlyVars(
                 crops_food_eaten_no_rotation,
@@ -305,10 +342,9 @@ class Analyzer:
                 show_output)),
             self.OG_SF_fraction_protein_to_humans
         )
-
         self.billions_fed_OG_produced_kcals = \
             np.multiply(
-                CROPS_WASTE
+                    CROPS_WASTE
                 * og_produced_kcals / self.constants["KCALS_MONTHLY"],
                 self.OG_SF_fraction_kcals_to_humans
             )
@@ -551,21 +587,40 @@ class Analyzer:
         order_fat = []
         order_protein = []
         for var in model.variables():
+
             if("Humans_Fed_Kcals_" in var.name):
-                humans_fed_kcals.append(var.value())
+                humans_fed_kcals.append(
+                    var.value()\
+                    / 100\
+                    * self.constants['POP_BILLIONS']\
+                )
+
                 order_kcals.append(
                     int(var.name[len("Humans_Fed_Kcals_"):].split("_")[0])
                 )
+
             if("Humans_Fed_Fat_" in var.name):
                 order_fat.append(
                     int(var.name[len("Humans_Fed_Fat_"):].split("_")[0])
                 )
-                humans_fed_fat.append(var.value())
+                
+                humans_fed_fat.append(
+                    var.value()\
+                    / 100\
+                    * self.constants['POP_BILLIONS']\
+                )
+
             if("Humans_Fed_Protein_" in var.name):
+                
                 order_protein.append(
                     int(var.name[len("Humans_Fed_Protein_"):].split("_")[0])
                 )
-                humans_fed_protein.append(var.value())
+
+                humans_fed_protein.append(
+                    var.value()\
+                    / 100\
+                    * self.constants['POP_BILLIONS']\
+                )
 
         zipped_lists = zip(order_kcals, humans_fed_kcals)
         sorted_zipped_lists = sorted(zipped_lists)
@@ -578,13 +633,28 @@ class Analyzer:
         zipped_lists = zip(order_protein, humans_fed_protein)
         sorted_zipped_lists = sorted(zipped_lists)
         self.humans_fed_protein_optimizer = [element for _, element in sorted_zipped_lists]
+
+        # when calculating the excess calories, the amount of human edible feed
+        # used can't be more than the excess calories. Because the baseline feed
+        # usage is higher than in nuclear winter, we don't want to increase 
+        # feed usage before the shutoff.
+
         feed_delay = self.constants['inputs']["DELAY"]['FEED_SHUTOFF_MONTHS']
-        sum_before = np.sum((np.array(self.humans_fed_kcals_optimizer)
-                             [:feed_delay] - self.constants["POP"]/1e9))
+        sum_before = np.sum(
+            (
+                np.array(self.humans_fed_kcals_optimizer)[:feed_delay]
+                - self.constants["POP"]/1e9
+            )
+        )
+
+        FRACTION_EXCESS_TO_REMOVE_NEXT_TIME = 0.1
 
         if(feed_delay >= self.constants["NMONTHS"]):
-            self.excess_after_run = (np.array(self.humans_fed_kcals_optimizer) -
-                                     self.constants["POP"]/1e9)*self.constants["KCALS_MONTHLY"]/10
+            self.excess_after_run = (
+                np.array(self.humans_fed_kcals_optimizer)
+                 - self.constants["POP"] / 1e9
+            ) * self.constants["KCALS_MONTHLY"]\
+              * FRACTION_EXCESS_TO_REMOVE_NEXT_TIME
         else:
             # any consistent monthly excess is subtracted
             # also spread out excess calories in pre-"feed shutoff" months
@@ -593,9 +663,10 @@ class Analyzer:
             self.excess_after_run = \
                 (
                     np.array(self.humans_fed_kcals_optimizer)
-                    - self.constants["POP"]/1e9 \
+                    - self.constants["POP"] / 1e9 \
                     # + (sum_before)/(self.constants["NMONTHS"]-feed_delay)
-                )*self.constants["KCALS_MONTHLY"]/10
+                ) * self.constants["KCALS_MONTHLY"]\
+                  * FRACTION_EXCESS_TO_REMOVE_NEXT_TIME
 
     def calc_fraction_OG_SF_to_humans(
         self,
@@ -769,6 +840,30 @@ class Analyzer:
                 print(np.where((self.sf + self.rot + self.no_rot - self.excess)*1e9/4e6/1e6 <= 0))
                 print("Double check this is actually reasonable.")
                 print("")
+
+        # print("self.billions_fed_SF_kcals")
+        # print(self.billions_fed_SF_kcals)
+        # print("self.billions_fed_meat_kcals")
+        # print(self.billions_fed_meat_kcals)
+        # print("self.billions_fed_seaweed_kcals")
+        # print(self.billions_fed_seaweed_kcals)
+        # print("self.billions_fed_milk_kcals")
+        # print(self.billions_fed_milk_kcals)
+        # print("self.billions_fed_CS_kcals")
+        # print(self.billions_fed_CS_kcals)
+        # print("self.billions_fed_SCP_kcals")
+        # print(self.billions_fed_SCP_kcals)
+        # print("self.billions_fed_GH_kcals")
+        # print(self.billions_fed_GH_kcals)
+        # print("self.billions_fed_OG_kcals")
+        # print(self.billions_fed_OG_kcals)
+        # print("self.billions_fed_fish_kcals")
+        # print(self.billions_fed_fish_kcals)
+        # print("self.billions_fed_h_e_meat_kcals")
+        # print(self.billions_fed_h_e_meat_kcals)
+        # print("self.billions_fed_h_e_milk_kcals")
+        # print(self.billions_fed_h_e_milk_kcals)
+
         self.kcals_fed = (np.array(self.billions_fed_SF_kcals)
                           + np.array(self.billions_fed_meat_kcals)
                           + np.array(self.billions_fed_seaweed_kcals)
@@ -803,12 +898,26 @@ class Analyzer:
             + self.billions_fed_h_e_meat_protein\
             + self.billions_fed_h_e_milk_protein
 
+
         assert((abs(np.divide(self.kcals_fed
                               - np.array(self.humans_fed_kcals_optimizer),
                               self.kcals_fed)) < 1e-6).all())
+        # print("fat_fed")
+        # print(self.fat_fed)
+        # print("humans_fed_fat_optimizer")
+        # print(self.humans_fed_fat_optimizer)
         if(self.constants["inputs"]["INCLUDE_FAT"]):
-            assert((abs(np.divide(self.fat_fed
-                                  - np.array(self.humans_fed_fat_optimizer), self.fat_fed)) < 1e-6).all())
+            assert(\
+                (\
+                    abs(\
+                        np.divide(\
+                            self.fat_fed\
+                            - np.array(self.humans_fed_fat_optimizer),
+                            self.fat_fed\
+                        )\
+                    ) < 1e-6).all()\
+                )
+
         if(self.constants["inputs"]["INCLUDE_PROTEIN"]):
             assert((abs(np.divide(self.protein_fed
                                   - np.array(self.humans_fed_protein_optimizer), self.protein_fed)) < 1e-6).all())
@@ -921,7 +1030,7 @@ class Analyzer:
 
             assert((abs(fractional_difference) < 1e-6).all())
 
-        self.people_fed_billions = model.objective.value()
+        self.percent_people_fed = model.objective.value()
 
         fed = {'fat': np.round(np.min(self.fat_fed), 2), 'kcals': np.round(
             np.min(self.kcals_fed), 2), 'protein': np.round(np.min(self.protein_fed), 2)}
@@ -929,12 +1038,13 @@ class Analyzer:
                 all(fed[temp] >= fed[key]
                     for temp in fed)]
 
-        if(self.constants["VERBOSE"]):
-            print(fed)
+        # if(self.constants["VERBOSE"]):
+        if(True):
+            # print(fed)
 
             print("Nutrients with constraining values are: " + str(mins))
-            print('Estimated people fed is ' + str(self.people_fed_billions)+' billion')
-        return [self.people_fed_billions, mins]
+            print('Estimated percent people fed is ' + str(self.percent_people_fed)+'%')
+        return [self.percent_people_fed, mins]
 
     # billions of kcals
     def countProduction(self, months):

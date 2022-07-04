@@ -15,9 +15,11 @@ import matplotlib.gridspec as gridspec
 import os
 import sys
 import pandas as pd
-module_path = os.path.abspath(os.path.join('..'))
+module_path = os.path.abspath(os.path.join('../..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
+
+# in some linux win manager setups matplotlib plotting doesn't seem to play nice
 # matplotlib.use('Svg')
 # matplotlib.use('QtAgg')
 
@@ -617,20 +619,20 @@ class Plotter:
                         linestyle='solid')
 
                 ax.plot(analysis.time_months_middle,
-                        analysis.protein_fed / analysis.constants["CONVERSION_TO_PROTEIN"]
-                        / analysis.constants["inputs"]['NUTRITION']['PROTEIN_DAILY'],
-                        marker='^',
-                        markersize=6,
-                        color='red',
-                        linestyle='dotted')
-
-                ax.plot(analysis.time_months_middle,
                         analysis.fat_fed / analysis.constants["CONVERSION_TO_FAT"]
                         / analysis.constants["inputs"]['NUTRITION']['FAT_DAILY'],
                         marker='x',
                         markersize=6,
                         color='green',
                         linestyle='dashed')
+
+                ax.plot(analysis.time_months_middle,
+                        analysis.protein_fed / analysis.constants["CONVERSION_TO_PROTEIN"]
+                        / analysis.constants["inputs"]['NUTRITION']['PROTEIN_DAILY'],
+                        marker='^',
+                        markersize=6,
+                        color='red',
+                        linestyle='dotted')
 
                 ax.set_ylabel('Fraction of minimum recommendation')
 
