@@ -46,6 +46,11 @@ pip install scipy
 pip install geopandas
 ```
 
+If you would like to run the entire by-country model with no trade, you will need to install geopandas and geoplot.
+
+unfortunately geoplot also requires conda, so you'll need to install conda if you want to plot these.
+
+
 results from the paper can be rerun using the following commands in the src/ folder
 
 ```bash
