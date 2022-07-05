@@ -1,7 +1,7 @@
 allfed-integrated-model
 ==============================
 
-An integrated economic model for resilient foods
+An integrated economic+food supply model for resilient foods in nuclear winter
 
 # Run the model
 
