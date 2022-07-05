@@ -12,7 +12,7 @@ class Greenhouses:
         # 500 million hectares in tropics (for outdoor crops 2020)
         self.TOTAL_CROP_AREA = 500e6  
 
-        self.GREENHOUSE_AREA_MULTIPLIER = inputs_to_optimizer['GREENHOUSE_AREA_MULTIPLIER']
+
 
         self.ADD_GREENHOUSES = inputs_to_optimizer['ADD_GREENHOUSES']
         self.NMONTHS = inputs_to_optimizer['NMONTHS']
@@ -20,6 +20,9 @@ class Greenhouses:
         if(self.ADD_GREENHOUSES):
             # this is in addition to the 5 month delay till harvest
             self.greenhouse_delay = inputs_to_optimizer["DELAY"]["GREENHOUSE_MONTHS"]
+            self.GREENHOUSE_AREA_MULTIPLIER = inputs_to_optimizer['GREENHOUSE_AREA_MULTIPLIER']
+        else:
+            self.GREENHOUSE_AREA_MULTIPLIER = 0
 
     def get_greenhouse_area(self,inputs_to_optimizer):
         # greenhouses tab

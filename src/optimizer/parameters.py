@@ -117,14 +117,6 @@ class Parameters:
         ####LIVESTOCK, EGG, DAIRY INITIAL VARIABLES####
 
         meat_and_dairy = MeatAndDairy(inputs_to_optimizer)
-        meat_and_dairy.calculate_animals_culled(inputs_to_optimizer)
-
-        meat_culled = meat_and_dairy.get_culled_meat(
-            inputs_to_optimizer,
-            feed.feed_shutoff_delay_months
-        )
-
-        meat_and_dairy.calculate_meat_nutrition()
 
         meat_and_dairy.calculate_meat_dairy_from_human_inedible_feed(
             inputs_to_optimizer
@@ -142,7 +134,15 @@ class Parameters:
          h_e_meat_kcals,
          h_e_meat_fat,
          h_e_meat_protein) = meat_and_dairy.get_meat_from_human_edible_feed()
+        meat_and_dairy.calculate_animals_culled(inputs_to_optimizer)
+
+
+        meat_and_dairy.calculate_meat_nutrition()
         
+        meat_culled = meat_and_dairy.get_culled_meat(
+            inputs_to_optimizer,
+            feed.feed_shutoff_delay_months
+        )
         (h_e_milk_kcals,
         h_e_milk_fat,
         h_e_milk_protein) = meat_and_dairy.get_dairy_from_human_edible_feed(

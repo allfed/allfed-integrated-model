@@ -415,9 +415,9 @@ class MeatAndDairy:
                 * self.LARGE_ANIMAL_PROTEIN_PER_KG / self.LARGE_ANIMAL_KCALS_PER_KG / 1e6
 
         else:
-            cattle_maintained_kcals = [0] * len(cattle_maintained)
-            cattle_maintained_fat = [0] * len(cattle_maintained)
-            cattle_maintained_protein = [0] * len(cattle_maintained)
+            cattle_maintained_kcals = [0] * len(self.cattle_maintained)
+            cattle_maintained_fat = [0] * len(self.cattle_maintained)
+            cattle_maintained_protein = [0] * len(self.cattle_maintained)
 
         return (cattle_maintained_kcals,
                 cattle_maintained_fat,
@@ -488,13 +488,13 @@ class MeatAndDairy:
         if(inputs_to_optimizer["CULL_ANIMALS"]):
             self.INIT_SMALL_ANIMALS_CULLED  \
                 = self.INIT_SMALL_ANIMALS \
-                * (1 - np.min(ratio_maintained_chicken_pork))
+                * (1 - np.min(self.ratio_maintained_chicken_pork))
             self.INIT_MEDIUM_ANIMALS_CULLED  \
                 = self.INIT_MEDIUM_ANIMALS \
-                * (1 - np.min(ratio_maintained_chicken_pork))
+                * (1 - np.min(self.ratio_maintained_chicken_pork))
             self.INIT_LARGE_ANIMALS_CULLED  \
                 = self.INIT_LARGE_ANIMALS \
-                * np.max(ratio_not_maintained_cattle)
+                * np.max(self.ratio_not_maintained_cattle)
         else:
             self.INIT_SMALL_ANIMALS_CULLED = 0
             self.INIT_MEDIUM_ANIMALS_CULLED = 0

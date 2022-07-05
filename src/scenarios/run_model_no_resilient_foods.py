@@ -17,7 +17,7 @@ import numpy as np
 #import some python files from this integrated model repository
 from src.optimizer.optimizer import Optimizer
 from src.utilities.plotter import Plotter
-from src.optimizer.scenarios import Scenarios 
+from src.optimizer.parameters import Parameters 
 from src.scenarios.scenarios import Scenarios 
 
 scenarios_loader = Scenarios()
@@ -39,7 +39,7 @@ inputs_to_optimizer = \
     scenarios_loader.set_global_seasonality_nuclear_winter(inputs_to_optimizer)
 
 inputs_to_optimizer = \
-    scenarios_loader.set_global_stored_food_all_used(inputs_to_optimizer)
+    scenarios_loader.set_stored_food_all_used(inputs_to_optimizer)
 
 inputs_to_optimizer = \
     scenarios_loader.set_fish_nuclear_winter_reduction(inputs_to_optimizer)
@@ -62,11 +62,11 @@ inputs_to_optimizer = \
 inputs_to_optimizer = \
     scenarios_loader.set_waste_to_zero(inputs_to_optimizer)
 
-constants_loader = Scenarios()
+constants_loader = Parameters()
 optimizer = Optimizer()
 constants['inputs'] = inputs_to_optimizer
 single_valued_constants, multi_valued_constants = \
-    constants_loader.computeScenarios(constants)
+    constants_loader.computeParameters(constants)
 
 single_valued_constants["CHECK_CONSTRAINTS"] = False
 [time_months, time_months_middle, analysis] = \
@@ -75,27 +75,27 @@ single_valued_constants["CHECK_CONSTRAINTS"] = False
 
 print("")
 print("Estimated Kcals/capita/day, no resilient foods, no waste")
-print(analysis.people_fed_billions/7.8*2100)
+print(analysis.percent_people_fed/100*2100)
 print("")
 
-np.save('../data/no_resilient_food_primary_analysis.npy',
+np.save('../../data/no_resilient_food_primary_analysis.npy',
         analysis,
         allow_pickle=True)
 
 
 inputs_to_optimizer["EXCESS_CALORIES"] = \
     np.array([0] * inputs_to_optimizer['NMONTHS'])
+scenarios = Scenarios()
+inputs_to_optimizer = scenarios.set_long_delayed_shutoff(inputs_to_optimizer)
 
-inputs_to_optimizer = constants_loader.set_long_delayed_shutoff(inputs_to_optimizer)
-
-inputs_to_optimizer = constants_loader.set_waste_to_tripled_prices(inputs_to_optimizer)
+inputs_to_optimizer = scenarios.set_waste_to_tripled_prices(inputs_to_optimizer)
 
 constants['inputs'] = inputs_to_optimizer
 
 optimizer = Optimizer()
 constants['inputs'] = inputs_to_optimizer
 single_valued_constants, multi_valued_constants = \
-    constants_loader.computeScenarios(constants)
+    constants_loader.computeParameters(constants)
 
 single_valued_constants["CHECK_CONSTRAINTS"] = False
 [time_months, time_months_middle, analysis] = \
@@ -103,7 +103,7 @@ single_valued_constants["CHECK_CONSTRAINTS"] = False
 
 print("Estimated Kcals/capita/day, no resilient foods, minus waste & delayed halt of nonhuman consumption ")
 
-print(analysis.people_fed_billions/7.8*2100)
+print(analysis.percent_people_fed/100*2100)
 print("")
 
 Plotter.plot_fig_1ab(analysis, 77)
