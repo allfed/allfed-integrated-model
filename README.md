@@ -71,7 +71,7 @@ For people new to coding the GUI is more intuitive.
 ```bash
 conda env create -f intmodel.yml
 ```
-The dependencies will be installed automatically and the environment will be name LoIYield.
+The dependencies will be installed automatically and the environment will be name intmodel.
 
 For both versions: Code from this project will only run smoothly when opened in the new
 environment and when the working directory is set to the path location of the repository on
