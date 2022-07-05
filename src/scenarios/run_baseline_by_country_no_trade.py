@@ -25,7 +25,7 @@ import geoplot as gplt
 from src.optimizer.optimizer import Optimizer
 from src.utilities.plotter import Plotter
 from src.optimizer.parameters import Parameters
-from src.scenarios import Scenarios
+from src.scenarios.scenarios import Scenarios
 
 # country codes for UK + EU 27 countries (used for plotting map)
 UK_27_Plus_GBR_countries = ["GBR","AUT","BEL","BGR","HRV","CYP","CZE",\
