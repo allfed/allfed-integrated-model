@@ -45,19 +45,52 @@ pip install seaborn
 pip install scipy
 pip install geopandas
 ```
+#### Dependency management with Anaconda
 
 If you would like to run the entire by-country model with no trade, you will need to install geopandas and geoplot.
 
 unfortunately geoplot also requires conda, so you'll need to install conda if you want to plot these.
 
+See https://docs.anaconda.com/anaconda/install/index.html for installation instructions.
 
-results from the paper can be rerun using the following commands in the src/ folder
+Once the program is installed on your device, set up a separate environment for the project
+(do not use the base environment). This step and the following can be done in two ways:
+- using the GUI or
+- using the Anaconda Prompt.
+For people new to coding the GUI is more intuitive.
+
+##### GUI
+1. Open the Anaconda Navigator.
+2. Select the tap "Environments".
+3. Click "Import" and select the "loi.yml" file from the repository and name the new
+    environment. All dependencies will be installed automatically.
+
+##### Anaconda Prompt
+1. Open Anaconda Prompt.
+2. Type in the following line:
+```bash
+conda env create -f loi.yml
+```
+The dependencies will be installed automatically and the environment will be name LoIYield.
+
+For both versions: Code from this project will only run smoothly when opened in the new
+environment and when the working directory is set to the path location of the repository on
+your machine.
+
+### Running on command line 
+
+results from the paper can be rerun using the following commands in the src/scenarios folder
 
 ```bash
-python run_model.py
+python run_model_with_resilient_foods.py
 python run_model_no_resilient_foods.py
 python run_model_before_catastrophe.py
 python plot_available_food.py
+```
+
+for the country-by-country no food trade model, run
+```bash
+run_baseline_by_country_no_trade.py
 ```
 
 ### Using Jupyter (requires cloned repo):
