@@ -654,7 +654,7 @@ class Scenarios:
         inputs_to_optimizer['MEAT_SMOOTHING'] = True
         inputs_to_optimizer['STORED_FOOD_SMOOTHING'] = True
 
-        inputs_to_optimizer['ADD_CELLULOSIC_SUGAR'] = True
+        inputs_to_optimizer['ADD_CELLULOSIC_SUGAR'] = False
         inputs_to_optimizer['ADD_DAIRY'] = True
         inputs_to_optimizer['ADD_FISH'] = True
         inputs_to_optimizer['ADD_GREENHOUSES'] = True
