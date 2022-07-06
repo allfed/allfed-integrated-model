@@ -34,6 +34,7 @@ class Scenarios:
         return inputs_to_optimizer
 
 
+
     def set_waste_to_zero(self,inputs_to_optimizer):
         inputs_to_optimizer['WASTE'] = {}
         inputs_to_optimizer['WASTE']['SUGAR'] = 0  # %
@@ -91,7 +92,9 @@ class Scenarios:
         return inputs_to_optimizer
 
 
+
     def set_baseline_nutrition_profile(self,inputs_to_optimizer):
+
         inputs_to_optimizer['NUTRITION'] = {}
 
         # kcals per person per day
@@ -106,6 +109,7 @@ class Scenarios:
         return inputs_to_optimizer
 
     def set_catastrophe_nutrition_profile(self,inputs_to_optimizer):
+
         inputs_to_optimizer['NUTRITION'] = {}
 
         # kcals per person per day
@@ -118,6 +122,132 @@ class Scenarios:
         inputs_to_optimizer['NUTRITION']['PROTEIN_DAILY'] = 51  # 46 
 
         return inputs_to_optimizer
+
+
+
+    def set_stored_food_all_used(self,inputs_to_optimizer):
+        # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
+        inputs_to_optimizer['TONS_DRY_CALORIC_EQIVALENT_SF'] = \
+            inputs_to_optimizer['TONS_DRY_CALORIC_EQIVALENT_SF_AVAILABLE']
+        # the stored food fat and protein ratios do not produce realistic outputs in baseline case, so outdoor growing ratios were used instead
+        # inputs_to_optimizer['INITIAL_SF_FAT'] = 166.07e3 * 0.96
+        # inputs_to_optimizer['INITIAL_SF_PROTEIN'] = 69.25e3 * 0.96
+
+        return inputs_to_optimizer
+
+    def set_stored_food_usage_as_may_till_minimum(self,inputs_to_optimizer):
+        # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
+        inputs_to_optimizer['TONS_DRY_CALORIC_EQIVALENT_SF'] = \
+            inputs_to_optimizer['TONS_DRY_CALORIC_EQIVALENT_SF_AVAILABLE'] \
+            * 0.26
+        # the stored food fat and protein ratios do not produce realistic outputs in baseline case, so outdoor growing ratios were used instead
+        # inputs_to_optimizer['INITIAL_SF_FAT'] = 166.07e3 * 0.96
+        # inputs_to_optimizer['INITIAL_SF_PROTEIN'] = 69.25e3 * 0.96
+
+        return inputs_to_optimizer
+
+
+
+    def set_country_seasonality_baseline(self,inputs_to_optimizer,country_data):
+
+        # fractional production per month
+        inputs_to_optimizer['SEASONALITY'] = [
+            country_data["seasonality_m1"],
+            country_data["seasonality_m2"],
+            country_data["seasonality_m3"],
+            country_data["seasonality_m4"],
+            country_data["seasonality_m5"],
+            country_data["seasonality_m6"],
+            country_data["seasonality_m7"],
+            country_data["seasonality_m8"],
+            country_data["seasonality_m9"],
+            country_data["seasonality_m10"],
+            country_data["seasonality_m11"],
+            country_data["seasonality_m12"]
+        ]
+
+        # tons dry caloric monthly
+        inputs_to_optimizer['HUMAN_INEDIBLE_FEED'] = \
+            np.array(
+                [country_data['grasses_baseline']]
+                * inputs_to_optimizer['NMONTHS']
+            ) / 12
+
+        return inputs_to_optimizer
+
+    def set_country_seasonality_nuclear_winter(
+            self,
+            inputs_to_optimizer,
+            country_data
+        ):
+
+        # fractional production per month
+        inputs_to_optimizer['SEASONALITY'] = [
+            country_data["seasonality_m1"],
+            country_data["seasonality_m2"],
+            country_data["seasonality_m3"],
+            country_data["seasonality_m4"],
+            country_data["seasonality_m5"],
+            country_data["seasonality_m6"],
+            country_data["seasonality_m7"],
+            country_data["seasonality_m8"],
+            country_data["seasonality_m9"],
+            country_data["seasonality_m10"],
+            country_data["seasonality_m11"],
+            country_data["seasonality_m12"]
+        ]           
+        inputs_to_optimizer['HUMAN_INEDIBLE_FEED'] = \
+            np.array(list(
+                np.array([country_data['grasses_year1']] * 8),
+                np.array([country_data['grasses_year2']] * 12),
+                np.array([country_data['grasses_year3']] * 12),
+                np.array([country_data['grasses_year4']] * 12),
+                np.array([country_data['grasses_year5']] * 12),
+                np.array([country_data['grasses_year6']] * 12),
+                np.array([country_data['grasses_year7']] * 12),
+                np.array([country_data['grasses_year8']] * 12),
+                np.array([country_data['grasses_year9']] * 12),
+                np.array([country_data['grasses_year10']] * 12),
+            ))
+        return inputs_to_optimizer
+
+    def set_global_seasonality_baseline(self,inputs_to_optimizer):
+
+        # fractional production per month
+        inputs_to_optimizer['SEASONALITY'] = \
+            [0.1121, 0.0178, 0.0241, 0.0344, 0.0338, 0.0411,
+             0.0882, 0.0791, 0.1042, 0.1911, 0.1377, 0.1365]
+
+        # tons dry caloric monthly
+        inputs_to_optimizer['HUMAN_INEDIBLE_FEED'] = \
+            np.array([4206] * inputs_to_optimizer['NMONTHS']) * 1e6 / 12
+
+        return inputs_to_optimizer
+
+    def set_global_seasonality_nuclear_winter(self,inputs_to_optimizer):
+
+        #most food grown in tropics, so set seasonality to typical in tropics
+        # fractional production per month
+        inputs_to_optimizer['SEASONALITY'] = \
+            [0.1564, 0.0461, 0.0650, 0.1017, 0.0772, 0.0785,
+             0.0667, 0.0256, 0.0163, 0.1254, 0.1183, 0.1228]
+        
+        # tons dry caloric monthly
+        inputs_to_optimizer['HUMAN_INEDIBLE_FEED'] = np.array(\
+            [2728, 2728, 2728, 2728, 2728, 2728, 2728, 2728,
+             972, 972, 972, 972, 972, 972, 972, 972, 972, 972, 972, 972,
+             594, 594, 594, 594, 594, 594, 594, 594, 594, 594, 594, 594,
+             531, 531, 531, 531, 531, 531, 531, 531, 531, 531, 531, 531,
+             552, 552, 552, 552, 552, 552, 552, 552, 552, 552, 552, 552,
+             789, 789, 789, 789, 789, 789, 789, 789, 789, 789, 789, 789,
+             1026, 1026, 1026, 1026, 1026, 1026, 1026, 1026, 1026, 1026,
+             1026, 1026,
+             1394, 1394, 1394, 1394, 1394, 1394, 1394, 1394, 1394, 1394,
+             1394, 1394])\
+            * 1e6 / 12
+
+        return inputs_to_optimizer
+
 
 
     def init_global_food_system_properties(self):
@@ -229,128 +359,6 @@ class Scenarios:
         #1000s of hectares
         inputs_to_optimizer['INITIAL_AREA'] = 1 
 
-
-        return inputs_to_optimizer
-
-
-    def set_stored_food_all_used(self,inputs_to_optimizer):
-        # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
-        inputs_to_optimizer['TONS_DRY_CALORIC_EQIVALENT_SF'] = \
-            inputs_to_optimizer['TONS_DRY_CALORIC_EQIVALENT_SF_AVAILABLE']
-        # the stored food fat and protein ratios do not produce realistic outputs in baseline case, so outdoor growing ratios were used instead
-        # inputs_to_optimizer['INITIAL_SF_FAT'] = 166.07e3 * 0.96
-        # inputs_to_optimizer['INITIAL_SF_PROTEIN'] = 69.25e3 * 0.96
-
-        return inputs_to_optimizer
-
-    def set_stored_food_usage_as_may_till_minimum(self,inputs_to_optimizer):
-        # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
-        inputs_to_optimizer['TONS_DRY_CALORIC_EQIVALENT_SF'] = \
-            inputs_to_optimizer['TONS_DRY_CALORIC_EQIVALENT_SF_AVAILABLE'] \
-            * 0.26
-        # the stored food fat and protein ratios do not produce realistic outputs in baseline case, so outdoor growing ratios were used instead
-        # inputs_to_optimizer['INITIAL_SF_FAT'] = 166.07e3 * 0.96
-        # inputs_to_optimizer['INITIAL_SF_PROTEIN'] = 69.25e3 * 0.96
-
-        return inputs_to_optimizer
-
-    def set_country_seasonality_baseline(self,inputs_to_optimizer,country_data):
-
-        # fractional production per month
-        inputs_to_optimizer['SEASONALITY'] = [
-            country_data["seasonality_m1"],
-            country_data["seasonality_m2"],
-            country_data["seasonality_m3"],
-            country_data["seasonality_m4"],
-            country_data["seasonality_m5"],
-            country_data["seasonality_m6"],
-            country_data["seasonality_m7"],
-            country_data["seasonality_m8"],
-            country_data["seasonality_m9"],
-            country_data["seasonality_m10"],
-            country_data["seasonality_m11"],
-            country_data["seasonality_m12"]
-        ]
-
-        # tons dry caloric monthly
-        inputs_to_optimizer['HUMAN_INEDIBLE_FEED'] = \
-            np.array(
-                [country_data['grasses_baseline']]
-                * inputs_to_optimizer['NMONTHS']
-            ) / 12
-
-        return inputs_to_optimizer
-
-    def set_country_seasonality_nuclear_winter(
-            self,
-            inputs_to_optimizer,
-            country_data
-        ):
-
-        # fractional production per month
-        inputs_to_optimizer['SEASONALITY'] = [
-            country_data["seasonality_m1"],
-            country_data["seasonality_m2"],
-            country_data["seasonality_m3"],
-            country_data["seasonality_m4"],
-            country_data["seasonality_m5"],
-            country_data["seasonality_m6"],
-            country_data["seasonality_m7"],
-            country_data["seasonality_m8"],
-            country_data["seasonality_m9"],
-            country_data["seasonality_m10"],
-            country_data["seasonality_m11"],
-            country_data["seasonality_m12"]
-        ]           
-        inputs_to_optimizer['HUMAN_INEDIBLE_FEED'] = \
-            np.array(list(
-                np.array([country_data['grasses_year1']] * 8),
-                np.array([country_data['grasses_year2']] * 12),
-                np.array([country_data['grasses_year3']] * 12),
-                np.array([country_data['grasses_year4']] * 12),
-                np.array([country_data['grasses_year5']] * 12),
-                np.array([country_data['grasses_year6']] * 12),
-                np.array([country_data['grasses_year7']] * 12),
-                np.array([country_data['grasses_year8']] * 12),
-                np.array([country_data['grasses_year9']] * 12),
-                np.array([country_data['grasses_year10']] * 12),
-            ))
-        return inputs_to_optimizer
-
-    def set_global_seasonality_baseline(self,inputs_to_optimizer):
-
-        # fractional production per month
-        inputs_to_optimizer['SEASONALITY'] = \
-            [0.1121, 0.0178, 0.0241, 0.0344, 0.0338, 0.0411,
-             0.0882, 0.0791, 0.1042, 0.1911, 0.1377, 0.1365]
-
-        # tons dry caloric monthly
-        inputs_to_optimizer['HUMAN_INEDIBLE_FEED'] = \
-            np.array([4206] * inputs_to_optimizer['NMONTHS']) * 1e6 / 12
-
-        return inputs_to_optimizer
-
-    def set_global_seasonality_nuclear_winter(self,inputs_to_optimizer):
-
-        #most food grown in tropics, so set seasonality to typical in tropics
-        # fractional production per month
-        inputs_to_optimizer['SEASONALITY'] = \
-            [0.1564, 0.0461, 0.0650, 0.1017, 0.0772, 0.0785,
-             0.0667, 0.0256, 0.0163, 0.1254, 0.1183, 0.1228]
-        
-        # tons dry caloric monthly
-        inputs_to_optimizer['HUMAN_INEDIBLE_FEED'] = np.array(\
-            [2728, 2728, 2728, 2728, 2728, 2728, 2728, 2728,
-             972, 972, 972, 972, 972, 972, 972, 972, 972, 972, 972, 972,
-             594, 594, 594, 594, 594, 594, 594, 594, 594, 594, 594, 594,
-             531, 531, 531, 531, 531, 531, 531, 531, 531, 531, 531, 531,
-             552, 552, 552, 552, 552, 552, 552, 552, 552, 552, 552, 552,
-             789, 789, 789, 789, 789, 789, 789, 789, 789, 789, 789, 789,
-             1026, 1026, 1026, 1026, 1026, 1026, 1026, 1026, 1026, 1026,
-             1026, 1026,
-             1394, 1394, 1394, 1394, 1394, 1394, 1394, 1394, 1394, 1394,
-             1394, 1394])\
-            * 1e6 / 12
 
         return inputs_to_optimizer
 
@@ -486,6 +494,7 @@ class Scenarios:
         return inputs_to_optimizer
 
 
+
     def set_fish_nuclear_winter_reduction(self, inputs_to_optimizer):
         inputs_to_optimizer["FISH_PERCENT_MONTHLY"] = list(np.array(
             [0., -0.90909091, -1.81818182, -2.72727273,
@@ -527,6 +536,8 @@ class Scenarios:
 
         return inputs_to_optimizer    
 
+
+
     def set_disruption_to_crops_to_zero(self,inputs_to_optimizer):
         inputs_to_optimizer["DISRUPTION_CROPS_YEAR1"] = 0
         inputs_to_optimizer["DISRUPTION_CROPS_YEAR2"] = 0
@@ -557,6 +568,8 @@ class Scenarios:
 
         return inputs_to_optimizer
 
+
+
     def get_baseline_scenario(self,inputs_to_optimizer):
 
         inputs_to_optimizer['MAX_SEAWEED_AS_PERCENT_KCALS'] = 0
@@ -573,8 +586,8 @@ class Scenarios:
         inputs_to_optimizer['INCLUDE_PROTEIN'] = True
         inputs_to_optimizer['INCLUDE_FAT'] = True
 
-
-        inputs_to_optimizer['INITIAL_HARVEST_DURATION_IN_MONTHS'] = 7  # (no difference between harvests!)
+        # (no difference between harvests in the different countries!)
+        inputs_to_optimizer['INITIAL_HARVEST_DURATION_IN_MONTHS'] = 7  
 
         inputs_to_optimizer['CULL_ANIMALS'] = False
         inputs_to_optimizer['KCAL_SMOOTHING'] = False
@@ -638,8 +651,15 @@ class Scenarios:
         inputs_to_optimizer['ADD_SEAWEED'] = True
         inputs_to_optimizer['ADD_STORED_FOOD'] = True
 
-        return inputs_to_optimizer
+        ##### ERROR CHECKING, TO BE REMOVED WHEN SUFFICIENT BY-COUNTRY
+        ##### RESILIENT FOOD DATA ARE AVAILABLE
+        if(inputs_to_optimizer['POP']< 7e9):
+            print("ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY")
+            
+            #this is just random stuff to cause a compile time error
+            dsbginoempwrinrqjomeiwgnu
 
+        return inputs_to_optimizer
 
     def get_no_resilient_food_scenario(self,inputs_to_optimizer):
 
@@ -678,5 +698,15 @@ class Scenarios:
         inputs_to_optimizer['SEASONALITY'] =\
             [0.1564, 0.0461, 0.0650, 0.1017, 0.0772, 0.0785,
              0.0667, 0.0256, 0.0163, 0.1254, 0.1183, 0.1228]
+
+        ##### ERROR CHECKING, TO BE REMOVED WHEN SUFFICIENT BY-COUNTRY
+        ##### RESILIENT FOOD DATA ARE AVAILABLE
+        if(inputs_to_optimizer['POP']< 7e9):
+            print("ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY")
+            print("THIS IS BECAUSE WE HAVE NOT YET IMPORTED BY-COUNTRY CROP")
+            print("PRODUCTION IN A NUCLEAR WINTER")
+
+            #this is just random stuff to cause a compile time error
+            dsbginoempwrinrqjomeiwgnu
 
         return inputs_to_optimizer

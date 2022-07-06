@@ -9,7 +9,10 @@ import numpy as np
 class CellulosicSugar:
 
     def __init__(self,inputs_to_optimizer):
-                                                                        #
+
+        # billion kcals a month for 100% population (7.8 billion people).
+        self.GLOBAL_MONTHLY_NEEDS = 6793977 / 12
+
         self.NMONTHS = inputs_to_optimizer['NMONTHS']
         self.INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = \
             inputs_to_optimizer['INDUSTRIAL_FOODS_SLOPE_MULTIPLIER']
