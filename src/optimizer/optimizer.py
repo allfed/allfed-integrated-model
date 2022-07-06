@@ -216,49 +216,44 @@ class Optimizer:
         standard_deviation = self.single_valued_constants["inputs"]["DELAY"]["SEAWEED_MONTHS"]
         sum_food_this_month = []
         #assume that the only harvest opportunity is once a month
-        if month > (15 + standard_deviation):
-            variables["seaweed_food_produced_monthly"][month] = LpVariable(name="Seaweed_Food_Produced_Monthly_"+str(month)+"_Variable", lowBound=0)
-            return (model, variables)
+        for day in np.arange(month*self.single_valued_constants["DAYS_IN_MONTH"], (month + 1)*self.single_valued_constants["DAYS_IN_MONTH"]):
+            self.time_days_daily.append(day)
+            variables["seaweed_wet_on_farm"][day] = LpVariable(
+                "Seaweed_Wet_On_Farm_"
+                + str(day)
+                + "_Variable",
+                self.single_valued_constants["INITIAL_SEAWEED"],
+                self.single_valued_constants["MAXIMUM_DENSITY"] * self.multi_valued_constants["built_area"][day])
 
-        else:
-            for day in np.arange(month*self.single_valued_constants["DAYS_IN_MONTH"], (month + 1)*self.single_valued_constants["DAYS_IN_MONTH"]):
-                self.time_days_daily.append(day)
-                variables["seaweed_wet_on_farm"][day] = LpVariable(
-                    "Seaweed_Wet_On_Farm_"
-                    + str(day)
-                    + "_Variable",
-                    self.single_valued_constants["INITIAL_SEAWEED"],
-                    self.single_valued_constants["MAXIMUM_DENSITY"] * self.multi_valued_constants["built_area"][day])
+            # food production (using resources)
+            variables["seaweed_food_produced"][day] = LpVariable(
+                name="Seaweed_Food_Produced_During_Day_"+str(day)+"_Variable", lowBound=0)
 
-                # food production (using resources)
-                variables["seaweed_food_produced"][day] = LpVariable(
-                    name="Seaweed_Food_Produced_During_Day_"+str(day)+"_Variable", lowBound=0)
+            variables["used_area"][day] = LpVariable(
+                "Used_Area_"+str(day)+"_Variable", self.single_valued_constants["INITIAL_AREA"], self.multi_valued_constants["built_area"][day])
 
-                variables["used_area"][day] = LpVariable(
-                    "Used_Area_"+str(day)+"_Variable", self.single_valued_constants["INITIAL_AREA"], self.multi_valued_constants["built_area"][day])
+            if(day == 0):  # first Day
+                model += (variables["seaweed_wet_on_farm"][0] == self.single_valued_constants["INITIAL_SEAWEED"],
+                          "Seaweed_Wet_On_Farm_0_Constraint")
+                model += (variables["used_area"][0] == self.single_valued_constants["INITIAL_AREA"],
+                          "Used_Area_Day_0_Constraint")
+                model += (variables["seaweed_food_produced"][0] == 0,
+                          "Seaweed_Food_Produced_Day_0_Constraint")
 
-                if(day == 0):  # first Day
-                    model += (variables["seaweed_wet_on_farm"][0] == self.single_valued_constants["INITIAL_SEAWEED"],
-                              "Seaweed_Wet_On_Farm_0_Constraint")
-                    model += (variables["used_area"][0] == self.single_valued_constants["INITIAL_AREA"],
-                              "Used_Area_Day_0_Constraint")
-                    model += (variables["seaweed_food_produced"][0] == 0,
-                              "Seaweed_Food_Produced_Day_0_Constraint")
+            else:  # later Days
+                model += (variables["seaweed_wet_on_farm"][day] <= variables["used_area"]
+                          [day] * self.single_valued_constants["MAXIMUM_DENSITY"])
 
-                else:  # later Days
-                    model += (variables["seaweed_wet_on_farm"][day] <= variables["used_area"]
-                              [day] * self.single_valued_constants["MAXIMUM_DENSITY"])
+                model += (variables["seaweed_wet_on_farm"][day] ==
+                          variables["seaweed_wet_on_farm"][day-1] *
+                          (1+self.single_valued_constants["inputs"]["SEAWEED_PRODUCTION_RATE"]/100.)
+                          - variables["seaweed_food_produced"][day]
+                          - (variables["used_area"][day]-variables["used_area"][day-1]) *
+                          self.single_valued_constants["MINIMUM_DENSITY"]
+                          * (self.single_valued_constants["HARVEST_LOSS"] / 100),
+                          "Seaweed_Wet_On_Farm_"+str(day)+"_Constraint")
 
-                    model += (variables["seaweed_wet_on_farm"][day] ==
-                              variables["seaweed_wet_on_farm"][day-1] *
-                              (1+self.single_valued_constants["inputs"]["SEAWEED_PRODUCTION_RATE"]/100.)
-                              - variables["seaweed_food_produced"][day]
-                              - (variables["used_area"][day]-variables["used_area"][day-1]) *
-                              self.single_valued_constants["MINIMUM_DENSITY"]
-                              * (self.single_valued_constants["HARVEST_LOSS"] / 100),
-                              "Seaweed_Wet_On_Farm_"+str(day)+"_Constraint")
-
-                sum_food_this_month.append(variables["seaweed_food_produced"][day])
+            sum_food_this_month.append(variables["seaweed_food_produced"][day])
 
         variables["seaweed_food_produced_monthly"][month] = LpVariable(
             name="Seaweed_Food_Produced_Monthly_" + str(month) + "_Variable", lowBound=0)
@@ -423,16 +418,10 @@ class Optimizer:
             # a rounding error from full quantity of seaweed
             standard_deviation = self.single_valued_constants["inputs"]["DELAY"]["SEAWEED_MONTHS"]
 
-            if month > (15 + standard_deviation):
-               model += (variables["seaweed_food_produced_monthly"][month] * self.single_valued_constants["SEAWEED_KCALS"] ==
-                         (self.single_valued_constants["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"]/100)
-                          * (self.single_valued_constants["POP"] / 1e9 * self.single_valued_constants["KCALS_MONTHLY"]),
-                          "Seaweed_Limit_Kcals_" + str(month) + "_Constraint")
-            else:
-                model += (variables["seaweed_food_produced_monthly"][month] * self.single_valued_constants["SEAWEED_KCALS"] <=
-                          (self.single_valued_constants["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"]/100)
-                          * (self.single_valued_constants["POP"] / 1e9 * self.single_valued_constants["KCALS_MONTHLY"]),
-                          "Seaweed_Limit_Kcals_" + str(month) + "_Constraint")
+            model += (variables["seaweed_food_produced_monthly"][month] * self.single_valued_constants["SEAWEED_KCALS"] <=
+                      (self.single_valued_constants["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"]/100)
+                      * (self.single_valued_constants["POP"] / 1e9 * self.single_valued_constants["KCALS_MONTHLY"]),
+                      "Seaweed_Limit_Kcals_" + str(month) + "_Constraint")
 
         # finds billions of people fed that month per nutrient
 
