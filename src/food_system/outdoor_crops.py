@@ -62,21 +62,21 @@ class OutdoorCrops:
             self.OG_KCAL_REDUCED = \
                 inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"]
 
-            OG_ROTATION_FRACTION_KCALS = 1
+            self.OG_ROTATION_FRACTION_KCALS = 1
 
-            KCAL_RATIO_ROT = 1
-            FAT_ROTATION_RATIO = \
+            self.KCAL_RATIO_ROT = 1
+            self.FAT_ROTATION_RATIO = \
                 inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["FAT_RATIO"]
-            PROTEIN_ROTATION_RATIO = \
+            self.PROTEIN_ROTATION_RATIO = \
                 inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"]
 
-            OG_ROTATION_FRACTION_FAT = self.OG_FRACTION_FAT * FAT_ROTATION_RATIO
-            OG_ROTATION_FRACTION_PROTEIN = self.OG_FRACTION_PROTEIN * PROTEIN_ROTATION_RATIO
+            self.OG_ROTATION_FRACTION_FAT = \
+                self.OG_FRACTION_FAT * self.FAT_ROTATION_RATIO
+            self.OG_ROTATION_FRACTION_PROTEIN = \
+                self.OG_FRACTION_PROTEIN * self.PROTEIN_ROTATION_RATIO
 
-            FAT_RATIO_ROT = OG_ROTATION_FRACTION_FAT
-            PROTEIN_RATIO_ROT = OG_ROTATION_FRACTION_PROTEIN
-            print("ERROR ERROR1")
-            quit()
+            self.FAT_RATIO_ROT = self.OG_ROTATION_FRACTION_FAT
+            self.PROTEIN_RATIO_ROT = self.OG_ROTATION_FRACTION_PROTEIN
 
         else:
             self.OG_KCAL_REDUCED = 1
@@ -189,7 +189,7 @@ class OutdoorCrops:
         jun_y11_to_dec_y11 = np.linspace(
             RATIO_KCALS_POSTDISASTER_10Y, RATIO_KCALS_POSTDISASTER_11Y, 13)[1:8]
 
-        all_months_reductions = np.array(first_year_jan_to_may
+        self.all_months_reductions = np.array(first_year_jan_to_may
                                          + list(jun_y1_to_may_y2)
                                          + list(jun_y2_to_may_y3)
                                          + list(jun_y3_to_may_y4)
@@ -202,10 +202,10 @@ class OutdoorCrops:
                                          + list(jun_y10_to_may_y11)
                                          + list(jun_y11_to_dec_y11))\
 
-        assert(len(all_months_reductions) == 12 * 11)
+        assert(len(self.all_months_reductions) == 12 * 11)
 
 
-        months_cycle = [MAY_KCALS_OG, JUN_KCALS_OG, JUL_KCALS_OG,
+        self.months_cycle = [MAY_KCALS_OG, JUN_KCALS_OG, JUL_KCALS_OG,
                         AUG_KCALS_OG, SEP_KCALS_OG, OCT_KCALS_OG,
                         NOV_KCALS_OG, DEC_KCALS_OG, JAN_KCALS_OG,
                         FEB_KCALS_OG, MAR_KCALS_OG, APR_KCALS_OG]
@@ -215,16 +215,16 @@ class OutdoorCrops:
 
         for i in range(0, self.NMONTHS):
             cycle_index = i % 12
-            month_kcals = months_cycle[cycle_index]
+            month_kcals = self.months_cycle[cycle_index]
             self.KCALS_GROWN.append(
                 month_kcals * (1 - (
                     self.OG_KCAL_REDUCED
-                    * (1 - all_months_reductions[i+4])
+                    * (1 - self.all_months_reductions[i+4])
                 ))
             )
             self.NO_ROT_KCALS_GROWN.append(
                 month_kcals * (1 - (
-                    (1 - all_months_reductions[i+4])
+                    (1 - self.all_months_reductions[i+4])
                 ))
             )
 
@@ -251,8 +251,6 @@ class OutdoorCrops:
                     np.multiply(np.array(self.NO_ROT_KCALS_GROWN[:hd]),
                                 (1 - greenhouse_fraction_area[:hd]))
 
-                print("CANT DEAL TOTAL CROPS SAD")
-                quit()
 
             else:
                 crops_food_produced = \

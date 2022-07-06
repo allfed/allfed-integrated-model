@@ -24,7 +24,7 @@ class Greenhouses:
         else:
             self.GREENHOUSE_AREA_MULTIPLIER = 0
 
-    def get_greenhouse_area(self,inputs_to_optimizer):
+    def get_greenhouse_area(self,inputs_to_optimizer,outdoor_crops):
         # greenhouses tab
         # assumption: greenhouse crop production is very similar in nutritional
         # profile to stored food
@@ -36,7 +36,8 @@ class Greenhouses:
         # NOTE: the 5 months represents the delay from plant to harvest.
 
         if(self.ADD_GREENHOUSES):
-            GREENHOUSE_LIMIT_AREA = self.TOTAL_CROP_AREA * self.GREENHOUSE_AREA_MULTIPLIER
+            GREENHOUSE_LIMIT_AREA = \
+                self.TOTAL_CROP_AREA * self.GREENHOUSE_AREA_MULTIPLIER
 
             greenhouse_area_long = \
                 list(
@@ -47,23 +48,41 @@ class Greenhouses:
                             np.linspace(0, GREENHOUSE_LIMIT_AREA, 37)
                         ),
                         np.linspace(GREENHOUSE_LIMIT_AREA,
-                                    GREENHOUSE_LIMIT_AREA, len(KCALS_GROWN) - 42)
+                                    GREENHOUSE_LIMIT_AREA,
+                                    len(outdoor_crops.KCALS_GROWN) - 42)
                     )
                 )\
 
             greenhouse_area = np.array(greenhouse_area_long[0:self.NMONTHS])
-            print("CANT DEAL TOTAL CROPS SAD")
-            quit()
+            print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
+            print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
+            print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
+            print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
+            print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
+            print("")
+            print("")
+            print("")
+            print("")
+            print("the reason no to, is that we're dividing by total crop ")
+            print("area, and that won't work on a by-country basis. ")
+            print("We need to use by-country fraction of total crop area")
+            print("if we're adding greenhouses. ")
+            print("")
+            print("")
+            print("")
+            print("")
+            print("")
 
-            MONTHLY_KCALS = np.mean(months_cycle) / self.TOTAL_CROP_AREA
+            MONTHLY_KCALS = np.mean(outdoor_crops.months_cycle) \
+                            / self.TOTAL_CROP_AREA
 
             KCALS_GROWN_PER_HECTARE_BEFORE_WASTE = \
                 MONTHLY_KCALS * (1 - (
-                    (1 - all_months_reductions[4:])
-                    * OG_KCAL_REDUCED
+                    (1 - outdoor_crops.all_months_reductions[4:])
+                    * outdoor_crops.OG_KCAL_REDUCED
                 ))
 
-            self.GH_KCALS_GROWN_PER_HECTARE = (1 - CROP_WASTE / 100) \
+            self.GH_KCALS_GROWN_PER_HECTARE = (1 - inputs_to_optimizer["WASTE"]["CROPS"] / 100) \
                 * np.array(KCALS_GROWN_PER_HECTARE_BEFORE_WASTE)
         else:
             self.GH_KCALS_GROWN_PER_HECTARE = [0] * self.NMONTHS

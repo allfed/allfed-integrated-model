@@ -67,7 +67,7 @@ class Seaweed:
         SEAWEED_PRODUCTION_RATE = inputs_to_optimizer['SEAWEED_PRODUCTION_RATE']
 
         if(inputs_to_optimizer["ADD_SEAWEED"]):
-            sd = [self.INITIAL_AREA] * inputs_to_optimizer["DELAY"]["SEAWEED_MONTHS"] * self.DAYS_IN_MONTH
+            sd = [self.INITIAL_AREA] * inputs_to_optimizer["DELAY"]["SEAWEED_MONTHS"] * 30
         else:
             sd = [self.INITIAL_AREA] * 100000
 

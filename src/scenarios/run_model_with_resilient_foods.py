@@ -40,7 +40,7 @@ inputs_to_optimizer = \
     scenarios_loader.set_global_seasonality_nuclear_winter(inputs_to_optimizer)
 
 inputs_to_optimizer = \
-    scenarios_loader.set_global_stored_food_all_used(inputs_to_optimizer)
+    scenarios_loader.set_stored_food_all_used(inputs_to_optimizer)
 
 inputs_to_optimizer = \
     scenarios_loader.set_fish_nuclear_winter_reduction(inputs_to_optimizer)
@@ -71,10 +71,10 @@ single_valued_constants["CHECK_CONSTRAINTS"] = False
 
 print("")
 print("no waste estimated people fed (kcals/capita/day)")
-print(analysis.people_fed_billions/7.8*2100)
+print(analysis.percent_people_fed/100*2100)
 print("")
 
-np.save('../data/resilient_food_primary_analysis.npy',
+np.save('../../data/resilient_food_primary_analysis.npy',
         analysis,
         allow_pickle=True)
 
@@ -95,7 +95,7 @@ single_valued_constants["CHECK_CONSTRAINTS"] = False
 
 analysis1 = analysis
 print("Food available after waste, feed ramp down and biofuel ramp down, with resilient foods (kcals per capita per day)")
-print(analysis.people_fed_billions/7.8*2100)
+print(analysis.percent_people_fed/100*2100)
 print("")
 
 constants['inputs'] = inputs_to_optimizer
@@ -108,7 +108,7 @@ single_valued_constants["CHECK_CONSTRAINTS"] = False
     optimizer.optimize(single_valued_constants, multi_valued_constants)
 
 
-people_fed = analysis.people_fed_billions
+people_fed = analysis.percent_people_fed/100*7.8
 feed_delay = inputs_to_optimizer["DELAY"]['FEED_SHUTOFF_MONTHS']
 
 # these months are used to estimate the diet before the full scale-up of resilient foods makes there be way too much food to make sense economically
