@@ -72,7 +72,7 @@ def run_optimizer_for_country(country_code,country_data):
         scenarios_loader.set_baseline_nutrition_profile(inputs_to_optimizer)
 
     inputs_to_optimizer = \
-        scenarios_loader.set_stored_food_usage_as_may_till_minimum(
+        scenarios_loader.set_stored_food_usage_as_80_percent_used(
             inputs_to_optimizer
         )
 

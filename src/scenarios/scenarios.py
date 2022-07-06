@@ -148,6 +148,19 @@ class Scenarios:
 
 
 
+    def set_stored_food_usage_as_80_percent_used(self,inputs_to_optimizer):
+        # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
+        inputs_to_optimizer['TONS_DRY_CALORIC_EQIVALENT_SF'] = \
+            inputs_to_optimizer['TONS_DRY_CALORIC_EQIVALENT_SF_AVAILABLE'] \
+            * 0.80
+        # the stored food fat and protein ratios do not produce realistic outputs in baseline case, so outdoor growing ratios were used instead
+        # inputs_to_optimizer['INITIAL_SF_FAT'] = 166.07e3 * 0.96
+        # inputs_to_optimizer['INITIAL_SF_PROTEIN'] = 69.25e3 * 0.96
+
+        return inputs_to_optimizer
+
+
+
     def set_country_seasonality_baseline(self,inputs_to_optimizer,country_data):
 
         # fractional production per month
