@@ -141,7 +141,7 @@ while(True):
     if(people_fed > 7.79 and people_fed < 7.81):
         break
 
-    assert(feed_delay > inputs_to_optimizer["DELAY"]['BIOFUEL_SHUTOFF_MONTHS'])
+    assert(feed_delay >= inputs_to_optimizer["DELAY"]['BIOFUEL_SHUTOFF_MONTHS'])
 
     # rapidly feed more to people until it's close to 2100 kcals, then
     # slowly feed more to people 

@@ -80,7 +80,9 @@ print("")
 
 analysis1 = analysis
 
-inputs_to_optimizer = scenarios_loader.set_continued_feed_biofuels(inputs_to_optimizer)
+inputs_to_optimizer = scenarios_loader.set_continued_feed_biofuels(
+    inputs_to_optimizer
+    )
 
 inputs_to_optimizer = \
     scenarios_loader.set_waste_to_baseline_prices(inputs_to_optimizer)
