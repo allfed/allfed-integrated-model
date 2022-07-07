@@ -84,7 +84,7 @@ class Seaweed:
 
         # import matplotlib.pyplot as plt
 
-        # plt.plot(built_area)
+        # plt.plot(built_area*self.MAXIMUM_DENSITY/7.8e9)
         # plt.show()
 
-        return built_area/100
+        return built_area

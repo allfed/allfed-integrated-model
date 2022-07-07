@@ -246,7 +246,7 @@ class Optimizer:
 
                 model += (variables["seaweed_wet_on_farm"][day] ==
                           variables["seaweed_wet_on_farm"][day-1] *
-                          (1+self.single_valued_constants["inputs"]["SEAWEED_PRODUCTION_RATE"]/100.)
+                          (1+self.single_valued_constants["inputs"]["SEAWEED_PRODUCTION_RATE"]/100)
                           - variables["seaweed_food_produced"][day]
                           - (variables["used_area"][day]-variables["used_area"][day-1]) *
                           self.single_valued_constants["MINIMUM_DENSITY"]

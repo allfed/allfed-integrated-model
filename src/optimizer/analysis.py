@@ -548,9 +548,17 @@ class Analyzer:
         seaweed_food_produced_monthly,
         show_output
     ):
+        self.seaweed_wet_on_farm = self.makeMidMonthlyVars(seaweed_wet_on_farm,1,False)
+
+
+        import matplotlib.pyplot as plt
 
         self.seaweed_built_area = built_area
         self.seaweed_built_area_max_density = np.array(built_area)*self.constants['MAXIMUM_DENSITY']
+
+        plt.plot(self.seaweed_wet_on_farm)
+        plt.plot(self.seaweed_built_area_max_density[0::30])
+        plt.show()
 
         self.seaweed_food_produced_monthly = self.makeMidMonthlyVars(
             seaweed_food_produced_monthly,
