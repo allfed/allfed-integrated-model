@@ -113,22 +113,6 @@ class Analyzer:
                 print("    End Month "+str(month)+": "+str(variable_output[month]))
         return variable_output
 
-    def makeDailyVars(self, variables, conversion, show_output):
-        variable_output = []
-        # if the variable was not modeled
-        if(type(variables[0]) == type(0)):
-            return variables  # return initial value
-
-        if(show_output):
-            print("Daily Output for " + str(variables[0]))
-        for day in range(0, self.constants['NDAYS']):
-            val = variables[day]
-            # if(val==0)
-            variable_output.append(val.varValue * conversion)
-            if(show_output):
-                print("    Day " + str(day) + ": " + str(variable_output[day]))
-        return variable_output
-
     # if greenhouses aren't included, these results will be zero
 
     def analyze_GH_results(
@@ -545,30 +529,29 @@ class Analyzer:
         used_area,
         built_area,
         seaweed_food_produced,
-        seaweed_food_produced_monthly,
         show_output
     ):
 
         self.seaweed_built_area = built_area
         self.seaweed_built_area_max_density = np.array(built_area)*self.constants['MAXIMUM_DENSITY']
 
-        self.seaweed_food_produced_monthly = self.makeMidMonthlyVars(
-            seaweed_food_produced_monthly,
+        self.seaweed_food_produced = self.makeMidMonthlyVars(
+            seaweed_food_produced,
             1,
             show_output)
 
         self.billions_fed_seaweed_kcals = self.makeMidMonthlyVars(
-            seaweed_food_produced_monthly,
+            seaweed_food_produced,
             self.constants["SEAWEED_KCALS"]/self.constants["KCALS_MONTHLY"],
             show_output)
 
         self.billions_fed_seaweed_fat = self.makeMidMonthlyVars(
-            seaweed_food_produced_monthly,
+            seaweed_food_produced,
             self.constants["SEAWEED_FAT"]/self.constants["FAT_MONTHLY"]/1e9,
             show_output)
 
         self.billions_fed_seaweed_protein = self.makeMidMonthlyVars(
-            seaweed_food_produced_monthly,
+            seaweed_food_produced,
             self.constants["SEAWEED_PROTEIN"]/self.constants["PROTEIN_MONTHLY"]/1e9,
             show_output)
 

@@ -63,23 +63,28 @@ class Seaweed:
     def get_built_area(self, inputs_to_optimizer):
 
 
-        SEAWEED_NEW_AREA_PER_DAY = inputs_to_optimizer['SEAWEED_NEW_AREA_PER_DAY']
+        SEAWEED_NEW_AREA_PER_MONTH = \
+            inputs_to_optimizer['SEAWEED_NEW_AREA_PER_MONTH']
+
         SEAWEED_PRODUCTION_RATE = inputs_to_optimizer['SEAWEED_PRODUCTION_RATE']
 
         if(inputs_to_optimizer["ADD_SEAWEED"]):
-            sd = [self.INITIAL_AREA] * inputs_to_optimizer["DELAY"]["SEAWEED_MONTHS"] * 30
+            sd = [self.INITIAL_AREA] \
+                 * inputs_to_optimizer["DELAY"]["SEAWEED_MONTHS"]
         else:
-            sd = [self.INITIAL_AREA] * 100000
+            # arbitrarily long constant area
+            sd = [self.INITIAL_AREA] * 100000 
 
         built_area_long = np.append(
             np.array(sd),
             np.linspace(
                 self.INITIAL_AREA,
-                (self.NMONTHS*30 - 1) * SEAWEED_NEW_AREA_PER_DAY + self.INITIAL_AREA,
-                self.NMONTHS*30
+                (self.NMONTHS - 1) * SEAWEED_NEW_AREA_PER_MONTH \
+                + self.INITIAL_AREA,
+                self.NMONTHS
             )
         )
         built_area_long[built_area_long > self.MAXIMUM_AREA] = self.MAXIMUM_AREA
-        built_area = built_area_long[0:self.NMONTHS*30]
+        built_area = built_area_long[0:self.NMONTHS]
 
         return built_area

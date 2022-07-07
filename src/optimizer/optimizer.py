@@ -39,23 +39,18 @@ class Optimizer:
         self.multi_valued_constants = multi_valued_constants
 
         #### MODEL GENERATION LOOP ####
-        self.time_days_monthly = []
-        self.time_days_daily = []
         self.time_months = []
-        self.time_days_middle = []
         self.time_months_middle = []
 
-        NDAYS = single_valued_constants["NDAYS"]
         NMONTHS = single_valued_constants["NMONTHS"]
 
         variables["stored_food_start"] = [0] * NMONTHS
         variables["stored_food_end"] = [0] * NMONTHS
         variables["stored_food_eaten"] = [0] * NMONTHS
 
-        variables["seaweed_wet_on_farm"] = [0] * NDAYS
-        variables["seaweed_food_produced"] = [0] * NDAYS
-        variables["used_area"] = [0] * NDAYS
-        variables["seaweed_food_produced_monthly"] = [0] * NMONTHS
+        variables["seaweed_wet_on_farm"] = [0] * NMONTHS
+        variables["used_area"] = [0] * NMONTHS
+        variables["seaweed_food_produced"] = [0] * NMONTHS
 
         variables["crops_food_storage_no_rotation"] = [0] * NMONTHS
         variables["crops_food_storage_rotation"] = [0] * NMONTHS
@@ -67,9 +62,6 @@ class Optimizer:
         variables["humans_fed_protein"] = [0] * NMONTHS
 
         for month in range(0, self.single_valued_constants["NMONTHS"]):
-            self.time_days_middle.append(single_valued_constants["DAYS_IN_MONTH"] * (month + 0.5))
-            self.time_days_monthly.append(single_valued_constants["DAYS_IN_MONTH"] * month)
-            self.time_days_monthly.append(single_valued_constants["DAYS_IN_MONTH"] * (month + 1))
             self.time_months.append(month)
             self.time_months.append(month + 1)
             self.time_months_middle.append(month + 0.5)
@@ -145,8 +137,7 @@ class Optimizer:
             variables["seaweed_wet_on_farm"],
             variables["used_area"],
             multi_valued_constants["built_area"],
-            variables["seaweed_food_produced"],  # daily
-            variables["seaweed_food_produced_monthly"],
+            variables["seaweed_food_produced"], 
             show_output
         )
 
@@ -214,57 +205,41 @@ class Optimizer:
 
     def add_seaweed_to_model(self, model, variables, month):
         standard_deviation = self.single_valued_constants["inputs"]["DELAY"]["SEAWEED_MONTHS"]
-        sum_food_this_month = []
         #assume that the only harvest opportunity is once a month
-        if month > (15 + standard_deviation):
-            variables["seaweed_food_produced_monthly"][month] = LpVariable(name="Seaweed_Food_Produced_Monthly_"+str(month)+"_Variable", lowBound=0)
-            return (model, variables)
+        variables["seaweed_wet_on_farm"][month] = LpVariable(
+            "Seaweed_Wet_On_Farm_"
+            + str(month)
+            + "_Variable",
+            self.single_valued_constants["INITIAL_SEAWEED"],
+            self.single_valued_constants["MAXIMUM_DENSITY"] * self.multi_valued_constants["built_area"][month])
 
-        else:
-            for day in np.arange(month*self.single_valued_constants["DAYS_IN_MONTH"], (month + 1)*self.single_valued_constants["DAYS_IN_MONTH"]):
-                self.time_days_daily.append(day)
-                variables["seaweed_wet_on_farm"][day] = LpVariable(
-                    "Seaweed_Wet_On_Farm_"
-                    + str(day)
-                    + "_Variable",
-                    self.single_valued_constants["INITIAL_SEAWEED"],
-                    self.single_valued_constants["MAXIMUM_DENSITY"] * self.multi_valued_constants["built_area"][day])
+        # food production (using resources)
+        variables["seaweed_food_produced"][month] = LpVariable(
+            name="Seaweed_Food_Produced_During_Month_"+str(month)+"_Variable", lowBound=0)
 
-                # food production (using resources)
-                variables["seaweed_food_produced"][day] = LpVariable(
-                    name="Seaweed_Food_Produced_During_Day_"+str(day)+"_Variable", lowBound=0)
+        variables["used_area"][month] = LpVariable(
+            "Used_Area_"+str(month)+"_Variable", self.single_valued_constants["INITIAL_AREA"], self.multi_valued_constants["built_area"][month])
 
-                variables["used_area"][day] = LpVariable(
-                    "Used_Area_"+str(day)+"_Variable", self.single_valued_constants["INITIAL_AREA"], self.multi_valued_constants["built_area"][day])
+        if(month == 0):  # first Month
+            model += (variables["seaweed_wet_on_farm"][0] == self.single_valued_constants["INITIAL_SEAWEED"],
+                      "Seaweed_Wet_On_Farm_0_Constraint")
+            model += (variables["used_area"][0] == self.single_valued_constants["INITIAL_AREA"],
+                      "Used_Area_Month_0_Constraint")
+            model += (variables["seaweed_food_produced"][0] == 0,
+                      "Seaweed_Food_Produced_Month_0_Constraint")
 
-                if(day == 0):  # first Day
-                    model += (variables["seaweed_wet_on_farm"][0] == self.single_valued_constants["INITIAL_SEAWEED"],
-                              "Seaweed_Wet_On_Farm_0_Constraint")
-                    model += (variables["used_area"][0] == self.single_valued_constants["INITIAL_AREA"],
-                              "Used_Area_Day_0_Constraint")
-                    model += (variables["seaweed_food_produced"][0] == 0,
-                              "Seaweed_Food_Produced_Day_0_Constraint")
+        else:  # later Months
+            model += (variables["seaweed_wet_on_farm"][month] <= variables["used_area"]
+                      [month] * self.single_valued_constants["MAXIMUM_DENSITY"])
 
-                else:  # later Days
-                    model += (variables["seaweed_wet_on_farm"][day] <= variables["used_area"]
-                              [day] * self.single_valued_constants["MAXIMUM_DENSITY"])
-
-                    model += (variables["seaweed_wet_on_farm"][day] ==
-                              variables["seaweed_wet_on_farm"][day-1] *
-                              (1+self.single_valued_constants["inputs"]["SEAWEED_PRODUCTION_RATE"]/100.)
-                              - variables["seaweed_food_produced"][day]
-                              - (variables["used_area"][day]-variables["used_area"][day-1]) *
-                              self.single_valued_constants["MINIMUM_DENSITY"]
-                              * (self.single_valued_constants["HARVEST_LOSS"] / 100),
-                              "Seaweed_Wet_On_Farm_"+str(day)+"_Constraint")
-
-                sum_food_this_month.append(variables["seaweed_food_produced"][day])
-
-        variables["seaweed_food_produced_monthly"][month] = LpVariable(
-            name="Seaweed_Food_Produced_Monthly_" + str(month) + "_Variable", lowBound=0)
-
-        model += (variables["seaweed_food_produced_monthly"][month] == np.sum(sum_food_this_month),
-                  "Seaweed_Food_Produced_Monthly_" + str(month) + "_Constraint")
+            model += (variables["seaweed_wet_on_farm"][month] ==
+                      variables["seaweed_wet_on_farm"][month-1] *
+                      (1+self.single_valued_constants["inputs"]["SEAWEED_PRODUCTION_RATE"]/100.)
+                      - variables["seaweed_food_produced"][month]
+                      - (variables["used_area"][month]-variables["used_area"][month-1]) *
+                      self.single_valued_constants["MINIMUM_DENSITY"]
+                      * (self.single_valued_constants["HARVEST_LOSS"] / 100),
+                      "Seaweed_Wet_On_Farm_"+str(month)+"_Constraint")
 
         return (model, variables)
 
@@ -277,26 +252,23 @@ class Optimizer:
         variables["stored_food_eaten"][month] = LpVariable(
             "Stored_Food_Eaten_During_Month_" + str(month) + "_Variable", 0, self.single_valued_constants["INITIAL_SF_KCALS"])
 
-        SCALE=1
-
         if(month == 0):  # first Month
-            model += (variables["stored_food_start"][0]*SCALE == self.single_valued_constants["INITIAL_SF_KCALS"]*SCALE,
+            model += (variables["stored_food_start"][0] == self.single_valued_constants["INITIAL_SF_KCALS"],
                       "Stored_Food_Start_Month_0_Constraint")
         else:
-            model += (variables["stored_food_start"][month]*SCALE == variables["stored_food_end"][month - 1]*SCALE,
+            model += (variables["stored_food_start"][month] == variables["stored_food_end"][month - 1],
                       "Stored_Food_Start_Month_" + str(month) + "_Constraint")
 
             ##### helps reduce wild fluctutions in stored food #######
             if(month > 0 and self.single_valued_constants['inputs']["STORED_FOOD_SMOOTHING"]):
-                model += (variables["stored_food_eaten"][month]*SCALE <= variables["stored_food_eaten"][month - 1] * self.single_valued_constants["inputs"]
-                          ["FLUCTUATION_LIMIT"]*SCALE, "Small_Change_Plus_SF_Eaten_Month_" + str(month) + "_Constraint")
+                model += (variables["stored_food_eaten"][month] <= variables["stored_food_eaten"][month - 1] * self.single_valued_constants["inputs"]
+                          ["FLUCTUATION_LIMIT"], "Small_Change_Plus_SF_Eaten_Month_" + str(month) + "_Constraint")
 
-                model += (variables["stored_food_eaten"][month]*SCALE >= variables["stored_food_eaten"][month - 1]*SCALE * (1/self.single_valued_constants["inputs"]
+                model += (variables["stored_food_eaten"][month] >= variables["stored_food_eaten"][month - 1] * (1/self.single_valued_constants["inputs"]
                 ["FLUCTUATION_LIMIT"]), "Small_Change_Minus_SF_Eaten_Month_" + str(month) + "_Constraint")
-                pass
 
-        model += (variables["stored_food_end"][month]*SCALE == variables["stored_food_start"][month]*SCALE -
-                  variables["stored_food_eaten"][month]*SCALE, "Stored_Food_End_Month_" + str(month) + "_Constraint")
+        model += (variables["stored_food_end"][month] == variables["stored_food_start"][month] -
+                  variables["stored_food_eaten"][month], "Stored_Food_End_Month_" + str(month) + "_Constraint")
 
         return (model, variables)
 
@@ -326,19 +298,19 @@ class Optimizer:
         if(month == 0):
 
             model += (
-                variables["crops_food_storage_no_rotation"][month]*SCALE ==
-                self.multi_valued_constants["crops_food_produced"][month]*SCALE
-                - variables["crops_food_eaten_no_rotation"][month]*SCALE,
+                variables["crops_food_storage_no_rotation"][month] ==
+                self.multi_valued_constants["crops_food_produced"][month]
+                - variables["crops_food_eaten_no_rotation"][month],
                 "Crops_Food_Storage_No_Rotation_" + str(month) + "_Constraint"
             )
 
             model += (
-                variables["crops_food_storage_rotation"][month]*SCALE == 0,
+                variables["crops_food_storage_rotation"][month] == 0,
                 "Crops_Food_Storage_Rotation_" + str(month) + "_Constraint"
             )
 
             model += (
-                variables["crops_food_eaten_with_rotation"][month]*SCALE == 0,
+                variables["crops_food_eaten_with_rotation"][month] == 0,
                 "Crops_Food_Eaten_Rotation_" + str(month) + "_Constraint"
             )
 
@@ -347,70 +319,76 @@ class Optimizer:
             assert(month > self.single_valued_constants["inputs"]["INITIAL_HARVEST_DURATION_IN_MONTHS"])
 
             model += (
-                variables["crops_food_storage_no_rotation"][month]*SCALE == 0,
+                variables["crops_food_storage_no_rotation"][month] == 0,
                 "Crops_Food_No_Rotation_None_Left_" + str(month) + "_Constraint"
             )
 
             model += (
-                variables["crops_food_storage_rotation"][month]*SCALE == 0,
+                variables["crops_food_storage_rotation"][month] == 0,
                 "Crops_Food_Rotation_None_Left_" + str(month) + "_Constraint"
             )
 
             model += (
-                variables["crops_food_storage_rotation"][month]*SCALE
-                == self.multi_valued_constants["crops_food_produced"][month]*SCALE
+                variables["crops_food_storage_rotation"][month]
+                == self.multi_valued_constants["crops_food_produced"][month]
                 - variables["crops_food_eaten_with_rotation"][month]
-                + variables["crops_food_storage_rotation"][month - 1]*SCALE,
+                + variables["crops_food_storage_rotation"][month - 1],
                 "Crops_Food_Rotation_Storage_" + str(month) + "_Constraint"
             )
 
             model += (
-                variables["crops_food_storage_no_rotation"][month]*SCALE
-                == variables["crops_food_storage_no_rotation"][month - 1]*SCALE
-                - variables["crops_food_eaten_no_rotation"][month]*SCALE,
+                variables["crops_food_storage_no_rotation"][month]
+                == variables["crops_food_storage_no_rotation"][month - 1]
+                - variables["crops_food_eaten_no_rotation"][month],
                 "Crops_Food_No_Rotation_Storage_" + str(month) + "_Constraint")
 
         elif(month < self.single_valued_constants["inputs"]["INITIAL_HARVEST_DURATION_IN_MONTHS"]):
 
             model += (
-                variables["crops_food_storage_rotation"][month]*SCALE == 0,
+                variables["crops_food_storage_rotation"][month] == 0,
                 "Crops_Food_Storage_Rotation" + str(month) + "_Constraint"
             )
 
             model += (
-                variables["crops_food_eaten_with_rotation"][month]*SCALE == 0,
+                variables["crops_food_eaten_with_rotation"][month] == 0,
                 "Crops_Food_Eaten_Rotation" + str(month) + "_Constraint"
             )
 
             model += (
-                variables["crops_food_storage_no_rotation"][month]*SCALE
-                == self.multi_valued_constants["crops_food_produced"][month]*SCALE
-                - variables["crops_food_eaten_no_rotation"][month]*SCALE
-                + variables["crops_food_storage_no_rotation"][month - 1]*SCALE,
+                variables["crops_food_storage_no_rotation"][month]
+                == self.multi_valued_constants["crops_food_produced"][month]
+                - variables["crops_food_eaten_no_rotation"][month]
+                + variables["crops_food_storage_no_rotation"][month - 1],
                 "Crops_Food_Storage_No_Rotation_" + str(month) + "_Constraint"
             )
 
         else:  # now produinputs_to_optimizerg rotation, but can still eat "no rotation" storage
 
             model += (
-                variables["crops_food_storage_rotation"][month]*SCALE
-                == self.multi_valued_constants["crops_food_produced"][month]*SCALE
-                - variables["crops_food_eaten_with_rotation"][month]*SCALE
-                + variables["crops_food_storage_rotation"][month - 1]*SCALE,
+                variables["crops_food_storage_rotation"][month]
+                == self.multi_valued_constants["crops_food_produced"][month]
+                - variables["crops_food_eaten_with_rotation"][month]
+                + variables["crops_food_storage_rotation"][month - 1],
                 "Crops_Food_Storage_Rotation_" + str(month) + "_Constraint"
             )
 
             model += (
-                variables["crops_food_storage_no_rotation"][month]*SCALE
-                == variables["crops_food_storage_no_rotation"][month - 1]*SCALE
-                - variables["crops_food_eaten_no_rotation"][month]*SCALE,
+                variables["crops_food_storage_no_rotation"][month]
+                == variables["crops_food_storage_no_rotation"][month - 1]
+                - variables["crops_food_eaten_no_rotation"][month],
                 "Crops_Food_Storage_No_Rotation_" + str(month) + "_Constraint")
 
         return (model, variables)
 
     #### OBJECTIVE FUNCTIONS  ####
 
-    def add_objectives_to_model(self, model, variables, month, maximize_constraints):
+    def add_objectives_to_model(
+        self,
+        model,
+        variables,
+        month,
+        maximize_constraints):
+
         variables["humans_fed_kcals"][month] = \
             LpVariable(name="Humans_Fed_Kcals_" + str(month) + "_Variable", lowBound=0)
         variables["humans_fed_fat"][month] = \
@@ -423,24 +401,19 @@ class Optimizer:
             # a rounding error from full quantity of seaweed
             standard_deviation = self.single_valued_constants["inputs"]["DELAY"]["SEAWEED_MONTHS"]
 
-            if month > (15 + standard_deviation):
-               model += (variables["seaweed_food_produced_monthly"][month] * self.single_valued_constants["SEAWEED_KCALS"] ==
-                         (self.single_valued_constants["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"]/100)
-                          * (self.single_valued_constants["POP"] / 1e9 * self.single_valued_constants["KCALS_MONTHLY"]),
-                          "Seaweed_Limit_Kcals_" + str(month) + "_Constraint")
-            else:
-                model += (variables["seaweed_food_produced_monthly"][month] * self.single_valued_constants["SEAWEED_KCALS"] <=
-                          (self.single_valued_constants["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"]/100)
-                          * (self.single_valued_constants["POP"] / 1e9 * self.single_valued_constants["KCALS_MONTHLY"]),
-                          "Seaweed_Limit_Kcals_" + str(month) + "_Constraint")
+            model += (variables["seaweed_food_produced"][month] * self.single_valued_constants["SEAWEED_KCALS"] <=
+                      (self.single_valued_constants["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"]/100)
+                      * (self.single_valued_constants["POP"] / 1e9 * self.single_valued_constants["KCALS_MONTHLY"]),
+                      "Seaweed_Limit_Kcals_" + str(month) + "_Constraint")
 
         # finds billions of people fed that month per nutrient
 
         # stored food eaten*sf_fraction_kcals is in units billions kcals monthly
-        # seaweed_food_produced_monthly*seaweed_kcals is in units billions kcals
+        # seaweed_food_produced*seaweed_kcals is in units billions kcals
         # billions kcals needed is in units billion kcals per month for 
         # the whole population
-        CROPS_WASTE = 1-self.single_valued_constants["inputs"]["WASTE"]["CROPS"]/100
+        CROPS_WASTE = \
+            1 - self.single_valued_constants["inputs"]["WASTE"]["CROPS"]/100
 
         # numbers scaled to percent of per person human needs per month
 
@@ -453,7 +426,7 @@ class Optimizer:
                         * CROPS_WASTE
                       - self.multi_valued_constants["excess_kcals"][month]\
                         * CROPS_WASTE
-                      + variables["seaweed_food_produced_monthly"][month]\
+                      + variables["seaweed_food_produced"][month]\
                         * self.single_valued_constants["SEAWEED_KCALS"]
                       + self.multi_valued_constants["dairy_milk_kcals"][month]
                       + self.multi_valued_constants["cattle_maintained_kcals"][month]
@@ -478,7 +451,7 @@ class Optimizer:
                        * self.single_valued_constants["OG_ROTATION_FRACTION_FAT"]
                        * CROPS_WASTE
                        - self.multi_valued_constants["excess_fat_used"][month] * CROPS_WASTE
-                       + variables["seaweed_food_produced_monthly"][month] * self.single_valued_constants["SEAWEED_FAT"]
+                       + variables["seaweed_food_produced"][month] * self.single_valued_constants["SEAWEED_FAT"]
                        + self.multi_valued_constants["dairy_milk_fat"][month]
                        + self.multi_valued_constants["cattle_maintained_fat"][month]
                        + self.multi_valued_constants["meat_eaten"][month] * self.single_valued_constants["MEAT_FRACTION_FAT"]
@@ -500,7 +473,7 @@ class Optimizer:
                        + variables["crops_food_eaten_with_rotation"][month]
                        * self.single_valued_constants["OG_ROTATION_FRACTION_PROTEIN"] * CROPS_WASTE
                        - self.multi_valued_constants["excess_protein_used"][month] * CROPS_WASTE
-                       + variables["seaweed_food_produced_monthly"][month] * self.single_valued_constants["SEAWEED_PROTEIN"]
+                       + variables["seaweed_food_produced"][month] * self.single_valued_constants["SEAWEED_PROTEIN"]
                        + self.multi_valued_constants["dairy_milk_protein"][month]
                        + self.multi_valued_constants["cattle_maintained_protein"][month]
                        + self.multi_valued_constants["production_protein_scp_per_month"][month]
