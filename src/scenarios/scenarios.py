@@ -627,7 +627,7 @@ class Scenarios:
         inputs_to_optimizer['INCLUDE_PROTEIN'] = True
         inputs_to_optimizer['INCLUDE_FAT'] = True
 
-        inputs_to_optimizer['MAX_SEAWEED_AS_PERCENT_KCALS'] = 10
+        inputs_to_optimizer['MAX_SEAWEED_AS_PERCENT_KCALS'] = 300
 
         # units: 1000 km^2
         inputs_to_optimizer['SEAWEED_NEW_AREA_PER_MONTH'] = 2.0765*30  

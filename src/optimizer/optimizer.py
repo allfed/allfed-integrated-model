@@ -204,14 +204,15 @@ class Optimizer:
         return [self.time_months, self.time_months_middle, analysis]
 
     def add_seaweed_to_model(self, model, variables, month):
-        standard_deviation = self.single_valued_constants["inputs"]["DELAY"]["SEAWEED_MONTHS"]
         #assume that the only harvest opportunity is once a month
+        #format: name, lower bound, upper bound
         variables["seaweed_wet_on_farm"][month] = LpVariable(
             "Seaweed_Wet_On_Farm_"
             + str(month)
             + "_Variable",
             self.single_valued_constants["INITIAL_SEAWEED"],
-            self.single_valued_constants["MAXIMUM_DENSITY"] * self.multi_valued_constants["built_area"][month])
+            self.single_valued_constants["MAXIMUM_DENSITY"] \
+            * self.multi_valued_constants["built_area"][month])
 
         # food production (using resources)
         variables["seaweed_food_produced"][month] = LpVariable(
@@ -234,8 +235,8 @@ class Optimizer:
                          * self.single_valued_constants["MAXIMUM_DENSITY"])
 
             model += (variables["seaweed_wet_on_farm"][month] ==
-                      variables["seaweed_wet_on_farm"][month-1] *
-                      (1+self.single_valued_constants["inputs"]["SEAWEED_PRODUCTION_RATE"]/100.)
+                      variables["seaweed_wet_on_farm"][month-1] \
+                      * (1 + self.single_valued_constants["inputs"]["SEAWEED_PRODUCTION_RATE"]/100.)
                       - variables["seaweed_food_produced"][month]
                       - (variables["used_area"][month]-variables["used_area"][month-1]) *
                       self.single_valued_constants["MINIMUM_DENSITY"]
@@ -398,13 +399,13 @@ class Optimizer:
             LpVariable(name="Humans_Fed_Protein_" + str(month) + "_Variable", lowBound=0)
 
         if(self.single_valued_constants["ADD_SEAWEED"]):
-            # after month 15, enforce maximum seaweed production to prevent
-            # a rounding error from full quantity of seaweed
-            standard_deviation = self.single_valued_constants["inputs"]["DELAY"]["SEAWEED_MONTHS"]
 
+            #maximum seaweed percent of calories
+            #constraint units: billion kcals per person
             model += (variables["seaweed_food_produced"][month] * self.single_valued_constants["SEAWEED_KCALS"] <=
                       (self.single_valued_constants["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"]/100)
-                      * (self.single_valued_constants["POP"] / 1e9 * self.single_valued_constants["KCALS_MONTHLY"]),
+                      * (self.single_valued_constants["POP"] \
+                        * self.single_valued_constants["KCALS_MONTHLY"] / 1e9 ),
                       "Seaweed_Limit_Kcals_" + str(month) + "_Constraint")
 
         # finds billions of people fed that month per nutrient
