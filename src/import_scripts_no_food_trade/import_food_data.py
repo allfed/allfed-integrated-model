@@ -178,11 +178,21 @@ food_names = {
     }
 
 for pandas_name, excel_name in food_names.items():
-    temp_df = pd.read_excel(xls, excel_name)[
+    # Only take the first 138 rows, as this includes all countries, but excludes
+    # the calculations done below it. 
+    temp_df = pd.read_excel(xls, excel_name, nrows=137)[
     list(col_names[pandas_name].keys())
     ]
+
     # Rename columns to nicer names
     temp_df.rename(columns=col_names[pandas_name], inplace=True)
+
+    # make the country name the index
+    temp_df.index = temp_df["iso3"]
+
+    del(temp_df["iso3"])
+   # print(temp_df.head())
+
     dataframe_dict[pandas_name] = temp_df
 
 
@@ -234,13 +244,15 @@ dataframe_dict["biofuel"]['biofuel_fat'] = dataframe_dict["biofuel"]['biofuel_fa
 dataframe_dict["biofuel"]['biofuel_protein'] = dataframe_dict["biofuel"]['biofuel_protein'] * 1e6
 
 
-# # combine the data frames from all the tabs into a giant dataframe
+# #combine the data frames from all the tabs into a giant dataframe
 
-# # everestial007 explains the merge quite neatly https://stackoverflow.com/questions/44327999/python-pandas-merge-multiple-dataframes
-# df_merged = reduce(lambda left, right: pd.merge(left, right, on=['iso3'],
-#                                                 how='outer'), dataframe_dict.values())
+# everestial007 explains the merge quite neatly https://stackoverflow.com/questions/44327999/python-pandas-merge-multiple-dataframes
+df_merged = reduce(lambda left, right:     # Merge DataFrames in list
+                      pd.merge(left , right,
+                              right_index=True,
+                              left_index=True,
+                              how = "outer"),
+                      dataframe_dict.values())
 
-# # get rid of empty row countries
-# df_merged.dropna(subset=["iso3"], inplace=True)
 
-# df_merged.to_csv("../../data/no_food_trade/computer_readable_combined.csv")
+df_merged.to_csv("../../data/no_food_trade/computer_readable_combined.csv")
