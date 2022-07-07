@@ -14,7 +14,6 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 
 import geopandas as gpd
-import geoplot as gplt
 import copy
 
 from functools import reduce
@@ -23,7 +22,7 @@ from functools import reduce
 NO_TRADE_XLS = \
     '../../data/no_food_trade/Integrated Model With No Food Trade.xlsx'
 
-# create some simpler, more readable names for the columns stored in a list
+# create some simpler, more readable names for the columns stored in a dictionary
 # of dictionaries
 col_names = {}
 
@@ -126,90 +125,75 @@ col_names['food_stocks'] = {
 }
 
 
+col_names['cellulosis_sugar'] = {
+    'ISO3 Country Code': 'iso3',
+    "Country chemical wood pulp 2020 (tonnes)": 'wood_pulp_tonnes',
+    "Ratio to sum total": 'percent_of_global_production'
+}
+
+
+col_names['methane_scp'] = {
+    'ISO3 Country Code': 'iso3',
+    "Estimated Capex for related industries - Average 2014-2018 - 2015 US$ billion basis": 'capex_dollar',
+    "% of global chemical and related CAPEX": 'percent_of_global_capex'
+}
+
+
+col_names['greenhouses'] = {
+    'ISO3 Country Code': 'iso3',
+    "Country Crop Area ('000 Hectares)": 'crop_area_1000ha',
+    "Latitude": 'Latitude',
+    "Whether above latitude threshold (23)":"above_lat_23_boolean",
+    "Fraction of total crop area - below 23 latitude":"fraction_crop_area_below_lat_23"
+}
+
+
+
+
+
 # import raw data from the dowloaded spreadsheet
 
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
 
-population = pd.read_excel(xls, 'Population')[
-    list(col_names['population'].keys())
-]
 
-population.rename(columns=col_names['population'], inplace=True)
+# Load all dataframes into a dictionary, so we can iterate over it
+dataframe_dict = {}
+# A dictionary with the name of the food in excel as the value and the name we use in pandas as key
+food_names = {
+    "population":'Population',
+    "aquaculture":'Seafood - excluding seaweeds',
+    "grasses":"Grazing",
+    "dairy":"Grazing",
+    "meat":'Meat Production',
+    'head_counts':'Head Counts',
+    'biofuel':'Biofuel',
+    'feed':"Feed",
+    'crop_baseline': 'Outdoor Crop Baseline',
+    'crop_seasonality':'Outdoor Crop Seasonality',
+    "food_stocks": "Food Stocks",
+    "cellulosis_sugar":"Cellulosic Sugar",
+    "methane_scp":"Methane SCP",
+    "greenhouses":"Greenhouses",
+    }
 
+for pandas_name, excel_name in food_names.items():
+    # Only take the first 138 rows, as this includes all countries, but excludes
+    # the calculations done below it. 
+    temp_df = pd.read_excel(xls, excel_name, nrows=137)[
+    list(col_names[pandas_name].keys())
+    ]
 
-aquaculture = pd.read_excel(xls, 'Seafood - excluding seaweeds')[
-    list(col_names['aquaculture'].keys())
-]
+    # Rename columns to nicer names
+    temp_df.rename(columns=col_names[pandas_name], inplace=True)
 
-aquaculture.rename(columns=col_names['aquaculture'], inplace=True)
+    # make the country name the index
+    temp_df.index = temp_df["iso3"]
 
+    del(temp_df["iso3"])
+   # print(temp_df.head())
 
-grasses = pd.read_excel(xls, 'Grazing')[
-    list(col_names['grasses'].keys())
-]
-
-grasses.rename(columns=col_names['grasses'], inplace=True)
-
-
-dairy = pd.read_excel(xls, 'Grazing')[
-    list(col_names['dairy'].keys())
-]
-
-dairy.rename(columns=col_names['dairy'], inplace=True)
-
-
-meat = pd.read_excel(xls, 'Meat Production')[
-    list(col_names['meat'].keys())
-]
-
-meat.rename(columns=col_names['meat'], inplace=True)
-
-
-head_counts = pd.read_excel(xls, 'Head Counts')[
-    list(col_names['head_counts'].keys())
-]
-
-head_counts.rename(columns=col_names['head_counts'], inplace=True)
-
-
-biofuel = pd.read_excel(xls, 'Biofuel')[
-    list(col_names['biofuel'].keys())
-]
-
-biofuel.rename(columns=col_names['biofuel'], inplace=True)
-
-
-feed = pd.read_excel(xls, 'Feed')[
-    list(col_names['feed'].keys())
-]
-
-feed.rename(columns=col_names['feed'], inplace=True)
-
-
-crop_baseline = pd.read_excel(xls, 'Outdoor Crop Baseline')[
-    list(col_names['crop_baseline'].keys())
-]
-
-crop_baseline.rename(columns=col_names['crop_baseline'], inplace=True)
-
-
-crop_seasonality = pd.read_excel(xls, 'Outdoor Crop Seasonality')[
-    list(col_names['crop_seasonality'].keys())
-]
-
-crop_seasonality.rename(
-    columns=col_names['crop_seasonality'],
-    inplace=True
-)
-
-
-food_stocks = pd.read_excel(xls, 'Food Stocks')[
-    list(col_names['food_stocks'].keys())
-]
-
-# Rename columns to nicer names
-food_stocks.rename(columns=col_names['food_stocks'], inplace=True)
+    dataframe_dict[pandas_name] = temp_df
 
 
 
@@ -218,65 +202,57 @@ food_stocks.rename(columns=col_names['food_stocks'], inplace=True)
 
 
 # convert to per person units
-population['population'] = population['population'] * 1e6
+dataframe_dict["population"]['population'] = dataframe_dict["population"]['population'] * 1e6
 
 # convert to tons dry caloric
-aquaculture['aq_kcals'] = aquaculture['aq_kcals'] * 1e6
+dataframe_dict["aquaculture"]['aq_kcals'] = dataframe_dict["aquaculture"]['aq_kcals'] * 1e6
 
 # convert to tons fat
-aquaculture['aq_fat'] = aquaculture['aq_fat'] * 1e6
+dataframe_dict["aquaculture"]['aq_fat'] = dataframe_dict["aquaculture"]['aq_fat'] * 1e6
 
 # convert to tons protein
-aquaculture['aq_protein'] = aquaculture['aq_protein'] * 1e6
+dataframe_dict["aquaculture"]['aq_protein'] = dataframe_dict["aquaculture"]['aq_protein'] * 1e6
 
 
 # convert to tons dry caloric equivalent annually
-grasses['grasses_baseline'] = grasses['grasses_baseline'] * 1000
-grasses['grasses_y1'] = grasses['grasses_y1'] * 1000
-grasses['grasses_y2'] = grasses['grasses_y2'] * 1000
-grasses['grasses_y3'] = grasses['grasses_y3'] * 1000
-grasses['grasses_y4'] = grasses['grasses_y4'] * 1000
-grasses['grasses_y5'] = grasses['grasses_y5'] * 1000
-grasses['grasses_y6'] = grasses['grasses_y6'] * 1000
-grasses['grasses_y7'] = grasses['grasses_y7'] * 1000
-grasses['grasses_y8'] = grasses['grasses_y8'] * 1000
-grasses['grasses_y9'] = grasses['grasses_y9'] * 1000
-grasses['grasses_y10'] = grasses['grasses_y10'] * 1000
+dataframe_dict["grasses"]['grasses_baseline'] = dataframe_dict["grasses"]['grasses_baseline'] * 1000
+for i in range(1,11):
+    dataframe_dict["grasses"]['grasses_y'+str(i)] = dataframe_dict["grasses"]['grasses_y'+str(i)] * 1000
 
 
 # convert to tons wet annually
-dairy['dairy'] = dairy['dairy'] * 1000
+dataframe_dict["dairy"]['dairy'] = dataframe_dict["dairy"]['dairy'] * 1000
 
 
 # convert to tons dry caloric
-food_stocks['stocks_kcals'] = food_stocks['stocks_kcals'] * 1e3
+dataframe_dict["food_stocks"]['stocks_kcals'] = dataframe_dict["food_stocks"]['stocks_kcals'] * 1e3
 
 # convert to tons fat
-food_stocks['stocks_fat'] = food_stocks['stocks_fat'] * 1e3
+dataframe_dict["food_stocks"]['stocks_fat'] = dataframe_dict["food_stocks"]['stocks_fat'] * 1e3
 
 # convert to tons protein
-food_stocks['stocks_protein'] = food_stocks['stocks_protein'] * 1e3
+dataframe_dict["food_stocks"]['stocks_protein'] = dataframe_dict["food_stocks"]['stocks_protein'] * 1e3
 
 
 # biofuel
-biofuel['biofuel_kcals'] = biofuel['biofuel_kcals'] * 1e6
+dataframe_dict["biofuel"]['biofuel_kcals'] = dataframe_dict["biofuel"]['biofuel_kcals'] * 1e6
 
 # biofuel
-biofuel['biofuel_fat'] = biofuel['biofuel_fat'] * 1e6
+dataframe_dict["biofuel"]['biofuel_fat'] = dataframe_dict["biofuel"]['biofuel_fat'] * 1e6
 
 # biofuel
-biofuel['biofuel_protein'] = biofuel['biofuel_protein'] * 1e6
+dataframe_dict["biofuel"]['biofuel_protein'] = dataframe_dict["biofuel"]['biofuel_protein'] * 1e6
 
 
-# combine the data frames from all the tabs into a giant dataframe
-data_frames = [population, aquaculture, grasses, dairy, meat, head_counts,
-               biofuel, feed, crop_baseline, crop_seasonality, food_stocks]
+# #combine the data frames from all the tabs into a giant dataframe
 
 # everestial007 explains the merge quite neatly https://stackoverflow.com/questions/44327999/python-pandas-merge-multiple-dataframes
-df_merged = reduce(lambda left, right: pd.merge(left, right, on=['iso3'],
-                                                how='outer'), data_frames)
+df_merged = reduce(lambda left, right:     # Merge DataFrames in list
+                      pd.merge(left , right,
+                              right_index=True,
+                              left_index=True,
+                              how = "outer"),
+                      dataframe_dict.values())
 
-# get rid of empty row countries
-df_merged.dropna(subset=["iso3"], inplace=True)
 
 df_merged.to_csv("../../data/no_food_trade/computer_readable_combined.csv")

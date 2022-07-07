@@ -93,7 +93,7 @@ inputs_to_optimizer = scenarios.set_waste_to_tripled_prices(inputs_to_optimizer)
 constants['inputs'] = inputs_to_optimizer
 
 optimizer = Optimizer()
-constants['inputs'] = inputs_to_optimizer
+
 single_valued_constants, multi_valued_constants = \
     constants_loader.computeParameters(constants)
 
