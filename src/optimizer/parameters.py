@@ -28,6 +28,7 @@ class Parameters:
     def __init__(self):
 
         self.DAYS_IN_MONTH = 30
+        self.SIMULATION_STARTING_MONTH = "MAY"
 
 
     def computeParameters(self, constants):
