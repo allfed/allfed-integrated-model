@@ -627,7 +627,7 @@ class Scenarios:
         inputs_to_optimizer['INCLUDE_PROTEIN'] = True
         inputs_to_optimizer['INCLUDE_FAT'] = True
 
-        inputs_to_optimizer['MAX_SEAWEED_AS_PERCENT_KCALS'] = 300
+        inputs_to_optimizer['MAX_SEAWEED_AS_PERCENT_KCALS'] = 10
 
         # units: 1000 km^2
         inputs_to_optimizer['SEAWEED_NEW_AREA_PER_MONTH'] = 2.0765*30  
@@ -638,7 +638,7 @@ class Scenarios:
 
         inputs_to_optimizer["OG_USE_BETTER_ROTATION"] = True
         inputs_to_optimizer["ROTATION_IMPROVEMENTS"] = {}
-        inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"] = .93
+        inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["REDUCTION"] = .93
         inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.487
         inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
 
