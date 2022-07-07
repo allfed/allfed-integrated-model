@@ -82,4 +82,9 @@ class Seaweed:
         built_area_long[built_area_long > self.MAXIMUM_AREA] = self.MAXIMUM_AREA
         built_area = built_area_long[0:self.NMONTHS*30]
 
-        return built_area
+        # import matplotlib.pyplot as plt
+
+        # plt.plot(built_area)
+        # plt.show()
+
+        return built_area/100
