@@ -60,7 +60,7 @@ class OutdoorCrops:
 
             # deals with the issue of caloric improvement being more than present-day production during the beginning months of the simulation.
             self.OG_KCAL_REDUCED = \
-                inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["213"]
+                inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"]
 
             self.OG_ROTATION_FRACTION_KCALS = 1
 
