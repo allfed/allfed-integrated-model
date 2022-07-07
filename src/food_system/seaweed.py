@@ -13,7 +13,7 @@ class Seaweed:
         self.MINIMUM_DENSITY = 400  # tons/km^2 (seaweed)
         self.MAXIMUM_DENSITY = 800  # tons/km^2 (seaweed)
         self.MAXIMUM_AREA = 1000  # 1000 km^2 (seaweed)
-
+        
         # use "laver" variety for now from nutrition calculator
         # https://docs.google.com/spreadsheets/d / 1RZqSrHNiIEuPQLtx1ebCd_kUcFvEF6Ea46xyzA5wU0s/edit#gid=1516287804
         self.WET_TO_DRY_MASS_CONVERSION = 1 / 6
@@ -66,8 +66,6 @@ class Seaweed:
         SEAWEED_NEW_AREA_PER_MONTH = \
             inputs_to_optimizer['SEAWEED_NEW_AREA_PER_MONTH']
 
-        SEAWEED_PRODUCTION_RATE = inputs_to_optimizer['SEAWEED_PRODUCTION_RATE']
-
         if(inputs_to_optimizer["ADD_SEAWEED"]):
             sd = [self.INITIAL_AREA] \
                  * inputs_to_optimizer["DELAY"]["SEAWEED_MONTHS"]
@@ -86,12 +84,12 @@ class Seaweed:
         )
         built_area_long[built_area_long > self.MAXIMUM_AREA] = self.MAXIMUM_AREA
 
-        # reduce list to small size
+        # reduce list to length of months of simulation
         built_area = built_area_long[0:self.NMONTHS]
 
-        import matplotlib.pyplot as plt
+        # import matplotlib.pyplot as plt
 
-        plt.plot(built_area)
-        plt.show()
+        # plt.plot(built_area)
+        # plt.show()
 
         return built_area

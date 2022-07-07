@@ -229,8 +229,9 @@ class Optimizer:
                       "Seaweed_Food_Produced_Month_0_Constraint")
 
         else:  # later Months
-            model += (variables["seaweed_wet_on_farm"][month] <= variables["used_area"]
-                      [month] * self.single_valued_constants["MAXIMUM_DENSITY"])
+            model += (variables["seaweed_wet_on_farm"][month] \
+                      <= variables["used_area"][month] \
+                         * self.single_valued_constants["MAXIMUM_DENSITY"])
 
             model += (variables["seaweed_wet_on_farm"][month] ==
                       variables["seaweed_wet_on_farm"][month-1] *
