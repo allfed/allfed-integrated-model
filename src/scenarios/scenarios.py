@@ -628,8 +628,13 @@ class Scenarios:
         inputs_to_optimizer['INCLUDE_FAT'] = True
 
         inputs_to_optimizer['MAX_SEAWEED_AS_PERCENT_KCALS'] = 300
-        inputs_to_optimizer['SEAWEED_NEW_AREA_PER_MONTH'] = 2.0765*30  # 1000 km^2 (seaweed)
-        inputs_to_optimizer['SEAWEED_PRODUCTION_RATE'] = 100*(1.1**30-1)  # percent (seaweed)
+
+        # units: 1000 km^2
+        inputs_to_optimizer['SEAWEED_NEW_AREA_PER_MONTH'] = 2.0765*30  
+
+        # percent (seaweed)
+        #represents 10% daily growth 
+        inputs_to_optimizer['SEAWEED_PRODUCTION_RATE'] = 100*(1.1**30-1) 
 
         inputs_to_optimizer["OG_USE_BETTER_ROTATION"] = True
         inputs_to_optimizer["ROTATION_IMPROVEMENTS"] = {}

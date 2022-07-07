@@ -72,8 +72,8 @@ class Seaweed:
             sd = [self.INITIAL_AREA] \
                  * inputs_to_optimizer["DELAY"]["SEAWEED_MONTHS"]
         else:
-            # arbitrarily long constant area
-            sd = [self.INITIAL_AREA] * 100000 
+            # arbitrarily long list of months all at constant area
+            sd = [self.INITIAL_AREA] * 1000 
 
         built_area_long = np.append(
             np.array(sd),
@@ -85,6 +85,13 @@ class Seaweed:
             )
         )
         built_area_long[built_area_long > self.MAXIMUM_AREA] = self.MAXIMUM_AREA
+
+        # reduce list to small size
         built_area = built_area_long[0:self.NMONTHS]
+
+        import matplotlib.pyplot as plt
+
+        plt.plot(built_area)
+        plt.show()
 
         return built_area
