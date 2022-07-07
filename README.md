@@ -5,11 +5,10 @@ An integrated economic+food supply model for resilient foods in nuclear winter
 
 # Run the model
 
-* You can create a varierety of different scenarios with this model. A collection of possible scenarios are already available in the scenarios folder (e.g. 'run_model_with_resilient_foods.py').
-* A scenario is created by creating a new instance of the Scenario class in 'scenario.py'. This class contains a collection of methods that provide your model with the parameter value it needs to run. Here you can also change the parameter values if you want to change the model to your specifications. 
-* Once you got all your parameter values ready you create an Instance of the Parameter class from 'parameter.py'. This class allows you to initialize the model with the parameter values you defined. 
-* Finally to create an instance of the Optimizer class from 'optimizer.py' and provide it with your parameters. This will run the model itself and optimize it (for what exactly?@Morgan).
-
+* You can create a varierety of different scenarios with this model. A collection of possible scenarios are already available in the scenarios folder (e.g. `run_model_with_resilient_foods.py`).
+* A scenario is created by creating a new instance of the Scenario class in `scenario.py`. This class contains a collection of methods that provide your model with the parameter value it needs to run. Here you can also change the parameter values if you want to change the model to your specifications. 
+* Once you got all your parameter values ready you create an Instance of the Parameter class from `parameter.py`. This class allows you to initialize the model with the parameter values you defined. 
+* Finally to create an instance of the Optimizer class from `optimizer.py` and provide it with your parameters. This will run the model itself and optimize it.
  
 
 ### Using Colab (most users use this):
