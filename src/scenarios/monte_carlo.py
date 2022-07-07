@@ -298,7 +298,6 @@ class MonteCarlo:
         inputs_to_optimizer["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = variables['BIOFUEL_SHUTOFF_MONTHS_delay'][i]
 
         constants = {}
-        constants['CHECK_CONSTRAINTS'] = False
         constants['inputs'] = inputs_to_optimizer
         constants_for_optimizer = copy.deepcopy(constants)
         constants_loader = Parameters()
@@ -307,26 +306,28 @@ class MonteCarlo:
 
         failed_to_optimize = False  # until proven otherwise
         optimizer = Optimizer()
-        # try:
-        [time_months, time_months_middle, analysis] = \
-            optimizer.optimize(
-                single_valued_constants,
-                multi_valued_constants
-            )
+        try:
+            single_valued_constants['CHECK_CONSTRAINTS'] = False
+            [time_months, time_months_middle, analysis] = \
+                optimizer.optimize(
+                    single_valued_constants,
+                    multi_valued_constants
+                )
+            print(analysis.percent_people_fed)
 
-        # except AssertionError as msg:
-        #     print(msg)
-        #     failed_to_optimize = True
-        #     print("Warning: Optimization failed. Continuing.")
-        #     # quit()
-        #     return (np.nan, i)
-        # except Exception as ex:
-        #     template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-        #     message = template.format(type(ex).__name__, ex.args)
-        #     print(message)
-        #     failed_to_optimize = True
-        #     print("Warning: Optimization failed. Continuing.")
-        #     return (np.nan, i)
+        except AssertionError as msg:
+            print(msg)
+            failed_to_optimize = True
+            print("Warning: Optimization failed. Continuing.")
+            # quit()
+            return (np.nan, i)
+        except Exception as ex:
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+            failed_to_optimize = True
+            print("Warning: Optimization failed. Continuing.")
+            return (np.nan, i)
 
         PLOT_EACH_SCENARIO = False
         if(PLOT_EACH_SCENARIO):
@@ -504,4 +505,4 @@ class MonteCarlo:
 
 
 if __name__ == '__main__':
-    MonteCarlo.run_all_scenarios(10,100,False,False)
+    MonteCarlo.run_all_scenarios(10,10,False,False)

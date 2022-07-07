@@ -201,7 +201,7 @@ class Optimizer:
         )
 
         analysis.analyze_results(model, self.time_months_middle)
-
+        print(analysis.percent_people_fed)
         return [self.time_months, self.time_months_middle, analysis]
 
     def add_seaweed_to_model(self, model, variables, month):
