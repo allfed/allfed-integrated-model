@@ -49,8 +49,6 @@ scenarios_loader = Scenarios()
 
 def run_optimizer_for_country(country_code,country_data):
 
-    constants = {}
-    constants['CHECK_CONSTRAINTS'] = False
 
     #initialize country specific food system properties 
     inputs_to_optimizer = \
@@ -99,8 +97,8 @@ def run_optimizer_for_country(country_code,country_data):
 
     single_valued_constants, multi_valued_constants = \
         constants_loader.computeParameters(constants)
+    single_valued_constants['CHECK_CONSTRAINTS'] = False
 
-    single_valued_constants["CHECK_CONSTRAINTS"] = False
     optimizer = Optimizer()
     [time_months, time_months_middle, analysis] = \
         optimizer.optimize(single_valued_constants, multi_valued_constants)

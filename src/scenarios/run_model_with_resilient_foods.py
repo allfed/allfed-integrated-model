@@ -87,6 +87,9 @@ constants['inputs'] = inputs_to_optimizer
 constants_for_optimizer = copy.deepcopy(constants)
 single_valued_constants, multi_valued_constants = \
     constants_loader.computeParameters(constants_for_optimizer)
+    
+inputs_to_optimizer = \
+    scenarios_loader.set_waste_to_doubled_prices(inputs_to_optimizer)
 
 single_valued_constants["CHECK_CONSTRAINTS"] = False
 [time_months, time_months_middle, analysis] = \

@@ -87,9 +87,5 @@ class Seaweed:
         # reduce list to length of months of simulation
         built_area = built_area_long[0:self.NMONTHS]
 
-        # import matplotlib.pyplot as plt
-
-        # plt.plot(built_area)
-        # plt.show()
 
         return built_area

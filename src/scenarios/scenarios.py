@@ -638,7 +638,7 @@ class Scenarios:
 
         inputs_to_optimizer["OG_USE_BETTER_ROTATION"] = True
         inputs_to_optimizer["ROTATION_IMPROVEMENTS"] = {}
-        inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["REDUCTION"] = .93
+        inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"] = .93
         inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.487
         inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
 
@@ -654,18 +654,18 @@ class Scenarios:
         inputs_to_optimizer["DELAY"]['GREENHOUSE_MONTHS'] = 2
         inputs_to_optimizer["DELAY"]['SEAWEED_MONTHS'] = 1
 
-        inputs_to_optimizer['CULL_ANIMALS'] = False
-        inputs_to_optimizer['KCAL_SMOOTHING'] = False
-        inputs_to_optimizer['MEAT_SMOOTHING'] = False
-        inputs_to_optimizer['STORED_FOOD_SMOOTHING'] = False
+        inputs_to_optimizer['CULL_ANIMALS'] = True
+        inputs_to_optimizer['KCAL_SMOOTHING'] = True
+        inputs_to_optimizer['MEAT_SMOOTHING'] = True
+        inputs_to_optimizer['STORED_FOOD_SMOOTHING'] = True
 
-        inputs_to_optimizer['ADD_CELLULOSIC_SUGAR'] = False
-        inputs_to_optimizer['ADD_DAIRY'] = False
-        inputs_to_optimizer['ADD_FISH'] = False
-        inputs_to_optimizer['ADD_GREENHOUSES'] = False
+        inputs_to_optimizer['ADD_CELLULOSIC_SUGAR'] = True
+        inputs_to_optimizer['ADD_DAIRY'] = True
+        inputs_to_optimizer['ADD_FISH'] = True
+        inputs_to_optimizer['ADD_GREENHOUSES'] = True
         inputs_to_optimizer['ADD_OUTDOOR_GROWING'] = True
-        inputs_to_optimizer['ADD_MEAT'] = False
-        inputs_to_optimizer['ADD_METHANE_SCP'] = False
+        inputs_to_optimizer['ADD_MEAT'] = True
+        inputs_to_optimizer['ADD_METHANE_SCP'] = True
         inputs_to_optimizer['ADD_SEAWEED'] = True
         inputs_to_optimizer['ADD_STORED_FOOD'] = True
 

@@ -132,8 +132,8 @@ class Parameters:
          h_e_meat_kcals,
          h_e_meat_fat,
          h_e_meat_protein) = meat_and_dairy.get_meat_from_human_edible_feed()
-        meat_and_dairy.calculate_animals_culled(inputs_to_optimizer)
 
+        meat_and_dairy.calculate_animals_culled(inputs_to_optimizer)
 
         meat_and_dairy.calculate_meat_nutrition()
         

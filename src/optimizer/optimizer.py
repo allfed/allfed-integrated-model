@@ -25,6 +25,7 @@ class Optimizer:
         pass
 
     def optimize(self, single_valued_constants,multi_valued_constants):
+        print(single_valued_constants["CHECK_CONSTRAINTS"])
         maximize_constraints = []  # used only for validation
 
         # Create the model to optimize

@@ -3,7 +3,7 @@
  the monte carlo model, and prints the outcomes for 1000 runs in a row, then 
  plots a histogram of the results
 """
-
+import copy
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -28,86 +28,82 @@ if module_path not in sys.path:
 
 #import some python files from this integrated model repository
 from src.optimizer.optimizer import Optimizer
+from src.optimizer.parameters import Parameters
 from src.utilities.plotter import Plotter
-
+from src.scenarios.scenarios import Scenarios
 
 class MonteCarlo:
     def __init__(self):
         pass
 
-    def run_all_scenarios(N_monte_carlo, N_comparison, load_saved_mc, load_saved_comp):
+    def run_all_scenarios(
+        N_monte_carlo,
+        N_comparison,
+        load_saved_mc,
+        load_saved_comp):
+    
         inputs_to_optimizer = {}  # constants as inputs to optimizer
+        
+        scenarios_loader = Scenarios()
+        inputs_to_optimizer = \
+            scenarios_loader.init_global_food_system_properties()
 
-        inputs_to_optimizer['NMONTHS'] = 84
-        inputs_to_optimizer['LIMIT_SEAWEED_AS_PERCENT_KCALS'] = True
+        inputs_to_optimizer = \
+            scenarios_loader.set_waste_to_doubled_prices(inputs_to_optimizer)
 
-        inputs_to_optimizer['NUTRITION'] = {
-            'FAT_DAILY': 47, 'KCALS_DAILY': 2100, 'PROTEIN_DAILY': 51}
+        inputs_to_optimizer = \
+            scenarios_loader.get_resilient_food_scenario(inputs_to_optimizer)
 
-        inputs_to_optimizer['INITIAL_SF_FAT'] = 166.07e3 * 0.96
-        inputs_to_optimizer['INITIAL_SF_PROTEIN'] = 69.25e3 * 0.96
+        inputs_to_optimizer = \
+            scenarios_loader.set_catastrophe_nutrition_profile(inputs_to_optimizer)
+
+        inputs_to_optimizer = \
+            scenarios_loader.set_global_seasonality_nuclear_winter(inputs_to_optimizer)
+
+        inputs_to_optimizer = \
+            scenarios_loader.set_stored_food_all_used(inputs_to_optimizer)
+
+        inputs_to_optimizer = \
+            scenarios_loader.set_fish_nuclear_winter_reduction(inputs_to_optimizer)
+
+        inputs_to_optimizer = \
+            scenarios_loader.set_nuclear_winter_global_disruption_to_crops(
+                inputs_to_optimizer
+            )
+
+        inputs_to_optimizer = scenarios_loader.set_short_delayed_shutoff(inputs_to_optimizer)
 
 
-        # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
-        inputs_to_optimizer['TONS_DRY_CALORIC_EQIVALENT_SF'] = 1360e6 * 0.96
-        inputs_to_optimizer['INCLUDE_PROTEIN'] = True
-        inputs_to_optimizer['INCLUDE_FAT'] = True
-        inputs_to_optimizer['WASTE'] = {}
-        inputs_to_optimizer['WASTE']['SUGAR'] = 14.47  # %
-        inputs_to_optimizer['WASTE']['MEAT'] = 15.17  # %
-        inputs_to_optimizer['WASTE']['DAIRY'] = 16.49  # %
-        inputs_to_optimizer['WASTE']['SEAFOOD'] = 14.55  # %
-        inputs_to_optimizer['WASTE']['CROPS'] = 19.33  # %
-        inputs_to_optimizer['WASTE']['SEAWEED'] = 14.37  # %
-        inputs_to_optimizer["CULL_DURATION_MONTHS"] = 60
-
-        inputs_to_optimizer['IS_NUCLEAR_WINTER'] = True
+        # No excess calories
         excess_per_month = np.array([0] * inputs_to_optimizer['NMONTHS'])
         inputs_to_optimizer["EXCESS_CALORIES"] = excess_per_month
-
-        inputs_to_optimizer['ADD_STORED_FOOD'] = True
-        inputs_to_optimizer['ADD_OUTDOOR_GROWING'] = True
-        inputs_to_optimizer['ADD_MEAT'] = True
-        inputs_to_optimizer['ADD_FISH'] = True
-        inputs_to_optimizer['ADD_SEAWEED'] = True
-        inputs_to_optimizer['ADD_CELLULOSIC_SUGAR'] = True
-        inputs_to_optimizer['ADD_METHANE_SCP'] = True
-        inputs_to_optimizer['ADD_GREENHOUSES'] = True
-        inputs_to_optimizer['ADD_DAIRY'] = True
-        inputs_to_optimizer['OG_USE_BETTER_ROTATION'] = True
-        inputs_to_optimizer['INITIAL_HARVEST_DURATION_IN_MONTHS'] = 8
-        inputs_to_optimizer['FLUCTUATION_LIMIT'] = 1.5
-        inputs_to_optimizer['KCAL_SMOOTHING'] = True
-        inputs_to_optimizer['MEAT_SMOOTHING'] = True
-        inputs_to_optimizer['STORED_FOOD_SMOOTHING'] = True
-        inputs_to_optimizer['ROTATION_IMPROVEMENTS'] = {}
 
         # resilient foods used for simulation
         res_foods = ("greenhouses",
                      "cellulosic sugar",
                      "methane SCP",
-                     'seaweed',
+                     "seaweed",
                      "relocated crops")
 
         if(load_saved_mc):
             mc_variables = np.load(
-                '../data/mc_variables_'+str(N_monte_carlo)+'.npy',
+                '../../data/mc_variables_'+str(N_monte_carlo)+'.npy',
                 allow_pickle=True).item()
             print("Computing input variables")
         else:
             mc_variables = MonteCarlo.get_variables(N_monte_carlo, inputs_to_optimizer)
-            np.save('../data/mc_variables_'+str(N_monte_carlo)+'.npy',
+            np.save('../../data/mc_variables_'+str(N_monte_carlo)+'.npy',
                     mc_variables, allow_pickle=True)
             print('MonteCarlo variables')
             Plotter.plot_fig_s1(mc_variables, N_monte_carlo)
         if(load_saved_comp):
             comp_variables = np.load(
-                '../data/comp_variables_'+str(N_comparison)+'.npy',
+                '../../data/comp_variables_'+str(N_comparison)+'.npy',
                 allow_pickle=True).item()
         else:
             print("Computing input variables")
             comp_variables = MonteCarlo.get_variables(N_comparison, inputs_to_optimizer)
-            np.save('../data/comp_variables_'+str(N_comparison)+'.npy',
+            np.save('../../data/comp_variables_'+str(N_comparison)+'.npy',
                     comp_variables, allow_pickle=True)
             print('Comparison variables')
             Plotter.plot_fig_s1(comp_variables, N_monte_carlo)
@@ -119,18 +115,18 @@ class MonteCarlo:
 
 
         if(load_saved_mc):
-            all_fed = np.load('../data/all_fed_'+str(N_monte_carlo)+'.npy',
+            all_fed = np.load('../../data/all_fed_'+str(N_monte_carlo)+'.npy',
                               allow_pickle=True)
         else:
             print("Running Monte Carlo")
             all_fed = MonteCarlo.monte_carlo(mc_variables, N_monte_carlo, inputs_to_optimizer)
-            np.save('../data/all_fed_'+str(N_monte_carlo)+'.npy', all_fed,
+            np.save('../../data/all_fed_'+str(N_monte_carlo)+'.npy', all_fed,
                     allow_pickle=True)
 
         if(load_saved_comp):
-            removed = np.load('../data/removed_'+str(N_comparison)+'.npy',
+            removed = np.load('../../data/removed_'+str(N_comparison)+'.npy',
                               allow_pickle=True).item()
-            added = np.load('../data/added_'+str(N_comparison)+'.npy',
+            added = np.load('../../data/added_'+str(N_comparison)+'.npy',
                             allow_pickle=True).item()
         else:
             print("Running Comparison")
@@ -139,8 +135,8 @@ class MonteCarlo:
                                                                 inputs_to_optimizer,
                                                                 res_foods)
 
-            np.save('../data/removed_'+str(N_comparison)+'.npy', removed, allow_pickle=True)
-            np.save('../data/added_'+str(N_comparison)+'.npy', added, allow_pickle=True)
+            np.save('../../data/removed_'+str(N_comparison)+'.npy', removed, allow_pickle=True)
+            np.save('../../data/added_'+str(N_comparison)+'.npy', added, allow_pickle=True)
 
         Plotter.plot_fig_3ab(all_fed, res_foods, removed, added)
 
@@ -302,26 +298,35 @@ class MonteCarlo:
         inputs_to_optimizer["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = variables['BIOFUEL_SHUTOFF_MONTHS_delay'][i]
 
         constants = {}
-        constants['inputs'] = inputs_to_optimizer
         constants['CHECK_CONSTRAINTS'] = False
+        constants['inputs'] = inputs_to_optimizer
+        constants_for_optimizer = copy.deepcopy(constants)
+        constants_loader = Parameters()
+        single_valued_constants, multi_valued_constants = \
+            constants_loader.computeParameters(constants_for_optimizer)
+
         failed_to_optimize = False  # until proven otherwise
         optimizer = Optimizer()
-        try:
-            [time_months, time_months_middle, analysis] = \
-                optimizer.optimize(constants)
+        # try:
+        [time_months, time_months_middle, analysis] = \
+            optimizer.optimize(
+                single_valued_constants,
+                multi_valued_constants
+            )
 
-        except AssertionError as msg:
-            print(msg)
-            failed_to_optimize = True
-            print("Warning: Optimization failed. Continuing.")
-            return (np.nan, i)
-        except Exception as ex:
-            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-            message = template.format(type(ex).__name__, ex.args)
-            print(message)
-            failed_to_optimize = True
-            print("Warning: Optimization failed. Continuing.")
-            return (np.nan, i)
+        # except AssertionError as msg:
+        #     print(msg)
+        #     failed_to_optimize = True
+        #     print("Warning: Optimization failed. Continuing.")
+        #     # quit()
+        #     return (np.nan, i)
+        # except Exception as ex:
+        #     template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+        #     message = template.format(type(ex).__name__, ex.args)
+        #     print(message)
+        #     failed_to_optimize = True
+        #     print("Warning: Optimization failed. Continuing.")
+        #     return (np.nan, i)
 
         PLOT_EACH_SCENARIO = False
         if(PLOT_EACH_SCENARIO):
@@ -330,7 +335,7 @@ class MonteCarlo:
                                           'People fed minus waste and biofuels',
                                           84)
 
-        fed = analysis.people_fed_billions
+        fed = analysis.percent_people_fed
         if(np.isnan(fed)):
             failed_to_optimize = True
             print("Warning: Total people fed could not be calculated. Continuing.")
@@ -346,9 +351,9 @@ class MonteCarlo:
                   + ' out of '
                   + str(N)
                   + ', '
-                  + str(fed / 7.8 * 2100)
+                  + str(fed / 100 * 2100)
                   + ' kcals')
-        return (analysis.people_fed_billions, failed_index)
+        return (analysis.percent_people_fed, failed_index)
 
     # https://www.kth.se/blogs/pdc/2019/02/parallel-programming-in-python-multiprocessing-part-1/
     def slice_data(data, nprocs):
@@ -410,7 +415,9 @@ class MonteCarlo:
         return all_fed, failed_indices
 
     def monte_carlo(variables, N, inputs_to_optimizer):
-        all_fed, failed_indices = MonteCarlo.run_scenarios(variables, inputs_to_optimizer, N)
+        all_fed, failed_indices = \
+            MonteCarlo.run_scenarios(variables, inputs_to_optimizer, N)
+
         succeeded = np.delete(all_fed, np.array(failed_indices).astype(int))
 
         print("fraction failed to optimize")
@@ -495,4 +502,6 @@ class MonteCarlo:
                                        np.array(baseline_fed))
         return removed, added
 
-#MonteCarlo.run_all_scenarios(10,100,False,False)
+
+if __name__ == '__main__':
+    MonteCarlo.run_all_scenarios(10,100,False,False)
