@@ -12,6 +12,7 @@ class OutdoorCrops:
     def __init__(self,inputs_to_optimizer):
 
         self.NMONTHS = inputs_to_optimizer['NMONTHS']
+        self.STARTING_MONTH = inputs_to_optimizer["STARTING_MONTH"]
 
         self.BASELINE_CROP_KCALS = \
             inputs_to_optimizer['BASELINE_CROP_KCALS']
@@ -165,42 +166,48 @@ class OutdoorCrops:
             1 - inputs_to_optimizer["DISRUPTION_CROPS_YEAR10"]
         RATIO_KCALS_POSTDISASTER_11Y = \
             1 - inputs_to_optimizer["DISRUPTION_CROPS_YEAR11"]
-
-        first_year_jan_to_may = [1, 1, 1, 1, 1]
-        jun_y1_to_may_y2 = np.linspace(1, RATIO_KCALS_POSTDISASTER_1Y, 13)[1:]
-        jun_y2_to_may_y3 = np.linspace(
+        
+        # Dictionary of the months to set the starting point of the model to 
+        # the months specified in parameters.py
+        months_dict = {"JAN":1, "FEB":2,"MAR":3,"APR":4,"MAY":5,"JUN":6,
+                       "JUL":7,"AUG":8,"SEP":9,"OCT":10,"NOV":11, "DEC":12}
+        
+        
+        first_year_starting_point = [1]*months_dict[self.STARTING_MONTH]
+        y1_to_y2 = np.linspace(1, RATIO_KCALS_POSTDISASTER_1Y, 13)[1:]
+        y2_to_y3 = np.linspace(
             RATIO_KCALS_POSTDISASTER_1Y, RATIO_KCALS_POSTDISASTER_2Y, 13)[1:]
-        jun_y3_to_may_y4 = np.linspace(
+        y3_to_y4 = np.linspace(
             RATIO_KCALS_POSTDISASTER_2Y, RATIO_KCALS_POSTDISASTER_3Y, 13)[1:]
-        jun_y4_to_may_y5 = np.linspace(
+        y4_to_y5 = np.linspace(
             RATIO_KCALS_POSTDISASTER_3Y, RATIO_KCALS_POSTDISASTER_4Y, 13)[1:]
-        jun_y5_to_may_y6 = np.linspace(
+        y5_to_y6 = np.linspace(
             RATIO_KCALS_POSTDISASTER_4Y, RATIO_KCALS_POSTDISASTER_5Y, 13)[1:]
-        jun_y6_to_may_y7 = np.linspace(
+        y6_to_y7 = np.linspace(
             RATIO_KCALS_POSTDISASTER_5Y, RATIO_KCALS_POSTDISASTER_6Y, 13)[1:]
-        jun_y7_to_may_y8 = np.linspace(
+        y7_to_y8 = np.linspace(
             RATIO_KCALS_POSTDISASTER_6Y, RATIO_KCALS_POSTDISASTER_7Y, 13)[1:]
-        jun_y8_to_may_y9 = np.linspace(
+        y8_to_y9 = np.linspace(
             RATIO_KCALS_POSTDISASTER_7Y, RATIO_KCALS_POSTDISASTER_8Y, 13)[1:]
-        jun_y9_to_may_y10 = np.linspace(
+        y9_to_y10 = np.linspace(
             RATIO_KCALS_POSTDISASTER_8Y, RATIO_KCALS_POSTDISASTER_9Y, 13)[1:]
-        jun_y10_to_may_y11 = np.linspace(
+        y10_to_y11 = np.linspace(
             RATIO_KCALS_POSTDISASTER_9Y, RATIO_KCALS_POSTDISASTER_10Y, 13)[1:]
-        jun_y11_to_dec_y11 = np.linspace(
-            RATIO_KCALS_POSTDISASTER_10Y, RATIO_KCALS_POSTDISASTER_11Y, 13)[1:8]
+        y11_to_y11 = np.linspace(
+            RATIO_KCALS_POSTDISASTER_10Y, RATIO_KCALS_POSTDISASTER_11Y, 13)[1:12-(months_dict[self.STARTING_MONTH]-1)]
 
-        self.all_months_reductions = np.array(first_year_jan_to_may
-                                         + list(jun_y1_to_may_y2)
-                                         + list(jun_y2_to_may_y3)
-                                         + list(jun_y3_to_may_y4)
-                                         + list(jun_y4_to_may_y5)
-                                         + list(jun_y5_to_may_y6)
-                                         + list(jun_y6_to_may_y7)
-                                         + list(jun_y7_to_may_y8)
-                                         + list(jun_y8_to_may_y9)
-                                         + list(jun_y9_to_may_y10)
-                                         + list(jun_y10_to_may_y11)
-                                         + list(jun_y11_to_dec_y11))\
+        self.all_months_reductions = np.array(first_year_starting_point
+                                         + list(y1_to_y2)
+                                         + list(y2_to_y3)
+                                         + list(y3_to_y4)
+                                         + list(y4_to_y5)
+                                         + list(y5_to_y6)
+                                         + list(y6_to_y7)
+                                         + list(y7_to_y8)
+                                         + list(y8_to_y9)
+                                         + list(y9_to_y10)
+                                         + list(y10_to_y11)
+                                         + list(y11_to_y11))\
 
         assert(len(self.all_months_reductions) == 12 * 11)
 
@@ -219,12 +226,12 @@ class OutdoorCrops:
             self.KCALS_GROWN.append(
                 month_kcals * (1 - (
                     self.OG_KCAL_REDUCED
-                    * (1 - self.all_months_reductions[i+4])
+                    * (1 - self.all_months_reductions[i+months_dict[self.STARTING_MONTH]-1])
                 ))
             )
             self.NO_ROT_KCALS_GROWN.append(
                 month_kcals * (1 - (
-                    (1 - self.all_months_reductions[i+4])
+                    (1 - self.all_months_reductions[i+months_dict[self.STARTING_MONTH]-1])
                 ))
             )
 

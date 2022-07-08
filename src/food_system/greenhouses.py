@@ -12,11 +12,12 @@ class Greenhouses:
         # 500 million hectares in tropics (for outdoor crops 2020)
         self.TOTAL_CROP_AREA = 500e6  
 
+        self.STARTING_MONTH = inputs_to_optimizer["STARTING_MONTH"]
 
 
         self.ADD_GREENHOUSES = inputs_to_optimizer['ADD_GREENHOUSES']
         self.NMONTHS = inputs_to_optimizer['NMONTHS']
-
+        
         if(self.ADD_GREENHOUSES):
             # this is in addition to the 5 month delay till harvest
             self.greenhouse_delay = inputs_to_optimizer["DELAY"]["GREENHOUSE_MONTHS"]
@@ -25,6 +26,7 @@ class Greenhouses:
             self.GREENHOUSE_AREA_MULTIPLIER = 0
 
     def get_greenhouse_area(self,inputs_to_optimizer,outdoor_crops):
+        
         # greenhouses tab
         # assumption: greenhouse crop production is very similar in nutritional
         # profile to stored food
@@ -34,6 +36,11 @@ class Greenhouses:
         # will equal 2.5 million km^2 (250 million hectares).
         # Takes 5+36=41 months to reach full output
         # NOTE: the 5 months represents the delay from plant to harvest.
+
+        # Dictionary of the months to set the starting point of the model to 
+        # the months specified in parameters.py
+        months_dict = {"JAN":1, "FEB":2,"MAR":3,"APR":4,"MAY":5,"JUN":6,
+                       "JUL":7,"AUG":8,"SEP":9,"OCT":10,"NOV":11, "DEC":12}
 
         if(self.ADD_GREENHOUSES):
             GREENHOUSE_LIMIT_AREA = \
@@ -78,7 +85,7 @@ class Greenhouses:
 
             KCALS_GROWN_PER_HECTARE_BEFORE_WASTE = \
                 MONTHLY_KCALS * (1 - (
-                    (1 - outdoor_crops.all_months_reductions[4:])
+                    (1 - outdoor_crops.all_months_reductions[months_dict[self.STARTING_MONTH-1]:])
                     * outdoor_crops.OG_KCAL_REDUCED
                 ))
 

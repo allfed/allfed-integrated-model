@@ -28,12 +28,10 @@ class Parameters:
     def __init__(self):
 
         self.DAYS_IN_MONTH = 30
-        self.SIMULATION_STARTING_MONTH = "MAY"
+        self.SIMULATION_STARTING_MONTH = "JUN"
 
 
-    def computeParameters(self, constants):
-        VERBOSE = False
-
+    def computeParameters(self, constants, VERBOSE = False):
         inputs_to_optimizer = constants['inputs']  # single valued inputs to optimizer
 
         # population
@@ -178,6 +176,7 @@ class Parameters:
         h_e_balance_protein = -excess_protein_used * CROP_WASTE \
             + h_e_created_protein
 
+        inputs_to_optimizer['STARTING_MONTH'] = self.SIMULATION_STARTING_MONTH
 
         #### CROP PRODUCTION VARIABLES ####
 
