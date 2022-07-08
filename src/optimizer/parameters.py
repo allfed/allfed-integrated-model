@@ -29,10 +29,16 @@ class Parameters:
 
         self.DAYS_IN_MONTH = 30
         self.SIMULATION_STARTING_MONTH = "JUN"
+        # Dictionary of the months to set the starting point of the model to 
+        # the months specified in parameters.py
+        months_dict = {"JAN":1, "FEB":2,"MAR":3,"APR":4,"MAY":5,"JUN":6,
+                       "JUL":7,"AUG":8,"SEP":9,"OCT":10,"NOV":11, "DEC":12}
+        self.SIMULATION_STARTING_MONTH_NUM = months_dict[self.SIMULATION_STARTING_MONTH]
 
 
     def computeParameters(self, constants, VERBOSE = False):
         inputs_to_optimizer = constants['inputs']  # single valued inputs to optimizer
+        inputs_to_optimizer['STARTING_MONTH_NUM'] = self.SIMULATION_STARTING_MONTH_NUM
 
         # population
         self.POP = inputs_to_optimizer['POP']
@@ -176,7 +182,7 @@ class Parameters:
         h_e_balance_protein = -excess_protein_used * CROP_WASTE \
             + h_e_created_protein
 
-        inputs_to_optimizer['STARTING_MONTH'] = self.SIMULATION_STARTING_MONTH
+        
 
         #### CROP PRODUCTION VARIABLES ####
 

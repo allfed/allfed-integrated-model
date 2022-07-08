@@ -209,6 +209,7 @@ class Scenarios:
             country_data["seasonality_m11"],
             country_data["seasonality_m12"]
         ]           
+        
         inputs_to_optimizer['HUMAN_INEDIBLE_FEED'] = \
             np.array(list(
                 np.array([country_data['grasses_year1']] * 8),

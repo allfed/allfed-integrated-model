@@ -12,7 +12,7 @@ class OutdoorCrops:
     def __init__(self,inputs_to_optimizer):
 
         self.NMONTHS = inputs_to_optimizer['NMONTHS']
-        self.STARTING_MONTH = inputs_to_optimizer["STARTING_MONTH"]
+        self.STARTING_MONTH_NUM = inputs_to_optimizer["STARTING_MONTH_NUM"]
 
         self.BASELINE_CROP_KCALS = \
             inputs_to_optimizer['BASELINE_CROP_KCALS']
@@ -166,14 +166,9 @@ class OutdoorCrops:
             1 - inputs_to_optimizer["DISRUPTION_CROPS_YEAR10"]
         RATIO_KCALS_POSTDISASTER_11Y = \
             1 - inputs_to_optimizer["DISRUPTION_CROPS_YEAR11"]
+             
         
-        # Dictionary of the months to set the starting point of the model to 
-        # the months specified in parameters.py
-        months_dict = {"JAN":1, "FEB":2,"MAR":3,"APR":4,"MAY":5,"JUN":6,
-                       "JUL":7,"AUG":8,"SEP":9,"OCT":10,"NOV":11, "DEC":12}
-        
-        
-        first_year_starting_point = [1]*months_dict[self.STARTING_MONTH]
+        first_year_starting_point = [1]*self.STARTING_MONTH_NUM
         y1_to_y2 = np.linspace(1, RATIO_KCALS_POSTDISASTER_1Y, 13)[1:]
         y2_to_y3 = np.linspace(
             RATIO_KCALS_POSTDISASTER_1Y, RATIO_KCALS_POSTDISASTER_2Y, 13)[1:]
@@ -194,7 +189,7 @@ class OutdoorCrops:
         y10_to_y11 = np.linspace(
             RATIO_KCALS_POSTDISASTER_9Y, RATIO_KCALS_POSTDISASTER_10Y, 13)[1:]
         y11_to_y11 = np.linspace(
-            RATIO_KCALS_POSTDISASTER_10Y, RATIO_KCALS_POSTDISASTER_11Y, 13)[1:12-(months_dict[self.STARTING_MONTH]-1)]
+            RATIO_KCALS_POSTDISASTER_10Y, RATIO_KCALS_POSTDISASTER_11Y, 13)[1:12-(self.STARTING_MONTH_NUM-1)]
 
         self.all_months_reductions = np.array(first_year_starting_point
                                          + list(y1_to_y2)
@@ -226,12 +221,12 @@ class OutdoorCrops:
             self.KCALS_GROWN.append(
                 month_kcals * (1 - (
                     self.OG_KCAL_REDUCED
-                    * (1 - self.all_months_reductions[i+months_dict[self.STARTING_MONTH]-1])
+                    * (1 - self.all_months_reductions[i+self.STARTING_MONTH_NUM])
                 ))
             )
             self.NO_ROT_KCALS_GROWN.append(
                 month_kcals * (1 - (
-                    (1 - self.all_months_reductions[i+months_dict[self.STARTING_MONTH]-1])
+                    (1 - self.all_months_reductions[i+self.STARTING_MONTH_NUM-1])
                 ))
             )
 
