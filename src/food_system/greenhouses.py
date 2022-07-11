@@ -6,27 +6,28 @@
 
 import numpy as np
 
-class Greenhouses:
 
-    def __init__(self,inputs_to_optimizer):
+class Greenhouses:
+    def __init__(self, inputs_to_optimizer):
         # 500 million hectares in tropics (for outdoor crops 2020)
-        self.TOTAL_CROP_AREA = 500e6  
+        self.TOTAL_CROP_AREA = 500e6
 
         self.STARTING_MONTH_NUM = inputs_to_optimizer["STARTING_MONTH_NUM"]
 
+        self.ADD_GREENHOUSES = inputs_to_optimizer["ADD_GREENHOUSES"]
+        self.NMONTHS = inputs_to_optimizer["NMONTHS"]
 
-        self.ADD_GREENHOUSES = inputs_to_optimizer['ADD_GREENHOUSES']
-        self.NMONTHS = inputs_to_optimizer['NMONTHS']
-        
-        if(self.ADD_GREENHOUSES):
+        if self.ADD_GREENHOUSES:
             # this is in addition to the 5 month delay till harvest
             self.greenhouse_delay = inputs_to_optimizer["DELAY"]["GREENHOUSE_MONTHS"]
-            self.GREENHOUSE_AREA_MULTIPLIER = inputs_to_optimizer['GREENHOUSE_AREA_MULTIPLIER']
+            self.GREENHOUSE_AREA_MULTIPLIER = inputs_to_optimizer[
+                "GREENHOUSE_AREA_MULTIPLIER"
+            ]
         else:
             self.GREENHOUSE_AREA_MULTIPLIER = 0
 
-    def get_greenhouse_area(self,inputs_to_optimizer,outdoor_crops):
-        
+    def get_greenhouse_area(self, inputs_to_optimizer, outdoor_crops):
+
         # greenhouses tab
         # assumption: greenhouse crop production is very similar in nutritional
         # profile to stored food
@@ -37,26 +38,28 @@ class Greenhouses:
         # Takes 5+36=41 months to reach full output
         # NOTE: the 5 months represents the delay from plant to harvest.
 
-
-        if(self.ADD_GREENHOUSES):
-            GREENHOUSE_LIMIT_AREA = \
+        if self.ADD_GREENHOUSES:
+            GREENHOUSE_LIMIT_AREA = (
                 self.TOTAL_CROP_AREA * self.GREENHOUSE_AREA_MULTIPLIER
+            )
 
-            greenhouse_area_long = \
-                list(
+            greenhouse_area_long = list(
+                np.append(
                     np.append(
                         np.append(
-                            np.append(np.linspace(0, 0, self.greenhouse_delay),
-                                      np.linspace(0, 0, 5)),
-                            np.linspace(0, GREENHOUSE_LIMIT_AREA, 37)
+                            np.linspace(0, 0, self.greenhouse_delay),
+                            np.linspace(0, 0, 5),
                         ),
-                        np.linspace(GREENHOUSE_LIMIT_AREA,
-                                    GREENHOUSE_LIMIT_AREA,
-                                    len(outdoor_crops.KCALS_GROWN) - 42)
-                    )
-                )\
-
-            greenhouse_area = np.array(greenhouse_area_long[0:self.NMONTHS])
+                        np.linspace(0, GREENHOUSE_LIMIT_AREA, 37),
+                    ),
+                    np.linspace(
+                        GREENHOUSE_LIMIT_AREA,
+                        GREENHOUSE_LIMIT_AREA,
+                        len(outdoor_crops.KCALS_GROWN) - 42,
+                    ),
+                )
+            )
+            greenhouse_area = np.array(greenhouse_area_long[0 : self.NMONTHS])
             print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
             print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
             print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
@@ -76,17 +79,24 @@ class Greenhouses:
             print("")
             print("")
 
-            MONTHLY_KCALS = np.mean(outdoor_crops.months_cycle) \
-                            / self.TOTAL_CROP_AREA
+            MONTHLY_KCALS = np.mean(outdoor_crops.months_cycle) / self.TOTAL_CROP_AREA
 
-            KCALS_GROWN_PER_HECTARE_BEFORE_WASTE = \
-                MONTHLY_KCALS * (1 - (
-                    (1 - outdoor_crops.all_months_reductions[self.STARTING_MONTH_NUM-1:])
+            KCALS_GROWN_PER_HECTARE_BEFORE_WASTE = MONTHLY_KCALS * (
+                1
+                - (
+                    (
+                        1
+                        - outdoor_crops.all_months_reductions[
+                            self.STARTING_MONTH_NUM - 1 :
+                        ]
+                    )
                     * outdoor_crops.OG_KCAL_REDUCED
-                ))
+                )
+            )
 
-            self.GH_KCALS_GROWN_PER_HECTARE = (1 - inputs_to_optimizer["WASTE"]["CROPS"] / 100) \
-                * np.array(KCALS_GROWN_PER_HECTARE_BEFORE_WASTE)
+            self.GH_KCALS_GROWN_PER_HECTARE = (
+                1 - inputs_to_optimizer["WASTE"]["CROPS"] / 100
+            ) * np.array(KCALS_GROWN_PER_HECTARE_BEFORE_WASTE)
         else:
             self.GH_KCALS_GROWN_PER_HECTARE = [0] * self.NMONTHS
             greenhouse_area = np.array([0] * self.NMONTHS)
@@ -108,18 +118,25 @@ class Greenhouses:
         FAT_RATIO = outdoor_crops.FAT_RATIO_ROT
         PROTEIN_RATIO = outdoor_crops.PROTEIN_RATIO_ROT
 
-        if(not self.ADD_GREENHOUSES):
+        if not self.ADD_GREENHOUSES:
             greenhouse_kcals_per_ha = [0] * self.NMONTHS
             greenhouse_fat_per_ha = [0] * self.NMONTHS
             greenhouse_protein_per_ha = [0] * self.NMONTHS
-            return (greenhouse_kcals_per_ha,greenhouse_fat_per_ha,greenhouse_protein_per_ha)
-            
+            return (
+                greenhouse_kcals_per_ha,
+                greenhouse_fat_per_ha,
+                greenhouse_protein_per_ha,
+            )
+
         rotation_fat_per_ha_long = []
         rotation_protein_per_ha_long = []
         rotation_kcals_per_ha_long = []
         for kcals_per_month in self.GH_KCALS_GROWN_PER_HECTARE:
-            gh_kcals = kcals_per_month * KCAL_RATIO \
-                * (1+inputs_to_optimizer["GREENHOUSE_GAIN_PCT"] / 100)
+            gh_kcals = (
+                kcals_per_month
+                * KCAL_RATIO
+                * (1 + inputs_to_optimizer["GREENHOUSE_GAIN_PCT"] / 100)
+            )
 
             rotation_kcals_per_ha_long.append(gh_kcals)
 
@@ -127,10 +144,8 @@ class Greenhouses:
 
             rotation_protein_per_ha_long.append(PROTEIN_RATIO * gh_kcals)
 
-        rotation_kcals_per_ha = rotation_kcals_per_ha_long[0:self.NMONTHS]
-        rotation_fat_per_ha = rotation_fat_per_ha_long[0:self.NMONTHS]
-        rotation_protein_per_ha = rotation_protein_per_ha_long[0:self.NMONTHS]
+        rotation_kcals_per_ha = rotation_kcals_per_ha_long[0 : self.NMONTHS]
+        rotation_fat_per_ha = rotation_fat_per_ha_long[0 : self.NMONTHS]
+        rotation_protein_per_ha = rotation_protein_per_ha_long[0 : self.NMONTHS]
 
-        return (rotation_kcals_per_ha,
-                rotation_fat_per_ha,
-                rotation_protein_per_ha)
+        return (rotation_kcals_per_ha, rotation_fat_per_ha, rotation_protein_per_ha)
