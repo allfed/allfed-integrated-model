@@ -325,7 +325,7 @@ class MeatAndDairy:
         )
 
         # thousands tons monthly
-        chicken_pork_fat = (
+        self.chicken_pork_fat = (
             np.array(self.chicken_pork_maintained)
             * 1e3
             * (
@@ -336,7 +336,7 @@ class MeatAndDairy:
         )
 
         # thousands tons monthly
-        chicken_pork_protein = (
+        self.chicken_pork_protein = (
             np.array(self.chicken_pork_maintained)
             * 1e3
             * (
@@ -375,11 +375,11 @@ class MeatAndDairy:
         h_e_meat_kcals = np.array(
             cattle_h_e_maintained_kcals + self.chicken_pork_kcals
         ) * (1 - self.MEAT_WASTE / 100)
-        h_e_meat_fat = np.array(cattle_h_e_maintained_fat + chicken_pork_fat) * (
+        h_e_meat_fat = np.array(cattle_h_e_maintained_fat + self.chicken_pork_fat) * (
             1 - self.MEAT_WASTE / 100
         )
         h_e_meat_protein = np.array(
-            cattle_h_e_maintained_protein + chicken_pork_protein
+            cattle_h_e_maintained_protein + self.chicken_pork_protein
         ) * (1 - self.MEAT_WASTE / 100)
 
         if not self.ADD_MEAT:
@@ -389,8 +389,8 @@ class MeatAndDairy:
 
         return (
             self.chicken_pork_kcals,
-            chicken_pork_fat,
-            chicken_pork_protein,
+            self.chicken_pork_fat,
+            self.chicken_pork_protein,
             h_e_meat_kcals,
             h_e_meat_fat,
             h_e_meat_protein,

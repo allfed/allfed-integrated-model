@@ -169,6 +169,8 @@ class Parameters:
         ) = meat_and_dairy.get_dairy_produced()
 
         self.chicken_pork_kcals = meat_and_dairy.chicken_pork_kcals
+        self.chicken_pork_fat = meat_and_dairy.chicken_pork_fat
+        self.chicken_pork_protein = meat_and_dairy.chicken_pork_protein
         self.cattle_h_e_maintained = meat_and_dairy.cattle_h_e_maintained
 
         (
@@ -395,11 +397,24 @@ class Parameters:
 
         constants["inputs"] = inputs_to_optimizer
 
-        self.print_constants(constants, time_consts, feed, stored_food)
+        self.print_constants(
+            constants,
+            time_consts,
+            feed,
+            stored_food,
+            biofuels
+        )
 
         return (constants, time_consts)
 
-    def print_constants(self, constants, time_consts, feed, stored_food):
+    def print_constants(
+        self,
+        constants,
+        time_consts,
+        feed,
+        stored_food,
+        biofuels):
+
         # used by world population
         print("")
         print("calories consumed per day")
@@ -750,24 +765,24 @@ class Parameters:
         if time_consts["biofuels_kcals"][0] > 0:
             # 1000 tons protein/fat per dry caloric ton
             print("INITIAL_BIOFUEL_KCALS million tons dry caloric monthly")
-            print(-self.BIOFUEL_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
+            print(-biofuels.BIOFUEL_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
             print("INITIAL_BIOFUEL_FAT million tons monthly")
-            print(-self.BIOFUEL_MONTHLY_USAGE_FAT / 1e3)
+            print(-biofuels.BIOFUEL_MONTHLY_USAGE_FAT / 1e3)
             print("INITIAL_BIOFUEL_PROTEIN million tons monthly")
-            print(-self.BIOFUEL_MONTHLY_USAGE_PROTEIN / 1e3)
+            print(-biofuels.BIOFUEL_MONTHLY_USAGE_PROTEIN / 1e3)
             print("INITIAL_BIOFUEL_FAT percentage")
             print(
                 100
-                * self.BIOFUEL_MONTHLY_USAGE_FAT
+                * biofuels.BIOFUEL_MONTHLY_USAGE_FAT
                 / 1e3
-                / (self.BIOFUEL_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
+                / (biofuels.BIOFUEL_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
             )
             print("INITIAL_BIOFUEL_PROTEIN percentage")
             print(
                 100
-                * self.BIOFUEL_MONTHLY_USAGE_PROTEIN
+                * biofuels.BIOFUEL_MONTHLY_USAGE_PROTEIN
                 / 1e3
-                / (self.BIOFUEL_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
+                / (biofuels.BIOFUEL_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
             )
         else:
             print("No biofuel usage")

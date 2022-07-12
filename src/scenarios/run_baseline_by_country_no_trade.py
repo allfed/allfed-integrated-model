@@ -107,11 +107,9 @@ def run_optimizer_for_country(country_code, country_data):
         inputs_to_optimizer
     )
 
-    inputs_to_optimizer = scenarios_loader.set_waste_to_baseline_prices(
+    inputs_to_optimizer = scenarios_loader.set_immediate_shutoff(
         inputs_to_optimizer
     )
-
-    inputs_to_optimizer = scenarios_loader.set_immediate_shutoff(inputs_to_optimizer)
 
     inputs_to_optimizer = scenarios_loader.set_disruption_to_crops_to_zero(
         inputs_to_optimizer
@@ -145,9 +143,8 @@ def run_optimizer_for_country(country_code, country_data):
     # Plotter.plot_fig_s1abcd(analysis, analysis, 72)
 
     return needs_ratio
-def fill_data_for_map(country_code, needs_ratio):
-    # population = world[world['iso_a3'].apply(lambda x: x == country)]
 
+def fill_data_for_map(country_code, needs_ratio):
     if country_code == "SWT":
         country_code_map = "SWZ"
     else:
@@ -159,12 +156,9 @@ def fill_data_for_map(country_code, needs_ratio):
         print(country_code_map)
 
     if len(country_map) == 1:
-        # world.loc[world_index, 'needs_ratio'] = needs_ratio
 
         # cap at 100% fed, surplus is not traded away in this scenario
         kcals_ratio_capped = 1 if needs_ratio >= 1 else needs_ratio
-        # fat_ratio_capped = 1 if fat_ratio >= 1 else fat_ratio
-        # protein_ratio_capped = 1 if protein_ratio >= 1 else protein_ratio
         world_index = country_map.index
         world.loc[world_index, "needs_ratio"] = kcals_ratio_capped
 
@@ -174,6 +168,10 @@ og_sum = 0
 for index, country_data in no_trade_table.iterrows():
     country_code = country_data["iso3"]
     country_name = country_data["country"]
+
+
+    print("")
+    print(country_name)
 
     population = country_data["population"]
 
@@ -193,64 +191,9 @@ ax = world.plot(
     legend=True,
     cmap="viridis",
     legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"}
-    # missing_kwds={
-    #             "color": "lightgrey",
-    #             "edgecolor": "red",
-    #             "hatch": "///",
-    #             "label": "Missing values",
-    # }
 )
 
 pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
-# Plotter.formatticklabels(mn,mx,pp)
-# plt.rcParams['text.usetex'] = True
 plt.title("Fraction of minimum macronutritional needs with no trade")
-# plt.savefig(Params.globalEfieldPlots+'Results'+str(r)+'perYearWindow'+str(windowperiod)+'s.png')
 plt.show()
 plt.close()
-quit()
-mn = 0
-mx = 1
-ax = world.plot(
-    column="fat_frac_fed",
-    legend=True,
-    cmap="viridis",
-    legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"},
-)
-pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
-# Plotter.formatticklabels(mn,mx,pp)
-# plt.rcParams['text.usetex'] = True
-plt.title("Fraction of minimum fat needs with no trade")
-# plt.savefig(Params.globalEfieldPlots+'Results'+str(r)+'perYearWindow'+str(windowperiod)+'s.png')
-plt.show()
-plt.close()
-
-mn = 0
-mx = 1
-ax = world.plot(
-    column="protein_frac_fed",
-    legend=True,
-    cmap="viridis",
-    legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"},
-)
-pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
-# Plotter.formatticklabels(mn,mx,pp)
-# plt.rcParams['text.usetex'] = True
-plt.title("Fraction of minimum protein needs with no trade")
-# plt.savefig(Params.globalEfieldPlots+'Results'+str(r)+'perYearWindow'+str(windowperiod)+'s.png')
-plt.show()
-
-mn = 0
-mx = 1
-ax = world.plot(
-    column="min_frac_fed",
-    legend=True,
-    cmap="viridis",
-    legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"},
-)
-pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
-# Plotter.formatticklabels(mn,mx,pp)
-# plt.rcParams['text.usetex'] = True
-plt.title("Smallest fraction of any macronutrient need with no trade")
-# plt.savefig(Params.globalEfieldPlots+'Results'+str(r)+'perYearWindow'+str(windowperiod)+'s.png')
-plt.show()
