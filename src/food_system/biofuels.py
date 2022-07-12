@@ -22,8 +22,8 @@ class Biofuels:
             self.BIOFUEL_PROTEIN / 12 / 1e3
         )  # thousand tons
 
-        #### Delayed shutoff BIOFUELS ####
-        # "Monthly flows" tab https://docs.google.com/spreadsheets/d / 1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=1714403726
+        # Delayed shutoff BIOFUELS ####
+        # "Monthly flows" tab @Morgan: Link broken
 
         biofuel_delay = inputs_to_optimizer["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
         self.biofuels_kcals = [self.BIOFUEL_MONTHLY_USAGE_KCALS] * biofuel_delay + [

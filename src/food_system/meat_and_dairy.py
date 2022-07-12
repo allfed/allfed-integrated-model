@@ -16,7 +16,7 @@ class MeatAndDairy:
         self.KG_TO_1000_TONS = 1 / (1e6)
         self.ADD_DAIRY = inputs_to_optimizer["ADD_DAIRY"]
 
-        # we use this spreadsheeet https://docs.google.com/spreadsheets/d / 1ZyDrGI84TwhXj_QNicwjj9EPWLJ-r3xnAYMzKSAfWc0/edit#gid=824870019
+        # we use this spreadsheeet @Morgan: Link broken
         self.NMONTHS = inputs_to_optimizer["NMONTHS"]
         # edible meat, organs, and fat added
         self.MEAT_WASTE = inputs_to_optimizer["WASTE"]["MEAT"]
@@ -34,33 +34,21 @@ class MeatAndDairy:
         self.SMALL_ANIMAL_FAT_PER_KG = 0.076
         self.SMALL_ANIMAL_PROTEIN_PER_KG = 0.196
 
-        # https://docs.google.com/spreadsheets/d / 1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=300573673
+        # @Morgan: Link broken
         # this one uses pigs from FAOstat, unlike the other two
         # roww 264, "Nutrition Data From FAOstat" tab
         self.MEDIUM_ANIMAL_KCALS_PER_KG = 3590
         self.MEDIUM_ANIMAL_FAT_PER_KG = 0.34
         self.MEDIUM_ANIMAL_PROTEIN_PER_KG = 0.11
 
-        # DAIRY_PRODUCTION = inputs_to_optimizer['DAIRY_PRODUCTION']
-        # DAIRY_WASTE = inputs_to_optimizer['WASTE']['DAIRY']
-        # billions of kcals
-        # MILK_KCALS_PER_1000_CATTLE_PER_MONTH = ANNUAL_LITERS_PER_COW \
-        #     * KCALS_PER_LITER \
-        #     / 12 \
-        #     / 1e9 \
-        #     * 1000 \
-        #     * DAIRY_PRODUCTION \
-        #     * (1 - DAIRY_WASTE / 100)
-
-        # MILK_KCALS_PER_1000_CATTLE_PER_MONTH = 0.0369 / (1 / 1000 * 1e9 / 4e6) *  (1 - DAIRY_WASTE / 100)
-        # https://docs.google.com/spreadsheets/d / 1 - upBP5-iPtBzyjm5zbeGlfuE4FwqLUyR/edit#gid=2007828143
+        # @Morgan: Link broken
         # per kg, whole milk, per nutrition calculator
         self.MILK_KCALS = 610  # kcals per kg
         self.MILK_FAT = 0.032  # kg per kg
         self.MILK_PROTEIN = 0.033  # kg per kg
 
-        ######## Human Inedible Produced Primary Dairy and Cattle Meat #########
-        # 'integrated model 150 tg' tab https://docs.google.com/spreadsheets/d / 1rYcxSe-Z7ztvW-QwTBXT8GABaRmVdDuQ05HXmTHbQ8I/edit#gid=1141282747
+        # Human Inedible Produced Primary Dairy and Cattle Meat #########
+        # 'integrated model 150 tg' tab @Morgan: Link broken
         self.human_inedible_feed = inputs_to_optimizer["HUMAN_INEDIBLE_FEED"]
 
         # dry caloric ton feed/ton milk
@@ -151,7 +139,7 @@ class MeatAndDairy:
             self.MEAT_FRACTION_FAT = 0
             self.MEAT_FRACTION_PROTEIN = 0
 
-    # https://docs.google.com/document/d / 1HlML7ptYmRfNJjko5qMfIJJGyLRUBlnCIiEiBMr41cM/edit#heading=h.7wiajnpimw8t
+    # @Morgan: Link broken
     def calculate_meat_and_dairy_from_excess(self, kcals_fed_to_animals):
 
         # each unit of excess kcals (with associated fat and protein)
@@ -226,9 +214,7 @@ class MeatAndDairy:
 
             # tons per month meat
             cattle_h_e_maintained.append(for_cattle / EDIBLE_TO_CATTLE_CONVERSION)
-            # cattle_h_e_maintained.append(0)
 
-        # assert((ratio_maintained_chicken_pork <= 1).all())
         assert (np.array(h_e_fed_dairy_produced) >= 0).all()
 
         if not self.ADD_DAIRY:
@@ -251,7 +237,8 @@ class MeatAndDairy:
         ) / present_day_tons_per_month_cattle
         self.ratio_not_maintained_cattle = 1 - ratio_maintained_cattle
 
-        # make sure for the months we really care about we're not exceeding present-day cattle meat maintained production
+        # make sure for the months we really care about we're not
+        # exceeding present-day cattle meat maintained production
         # assert((ratio_maintained_cattle <= 1)[0:47].all())
         if (ratio_maintained_cattle[0:47] >= 1).any():
             print("")
@@ -273,37 +260,12 @@ class MeatAndDairy:
         )
         if not (self.ratio_maintained_chicken_pork <= 1).all():
             print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            print("DIRE, DIRE WARNING!!")
-            # quit()
+            # @ Morgan: Should this raise an error?
 
-        # limit the rate of livestock culling by how long it takes to reduce the maintained livestock to its minimum.
-
-        # chicken pork assumed to maintain ratio between medium and small animal mass
+        # limit the rate of livestock culling by how long it takes to reduce
+        # the maintained livestock to its minimum.
+        # chicken pork assumed to maintain ratio between medium
+        # and small animal mass
         small_to_medium_ratio = (
             self.INIT_SMALL_ANIMALS
             * self.KG_PER_SMALL_ANIMAL
@@ -397,10 +359,8 @@ class MeatAndDairy:
         )
 
     def calculate_meat_dairy_from_human_inedible_feed(self, inputs_to_optimizer):
-
         # monthly in tons milk (present day value)
         DAIRY_LIMIT = inputs_to_optimizer["TONS_DAIRY_ANNUAL"] / 12
-        # CHICKEN_PORK_LIMIT = 250e6 / 12
 
         # monthly in dry caloric tons inedible feed
         DAIRY_LIMIT_FEED_USAGE = DAIRY_LIMIT * self.INEDIBLE_TO_DAIRY_CONVERSION
@@ -504,7 +464,7 @@ class MeatAndDairy:
         )
 
     def get_excess(self, inputs_to_optimizer, biofuels, feed):
-        ###### Human Edible Produced "Secondary" Dairy and Cattle Meat #######
+        # Human Edible Produced "Secondary" Dairy and Cattle Meat #######
 
         # assume animals need and use human levels of fat and protein per kcal
         # units grams per kcal same as units 1000s tons per billion kcals

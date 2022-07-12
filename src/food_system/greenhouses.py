@@ -31,7 +31,7 @@ class Greenhouses:
         # greenhouses tab
         # assumption: greenhouse crop production is very similar in nutritional
         # profile to stored food
-        # reference: see https://docs.google.com/spreadsheets/d / 1f9eVD14Y2d9vmLFP3OsJPFA5d2JXBU-63MTz8MlB1rY/edit#gid=756212200
+        # reference: @Morgan Link broken
         # greenhouse paper (scaling of greenhouses in low sunlight scenarios)
         # At constant expansion for 36 months, the cumulative ground coverage
         # will equal 2.5 million km^2 (250 million hectares).
@@ -105,9 +105,9 @@ class Greenhouses:
         return greenhouse_area
 
     # for the conversions and numbers, go here
-    # https://docs.google.com/document/d / 1HlML7ptYmRfNJjko5qMfIJJGyLRUBlnCIiEiBMr41cM/edit#
+    # @Morgan: Link broken
     # and here
-    # https://docs.google.com/spreadsheets/d / 1rYcxSe-Z7ztvW-QwTBXT8GABaRmVdDuQ05HXmTHbQ8I/edit#gid=1141282747
+    # @Morgan: Link broken
 
     # SUM_CALORIES is an overestimate by some factor, as it is in current
     # day conditions. We improve accuracy by applying the outdoor growing

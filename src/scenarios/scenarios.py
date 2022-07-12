@@ -101,10 +101,10 @@ class Scenarios:
         inputs_to_optimizer["NUTRITION"]["KCALS_DAILY"] = 2100
 
         # grams per person per day
-        inputs_to_optimizer["NUTRITION"]["FAT_DAILY"] = 61.7  # 47#35
+        inputs_to_optimizer["NUTRITION"]["FAT_DAILY"] = 61.7
 
         # grams per person per day
-        inputs_to_optimizer["NUTRITION"]["PROTEIN_DAILY"] = 59.5  # 51#46
+        inputs_to_optimizer["NUTRITION"]["PROTEIN_DAILY"] = 59.5
 
         return inputs_to_optimizer
 
@@ -116,10 +116,10 @@ class Scenarios:
         inputs_to_optimizer["NUTRITION"]["KCALS_DAILY"] = 2100
 
         # grams per person per day
-        inputs_to_optimizer["NUTRITION"]["FAT_DAILY"] = 47  # 35
+        inputs_to_optimizer["NUTRITION"]["FAT_DAILY"] = 47
 
         # grams per person per day
-        inputs_to_optimizer["NUTRITION"]["PROTEIN_DAILY"] = 51  # 46
+        inputs_to_optimizer["NUTRITION"]["PROTEIN_DAILY"] = 51
 
         return inputs_to_optimizer
 
@@ -128,10 +128,6 @@ class Scenarios:
         inputs_to_optimizer["TONS_DRY_CALORIC_EQIVALENT_SF"] = inputs_to_optimizer[
             "TONS_DRY_CALORIC_EQIVALENT_SF_AVAILABLE"
         ]
-        # the stored food fat and protein ratios do not produce realistic outputs in baseline case, so outdoor growing ratios were used instead
-        # inputs_to_optimizer['INITIAL_SF_FAT'] = 166.07e3 * 0.96
-        # inputs_to_optimizer['INITIAL_SF_PROTEIN'] = 69.25e3 * 0.96
-
         return inputs_to_optimizer
 
     def set_stored_food_usage_as_may_till_minimum(self, inputs_to_optimizer):
@@ -139,10 +135,6 @@ class Scenarios:
         inputs_to_optimizer["TONS_DRY_CALORIC_EQIVALENT_SF"] = (
             inputs_to_optimizer["TONS_DRY_CALORIC_EQIVALENT_SF_AVAILABLE"] * 0.26
         )
-        # the stored food fat and protein ratios do not produce realistic outputs in baseline case, so outdoor growing ratios were used instead
-        # inputs_to_optimizer['INITIAL_SF_FAT'] = 166.07e3 * 0.96
-        # inputs_to_optimizer['INITIAL_SF_PROTEIN'] = 69.25e3 * 0.96
-
         return inputs_to_optimizer
 
     def set_stored_food_usage_as_80_percent_used(self, inputs_to_optimizer):
@@ -150,28 +142,13 @@ class Scenarios:
         inputs_to_optimizer["TONS_DRY_CALORIC_EQIVALENT_SF"] = (
             inputs_to_optimizer["TONS_DRY_CALORIC_EQIVALENT_SF_AVAILABLE"] * 0.80
         )
-        # the stored food fat and protein ratios do not produce realistic outputs in baseline case, so outdoor growing ratios were used instead
-        # inputs_to_optimizer['INITIAL_SF_FAT'] = 166.07e3 * 0.96
-        # inputs_to_optimizer['INITIAL_SF_PROTEIN'] = 69.25e3 * 0.96
-
         return inputs_to_optimizer
 
     def set_country_seasonality_baseline(self, inputs_to_optimizer, country_data):
 
         # fractional production per month
         inputs_to_optimizer["SEASONALITY"] = [
-            country_data["seasonality_m1"],
-            country_data["seasonality_m2"],
-            country_data["seasonality_m3"],
-            country_data["seasonality_m4"],
-            country_data["seasonality_m5"],
-            country_data["seasonality_m6"],
-            country_data["seasonality_m7"],
-            country_data["seasonality_m8"],
-            country_data["seasonality_m9"],
-            country_data["seasonality_m10"],
-            country_data["seasonality_m11"],
-            country_data["seasonality_m12"],
+            country_data["seasonality_m" + str(i)] for i in range(1, 13)
         ]
 
         # tons dry caloric monthly
@@ -188,18 +165,7 @@ class Scenarios:
 
         # fractional production per month
         inputs_to_optimizer["SEASONALITY"] = [
-            country_data["seasonality_m1"],
-            country_data["seasonality_m2"],
-            country_data["seasonality_m3"],
-            country_data["seasonality_m4"],
-            country_data["seasonality_m5"],
-            country_data["seasonality_m6"],
-            country_data["seasonality_m7"],
-            country_data["seasonality_m8"],
-            country_data["seasonality_m9"],
-            country_data["seasonality_m10"],
-            country_data["seasonality_m11"],
-            country_data["seasonality_m12"],
+            country_data["seasonality_m" + str(i)] for i in range(1, 13)
         ]
 
         inputs_to_optimizer["HUMAN_INEDIBLE_FEED"] = np.array(
@@ -265,100 +231,14 @@ class Scenarios:
         # tons dry caloric monthly
         inputs_to_optimizer["HUMAN_INEDIBLE_FEED"] = (
             np.array(
-                [
-                    2728,
-                    2728,
-                    2728,
-                    2728,
-                    2728,
-                    2728,
-                    2728,
-                    2728,
-                    972,
-                    972,
-                    972,
-                    972,
-                    972,
-                    972,
-                    972,
-                    972,
-                    972,
-                    972,
-                    972,
-                    972,
-                    594,
-                    594,
-                    594,
-                    594,
-                    594,
-                    594,
-                    594,
-                    594,
-                    594,
-                    594,
-                    594,
-                    594,
-                    531,
-                    531,
-                    531,
-                    531,
-                    531,
-                    531,
-                    531,
-                    531,
-                    531,
-                    531,
-                    531,
-                    531,
-                    552,
-                    552,
-                    552,
-                    552,
-                    552,
-                    552,
-                    552,
-                    552,
-                    552,
-                    552,
-                    552,
-                    552,
-                    789,
-                    789,
-                    789,
-                    789,
-                    789,
-                    789,
-                    789,
-                    789,
-                    789,
-                    789,
-                    789,
-                    789,
-                    1026,
-                    1026,
-                    1026,
-                    1026,
-                    1026,
-                    1026,
-                    1026,
-                    1026,
-                    1026,
-                    1026,
-                    1026,
-                    1026,
-                    1394,
-                    1394,
-                    1394,
-                    1394,
-                    1394,
-                    1394,
-                    1394,
-                    1394,
-                    1394,
-                    1394,
-                    1394,
-                    1394,
-                ]
+                [2728] * 8
+                + [972] * 12
+                + [594] * 12
+                + [531] * 12
+                + [552] * 12
+                + [789] * 12
+                + [1026] * 12
+                + [1394] * 12
             )
             * 1e6
             / 12
