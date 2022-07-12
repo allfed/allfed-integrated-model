@@ -397,13 +397,17 @@ class Parameters:
 
         constants["inputs"] = inputs_to_optimizer
 
-        self.print_constants(
-            constants,
-            time_consts,
-            feed,
-            stored_food,
-            biofuels
-        )
+        PRINT_FIRST_MONTH_CONSTANTS = False
+        
+        if(PRINT_FIRST_MONTH_CONSTANTS):
+            self.print_constants(
+                constants,
+                time_consts,
+                feed,
+                stored_food,
+                biofuels,
+                methane_scp
+            )
 
         return (constants, time_consts)
 
@@ -413,7 +417,8 @@ class Parameters:
         time_consts,
         feed,
         stored_food,
-        biofuels):
+        biofuels,
+        methane_scp):
 
         # used by world population
         print("")
@@ -809,7 +814,7 @@ class Parameters:
                 * 1e9
                 / self.DAYS_IN_MONTH
                 / self.POP
-                / self.SCP_KCALS_PER_KG
+                / methane_scp.SCP_KCALS_PER_KG
             )
             print("daily grams protein SCP")
             print(
@@ -817,15 +822,15 @@ class Parameters:
                 * 1e9
                 / self.DAYS_IN_MONTH
                 / self.POP
-                / self.SCP_KCALS_PER_KG
-                * self.SCP_FRAC_PROTEIN
+                / methane_scp.SCP_KCALS_PER_KG
+                * methane_scp.SCP_FRAC_PROTEIN
                 * 1000
             )
             print("1000 tons per month protein SCP")
             print(
                 np.array(production_kcals_scp_per_month)
                 * 1e9
-                / self.SCP_KCALS_PER_KG
-                * self.SCP_FRAC_PROTEIN
+                / methane_scp.SCP_KCALS_PER_KG
+                * methane_scp.SCP_FRAC_PROTEIN
                 / 1e6
             )
