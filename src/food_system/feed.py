@@ -13,17 +13,15 @@ class Feed:
         self.FEED_KCALS = inputs_to_optimizer["FEED_KCALS"]
         self.FEED_FAT = inputs_to_optimizer["FEED_FAT"]
         self.FEED_PROTEIN = inputs_to_optimizer["FEED_PROTEIN"]
-
-        # or, should this be 1543e6?? cell L8 https://docs.google.com/spreadsheets/d / 1rYcxSe-Z7ztvW-QwTBXT8GABaRmVdDuQ05HXmTHbQ8I/edit#gid=1141282747
-        self.FEED_MONTHLY_USAGE_KCALS = (
-            self.FEED_KCALS / 12 * 4e6 / 1e9
-        )  # billions kcals
-        self.FEED_MONTHLY_USAGE_FAT = self.FEED_FAT / 12 / 1e3  # thousand tons
-        self.FEED_MONTHLY_USAGE_PROTEIN = self.FEED_PROTEIN / 12 / 1e3  # thousand tons
+        # billions kcals
+        self.FEED_MONTHLY_USAGE_KCALS = self.FEED_KCALS / 12 * 4e6 / 1e9
+        # thousand tons
+        self.FEED_MONTHLY_USAGE_FAT = self.FEED_FAT / 12 / 1e3
+        self.FEED_MONTHLY_USAGE_PROTEIN = self.FEED_PROTEIN / 12 / 1e3
 
     def get_feed_usage(self, inputs_to_optimizer):
-        #### Delayed shutoff FEED ####
-        # "Monthly flows" tab https://docs.google.com/spreadsheets/d / 1tLFHJpXTStxyfNojP_Wrj0MQowfyKujJUA37ZG1q6pk/edit#gid=1714403726
+        # Delayed shutoff FEED
+        # "Monthly flows" tab @Morgan: Link broken
 
         self.feed_shutoff_delay_months = inputs_to_optimizer["DELAY"][
             "FEED_SHUTOFF_MONTHS"

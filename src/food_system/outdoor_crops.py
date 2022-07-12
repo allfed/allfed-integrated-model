@@ -59,7 +59,9 @@ class OutdoorCrops:
         # need to use the multiplier on units of kcals to get fat and protein
         if inputs_to_optimizer["OG_USE_BETTER_ROTATION"]:
 
-            # deals with the issue of caloric improvement being more than present-day production during the beginning months of the simulation.
+            # deals with the issue of caloric improvement being more than
+            # present-day production during the beginning months
+            # of the simulation.
             self.OG_KCAL_REDUCED = inputs_to_optimizer["ROTATION_IMPROVEMENTS"][
                 "KCALS_REDUCTION"
             ]
@@ -97,7 +99,8 @@ class OutdoorCrops:
     def calculate_monthly_production(self, inputs_to_optimizer):
         # assumption: outdoor crop production is very similar in nutritional
         # profile to stored food
-        # reference: row 11, 'outputs' tab  https://docs.google.com/spreadsheets/d / 19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673
+        # reference: row 11, 'outputs' tab
+        # @ Morgan: Link here was dead, please add again
 
         JAN_FRACTION = inputs_to_optimizer["SEASONALITY"][0]
         FEB_FRACTION = inputs_to_optimizer["SEASONALITY"][1]
@@ -112,18 +115,19 @@ class OutdoorCrops:
         NOV_FRACTION = inputs_to_optimizer["SEASONALITY"][10]
         DEC_FRACTION = inputs_to_optimizer["SEASONALITY"][11]
 
-        JAN_YIELD = JAN_FRACTION * self.ANNUAL_YIELD  # tons dry carb equivalent
-        FEB_YIELD = FEB_FRACTION * self.ANNUAL_YIELD  # tons dry carb equivalent
-        MAR_YIELD = MAR_FRACTION * self.ANNUAL_YIELD  # tons dry carb equivalent
-        APR_YIELD = APR_FRACTION * self.ANNUAL_YIELD  # tons dry carb equivalent
-        MAY_YIELD = MAY_FRACTION * self.ANNUAL_YIELD  # tons dry carb equivalent
-        JUN_YIELD = JUN_FRACTION * self.ANNUAL_YIELD  # tons dry carb equivalent
-        JUL_YIELD = JUL_FRACTION * self.ANNUAL_YIELD  # tons dry carb equivalent
-        AUG_YIELD = AUG_FRACTION * self.ANNUAL_YIELD  # tons dry carb equivalent
-        SEP_YIELD = SEP_FRACTION * self.ANNUAL_YIELD  # tons dry carb equivalent
-        OCT_YIELD = OCT_FRACTION * self.ANNUAL_YIELD  # tons dry carb equivalent
-        NOV_YIELD = NOV_FRACTION * self.ANNUAL_YIELD  # tons dry carb equivalent
-        DEC_YIELD = DEC_FRACTION * self.ANNUAL_YIELD  # tons dry carb equivalent
+        # tons dry carb equivalent
+        JAN_YIELD = JAN_FRACTION * self.ANNUAL_YIELD
+        FEB_YIELD = FEB_FRACTION * self.ANNUAL_YIELD
+        MAR_YIELD = MAR_FRACTION * self.ANNUAL_YIELD
+        APR_YIELD = APR_FRACTION * self.ANNUAL_YIELD
+        MAY_YIELD = MAY_FRACTION * self.ANNUAL_YIELD
+        JUN_YIELD = JUN_FRACTION * self.ANNUAL_YIELD
+        JUL_YIELD = JUL_FRACTION * self.ANNUAL_YIELD
+        AUG_YIELD = AUG_FRACTION * self.ANNUAL_YIELD
+        SEP_YIELD = SEP_FRACTION * self.ANNUAL_YIELD
+        OCT_YIELD = OCT_FRACTION * self.ANNUAL_YIELD
+        NOV_YIELD = NOV_FRACTION * self.ANNUAL_YIELD
+        DEC_YIELD = DEC_FRACTION * self.ANNUAL_YIELD
 
         # billions of kcals
         JAN_KCALS_OG = JAN_YIELD * 4e6 / 1e9
@@ -138,35 +142,6 @@ class OutdoorCrops:
         OCT_KCALS_OG = OCT_YIELD * 4e6 / 1e9
         NOV_KCALS_OG = NOV_YIELD * 4e6 / 1e9
         DEC_KCALS_OG = DEC_YIELD * 4e6 / 1e9
-
-        KCALS_PREDISASTER_BEFORE_MAY = (
-            JAN_KCALS_OG + FEB_KCALS_OG + MAR_KCALS_OG + APR_KCALS_OG + MAY_KCALS_OG
-        )
-
-        KCALS_PREDISASTER_AFTER_MAY = (
-            JUN_KCALS_OG
-            + JUL_KCALS_OG
-            + AUG_KCALS_OG
-            + SEP_KCALS_OG
-            + OCT_KCALS_OG
-            + NOV_KCALS_OG
-            + DEC_KCALS_OG
-        )
-
-        KCALS_PREDISASTER_ANNUAL = (
-            JAN_KCALS_OG
-            + FEB_KCALS_OG
-            + MAR_KCALS_OG
-            + APR_KCALS_OG
-            + MAY_KCALS_OG
-            + JUN_KCALS_OG
-            + JUL_KCALS_OG
-            + AUG_KCALS_OG
-            + SEP_KCALS_OG
-            + OCT_KCALS_OG
-            + NOV_KCALS_OG
-            + DEC_KCALS_OG
-        )
 
         RATIO_KCALS_POSTDISASTER_1Y = 1 - inputs_to_optimizer["DISRUPTION_CROPS_YEAR1"]
         RATIO_KCALS_POSTDISASTER_2Y = 1 - inputs_to_optimizer["DISRUPTION_CROPS_YEAR2"]

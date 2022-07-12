@@ -15,7 +15,7 @@ class Seaweed:
         self.MAXIMUM_AREA = 1000  # 1000 km^2 (seaweed)
 
         # use "laver" variety for now from nutrition calculator
-        # https://docs.google.com/spreadsheets/d / 1RZqSrHNiIEuPQLtx1ebCd_kUcFvEF6Ea46xyzA5wU0s/edit#gid=1516287804
+        # @Morgan: Link broken
         self.WET_TO_DRY_MASS_CONVERSION = 1 / 6
 
         # in order, in equal parts by mass:
