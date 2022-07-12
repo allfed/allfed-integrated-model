@@ -89,15 +89,14 @@ def run_optimizer_for_country(country_code, country_data):
 
     inputs_to_optimizer = scenarios_loader.get_baseline_scenario(inputs_to_optimizer)
 
-    inputs_to_optimizer = scenarios_loader.set_baseline_nutrition_profile(
-        inputs_to_optimizer
-    )
+    inputs_to_optimizer = scenarios_loader.set_stored_food_usage_as_may_till_minimum(
+            inputs_to_optimizer
+        )
 
-    inputs_to_optimizer = scenarios_loader.set_stored_food_usage_as_80_percent_used(
-        inputs_to_optimizer
-    )
 
     inputs_to_optimizer = scenarios_loader.set_fish_baseline(inputs_to_optimizer)
+
+    inputs_to_optimizer = scenarios_loader.set_waste_to_zero(inputs_to_optimizer)
 
     inputs_to_optimizer = scenarios_loader.set_waste_to_baseline_prices(
         inputs_to_optimizer
@@ -114,7 +113,8 @@ def run_optimizer_for_country(country_code, country_data):
         [0] * inputs_to_optimizer["NMONTHS"]
     )
 
-    constants["inputs"] = inputs_to_optimizer
+    constants = {}
+    constants['inputs'] = inputs_to_optimizer
 
     (
         single_valued_constants,
@@ -133,12 +133,10 @@ def run_optimizer_for_country(country_code, country_data):
     print(needs_ratio * 2100)
     print("")
 
-    # Plotter.plot_fig_s1abcd(analysis, analysis, 72)
+    Plotter.plot_fig_s1abcd(analysis, analysis, 72)
 
     return needs_ratio
-
-
-def get_country_data(country_code, needs_ratio):
+def fill_data_for_map(country_code, needs_ratio):
     # population = world[world['iso_a3'].apply(lambda x: x == country)]
 
     if country_code == "SWT":
@@ -168,32 +166,16 @@ for index, country_data in no_trade_table.iterrows():
     country_code = country_data["iso3"]
     country_name = country_data["country"]
 
-    print("")
-    print(country_name)
-
     population = country_data["population"]
 
     needs_ratio = run_optimizer_for_country(country_code, country_data)
-    # og = run_optimizer_for_country(country_code, country_data)
-    # og_sum += og
-    # print(og)
 
     if country_code == "F5707+GBR":
         for c in UK_27_Plus_GBR_countries:
-            get_country_data(c, needs_ratio)
+            fill_data_for_map(c, needs_ratio)
     else:
-        get_country_data(country_code, needs_ratio)
+        fill_data_for_map(country_code, needs_ratio)
 
-##LATER##
-# print("og_sum")
-# print(og_sum)
-# quit()
-
-# world[world['kcals_frac_fed']==0] = np.nan
-# world[world['fat_frac_fed']==0] = np.nan
-# world[world['protein_frac_fed']==0] = np.nan
-# world[world['max_frac_fed']==0] = np.nan
-# print(world['max_frac_fed'])
 plt.close()
 mn = 0
 mx = 1

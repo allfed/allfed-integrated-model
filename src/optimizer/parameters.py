@@ -395,11 +395,11 @@ class Parameters:
 
         constants["inputs"] = inputs_to_optimizer
 
-        # self.print_constants(constants,time_consts)
+        self.print_constants(constants, time_consts, feed, stored_food)
 
         return (constants, time_consts)
 
-    def print_constants(self, constants, time_consts):
+    def print_constants(self, constants, time_consts, feed, stored_food):
         # used by world population
         print("")
         print("calories consumed per day")
@@ -513,28 +513,28 @@ class Parameters:
             / 1e3
             / (INITIAL_SF_KCALS * 1e9 / 4e6 / 1e6)
         )
-        if self.feed_shutoff_kcals[0] > 0:
+        if feed.FEED_MONTHLY_USAGE_KCALS > 0:
             print("")
             print("INITIAL_FEED_KCALS million tons dry caloric monthly")
-            print(-self.FEED_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
+            print(-feed.FEED_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
             print("INITIAL_FEED_FAT million tons monthly")
-            print(-self.FEED_MONTHLY_USAGE_FAT / 1e3)
+            print(-feed.FEED_MONTHLY_USAGE_FAT / 1e3)
             print("INITIAL_FEED_PROTEIN million tons monthly")
-            print(-self.FEED_MONTHLY_USAGE_PROTEIN / 1e3)
+            print(-feed.FEED_MONTHLY_USAGE_PROTEIN / 1e3)
             print("")
             print("INITIAL_FEED_FAT percentage")
             print(
                 100
                 * self.FEED_MONTHLY_USAGE_FAT
                 / 1e3
-                / (self.FEED_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
+                / (feed.FEED_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
             )
             print("INITIAL_FEED_PROTEIN percentage")
             print(
                 100
                 * self.FEED_MONTHLY_USAGE_PROTEIN
                 / 1e3
-                / (self.FEED_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
+                / (feed.FEED_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
             )
             print("")
             CPM = np.array(self.chicken_pork_kcals)[0]
