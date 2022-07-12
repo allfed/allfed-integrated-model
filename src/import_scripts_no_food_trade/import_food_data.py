@@ -26,6 +26,9 @@ NO_TRADE_XLS = \
 # of dictionaries
 col_names = {}
 
+#NOTE: IF ANY OF THE UNITS CHANGE HERE, BE SURE TO CHANGE THE UNIT CONVERSIONS
+#      AS WELL IN THE SECTION DOWN BELOW
+
 col_names['population'] = {
     'ISO3 Country Code': "iso3",
     "Country": "country",
@@ -225,13 +228,13 @@ dataframe_dict["dairy"]['dairy'] = dataframe_dict["dairy"]['dairy'] * 1000
 
 
 # convert to tons dry caloric
-dataframe_dict["food_stocks"]['stocks_kcals'] = dataframe_dict["food_stocks"]['stocks_kcals'] * 1e3
+dataframe_dict["food_stocks"]['stocks_kcals'] = dataframe_dict["food_stocks"]['stocks_kcals'] * 1e6
 
 # convert to tons fat
-dataframe_dict["food_stocks"]['stocks_fat'] = dataframe_dict["food_stocks"]['stocks_fat'] * 1e3
+dataframe_dict["food_stocks"]['stocks_fat'] = dataframe_dict["food_stocks"]['stocks_fat'] * 1e6
 
 # convert to tons protein
-dataframe_dict["food_stocks"]['stocks_protein'] = dataframe_dict["food_stocks"]['stocks_protein'] * 1e3
+dataframe_dict["food_stocks"]['stocks_protein'] = dataframe_dict["food_stocks"]['stocks_protein'] * 1e6
 
 
 # biofuel

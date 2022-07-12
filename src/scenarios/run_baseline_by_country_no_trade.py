@@ -49,7 +49,6 @@ scenarios_loader = Scenarios()
 
 def run_optimizer_for_country(country_code,country_data):
 
-
     #initialize country specific food system properties 
     inputs_to_optimizer = \
         scenarios_loader.init_country_food_system_properties(country_data)
@@ -70,15 +69,16 @@ def run_optimizer_for_country(country_code,country_data):
         scenarios_loader.set_baseline_nutrition_profile(inputs_to_optimizer)
 
     inputs_to_optimizer = \
-        scenarios_loader.set_stored_food_usage_as_80_percent_used(
+        scenarios_loader.set_stored_food_usage_as_may_till_minimum(
             inputs_to_optimizer
         )
+
 
     inputs_to_optimizer = \
         scenarios_loader.set_fish_baseline(inputs_to_optimizer)
 
     inputs_to_optimizer = \
-        scenarios_loader.set_waste_to_baseline_prices(inputs_to_optimizer)
+        scenarios_loader.set_waste_to_zero(inputs_to_optimizer)
 
 
     inputs_to_optimizer = \
@@ -92,7 +92,7 @@ def run_optimizer_for_country(country_code,country_data):
     # No excess calories
     inputs_to_optimizer["EXCESS_CALORIES"] = \
         np.array([0] * inputs_to_optimizer['NMONTHS'])
-
+    constants = {}
     constants['inputs'] = inputs_to_optimizer
 
     single_valued_constants, multi_valued_constants = \
@@ -109,11 +109,11 @@ def run_optimizer_for_country(country_code,country_data):
     print(needs_ratio*2100)
     print("")
 
-    # Plotter.plot_fig_s1abcd(analysis, analysis, 72)
+    Plotter.plot_fig_s1abcd(analysis, analysis, 72)
 
     return needs_ratio
 
-def get_country_data(country_code, needs_ratio):
+def fill_data_for_map(country_code, needs_ratio):
     # population = world[world['iso_a3'].apply(lambda x: x == country)]
     
     if(country_code=="SWT"):
@@ -135,12 +135,17 @@ def get_country_data(country_code, needs_ratio):
         # protein_ratio_capped = 1 if protein_ratio >= 1 else protein_ratio
         world_index = country_map.index
         world.loc[world_index, 'needs_ratio'] = kcals_ratio_capped
-
 #iterate over each country from spreadsheet, run the optimizer, plot the result
 og_sum = 0
 for index, country_data in no_trade_table.iterrows():
+    print("index")
+    print(index)
+    # print(country_data)
     country_code = country_data['iso3']
     country_name = country_data['country']
+    if(index==42):
+        print(country_code)
+        print(country_name)
 
     print("")
     print(country_name)
@@ -148,26 +153,13 @@ for index, country_data in no_trade_table.iterrows():
     population = country_data['population']
 
     needs_ratio = run_optimizer_for_country(country_code, country_data)
-    # og = run_optimizer_for_country(country_code, country_data)
-    # og_sum += og
-    # print(og)
 
     if(country_code=="F5707+GBR"):
         for c in UK_27_Plus_GBR_countries:
-            get_country_data(c, needs_ratio)
+            fill_data_for_map(c, needs_ratio)
     else:
-        get_country_data(country_code, needs_ratio)
+        fill_data_for_map(country_code, needs_ratio)
 
-##LATER##
-# print("og_sum")
-# print(og_sum)
-# quit()
-
-# world[world['kcals_frac_fed']==0] = np.nan
-# world[world['fat_frac_fed']==0] = np.nan
-# world[world['protein_frac_fed']==0] = np.nan
-# world[world['max_frac_fed']==0] = np.nan
-# print(world['max_frac_fed'])
 plt.close()
 mn = 0
 mx = 1
