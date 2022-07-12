@@ -89,14 +89,23 @@ def run_optimizer_for_country(country_code, country_data):
 
     inputs_to_optimizer = scenarios_loader.get_baseline_scenario(inputs_to_optimizer)
 
-    inputs_to_optimizer = scenarios_loader.set_stored_food_usage_as_may_till_minimum(
+    inputs_to_optimizer = scenarios_loader.set_baseline_nutrition_profile(
+        inputs_to_optimizer
+    )
+
+    inputs_to_optimizer = \
+        scenarios_loader.set_stored_food_usage_as_may_till_minimum(
             inputs_to_optimizer
         )
 
 
-    inputs_to_optimizer = scenarios_loader.set_fish_baseline(inputs_to_optimizer)
+    inputs_to_optimizer = scenarios_loader.set_fish_baseline(
+        inputs_to_optimizer
+    )
 
-    inputs_to_optimizer = scenarios_loader.set_waste_to_zero(inputs_to_optimizer)
+    inputs_to_optimizer = scenarios_loader.set_waste_to_zero(
+        inputs_to_optimizer
+    )
 
     inputs_to_optimizer = scenarios_loader.set_waste_to_baseline_prices(
         inputs_to_optimizer
@@ -133,7 +142,7 @@ def run_optimizer_for_country(country_code, country_data):
     print(needs_ratio * 2100)
     print("")
 
-    Plotter.plot_fig_s1abcd(analysis, analysis, 72)
+    # Plotter.plot_fig_s1abcd(analysis, analysis, 72)
 
     return needs_ratio
 def fill_data_for_map(country_code, needs_ratio):

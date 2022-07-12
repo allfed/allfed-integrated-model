@@ -525,14 +525,14 @@ class Parameters:
             print("INITIAL_FEED_FAT percentage")
             print(
                 100
-                * self.FEED_MONTHLY_USAGE_FAT
+                * feed.FEED_MONTHLY_USAGE_FAT
                 / 1e3
                 / (feed.FEED_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
             )
             print("INITIAL_FEED_PROTEIN percentage")
             print(
                 100
-                * self.FEED_MONTHLY_USAGE_PROTEIN
+                * feed.FEED_MONTHLY_USAGE_PROTEIN
                 / 1e3
                 / (feed.FEED_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
             )
