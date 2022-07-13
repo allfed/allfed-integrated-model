@@ -38,7 +38,7 @@ inputs_to_optimizer = scenarios_loader.set_baseline_nutrition_profile(
     inputs_to_optimizer
 )
 
-inputs_to_optimizer = scenarios_loader.set_stored_food_usage_as_may_till_minimum(
+inputs_to_optimizer = scenarios_loader.set_stored_food_buffer_as_baseline(
     inputs_to_optimizer
 )
 

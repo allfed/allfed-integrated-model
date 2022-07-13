@@ -184,7 +184,7 @@ class Plotter:
         fig.set_figheight(8)
         fig.set_figwidth(8)
         plt.tight_layout()
-        # plt.savefig('../../reports/fig_1ab.png')
+        # plt.savefig('../../results/fig_1ab.png')
         print("saved figure 1ab")
         plt.show()
 
@@ -350,7 +350,7 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig("../../reports/fig_2abcd.png")
+        plt.savefig("../../results/fig_2abcd.png")
         print("saved figure 2abcd")
         plt.show()
 
@@ -446,7 +446,7 @@ class Plotter:
                 ax_hist.set(title="Monte Carlo outcomes")
 
         plt.tight_layout()
-        plt.savefig("../../reports/fig_3ab.png")
+        plt.savefig("../../results/fig_3ab.png")
         print("saved figure 3ab")
         # os.system('firefox-esr plot.svg')
         plt.show()
@@ -525,7 +525,7 @@ class Plotter:
         plt.tight_layout()
 
         plt.rcParams["figure.figsize"] = [12, 9]
-        plt.savefig("../../reports/fig_s1.png")
+        plt.savefig("../../results/fig_s1.png")
         print("saved figure s1")
         plt.show()
 
@@ -699,7 +699,7 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig("../../reports/fig_s2abcd.png")
+        plt.savefig("../../results/fig_s2abcd.png")
         print("saved figure s2abcd")
         plt.show()
 
@@ -866,7 +866,7 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        # plt.savefig('../../reports/fig_s1abcd.png')
+        # plt.savefig('../../results/fig_s1abcd.png')
         print("saved figure s1abcd")
         plt.show()
 

@@ -94,7 +94,7 @@ def run_optimizer_for_country(country_code, country_data):
     )
 
     inputs_to_optimizer = \
-        scenarios_loader.set_stored_food_usage_as_may_till_minimum(
+        scenarios_loader.set_stored_food_buffer_as_baseline(
             inputs_to_optimizer
         )
 
