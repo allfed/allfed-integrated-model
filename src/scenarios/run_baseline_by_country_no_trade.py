@@ -8,15 +8,19 @@
 
 import pandas as pd
 import numpy as np
+import requests
+import json
 import os
 import sys
 import matplotlib.pyplot as plt
-import geopandas as gpd
-import geoplot as gplt
+import matplotlib.colors as colors
 
 module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
     sys.path.append(module_path)
+
+import geopandas as gpd
+import geoplot as gplt
 
 # import some python files from this integrated model repository
 from src.optimizer.optimizer import Optimizer
@@ -89,15 +93,23 @@ def run_optimizer_for_country(country_code, country_data):
         inputs_to_optimizer
     )
 
-    inputs_to_optimizer = scenarios_loader.set_stored_food_usage_as_may_till_minimum(
+    inputs_to_optimizer = \
+        scenarios_loader.set_stored_food_buffer_as_baseline(
+            inputs_to_optimizer
+        )
+
+
+    inputs_to_optimizer = scenarios_loader.set_fish_baseline(
         inputs_to_optimizer
     )
 
-    inputs_to_optimizer = scenarios_loader.set_fish_baseline(inputs_to_optimizer)
+    inputs_to_optimizer = scenarios_loader.set_waste_to_zero(
+        inputs_to_optimizer
+    )
 
-    inputs_to_optimizer = scenarios_loader.set_waste_to_zero(inputs_to_optimizer)
-
-    inputs_to_optimizer = scenarios_loader.set_immediate_shutoff(inputs_to_optimizer)
+    inputs_to_optimizer = scenarios_loader.set_immediate_shutoff(
+        inputs_to_optimizer
+    )
 
     inputs_to_optimizer = scenarios_loader.set_disruption_to_crops_to_zero(
         inputs_to_optimizer
@@ -109,7 +121,7 @@ def run_optimizer_for_country(country_code, country_data):
     )
 
     constants = {}
-    constants["inputs"] = inputs_to_optimizer
+    constants['inputs'] = inputs_to_optimizer
 
     (
         single_valued_constants,
@@ -131,7 +143,6 @@ def run_optimizer_for_country(country_code, country_data):
     # Plotter.plot_fig_s1abcd(analysis, analysis, 72)
 
     return needs_ratio
-
 
 def fill_data_for_map(country_code, needs_ratio):
     if country_code == "SWT":
@@ -158,6 +169,7 @@ for index, country_data in no_trade_table.iterrows():
     country_code = country_data["iso3"]
     country_name = country_data["country"]
 
+
     print("")
     print(country_name)
 
@@ -178,7 +190,7 @@ ax = world.plot(
     column="needs_ratio",
     legend=True,
     cmap="viridis",
-    legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"},
+    legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"}
 )
 
 pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)

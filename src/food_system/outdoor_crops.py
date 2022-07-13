@@ -101,6 +101,9 @@ class OutdoorCrops:
         # profile to stored food
         # reference: row 11, 'outputs' tab
         # @ Morgan: Link here was dead, please add again
+        # @ Florian: https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673
+        #            does that link work for you?
+        month_index = self.STARTING_MONTH_NUM - 1
 
         JAN_FRACTION = inputs_to_optimizer["SEASONALITY"][0]
         FEB_FRACTION = inputs_to_optimizer["SEASONALITY"][1]
@@ -190,7 +193,7 @@ class OutdoorCrops:
         )[1:]
         y11_to_y11 = np.linspace(
             RATIO_KCALS_POSTDISASTER_10Y, RATIO_KCALS_POSTDISASTER_11Y, 13
-        )[1 : 12 - (self.STARTING_MONTH_NUM - 1)]
+        )[1 : 12 - (month_index)]
 
         self.all_months_reductions = np.array(
             first_year_starting_point
@@ -208,7 +211,11 @@ class OutdoorCrops:
         )
         assert len(self.all_months_reductions) == 12 * 11
 
-        self.months_cycle = [
+        month_cycle_starting_january = [
+            JAN_KCALS_OG,
+            FEB_KCALS_OG,
+            MAR_KCALS_OG,
+            APR_KCALS_OG,
             MAY_KCALS_OG,
             JUN_KCALS_OG,
             JUL_KCALS_OG,
@@ -216,11 +223,14 @@ class OutdoorCrops:
             SEP_KCALS_OG,
             OCT_KCALS_OG,
             NOV_KCALS_OG,
-            DEC_KCALS_OG,
-            JAN_KCALS_OG,
-            FEB_KCALS_OG,
-            MAR_KCALS_OG,
-            APR_KCALS_OG,
+            DEC_KCALS_OG
+        ]
+
+        # adjust cycle so it starts at the first month of the simulation
+        self.months_cycle = month_cycle_starting_january[
+            month_index:
+        ] + month_cycle_starting_january[
+            0:month_index
         ]
 
         self.KCALS_GROWN = []
@@ -235,7 +245,11 @@ class OutdoorCrops:
                     1
                     - (
                         self.OG_KCAL_REDUCED
-                        * (1 - self.all_months_reductions[i + self.STARTING_MONTH_NUM])
+                        * (1 - \
+                            self.all_months_reductions[
+                                i + month_index
+                            ]
+                        )
                     )
                 )
             )
@@ -247,7 +261,7 @@ class OutdoorCrops:
                         (
                             1
                             - self.all_months_reductions[
-                                i + self.STARTING_MONTH_NUM - 1
+                                i + month_index
                             ]
                         )
                     )

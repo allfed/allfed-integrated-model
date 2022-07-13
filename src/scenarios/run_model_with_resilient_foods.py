@@ -1,11 +1,9 @@
-# this program runs the optimizer model, and ensures that all the results are
-# reasonable using a couple useful checks to make sure there's nothing wacky
-# going on:
-
-# 1) check that as time increases, more people can be fed
-
-# 2) check that stored food plus meat is always used at the
-# highest rate during the largest food shortage.
+# run_model_with_resilient_foods.py
+#
+# Runs the model in nuclear winter with resilient foods, then calculates a diet
+# The diet is 2100 kcals, determined by feeding any excess to animals
+# This currently runs for the whole earth, and does not run on a by-country
+# basis.
 
 
 from datetime import datetime
@@ -140,14 +138,11 @@ while True:
         single_valued_constants,
         multi_valued_constants,
     ) = constants_loader.computeParameters(constants)
-    print(multi_valued_constants["excess_kcals"])
-    # print(excess_per_month)
+
     single_valued_constants["CHECK_CONSTRAINTS"] = False
     [time_months, time_months_middle, analysis] = optimizer.optimize(
         single_valued_constants, multi_valued_constants
     )
-    print("analysis.kcals_fed")
-    print(analysis.kcals_fed)
 
     if people_fed > 7.79 and people_fed < 7.81:
         break
@@ -159,14 +154,17 @@ while True:
     if people_fed < 8.3 and people_fed > 7.8:
         excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = excess_per_month[
             feed_delay:N_MONTHS_TO_CALCULATE_DIET
-        ] + np.linspace(500, 500, N_MONTHS_TO_CALCULATE_DIET - feed_delay)
+        ] + np.linspace(200, 200, N_MONTHS_TO_CALCULATE_DIET - feed_delay)
     else:
         excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = excess_per_month[
             feed_delay:N_MONTHS_TO_CALCULATE_DIET
-        ] + np.linspace(25000, 25000, N_MONTHS_TO_CALCULATE_DIET - feed_delay)
+        ] + np.linspace(15000, 15000, N_MONTHS_TO_CALCULATE_DIET - feed_delay)
     inputs_to_optimizer["EXCESS_CALORIES"] = excess_per_month
-    Plotter.plot_fig_2abcd(analysis1, analysis, 48)
     print("Diet computation complete")
+
+    people_fed = analysis.percent_people_fed / 100 * 7.8
+
+    excess_per_month = excess_per_month + analysis.excess_after_run
 
     n = n + 1
 

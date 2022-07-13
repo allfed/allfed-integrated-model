@@ -123,26 +123,31 @@ class Scenarios:
 
         return inputs_to_optimizer
 
-    def set_stored_food_all_used(self, inputs_to_optimizer):
-        # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
-        inputs_to_optimizer["TONS_DRY_CALORIC_EQIVALENT_SF"] = inputs_to_optimizer[
-            "TONS_DRY_CALORIC_EQIVALENT_SF_AVAILABLE"
-        ]
+
+    def set_stored_food_buffer_zero(self,inputs_to_optimizer):
+        """
+        Sets the stored food buffer as zero -- no stored food left at 
+        the end of the simulation.
+
+        However, in reality food in transit and food in grocery stores and
+        warehouses means there would still likely be some food available at 
+        the end as a buffer.
+
+        """
+        inputs_to_optimizer['BUFFER_RATIO'] = 0
+
         return inputs_to_optimizer
 
-    def set_stored_food_usage_as_may_till_minimum(self, inputs_to_optimizer):
-        # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
-        inputs_to_optimizer["TONS_DRY_CALORIC_EQIVALENT_SF"] = (
-            inputs_to_optimizer["TONS_DRY_CALORIC_EQIVALENT_SF_AVAILABLE"] * 0.26
-        )
+    def set_stored_food_buffer_as_baseline(self,inputs_to_optimizer):
+        """
+        Sets the stored food buffer as 100% -- the typical stored food buffer
+        in ~2020 left at the end of the simulation.
+
+        """
+        inputs_to_optimizer['BUFFER_RATIO'] = 1
+
         return inputs_to_optimizer
 
-    def set_stored_food_usage_as_80_percent_used(self, inputs_to_optimizer):
-        # "Outputs" https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673 cell G12-G14
-        inputs_to_optimizer["TONS_DRY_CALORIC_EQIVALENT_SF"] = (
-            inputs_to_optimizer["TONS_DRY_CALORIC_EQIVALENT_SF_AVAILABLE"] * 0.80
-        )
-        return inputs_to_optimizer
 
     def set_country_seasonality_baseline(self, inputs_to_optimizer, country_data):
 
