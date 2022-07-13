@@ -29,7 +29,7 @@ class Parameters:
     def __init__(self):
 
         self.DAYS_IN_MONTH = 30
-        self.SIMULATION_STARTING_MONTH = "JUN"
+        self.SIMULATION_STARTING_MONTH = "MAY"
         # Dictionary of the months to set the starting point of the model to
         # the months specified in parameters.py
         months_dict = {
@@ -206,6 +206,9 @@ class Parameters:
         #### STORED FOOD VARIABLES ####
 
         stored_food = StoredFood(inputs_to_optimizer, outdoor_crops)
+        stored_food.calculate_stored_food_to_use(
+            self.SIMULATION_STARTING_MONTH_NUM
+        )
 
         #### CONSTANTS FOR GREENHOUSES ####
 
@@ -398,7 +401,7 @@ class Parameters:
         constants["inputs"] = inputs_to_optimizer
 
         PRINT_FIRST_MONTH_CONSTANTS = False
-        
+
         if(PRINT_FIRST_MONTH_CONSTANTS):
             self.print_constants(
                 constants,
