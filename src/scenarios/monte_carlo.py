@@ -4,23 +4,12 @@
  plots a histogram of the results
 """
 import copy
-import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 import os
 import sys
-
-
-from scipy.stats import uniform
 from scipy.stats import norm
-from scipy.stats import lognorm
 from scipy.stats import truncnorm
-import statsmodels
-import statsmodels.api as sm
-import matplotlib.pyplot as plt
 import multiprocessing as mp
-from multiprocessing import Pool
-from multiprocessing import set_start_method
 
 # matplotlib.use('Svg')
 
