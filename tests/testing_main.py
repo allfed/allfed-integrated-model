@@ -7,7 +7,6 @@ Created on Wed Jul 13 11:51:40 2022
 
 @author: florian
 """
-
 import pytest
 
 # Run all the test files and function in this directoy
