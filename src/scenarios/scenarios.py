@@ -123,8 +123,7 @@ class Scenarios:
 
         return inputs_to_optimizer
 
-
-    def set_stored_food_buffer_zero(self,inputs_to_optimizer):
+    def set_stored_food_buffer_zero(self, inputs_to_optimizer):
         """
         Sets the stored food buffer as zero -- no stored food left at 
         the end of the simulation.
@@ -134,20 +133,19 @@ class Scenarios:
         the end as a buffer.
 
         """
-        inputs_to_optimizer['BUFFER_RATIO'] = 0
+        inputs_to_optimizer["BUFFER_RATIO"] = 0
 
         return inputs_to_optimizer
 
-    def set_stored_food_buffer_as_baseline(self,inputs_to_optimizer):
+    def set_stored_food_buffer_as_baseline(self, inputs_to_optimizer):
         """
         Sets the stored food buffer as 100% -- the typical stored food buffer
         in ~2020 left at the end of the simulation.
 
         """
-        inputs_to_optimizer['BUFFER_RATIO'] = 1
+        inputs_to_optimizer["BUFFER_RATIO"] = 1
 
         return inputs_to_optimizer
-
 
     def set_country_seasonality_baseline(self, inputs_to_optimizer, country_data):
 
@@ -690,10 +688,9 @@ class Scenarios:
         ##### ERROR CHECKING, TO BE REMOVED WHEN SUFFICIENT BY-COUNTRY
         ##### RESILIENT FOOD DATA ARE AVAILABLE
         if inputs_to_optimizer["POP"] < 7e9:
-            print("ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY")
-
-            # this is just random stuff to cause a compile time error
-            dsbginoempwrinrqjomeiwgnu
+            raise RuntimeError(
+                "ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY"
+            )
 
         return inputs_to_optimizer
 
@@ -752,11 +749,7 @@ class Scenarios:
         ##### ERROR CHECKING, TO BE REMOVED WHEN SUFFICIENT BY-COUNTRY
         ##### RESILIENT FOOD DATA ARE AVAILABLE
         if inputs_to_optimizer["POP"] < 7e9:
-            print("ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY")
-            print("THIS IS BECAUSE WE HAVE NOT YET IMPORTED BY-COUNTRY CROP")
-            print("PRODUCTION IN A NUCLEAR WINTER")
-
-            # this is just random stuff to cause a compile time error
-            dsbginoempwrinrqjomeiwgnu
-
+            raise RuntimeError(
+                "ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY. THIS IS BECAUSE WE HAVE NOT YET IMPORTED BY-COUNTRY CROP PRODUCTION IN A NUCLEAR WINTER"
+            )
         return inputs_to_optimizer
