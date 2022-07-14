@@ -51,7 +51,7 @@ class MonteCarlo:
             inputs_to_optimizer
         )
 
-        inputs_to_optimizer = scenarios_loader.set_stored_food_all_used(
+        inputs_to_optimizer = scenarios_loader.set_stored_food_buffer_zero(
             inputs_to_optimizer
         )
 

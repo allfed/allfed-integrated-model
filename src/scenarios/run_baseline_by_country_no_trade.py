@@ -62,13 +62,15 @@ def run_baseline_by_country_no_trade():
 
     no_trade_table = pd.read_csv(NO_TRADE_CSV)
 
-    sum_pop = 0  # initialize to zero population for summing global population
-
     # import the visual map
     world = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
 
     constants_loader = Parameters()
     scenarios_loader = Scenarios()
+
+    print("ERROR: STORED FOOD SEASONALITY CANNOT CURRENTLY BE PROPERLY ACCOUNTED")
+    print("QUITTING")
+    quit()
 
     def run_optimizer_for_country(country_code, country_data):
 

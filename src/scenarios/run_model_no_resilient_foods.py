@@ -50,8 +50,9 @@ def run_model_no_resilient_foods():
     inputs_to_optimizer = scenarios_loader.set_global_seasonality_nuclear_winter(
         inputs_to_optimizer
     )
-
-    inputs_to_optimizer = scenarios_loader.set_stored_food_all_used(inputs_to_optimizer)
+    inputs_to_optimizer = scenarios_loader.set_stored_food_buffer_zero(
+        inputs_to_optimizer
+    )
 
     inputs_to_optimizer = scenarios_loader.set_fish_nuclear_winter_reduction(
         inputs_to_optimizer
