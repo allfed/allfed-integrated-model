@@ -70,7 +70,7 @@ def run_baseline_by_country_no_trade():
 
     print("ERROR: STORED FOOD SEASONALITY CANNOT CURRENTLY BE PROPERLY ACCOUNTED")
     print("QUITTING")
-    quit()
+    sys.exit()
 
     def run_optimizer_for_country(country_code, country_data):
 
