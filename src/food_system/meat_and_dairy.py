@@ -130,7 +130,11 @@ class MeatAndDairy:
             + self.INIT_LARGE_ANIMALS_CULLED * PROTEIN_PER_LARGE_ANIMAL
         )
 
+
         self.INITIAL_MEAT = INIT_MEAT_KCALS * (1 - self.MEAT_WASTE / 100)
+
+
+
 
         if self.INITIAL_MEAT > 0:
             self.MEAT_FRACTION_FAT = INIT_MEAT_FAT / INIT_MEAT_KCALS
@@ -165,10 +169,11 @@ class MeatAndDairy:
         # dry caloric ton excess/ton meat
         CHICKEN_PORK_CONVERSION = 4.8
 
-        # monthly in dry caloric tons inedible feed
+        # monthly in dry caloric tons
         CHICKEN_PORK_LIMIT_FOOD_USAGE = (
             self.CHICKEN_AND_PORK_LIMIT * CHICKEN_PORK_CONVERSION
         )
+
 
         # dry caloric ton excess/ton meat
         EDIBLE_TO_CATTLE_CONVERSION = 9.8
@@ -208,6 +213,7 @@ class MeatAndDairy:
                 # tons per month meat
                 cattle_h_e_maintained.append(0)
                 continue
+
             # tons per month meat
             chicken_pork_maintained.append(self.CHICKEN_AND_PORK_LIMIT)
             for_cattle = for_chicken_pork_cattle - CHICKEN_PORK_LIMIT_FOOD_USAGE
@@ -227,6 +233,7 @@ class MeatAndDairy:
     def get_meat_from_human_edible_feed(self):
 
         present_day_tons_per_month_cattle = self.TONS_BEEF_MONTHLY_BASELINE
+
         present_day_tons_per_month_chicken_pork = (
             self.CHICKEN_AND_PORK_LIMIT
         )  # tons a month

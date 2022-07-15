@@ -400,7 +400,7 @@ class Parameters:
 
         constants["inputs"] = inputs_to_optimizer
 
-        PRINT_FIRST_MONTH_CONSTANTS = False
+        PRINT_FIRST_MONTH_CONSTANTS = True
 
         if(PRINT_FIRST_MONTH_CONSTANTS):
             self.print_constants(
@@ -422,7 +422,31 @@ class Parameters:
         stored_food,
         biofuels,
         methane_scp):
+        print("""
+            conversion to kcals/person/day:
+            million dry caloric tons monthly * 12 = millon dry caloric tons annually
+            million dry caloric tons annually * 1e6 = dry caloric tons annually
+            dry caloric tons annually * 1e3 = dry caloric kg annually
+            dry caloric kg annually * 4e3 = calories annually (1 kg dry caloric just means the equivalent of 1 kg of sugar)
+            calories annually  / 365 = calories per day
+            calories per day / 7.8e9 = calories per person per day globally
+            therefore:
+            calories per person per day globally = million tons dry caloric monthly * 12 * 1e6 * 4e6 / 365 / 7.8e9
+            
+            conversion to months worth of food:
+            million tons dry caloric * 1e6 = tons dry caloric
+            tons dry caloric * 1e3 = kg dry caloric
+            kg dry caloric * 4e3 = calories
+            calories / 2100 = people fed per day
+            people fed per day / 30 = people fed per month
+            people fed per month / 7.8e9 = fraction of global population fed for a month 
+            fraction of global population fed for a month = months global population is fed from this food source
+            therefore:
+            months global population fed = million tons dry caloric *1e6*4e6 /2100/30/7.8e9
 
+            NOTE: WASTE IS CONSIDERED IN THE FOLLOWING OUTPUTS at the following levels:
+        """)
+        print(constants['inputs']["WASTE"])
         # used by world population
         print("")
         print("calories consumed per day")
@@ -586,7 +610,7 @@ class Parameters:
                 )
                 print("")
             else:
-                print("no chicken pork maintained")
+                print("(no chicken pork maintained considered yet)")
                 print("")
             if CM > 0:
                 print("INITIAL_CM_KCALS million tons dry caloric monthly")
@@ -641,7 +665,7 @@ class Parameters:
                     + " months"
                 )
             else:
-                print("no cattle maintained from human edible")
+                print("(no cattle maintained from human edible considered yet)")
                 print("")
 
             MEAT_WASTE = constants["inputs"]["WASTE"]["MEAT"]
@@ -655,7 +679,7 @@ class Parameters:
             )
 
             if CM_IN_KCALS > 0:
-                print("INITIAL_CM_IN_KCALS million tons dry caloric monthly")
+                print("INITIAL_CM_IN_KCALS million tons dry caloric monthly (cattle meat produced in 2020 monthly)")
                 print(CM_IN_KCALS * 1e9 / 4e6 / 1e6)
 
                 print("INITIAL_CM_IN_FAT million tons monthly")
