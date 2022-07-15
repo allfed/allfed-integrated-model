@@ -16,23 +16,23 @@ The interactive model runs off colab. It doesn't require any downloading or code
 
 First click on the "notebooks" folder in the allfed-integrated-model directory.
 
-![step2](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/readme_content/step2.png)
+![step2](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/step2.png)
 
 Open 'example_optimize.ipynb'
 
-![step3](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/readme_content/step3.png)
+![step3](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/step3.png)
 
 Click 'Open in Colab'.
 
-![step4](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/readme_content/step4.png)
+![step4](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/step4.png)
 
 Select 'Authorize with github'.
 
-![step5](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/readme_content/step5.png)
+![step5](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/step5.png)
 
 Select 'OK'.
 
-![step6](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/readme_content/step6.png)
+![step6](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/step6.png)
 
 For the repository, select 'allfed/allfed-integrated-model' branch 'main', then click on the item labelled under Path, 'notebooks/example_optimize.ipynb'.
 

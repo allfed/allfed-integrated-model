@@ -86,9 +86,9 @@ col_names["biofuel"] = {
 
 col_names["feed"] = {
     "ISO3 Country Code": "iso3",
-    "Animal feed caloric consumption in 2020 (dry caloric tons)": "feed_kcals",
-    "Animal feed fat consumption in 2020 (tonnes)": "feed_fat",
-    "Animal feed protein consumption in 2020 (tonnes)": "feed_protein",
+    "Animal feed caloric consumption in 2020 (million dry caloric tons)": "feed_kcals",
+    "Animal feed fat consumption in 2020 (million tonnes)": "feed_fat",
+    "Animal feed protein consumption in 2020 (million tonnes)": "feed_protein",
 }
 
 col_names["crop_baseline"] = {
@@ -96,6 +96,15 @@ col_names["crop_baseline"] = {
     "Outdoor crop caloric production in 2020 (dry caloric tons)": "crop_kcals",
     "Outdoor crop fat production in 2020 (tonnes)": "crop_fat",
     "Outdoor crop protein production in 2020 (tonnes)": "crop_protein",
+}
+
+col_names["crop_nuclear_winter"] = {
+    "ISO3 Country Code": "iso3",
+    "reduction_year1":"reduction_year1",
+    "reduction_year2":"reduction_year2",
+    "reduction_year3":"reduction_year3",
+    "reduction_year4":"reduction_year4",
+    "reduction_year5":"reduction_year5"
 }
 
 col_names["crop_seasonality"] = {
@@ -113,18 +122,25 @@ col_names["crop_seasonality"] = {
     "November": "seasonality_m11",
     "December": "seasonality_m12",
 }
-
+ 
 col_names["food_stocks"] = {
     "ISO3 Country Code": "iso3",
-    """Food Stocks calories,\
- approximate, May 2016-2020 average, million tonnes dry caloric value""": "stocks_kcals",
-    "Food Stocks fat, approximate, May 2016-2020 average, million tonnes fat": "stocks_fat",
-    """Food Stocks protein,\
- approximate, May 2016-2020 average, million tonnes protein""": "stocks_protein",
+    "Jan": "stocks_kcals_jan", # million tons that month in that country
+    "Feb": "stocks_kcals_feb", # million tons that month in that country
+    "Mar": "stocks_kcals_mar", # million tons that month in that country
+    "Apr": "stocks_kcals_apr", # million tons that month in that country
+    "May": "stocks_kcals_may", # million tons that month in that country
+    "Jun": "stocks_kcals_jun", # million tons that month in that country
+    "Jul": "stocks_kcals_jul", # million tons that month in that country
+    "Aug": "stocks_kcals_aug", # million tons that month in that country
+    "Sep": "stocks_kcals_sep", # million tons that month in that country
+    "Oct": "stocks_kcals_oct", # million tons that month in that country
+    "Nov": "stocks_kcals_nov", # million tons that month in that country
+    "Dec": "stocks_kcals_dec"  # million tons that month in that country
 }
 
 
-col_names["cellulosis_sugar"] = {
+col_names["cellulosic_sugar"] = {
     "ISO3 Country Code": "iso3",
     "Country chemical wood pulp 2020 (tonnes)": "wood_pulp_tonnes",
     "Ratio to sum total": "percent_of_global_production",
@@ -166,9 +182,10 @@ food_names = {
     "biofuel": "Biofuel",
     "feed": "Feed",
     "crop_baseline": "Outdoor Crop Baseline",
+    "crop_nuclear_winter": "Outdoor Crop Production NW",
     "crop_seasonality": "Outdoor Crop Seasonality",
     "food_stocks": "Food Stocks",
-    "cellulosis_sugar": "Cellulosic Sugar",
+    "cellulosic_sugar": "Cellulosic Sugar",
     "methane_scp": "Methane SCP",
     "greenhouses": "Greenhouses",
 }
@@ -180,6 +197,7 @@ for pandas_name, excel_name in food_names.items():
         list(col_names[pandas_name].keys())
     ]
 
+
     # Rename columns to nicer names
     temp_df.rename(columns=col_names[pandas_name], inplace=True)
 
@@ -187,7 +205,6 @@ for pandas_name, excel_name in food_names.items():
     temp_df.index = temp_df["iso3"]
 
     del temp_df["iso3"]
-    # print(temp_df.head())
 
     dataframe_dict[pandas_name] = temp_df
 
@@ -229,13 +246,30 @@ dataframe_dict["dairy"]["dairy"] = dataframe_dict["dairy"]["dairy"] * 1000
 
 
 # convert to tons dry caloric
-dataframe_dict["food_stocks"]['stocks_kcals'] = dataframe_dict["food_stocks"]['stocks_kcals'] * 1e6
-
-# convert to tons fat
-dataframe_dict["food_stocks"]['stocks_fat'] = dataframe_dict["food_stocks"]['stocks_fat'] * 1e6
-
-# convert to tons protein
-dataframe_dict["food_stocks"]['stocks_protein'] = dataframe_dict["food_stocks"]['stocks_protein'] * 1e6
+dataframe_dict["food_stocks"]['stocks_kcals_jan'] \
+    = dataframe_dict["food_stocks"]['stocks_kcals_jan'] * 1e6
+dataframe_dict["food_stocks"]['stocks_kcals_feb'] \
+    = dataframe_dict["food_stocks"]['stocks_kcals_feb'] * 1e6
+dataframe_dict["food_stocks"]['stocks_kcals_mar'] \
+    = dataframe_dict["food_stocks"]['stocks_kcals_mar'] * 1e6
+dataframe_dict["food_stocks"]['stocks_kcals_apr'] \
+    = dataframe_dict["food_stocks"]['stocks_kcals_apr'] * 1e6
+dataframe_dict["food_stocks"]['stocks_kcals_may'] \
+    = dataframe_dict["food_stocks"]['stocks_kcals_may'] * 1e6
+dataframe_dict["food_stocks"]['stocks_kcals_jun'] \
+    = dataframe_dict["food_stocks"]['stocks_kcals_jun'] * 1e6
+dataframe_dict["food_stocks"]['stocks_kcals_jul'] \
+    = dataframe_dict["food_stocks"]['stocks_kcals_jul'] * 1e6
+dataframe_dict["food_stocks"]['stocks_kcals_aug'] \
+    = dataframe_dict["food_stocks"]['stocks_kcals_aug'] * 1e6
+dataframe_dict["food_stocks"]['stocks_kcals_sep'] \
+    = dataframe_dict["food_stocks"]['stocks_kcals_sep'] * 1e6
+dataframe_dict["food_stocks"]['stocks_kcals_oct'] \
+    = dataframe_dict["food_stocks"]['stocks_kcals_oct'] * 1e6
+dataframe_dict["food_stocks"]['stocks_kcals_nov'] \
+    = dataframe_dict["food_stocks"]['stocks_kcals_nov'] * 1e6
+dataframe_dict["food_stocks"]['stocks_kcals_dec'] \
+    = dataframe_dict["food_stocks"]['stocks_kcals_dec'] * 1e6
 
 
 # biofuel
@@ -253,6 +287,42 @@ dataframe_dict["biofuel"]["biofuel_protein"] = (
     dataframe_dict["biofuel"]["biofuel_protein"] * 1e6
 )
 
+# feed
+dataframe_dict["feed"]["feed_kcals"] = (
+    dataframe_dict["feed"]["feed_kcals"] * 1e6
+)
+
+# feed
+dataframe_dict["feed"]["feed_fat"] = (
+    dataframe_dict["feed"]["feed_fat"] * 1e6
+)
+
+# feed
+dataframe_dict["feed"]["feed_protein"] = (
+    dataframe_dict["feed"]["feed_protein"] * 1e6
+)
+
+# nuclear winter convert from percent to fraction
+dataframe_dict["crop_nuclear_winter"]["reduction_year1"] = (
+    dataframe_dict["crop_nuclear_winter"]["reduction_year1"] / 100
+)
+dataframe_dict["crop_nuclear_winter"]["reduction_year2"] = (
+    dataframe_dict["crop_nuclear_winter"]["reduction_year2"] / 100
+)
+dataframe_dict["crop_nuclear_winter"]["reduction_year3"] = (
+    dataframe_dict["crop_nuclear_winter"]["reduction_year3"] / 100
+)
+dataframe_dict["crop_nuclear_winter"]["reduction_year4"] = (
+    dataframe_dict["crop_nuclear_winter"]["reduction_year4"] / 100
+)
+dataframe_dict["crop_nuclear_winter"]["reduction_year5"] = (
+    dataframe_dict["crop_nuclear_winter"]["reduction_year5"] / 100
+)
+
+
+# nuclear winter remove nan values by assuming zero yield 
+# (-1 => change from baseline to -100% of baseline, meaning zero crop growth)
+dataframe_dict["crop_nuclear_winter"][dataframe_dict["crop_nuclear_winter"] > 9.36e34] = -1
 
 # #combine the data frames from all the tabs into a giant dataframe
 
