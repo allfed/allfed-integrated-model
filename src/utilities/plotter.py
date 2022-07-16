@@ -785,7 +785,7 @@ class Plotter:
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
                 maxy = max(sum([x[0:xlim] for x in ykcals]))
-                ax.set_ylim([0, maxy / analysis.constants["CONVERSION_TO_KCALS"]])
+                # ax.set_ylim([0, maxy / analysis.constants["CONVERSION_TO_KCALS"]])
 
                 plt.ylabel("Calories / capita / day")
             if label == "b" or label == "d":
@@ -836,7 +836,7 @@ class Plotter:
 
                 ax.set_ylabel("Fraction of minimum recommendation")
 
-                ax.set_ylim(Plotter.getylim_nutrients(analysis, xlim))
+                # ax.set_ylim(Plotter.getylim_nutrients(analysis, xlim))
 
             if label == "c":
                 # ax.legend(loc='center left', frameon=False,bbox_to_anchor=(0, -0.2), shadow=False,)
@@ -859,7 +859,7 @@ class Plotter:
                     shadow=False,
                     labels=["Calories", "Fat", "Protein"],
                 )
-                ax.set_ylim(Plotter.getylim_nutrients(analysis, xlim))
+                # ax.set_ylim(Plotter.getylim_nutrients(analysis, xlim))
 
             plt.xlabel("Months since May")
 

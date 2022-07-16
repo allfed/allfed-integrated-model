@@ -14,7 +14,7 @@ from src.optimizer.parameters import Parameters
 from src.scenarios.scenarios import Scenarios
 
 
-def run_model_no_resilient_foods():
+def run_model_no_resilient_foods(plot_figures=True):
     """
     this program runs the optimizer model, and ensures that all the results are
     reasonable using a couple useful checks to make sure there's nothing wacky
@@ -125,7 +125,8 @@ def run_model_no_resilient_foods():
     print(analysis.percent_people_fed / 100 * 2100)
     print("")
 
-    Plotter.plot_fig_1ab(analysis, 77)
+    if(plot_figures):
+        Plotter.plot_fig_1ab(analysis, 77)
 
 
 if __name__ == "__main__":

@@ -13,7 +13,6 @@ class OutdoorCrops:
 
         self.NMONTHS = inputs_to_optimizer["NMONTHS"]
         self.STARTING_MONTH_NUM = inputs_to_optimizer["STARTING_MONTH_NUM"]
-
         self.BASELINE_CROP_KCALS = inputs_to_optimizer["BASELINE_CROP_KCALS"]
         self.BASELINE_CROP_FAT = inputs_to_optimizer["BASELINE_CROP_FAT"]
         self.BASELINE_CROP_PROTEIN = inputs_to_optimizer["BASELINE_CROP_PROTEIN"]
@@ -47,12 +46,11 @@ class OutdoorCrops:
         self.OG_FRACTION_PROTEIN = (
             0.93 * (self.BASELINE_CROP_PROTEIN / 1e3) / (self.ANNUAL_YIELD * 4e6 / 1e9)
         )
-        print("protein 1000 tons BASELINE_CROP_PROTEIN / 1e3")
-        print(self.BASELINE_CROP_PROTEIN / 1e3)
-        print("billion kcals ANNUAL_YIELD * 4e6 / 1e9")
-        print(self.ANNUAL_YIELD * 4e6 / 1e9)
-        print("self.OG_FRACTION_PROTEIN")
-        print(self.OG_FRACTION_PROTEIN)
+        # if production is zero, then protein fraction is zero
+        if(self.ANNUAL_YIELD == 0):
+            self.OG_FRACTION_PROTEIN = 0
+            self.OG_FRACTION_FAT = 0
+
 
     def calculate_rotation_ratios(self, inputs_to_optimizer):
 

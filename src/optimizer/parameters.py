@@ -8,6 +8,7 @@
 import os
 import sys
 import numpy as np
+from pandas.core import window
 
 module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
@@ -97,6 +98,7 @@ class Parameters:
         self.THOU_TONS_FAT_NEEDED = self.FAT_MONTHLY * self.POP
         # in thousands of tons per month for population
         self.THOU_TONS_PROTEIN_NEEDED = self.PROTEIN_MONTHLY * self.POP
+        
         print("self.POP_BILLIONS")
         print(self.POP_BILLIONS)
 
@@ -400,7 +402,7 @@ class Parameters:
 
         constants["inputs"] = inputs_to_optimizer
 
-        PRINT_FIRST_MONTH_CONSTANTS = True
+        PRINT_FIRST_MONTH_CONSTANTS = False
 
         if(PRINT_FIRST_MONTH_CONSTANTS):
             self.print_constants(
@@ -531,7 +533,6 @@ class Parameters:
             / 1e3
             / (time_consts["crops_food_produced"][0] * OG_RF_KCALS * 1e9 / 4e6 / 1e6)
         )
-
         INITIAL_SF_KCALS = constants["INITIAL_SF_KCALS"]
         SF_FRACTION_FAT = constants["SF_FRACTION_FAT"]
         SF_FRACTION_PROTEIN = constants["SF_FRACTION_PROTEIN"]
@@ -539,7 +540,8 @@ class Parameters:
         print("")
         print("INITIAL_SF_KCALS million tons dry caloric")
         print(INITIAL_SF_KCALS * 1e9 / 4e6 / 1e6)
-        print("INITIAL_SF_FAT million tons")
+        print("INITIAL_SF_FAT million tonds")
+
         print(INITIAL_SF_KCALS * SF_FRACTION_FAT / 1e3)
         print("INITIAL_SF_PROTEIN million tons")
         print(INITIAL_SF_KCALS * SF_FRACTION_PROTEIN / 1e3)
@@ -547,18 +549,12 @@ class Parameters:
         print("INITIAL_SF_FAT percentage")
         print(
             100
-            * INITIAL_SF_KCALS
             * SF_FRACTION_FAT
-            / 1e3
-            / (INITIAL_SF_KCALS * 1e9 / 4e6 / 1e6)
         )
         print("INITIAL_SF_PROTEIN percentage")
         print(
             100
-            * INITIAL_SF_KCALS
             * SF_FRACTION_PROTEIN
-            / 1e3
-            / (INITIAL_SF_KCALS * 1e9 / 4e6 / 1e6)
         )
         if feed.FEED_MONTHLY_USAGE_KCALS > 0:
             print("")

@@ -8,6 +8,7 @@
 ###############################################################################
 
 
+from typing import no_type_check
 import numpy as np
 import os
 import sys
@@ -619,7 +620,7 @@ class Analyzer:
                 * self.constants["SF_FRACTION_PROTEIN"]
                 / self.constants["PROTEIN_MONTHLY"]
                 / 1e9,
-                show_output,
+                False,
             ),
             self.OG_SF_fraction_protein_to_humans,
         )
@@ -838,7 +839,6 @@ class Analyzer:
             self.constants["SF_FRACTION_FAT"] / self.constants["FAT_MONTHLY"] / 1e9,
             False,
         )
-
         SF_protein = self.makeMidMonthlyVars(
             stored_food_eaten,
             self.constants["SF_FRACTION_PROTEIN"]
@@ -893,10 +893,16 @@ class Analyzer:
             )
         )
 
+        total_production = (np.array(OG_kcals) + np.array(SF_kcals)) * self.constants["KCALS_MONTHLY"]
+
         OG_SF_fraction_kcals_to_feed = np.divide(
             excess_calories,
-            (np.array(OG_kcals) + np.array(SF_kcals)) * self.constants["KCALS_MONTHLY"],
+            total_production
         )
+
+        #if the total production is zero, then the fraction is zero
+        OG_SF_fraction_kcals_to_feed \
+            = np.where(total_production == 0, 0, OG_SF_fraction_kcals_to_feed)
 
         OG_SF_fraction_kcals_to_humans = 1 - OG_SF_fraction_kcals_to_feed
 
@@ -912,6 +918,9 @@ class Analyzer:
             (np.array(OG_fat) + np.array(SF_fat)) * self.constants["FAT_MONTHLY"] * 1e9,
         )
 
+        OG_SF_fraction_fat_to_feed \
+            = np.where(total_production == 0, 0, OG_SF_fraction_fat_to_feed)
+
         OG_SF_fraction_fat_to_humans = 1 - OG_SF_fraction_fat_to_feed
 
         OG_SF_fraction_protein_to_feed = np.divide(
@@ -920,18 +929,35 @@ class Analyzer:
             * self.constants["PROTEIN_MONTHLY"]
             * 1e9,
         )
+        OG_SF_fraction_protein_to_feed \
+            = np.where(total_production == 0, 0, OG_SF_fraction_protein_to_feed)
 
         OG_SF_fraction_protein_to_humans = 1 - OG_SF_fraction_protein_to_feed
 
-        if (
-            not (OG_SF_fraction_kcals_to_feed <= 1 + 1e-5).all()
-            or not (OG_SF_fraction_kcals_to_feed >= 0).all()
-        ):
+
+        FEED_NAN = np.isnan(OG_SF_fraction_kcals_to_feed).any() 
+
+        MORE_THAN_AVAILABLE_USED_FOR_FEED \
+            = not (OG_SF_fraction_kcals_to_feed <= 1 + 1e-5).all()
+
+        NEGATIVE_FRACTION_FEED = not (OG_SF_fraction_kcals_to_feed >= 0).all()
+
+
+        if(FEED_NAN):
+            print("ERROR: Feed not a number")
+            quit()
+
+        if ( MORE_THAN_AVAILABLE_USED_FOR_FEED):
+            print("")
             print(
-                "WARNING: Attempted to feed more food to animals than exists available outdoor growing fat, calories, or protein. Scenario is impossible."
+                "ERROR: Attempted to feed more food to animals than exists available outdoor growing fat, calories, or protein. Scenario is impossible."
             )
-            self.scenario_is_impossible = True
-            return
+            quit()
+
+        if(NEGATIVE_FRACTION_FEED):
+            print("ERROR: fraction feed to humans is negative")
+            quit()
+
         assert (OG_SF_fraction_kcals_to_feed <= 1 + 1e-5).all()
 
         if (OG_SF_fraction_kcals_to_feed >= 1).any():
@@ -986,28 +1012,6 @@ class Analyzer:
                 print("Double check this is actually reasonable.")
                 print("")
 
-        # print("self.billions_fed_SF_kcals")
-        # print(self.billions_fed_SF_kcals)
-        # print("self.billions_fed_meat_kcals")
-        # print(self.billions_fed_meat_kcals)
-        # print("self.billions_fed_seaweed_kcals")
-        # print(self.billions_fed_seaweed_kcals)
-        # print("self.billions_fed_milk_kcals")
-        # print(self.billions_fed_milk_kcals)
-        # print("self.billions_fed_CS_kcals")
-        # print(self.billions_fed_CS_kcals)
-        # print("self.billions_fed_SCP_kcals")
-        # print(self.billions_fed_SCP_kcals)
-        # print("self.billions_fed_GH_kcals")
-        # print(self.billions_fed_GH_kcals)
-        # print("self.billions_fed_OG_kcals")
-        # print(self.billions_fed_OG_kcals)
-        # print("self.billions_fed_fish_kcals")
-        # print(self.billions_fed_fish_kcals)
-        # print("self.billions_fed_h_e_meat_kcals")
-        # print(self.billions_fed_h_e_meat_kcals)
-        # print("self.billions_fed_h_e_milk_kcals")
-        # print(self.billions_fed_h_e_milk_kcals)
 
         self.kcals_fed = (
             np.array(self.billions_fed_SF_kcals)
@@ -1036,6 +1040,7 @@ class Analyzer:
             + self.billions_fed_h_e_milk_fat
         )
 
+
         self.protein_fed = (
             (
                 np.array(self.billions_fed_SF_protein)
@@ -1060,10 +1065,6 @@ class Analyzer:
             )
             < 1e-6
         ).all()
-        # print("fat_fed")
-        # print(self.fat_fed)
-        # print("humans_fed_fat_optimizer")
-        # print(self.humans_fed_fat_optimizer)
         if self.constants["inputs"]["INCLUDE_FAT"]:
             assert (
                 abs(
@@ -1076,6 +1077,7 @@ class Analyzer:
             ).all()
 
         if self.constants["inputs"]["INCLUDE_PROTEIN"]:
+
             assert (
                 abs(
                     np.divide(
@@ -1119,6 +1121,11 @@ class Analyzer:
         # if b>a, we don't have enough stored food and OG to produced food, and should quit.
         # This may happen even if there is plenty of food to go around, because the stored food needs to
         # If we optimize such that stored food is used in one part while culled meat is used in another, and that generates excess calories above world demand
+
+        denominator = SF_OG_kcals \
+            + self.billions_fed_h_e_meat_kcals \
+            + self.billions_fed_h_e_milk_kcals
+
         fractional_difference = np.divide(
             (
                 SF_OG_kcals
@@ -1126,13 +1133,15 @@ class Analyzer:
                 + self.billions_fed_h_e_milk_kcals
             )
             - (np.array(division) + self.billions_fed_h_e_balance_kcals),
-            SF_OG_kcals
-            + self.billions_fed_h_e_meat_kcals
-            + self.billions_fed_h_e_milk_kcals,
+            denominator,
         )
+
+        fractional_difference = \
+            np.where(denominator == 0, 0, fractional_difference)
+
         assert (abs(fractional_difference) < 1e-6).all()
 
-        if self.constants["inputs"]["INCLUDE_FAT"] == True:
+        if self.constants["inputs"]["INCLUDE_FAT"]:
             division = []
             for zipped_lists in zip(SF_OG_fat, self.OG_SF_fraction_fat_to_humans):
 
@@ -1142,6 +1151,10 @@ class Analyzer:
                 else:
                     division.append(zipped_lists[0] / zipped_lists[1])
 
+            denominator = SF_OG_fat \
+                + self.billions_fed_h_e_meat_fat \
+                + self.billions_fed_h_e_milk_fat
+
             fractional_difference = np.divide(
                 (
                     SF_OG_fat
@@ -1149,15 +1162,15 @@ class Analyzer:
                     + self.billions_fed_h_e_milk_fat
                 )
                 - (np.array(division) + self.billions_fed_h_e_balance_fat),
-                SF_OG_fat
-                + self.billions_fed_h_e_meat_fat
-                + self.billions_fed_h_e_milk_fat,
+                denominator,
             )
 
-            # print(fractional_difference)
+            fractional_difference = \
+                np.where(denominator == 0, 0, fractional_difference)
+
             assert (abs(fractional_difference) < 1e-6).all()
 
-        if self.constants["inputs"]["INCLUDE_PROTEIN"] == True:
+        if self.constants["inputs"]["INCLUDE_PROTEIN"]:
 
             division = []
             for zipped_lists in zip(
@@ -1172,6 +1185,10 @@ class Analyzer:
 
             # a separate problem is if we have a primary restriction on protein or fat rather than calories, the rebalancer will try to get the calories the same for each month, but then even if there are enough calories, this will force protein used to be more than is available from outdoor growing and stored food.
 
+            denominator = SF_OG_protein \
+                + self.billions_fed_h_e_meat_protein \
+                + self.billions_fed_h_e_milk_protein
+
             fractional_difference = np.divide(
                 (
                     SF_OG_protein
@@ -1179,10 +1196,11 @@ class Analyzer:
                     + self.billions_fed_h_e_milk_protein
                 )
                 - (np.array(division) + self.billions_fed_h_e_balance_protein),
-                SF_OG_protein
-                + self.billions_fed_h_e_meat_protein
-                + self.billions_fed_h_e_milk_protein,
+                denominator,
             )
+
+            fractional_difference = \
+                np.where(denominator == 0, 0, fractional_difference)
 
             assert (abs(fractional_difference) < 1e-6).all()
 
@@ -1195,9 +1213,9 @@ class Analyzer:
         }
         mins = [key for key in fed if all(fed[temp] >= fed[key] for temp in fed)]
 
-        # if(self.constants["VERBOSE"]):
-        if True:
-            # print(fed)
+        PRINT_FED = False
+        if PRINT_FED:
+            print(fed)
 
             print("Nutrients with constraining values are: " + str(mins))
             print(

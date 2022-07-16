@@ -13,7 +13,7 @@ from src.optimizer.parameters import Parameters
 from src.scenarios.scenarios import Scenarios
 
 
-def run_model_baseline():
+def run_model_baseline(plot_figures=True):
     """
     this program runs the optimizer model, and ensures that all the results are
     reasonable using a couple useful checks to make sure there's nothing wacky
@@ -104,22 +104,22 @@ def run_model_baseline():
 
     optimizer = Optimizer()
     constants["inputs"] = inputs_to_optimizer
-    # og = \
     (
         single_valued_constants,
         multi_valued_constants,
     ) = constants_loader.computeParameters(constants)
-    # print(og)
-    # quit()
+
     single_valued_constants["CHECK_CONSTRAINTS"] = False
+
     [time_months, time_months_middle, analysis] = optimizer.optimize(
         single_valued_constants, multi_valued_constants
     )
 
     analysis2 = analysis
 
-    Plotter.plot_fig_s1abcd(analysis1, analysis2, 72)
+    if plot_figures:
+        Plotter.plot_fig_s1abcd(analysis1, analysis2, 72)
 
 
 if __name__ == "__main__":
-    run_model_baseline()
+    run_model_baseline(False)

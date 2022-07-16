@@ -1,4 +1,4 @@
-################################Optimizer Model################################
+f################################Optimizer Model################################
 ##                                                                            #
 ##                   Convert everything into consistent units                 #
 ##                and import the spreadsheet into a program-readable          #
@@ -239,7 +239,8 @@ for i in range(1, 11):
     dataframe_dict["grasses"]["grasses_y" + str(i)] = (
         dataframe_dict["grasses"]["grasses_y" + str(i)] * 1000
     )
-
+print("dairy")
+print(dataframe_dict["dairy"]["dairy"])
 
 # convert to tons wet annually
 dataframe_dict["dairy"]["dairy"] = dataframe_dict["dairy"]["dairy"] * 1000

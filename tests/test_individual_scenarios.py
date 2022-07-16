@@ -24,6 +24,7 @@ from src.scenarios import run_model_baseline
 from src.scenarios import run_baseline_by_country_no_trade
 from src.scenarios import run_model_no_resilient_foods
 from src.scenarios import run_model_with_resilient_foods
+from src.scenarios import monte_carlo
 
 
 def test_run_model_baseline():
@@ -35,7 +36,7 @@ def test_run_model_baseline():
     Returns:
         None
     """
-    run_model_baseline.run_model_baseline()
+    run_model_baseline.run_model_baseline(plot_figures=False)
 
 
 def test_run_baseline_by_country_no_trade():
@@ -47,7 +48,9 @@ def test_run_baseline_by_country_no_trade():
     Returns:
         None
     """
-    run_baseline_by_country_no_trade.run_baseline_by_country_no_trade()
+    run_baseline_by_country_no_trade.run_baseline_by_country_no_trade(
+        plot_figures=False
+    )
 
 
 def test_run_model_no_resilient_foods():
@@ -59,7 +62,9 @@ def test_run_model_no_resilient_foods():
     Returns:
         None
     """
-    run_model_no_resilient_foods.run_model_no_resilient_foods()
+    run_model_no_resilient_foods.run_model_no_resilient_foods(
+        plot_figures=False
+    )
 
 
 def test_run_model_with_resilient_foods():
@@ -71,4 +76,29 @@ def test_run_model_with_resilient_foods():
     Returns:
         None
     """
-    run_model_with_resilient_foods.run_model_with_resilient_foods()
+    run_model_with_resilient_foods.run_model_with_resilient_foods(
+        plot_figures=False
+    )
+
+
+def test_run_monte_carlo():
+    """
+    Runs the monte carlo model for testing
+
+    Arguments:
+
+    Returns:
+        None
+    """
+    #TBD
+    pass
+
+if __name__ == "__main__":
+    test_run_model_baseline()
+    test_run_baseline_by_country_no_trade()
+    test_run_model_no_resilient_foods()
+    test_run_model_with_resilient_foods()
+    test_run_monte_carlo()
+
+    print("All tests passed")
+    sys.exit(0)

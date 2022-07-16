@@ -8,18 +8,31 @@
 class StoredFood:
     def __init__(self, inputs_to_optimizer, outdoor_crops):
 
-        self.end_of_month_stocks = [1960.922, 
-                                    1784.277, 
-                                    1624.673, 
-                                    1492.822, 
-                                    1359.236, 
-                                    1245.351, 
-                                    1246.485, 
-                                    1140.824, 
-                                    1196.499, 
-                                    1487.030, 
-                                    1642.406, 
-                                    1813.862]
+        self.end_of_month_stocks = [0]*12 # initialize the array
+        self.end_of_month_stocks[0] \
+            = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JAN"]
+        self.end_of_month_stocks[1] \
+            = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["FEB"]
+        self.end_of_month_stocks[2] \
+            = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAR"]
+        self.end_of_month_stocks[3] \
+            = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["APR"]
+        self.end_of_month_stocks[4] \
+            = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAY"]
+        self.end_of_month_stocks[5] \
+            = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUN"]
+        self.end_of_month_stocks[6] \
+            = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUL"]
+        self.end_of_month_stocks[7] \
+            = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["AUG"]
+        self.end_of_month_stocks[8] \
+            = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["SEP"]
+        self.end_of_month_stocks[9] \
+            = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["OCT"]
+        self.end_of_month_stocks[10] \
+            = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["NOV"]
+        self.end_of_month_stocks[11] \
+            = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["DEC"]
 
         # (nuclear event in mid-may)
         # Mike's spreadsheet: https://docs.google.com/spreadsheets/d / 19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=806987252
@@ -70,14 +83,9 @@ class StoredFood:
 
         stocks_at_start_of_month = end_of_month_stocks[month_before_index]
 
-        #stores at the start of the simulation
-        stores_at_sim_start = \
+        # stores at the start of the simulation
+        self.TONS_DRY_CALORIC_EQIVALENT_SF = \
             stocks_at_start_of_month - lowest_stocks * buffer_ratio
-        print("stores_at_sim_start")
-        print(stores_at_sim_start)
-
-        # convert to tons dry caloric equivalent
-        self.TONS_DRY_CALORIC_EQIVALENT_SF = stores_at_sim_start * 1e6
 
         # convert to billion kcals
         self.INITIAL_SF_KCALS = self.TONS_DRY_CALORIC_EQIVALENT_SF * 4e6 / 1e9

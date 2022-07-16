@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+This file contains the code for creating the nuclear winter crop production csv 
+originally imported from data from the Rutgers team (xia et al).
+
+Created on Wed Jul 15
+@author: morgan
+"""
+
 import pandas as pd
 import numpy as np
 import os

@@ -299,6 +299,26 @@ class Scenarios:
         # annual tons protein
         inputs_to_optimizer["FEED_PROTEIN"] = 147e6
 
+        # total stocks at the end of the month in dry caloric tons
+        # this is total stored food available
+        # if all of it were used for the whole earth, including private stocks
+        # but not including a 2 month in-transit or the estimated 2 weeks to 1 
+        # month of stocks in people's homes, grocery stores, and food 
+        # warehouses
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"] = {}
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JAN"] = 1960.922e6
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["FEB"] = 1784.277e6
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAR"] = 1624.673e6
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["APR"] = 1492.822e6
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAY"] = 1359.236e6
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUN"] = 1245.351e6
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUL"] = 1246.485e6
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["AUG"] = 1140.824e6
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["SEP"] = 1196.499e6
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["OCT"] = 1487.030e6
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["NOV"] = 1642.406e6
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["DEC"] = 1813.862e6
+
         # total head count of milk cattle
         inputs_to_optimizer["INITIAL_MILK_CATTLE"] = 264e6
 
@@ -338,9 +358,6 @@ class Scenarios:
         # annual tons cattle beef production
         inputs_to_optimizer["TONS_BEEF_ANNUAL"] = 74.2e6
 
-        # total stored food available in the month of May in tons dry caloric,
-        # if all of it were used for the whole earth, including private stocks
-        inputs_to_optimizer["TONS_DRY_CALORIC_EQIVALENT_SF_AVAILABLE"] = 1360e6 * 0.96
 
         # Single cell protein fraction of global production
         inputs_to_optimizer["SCP_GLOBAL_PRODUCTION_FRACTION"] = 1
@@ -440,13 +457,31 @@ class Scenarios:
         # annual tons cattle beef production
         inputs_to_optimizer["TONS_BEEF_ANNUAL"] = country_data["beef"]
 
-        # total stored food available in the month of May in tons dry caloric,
-        # if all of it were used for the whole earth, including private stocks.
-        # The 0.96 comes from adjustment for whole world to match up
-        # residuals in baseline scenario
-        inputs_to_optimizer["TONS_DRY_CALORIC_EQIVALENT_SF_AVAILABLE"] = (
-            country_data["stocks_kcals"] * 0.96
-        )
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"] = {}
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JAN"] \
+            = country_data["stocks_kcals_jan"] 
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["FEB"] \
+            = country_data["stocks_kcals_feb"] 
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAR"] \
+            = country_data["stocks_kcals_mar"] 
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["APR"] \
+            = country_data["stocks_kcals_apr"] 
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAY"] \
+            = country_data["stocks_kcals_may"] 
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUN"] \
+            = country_data["stocks_kcals_jun"] 
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUL"] \
+            = country_data["stocks_kcals_jul"] 
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["AUG"] \
+            = country_data["stocks_kcals_aug"] 
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["SEP"] \
+            = country_data["stocks_kcals_sep"] 
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["OCT"] \
+            = country_data["stocks_kcals_oct"] 
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["NOV"] \
+            = country_data["stocks_kcals_nov"] 
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["DEC"] \
+            = country_data["stocks_kcals_dec"]
 
         # TODO: ALTER THESE TO CORRECT CLOBAL FRACTIONS
 

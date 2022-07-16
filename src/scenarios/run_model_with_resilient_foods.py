@@ -14,7 +14,7 @@ from src.optimizer.parameters import Parameters
 from src.scenarios.scenarios import Scenarios
 
 
-def run_model_with_resilient_foods():
+def run_model_with_resilient_foods(plot_figures=True):
     """
     Runs the model in nuclear winter with resilient foods, then calculates a diet
     The diet is 2100 kcals, determined by feeding any excess to animals
@@ -189,7 +189,8 @@ def run_model_with_resilient_foods():
     analysis2 = analysis
 
     # last month plotted is month 48
-    Plotter.plot_fig_2abcd(analysis1, analysis2, 48)
+    if(plot_figures):
+        Plotter.plot_fig_2abcd(analysis1, analysis2, 48)
     print("Diet computation complete")
 
 

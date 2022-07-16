@@ -161,7 +161,6 @@ class MeatAndDairy:
 
         # dry caloric ton excess/ton milk
         EDIBLE_TO_DAIRY_CONVERSION = 0.7
-
         h_e_fed_dairy_limit_food_usage = (
             self.h_e_fed_dairy_limit * EDIBLE_TO_DAIRY_CONVERSION
         )
@@ -200,6 +199,7 @@ class MeatAndDairy:
             else:
                 limit_dairy = 0
                 h_e_fed_dairy_produced.append(0)
+
 
             for_chicken_pork_cattle = excess_dry_cal_tons[m] - limit_dairy
 
@@ -267,6 +267,7 @@ class MeatAndDairy:
         )
         if not (self.ratio_maintained_chicken_pork <= 1).all():
             print("DIRE, DIRE WARNING!!")
+            # quit()
             # @ Morgan: Should this raise an error?
 
         # limit the rate of livestock culling by how long it takes to reduce
@@ -380,9 +381,11 @@ class MeatAndDairy:
                     self.human_inedible_feed[m] / self.INEDIBLE_TO_DAIRY_CONVERSION
                 )
                 if max_dairy <= DAIRY_LIMIT:
+                    # print("APPENDING MAX DAIRY")
                     self.dairy_milk_produced.append(max_dairy)
                     self.cattle_maintained.append(0)
                     continue
+                # print("APPENDING DAIRY LIMIT")
                 self.dairy_milk_produced.append(DAIRY_LIMIT)
                 inedible_for_cattle = (
                     self.human_inedible_feed[m] - DAIRY_LIMIT_FEED_USAGE
@@ -399,6 +402,7 @@ class MeatAndDairy:
                 self.cattle_maintained.append(0)
 
         self.h_e_fed_dairy_limit = DAIRY_LIMIT - np.array(self.dairy_milk_produced)
+
 
     def get_dairy_produced(self):
         # billions kcals

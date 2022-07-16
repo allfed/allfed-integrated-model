@@ -26,7 +26,6 @@ class Optimizer:
         pass
 
     def optimize(self, single_valued_constants, multi_valued_constants):
-        print(single_valued_constants["CHECK_CONSTRAINTS"])
         maximize_constraints = []  # used only for validation
 
         # Create the model to optimize
@@ -129,17 +128,18 @@ class Optimizer:
         )
 
         if analysis.scenario_is_impossible:
-            if single_valued_constants["VERBOSE"]:
-                print("")
-                print("Scenario is impossible")
-                print("")
-            analysis.people_fed_billions = np.nan
-            return [np.nan, np.nan, analysis]
+            print("")
+            print("ERROR:Scenario is impossible")
+            print("")
+            quit()
 
-        # if no stored food, will be zero
+        # if no stored food, plot shows zero
         analysis.analyze_SF_results(variables["stored_food_eaten"], show_output)
-        # extract numeric seaweed results in terms of people fed and raw tons wet
-        # if seaweed not added to model, will be zero
+        
+        # extract numeric seaweed results in terms of people fed and raw
+        # tons wet
+        
+        # if seaweed not added to model, plot shows zero
         analysis.analyze_seaweed_results(
             variables["seaweed_wet_on_farm"],
             variables["used_area"],
@@ -148,26 +148,26 @@ class Optimizer:
             show_output,
         )
 
-        # if no cellulosic sugar, will be zero
+        # if no cellulosic sugar, plot shows zero
         analysis.analyze_CS_results(
             multi_valued_constants["production_kcals_CS_per_month"],
         )
 
-        # if no scp, will be zero
+        # if no scp, plot shows zero
         analysis.analyze_SCP_results(
             multi_valued_constants["production_kcals_scp_per_month"],
             multi_valued_constants["production_fat_scp_per_month"],
             multi_valued_constants["production_protein_scp_per_month"],
         )
 
-        # if no fish, will be zero
+        # if no fish, plot shows zero
         analysis.analyze_fish_results(
             multi_valued_constants["production_kcals_fish_per_month"],
             multi_valued_constants["production_fat_fish_per_month"],
             multi_valued_constants["production_protein_fish_per_month"],
         )
 
-        # if no greenhouses, will be zero
+        # if no greenhouses, plot shows zero
         analysis.analyze_GH_results(
             multi_valued_constants["greenhouse_kcals_per_ha"],
             multi_valued_constants["greenhouse_fat_per_ha"],
@@ -176,7 +176,7 @@ class Optimizer:
             show_output,
         )
 
-        # if no outdoor food, will be zero
+        # if no outdoor food, plot shows zero
         analysis.analyze_OG_results(
             variables["crops_food_eaten_no_rotation"],
             variables["crops_food_eaten_with_rotation"],
@@ -186,7 +186,7 @@ class Optimizer:
             show_output,
         )
 
-        # if nonegg nondairy meat isn't included, these results will be zero
+        # if nonegg nondairy meat isn't included, these results plot shows zero
         analysis.analyze_meat_dairy_results(
             multi_valued_constants["meat_eaten"],
             multi_valued_constants["dairy_milk_kcals"],
@@ -205,9 +205,7 @@ class Optimizer:
             multi_valued_constants["h_e_balance_fat"],
             multi_valued_constants["h_e_balance_protein"],
         )
-
         analysis.analyze_results(model, self.time_months_middle)
-        print(analysis.percent_people_fed)
         return [self.time_months, self.time_months_middle, analysis]
 
     def add_seaweed_to_model(self, model, variables, month):

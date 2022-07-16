@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+This file contains the code for the baseline model by country for with and 
+without trade scenarios.
+
+Created on Wed Jul 15
+@author: morgan
+"""
 import pandas as pd
 import numpy as np
 import os
@@ -17,7 +26,7 @@ from src.optimizer.parameters import Parameters
 from src.scenarios.scenarios import Scenarios
 
 
-def run_baseline_by_country_no_trade():
+def run_baseline_by_country_no_trade(plot_figures=True):
     """
     Runs the baseline model by country and without trade
     
@@ -65,12 +74,13 @@ def run_baseline_by_country_no_trade():
     # import the visual map
     world = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
 
+    # oddly, some of these were -99
+    world.loc[world.name == "France", "iso_a3"] = "FRA"
+    world.loc[world.name == "Norway", "iso_a3"] = "NOR"
+    world.loc[world.name == "Kosovo", "iso_a3"] = "KOS"
+
     constants_loader = Parameters()
     scenarios_loader = Scenarios()
-
-    print("ERROR: STORED FOOD SEASONALITY CANNOT CURRENTLY BE PROPERLY ACCOUNTED")
-    print("QUITTING")
-    sys.exit()
 
     def run_optimizer_for_country(country_code, country_data):
 
@@ -94,7 +104,7 @@ def run_baseline_by_country_no_trade():
             inputs_to_optimizer
         )
 
-        inputs_to_optimizer = scenarios_loader.set_stored_food_buffer_as_baseline(
+        inputs_to_optimizer = scenarios_loader.set_stored_food_buffer_zero(
             inputs_to_optimizer
         )
 
@@ -118,12 +128,13 @@ def run_baseline_by_country_no_trade():
         constants = {}
         constants["inputs"] = inputs_to_optimizer
 
+        print(country_name)
+
         (
             single_valued_constants,
             multi_valued_constants,
         ) = constants_loader.computeParameters(constants)
         single_valued_constants["CHECK_CONSTRAINTS"] = False
-
         optimizer = Optimizer()
         [time_months, time_months_middle, analysis] = optimizer.optimize(
             single_valued_constants, multi_valued_constants
@@ -135,7 +146,10 @@ def run_baseline_by_country_no_trade():
         print(needs_ratio * 2100)
         print("")
 
-        # Plotter.plot_fig_s1abcd(analysis, analysis, 72)
+        if plot_figures:
+            PLOT_EACH_FIGURE = False
+            if PLOT_EACH_FIGURE:
+                Plotter.plot_fig_s1abcd(analysis, analysis, 84)
 
         return needs_ratio
 
@@ -144,7 +158,10 @@ def run_baseline_by_country_no_trade():
             country_code_map = "SWZ"
         else:
             country_code_map = country_code
-        country_map = world[world["iso_a3"].apply(lambda x: x == country_code_map)]
+
+        country_map = world[world["iso_a3"].apply(
+            lambda x: x == country_code_map
+        )]
 
         if len(country_map) == 0:
             print("no match")
@@ -163,10 +180,11 @@ def run_baseline_by_country_no_trade():
         country_code = country_data["iso3"]
         country_name = country_data["country"]
 
-        print("")
-        print(country_name)
-
         population = country_data["population"]
+        
+        # skip countries with no population
+        if(np.isnan(population)):
+            continue
 
         needs_ratio = run_optimizer_for_country(country_code, country_data)
 
@@ -185,11 +203,11 @@ def run_baseline_by_country_no_trade():
         cmap="viridis",
         legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"},
     )
-
-    pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
-    plt.title("Fraction of minimum macronutritional needs with no trade")
-    plt.show()
-    plt.close()
+    if plot_figures:
+        pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
+        plt.title("Fraction of minimum macronutritional needs with no trade")
+        plt.show()
+        plt.close()
 
 
 if __name__ == "__main__":
