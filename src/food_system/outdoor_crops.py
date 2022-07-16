@@ -39,9 +39,7 @@ class OutdoorCrops:
 
         # 1000 tons fat per billion kcals
         self.OG_FRACTION_FAT = (
-            1.02 * (
-                self.BASELINE_CROP_FAT / 1e3
-            ) / (self.ANNUAL_YIELD * 4e6 / 1e9)
+            1.02 * (self.BASELINE_CROP_FAT / 1e3) / (self.ANNUAL_YIELD * 4e6 / 1e9)
         )
 
         # 1000 tons protein per billion kcals

@@ -93,7 +93,7 @@ def run_model_baseline(plot_figures=True):
         inputs_to_optimizer
     )
 
-    inputs_to_optimizer = scenarios_loader.set_waste_to_baseline_prices(
+    inputs_to_optimizer = scenarios_loader.set_global_waste_to_baseline_prices(
         inputs_to_optimizer
     )
 
@@ -122,4 +122,4 @@ def run_model_baseline(plot_figures=True):
 
 
 if __name__ == "__main__":
-    run_model_baseline(False)
+    run_model_baseline(True)

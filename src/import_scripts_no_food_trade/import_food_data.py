@@ -79,14 +79,18 @@ col_names["head_counts"] = {
 
 col_names["biofuel"] = {
     "ISO3 Country Code": "iso3",
-    "Biofuel/other caloric consumption in 2020 (million dry caloric tons)": "biofuel_kcals",
+    "Biofuel/other caloric consumption in 2020 (million dry caloric tons)": (
+        "biofuel_kcals"
+    ),
     "Biofuel/other fat consumption in 2020 (tonnes)": "biofuel_fat",
     "Biofuel/other protein consumption in 2020 (tonnes)": "biofuel_protein",
 }
 
 col_names["feed"] = {
     "ISO3 Country Code": "iso3",
-    "Animal feed caloric consumption in 2020 (million dry caloric tons)": "feed_kcals",
+    "Animal feed caloric consumption in 2020 (million dry caloric tons)": (
+        "feed_kcals"
+    ),
     "Animal feed fat consumption in 2020 (million tonnes)": "feed_fat",
     "Animal feed protein consumption in 2020 (million tonnes)": "feed_protein",
 }
@@ -139,6 +143,18 @@ col_names["food_stocks"] = {
     "Dec": "stocks_kcals_dec",  # million tons that month in that country
 }
 
+col_names["food_waste"] = {
+    "ISO3 Country Code": "iso3",
+    "Crops (Greenhouses/ outdoor growing)": "distribution_loss_crops",
+    "Sugar": "distribution_loss_sugar",
+    "Meat": "distribution_loss_meat",
+    "Dairy": "distribution_loss_dairy",
+    "Seafood": "distribution_loss_seafood",
+    "% wasted - pre disaster": "retail_waste_baseline",
+    "% wasted - post disaster - food prices double": "retail_waste_price_double",
+    "% wasted - post disaster - food prices triple": "retail_waste_price_triple",
+}
+
 
 col_names["cellulosic_sugar"] = {
     "ISO3 Country Code": "iso3",
@@ -149,7 +165,9 @@ col_names["cellulosic_sugar"] = {
 
 col_names["methane_scp"] = {
     "ISO3 Country Code": "iso3",
-    "Estimated Capex for related industries - Average 2014-2018 - 2015 US$ billion basis": "capex_dollar",
+    "Estimated Capex for related industries - Average 2014-2018 - 2015 US$ billion basis": (
+        "capex_dollar"
+    ),
     "% of global chemical and related CAPEX": "percent_of_global_capex",
 }
 
@@ -159,7 +177,9 @@ col_names["greenhouses"] = {
     "Country Crop Area ('000 Hectares)": "crop_area_1000ha",
     "Latitude": "Latitude",
     "Whether above latitude threshold (23)": "above_lat_23_boolean",
-    "Fraction of total crop area - below 23 latitude": "fraction_crop_area_below_lat_23",
+    "Fraction of total crop area - below 23 latitude": (
+        "fraction_crop_area_below_lat_23"
+    ),
 }
 
 
@@ -185,6 +205,7 @@ food_names = {
     "crop_nuclear_winter": "Outdoor Crop Production NW",
     "crop_seasonality": "Outdoor Crop Seasonality",
     "food_stocks": "Food Stocks",
+    "food_waste": "Food waste",
     "cellulosic_sugar": "Cellulosic Sugar",
     "methane_scp": "Methane SCP",
     "greenhouses": "Greenhouses",
@@ -330,9 +351,10 @@ dataframe_dict["crop_nuclear_winter"][
     dataframe_dict["crop_nuclear_winter"] > 9.36e34
 ] = -1
 
-# #combine the data frames from all the tabs into a giant dataframe
+# combine the data frames from all the tabs into a giant dataframe
 
-# everestial007 explains the merge quite neatly https://stackoverflow.com/questions/44327999/python-pandas-merge-multiple-dataframes
+# everestial007 explains the merge quite neatly
+# https://stackoverflow.com/questions/44327999/python-pandas-merge-multiple-dataframes
 df_merged = reduce(
     lambda left, right: pd.merge(  # Merge DataFrames in list
         left, right, right_index=True, left_index=True, how="outer"

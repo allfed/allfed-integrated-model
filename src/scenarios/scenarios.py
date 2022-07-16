@@ -9,6 +9,9 @@ import numpy as np
 
 
 class Scenarios:
+
+    # FEED AND BIOFUELS
+
     def set_immediate_shutoff(self, inputs_to_optimizer):
         inputs_to_optimizer["DELAY"]["FEED_SHUTOFF_MONTHS"] = 0
         inputs_to_optimizer["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 0
@@ -37,6 +40,8 @@ class Scenarios:
 
         return inputs_to_optimizer
 
+    # WASTE
+
     def set_waste_to_zero(self, inputs_to_optimizer):
         inputs_to_optimizer["WASTE"] = {}
         inputs_to_optimizer["WASTE"]["SUGAR"] = 0  # %
@@ -48,50 +53,140 @@ class Scenarios:
 
         return inputs_to_optimizer
 
-    def set_waste_to_tripled_prices(self, inputs_to_optimizer):
-        # nuclear winter 150 tab, cell G30-G38  https://docs.google.com/spreadsheets/d/14t3_PUIky6aNiBvw8q24sj6QYxCN9s_VddLY2-eJuPE/edit#gid=1637082097
-        # overall waste, on farm + distribution + retail
-        # 3x prices (note, currently set to 2019, not 2020)
-        inputs_to_optimizer["WASTE"] = {}
-        # inputs_to_optimizer['WASTE']['CEREALS'] = 14.46  # %
-        inputs_to_optimizer["WASTE"]["SUGAR"] = 9.91  # %
-        inputs_to_optimizer["WASTE"]["MEAT"] = 10.61  # %
-        inputs_to_optimizer["WASTE"]["DAIRY"] = 11.93  # %
-        inputs_to_optimizer["WASTE"]["SEAFOOD"] = 9.99  # %
-        inputs_to_optimizer["WASTE"]["CROPS"] = 14.78  # %
-        inputs_to_optimizer["WASTE"]["SEAWEED"] = 9.81  # %
+    def get_total_global_waste(self, retail_waste):
+        """
+        Calculates the total waste of the global food system by adding retail waste
+        to distribution loss.
+        """
+
+        distribution_loss = {}
+
+        distribution_loss["SUGAR"] = 0.09
+        distribution_loss["CROPS"] = 4.96
+        distribution_loss["MEAT"] = 0.80
+        distribution_loss["DAIRY"] = 2.12
+        distribution_loss["SEAFOOD"] = 0.17
+        distribution_loss["SEAWEED"] = distribution_loss["SEAFOOD"]
+
+        total_waste = {}
+
+        total_waste["SUGAR"] = distribution_loss["SUGAR"] + retail_waste
+        total_waste["CROPS"] = distribution_loss["CROPS"] + retail_waste
+        total_waste["MEAT"] = distribution_loss["MEAT"] + retail_waste
+        total_waste["DAIRY"] = distribution_loss["DAIRY"] + retail_waste
+        total_waste["SEAFOOD"] = distribution_loss["SEAFOOD"] + retail_waste
+        total_waste["SEAWEED"] = distribution_loss["SEAWEED"] + retail_waste
+
+        return total_waste
+
+    def set_global_waste_to_tripled_prices(self, inputs_to_optimizer):
+        """
+        overall waste, on farm + distribution + retail
+        3x prices (note, currently set to 2019, not 2020)
+        """
+        RETAIL_WASTE = 5.75
+
+        total_waste = self.get_total_global_waste(RETAIL_WASTE)
+
+        inputs_to_optimizer["WASTE"] = total_waste
 
         return inputs_to_optimizer
 
-    def set_waste_to_doubled_prices(self, inputs_to_optimizer):
-        # nuclear winter 150 tab, cell G30-G38  https://docs.google.com/spreadsheets/d/14t3_PUIky6aNiBvw8q24sj6QYxCN9s_VddLY2-eJuPE/edit#gid=1637082097
-        # overall waste, on farm + distribution + retail
-        # 2x prices (note, currently set to 2019, not 2020)
-        inputs_to_optimizer["WASTE"] = {}
-        # inputs_to_optimizer['WASTE']['CEREALS'] = 19.02 #%
-        inputs_to_optimizer["WASTE"]["SUGAR"] = 14.47  # %
-        inputs_to_optimizer["WASTE"]["MEAT"] = 15.17  # %
-        inputs_to_optimizer["WASTE"]["DAIRY"] = 16.49  # %
-        inputs_to_optimizer["WASTE"]["SEAFOOD"] = 14.55  # %
-        inputs_to_optimizer["WASTE"]["CROPS"] = 19.33  # %
-        inputs_to_optimizer["WASTE"]["SEAWEED"] = 14.37  # %
+    def set_global_waste_to_doubled_prices(self, inputs_to_optimizer):
+        """
+        overall waste, on farm + distribution + retail
+        2x prices (note, currently set to 2019, not 2020)
+        """
+
+        RETAIL_WASTE = 10.04
+
+        total_waste = self.get_total_global_waste(RETAIL_WASTE)
+
+        inputs_to_optimizer["WASTE"] = total_waste
 
         return inputs_to_optimizer
 
-    def set_waste_to_baseline_prices(self, inputs_to_optimizer):
-        # nuclear winter 150 tab, cell G30-G38  https://docs.google.com/spreadsheets/d/14t3_PUIky6aNiBvw8q24sj6QYxCN9s_VddLY2-eJuPE/edit#gid=1637082097
-        # overall waste, on farm+distribution+retail
-        # 1x prices (note, currently set to 2019, not 2020)
-        inputs_to_optimizer["WASTE"] = {}
-        inputs_to_optimizer["WASTE"]["CEREALS"] = 28.52  # %
-        inputs_to_optimizer["WASTE"]["SUGAR"] = 23.96  # %
-        inputs_to_optimizer["WASTE"]["MEAT"] = 24.67  # %
-        inputs_to_optimizer["WASTE"]["DAIRY"] = 25.99  # %
-        inputs_to_optimizer["WASTE"]["SEAFOOD"] = 24.04  # %
-        inputs_to_optimizer["WASTE"]["CROPS"] = 28.83  # %
-        inputs_to_optimizer["WASTE"]["SEAWEED"] = 23.87  # %
+    def set_global_waste_to_baseline_prices(self, inputs_to_optimizer):
+        """
+        overall waste, on farm+distribution+retail
+        1x prices (note, currently set to 2019, not 2020)
+        """
+        RETAIL_WASTE = 23.87
+
+        total_waste = self.get_total_global_waste(RETAIL_WASTE)
+
+        inputs_to_optimizer["WASTE"] = total_waste
 
         return inputs_to_optimizer
+
+    def get_total_country_waste(self, retail_waste, country_data):
+        """
+        Calculates the total waste of the global food system by adding retail waste
+        to distribution loss.
+        """
+
+        distribution_loss = {}
+
+        distribution_loss["SUGAR"] = country_data["distribution_loss_sugar"]
+        distribution_loss["CROPS"] = country_data["distribution_loss_crops"]
+        distribution_loss["MEAT"] = country_data["distribution_loss_meat"]
+        distribution_loss["DAIRY"] = country_data["distribution_loss_dairy"]
+        distribution_loss["SEAFOOD"] = country_data["distribution_loss_seafood"]
+        distribution_loss["SEAWEED"] = distribution_loss["SEAFOOD"]
+
+        total_waste = {}
+
+        total_waste["SUGAR"] = distribution_loss["SUGAR"] + retail_waste
+        total_waste["CROPS"] = distribution_loss["CROPS"] + retail_waste
+        total_waste["MEAT"] = distribution_loss["MEAT"] + retail_waste
+        total_waste["DAIRY"] = distribution_loss["DAIRY"] + retail_waste
+        total_waste["SEAFOOD"] = distribution_loss["SEAFOOD"] + retail_waste
+        total_waste["SEAWEED"] = distribution_loss["SEAWEED"] + retail_waste
+
+        return total_waste
+
+    def set_country_waste_to_tripled_prices(self, inputs_to_optimizer, country_data):
+        """
+        overall waste, on farm + distribution + retail
+        3x prices (note, currently set to 2019, not 2020)
+        """
+
+        RETAIL_WASTE = country_data["retail_waste_price_tripled"]
+
+        total_waste = self.get_total_country_waste(RETAIL_WASTE)
+
+        inputs_to_optimizer["WASTE"] = total_waste
+
+        return inputs_to_optimizer
+
+    def set_country_waste_to_doubled_prices(self, inputs_to_optimizer, country_data):
+        """
+        overall waste, on farm + distribution + retail
+        2x prices (note, currently set to 2019, not 2020)
+        """
+
+        RETAIL_WASTE = country_data["retail_waste_price_doubled"]
+
+        total_waste = self.get_total_country_waste(RETAIL_WASTE)
+
+        inputs_to_optimizer["WASTE"] = total_waste
+
+        return inputs_to_optimizer
+
+    def set_country_waste_to_baseline_prices(self, inputs_to_optimizer, country_data):
+        """
+        overall waste, on farm+distribution+retail
+        1x prices (note, currently set to 2019, not 2020)
+        """
+        RETAIL_WASTE = country_data["retail_waste_baseline"]
+
+        total_waste = self.get_total_country_waste(RETAIL_WASTE)
+
+        inputs_to_optimizer["WASTE"] = total_waste
+
+        return inputs_to_optimizer
+
+    # NUTRITION
 
     def set_baseline_nutrition_profile(self, inputs_to_optimizer):
 
@@ -123,6 +218,8 @@ class Scenarios:
 
         return inputs_to_optimizer
 
+    # STORED FOOD
+
     def set_stored_food_buffer_zero(self, inputs_to_optimizer):
         """
         Sets the stored food buffer as zero -- no stored food left at
@@ -146,6 +243,8 @@ class Scenarios:
         inputs_to_optimizer["BUFFER_RATIO"] = 1
 
         return inputs_to_optimizer
+
+    # SEASONALITY
 
     def set_country_seasonality_baseline(self, inputs_to_optimizer, country_data):
 
@@ -185,6 +284,7 @@ class Scenarios:
                 np.array([country_data["grasses_year10"]] * 12),
             )
         )
+
         return inputs_to_optimizer
 
     def set_global_seasonality_baseline(self, inputs_to_optimizer):
@@ -249,16 +349,13 @@ class Scenarios:
 
         return inputs_to_optimizer
 
-    def init_global_food_system_properties(self):
+    # INITIALIZATION
 
+    def init_generic_scenario(self):
         inputs_to_optimizer = {}
-
-        ##########!!!!!!MOOOOOVEEEE MMEEEEEE!!!!!!######
 
         # the following are used for all scenarios
         inputs_to_optimizer["NMONTHS"] = 84
-
-        # global stocks
 
         # not used unless smoothing true
         # useful for ensuring output variables don't fluctuate wildly
@@ -267,7 +364,11 @@ class Scenarios:
         inputs_to_optimizer["DELAY"] = {}
         inputs_to_optimizer["CULL_DURATION_MONTHS"] = 60
 
-        ################################################
+        return inputs_to_optimizer
+
+    def init_global_food_system_properties(self):
+
+        inputs_to_optimizer = self.init_generic_scenario()
 
         # global human population (2020)
         inputs_to_optimizer["POP"] = 7.8e9
@@ -374,21 +475,7 @@ class Scenarios:
 
     def init_country_food_system_properties(self, country_data):
 
-        inputs_to_optimizer = {}
-
-        ##########!!!!!!MOOOOOVEEEE MMEEEEEE!!!!!!######
-
-        # the following are used for all scenarios
-        inputs_to_optimizer["NMONTHS"] = 84
-
-        # not used unless smoothing true
-        # useful for ensuring output variables don't fluctuate wildly
-        inputs_to_optimizer["FLUCTUATION_LIMIT"] = 1.5
-
-        inputs_to_optimizer["DELAY"] = {}
-        inputs_to_optimizer["CULL_DURATION_MONTHS"] = 60
-
-        ################################################
+        inputs_to_optimizer = self.init_generic_scenario()
 
         # global human population (2020)
         inputs_to_optimizer["POP"] = country_data["population"]
@@ -510,6 +597,8 @@ class Scenarios:
 
         return inputs_to_optimizer
 
+    # FISH
+
     def set_fish_nuclear_winter_reduction(self, inputs_to_optimizer):
         inputs_to_optimizer["FISH_PERCENT_MONTHLY"] = list(
             np.array(
@@ -613,6 +702,8 @@ class Scenarios:
 
         return inputs_to_optimizer
 
+    # CROP DISRUPTION
+
     def set_disruption_to_crops_to_zero(self, inputs_to_optimizer):
         inputs_to_optimizer["DISRUPTION_CROPS_YEAR1"] = 0
         inputs_to_optimizer["DISRUPTION_CROPS_YEAR2"] = 0
@@ -643,6 +734,8 @@ class Scenarios:
 
         return inputs_to_optimizer
 
+    # SPECIFIC SCENARIOS
+
     def get_baseline_scenario(self, inputs_to_optimizer):
 
         inputs_to_optimizer["MAX_SEAWEED_AS_PERCENT_KCALS"] = 0
@@ -650,7 +743,8 @@ class Scenarios:
         inputs_to_optimizer["SEAWEED_PRODUCTION_RATE"] = 0
         inputs_to_optimizer["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = 0
 
-        # these fat and protein values do not produce realistic outputs, so outdoor growing ratios were used instead
+        # these fat and protein values do not produce realistic outputs,
+        # so outdoor growing ratios were used instead
         # inputs_to_optimizer['INITIAL_SF_FAT'] = 166.07e3 * 351e6/1360e6
         # inputs_to_optimizer['INITIAL_SF_PROTEIN'] = 69.25e3 * 351e6/1360e6
 

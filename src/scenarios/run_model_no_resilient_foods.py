@@ -104,7 +104,9 @@ def run_model_no_resilient_foods(plot_figures=True):
     scenarios = Scenarios()
     inputs_to_optimizer = scenarios.set_long_delayed_shutoff(inputs_to_optimizer)
 
-    inputs_to_optimizer = scenarios.set_waste_to_tripled_prices(inputs_to_optimizer)
+    inputs_to_optimizer = scenarios.set_global_waste_to_tripled_prices(
+        inputs_to_optimizer
+    )
 
     constants["inputs"] = inputs_to_optimizer
 

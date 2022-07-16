@@ -147,7 +147,7 @@ def run_baseline_by_country_no_trade(plot_figures=True):
         print("")
 
         if plot_figures:
-            PLOT_EACH_FIGURE = False
+            PLOT_EACH_FIGURE = True
             if PLOT_EACH_FIGURE:
                 Plotter.plot_fig_s1abcd(analysis, analysis, 84)
 

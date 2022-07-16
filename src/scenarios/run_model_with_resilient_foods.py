@@ -105,7 +105,7 @@ def run_model_with_resilient_foods(plot_figures=True):
         multi_valued_constants,
     ) = constants_loader.computeParameters(constants_for_optimizer)
 
-    inputs_to_optimizer = scenarios_loader.set_waste_to_doubled_prices(
+    inputs_to_optimizer = scenarios_loader.set_global_waste_to_doubled_prices(
         inputs_to_optimizer
     )
 
