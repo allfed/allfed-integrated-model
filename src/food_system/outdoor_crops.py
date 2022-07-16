@@ -39,7 +39,9 @@ class OutdoorCrops:
 
         # 1000 tons fat per billion kcals
         self.OG_FRACTION_FAT = (
-            1.02 * (self.BASELINE_CROP_FAT / 1e3) / (self.ANNUAL_YIELD * 4e6 / 1e9)
+            1.02 * (
+                self.BASELINE_CROP_FAT / 1e3
+            ) / (self.ANNUAL_YIELD * 4e6 / 1e9)
         )
 
         # 1000 tons protein per billion kcals
@@ -47,10 +49,9 @@ class OutdoorCrops:
             0.93 * (self.BASELINE_CROP_PROTEIN / 1e3) / (self.ANNUAL_YIELD * 4e6 / 1e9)
         )
         # if production is zero, then protein fraction is zero
-        if(self.ANNUAL_YIELD == 0):
+        if self.ANNUAL_YIELD == 0:
             self.OG_FRACTION_PROTEIN = 0
             self.OG_FRACTION_FAT = 0
-
 
     def calculate_rotation_ratios(self, inputs_to_optimizer):
 
@@ -221,15 +222,14 @@ class OutdoorCrops:
             SEP_KCALS_OG,
             OCT_KCALS_OG,
             NOV_KCALS_OG,
-            DEC_KCALS_OG
+            DEC_KCALS_OG,
         ]
 
         # adjust cycle so it starts at the first month of the simulation
-        self.months_cycle = month_cycle_starting_january[
-            month_index:
-        ] + month_cycle_starting_january[
-            0:month_index
-        ]
+        self.months_cycle = (
+            month_cycle_starting_january[month_index:]
+            + month_cycle_starting_january[0:month_index]
+        )
 
         self.KCALS_GROWN = []
         self.NO_ROT_KCALS_GROWN = []
@@ -243,27 +243,12 @@ class OutdoorCrops:
                     1
                     - (
                         self.OG_KCAL_REDUCED
-                        * (1 - \
-                            self.all_months_reductions[
-                                i + month_index
-                            ]
-                        )
+                        * (1 - self.all_months_reductions[i + month_index])
                     )
                 )
             )
             self.NO_ROT_KCALS_GROWN.append(
-                month_kcals
-                * (
-                    1
-                    - (
-                        (
-                            1
-                            - self.all_months_reductions[
-                                i + month_index
-                            ]
-                        )
-                    )
-                )
+                month_kcals * (1 - ((1 - self.all_months_reductions[i + month_index])))
             )
 
     def get_crop_production_minus_greenhouse_area(

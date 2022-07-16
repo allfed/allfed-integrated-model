@@ -1,4 +1,4 @@
-f################################Optimizer Model################################
+################################Optimizer Model################################
 ##                                                                            #
 ##                   Convert everything into consistent units                 #
 ##                and import the spreadsheet into a program-readable          #
@@ -26,11 +26,11 @@ NO_TRADE_XLS = "../../data/no_food_trade/Integrated Model With No Food Trade.xls
 # of dictionaries
 col_names = {}
 
-#NOTE: IF ANY OF THE UNITS CHANGE HERE, BE SURE TO CHANGE THE UNIT CONVERSIONS
+# NOTE: IF ANY OF THE UNITS CHANGE HERE, BE SURE TO CHANGE THE UNIT CONVERSIONS
 #      AS WELL IN THE SECTION DOWN BELOW
 
-col_names['population'] = {
-    'ISO3 Country Code': "iso3",
+col_names["population"] = {
+    "ISO3 Country Code": "iso3",
     "Country": "country",
     "Population (millions), 2020": "population",
 }
@@ -100,11 +100,11 @@ col_names["crop_baseline"] = {
 
 col_names["crop_nuclear_winter"] = {
     "ISO3 Country Code": "iso3",
-    "reduction_year1":"reduction_year1",
-    "reduction_year2":"reduction_year2",
-    "reduction_year3":"reduction_year3",
-    "reduction_year4":"reduction_year4",
-    "reduction_year5":"reduction_year5"
+    "reduction_year1": "reduction_year1",
+    "reduction_year2": "reduction_year2",
+    "reduction_year3": "reduction_year3",
+    "reduction_year4": "reduction_year4",
+    "reduction_year5": "reduction_year5",
 }
 
 col_names["crop_seasonality"] = {
@@ -122,21 +122,21 @@ col_names["crop_seasonality"] = {
     "November": "seasonality_m11",
     "December": "seasonality_m12",
 }
- 
+
 col_names["food_stocks"] = {
     "ISO3 Country Code": "iso3",
-    "Jan": "stocks_kcals_jan", # million tons that month in that country
-    "Feb": "stocks_kcals_feb", # million tons that month in that country
-    "Mar": "stocks_kcals_mar", # million tons that month in that country
-    "Apr": "stocks_kcals_apr", # million tons that month in that country
-    "May": "stocks_kcals_may", # million tons that month in that country
-    "Jun": "stocks_kcals_jun", # million tons that month in that country
-    "Jul": "stocks_kcals_jul", # million tons that month in that country
-    "Aug": "stocks_kcals_aug", # million tons that month in that country
-    "Sep": "stocks_kcals_sep", # million tons that month in that country
-    "Oct": "stocks_kcals_oct", # million tons that month in that country
-    "Nov": "stocks_kcals_nov", # million tons that month in that country
-    "Dec": "stocks_kcals_dec"  # million tons that month in that country
+    "Jan": "stocks_kcals_jan",  # million tons that month in that country
+    "Feb": "stocks_kcals_feb",  # million tons that month in that country
+    "Mar": "stocks_kcals_mar",  # million tons that month in that country
+    "Apr": "stocks_kcals_apr",  # million tons that month in that country
+    "May": "stocks_kcals_may",  # million tons that month in that country
+    "Jun": "stocks_kcals_jun",  # million tons that month in that country
+    "Jul": "stocks_kcals_jul",  # million tons that month in that country
+    "Aug": "stocks_kcals_aug",  # million tons that month in that country
+    "Sep": "stocks_kcals_sep",  # million tons that month in that country
+    "Oct": "stocks_kcals_oct",  # million tons that month in that country
+    "Nov": "stocks_kcals_nov",  # million tons that month in that country
+    "Dec": "stocks_kcals_dec",  # million tons that month in that country
 }
 
 
@@ -197,7 +197,6 @@ for pandas_name, excel_name in food_names.items():
         list(col_names[pandas_name].keys())
     ]
 
-
     # Rename columns to nicer names
     temp_df.rename(columns=col_names[pandas_name], inplace=True)
 
@@ -239,38 +238,48 @@ for i in range(1, 11):
     dataframe_dict["grasses"]["grasses_y" + str(i)] = (
         dataframe_dict["grasses"]["grasses_y" + str(i)] * 1000
     )
-print("dairy")
-print(dataframe_dict["dairy"]["dairy"])
 
 # convert to tons wet annually
 dataframe_dict["dairy"]["dairy"] = dataframe_dict["dairy"]["dairy"] * 1000
 
 
 # convert to tons dry caloric
-dataframe_dict["food_stocks"]['stocks_kcals_jan'] \
-    = dataframe_dict["food_stocks"]['stocks_kcals_jan'] * 1e6
-dataframe_dict["food_stocks"]['stocks_kcals_feb'] \
-    = dataframe_dict["food_stocks"]['stocks_kcals_feb'] * 1e6
-dataframe_dict["food_stocks"]['stocks_kcals_mar'] \
-    = dataframe_dict["food_stocks"]['stocks_kcals_mar'] * 1e6
-dataframe_dict["food_stocks"]['stocks_kcals_apr'] \
-    = dataframe_dict["food_stocks"]['stocks_kcals_apr'] * 1e6
-dataframe_dict["food_stocks"]['stocks_kcals_may'] \
-    = dataframe_dict["food_stocks"]['stocks_kcals_may'] * 1e6
-dataframe_dict["food_stocks"]['stocks_kcals_jun'] \
-    = dataframe_dict["food_stocks"]['stocks_kcals_jun'] * 1e6
-dataframe_dict["food_stocks"]['stocks_kcals_jul'] \
-    = dataframe_dict["food_stocks"]['stocks_kcals_jul'] * 1e6
-dataframe_dict["food_stocks"]['stocks_kcals_aug'] \
-    = dataframe_dict["food_stocks"]['stocks_kcals_aug'] * 1e6
-dataframe_dict["food_stocks"]['stocks_kcals_sep'] \
-    = dataframe_dict["food_stocks"]['stocks_kcals_sep'] * 1e6
-dataframe_dict["food_stocks"]['stocks_kcals_oct'] \
-    = dataframe_dict["food_stocks"]['stocks_kcals_oct'] * 1e6
-dataframe_dict["food_stocks"]['stocks_kcals_nov'] \
-    = dataframe_dict["food_stocks"]['stocks_kcals_nov'] * 1e6
-dataframe_dict["food_stocks"]['stocks_kcals_dec'] \
-    = dataframe_dict["food_stocks"]['stocks_kcals_dec'] * 1e6
+dataframe_dict["food_stocks"]["stocks_kcals_jan"] = (
+    dataframe_dict["food_stocks"]["stocks_kcals_jan"] * 1e6
+)
+dataframe_dict["food_stocks"]["stocks_kcals_feb"] = (
+    dataframe_dict["food_stocks"]["stocks_kcals_feb"] * 1e6
+)
+dataframe_dict["food_stocks"]["stocks_kcals_mar"] = (
+    dataframe_dict["food_stocks"]["stocks_kcals_mar"] * 1e6
+)
+dataframe_dict["food_stocks"]["stocks_kcals_apr"] = (
+    dataframe_dict["food_stocks"]["stocks_kcals_apr"] * 1e6
+)
+dataframe_dict["food_stocks"]["stocks_kcals_may"] = (
+    dataframe_dict["food_stocks"]["stocks_kcals_may"] * 1e6
+)
+dataframe_dict["food_stocks"]["stocks_kcals_jun"] = (
+    dataframe_dict["food_stocks"]["stocks_kcals_jun"] * 1e6
+)
+dataframe_dict["food_stocks"]["stocks_kcals_jul"] = (
+    dataframe_dict["food_stocks"]["stocks_kcals_jul"] * 1e6
+)
+dataframe_dict["food_stocks"]["stocks_kcals_aug"] = (
+    dataframe_dict["food_stocks"]["stocks_kcals_aug"] * 1e6
+)
+dataframe_dict["food_stocks"]["stocks_kcals_sep"] = (
+    dataframe_dict["food_stocks"]["stocks_kcals_sep"] * 1e6
+)
+dataframe_dict["food_stocks"]["stocks_kcals_oct"] = (
+    dataframe_dict["food_stocks"]["stocks_kcals_oct"] * 1e6
+)
+dataframe_dict["food_stocks"]["stocks_kcals_nov"] = (
+    dataframe_dict["food_stocks"]["stocks_kcals_nov"] * 1e6
+)
+dataframe_dict["food_stocks"]["stocks_kcals_dec"] = (
+    dataframe_dict["food_stocks"]["stocks_kcals_dec"] * 1e6
+)
 
 
 # biofuel
@@ -289,19 +298,13 @@ dataframe_dict["biofuel"]["biofuel_protein"] = (
 )
 
 # feed
-dataframe_dict["feed"]["feed_kcals"] = (
-    dataframe_dict["feed"]["feed_kcals"] * 1e6
-)
+dataframe_dict["feed"]["feed_kcals"] = dataframe_dict["feed"]["feed_kcals"] * 1e6
 
 # feed
-dataframe_dict["feed"]["feed_fat"] = (
-    dataframe_dict["feed"]["feed_fat"] * 1e6
-)
+dataframe_dict["feed"]["feed_fat"] = dataframe_dict["feed"]["feed_fat"] * 1e6
 
 # feed
-dataframe_dict["feed"]["feed_protein"] = (
-    dataframe_dict["feed"]["feed_protein"] * 1e6
-)
+dataframe_dict["feed"]["feed_protein"] = dataframe_dict["feed"]["feed_protein"] * 1e6
 
 # nuclear winter convert from percent to fraction
 dataframe_dict["crop_nuclear_winter"]["reduction_year1"] = (
@@ -321,9 +324,11 @@ dataframe_dict["crop_nuclear_winter"]["reduction_year5"] = (
 )
 
 
-# nuclear winter remove nan values by assuming zero yield 
+# nuclear winter remove nan values by assuming zero yield
 # (-1 => change from baseline to -100% of baseline, meaning zero crop growth)
-dataframe_dict["crop_nuclear_winter"][dataframe_dict["crop_nuclear_winter"] > 9.36e34] = -1
+dataframe_dict["crop_nuclear_winter"][
+    dataframe_dict["crop_nuclear_winter"] > 9.36e34
+] = -1
 
 # #combine the data frames from all the tabs into a giant dataframe
 

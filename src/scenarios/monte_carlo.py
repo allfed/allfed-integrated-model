@@ -59,8 +59,10 @@ class MonteCarlo:
             inputs_to_optimizer
         )
 
-        inputs_to_optimizer = scenarios_loader.set_nuclear_winter_global_disruption_to_crops(
-            inputs_to_optimizer
+        inputs_to_optimizer = (
+            scenarios_loader.set_nuclear_winter_global_disruption_to_crops(
+                inputs_to_optimizer
+            )
         )
 
         inputs_to_optimizer = scenarios_loader.set_short_delayed_shutoff(

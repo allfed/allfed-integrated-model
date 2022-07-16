@@ -135,10 +135,10 @@ class Optimizer:
 
         # if no stored food, plot shows zero
         analysis.analyze_SF_results(variables["stored_food_eaten"], show_output)
-        
+
         # extract numeric seaweed results in terms of people fed and raw
         # tons wet
-        
+
         # if seaweed not added to model, plot shows zero
         analysis.analyze_seaweed_results(
             variables["seaweed_wet_on_farm"],

@@ -34,7 +34,9 @@ class Seafood:
 
         # Based on Xia et al. (2021): Global Famine after Nuclear War
 
-        FISH_PERCENT_EACH_MONTH_LONG = inputs_to_optimizer["FISH_PERCENT_MONTHLY"]
+        FISH_PERCENT_EACH_MONTH_LONG = (
+            inputs_to_optimizer["FISH_PERCENT_MONTHLY"]
+        )
 
         FISH_PERCENT_EACH_MONTH = FISH_PERCENT_EACH_MONTH_LONG[0 : self.NMONTHS]
 

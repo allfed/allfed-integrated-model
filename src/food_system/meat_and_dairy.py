@@ -130,11 +130,7 @@ class MeatAndDairy:
             + self.INIT_LARGE_ANIMALS_CULLED * PROTEIN_PER_LARGE_ANIMAL
         )
 
-
         self.INITIAL_MEAT = INIT_MEAT_KCALS * (1 - self.MEAT_WASTE / 100)
-
-
-
 
         if self.INITIAL_MEAT > 0:
             self.MEAT_FRACTION_FAT = INIT_MEAT_FAT / INIT_MEAT_KCALS
@@ -173,7 +169,6 @@ class MeatAndDairy:
             self.CHICKEN_AND_PORK_LIMIT * CHICKEN_PORK_CONVERSION
         )
 
-
         # dry caloric ton excess/ton meat
         EDIBLE_TO_CATTLE_CONVERSION = 9.8
         h_e_fed_dairy_produced = []
@@ -199,7 +194,6 @@ class MeatAndDairy:
             else:
                 limit_dairy = 0
                 h_e_fed_dairy_produced.append(0)
-
 
             for_chicken_pork_cattle = excess_dry_cal_tons[m] - limit_dairy
 
@@ -402,7 +396,6 @@ class MeatAndDairy:
                 self.cattle_maintained.append(0)
 
         self.h_e_fed_dairy_limit = DAIRY_LIMIT - np.array(self.dairy_milk_produced)
-
 
     def get_dairy_produced(self):
         # billions kcals

@@ -19,16 +19,16 @@ def run_model_no_resilient_foods(plot_figures=True):
     this program runs the optimizer model, and ensures that all the results are
     reasonable using a couple useful checks to make sure there's nothing wacky
     going on:
-    
+
     1) check that as time increases, more people can be fed
-    
+
     2) check that stored food plus meat is always used at the
     highest rate during the largest food shortage.
 
     Arguments:
 
     Returns:
-        None    
+        None
     """
 
     scenarios_loader = Scenarios()
@@ -58,8 +58,10 @@ def run_model_no_resilient_foods(plot_figures=True):
         inputs_to_optimizer
     )
 
-    inputs_to_optimizer = scenarios_loader.set_nuclear_winter_global_disruption_to_crops(
-        inputs_to_optimizer
+    inputs_to_optimizer = (
+        scenarios_loader.set_nuclear_winter_global_disruption_to_crops(
+            inputs_to_optimizer
+        )
     )
 
     inputs_to_optimizer["EXCESS_CALORIES"] = np.array(
@@ -125,7 +127,7 @@ def run_model_no_resilient_foods(plot_figures=True):
     print(analysis.percent_people_fed / 100 * 2100)
     print("")
 
-    if(plot_figures):
+    if plot_figures:
         Plotter.plot_fig_1ab(analysis, 77)
 
 

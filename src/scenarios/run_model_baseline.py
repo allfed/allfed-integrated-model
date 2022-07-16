@@ -18,16 +18,16 @@ def run_model_baseline(plot_figures=True):
     this program runs the optimizer model, and ensures that all the results are
     reasonable using a couple useful checks to make sure there's nothing wacky
     going on:
-    
+
     1) check that as time increases, more people can be fed
-    
+
     2) check that stored food plus meat is always used at the
     highest rate during the largest food shortage.
-    
+
     Arguments:
-        
+
     Returns:
-        None    
+        None
     """
     scenarios_loader = Scenarios()
 

@@ -433,7 +433,9 @@ class Plotter:
                 )
                 ax3.get_legend().remove()
                 ax3.set(title="Comparative evaluation")
-                plt.legend(bbox_to_anchor=(0.0, -0.1),)
+                plt.legend(
+                    bbox_to_anchor=(0.0, -0.1),
+                )
                 ax3.set(xlabel="change in caloric availability (Kcals / person / day)")
                 plt.ylabel("")
                 handles, labels = ax3.get_legend_handles_labels()

@@ -19,12 +19,12 @@ def run_model_with_resilient_foods(plot_figures=True):
     Runs the model in nuclear winter with resilient foods, then calculates a diet
     The diet is 2100 kcals, determined by feeding any excess to animals
     This currently runs for the whole earth, and does not run on a by-country
-    basis.    
-    
+    basis.
+
     Arguments:
-        
+
     Returns:
-        None    
+        None
     """
 
     scenarios_loader = Scenarios()
@@ -53,8 +53,10 @@ def run_model_with_resilient_foods(plot_figures=True):
         inputs_to_optimizer
     )
 
-    inputs_to_optimizer = scenarios_loader.set_nuclear_winter_global_disruption_to_crops(
-        inputs_to_optimizer
+    inputs_to_optimizer = (
+        scenarios_loader.set_nuclear_winter_global_disruption_to_crops(
+            inputs_to_optimizer
+        )
     )
 
     # No excess calories
@@ -189,7 +191,7 @@ def run_model_with_resilient_foods(plot_figures=True):
     analysis2 = analysis
 
     # last month plotted is month 48
-    if(plot_figures):
+    if plot_figures:
         Plotter.plot_fig_2abcd(analysis1, analysis2, 48)
     print("Diet computation complete")
 

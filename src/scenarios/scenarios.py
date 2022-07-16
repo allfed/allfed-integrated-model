@@ -125,11 +125,11 @@ class Scenarios:
 
     def set_stored_food_buffer_zero(self, inputs_to_optimizer):
         """
-        Sets the stored food buffer as zero -- no stored food left at 
+        Sets the stored food buffer as zero -- no stored food left at
         the end of the simulation.
 
         However, in reality food in transit and food in grocery stores and
-        warehouses means there would still likely be some food available at 
+        warehouses means there would still likely be some food available at
         the end as a buffer.
 
         """
@@ -302,8 +302,8 @@ class Scenarios:
         # total stocks at the end of the month in dry caloric tons
         # this is total stored food available
         # if all of it were used for the whole earth, including private stocks
-        # but not including a 2 month in-transit or the estimated 2 weeks to 1 
-        # month of stocks in people's homes, grocery stores, and food 
+        # but not including a 2 month in-transit or the estimated 2 weeks to 1
+        # month of stocks in people's homes, grocery stores, and food
         # warehouses
         inputs_to_optimizer["END_OF_MONTH_STOCKS"] = {}
         inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JAN"] = 1960.922e6
@@ -357,7 +357,6 @@ class Scenarios:
 
         # annual tons cattle beef production
         inputs_to_optimizer["TONS_BEEF_ANNUAL"] = 74.2e6
-
 
         # Single cell protein fraction of global production
         inputs_to_optimizer["SCP_GLOBAL_PRODUCTION_FRACTION"] = 1
@@ -458,30 +457,42 @@ class Scenarios:
         inputs_to_optimizer["TONS_BEEF_ANNUAL"] = country_data["beef"]
 
         inputs_to_optimizer["END_OF_MONTH_STOCKS"] = {}
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JAN"] \
-            = country_data["stocks_kcals_jan"] 
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["FEB"] \
-            = country_data["stocks_kcals_feb"] 
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAR"] \
-            = country_data["stocks_kcals_mar"] 
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["APR"] \
-            = country_data["stocks_kcals_apr"] 
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAY"] \
-            = country_data["stocks_kcals_may"] 
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUN"] \
-            = country_data["stocks_kcals_jun"] 
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUL"] \
-            = country_data["stocks_kcals_jul"] 
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["AUG"] \
-            = country_data["stocks_kcals_aug"] 
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["SEP"] \
-            = country_data["stocks_kcals_sep"] 
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["OCT"] \
-            = country_data["stocks_kcals_oct"] 
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["NOV"] \
-            = country_data["stocks_kcals_nov"] 
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["DEC"] \
-            = country_data["stocks_kcals_dec"]
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JAN"] = country_data[
+            "stocks_kcals_jan"
+        ]
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["FEB"] = country_data[
+            "stocks_kcals_feb"
+        ]
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAR"] = country_data[
+            "stocks_kcals_mar"
+        ]
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["APR"] = country_data[
+            "stocks_kcals_apr"
+        ]
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAY"] = country_data[
+            "stocks_kcals_may"
+        ]
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUN"] = country_data[
+            "stocks_kcals_jun"
+        ]
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUL"] = country_data[
+            "stocks_kcals_jul"
+        ]
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["AUG"] = country_data[
+            "stocks_kcals_aug"
+        ]
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["SEP"] = country_data[
+            "stocks_kcals_sep"
+        ]
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["OCT"] = country_data[
+            "stocks_kcals_oct"
+        ]
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["NOV"] = country_data[
+            "stocks_kcals_nov"
+        ]
+        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["DEC"] = country_data[
+            "stocks_kcals_dec"
+        ]
 
         # TODO: ALTER THESE TO CORRECT CLOBAL FRACTIONS
 
@@ -683,7 +694,7 @@ class Scenarios:
 
         # percent (seaweed)
         # represents 10% daily growth
-        inputs_to_optimizer["SEAWEED_PRODUCTION_RATE"] = 100 * (1.1 ** 30 - 1)
+        inputs_to_optimizer["SEAWEED_PRODUCTION_RATE"] = 100 * (1.1**30 - 1)
 
         inputs_to_optimizer["OG_USE_BETTER_ROTATION"] = True
         inputs_to_optimizer["ROTATION_IMPROVEMENTS"] = {}

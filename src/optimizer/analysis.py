@@ -440,7 +440,8 @@ class Analyzer:
     # if cellulosic sugar isn't included, these results will be zero
 
     def analyze_CS_results(
-        self, production_kcals_CS_per_month,
+        self,
+        production_kcals_CS_per_month,
     ):
 
         self.billions_fed_CS_kcals = (
@@ -893,16 +894,16 @@ class Analyzer:
             )
         )
 
-        total_production = (np.array(OG_kcals) + np.array(SF_kcals)) * self.constants["KCALS_MONTHLY"]
+        total_production = (np.array(OG_kcals) + np.array(SF_kcals)) * self.constants[
+            "KCALS_MONTHLY"
+        ]
 
-        OG_SF_fraction_kcals_to_feed = np.divide(
-            excess_calories,
-            total_production
+        OG_SF_fraction_kcals_to_feed = np.divide(excess_calories, total_production)
+
+        # if the total production is zero, then the fraction is zero
+        OG_SF_fraction_kcals_to_feed = np.where(
+            total_production == 0, 0, OG_SF_fraction_kcals_to_feed
         )
-
-        #if the total production is zero, then the fraction is zero
-        OG_SF_fraction_kcals_to_feed \
-            = np.where(total_production == 0, 0, OG_SF_fraction_kcals_to_feed)
 
         OG_SF_fraction_kcals_to_humans = 1 - OG_SF_fraction_kcals_to_feed
 
@@ -918,8 +919,9 @@ class Analyzer:
             (np.array(OG_fat) + np.array(SF_fat)) * self.constants["FAT_MONTHLY"] * 1e9,
         )
 
-        OG_SF_fraction_fat_to_feed \
-            = np.where(total_production == 0, 0, OG_SF_fraction_fat_to_feed)
+        OG_SF_fraction_fat_to_feed = np.where(
+            total_production == 0, 0, OG_SF_fraction_fat_to_feed
+        )
 
         OG_SF_fraction_fat_to_humans = 1 - OG_SF_fraction_fat_to_feed
 
@@ -929,32 +931,32 @@ class Analyzer:
             * self.constants["PROTEIN_MONTHLY"]
             * 1e9,
         )
-        OG_SF_fraction_protein_to_feed \
-            = np.where(total_production == 0, 0, OG_SF_fraction_protein_to_feed)
+        OG_SF_fraction_protein_to_feed = np.where(
+            total_production == 0, 0, OG_SF_fraction_protein_to_feed
+        )
 
         OG_SF_fraction_protein_to_humans = 1 - OG_SF_fraction_protein_to_feed
 
+        FEED_NAN = np.isnan(OG_SF_fraction_kcals_to_feed).any()
 
-        FEED_NAN = np.isnan(OG_SF_fraction_kcals_to_feed).any() 
-
-        MORE_THAN_AVAILABLE_USED_FOR_FEED \
-            = not (OG_SF_fraction_kcals_to_feed <= 1 + 1e-5).all()
+        MORE_THAN_AVAILABLE_USED_FOR_FEED = not (
+            OG_SF_fraction_kcals_to_feed <= 1 + 1e-5
+        ).all()
 
         NEGATIVE_FRACTION_FEED = not (OG_SF_fraction_kcals_to_feed >= 0).all()
 
-
-        if(FEED_NAN):
+        if FEED_NAN:
             print("ERROR: Feed not a number")
             quit()
 
-        if ( MORE_THAN_AVAILABLE_USED_FOR_FEED):
+        if MORE_THAN_AVAILABLE_USED_FOR_FEED:
             print("")
             print(
                 "ERROR: Attempted to feed more food to animals than exists available outdoor growing fat, calories, or protein. Scenario is impossible."
             )
             quit()
 
-        if(NEGATIVE_FRACTION_FEED):
+        if NEGATIVE_FRACTION_FEED:
             print("ERROR: fraction feed to humans is negative")
             quit()
 
@@ -1012,7 +1014,6 @@ class Analyzer:
                 print("Double check this is actually reasonable.")
                 print("")
 
-
         self.kcals_fed = (
             np.array(self.billions_fed_SF_kcals)
             + np.array(self.billions_fed_meat_kcals)
@@ -1039,7 +1040,6 @@ class Analyzer:
             + self.billions_fed_h_e_meat_fat
             + self.billions_fed_h_e_milk_fat
         )
-
 
         self.protein_fed = (
             (
@@ -1122,9 +1122,11 @@ class Analyzer:
         # This may happen even if there is plenty of food to go around, because the stored food needs to
         # If we optimize such that stored food is used in one part while culled meat is used in another, and that generates excess calories above world demand
 
-        denominator = SF_OG_kcals \
-            + self.billions_fed_h_e_meat_kcals \
+        denominator = (
+            SF_OG_kcals
+            + self.billions_fed_h_e_meat_kcals
             + self.billions_fed_h_e_milk_kcals
+        )
 
         fractional_difference = np.divide(
             (
@@ -1136,8 +1138,7 @@ class Analyzer:
             denominator,
         )
 
-        fractional_difference = \
-            np.where(denominator == 0, 0, fractional_difference)
+        fractional_difference = np.where(denominator == 0, 0, fractional_difference)
 
         assert (abs(fractional_difference) < 1e-6).all()
 
@@ -1151,9 +1152,11 @@ class Analyzer:
                 else:
                     division.append(zipped_lists[0] / zipped_lists[1])
 
-            denominator = SF_OG_fat \
-                + self.billions_fed_h_e_meat_fat \
+            denominator = (
+                SF_OG_fat
+                + self.billions_fed_h_e_meat_fat
                 + self.billions_fed_h_e_milk_fat
+            )
 
             fractional_difference = np.divide(
                 (
@@ -1165,8 +1168,7 @@ class Analyzer:
                 denominator,
             )
 
-            fractional_difference = \
-                np.where(denominator == 0, 0, fractional_difference)
+            fractional_difference = np.where(denominator == 0, 0, fractional_difference)
 
             assert (abs(fractional_difference) < 1e-6).all()
 
@@ -1185,9 +1187,11 @@ class Analyzer:
 
             # a separate problem is if we have a primary restriction on protein or fat rather than calories, the rebalancer will try to get the calories the same for each month, but then even if there are enough calories, this will force protein used to be more than is available from outdoor growing and stored food.
 
-            denominator = SF_OG_protein \
-                + self.billions_fed_h_e_meat_protein \
+            denominator = (
+                SF_OG_protein
+                + self.billions_fed_h_e_meat_protein
                 + self.billions_fed_h_e_milk_protein
+            )
 
             fractional_difference = np.divide(
                 (
@@ -1199,8 +1203,7 @@ class Analyzer:
                 denominator,
             )
 
-            fractional_difference = \
-                np.where(denominator == 0, 0, fractional_difference)
+            fractional_difference = np.where(denominator == 0, 0, fractional_difference)
 
             assert (abs(fractional_difference) < 1e-6).all()
 

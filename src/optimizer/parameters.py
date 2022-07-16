@@ -98,7 +98,7 @@ class Parameters:
         self.THOU_TONS_FAT_NEEDED = self.FAT_MONTHLY * self.POP
         # in thousands of tons per month for population
         self.THOU_TONS_PROTEIN_NEEDED = self.PROTEIN_MONTHLY * self.POP
-        
+
         print("self.POP_BILLIONS")
         print(self.POP_BILLIONS)
 
@@ -208,9 +208,7 @@ class Parameters:
         #### STORED FOOD VARIABLES ####
 
         stored_food = StoredFood(inputs_to_optimizer, outdoor_crops)
-        stored_food.calculate_stored_food_to_use(
-            self.SIMULATION_STARTING_MONTH_NUM
-        )
+        stored_food.calculate_stored_food_to_use(self.SIMULATION_STARTING_MONTH_NUM)
 
         #### CONSTANTS FOR GREENHOUSES ####
 
@@ -404,27 +402,18 @@ class Parameters:
 
         PRINT_FIRST_MONTH_CONSTANTS = False
 
-        if(PRINT_FIRST_MONTH_CONSTANTS):
+        if PRINT_FIRST_MONTH_CONSTANTS:
             self.print_constants(
-                constants,
-                time_consts,
-                feed,
-                stored_food,
-                biofuels,
-                methane_scp
+                constants, time_consts, feed, stored_food, biofuels, methane_scp
             )
 
         return (constants, time_consts)
 
     def print_constants(
-        self,
-        constants,
-        time_consts,
-        feed,
-        stored_food,
-        biofuels,
-        methane_scp):
-        print("""
+        self, constants, time_consts, feed, stored_food, biofuels, methane_scp
+    ):
+        print(
+            """
             conversion to kcals/person/day:
             million dry caloric tons monthly * 12 = millon dry caloric tons annually
             million dry caloric tons annually * 1e6 = dry caloric tons annually
@@ -447,8 +436,9 @@ class Parameters:
             months global population fed = million tons dry caloric *1e6*4e6 /2100/30/7.8e9
 
             NOTE: WASTE IS CONSIDERED IN THE FOLLOWING OUTPUTS at the following levels:
-        """)
-        print(constants['inputs']["WASTE"])
+        """
+        )
+        print(constants["inputs"]["WASTE"])
         # used by world population
         print("")
         print("calories consumed per day")
@@ -547,15 +537,9 @@ class Parameters:
         print(INITIAL_SF_KCALS * SF_FRACTION_PROTEIN / 1e3)
         print("")
         print("INITIAL_SF_FAT percentage")
-        print(
-            100
-            * SF_FRACTION_FAT
-        )
+        print(100 * SF_FRACTION_FAT)
         print("INITIAL_SF_PROTEIN percentage")
-        print(
-            100
-            * SF_FRACTION_PROTEIN
-        )
+        print(100 * SF_FRACTION_PROTEIN)
         if feed.FEED_MONTHLY_USAGE_KCALS > 0:
             print("")
             print("INITIAL_FEED_KCALS million tons dry caloric monthly")
@@ -675,7 +659,9 @@ class Parameters:
             )
 
             if CM_IN_KCALS > 0:
-                print("INITIAL_CM_IN_KCALS million tons dry caloric monthly (cattle meat produced in 2020 monthly)")
+                print(
+                    "INITIAL_CM_IN_KCALS million tons dry caloric monthly (cattle meat produced in 2020 monthly)"
+                )
                 print(CM_IN_KCALS * 1e9 / 4e6 / 1e6)
 
                 print("INITIAL_CM_IN_FAT million tons monthly")

@@ -62,9 +62,7 @@ def test_run_model_no_resilient_foods():
     Returns:
         None
     """
-    run_model_no_resilient_foods.run_model_no_resilient_foods(
-        plot_figures=False
-    )
+    run_model_no_resilient_foods.run_model_no_resilient_foods(plot_figures=False)
 
 
 def test_run_model_with_resilient_foods():
@@ -76,9 +74,7 @@ def test_run_model_with_resilient_foods():
     Returns:
         None
     """
-    run_model_with_resilient_foods.run_model_with_resilient_foods(
-        plot_figures=False
-    )
+    run_model_with_resilient_foods.run_model_with_resilient_foods(plot_figures=False)
 
 
 def test_run_monte_carlo():
@@ -90,8 +86,9 @@ def test_run_monte_carlo():
     Returns:
         None
     """
-    #TBD
+    # TBD
     pass
+
 
 if __name__ == "__main__":
     test_run_model_baseline()

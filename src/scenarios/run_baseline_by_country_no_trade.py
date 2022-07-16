@@ -29,11 +29,11 @@ from src.scenarios.scenarios import Scenarios
 def run_baseline_by_country_no_trade(plot_figures=True):
     """
     Runs the baseline model by country and without trade
-    
+
     Arguments:
-        
+
     Returns:
-        None    
+        None
     """
     # country codes for UK + EU 27 countries (used for plotting map)
     UK_27_Plus_GBR_countries = [
@@ -159,9 +159,7 @@ def run_baseline_by_country_no_trade(plot_figures=True):
         else:
             country_code_map = country_code
 
-        country_map = world[world["iso_a3"].apply(
-            lambda x: x == country_code_map
-        )]
+        country_map = world[world["iso_a3"].apply(lambda x: x == country_code_map)]
 
         if len(country_map) == 0:
             print("no match")
@@ -181,9 +179,9 @@ def run_baseline_by_country_no_trade(plot_figures=True):
         country_name = country_data["country"]
 
         population = country_data["population"]
-        
+
         # skip countries with no population
-        if(np.isnan(population)):
+        if np.isnan(population):
             continue
 
         needs_ratio = run_optimizer_for_country(country_code, country_data)
