@@ -85,48 +85,48 @@ def run_baseline_by_country_no_trade(plot_figures=True):
     def run_optimizer_for_country(country_code, country_data):
 
         # initialize country specific food system properties
-        inputs_to_optimizer = scenarios_loader.init_country_food_system_properties(
+        constants_for_params = scenarios_loader.init_country_food_system_properties(
             country_data
         )
 
-        inputs_to_optimizer = scenarios_loader.set_country_seasonality_baseline(
-            inputs_to_optimizer, country_data
+        constants_for_params = scenarios_loader.set_country_seasonality_baseline(
+            constants_for_params, country_data
         )
 
         # set params that are true for baseline climate,
         # regardless of whether country or global scenario
 
-        inputs_to_optimizer = scenarios_loader.get_baseline_scenario(
-            inputs_to_optimizer
+        constants_for_params = scenarios_loader.get_baseline_scenario(
+            constants_for_params
         )
 
-        inputs_to_optimizer = scenarios_loader.set_baseline_nutrition_profile(
-            inputs_to_optimizer
+        constants_for_params = scenarios_loader.set_baseline_nutrition_profile(
+            constants_for_params
         )
 
-        inputs_to_optimizer = scenarios_loader.set_stored_food_buffer_zero(
-            inputs_to_optimizer
+        constants_for_params = scenarios_loader.set_stored_food_buffer_zero(
+            constants_for_params
         )
 
-        inputs_to_optimizer = scenarios_loader.set_fish_baseline(inputs_to_optimizer)
+        constants_for_params = scenarios_loader.set_fish_baseline(constants_for_params)
 
-        inputs_to_optimizer = scenarios_loader.set_waste_to_zero(inputs_to_optimizer)
+        constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
 
-        inputs_to_optimizer = scenarios_loader.set_immediate_shutoff(
-            inputs_to_optimizer
+        constants_for_params = scenarios_loader.set_immediate_shutoff(
+            constants_for_params
         )
 
-        inputs_to_optimizer = scenarios_loader.set_disruption_to_crops_to_zero(
-            inputs_to_optimizer
+        constants_for_params = scenarios_loader.set_disruption_to_crops_to_zero(
+            constants_for_params
         )
 
         # No excess calories
-        inputs_to_optimizer["EXCESS_CALORIES"] = np.array(
-            [0] * inputs_to_optimizer["NMONTHS"]
+        constants_for_params["EXCESS_FEED_KCALS"] = np.array(
+            [0] * constants_for_params["NMONTHS"]
         )
 
         constants = {}
-        constants["inputs"] = inputs_to_optimizer
+        constants["inputs"] = constants_for_params
 
         print(country_name)
 

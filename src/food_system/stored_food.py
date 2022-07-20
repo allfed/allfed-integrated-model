@@ -3,29 +3,38 @@
 ##       Functions and constants relating to stocks and stored food           #
 ##                                                                            #
 ###############################################################################
+from src.food_system.food import Food
 
 
-class StoredFood:
-    def __init__(self, inputs_to_optimizer, outdoor_crops):
+class StoredFood(Food):
+    def __init__(self, constants_for_params, outdoor_crops):
+        """
+        Initializes the StoredFood class, a child of the Food class.
+        """
+        super().__init__()
 
         self.end_of_month_stocks = [0] * 12  # initialize the array
-        self.end_of_month_stocks[0] = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JAN"]
-        self.end_of_month_stocks[1] = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["FEB"]
-        self.end_of_month_stocks[2] = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAR"]
-        self.end_of_month_stocks[3] = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["APR"]
-        self.end_of_month_stocks[4] = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAY"]
-        self.end_of_month_stocks[5] = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUN"]
-        self.end_of_month_stocks[6] = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUL"]
-        self.end_of_month_stocks[7] = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["AUG"]
-        self.end_of_month_stocks[8] = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["SEP"]
-        self.end_of_month_stocks[9] = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["OCT"]
-        self.end_of_month_stocks[10] = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["NOV"]
-        self.end_of_month_stocks[11] = inputs_to_optimizer["END_OF_MONTH_STOCKS"]["DEC"]
+        self.end_of_month_stocks[0] = constants_for_params["END_OF_MONTH_STOCKS"]["JAN"]
+        self.end_of_month_stocks[1] = constants_for_params["END_OF_MONTH_STOCKS"]["FEB"]
+        self.end_of_month_stocks[2] = constants_for_params["END_OF_MONTH_STOCKS"]["MAR"]
+        self.end_of_month_stocks[3] = constants_for_params["END_OF_MONTH_STOCKS"]["APR"]
+        self.end_of_month_stocks[4] = constants_for_params["END_OF_MONTH_STOCKS"]["MAY"]
+        self.end_of_month_stocks[5] = constants_for_params["END_OF_MONTH_STOCKS"]["JUN"]
+        self.end_of_month_stocks[6] = constants_for_params["END_OF_MONTH_STOCKS"]["JUL"]
+        self.end_of_month_stocks[7] = constants_for_params["END_OF_MONTH_STOCKS"]["AUG"]
+        self.end_of_month_stocks[8] = constants_for_params["END_OF_MONTH_STOCKS"]["SEP"]
+        self.end_of_month_stocks[9] = constants_for_params["END_OF_MONTH_STOCKS"]["OCT"]
+        self.end_of_month_stocks[10] = constants_for_params["END_OF_MONTH_STOCKS"][
+            "NOV"
+        ]
+        self.end_of_month_stocks[11] = constants_for_params["END_OF_MONTH_STOCKS"][
+            "DEC"
+        ]
 
         # (nuclear event in mid-may)
         # Mike's spreadsheet: https://docs.google.com/spreadsheets/d / 19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=806987252
 
-        self.buffer_ratio = inputs_to_optimizer["BUFFER_RATIO"]
+        self.buffer_ratio = constants_for_params["BUFFER_RATIO"]
 
         self.SF_FRACTION_FAT = outdoor_crops.OG_FRACTION_FAT
         self.SF_FRACTION_PROTEIN = outdoor_crops.OG_FRACTION_PROTEIN
@@ -77,3 +86,7 @@ class StoredFood:
 
         # convert to billion kcals
         self.INITIAL_SF_KCALS = self.TONS_DRY_CALORIC_EQIVALENT_SF * 4e6 / 1e9
+
+        self.kcals = self.INITIAL_SF_KCALS
+        self.fat = self.INITIAL_SF_KCALS * self.SF_FRACTION_FAT
+        self.protein = self.INITIAL_SF_KCALS * self.SF_FRACTION_PROTEIN

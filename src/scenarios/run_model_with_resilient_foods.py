@@ -32,46 +32,46 @@ def run_model_with_resilient_foods(plot_figures=True):
     constants = {}
     constants["CHECK_CONSTRAINTS"] = False
 
-    inputs_to_optimizer = scenarios_loader.init_global_food_system_properties()
+    constants_for_params = scenarios_loader.init_global_food_system_properties()
 
-    inputs_to_optimizer = scenarios_loader.get_resilient_food_scenario(
-        inputs_to_optimizer
+    constants_for_params = scenarios_loader.get_resilient_food_scenario(
+        constants_for_params
     )
 
-    inputs_to_optimizer = scenarios_loader.set_catastrophe_nutrition_profile(
-        inputs_to_optimizer
+    constants_for_params = scenarios_loader.set_catastrophe_nutrition_profile(
+        constants_for_params
     )
 
-    inputs_to_optimizer = scenarios_loader.set_global_seasonality_nuclear_winter(
-        inputs_to_optimizer
+    constants_for_params = scenarios_loader.set_global_seasonality_nuclear_winter(
+        constants_for_params
     )
-    inputs_to_optimizer = scenarios_loader.set_stored_food_buffer_zero(
-        inputs_to_optimizer
-    )
-
-    inputs_to_optimizer = scenarios_loader.set_fish_nuclear_winter_reduction(
-        inputs_to_optimizer
+    constants_for_params = scenarios_loader.set_stored_food_buffer_zero(
+        constants_for_params
     )
 
-    inputs_to_optimizer = (
+    constants_for_params = scenarios_loader.set_fish_nuclear_winter_reduction(
+        constants_for_params
+    )
+
+    constants_for_params = (
         scenarios_loader.set_nuclear_winter_global_disruption_to_crops(
-            inputs_to_optimizer
+            constants_for_params
         )
     )
 
     # No excess calories
-    inputs_to_optimizer["EXCESS_CALORIES"] = np.array(
-        [0] * inputs_to_optimizer["NMONTHS"]
+    constants_for_params["EXCESS_FEED_KCALS"] = np.array(
+        [0] * constants_for_params["NMONTHS"]
     )
 
-    inputs_to_optimizer = scenarios_loader.set_waste_to_zero(inputs_to_optimizer)
-    inputs_to_optimizer = scenarios_loader.set_short_delayed_shutoff(
-        inputs_to_optimizer
+    constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
+    constants_for_params = scenarios_loader.set_short_delayed_shutoff(
+        constants_for_params
     )
 
     optimizer = Optimizer()
     constants_loader = Parameters()
-    constants["inputs"] = inputs_to_optimizer
+    constants["inputs"] = constants_for_params
     constants_for_optimizer = copy.deepcopy(constants)
     (
         single_valued_constants,
@@ -93,20 +93,20 @@ def run_model_with_resilient_foods(plot_figures=True):
     )
 
     # No excess calories
-    inputs_to_optimizer["EXCESS_CALORIES"] = np.array(
-        [0] * inputs_to_optimizer["NMONTHS"]
+    constants_for_params["EXCESS_FEED_KCALS"] = np.array(
+        [0] * constants_for_params["NMONTHS"]
     )
 
     optimizer = Optimizer()
-    constants["inputs"] = inputs_to_optimizer
+    constants["inputs"] = constants_for_params
     constants_for_optimizer = copy.deepcopy(constants)
     (
         single_valued_constants,
         multi_valued_constants,
     ) = constants_loader.computeParameters(constants_for_optimizer)
 
-    inputs_to_optimizer = scenarios_loader.set_global_waste_to_doubled_prices(
-        inputs_to_optimizer
+    constants_for_params = scenarios_loader.set_global_waste_to_doubled_prices(
+        constants_for_params
     )
 
     single_valued_constants["CHECK_CONSTRAINTS"] = False
@@ -121,7 +121,7 @@ def run_model_with_resilient_foods(plot_figures=True):
     print(analysis.percent_people_fed / 100 * 2100)
     print("")
 
-    constants["inputs"] = inputs_to_optimizer
+    constants["inputs"] = constants_for_params
     constants_for_optimizer = copy.deepcopy(constants)
     (
         single_valued_constants,
@@ -134,12 +134,12 @@ def run_model_with_resilient_foods(plot_figures=True):
     )
 
     people_fed = analysis.percent_people_fed / 100 * 7.8
-    feed_delay = inputs_to_optimizer["DELAY"]["FEED_SHUTOFF_MONTHS"]
+    feed_delay = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
 
     # these months are used to estimate the diet before the full scale-up of resilient foods makes there be way too much food to make sense economically
     N_MONTHS_TO_CALCULATE_DIET = 49
 
-    excess_per_month = np.array([0] * inputs_to_optimizer["NMONTHS"])
+    excess_per_month = np.array([0] * constants_for_params["NMONTHS"])
 
     # don't try to feed more animals in the  months before feed shutoff
     excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = (
@@ -147,13 +147,13 @@ def run_model_with_resilient_foods(plot_figures=True):
         + analysis.excess_after_run[feed_delay:N_MONTHS_TO_CALCULATE_DIET]
     )
 
-    feed_delay = inputs_to_optimizer["DELAY"]["FEED_SHUTOFF_MONTHS"]
+    feed_delay = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
 
     n = 0
     print("Calculating 2100 calorie diet, excess feed to animals")
     while True:
 
-        constants["inputs"] = inputs_to_optimizer
+        constants["inputs"] = constants_for_params
         (
             single_valued_constants,
             multi_valued_constants,
@@ -167,7 +167,7 @@ def run_model_with_resilient_foods(plot_figures=True):
         if people_fed > 7.79 and people_fed < 7.81:
             break
 
-        assert feed_delay >= inputs_to_optimizer["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
+        assert feed_delay >= constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
 
         # rapidly feed more to people until it's close to 2100 kcals, then
         # slowly feed more to people
@@ -179,7 +179,7 @@ def run_model_with_resilient_foods(plot_figures=True):
             excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = excess_per_month[
                 feed_delay:N_MONTHS_TO_CALCULATE_DIET
             ] + np.linspace(15000, 15000, N_MONTHS_TO_CALCULATE_DIET - feed_delay)
-        inputs_to_optimizer["EXCESS_CALORIES"] = excess_per_month
+        constants_for_params["EXCESS_FEED_KCALS"] = excess_per_month
         print("Diet computation complete")
 
         people_fed = analysis.percent_people_fed / 100 * 7.8

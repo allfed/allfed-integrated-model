@@ -8,25 +8,25 @@ import numpy as np
 
 
 class Greenhouses:
-    def __init__(self, inputs_to_optimizer):
+    def __init__(self, constants_for_params):
         # 500 million hectares in tropics (for outdoor crops 2020)
         self.TOTAL_CROP_AREA = 500e6
 
-        self.STARTING_MONTH_NUM = inputs_to_optimizer["STARTING_MONTH_NUM"]
+        self.STARTING_MONTH_NUM = constants_for_params["STARTING_MONTH_NUM"]
 
-        self.ADD_GREENHOUSES = inputs_to_optimizer["ADD_GREENHOUSES"]
-        self.NMONTHS = inputs_to_optimizer["NMONTHS"]
+        self.ADD_GREENHOUSES = constants_for_params["ADD_GREENHOUSES"]
+        self.NMONTHS = constants_for_params["NMONTHS"]
 
         if self.ADD_GREENHOUSES:
             # this is in addition to the 5 month delay till harvest
-            self.greenhouse_delay = inputs_to_optimizer["DELAY"]["GREENHOUSE_MONTHS"]
-            self.GREENHOUSE_AREA_MULTIPLIER = inputs_to_optimizer[
+            self.greenhouse_delay = constants_for_params["DELAY"]["GREENHOUSE_MONTHS"]
+            self.GREENHOUSE_AREA_MULTIPLIER = constants_for_params[
                 "GREENHOUSE_AREA_MULTIPLIER"
             ]
         else:
             self.GREENHOUSE_AREA_MULTIPLIER = 0
 
-    def get_greenhouse_area(self, inputs_to_optimizer, outdoor_crops):
+    def get_greenhouse_area(self, constants_for_params, outdoor_crops):
 
         # greenhouses tab
         # assumption: greenhouse crop production is very similar in nutritional
@@ -95,7 +95,7 @@ class Greenhouses:
             )
 
             self.GH_KCALS_GROWN_PER_HECTARE = (
-                1 - inputs_to_optimizer["WASTE"]["CROPS"] / 100
+                1 - constants_for_params["WASTE"]["CROPS"] / 100
             ) * np.array(KCALS_GROWN_PER_HECTARE_BEFORE_WASTE)
         else:
             self.GH_KCALS_GROWN_PER_HECTARE = [0] * self.NMONTHS
@@ -113,7 +113,7 @@ class Greenhouses:
     # day conditions. We improve accuracy by applying the outdoor growing
     # estimate and decreasing the estimated fat and protein by the same
     # factor that kcals are decreased by
-    def get_greenhouse_yield_per_ha(self, inputs_to_optimizer, outdoor_crops):
+    def get_greenhouse_yield_per_ha(self, constants_for_params, outdoor_crops):
         KCAL_RATIO = outdoor_crops.KCAL_RATIO_ROT
         FAT_RATIO = outdoor_crops.FAT_RATIO_ROT
         PROTEIN_RATIO = outdoor_crops.PROTEIN_RATIO_ROT
@@ -135,7 +135,7 @@ class Greenhouses:
             gh_kcals = (
                 kcals_per_month
                 * KCAL_RATIO
-                * (1 + inputs_to_optimizer["GREENHOUSE_GAIN_PCT"] / 100)
+                * (1 + constants_for_params["GREENHOUSE_GAIN_PCT"] / 100)
             )
 
             rotation_kcals_per_ha_long.append(gh_kcals)

@@ -122,9 +122,9 @@ class Optimizer:
             variables["crops_food_eaten_no_rotation"],
             variables["crops_food_eaten_with_rotation"],
             variables["stored_food_eaten"],
-            multi_valued_constants["excess_kcals"],
-            multi_valued_constants["excess_fat_used"],
-            multi_valued_constants["excess_protein_used"],
+            multi_valued_constants["nonhuman_consumption_kcals"],
+            multi_valued_constants["nonhuman_consumption_fat_used"],
+            multi_valued_constants["nonhuman_consumption_protein_used"],
         )
 
         if analysis.scenario_is_impossible:
@@ -428,7 +428,7 @@ class Optimizer:
                 "Crops_Food_Storage_No_Rotation_" + str(month) + "_Constraint",
             )
 
-        else:  # now produinputs_to_optimizerg rotation, but can still eat "no rotation" storage
+        else:  # now produconstants_for_paramsg rotation, but can still eat "no rotation" storage
 
             model += (
                 variables["crops_food_storage_rotation"][month]
@@ -500,7 +500,8 @@ class Optimizer:
                 + variables["crops_food_eaten_with_rotation"][month]
                 * self.single_valued_constants["OG_ROTATION_FRACTION_KCALS"]
                 * CROPS_WASTE
-                - self.multi_valued_constants["excess_kcals"][month] * CROPS_WASTE
+                - self.multi_valued_constants["nonhuman_consumption_kcals"][month]
+                * CROPS_WASTE
                 + variables["seaweed_food_produced"][month]
                 * self.single_valued_constants["SEAWEED_KCALS"]
                 + self.multi_valued_constants["dairy_milk_kcals"][month]
@@ -532,7 +533,9 @@ class Optimizer:
                     + variables["crops_food_eaten_with_rotation"][month]
                     * self.single_valued_constants["OG_ROTATION_FRACTION_FAT"]
                     * CROPS_WASTE
-                    - self.multi_valued_constants["excess_fat_used"][month]
+                    - self.multi_valued_constants["nonhuman_consumption_fat_used"][
+                        month
+                    ]
                     * CROPS_WASTE
                     + variables["seaweed_food_produced"][month]
                     * self.single_valued_constants["SEAWEED_FAT"]
@@ -567,7 +570,9 @@ class Optimizer:
                     + variables["crops_food_eaten_with_rotation"][month]
                     * self.single_valued_constants["OG_ROTATION_FRACTION_PROTEIN"]
                     * CROPS_WASTE
-                    - self.multi_valued_constants["excess_protein_used"][month]
+                    - self.multi_valued_constants["nonhuman_consumption_protein_used"][
+                        month
+                    ]
                     * CROPS_WASTE
                     + variables["seaweed_food_produced"][month]
                     * self.single_valued_constants["SEAWEED_PROTEIN"]
@@ -597,7 +602,7 @@ class Optimizer:
             + variables["crops_food_eaten_no_rotation"][month]
             + variables["crops_food_eaten_with_rotation"][month]
             * self.single_valued_constants["OG_ROTATION_FRACTION_KCALS"]
-            >= self.multi_valued_constants["excess_kcals"][month],
+            >= self.multi_valued_constants["nonhuman_consumption_kcals"][month],
             "Excess_Kcals_Less_Than_SF_And_OG_" + str(month) + "_Constraint",
         )
 
@@ -609,7 +614,7 @@ class Optimizer:
                 * self.single_valued_constants["OG_FRACTION_FAT"]
                 + variables["crops_food_eaten_with_rotation"][month]
                 * self.single_valued_constants["OG_ROTATION_FRACTION_FAT"]
-                >= self.multi_valued_constants["excess_fat_used"][month],
+                >= self.multi_valued_constants["nonhuman_consumption_fat_used"][month],
                 "Excess_Fat_Less_Than_SF_And_OG_" + str(month) + "_Constraint",
             )
 
@@ -621,7 +626,9 @@ class Optimizer:
                 * self.single_valued_constants["OG_FRACTION_PROTEIN"]
                 + variables["crops_food_eaten_with_rotation"][month]
                 * self.single_valued_constants["OG_ROTATION_FRACTION_PROTEIN"]
-                >= self.multi_valued_constants["excess_protein_used"][month],
+                >= self.multi_valued_constants["nonhuman_consumption_protein_used"][
+                    month
+                ],
                 "Excess_Protein_Less_Than_SF_And_OG_" + str(month) + "_Constraint",
             )
 

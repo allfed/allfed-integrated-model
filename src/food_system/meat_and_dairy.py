@@ -5,23 +5,24 @@
 ###############################################################################
 
 import numpy as np
+from src.food_system.food import Food
 
 
 class MeatAndDairy:
-    def __init__(self, inputs_to_optimizer):
+    def __init__(self, constants_for_params):
 
         # time from slaughter livestock to it turning into food
         # not functional yet
 
         self.KG_TO_1000_TONS = 1 / (1e6)
-        self.ADD_DAIRY = inputs_to_optimizer["ADD_DAIRY"]
+        self.ADD_DAIRY = constants_for_params["ADD_DAIRY"]
 
         # we use this spreadsheeet @Morgan: Link broken
-        self.NMONTHS = inputs_to_optimizer["NMONTHS"]
+        self.NMONTHS = constants_for_params["NMONTHS"]
         # edible meat, organs, and fat added
-        self.MEAT_WASTE = inputs_to_optimizer["WASTE"]["MEAT"]
-        self.DAIRY_WASTE = inputs_to_optimizer["WASTE"]["DAIRY"]
-        self.ADD_MEAT = inputs_to_optimizer["ADD_MEAT"]
+        self.MEAT_WASTE = constants_for_params["WASTE"]["MEAT"]
+        self.DAIRY_WASTE = constants_for_params["WASTE"]["DAIRY"]
+        self.ADD_MEAT = constants_for_params["ADD_MEAT"]
         self.KG_PER_SMALL_ANIMAL = 2.36
         self.KG_PER_MEDIUM_ANIMAL = 24.6
         self.KG_PER_LARGE_ANIMAL = 269.7
@@ -41,15 +42,13 @@ class MeatAndDairy:
         self.MEDIUM_ANIMAL_FAT_PER_KG = 0.34
         self.MEDIUM_ANIMAL_PROTEIN_PER_KG = 0.11
 
-        # @Morgan: Link broken
         # per kg, whole milk, per nutrition calculator
         self.MILK_KCALS = 610  # kcals per kg
         self.MILK_FAT = 0.032  # kg per kg
         self.MILK_PROTEIN = 0.033  # kg per kg
 
         # Human Inedible Produced Primary Dairy and Cattle Meat #########
-        # 'integrated model 150 tg' tab @Morgan: Link broken
-        self.human_inedible_feed = inputs_to_optimizer["HUMAN_INEDIBLE_FEED"]
+        self.human_inedible_feed = constants_for_params["HUMAN_INEDIBLE_FEED"]
 
         # dry caloric ton feed/ton milk
         self.INEDIBLE_TO_DAIRY_CONVERSION = 1.44
@@ -60,18 +59,18 @@ class MeatAndDairy:
 
         # tons meat per month
         self.CHICKEN_AND_PORK_LIMIT = (
-            inputs_to_optimizer["TONS_CHICKEN_AND_PORK_ANNUAL"] / 12
+            constants_for_params["TONS_CHICKEN_AND_PORK_ANNUAL"] / 12
         )
         self.TONS_BEEF_MONTHLY_BASELINE = (
-            inputs_to_optimizer["TONS_BEEF_ANNUAL"] / 12
+            constants_for_params["TONS_BEEF_ANNUAL"] / 12
         )  # tons a month meat
 
-        INITIAL_MILK_CATTLE = inputs_to_optimizer["INITIAL_MILK_CATTLE"]
-        self.INIT_SMALL_ANIMALS = inputs_to_optimizer["INIT_SMALL_ANIMALS"]
-        self.INIT_MEDIUM_ANIMALS = inputs_to_optimizer["INIT_MEDIUM_ANIMALS"]
+        INITIAL_MILK_CATTLE = constants_for_params["INITIAL_MILK_CATTLE"]
+        self.INIT_SMALL_ANIMALS = constants_for_params["INIT_SMALL_ANIMALS"]
+        self.INIT_MEDIUM_ANIMALS = constants_for_params["INIT_MEDIUM_ANIMALS"]
 
         self.INIT_LARGE_ANIMALS = (
-            inputs_to_optimizer["INIT_LARGE_ANIMALS_WITH_MILK_COWS"]
+            constants_for_params["INIT_LARGE_ANIMALS_WITH_MILK_COWS"]
             - INITIAL_MILK_CATTLE
         )
 
@@ -139,7 +138,6 @@ class MeatAndDairy:
             self.MEAT_FRACTION_FAT = 0
             self.MEAT_FRACTION_PROTEIN = 0
 
-    # @Morgan: Link broken
     def calculate_meat_and_dairy_from_excess(self, kcals_fed_to_animals):
 
         # each unit of excess kcals (with associated fat and protein)
@@ -260,10 +258,10 @@ class MeatAndDairy:
             / present_day_tons_per_month_chicken_pork
         )
         if not (self.ratio_maintained_chicken_pork <= 1).all():
-            print("DIRE, DIRE WARNING!!")
-            # quit()
-            # @ Morgan: Should this raise an error?
-
+            print("At least one month has higher chicken and pork above")
+            print("baseline levels. This may be surprising if we are running a global")
+            print("model, but is to be expected in at least some countries.")
+            print("")
         # limit the rate of livestock culling by how long it takes to reduce
         # the maintained livestock to its minimum.
         # chicken pork assumed to maintain ratio between medium
@@ -360,9 +358,9 @@ class MeatAndDairy:
             h_e_meat_protein,
         )
 
-    def calculate_meat_dairy_from_human_inedible_feed(self, inputs_to_optimizer):
+    def calculate_meat_dairy_from_human_inedible_feed(self, constants_for_params):
         # monthly in tons milk (present day value)
-        DAIRY_LIMIT = inputs_to_optimizer["TONS_DAIRY_ANNUAL"] / 12
+        DAIRY_LIMIT = constants_for_params["TONS_DAIRY_ANNUAL"] / 12
 
         # monthly in dry caloric tons inedible feed
         DAIRY_LIMIT_FEED_USAGE = DAIRY_LIMIT * self.INEDIBLE_TO_DAIRY_CONVERSION
@@ -467,54 +465,10 @@ class MeatAndDairy:
             cattle_maintained_protein,
         )
 
-    def get_excess(self, inputs_to_optimizer, biofuels, feed):
-        # Human Edible Produced "Secondary" Dairy and Cattle Meat #######
+    def get_culled_meat(self, constants_for_params, feed_shutoff_delay_months):
 
-        # assume animals need and use human levels of fat and protein per kcal
-        # units grams per kcal same as units 1000s tons per billion kcals
-        fat_used_ls = (
-            inputs_to_optimizer["NUTRITION"]["FAT_DAILY"]
-            / inputs_to_optimizer["NUTRITION"]["KCALS_DAILY"]
-        )
-
-        protein_used_ls = (
-            inputs_to_optimizer["NUTRITION"]["PROTEIN_DAILY"]
-            / inputs_to_optimizer["NUTRITION"]["KCALS_DAILY"]
-        )
-
-        nonshutoff_excess_fat_used = (
-            fat_used_ls * inputs_to_optimizer["EXCESS_CALORIES"]
-        )
-
-        nonshutoff_excess_protein_used = (
-            protein_used_ls * inputs_to_optimizer["EXCESS_CALORIES"]
-        )
-
-        # totals human edible used for animal feed and biofuels
-        # excess is directly supplied separately from the feed_shutoff used.
-
-        self.excess_kcals = (
-            inputs_to_optimizer["EXCESS_CALORIES"]
-            + biofuels.biofuels_kcals
-            + feed.feed_shutoff_kcals
-        )
-
-        self.excess_fat_used = (
-            nonshutoff_excess_fat_used + biofuels.biofuels_fat + feed.feed_shutoff_fat
-        )
-
-        self.excess_protein_used = (
-            nonshutoff_excess_protein_used
-            + biofuels.biofuels_protein
-            + feed.feed_shutoff_protein
-        )
-
-        return (self.excess_kcals, self.excess_fat_used, self.excess_protein_used)
-
-    def get_culled_meat(self, inputs_to_optimizer, feed_shutoff_delay_months):
-
-        if inputs_to_optimizer["CULL_ANIMALS"]:
-            self.CULL_DURATION_MONTHS = inputs_to_optimizer["CULL_DURATION_MONTHS"]
+        if constants_for_params["CULL_ANIMALS"]:
+            self.CULL_DURATION_MONTHS = constants_for_params["CULL_DURATION_MONTHS"]
             if self.CULL_DURATION_MONTHS != 0:
                 meat_culled = (
                     [0] * feed_shutoff_delay_months
@@ -536,13 +490,13 @@ class MeatAndDairy:
         if not self.ADD_MEAT:
             meat_culled = [0] * self.NMONTHS
 
-        if not inputs_to_optimizer["CULL_ANIMALS"]:
+        if not constants_for_params["CULL_ANIMALS"]:
             assert max(meat_culled) == 0
 
         return meat_culled
 
-    def calculate_animals_culled(self, inputs_to_optimizer):
-        if inputs_to_optimizer["CULL_ANIMALS"]:
+    def calculate_animals_culled(self, constants_for_params):
+        if constants_for_params["CULL_ANIMALS"]:
             self.INIT_SMALL_ANIMALS_CULLED = self.INIT_SMALL_ANIMALS * (
                 1 - np.min(self.ratio_maintained_chicken_pork)
             )
@@ -557,7 +511,7 @@ class MeatAndDairy:
             self.INIT_MEDIUM_ANIMALS_CULLED = 0
             self.INIT_LARGE_ANIMALS_CULLED = 0
 
-    def get_dairy_from_human_edible_feed(self, inputs_to_optimizer):
+    def get_dairy_from_human_edible_feed(self, constants_for_params):
 
         if self.ADD_DAIRY:
 

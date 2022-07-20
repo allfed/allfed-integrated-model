@@ -8,24 +8,24 @@ import numpy as np
 
 
 class CellulosicSugar:
-    def __init__(self, inputs_to_optimizer):
+    def __init__(self, constants_for_params):
 
         # billion kcals a month for 100% population (7.8 billion people).
         self.GLOBAL_MONTHLY_NEEDS = 6793977 / 12
 
-        self.NMONTHS = inputs_to_optimizer["NMONTHS"]
-        self.INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = inputs_to_optimizer[
+        self.NMONTHS = constants_for_params["NMONTHS"]
+        self.INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = constants_for_params[
             "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
         ]
-        self.SUGAR_WASTE = inputs_to_optimizer["WASTE"]["SUGAR"]
+        self.SUGAR_WASTE = constants_for_params["WASTE"]["SUGAR"]
 
     # this all comes from one of Juan's recently published industrial foods
     # papers
-    def calculate_monthly_cs_production(self, inputs_to_optimizer):
+    def calculate_monthly_cs_production(self, constants_for_params):
 
-        if inputs_to_optimizer["ADD_CELLULOSIC_SUGAR"]:
+        if constants_for_params["ADD_CELLULOSIC_SUGAR"]:
 
-            industrial_delay_months = [0] * inputs_to_optimizer["DELAY"][
+            industrial_delay_months = [0] * constants_for_params["DELAY"][
                 "INDUSTRIAL_FOODS_MONTHS"
             ]
 
@@ -45,7 +45,7 @@ class CellulosicSugar:
                     x
                     / 100
                     * self.GLOBAL_MONTHLY_NEEDS
-                    * inputs_to_optimizer["CS_GLOBAL_PRODUCTION_FRACTION"]
+                    * constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"]
                     * (1 - self.SUGAR_WASTE / 100)
                 )
         else:

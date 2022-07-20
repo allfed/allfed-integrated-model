@@ -35,43 +35,43 @@ def run_model_baseline(plot_figures=True):
     constants["CHECK_CONSTRAINTS"] = False
 
     # initialize global food system properties
-    inputs_to_optimizer = scenarios_loader.init_global_food_system_properties()
+    constants_for_params = scenarios_loader.init_global_food_system_properties()
 
     # set params that are true for baseline regardless of whether country or global
 
-    inputs_to_optimizer = scenarios_loader.get_baseline_scenario(inputs_to_optimizer)
+    constants_for_params = scenarios_loader.get_baseline_scenario(constants_for_params)
 
-    inputs_to_optimizer = scenarios_loader.set_baseline_nutrition_profile(
-        inputs_to_optimizer
+    constants_for_params = scenarios_loader.set_baseline_nutrition_profile(
+        constants_for_params
     )
 
-    inputs_to_optimizer = scenarios_loader.set_stored_food_buffer_as_baseline(
-        inputs_to_optimizer
+    constants_for_params = scenarios_loader.set_stored_food_buffer_as_baseline(
+        constants_for_params
     )
 
-    inputs_to_optimizer = scenarios_loader.set_global_seasonality_baseline(
-        inputs_to_optimizer
+    constants_for_params = scenarios_loader.set_global_seasonality_baseline(
+        constants_for_params
     )
 
-    inputs_to_optimizer = scenarios_loader.set_fish_baseline(inputs_to_optimizer)
+    constants_for_params = scenarios_loader.set_fish_baseline(constants_for_params)
 
-    inputs_to_optimizer = scenarios_loader.set_waste_to_zero(inputs_to_optimizer)
+    constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
 
-    inputs_to_optimizer = scenarios_loader.set_immediate_shutoff(inputs_to_optimizer)
+    constants_for_params = scenarios_loader.set_immediate_shutoff(constants_for_params)
 
-    inputs_to_optimizer = scenarios_loader.set_disruption_to_crops_to_zero(
-        inputs_to_optimizer
+    constants_for_params = scenarios_loader.set_disruption_to_crops_to_zero(
+        constants_for_params
     )
 
     # No excess calories
-    inputs_to_optimizer["EXCESS_CALORIES"] = np.array(
-        [0] * inputs_to_optimizer["NMONTHS"]
+    constants_for_params["EXCESS_FEED_KCALS"] = np.array(
+        [0] * constants_for_params["NMONTHS"]
     )
 
     constants_loader = Parameters()
     optimizer = Optimizer()
 
-    constants["inputs"] = inputs_to_optimizer
+    constants["inputs"] = constants_for_params
     (
         single_valued_constants,
         multi_valued_constants,
@@ -89,21 +89,21 @@ def run_model_baseline(plot_figures=True):
 
     analysis1 = analysis
 
-    inputs_to_optimizer = scenarios_loader.set_continued_feed_biofuels(
-        inputs_to_optimizer
+    constants_for_params = scenarios_loader.set_continued_feed_biofuels(
+        constants_for_params
     )
 
-    inputs_to_optimizer = scenarios_loader.set_global_waste_to_baseline_prices(
-        inputs_to_optimizer
+    constants_for_params = scenarios_loader.set_global_waste_to_baseline_prices(
+        constants_for_params
     )
 
     # No excess calories -- excess calories is set when the model is run and needs to be reset each time.
-    inputs_to_optimizer["EXCESS_CALORIES"] = np.array(
-        [0] * inputs_to_optimizer["NMONTHS"]
+    constants_for_params["EXCESS_FEED_KCALS"] = np.array(
+        [0] * constants_for_params["NMONTHS"]
     )
 
     optimizer = Optimizer()
-    constants["inputs"] = inputs_to_optimizer
+    constants["inputs"] = constants_for_params
     (
         single_valued_constants,
         multi_valued_constants,

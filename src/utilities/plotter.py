@@ -1001,3 +1001,32 @@ class Plotter:
             legend = legend + [""]
 
         return legend
+
+    def plot_monthly_reductions_seasonally(ratios):
+
+        month_nums = np.linspace(0, len(ratios), len(ratios))
+
+        plt.scatter(month_nums, ratios)
+        plt.plot(month_nums, ratios)
+
+        plt.xlabel("month")
+        plt.ylabel("ratios to baseline production")
+        plt.title("fraction of crop production per month, including seasonality")
+        plt.xlim([0, 12 * 5])
+        plt.ylim([0, 1.5])
+        plt.show()
+
+    def plot_monthly_reductions_no_seasonality(all_months_reductions):
+        """
+        Plot the reduction each month, showing the seasonal variability.
+        """
+        month_nums = np.linspace(
+            0, len(all_months_reductions), len(all_months_reductions)
+        )
+        plt.scatter(month_nums, all_months_reductions)
+        plt.title("fraction of crop production per month, not including seasonality")
+        plt.xlabel("month")
+        plt.ylabel("ratio to baseline production")
+        plt.xlim([0, 12 * 5])
+        plt.ylim([0, 1.5])
+        plt.show()

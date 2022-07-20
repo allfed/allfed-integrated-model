@@ -14,8 +14,6 @@ module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-from src.food_system.biofuels import Biofuels
-from src.food_system.feed import Feed
 from src.food_system.meat_and_dairy import MeatAndDairy
 from src.food_system.outdoor_crops import OutdoorCrops
 from src.food_system.seafood import Seafood
@@ -24,6 +22,7 @@ from src.food_system.cellulosic_sugar import CellulosicSugar
 from src.food_system.greenhouses import Greenhouses
 from src.food_system.methane_scp import MethaneSCP
 from src.food_system.seaweed import Seaweed
+from src.food_system.feed_and_biofuels import FeedAndBiofuels
 
 
 class Parameters:
@@ -50,27 +49,27 @@ class Parameters:
         self.SIMULATION_STARTING_MONTH_NUM = months_dict[self.SIMULATION_STARTING_MONTH]
 
     def computeParameters(self, constants, VERBOSE=False):
-        inputs_to_optimizer = constants["inputs"]  # single valued inputs to optimizer
-        inputs_to_optimizer["STARTING_MONTH_NUM"] = self.SIMULATION_STARTING_MONTH_NUM
+        constants_for_params = constants["inputs"]  # single valued inputs to optimizer
+        constants_for_params["STARTING_MONTH_NUM"] = self.SIMULATION_STARTING_MONTH_NUM
 
         # population
-        self.POP = inputs_to_optimizer["POP"]
+        self.POP = constants_for_params["POP"]
         # population in units of millions of people
-        self.POP_BILLIONS = inputs_to_optimizer["POP"] / 1e9
+        self.POP_BILLIONS = constants_for_params["POP"] / 1e9
 
         # full months duration of simulation
-        NMONTHS = inputs_to_optimizer["NMONTHS"]
+        NMONTHS = constants_for_params["NMONTHS"]
         NDAYS = NMONTHS * self.DAYS_IN_MONTH
-        ADD_FISH = inputs_to_optimizer["ADD_FISH"]
-        ADD_SEAWEED = inputs_to_optimizer["ADD_SEAWEED"]
-        ADD_MEAT = inputs_to_optimizer["ADD_MEAT"]
-        ADD_DAIRY = inputs_to_optimizer["ADD_DAIRY"]
+        ADD_FISH = constants_for_params["ADD_FISH"]
+        ADD_SEAWEED = constants_for_params["ADD_SEAWEED"]
+        ADD_MEAT = constants_for_params["ADD_MEAT"]
+        ADD_DAIRY = constants_for_params["ADD_DAIRY"]
 
-        ADD_STORED_FOOD = inputs_to_optimizer["ADD_STORED_FOOD"]
-        ADD_METHANE_SCP = inputs_to_optimizer["ADD_METHANE_SCP"]
-        ADD_CELLULOSIC_SUGAR = inputs_to_optimizer["ADD_CELLULOSIC_SUGAR"]
-        ADD_GREENHOUSES = inputs_to_optimizer["ADD_GREENHOUSES"]
-        ADD_OUTDOOR_GROWING = inputs_to_optimizer["ADD_OUTDOOR_GROWING"]
+        ADD_STORED_FOOD = constants_for_params["ADD_STORED_FOOD"]
+        ADD_METHANE_SCP = constants_for_params["ADD_METHANE_SCP"]
+        ADD_CELLULOSIC_SUGAR = constants_for_params["ADD_CELLULOSIC_SUGAR"]
+        ADD_GREENHOUSES = constants_for_params["ADD_GREENHOUSES"]
+        ADD_OUTDOOR_GROWING = constants_for_params["ADD_OUTDOOR_GROWING"]
 
         #### NUTRITION PER MONTH ####
 
@@ -79,9 +78,9 @@ class Parameters:
         # we will assume a 2100 kcals diet, and scale the "upper safe" nutrition
         # from the spreadsheet down to this "standard" level.
         # we also add 20% loss, according to the sorts of loss seen in this spreadsheet
-        KCALS_DAILY = inputs_to_optimizer["NUTRITION"]["KCALS_DAILY"]
-        PROTEIN_DAILY = inputs_to_optimizer["NUTRITION"]["PROTEIN_DAILY"]
-        FAT_DAILY = inputs_to_optimizer["NUTRITION"]["FAT_DAILY"]
+        KCALS_DAILY = constants_for_params["NUTRITION"]["KCALS_DAILY"]
+        PROTEIN_DAILY = constants_for_params["NUTRITION"]["PROTEIN_DAILY"]
+        FAT_DAILY = constants_for_params["NUTRITION"]["FAT_DAILY"]
 
         # kcals per person
         self.KCALS_MONTHLY = KCALS_DAILY * self.DAYS_IN_MONTH
@@ -103,42 +102,71 @@ class Parameters:
         print(self.POP_BILLIONS)
 
         ####SEAWEED INITIAL VARIABLES####
-        seaweed = Seaweed(inputs_to_optimizer)
+        seaweed = Seaweed(constants_for_params)
 
         # determine area built to enable seaweed to grow there
-        built_area = seaweed.get_built_area(inputs_to_optimizer)
+        built_area = seaweed.get_built_area(constants_for_params)
 
         #### FISH ####
 
-        seafood = Seafood(inputs_to_optimizer)
+        seafood = Seafood(constants_for_params)
 
         (
             production_kcals_fish_per_month,
             production_fat_fish_per_month,
             production_protein_fish_per_month,
-        ) = seafood.get_seafood_production(inputs_to_optimizer)
+        ) = seafood.get_seafood_production(constants_for_params)
 
-        #### BIOFUEL VARIABLES ####
-        biofuels = Biofuels(inputs_to_optimizer)
-        (biofuels_kcals, biofuels_fat, biofuels_protein) = biofuels.get_biofuel_usage(
-            inputs_to_optimizer
+        #### CROP PRODUCTION VARIABLES ####
+
+        outdoor_crops = OutdoorCrops(constants_for_params)
+        outdoor_crops.calculate_rotation_ratios(constants_for_params)
+        outdoor_crops.calculate_monthly_production(constants_for_params)
+
+        #### CONSTANTS FOR GREENHOUSES ####
+
+        greenhouses = Greenhouses(constants_for_params)
+
+        greenhouse_area = greenhouses.get_greenhouse_area(
+            constants_for_params, outdoor_crops
         )
 
-        #### FEED VARIABLES ####
-        feed = Feed(inputs_to_optimizer)
-        (biofuels_kcals, biofuels_fat, biofuels_protein) = feed.get_feed_usage(
-            inputs_to_optimizer
+        (
+            greenhouse_kcals_per_ha,
+            greenhouse_fat_per_ha,
+            greenhouse_protein_per_ha,
+        ) = greenhouses.get_greenhouse_yield_per_ha(constants_for_params, outdoor_crops)
+
+        crops_food_produced = outdoor_crops.get_crop_production_minus_greenhouse_area(
+            constants_for_params, greenhouses.greenhouse_fraction_area
         )
+
+        #### STORED FOOD VARIABLES ####
+
+        stored_food = StoredFood(constants_for_params, outdoor_crops)
+        stored_food.calculate_stored_food_to_use(self.SIMULATION_STARTING_MONTH_NUM)
+
+        #### FEED AND BIOFUEL VARIABLES ####
+
+        feed_and_biofuels = FeedAndBiofuels(constants_for_params)
+
+        feed_and_biofuels.set_nonhuman_consumption_with_cap(
+            constants_for_params, outdoor_crops, stored_food
+        )
+
+        nonhuman_consumption = feed_and_biofuels.nonhuman_consumption
 
         ####LIVESTOCK, EGG, DAIRY INITIAL VARIABLES####
 
-        meat_and_dairy = MeatAndDairy(inputs_to_optimizer)
+        meat_and_dairy = MeatAndDairy(constants_for_params)
 
         meat_and_dairy.calculate_meat_dairy_from_human_inedible_feed(
-            inputs_to_optimizer
+            constants_for_params
         )
 
-        meat_and_dairy.calculate_meat_and_dairy_from_excess(feed.kcals_fed_to_animals)
+        meat_and_dairy.calculate_meat_and_dairy_from_excess(
+            feed_and_biofuels.kcals_fed_to_animals
+        )
 
         h_e_fed_dairy_produced = meat_and_dairy.h_e_fed_dairy_produced
 
@@ -151,18 +179,20 @@ class Parameters:
             h_e_meat_protein,
         ) = meat_and_dairy.get_meat_from_human_edible_feed()
 
-        meat_and_dairy.calculate_animals_culled(inputs_to_optimizer)
+        meat_and_dairy.calculate_animals_culled(constants_for_params)
 
         meat_and_dairy.calculate_meat_nutrition()
 
+        feed_shutoff_delay_months = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
+
         meat_culled = meat_and_dairy.get_culled_meat(
-            inputs_to_optimizer, feed.feed_shutoff_delay_months
+            constants_for_params, feed_shutoff_delay_months
         )
         (
             h_e_milk_kcals,
             h_e_milk_fat,
             h_e_milk_protein,
-        ) = meat_and_dairy.get_dairy_from_human_edible_feed(inputs_to_optimizer)
+        ) = meat_and_dairy.get_dairy_from_human_edible_feed(constants_for_params)
 
         (
             dairy_milk_kcals,
@@ -176,12 +206,6 @@ class Parameters:
         self.cattle_h_e_maintained = meat_and_dairy.cattle_h_e_maintained
 
         (
-            excess_kcals,
-            excess_fat_used,
-            excess_protein_used,
-        ) = meat_and_dairy.get_excess(inputs_to_optimizer, biofuels, feed)
-
-        (
             cattle_maintained_kcals,
             cattle_maintained_fat,
             cattle_maintained_protein,
@@ -191,47 +215,20 @@ class Parameters:
         h_e_created_fat = h_e_meat_fat + h_e_milk_fat
         h_e_created_protein = h_e_meat_protein + h_e_milk_protein
 
-        # crop waste percentage is applied to excess calories, as these are
-        # assumed to be excess crops being feed to animals
-        CROP_WASTE = 1 - inputs_to_optimizer["WASTE"]["CROPS"] / 100
+        # crop waste percentage is applied to nonhuman_consumption calories, as these are
+        # assumed to be nonhuman_consumption crops being feed to animals
+        CROP_WASTE = 1 - constants_for_params["WASTE"]["CROPS"] / 100
 
-        h_e_balance_kcals = -excess_kcals * CROP_WASTE + h_e_created_kcals
-        h_e_balance_fat = -excess_fat_used * CROP_WASTE + h_e_created_fat
-        h_e_balance_protein = -excess_protein_used * CROP_WASTE + h_e_created_protein
-
-        #### CROP PRODUCTION VARIABLES ####
-
-        outdoor_crops = OutdoorCrops(inputs_to_optimizer)
-        outdoor_crops.calculate_rotation_ratios(inputs_to_optimizer)
-        outdoor_crops.calculate_monthly_production(inputs_to_optimizer)
-
-        #### STORED FOOD VARIABLES ####
-
-        stored_food = StoredFood(inputs_to_optimizer, outdoor_crops)
-        stored_food.calculate_stored_food_to_use(self.SIMULATION_STARTING_MONTH_NUM)
-
-        #### CONSTANTS FOR GREENHOUSES ####
-
-        greenhouses = Greenhouses(inputs_to_optimizer)
-
-        greenhouse_area = greenhouses.get_greenhouse_area(
-            inputs_to_optimizer, outdoor_crops
-        )
-
-        (
-            greenhouse_kcals_per_ha,
-            greenhouse_fat_per_ha,
-            greenhouse_protein_per_ha,
-        ) = greenhouses.get_greenhouse_yield_per_ha(inputs_to_optimizer, outdoor_crops)
-
-        crops_food_produced = outdoor_crops.get_crop_production_minus_greenhouse_area(
-            inputs_to_optimizer, greenhouses.greenhouse_fraction_area
+        h_e_balance_kcals = -nonhuman_consumption.kcals * CROP_WASTE + h_e_created_kcals
+        h_e_balance_fat = -nonhuman_consumption.fat * CROP_WASTE + h_e_created_fat
+        h_e_balance_protein = (
+            -nonhuman_consumption.protein * CROP_WASTE + h_e_created_protein
         )
 
         #### CONSTANTS FOR METHANE SINGLE CELL PROTEIN ####
 
-        methane_scp = MethaneSCP(inputs_to_optimizer)
-        methane_scp.calculate_monthly_scp_production(inputs_to_optimizer)
+        methane_scp = MethaneSCP(constants_for_params)
+        methane_scp.calculate_monthly_scp_production(constants_for_params)
 
         (
             production_kcals_scp_per_month,
@@ -241,8 +238,8 @@ class Parameters:
 
         #### CONSTANTS FOR CELLULOSIC SUGAR ####
 
-        cellulosic_sugar = CellulosicSugar(inputs_to_optimizer)
-        cellulosic_sugar.calculate_monthly_cs_production(inputs_to_optimizer)
+        cellulosic_sugar = CellulosicSugar(constants_for_params)
+        cellulosic_sugar.calculate_monthly_cs_production(constants_for_params)
 
         production_kcals_CS_per_month = cellulosic_sugar.get_monthly_cs_production()
 
@@ -255,9 +252,6 @@ class Parameters:
         time_consts = {}  # time dependent constants as inputs to the optimizer
 
         time_consts["built_area"] = built_area
-        time_consts["biofuels_fat"] = biofuels_fat
-        time_consts["biofuels_protein"] = biofuels_protein
-        time_consts["biofuels_kcals"] = biofuels_kcals
         time_consts["crops_food_produced"] = crops_food_produced  # no waste
         time_consts["greenhouse_kcals_per_ha"] = greenhouse_kcals_per_ha
         time_consts["greenhouse_fat_per_ha"] = greenhouse_fat_per_ha
@@ -294,9 +288,9 @@ class Parameters:
         time_consts["h_e_meat_fat"] = h_e_meat_fat
         time_consts["h_e_meat_protein"] = h_e_meat_protein
         time_consts["h_e_fed_dairy_produced"] = h_e_fed_dairy_produced
-        time_consts["excess_kcals"] = excess_kcals
-        time_consts["excess_fat_used"] = excess_fat_used
-        time_consts["excess_protein_used"] = excess_protein_used
+        time_consts["nonhuman_consumption_kcals"] = nonhuman_consumption.kcals
+        time_consts["nonhuman_consumption_fat_used"] = nonhuman_consumption.fat
+        time_consts["nonhuman_consumption_protein_used"] = nonhuman_consumption.protein
 
         # store variables useful for analysis
 
@@ -398,7 +392,7 @@ class Parameters:
             "SMALL_ANIMAL_PROTEIN_PER_KG"
         ] = meat_and_dairy.SMALL_ANIMAL_PROTEIN_PER_KG
 
-        constants["inputs"] = inputs_to_optimizer
+        constants["inputs"] = constants_for_params
 
         PRINT_FIRST_MONTH_CONSTANTS = False
 

@@ -6,15 +6,15 @@
 
 
 class Seafood:
-    def __init__(self, inputs_to_optimizer):
-        self.NMONTHS = inputs_to_optimizer["NMONTHS"]
-        self.ADD_FISH = inputs_to_optimizer["ADD_FISH"]
+    def __init__(self, constants_for_params):
+        self.NMONTHS = constants_for_params["NMONTHS"]
+        self.ADD_FISH = constants_for_params["ADD_FISH"]
 
-        FISH_WASTE = inputs_to_optimizer["WASTE"]["SEAFOOD"]
+        FISH_WASTE = constants_for_params["WASTE"]["SEAFOOD"]
 
         # fish kcals per month, billions
         self.FISH_KCALS = (
-            inputs_to_optimizer["FISH_DRY_CALORIC_ANNUAL"]
+            constants_for_params["FISH_DRY_CALORIC_ANNUAL"]
             * (1 - FISH_WASTE / 100)
             * 4e6
             / 1e9
@@ -23,19 +23,19 @@ class Seafood:
 
         # units of 1000s tons protein monthly
         # (so, global value is in the hundreds of thousands of tons)
-        self.FISH_PROTEIN = inputs_to_optimizer["FISH_PROTEIN_TONS_ANNUAL"] / 1e3 / 12
+        self.FISH_PROTEIN = constants_for_params["FISH_PROTEIN_TONS_ANNUAL"] / 1e3 / 12
 
         # units of 1000s tons fat
         # (so, global value is in the tens of thousands of tons)
-        self.FISH_FAT = inputs_to_optimizer["FISH_FAT_TONS_ANNUAL"] / 1e3 / 12
+        self.FISH_FAT = constants_for_params["FISH_FAT_TONS_ANNUAL"] / 1e3 / 12
 
     # includes all seafood (except seaweed), not just fish
-    def get_seafood_production(self, inputs_to_optimizer):
+    def get_seafood_production(self, constants_for_params):
 
         # Based on Xia et al. (2021): Global Famine after Nuclear War
 
         FISH_PERCENT_EACH_MONTH_LONG = (
-            inputs_to_optimizer["FISH_PERCENT_MONTHLY"]
+            constants_for_params["FISH_PERCENT_MONTHLY"]
         )
 
         FISH_PERCENT_EACH_MONTH = FISH_PERCENT_EACH_MONTH_LONG[0 : self.NMONTHS]

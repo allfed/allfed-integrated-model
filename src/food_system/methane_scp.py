@@ -9,12 +9,12 @@ import numpy as np
 
 
 class MethaneSCP:
-    def __init__(self, inputs_to_optimizer):
-        self.INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = inputs_to_optimizer[
+    def __init__(self, constants_for_params):
+        self.INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = constants_for_params[
             "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
         ]
 
-        self.NMONTHS = inputs_to_optimizer["NMONTHS"]
+        self.NMONTHS = constants_for_params["NMONTHS"]
 
         self.SCP_KCALS_PER_KG = 5350
         self.SCP_FRAC_PROTEIN = 0.650
@@ -24,12 +24,12 @@ class MethaneSCP:
         self.GLOBAL_MONTHLY_NEEDS = 6793977 / 12
 
         # apply sugar waste also to methane scp, for lack of better baseline
-        self.SCP_WASTE = inputs_to_optimizer["WASTE"]["SUGAR"]
+        self.SCP_WASTE = constants_for_params["WASTE"]["SUGAR"]
 
-    def calculate_monthly_scp_production(self, inputs_to_optimizer):
-        if inputs_to_optimizer["ADD_METHANE_SCP"]:
+    def calculate_monthly_scp_production(self, constants_for_params):
+        if constants_for_params["ADD_METHANE_SCP"]:
 
-            industrial_delay_months = [0] * inputs_to_optimizer["DELAY"][
+            industrial_delay_months = [0] * constants_for_params["DELAY"][
                 "INDUSTRIAL_FOODS_MONTHS"
             ]
 
@@ -55,7 +55,7 @@ class MethaneSCP:
                     x
                     / 100
                     * self.GLOBAL_MONTHLY_NEEDS
-                    * inputs_to_optimizer["SCP_GLOBAL_PRODUCTION_FRACTION"]
+                    * constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"]
                     * (1 - self.SCP_WASTE / 100)
                 )
         else:

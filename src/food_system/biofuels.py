@@ -6,13 +6,13 @@
 
 
 class Biofuels:
-    def __init__(self, inputs_to_optimizer):
-        self.NMONTHS = inputs_to_optimizer["NMONTHS"]
-        self.BIOFUEL_KCALS = inputs_to_optimizer["BIOFUEL_KCALS"]
-        self.BIOFUEL_FAT = inputs_to_optimizer["BIOFUEL_FAT"]
-        self.BIOFUEL_PROTEIN = inputs_to_optimizer["BIOFUEL_PROTEIN"]
+    def __init__(self, constants_for_params):
+        self.NMONTHS = constants_for_params["NMONTHS"]
+        self.BIOFUEL_KCALS = constants_for_params["BIOFUEL_KCALS"]
+        self.BIOFUEL_FAT = constants_for_params["BIOFUEL_FAT"]
+        self.BIOFUEL_PROTEIN = constants_for_params["BIOFUEL_PROTEIN"]
 
-    def get_biofuel_usage(self, inputs_to_optimizer):
+    def set_biofuel_usage(self, constants_for_params):
 
         self.BIOFUEL_MONTHLY_USAGE_KCALS = (
             self.BIOFUEL_KCALS / 12 * 4e6 / 1e9
@@ -25,7 +25,7 @@ class Biofuels:
         # Delayed shutoff BIOFUELS ####
         # "Monthly flows" tab @Morgan: Link broken
 
-        biofuel_delay = inputs_to_optimizer["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
+        biofuel_delay = constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
         self.biofuels_kcals = [self.BIOFUEL_MONTHLY_USAGE_KCALS] * biofuel_delay + [
             0
         ] * (self.NMONTHS - biofuel_delay)
@@ -35,5 +35,3 @@ class Biofuels:
         self.biofuels_protein = [self.BIOFUEL_MONTHLY_USAGE_PROTEIN] * biofuel_delay + [
             0
         ] * (self.NMONTHS - biofuel_delay)
-
-        return (self.biofuels_kcals, self.biofuels_fat, self.biofuels_protein)

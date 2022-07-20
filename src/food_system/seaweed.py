@@ -8,8 +8,8 @@ import numpy as np
 
 
 class Seaweed:
-    def __init__(self, inputs_to_optimizer):
-        self.NMONTHS = inputs_to_optimizer["NMONTHS"]
+    def __init__(self, constants_for_params):
+        self.NMONTHS = constants_for_params["NMONTHS"]
         self.MINIMUM_DENSITY = 400  # tons/km^2 (seaweed)
         self.MAXIMUM_DENSITY = 800  # tons/km^2 (seaweed)
         self.MAXIMUM_AREA = 1000  # 1000 km^2 (seaweed)
@@ -33,12 +33,12 @@ class Seaweed:
         self.HARVEST_LOSS = 15  # percent (seaweed)
 
         # 1000 tons (seaweed)
-        self.INITIAL_SEAWEED = inputs_to_optimizer["INITIAL_SEAWEED"]
+        self.INITIAL_SEAWEED = constants_for_params["INITIAL_SEAWEED"]
 
         # 1000 tons (seaweed)
-        self.INITIAL_AREA = inputs_to_optimizer["INITIAL_AREA"]
+        self.INITIAL_AREA = constants_for_params["INITIAL_AREA"]
 
-        self.SEAWEED_WASTE = inputs_to_optimizer["WASTE"]["SEAWEED"]
+        self.SEAWEED_WASTE = constants_for_params["WASTE"]["SEAWEED"]
 
         # seaweed billion kcals per 1000 tons wet
         # convert 1000 tons to kg
@@ -67,12 +67,12 @@ class Seaweed:
             * (1 - self.SEAWEED_WASTE / 100)
         )
 
-    def get_built_area(self, inputs_to_optimizer):
+    def get_built_area(self, constants_for_params):
 
-        SEAWEED_NEW_AREA_PER_MONTH = inputs_to_optimizer["SEAWEED_NEW_AREA_PER_MONTH"]
+        SEAWEED_NEW_AREA_PER_MONTH = constants_for_params["SEAWEED_NEW_AREA_PER_MONTH"]
 
-        if inputs_to_optimizer["ADD_SEAWEED"]:
-            sd = [self.INITIAL_AREA] * inputs_to_optimizer["DELAY"]["SEAWEED_MONTHS"]
+        if constants_for_params["ADD_SEAWEED"]:
+            sd = [self.INITIAL_AREA] * constants_for_params["DELAY"]["SEAWEED_MONTHS"]
         else:
             # arbitrarily long list of months all at constant area
             sd = [self.INITIAL_AREA] * 1000

@@ -12,46 +12,46 @@ class Scenarios:
 
     # FEED AND BIOFUELS
 
-    def set_immediate_shutoff(self, inputs_to_optimizer):
-        inputs_to_optimizer["DELAY"]["FEED_SHUTOFF_MONTHS"] = 0
-        inputs_to_optimizer["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 0
+    def set_immediate_shutoff(self, constants_for_params):
+        constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 0
+        constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 0
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def set_short_delayed_shutoff(self, inputs_to_optimizer):
-        inputs_to_optimizer["DELAY"]["FEED_SHUTOFF_MONTHS"] = 2
-        inputs_to_optimizer["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 1
+    def set_short_delayed_shutoff(self, constants_for_params):
+        constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 2
+        constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 1
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def set_long_delayed_shutoff(self, inputs_to_optimizer):
-        inputs_to_optimizer["DELAY"]["FEED_SHUTOFF_MONTHS"] = 3
-        inputs_to_optimizer["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 2
+    def set_long_delayed_shutoff(self, constants_for_params):
+        constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 3
+        constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 2
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def set_continued_feed_biofuels(self, inputs_to_optimizer):
-        inputs_to_optimizer["DELAY"]["FEED_SHUTOFF_MONTHS"] = inputs_to_optimizer[
+    def set_continued_feed_biofuels(self, constants_for_params):
+        constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = constants_for_params[
             "NMONTHS"
         ]
-        inputs_to_optimizer["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = inputs_to_optimizer[
+        constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = constants_for_params[
             "NMONTHS"
         ]
 
-        return inputs_to_optimizer
+        return constants_for_params
 
     # WASTE
 
-    def set_waste_to_zero(self, inputs_to_optimizer):
-        inputs_to_optimizer["WASTE"] = {}
-        inputs_to_optimizer["WASTE"]["SUGAR"] = 0  # %
-        inputs_to_optimizer["WASTE"]["MEAT"] = 0  # %
-        inputs_to_optimizer["WASTE"]["DAIRY"] = 0  # %
-        inputs_to_optimizer["WASTE"]["SEAFOOD"] = 0  # %
-        inputs_to_optimizer["WASTE"]["CROPS"] = 0  # %
-        inputs_to_optimizer["WASTE"]["SEAWEED"] = 0  # %
+    def set_waste_to_zero(self, constants_for_params):
+        constants_for_params["WASTE"] = {}
+        constants_for_params["WASTE"]["SUGAR"] = 0  # %
+        constants_for_params["WASTE"]["MEAT"] = 0  # %
+        constants_for_params["WASTE"]["DAIRY"] = 0  # %
+        constants_for_params["WASTE"]["SEAFOOD"] = 0  # %
+        constants_for_params["WASTE"]["CROPS"] = 0  # %
+        constants_for_params["WASTE"]["SEAWEED"] = 0  # %
 
-        return inputs_to_optimizer
+        return constants_for_params
 
     def get_total_global_waste(self, retail_waste):
         """
@@ -79,7 +79,7 @@ class Scenarios:
 
         return total_waste
 
-    def set_global_waste_to_tripled_prices(self, inputs_to_optimizer):
+    def set_global_waste_to_tripled_prices(self, constants_for_params):
         """
         overall waste, on farm + distribution + retail
         3x prices (note, currently set to 2019, not 2020)
@@ -88,11 +88,11 @@ class Scenarios:
 
         total_waste = self.get_total_global_waste(RETAIL_WASTE)
 
-        inputs_to_optimizer["WASTE"] = total_waste
+        constants_for_params["WASTE"] = total_waste
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def set_global_waste_to_doubled_prices(self, inputs_to_optimizer):
+    def set_global_waste_to_doubled_prices(self, constants_for_params):
         """
         overall waste, on farm + distribution + retail
         2x prices (note, currently set to 2019, not 2020)
@@ -102,11 +102,11 @@ class Scenarios:
 
         total_waste = self.get_total_global_waste(RETAIL_WASTE)
 
-        inputs_to_optimizer["WASTE"] = total_waste
+        constants_for_params["WASTE"] = total_waste
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def set_global_waste_to_baseline_prices(self, inputs_to_optimizer):
+    def set_global_waste_to_baseline_prices(self, constants_for_params):
         """
         overall waste, on farm+distribution+retail
         1x prices (note, currently set to 2019, not 2020)
@@ -115,9 +115,9 @@ class Scenarios:
 
         total_waste = self.get_total_global_waste(RETAIL_WASTE)
 
-        inputs_to_optimizer["WASTE"] = total_waste
+        constants_for_params["WASTE"] = total_waste
 
-        return inputs_to_optimizer
+        return constants_for_params
 
     def get_total_country_waste(self, retail_waste, country_data):
         """
@@ -145,7 +145,7 @@ class Scenarios:
 
         return total_waste
 
-    def set_country_waste_to_tripled_prices(self, inputs_to_optimizer, country_data):
+    def set_country_waste_to_tripled_prices(self, constants_for_params, country_data):
         """
         overall waste, on farm + distribution + retail
         3x prices (note, currently set to 2019, not 2020)
@@ -155,11 +155,11 @@ class Scenarios:
 
         total_waste = self.get_total_country_waste(RETAIL_WASTE)
 
-        inputs_to_optimizer["WASTE"] = total_waste
+        constants_for_params["WASTE"] = total_waste
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def set_country_waste_to_doubled_prices(self, inputs_to_optimizer, country_data):
+    def set_country_waste_to_doubled_prices(self, constants_for_params, country_data):
         """
         overall waste, on farm + distribution + retail
         2x prices (note, currently set to 2019, not 2020)
@@ -169,11 +169,11 @@ class Scenarios:
 
         total_waste = self.get_total_country_waste(RETAIL_WASTE)
 
-        inputs_to_optimizer["WASTE"] = total_waste
+        constants_for_params["WASTE"] = total_waste
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def set_country_waste_to_baseline_prices(self, inputs_to_optimizer, country_data):
+    def set_country_waste_to_baseline_prices(self, constants_for_params, country_data):
         """
         overall waste, on farm+distribution+retail
         1x prices (note, currently set to 2019, not 2020)
@@ -182,45 +182,45 @@ class Scenarios:
 
         total_waste = self.get_total_country_waste(RETAIL_WASTE)
 
-        inputs_to_optimizer["WASTE"] = total_waste
+        constants_for_params["WASTE"] = total_waste
 
-        return inputs_to_optimizer
+        return constants_for_params
 
     # NUTRITION
 
-    def set_baseline_nutrition_profile(self, inputs_to_optimizer):
+    def set_baseline_nutrition_profile(self, constants_for_params):
 
-        inputs_to_optimizer["NUTRITION"] = {}
-
-        # kcals per person per day
-        inputs_to_optimizer["NUTRITION"]["KCALS_DAILY"] = 2100
-
-        # grams per person per day
-        inputs_to_optimizer["NUTRITION"]["FAT_DAILY"] = 61.7
-
-        # grams per person per day
-        inputs_to_optimizer["NUTRITION"]["PROTEIN_DAILY"] = 59.5
-
-        return inputs_to_optimizer
-
-    def set_catastrophe_nutrition_profile(self, inputs_to_optimizer):
-
-        inputs_to_optimizer["NUTRITION"] = {}
+        constants_for_params["NUTRITION"] = {}
 
         # kcals per person per day
-        inputs_to_optimizer["NUTRITION"]["KCALS_DAILY"] = 2100
+        constants_for_params["NUTRITION"]["KCALS_DAILY"] = 2100
 
         # grams per person per day
-        inputs_to_optimizer["NUTRITION"]["FAT_DAILY"] = 47
+        constants_for_params["NUTRITION"]["FAT_DAILY"] = 61.7
 
         # grams per person per day
-        inputs_to_optimizer["NUTRITION"]["PROTEIN_DAILY"] = 51
+        constants_for_params["NUTRITION"]["PROTEIN_DAILY"] = 59.5
 
-        return inputs_to_optimizer
+        return constants_for_params
+
+    def set_catastrophe_nutrition_profile(self, constants_for_params):
+
+        constants_for_params["NUTRITION"] = {}
+
+        # kcals per person per day
+        constants_for_params["NUTRITION"]["KCALS_DAILY"] = 2100
+
+        # grams per person per day
+        constants_for_params["NUTRITION"]["FAT_DAILY"] = 47
+
+        # grams per person per day
+        constants_for_params["NUTRITION"]["PROTEIN_DAILY"] = 51
+
+        return constants_for_params
 
     # STORED FOOD
 
-    def set_stored_food_buffer_zero(self, inputs_to_optimizer):
+    def set_stored_food_buffer_zero(self, constants_for_params):
         """
         Sets the stored food buffer as zero -- no stored food left at
         the end of the simulation.
@@ -230,47 +230,49 @@ class Scenarios:
         the end as a buffer.
 
         """
-        inputs_to_optimizer["BUFFER_RATIO"] = 0
+        constants_for_params["BUFFER_RATIO"] = 0
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def set_stored_food_buffer_as_baseline(self, inputs_to_optimizer):
+    def set_stored_food_buffer_as_baseline(self, constants_for_params):
         """
         Sets the stored food buffer as 100% -- the typical stored food buffer
         in ~2020 left at the end of the simulation.
 
         """
-        inputs_to_optimizer["BUFFER_RATIO"] = 1
+        constants_for_params["BUFFER_RATIO"] = 1
 
-        return inputs_to_optimizer
+        return constants_for_params
 
     # SEASONALITY
 
-    def set_country_seasonality_baseline(self, inputs_to_optimizer, country_data):
+    def set_country_seasonality_baseline(self, constants_for_params, country_data):
 
         # fractional production per month
-        inputs_to_optimizer["SEASONALITY"] = [
+        constants_for_params["SEASONALITY"] = [
             country_data["seasonality_m" + str(i)] for i in range(1, 13)
         ]
 
         # tons dry caloric monthly
-        inputs_to_optimizer["HUMAN_INEDIBLE_FEED"] = (
+        constants_for_params["HUMAN_INEDIBLE_FEED"] = (
             np.array(
-                [country_data["grasses_baseline"]] * inputs_to_optimizer["NMONTHS"]
+                [country_data["grasses_baseline"]] * constants_for_params["NMONTHS"]
             )
             / 12
         )
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def set_country_seasonality_nuclear_winter(self, inputs_to_optimizer, country_data):
+    def set_country_seasonality_nuclear_winter(
+        self, constants_for_params, country_data
+    ):
 
         # fractional production per month
-        inputs_to_optimizer["SEASONALITY"] = [
+        constants_for_params["SEASONALITY"] = [
             country_data["seasonality_m" + str(i)] for i in range(1, 13)
         ]
 
-        inputs_to_optimizer["HUMAN_INEDIBLE_FEED"] = np.array(
+        constants_for_params["HUMAN_INEDIBLE_FEED"] = np.array(
             list(
                 np.array([country_data["grasses_year1"]] * 8),
                 np.array([country_data["grasses_year2"]] * 12),
@@ -285,12 +287,12 @@ class Scenarios:
             )
         )
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def set_global_seasonality_baseline(self, inputs_to_optimizer):
+    def set_global_seasonality_baseline(self, constants_for_params):
 
         # fractional production per month
-        inputs_to_optimizer["SEASONALITY"] = [
+        constants_for_params["SEASONALITY"] = [
             0.1121,
             0.0178,
             0.0241,
@@ -306,17 +308,17 @@ class Scenarios:
         ]
 
         # tons dry caloric monthly
-        inputs_to_optimizer["HUMAN_INEDIBLE_FEED"] = (
-            np.array([4206] * inputs_to_optimizer["NMONTHS"]) * 1e6 / 12
+        constants_for_params["HUMAN_INEDIBLE_FEED"] = (
+            np.array([4206] * constants_for_params["NMONTHS"]) * 1e6 / 12
         )
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def set_global_seasonality_nuclear_winter(self, inputs_to_optimizer):
+    def set_global_seasonality_nuclear_winter(self, constants_for_params):
 
         # most food grown in tropics, so set seasonality to typical in tropics
         # fractional production per month
-        inputs_to_optimizer["SEASONALITY"] = [
+        constants_for_params["SEASONALITY"] = [
             0.1564,
             0.0461,
             0.0650,
@@ -332,7 +334,7 @@ class Scenarios:
         ]
 
         # tons dry caloric monthly
-        inputs_to_optimizer["HUMAN_INEDIBLE_FEED"] = (
+        constants_for_params["HUMAN_INEDIBLE_FEED"] = (
             np.array(
                 [2728] * 8
                 + [972] * 12
@@ -347,58 +349,58 @@ class Scenarios:
             / 12
         )
 
-        return inputs_to_optimizer
+        return constants_for_params
 
     # INITIALIZATION
 
     def init_generic_scenario(self):
-        inputs_to_optimizer = {}
+        constants_for_params = {}
 
         # the following are used for all scenarios
-        inputs_to_optimizer["NMONTHS"] = 84
+        constants_for_params["NMONTHS"] = 84
 
         # not used unless smoothing true
         # useful for ensuring output variables don't fluctuate wildly
-        inputs_to_optimizer["FLUCTUATION_LIMIT"] = 1.5
+        constants_for_params["FLUCTUATION_LIMIT"] = 1.5
 
-        inputs_to_optimizer["DELAY"] = {}
-        inputs_to_optimizer["CULL_DURATION_MONTHS"] = 60
+        constants_for_params["DELAY"] = {}
+        constants_for_params["CULL_DURATION_MONTHS"] = 60
 
-        return inputs_to_optimizer
+        return constants_for_params
 
     def init_global_food_system_properties(self):
 
-        inputs_to_optimizer = self.init_generic_scenario()
+        constants_for_params = self.init_generic_scenario()
 
         # global human population (2020)
-        inputs_to_optimizer["POP"] = 7.8e9
+        constants_for_params["POP"] = 7.8e9
 
         # annual tons dry carb equivalent
-        inputs_to_optimizer["BASELINE_CROP_KCALS"] = 3898e6
+        constants_for_params["BASELINE_CROP_KCALS"] = 3898e6
 
         # annual tons fat
-        inputs_to_optimizer["BASELINE_CROP_FAT"] = 322e6
+        constants_for_params["BASELINE_CROP_FAT"] = 322e6
 
         # annual tons protein
-        inputs_to_optimizer["BASELINE_CROP_PROTEIN"] = 350e6
+        constants_for_params["BASELINE_CROP_PROTEIN"] = 350e6
 
         # annual tons dry carb equivalent
-        inputs_to_optimizer["BIOFUEL_KCALS"] = 623e6
+        constants_for_params["BIOFUEL_KCALS"] = 623e6
 
         # annual tons fat
-        inputs_to_optimizer["BIOFUEL_FAT"] = 124e6
+        constants_for_params["BIOFUEL_FAT"] = 124e6
 
         # annual tons protein
-        inputs_to_optimizer["BIOFUEL_PROTEIN"] = 32e6
+        constants_for_params["BIOFUEL_PROTEIN"] = 32e6
 
         # annual tons dry carb equivalent
-        inputs_to_optimizer["FEED_KCALS"] = 1385e6
+        constants_for_params["FEED_KCALS"] = 1385e6
 
         # annual tons fat
-        inputs_to_optimizer["FEED_FAT"] = 60e6
+        constants_for_params["FEED_FAT"] = 60e6
 
         # annual tons protein
-        inputs_to_optimizer["FEED_PROTEIN"] = 147e6
+        constants_for_params["FEED_PROTEIN"] = 147e6
 
         # total stocks at the end of the month in dry caloric tons
         # this is total stored food available
@@ -406,31 +408,31 @@ class Scenarios:
         # but not including a 2 month in-transit or the estimated 2 weeks to 1
         # month of stocks in people's homes, grocery stores, and food
         # warehouses
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"] = {}
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JAN"] = 1960.922e6
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["FEB"] = 1784.277e6
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAR"] = 1624.673e6
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["APR"] = 1492.822e6
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAY"] = 1359.236e6
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUN"] = 1245.351e6
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUL"] = 1246.485e6
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["AUG"] = 1140.824e6
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["SEP"] = 1196.499e6
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["OCT"] = 1487.030e6
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["NOV"] = 1642.406e6
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["DEC"] = 1813.862e6
+        constants_for_params["END_OF_MONTH_STOCKS"] = {}
+        constants_for_params["END_OF_MONTH_STOCKS"]["JAN"] = 1960.922e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["FEB"] = 1784.277e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["MAR"] = 1624.673e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["APR"] = 1492.822e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["MAY"] = 1359.236e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["JUN"] = 1245.351e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["JUL"] = 1246.485e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["AUG"] = 1140.824e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["SEP"] = 1196.499e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["OCT"] = 1487.030e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["NOV"] = 1642.406e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["DEC"] = 1813.862e6
 
         # total head count of milk cattle
-        inputs_to_optimizer["INITIAL_MILK_CATTLE"] = 264e6
+        constants_for_params["INITIAL_MILK_CATTLE"] = 264e6
 
         # total head count of small sized animals
-        inputs_to_optimizer["INIT_SMALL_ANIMALS"] = 28.2e9
+        constants_for_params["INIT_SMALL_ANIMALS"] = 28.2e9
 
         # total head count of medium sized animals
-        inputs_to_optimizer["INIT_MEDIUM_ANIMALS"] = 3.2e9
+        constants_for_params["INIT_MEDIUM_ANIMALS"] = 3.2e9
 
         # total head count of large sized animals minus milk cows
-        inputs_to_optimizer["INIT_LARGE_ANIMALS_WITH_MILK_COWS"] = 1.9e9
+        constants_for_params["INIT_LARGE_ANIMALS_WITH_MILK_COWS"] = 1.9e9
 
         FISH_KCALS_PER_TON = 1310 * 1e3
         FISH_FAT_RATIO = 0.0048  # units: ton fat per ton wet
@@ -441,166 +443,166 @@ class Scenarios:
 
         # converting from kcals to dry caloric tons:
         # 4e6 kcals = 1 dry caloric ton
-        inputs_to_optimizer["FISH_DRY_CALORIC_ANNUAL"] = (
+        constants_for_params["FISH_DRY_CALORIC_ANNUAL"] = (
             FISH_TONS_WET_2018 * FISH_KCALS_PER_TON / 4e6
         )
-        inputs_to_optimizer["FISH_FAT_TONS_ANNUAL"] = (
+        constants_for_params["FISH_FAT_TONS_ANNUAL"] = (
             FISH_TONS_WET_2018 * FISH_FAT_RATIO
         )
-        inputs_to_optimizer["FISH_PROTEIN_TONS_ANNUAL"] = (
+        constants_for_params["FISH_PROTEIN_TONS_ANNUAL"] = (
             FISH_TONS_WET_2018 * FISH_PROTEIN_RATIO
         )
         # annual tons milk production
-        inputs_to_optimizer["TONS_DAIRY_ANNUAL"] = 879e6
+        constants_for_params["TONS_DAIRY_ANNUAL"] = 879e6
 
         # annual tons chicken and pork production
-        inputs_to_optimizer["TONS_CHICKEN_AND_PORK_ANNUAL"] = 250e6
+        constants_for_params["TONS_CHICKEN_AND_PORK_ANNUAL"] = 250e6
 
         # annual tons cattle beef production
-        inputs_to_optimizer["TONS_BEEF_ANNUAL"] = 74.2e6
+        constants_for_params["TONS_BEEF_ANNUAL"] = 74.2e6
 
         # Single cell protein fraction of global production
-        inputs_to_optimizer["SCP_GLOBAL_PRODUCTION_FRACTION"] = 1
+        constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"] = 1
 
         # Cellulosic sugar fraction of global production
-        inputs_to_optimizer["CS_GLOBAL_PRODUCTION_FRACTION"] = 1
+        constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"] = 1
 
         # 1000s of tons wet
-        inputs_to_optimizer["INITIAL_SEAWEED"] = 1
+        constants_for_params["INITIAL_SEAWEED"] = 1
 
         # 1000s of hectares
-        inputs_to_optimizer["INITIAL_AREA"] = 1
+        constants_for_params["INITIAL_AREA"] = 1
 
-        return inputs_to_optimizer
+        return constants_for_params
 
     def init_country_food_system_properties(self, country_data):
 
-        inputs_to_optimizer = self.init_generic_scenario()
+        constants_for_params = self.init_generic_scenario()
 
         # global human population (2020)
-        inputs_to_optimizer["POP"] = country_data["population"]
+        constants_for_params["POP"] = country_data["population"]
 
         # annual tons dry carb equivalent
-        inputs_to_optimizer["BASELINE_CROP_KCALS"] = country_data["crop_kcals"]
+        constants_for_params["BASELINE_CROP_KCALS"] = country_data["crop_kcals"]
 
         # annual tons fat
-        inputs_to_optimizer["BASELINE_CROP_FAT"] = country_data["crop_fat"]
+        constants_for_params["BASELINE_CROP_FAT"] = country_data["crop_fat"]
 
         # annual tons protein
-        inputs_to_optimizer["BASELINE_CROP_PROTEIN"] = country_data["crop_protein"]
+        constants_for_params["BASELINE_CROP_PROTEIN"] = country_data["crop_protein"]
 
         # annual tons dry carb equivalent
-        inputs_to_optimizer["BIOFUEL_KCALS"] = country_data["biofuel_kcals"]
+        constants_for_params["BIOFUEL_KCALS"] = country_data["biofuel_kcals"]
 
         # annual tons fat
-        inputs_to_optimizer["BIOFUEL_FAT"] = country_data["biofuel_fat"]
+        constants_for_params["BIOFUEL_FAT"] = country_data["biofuel_fat"]
 
         # annual tons protein
-        inputs_to_optimizer["BIOFUEL_PROTEIN"] = country_data["biofuel_protein"]
+        constants_for_params["BIOFUEL_PROTEIN"] = country_data["biofuel_protein"]
 
         # annual tons dry carb equivalent
-        inputs_to_optimizer["FEED_KCALS"] = country_data["feed_kcals"]
+        constants_for_params["FEED_KCALS"] = country_data["feed_kcals"]
 
         # annual tons fat
-        inputs_to_optimizer["FEED_FAT"] = country_data["feed_fat"]
+        constants_for_params["FEED_FAT"] = country_data["feed_fat"]
 
         # annual tons protein
-        inputs_to_optimizer["FEED_PROTEIN"] = country_data["feed_protein"]
+        constants_for_params["FEED_PROTEIN"] = country_data["feed_protein"]
 
         # total head count of milk cattle
-        inputs_to_optimizer["INITIAL_MILK_CATTLE"] = country_data["dairy_cows"]
+        constants_for_params["INITIAL_MILK_CATTLE"] = country_data["dairy_cows"]
 
         # total head count of small sized animals
-        inputs_to_optimizer["INIT_SMALL_ANIMALS"] = country_data["small_animals"]
+        constants_for_params["INIT_SMALL_ANIMALS"] = country_data["small_animals"]
 
         # total head count of medium sized animals
-        inputs_to_optimizer["INIT_MEDIUM_ANIMALS"] = country_data["medium_animals"]
+        constants_for_params["INIT_MEDIUM_ANIMALS"] = country_data["medium_animals"]
 
         # total head count of large sized animals minus milk cows
-        inputs_to_optimizer["INIT_LARGE_ANIMALS_WITH_MILK_COWS"] = country_data[
+        constants_for_params["INIT_LARGE_ANIMALS_WITH_MILK_COWS"] = country_data[
             "large_animals"
         ]
 
         # fish kcals per month, billions
-        inputs_to_optimizer["FISH_DRY_CALORIC_ANNUAL"] = country_data["aq_kcals"]
+        constants_for_params["FISH_DRY_CALORIC_ANNUAL"] = country_data["aq_kcals"]
 
         # units of 1000s tons fat
         # (so, global value is in the tens of thousands of tons)
-        inputs_to_optimizer["FISH_FAT_TONS_ANNUAL"] = country_data["aq_fat"]
+        constants_for_params["FISH_FAT_TONS_ANNUAL"] = country_data["aq_fat"]
 
         # units of 1000s tons protein monthly
         # (so, global value is in the hundreds of thousands of tons)
-        inputs_to_optimizer["FISH_PROTEIN_TONS_ANNUAL"] = country_data["aq_protein"]
+        constants_for_params["FISH_PROTEIN_TONS_ANNUAL"] = country_data["aq_protein"]
 
         # annual tons milk production
-        inputs_to_optimizer["TONS_DAIRY_ANNUAL"] = country_data["dairy"]
+        constants_for_params["TONS_DAIRY_ANNUAL"] = country_data["dairy"]
 
         # annual tons chicken and pork production
-        inputs_to_optimizer["TONS_CHICKEN_AND_PORK_ANNUAL"] = (
+        constants_for_params["TONS_CHICKEN_AND_PORK_ANNUAL"] = (
             country_data["chicken"] + country_data["pork"]
         )
 
         # annual tons cattle beef production
-        inputs_to_optimizer["TONS_BEEF_ANNUAL"] = country_data["beef"]
+        constants_for_params["TONS_BEEF_ANNUAL"] = country_data["beef"]
 
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"] = {}
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JAN"] = country_data[
+        constants_for_params["END_OF_MONTH_STOCKS"] = {}
+        constants_for_params["END_OF_MONTH_STOCKS"]["JAN"] = country_data[
             "stocks_kcals_jan"
         ]
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["FEB"] = country_data[
+        constants_for_params["END_OF_MONTH_STOCKS"]["FEB"] = country_data[
             "stocks_kcals_feb"
         ]
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAR"] = country_data[
+        constants_for_params["END_OF_MONTH_STOCKS"]["MAR"] = country_data[
             "stocks_kcals_mar"
         ]
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["APR"] = country_data[
+        constants_for_params["END_OF_MONTH_STOCKS"]["APR"] = country_data[
             "stocks_kcals_apr"
         ]
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["MAY"] = country_data[
+        constants_for_params["END_OF_MONTH_STOCKS"]["MAY"] = country_data[
             "stocks_kcals_may"
         ]
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUN"] = country_data[
+        constants_for_params["END_OF_MONTH_STOCKS"]["JUN"] = country_data[
             "stocks_kcals_jun"
         ]
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["JUL"] = country_data[
+        constants_for_params["END_OF_MONTH_STOCKS"]["JUL"] = country_data[
             "stocks_kcals_jul"
         ]
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["AUG"] = country_data[
+        constants_for_params["END_OF_MONTH_STOCKS"]["AUG"] = country_data[
             "stocks_kcals_aug"
         ]
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["SEP"] = country_data[
+        constants_for_params["END_OF_MONTH_STOCKS"]["SEP"] = country_data[
             "stocks_kcals_sep"
         ]
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["OCT"] = country_data[
+        constants_for_params["END_OF_MONTH_STOCKS"]["OCT"] = country_data[
             "stocks_kcals_oct"
         ]
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["NOV"] = country_data[
+        constants_for_params["END_OF_MONTH_STOCKS"]["NOV"] = country_data[
             "stocks_kcals_nov"
         ]
-        inputs_to_optimizer["END_OF_MONTH_STOCKS"]["DEC"] = country_data[
+        constants_for_params["END_OF_MONTH_STOCKS"]["DEC"] = country_data[
             "stocks_kcals_dec"
         ]
 
         # TODO: ALTER THESE TO CORRECT CLOBAL FRACTIONS
 
         # Single cell protein fraction of global production
-        inputs_to_optimizer["SCP_GLOBAL_PRODUCTION_FRACTION"] = 1
+        constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"] = 1
 
         # Cellulosic sugar fraction of global production
-        inputs_to_optimizer["CS_GLOBAL_PRODUCTION_FRACTION"] = 1
+        constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"] = 1
 
         # 1000s of tons wet
-        inputs_to_optimizer["INITIAL_SEAWEED"] = 1
+        constants_for_params["INITIAL_SEAWEED"] = 1
 
         # 1000s of hectares
-        inputs_to_optimizer["INITIAL_AREA"] = 1
+        constants_for_params["INITIAL_AREA"] = 1
 
-        return inputs_to_optimizer
+        return constants_for_params
 
     # FISH
 
-    def set_fish_nuclear_winter_reduction(self, inputs_to_optimizer):
-        inputs_to_optimizer["FISH_PERCENT_MONTHLY"] = list(
+    def set_fish_nuclear_winter_reduction(self, constants_for_params):
+        constants_for_params["FISH_PERCENT_MONTHLY"] = list(
             np.array(
                 [
                     0.0,
@@ -692,186 +694,186 @@ class Scenarios:
             + 100
         )
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def set_fish_baseline(self, inputs_to_optimizer):
+    def set_fish_baseline(self, constants_for_params):
         # 100% of fishing remains in baseline
-        inputs_to_optimizer["FISH_PERCENT_MONTHLY"] = np.array(
-            [100] * inputs_to_optimizer["NMONTHS"]
+        constants_for_params["FISH_PERCENT_MONTHLY"] = np.array(
+            [100] * constants_for_params["NMONTHS"]
         )
 
-        return inputs_to_optimizer
+        return constants_for_params
 
     # CROP DISRUPTION
 
-    def set_disruption_to_crops_to_zero(self, inputs_to_optimizer):
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR1"] = 0
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR2"] = 0
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR3"] = 0
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR4"] = 0
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR5"] = 0
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR6"] = 0
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR7"] = 0
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR8"] = 0
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR9"] = 0
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR10"] = 0
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR11"] = 0
+    def set_disruption_to_crops_to_zero(self, constants_for_params):
+        constants_for_params["DISRUPTION_CROPS_YEAR1"] = 0
+        constants_for_params["DISRUPTION_CROPS_YEAR2"] = 0
+        constants_for_params["DISRUPTION_CROPS_YEAR3"] = 0
+        constants_for_params["DISRUPTION_CROPS_YEAR4"] = 0
+        constants_for_params["DISRUPTION_CROPS_YEAR5"] = 0
+        constants_for_params["DISRUPTION_CROPS_YEAR6"] = 0
+        constants_for_params["DISRUPTION_CROPS_YEAR7"] = 0
+        constants_for_params["DISRUPTION_CROPS_YEAR8"] = 0
+        constants_for_params["DISRUPTION_CROPS_YEAR9"] = 0
+        constants_for_params["DISRUPTION_CROPS_YEAR10"] = 0
+        constants_for_params["DISRUPTION_CROPS_YEAR11"] = 0
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def set_nuclear_winter_global_disruption_to_crops(self, inputs_to_optimizer):
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR1"] = 0.53
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR2"] = 0.82
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR3"] = 0.89
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR4"] = 0.88
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR5"] = 0.84
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR6"] = 0.76
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR7"] = 0.65
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR8"] = 0.5
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR9"] = 0.33
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR10"] = 0.17
-        inputs_to_optimizer["DISRUPTION_CROPS_YEAR11"] = 0.08
+    def set_nuclear_winter_global_disruption_to_crops(self, constants_for_params):
+        constants_for_params["DISRUPTION_CROPS_YEAR1"] = 0.53
+        constants_for_params["DISRUPTION_CROPS_YEAR2"] = 0.82
+        constants_for_params["DISRUPTION_CROPS_YEAR3"] = 0.89
+        constants_for_params["DISRUPTION_CROPS_YEAR4"] = 0.88
+        constants_for_params["DISRUPTION_CROPS_YEAR5"] = 0.84
+        constants_for_params["DISRUPTION_CROPS_YEAR6"] = 0.76
+        constants_for_params["DISRUPTION_CROPS_YEAR7"] = 0.65
+        constants_for_params["DISRUPTION_CROPS_YEAR8"] = 0.5
+        constants_for_params["DISRUPTION_CROPS_YEAR9"] = 0.33
+        constants_for_params["DISRUPTION_CROPS_YEAR10"] = 0.17
+        constants_for_params["DISRUPTION_CROPS_YEAR11"] = 0.08
 
-        return inputs_to_optimizer
+        return constants_for_params
 
     # SPECIFIC SCENARIOS
 
-    def get_baseline_scenario(self, inputs_to_optimizer):
+    def get_baseline_scenario(self, constants_for_params):
 
-        inputs_to_optimizer["MAX_SEAWEED_AS_PERCENT_KCALS"] = 0
-        inputs_to_optimizer["SEAWEED_NEW_AREA_PER_MONTH"] = 0
-        inputs_to_optimizer["SEAWEED_PRODUCTION_RATE"] = 0
-        inputs_to_optimizer["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 0
+        constants_for_params["SEAWEED_NEW_AREA_PER_MONTH"] = 0
+        constants_for_params["SEAWEED_PRODUCTION_RATE"] = 0
+        constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = 0
 
         # these fat and protein values do not produce realistic outputs,
         # so outdoor growing ratios were used instead
-        # inputs_to_optimizer['INITIAL_SF_FAT'] = 166.07e3 * 351e6/1360e6
-        # inputs_to_optimizer['INITIAL_SF_PROTEIN'] = 69.25e3 * 351e6/1360e6
+        # constants_for_params['INITIAL_SF_FAT'] = 166.07e3 * 351e6/1360e6
+        # constants_for_params['INITIAL_SF_PROTEIN'] = 69.25e3 * 351e6/1360e6
 
-        inputs_to_optimizer["OG_USE_BETTER_ROTATION"] = False
+        constants_for_params["OG_USE_BETTER_ROTATION"] = False
 
-        inputs_to_optimizer["INCLUDE_PROTEIN"] = True
-        inputs_to_optimizer["INCLUDE_FAT"] = True
+        constants_for_params["INCLUDE_PROTEIN"] = True
+        constants_for_params["INCLUDE_FAT"] = True
 
         # (no difference between harvests in the different countries!)
-        inputs_to_optimizer["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7
+        constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7
 
-        inputs_to_optimizer["CULL_ANIMALS"] = False
-        inputs_to_optimizer["KCAL_SMOOTHING"] = False
-        inputs_to_optimizer["MEAT_SMOOTHING"] = False
-        inputs_to_optimizer["STORED_FOOD_SMOOTHING"] = False
+        constants_for_params["CULL_ANIMALS"] = False
+        constants_for_params["KCAL_SMOOTHING"] = False
+        constants_for_params["MEAT_SMOOTHING"] = False
+        constants_for_params["STORED_FOOD_SMOOTHING"] = False
 
-        inputs_to_optimizer["ADD_CELLULOSIC_SUGAR"] = False
-        inputs_to_optimizer["ADD_DAIRY"] = True
-        inputs_to_optimizer["ADD_FISH"] = True
-        inputs_to_optimizer["ADD_GREENHOUSES"] = False
-        inputs_to_optimizer["ADD_OUTDOOR_GROWING"] = True
-        inputs_to_optimizer["ADD_MEAT"] = True
-        inputs_to_optimizer["ADD_METHANE_SCP"] = False
-        inputs_to_optimizer["ADD_SEAWEED"] = False
-        inputs_to_optimizer["ADD_STORED_FOOD"] = True
+        constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
+        constants_for_params["ADD_DAIRY"] = True
+        constants_for_params["ADD_FISH"] = True
+        constants_for_params["ADD_GREENHOUSES"] = False
+        constants_for_params["ADD_OUTDOOR_GROWING"] = True
+        constants_for_params["ADD_MEAT"] = True
+        constants_for_params["ADD_METHANE_SCP"] = False
+        constants_for_params["ADD_SEAWEED"] = False
+        constants_for_params["ADD_STORED_FOOD"] = True
 
-        inputs_to_optimizer["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
+        constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def get_resilient_food_scenario(self, inputs_to_optimizer):
+    def get_resilient_food_scenario(self, constants_for_params):
 
         # maximize minimum of fat or protein or kcals
-        inputs_to_optimizer["INCLUDE_PROTEIN"] = True
-        inputs_to_optimizer["INCLUDE_FAT"] = True
+        constants_for_params["INCLUDE_PROTEIN"] = True
+        constants_for_params["INCLUDE_FAT"] = True
 
-        inputs_to_optimizer["MAX_SEAWEED_AS_PERCENT_KCALS"] = 10
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 10
 
         # units: 1000 km^2
-        inputs_to_optimizer["SEAWEED_NEW_AREA_PER_MONTH"] = 2.0765 * 30
+        constants_for_params["SEAWEED_NEW_AREA_PER_MONTH"] = 2.0765 * 30
 
         # percent (seaweed)
         # represents 10% daily growth
-        inputs_to_optimizer["SEAWEED_PRODUCTION_RATE"] = 100 * (1.1**30 - 1)
+        constants_for_params["SEAWEED_PRODUCTION_RATE"] = 100 * (1.1**30 - 1)
 
-        inputs_to_optimizer["OG_USE_BETTER_ROTATION"] = True
-        inputs_to_optimizer["ROTATION_IMPROVEMENTS"] = {}
-        inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"] = 0.93
-        inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.487
-        inputs_to_optimizer["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
+        constants_for_params["OG_USE_BETTER_ROTATION"] = True
+        constants_for_params["ROTATION_IMPROVEMENTS"] = {}
+        constants_for_params["ROTATION_IMPROVEMENTS"]["KCALS_REDUCTION"] = 0.93
+        constants_for_params["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.487
+        constants_for_params["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
 
-        inputs_to_optimizer["GREENHOUSE_GAIN_PCT"] = 50
+        constants_for_params["GREENHOUSE_GAIN_PCT"] = 50
 
         # half values from greenhouse paper due to higher cost
-        inputs_to_optimizer["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
-        inputs_to_optimizer[
+        constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
+        constants_for_params[
             "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
         ] = 1  # default values from CS and SCP papers
 
-        inputs_to_optimizer["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7 + 1
-        inputs_to_optimizer["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 2
-        inputs_to_optimizer["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = 3
-        inputs_to_optimizer["DELAY"]["GREENHOUSE_MONTHS"] = 2
-        inputs_to_optimizer["DELAY"]["SEAWEED_MONTHS"] = 1
+        constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7 + 1
+        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 2
+        constants_for_params["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = 3
+        constants_for_params["DELAY"]["GREENHOUSE_MONTHS"] = 2
+        constants_for_params["DELAY"]["SEAWEED_MONTHS"] = 1
 
-        inputs_to_optimizer["CULL_ANIMALS"] = True
-        inputs_to_optimizer["KCAL_SMOOTHING"] = True
-        inputs_to_optimizer["MEAT_SMOOTHING"] = True
-        inputs_to_optimizer["STORED_FOOD_SMOOTHING"] = True
+        constants_for_params["CULL_ANIMALS"] = True
+        constants_for_params["KCAL_SMOOTHING"] = True
+        constants_for_params["MEAT_SMOOTHING"] = True
+        constants_for_params["STORED_FOOD_SMOOTHING"] = True
 
-        inputs_to_optimizer["ADD_CELLULOSIC_SUGAR"] = True
-        inputs_to_optimizer["ADD_DAIRY"] = True
-        inputs_to_optimizer["ADD_FISH"] = True
-        inputs_to_optimizer["ADD_GREENHOUSES"] = True
-        inputs_to_optimizer["ADD_OUTDOOR_GROWING"] = True
-        inputs_to_optimizer["ADD_MEAT"] = True
-        inputs_to_optimizer["ADD_METHANE_SCP"] = True
-        inputs_to_optimizer["ADD_SEAWEED"] = True
-        inputs_to_optimizer["ADD_STORED_FOOD"] = True
+        constants_for_params["ADD_CELLULOSIC_SUGAR"] = True
+        constants_for_params["ADD_DAIRY"] = True
+        constants_for_params["ADD_FISH"] = True
+        constants_for_params["ADD_GREENHOUSES"] = True
+        constants_for_params["ADD_OUTDOOR_GROWING"] = True
+        constants_for_params["ADD_MEAT"] = True
+        constants_for_params["ADD_METHANE_SCP"] = True
+        constants_for_params["ADD_SEAWEED"] = True
+        constants_for_params["ADD_STORED_FOOD"] = True
 
         ##### ERROR CHECKING, TO BE REMOVED WHEN SUFFICIENT BY-COUNTRY
         ##### RESILIENT FOOD DATA ARE AVAILABLE
-        if inputs_to_optimizer["POP"] < 7e9:
+        if constants_for_params["POP"] < 7e9:
             raise RuntimeError(
                 "ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY"
             )
 
-        return inputs_to_optimizer
+        return constants_for_params
 
-    def get_no_resilient_food_scenario(self, inputs_to_optimizer):
+    def get_no_resilient_food_scenario(self, constants_for_params):
 
-        inputs_to_optimizer["MAX_SEAWEED_AS_PERCENT_KCALS"] = 0
-        inputs_to_optimizer["SEAWEED_NEW_AREA_PER_MONTH"] = 0  # 1000 km^2 (seaweed)
-        inputs_to_optimizer["SEAWEED_PRODUCTION_RATE"] = 0  # percent (seaweed)
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 0
+        constants_for_params["SEAWEED_NEW_AREA_PER_MONTH"] = 0  # 1000 km^2 (seaweed)
+        constants_for_params["SEAWEED_PRODUCTION_RATE"] = 0  # percent (seaweed)
 
-        inputs_to_optimizer["OG_USE_BETTER_ROTATION"] = False
+        constants_for_params["OG_USE_BETTER_ROTATION"] = False
 
-        inputs_to_optimizer["INCLUDE_PROTEIN"] = True
-        inputs_to_optimizer["INCLUDE_FAT"] = True
+        constants_for_params["INCLUDE_PROTEIN"] = True
+        constants_for_params["INCLUDE_FAT"] = True
 
-        inputs_to_optimizer["GREENHOUSE_GAIN_PCT"] = 0
+        constants_for_params["GREENHOUSE_GAIN_PCT"] = 0
 
-        inputs_to_optimizer[
+        constants_for_params[
             "GREENHOUSE_SLOPE_MULTIPLIER"
         ] = 1  # default values from greenhouse paper
-        inputs_to_optimizer[
+        constants_for_params[
             "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
         ] = 1  # default values from CS paper
 
-        inputs_to_optimizer["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7
+        constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7
 
-        inputs_to_optimizer["CULL_ANIMALS"] = True
-        inputs_to_optimizer["KCAL_SMOOTHING"] = False
-        inputs_to_optimizer["MEAT_SMOOTHING"] = True
-        inputs_to_optimizer["STORED_FOOD_SMOOTHING"] = True
+        constants_for_params["CULL_ANIMALS"] = True
+        constants_for_params["KCAL_SMOOTHING"] = False
+        constants_for_params["MEAT_SMOOTHING"] = True
+        constants_for_params["STORED_FOOD_SMOOTHING"] = True
 
-        inputs_to_optimizer["ADD_CELLULOSIC_SUGAR"] = False
-        inputs_to_optimizer["ADD_DAIRY"] = False
-        inputs_to_optimizer["ADD_FISH"] = True
-        inputs_to_optimizer["ADD_GREENHOUSES"] = False
-        inputs_to_optimizer["ADD_OUTDOOR_GROWING"] = True
-        inputs_to_optimizer["ADD_MEAT"] = False
-        inputs_to_optimizer["ADD_METHANE_SCP"] = False
-        inputs_to_optimizer["ADD_SEAWEED"] = False
-        inputs_to_optimizer["ADD_STORED_FOOD"] = True
+        constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
+        constants_for_params["ADD_DAIRY"] = False
+        constants_for_params["ADD_FISH"] = True
+        constants_for_params["ADD_GREENHOUSES"] = False
+        constants_for_params["ADD_OUTDOOR_GROWING"] = True
+        constants_for_params["ADD_MEAT"] = False
+        constants_for_params["ADD_METHANE_SCP"] = False
+        constants_for_params["ADD_SEAWEED"] = False
+        constants_for_params["ADD_STORED_FOOD"] = True
 
-        inputs_to_optimizer["SEASONALITY"] = [
+        constants_for_params["SEASONALITY"] = [
             0.1564,
             0.0461,
             0.0650,
@@ -888,8 +890,8 @@ class Scenarios:
 
         ##### ERROR CHECKING, TO BE REMOVED WHEN SUFFICIENT BY-COUNTRY
         ##### RESILIENT FOOD DATA ARE AVAILABLE
-        if inputs_to_optimizer["POP"] < 7e9:
+        if constants_for_params["POP"] < 7e9:
             raise RuntimeError(
                 "ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY. THIS IS BECAUSE WE HAVE NOT YET IMPORTED BY-COUNTRY CROP PRODUCTION IN A NUCLEAR WINTER"
             )
-        return inputs_to_optimizer
+        return constants_for_params
