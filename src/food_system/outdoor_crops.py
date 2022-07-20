@@ -245,7 +245,7 @@ class OutdoorCrops(Food):
         self.KCALS_GROWN = []
         self.NO_ROT_KCALS_GROWN = []
 
-        for i in range(0, self.NMONTHS):
+        for i in range(self.NMONTHS):
             cycle_index = i % 12
             month_kcals = self.months_cycle[cycle_index]
             self.KCALS_GROWN.append(

@@ -172,7 +172,7 @@ class MeatAndDairy:
         h_e_fed_dairy_produced = []
         chicken_pork_maintained = []
         cattle_h_e_maintained = []
-        for m in range(0, self.NMONTHS):
+        for m in range(self.NMONTHS):
 
             max_dairy = excess_dry_cal_tons[m] / EDIBLE_TO_DAIRY_CONVERSION
 
@@ -367,7 +367,7 @@ class MeatAndDairy:
 
         self.dairy_milk_produced = []  # tons
         self.cattle_maintained = []  # tons
-        for m in range(0, self.NMONTHS):
+        for m in range(self.NMONTHS):
             if self.ADD_DAIRY:
                 max_dairy = (
                     self.human_inedible_feed[m] / self.INEDIBLE_TO_DAIRY_CONVERSION

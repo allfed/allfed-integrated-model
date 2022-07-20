@@ -475,7 +475,7 @@ class FeedAndBiofuels:
         The ratio biofuels needs to be reduced by. This is the same ratio for all
         nutrients. 1==100% reduction here.
         """
-        for month in range(0, self.NMONTHS):
+        for month in range(self.NMONTHS):
             assert (
                 biofuels_before_cap.kcals[month] == biofuels_before_cap.kcals[0]
                 or biofuels_before_cap.kcals[0] == 0
