@@ -27,21 +27,20 @@ class FeedAndBiofuels:
             kcals=constants_for_params["FEED_KCALS"],
             fat=constants_for_params["FEED_FAT"],
             protein=constants_for_params["FEED_PROTEIN"],
-        )
-
-        # billions kcals
-        self.FEED_MONTHLY_USAGE = Food(
-            # thousand tons per month to billion kcals per month
-            kcals=self.FEED.kcals / 12 * 4e6 / 1e9,
-            fat=self.FEED.fat / 12 / 1e3,
-            protein=self.FEED.protein / 12 / 1e3,
+            kcals_units="thousand dry caloric tons per year",
+            fat_units="tons per year",
+            protein_units="tons per year",
         )
 
         self.BIOFUEL = Food(
             kcals=constants_for_params["BIOFUEL_KCALS"],
             fat=constants_for_params["BIOFUEL_FAT"],
             protein=constants_for_params["BIOFUEL_PROTEIN"],
+            kcals_units="thousand dry caloric tons per year",
+            fat_units="tons per year",
+            protein_units="tons per year",
         )
+        self.AMOUNT_TO_REDUCE_RATIO_EACH_ITERATION = 0.01  # 10% reduction
 
     def set_nonhuman_consumption_with_cap(
         self, constants_for_params, outdoor_crops, stored_food
@@ -81,48 +80,6 @@ class FeedAndBiofuels:
         In the case that the stored food is zero, this means that biofuels plus feed
         will be capped to the outdoor production of any macronutrient in any month.
 
-
-        Example:
-
-        In this example, we have 4 months of biofuel and 5 months of feed before
-        shutoff.
-
-        plot: monthly exceedances before accounting for crop+stored food availability
-                   |o o o o
-            total  |o o o o
-            usage  |+ + + + +
-                   |+ + + + +
-                   |+ + + + +
-                   |-------------
-                    1 2 3 4 5 6 7
-                        month
-        Key: o = biofuels (adds up to 8)
-        Key: + = feed (adds up to 15)
-
-        Let's say the outdoor growing contributes 13, and the stored food contributes
-        5. Then at the end, we would remove the 8 units of biofuels, and 5 units of
-        feed usage to end up with a total excess usage feed+biofuels of 10, and the
-        only usage ends up being in the form of feed:
-
-        plot: monthly exceedances after accounting for crop+stored food availability
-
-                   |
-            total  |
-            usage  |
-                   |+ + + + +
-                   |+ + + + +
-                   |-------------
-                    1 2 3 4 5 6 7
-
-        Key: o = biofuels (adds up to 0)
-        Key: + = feed (adds up to 10)
-
-        In this example we'd return the total biofuel used as zero, and the total feed
-        as 10 to ensure the program exactly cancels the available outdoor growing and
-        stored food due to the very high biofuel and feed demand in this scenario, but
-        does not create the impossible scenario of using more biofuel and feed than
-        there is outdoor crops and stored food to use for the purpose.
-
         """
         # billion kcals per month
 
@@ -141,23 +98,20 @@ class FeedAndBiofuels:
             constants_for_params, biofuels_before_cap, feed_before_cap
         )
 
-        # billion kcals per month, initialized to zero before calculation
         # this is the total exceedance beyond outdoor growing
-        total_exceeding_outdoor_crops = self.calculate_exceedance_past_crops(
-            outdoor_crops, nonhuman_consumption_before_cap
+        max_net_demand = self.calculate_max_running_net_demand(
+            outdoor_crops, biofuels_before_cap, feed_before_cap
         )
 
         excess_feed_kcals = constants_for_params["EXCESS_FEED_KCALS"]
 
         self.set_biofuels_and_feed_usage(
-            total_exceeding_outdoor_crops,
+            max_net_demand,
             stored_food,
+            outdoor_crops,
             biofuels_before_cap,
             feed_before_cap,
             excess_feed_kcals,
-            biofuel_duration,
-            feed_duration,
-            constants_for_params,
         )
 
         self.nonhuman_consumption = self.get_nonhuman_consumption_with_cap(
@@ -166,23 +120,21 @@ class FeedAndBiofuels:
 
     def set_biofuels_and_feed_usage(
         self,
-        total_exceeding_outdoor_crops,
+        max_net_demand,
         stored_food,
+        outdoor_crops,
         biofuels_before_cap,
         feed_before_cap,
         excess_feed_kcals,
-        biofuel_duration,
-        feed_duration,
-        constants_for_params,
     ):
 
         # all macronutrients are zero (none exceed)
-        all_zero = (total_exceeding_outdoor_crops.as_list() == 0).all()
+        all_zero = max_net_demand.equals_zero()
 
         # no macronutrients exceed availability from stored foods
-        exceeds_less_than_stored_food = (
-            total_exceeding_outdoor_crops.as_list() <= stored_food.as_list()
-        ).all()
+        exceeds_less_than_stored_food = max_net_demand.all_less_than_or_equal(
+            stored_food
+        )
 
         # the negative amount can be made up for by stored food, so there's no need
         # to change the biofuel or feed usage
@@ -200,78 +152,43 @@ class FeedAndBiofuels:
               available outdoor growing and stored food, because in that case there
               would not be nearly enough calories to go around to make a full 2100
               kcal diet."""
-        print("stored_food")
-        print(stored_food)
-        print("total_exceeding_outdoor_crops")
-        print(total_exceeding_outdoor_crops)
-        quit()
-        # this is the aggregate amount that needs to be reduced from biofuels, and/or
-        # feed. It includes kcals, fat, and protein. The most important is getting the
-        # amount to reduce down to zero for the nutrient with the highest value.
-        to_reduce_nonhuman_consumption = total_exceeding_outdoor_crops - stored_food
 
-        assert to_reduce_nonhuman_consumption > Food(
-            kcals=0, fat=0, protein=0
-        ), """ERROR: calculating reductions to feed and biofuels, but no reduction is 
-              necessary"""
+        ratio = self.iteratively_determine_reduction_in_nonhuman_consumption(
+            stored_food, outdoor_crops, biofuels_before_cap, feed_before_cap
+        )
 
-        print("to_reduce_nonhuman_consumption")
-        print(to_reduce_nonhuman_consumption)
-        quit()
-        if biofuel_duration > 0:
-            biofuels_reduction_ratio = self.get_reduction_in_biofuels_ratio(
-                biofuels_before_cap,
-                to_reduce_nonhuman_consumption,
-                biofuel_duration,
-            )
-            print("to_reduce_nonhuman_consumption")
-            print(to_reduce_nonhuman_consumption)
-            print("biofuels_reduction_ratio * biofuels_before_cap.get_nutrients_sum()")
-            print(biofuels_reduction_ratio * biofuels_before_cap.get_nutrients_sum())
-            print(biofuels_reduction_ratio)
-            print(biofuels_before_cap.get_nutrients_sum())
+        self.biofuels = biofuels_before_cap * ratio
+        self.feed = feed_before_cap * ratio
 
-            to_reduce_nonhuman_consumption = (
-                to_reduce_nonhuman_consumption
-                - biofuels_reduction_ratio * biofuels_before_cap.get_nutrients_sum()
+        assert self.biofuels.all_less_than_or_equal(biofuels_before_cap)
+        assert self.feed.all_less_than_or_equal(feed_before_cap)
+
+    def iteratively_determine_reduction_in_nonhuman_consumption(
+        self, stored_food, outdoor_crops, biofuels_before_cap, feed_before_cap
+    ):
+
+        demand_more_than_supply = True
+
+        ratio = 1
+        while demand_more_than_supply:
+            # if there needs to be more biofuels
+            ratio -= self.AMOUNT_TO_REDUCE_RATIO_EACH_ITERATION
+            if ratio < 0:
+                # if the ratio is negative, then we've already reduced the
+                # nonhuman consumption enough
+                ratio = 0
+                break
+
+            max_net_demand = self.calculate_max_running_net_demand(
+                outdoor_crops, biofuels_before_cap * ratio, feed_before_cap * ratio
             )
 
-            self.biofuels = biofuels_before_cap * (1 - biofuels_reduction_ratio)
+            demand_more_than_supply = max_net_demand.any_greater_than(stored_food)
 
-        if feed_duration > 0:
-            feed_reduction_ratio = self.get_reduction_in_feed_ratio(
-                feed_before_cap,
-                to_reduce_nonhuman_consumption,
-                biofuel_duration,
-            )
+        assert 1 >= ratio >= 0
 
-            self.feed = feed_before_cap * (1 - feed_reduction_ratio)
-
-            to_reduce_nonhuman_consumption = (
-                to_reduce_nonhuman_consumption
-                - feed_reduction_ratio * feed_before_cap.get_nutrients_sum()
-            )
-
-        assert (self.feed <= feed_before_cap).all()
-        assert (self.biofuels <= biofuels_before_cap).all()
-
-        # it's okay if to_reduce_nonhuman_consumption is negative, because this means
-        # that the amount of nonhuman consumption use of some may have been reduced more
-        # than strictly be necessary, but this is fine because we expect the minimum is
-        # exactly zero.
-        assert (
-            to_reduce_nonhuman_consumption <= 0
-        ).all(), """ERROR: a nutrient is
-         above zero that means that there is a nonhuman consumption nutrient that
-          cannot be reduced enough by reducing biofuels"""
-
-        assert (
-            to_reduce_nonhuman_consumption.get_max_nutrient() >= 0
-        ), """ERROR: feed and biofuel
-          reductions have added up to more than was required to be produced"""
-        assert (
-            to_reduce_nonhuman_consumption.get_max_nutrient() <= 0
-        ), """ERROR: feed and biofuel reductions were reduced by too little, more needs to be reduced to compensate for low levels of stored food and outdoor growing"""
+        print("Final ratio for feed and biofuels:" + str(ratio))
+        return ratio
 
     def get_biofuel_usage_before_cap(self, biofuel_duration):
         """
@@ -290,6 +207,14 @@ class FeedAndBiofuels:
             self.BIOFUEL.protein / 12 / 1e3
         )  # thousand tons
 
+        assert self.BIOFUEL_MONTHLY_USAGE.all_greater_than_or_equal_zero()
+
+        self.BIOFUEL_MONTHLY_USAGE.set_units(
+            kcals_units="billion kcals per month",
+            fat_units="thousand tons per month",
+            protein_units="thousand tons per month",
+        )
+
         biofuels_before_cap = Food()
 
         biofuels_before_cap.kcals = [
@@ -304,6 +229,12 @@ class FeedAndBiofuels:
             self.BIOFUEL_MONTHLY_USAGE.protein
         ] * biofuel_duration + [0] * (self.NMONTHS - biofuel_duration)
 
+        biofuels_before_cap.set_units(
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
+        )
+
         return biofuels_before_cap
 
     def get_feed_usage_before_cap(self, feed_duration):
@@ -312,6 +243,21 @@ class FeedAndBiofuels:
         The total number of months before shutoff is the duration, representing the
         number of nonzero feed months for feeds to be used.
         """
+
+        self.FEED_MONTHLY_USAGE = Food(
+            # thousand tons annually to billion kcals per month
+            kcals=self.FEED.kcals / 12 * 4e6 / 1e9,
+            # tons annually to thousand tons per month
+            fat=self.FEED.fat / 12 / 1e3,
+            # tons annually to thousand tons per month
+            protein=self.FEED.protein / 12 / 1e3,
+            kcals_units="billion kcals per month",
+            fat_units="thousand tons per month",
+            protein_units="thousand tons per month",
+        )
+
+        assert self.FEED_MONTHLY_USAGE.all_greater_than_or_equal_zero()
+
         feed_shutoff_kcals_before_cap = np.array(
             [self.FEED_MONTHLY_USAGE.kcals] * feed_duration
             + [0] * (self.NMONTHS - feed_duration)
@@ -325,10 +271,14 @@ class FeedAndBiofuels:
             + [0] * (self.NMONTHS - feed_duration)
         )
 
-        feed_shutoff_before_cap = Food()
-        feed_shutoff_before_cap.kcals = feed_shutoff_kcals_before_cap
-        feed_shutoff_before_cap.fat = feed_shutoff_fat_before_cap
-        feed_shutoff_before_cap.protein = feed_shutoff_protein_before_cap
+        feed_shutoff_before_cap = Food(
+            kcals=feed_shutoff_kcals_before_cap,
+            fat=feed_shutoff_fat_before_cap,
+            protein=feed_shutoff_protein_before_cap,
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
+        )
 
         return feed_shutoff_before_cap
 
@@ -358,26 +308,19 @@ class FeedAndBiofuels:
             protein_used_livestock * constants_for_params["EXCESS_FEED_KCALS"]
         )
 
+        nonshutoff_excess = Food(
+            kcals=constants_for_params["EXCESS_FEED_KCALS"],
+            fat=nonshutoff_excess_fat,
+            protein=nonshutoff_excess_protein,
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
+        )
+
         # totals human edible used for animal feed and biofuels
         # excess is directly supplied separately from the feed_shutoff used.
 
-        nonhuman_consumption = Food()
-
-        nonhuman_consumption.kcals = (
-            constants_for_params["EXCESS_FEED_KCALS"]
-            + biofuels_before_cap.kcals
-            + feed_before_cap.kcals
-        )
-
-        nonhuman_consumption.fat = (
-            nonshutoff_excess_fat + biofuels_before_cap.fat + feed_before_cap.fat
-        )
-
-        nonhuman_consumption.protein = (
-            nonshutoff_excess_protein
-            + biofuels_before_cap.protein
-            + feed_before_cap.protein
-        )
+        nonhuman_consumption = biofuels_before_cap + feed_before_cap + nonshutoff_excess
 
         return nonhuman_consumption
 
@@ -407,186 +350,88 @@ class FeedAndBiofuels:
 
         # totals human edible used for animal feed and biofuels
         # excess is directly supplied separately from the feed_shutoff used.
-
-        nonhuman_consumption = Food()
-
-        nonhuman_consumption.kcals = (
-            constants_for_params["EXCESS_FEED_KCALS"] + biofuels.kcals + feed.kcals
+        nonshutoff_excess = Food(
+            kcals=constants_for_params["EXCESS_FEED_KCALS"],
+            fat=nonshutoff_excess_fat,
+            protein=nonshutoff_excess_protein,
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
         )
 
-        nonhuman_consumption.fat = nonshutoff_excess_fat + biofuels.fat + feed.fat
-
-        nonhuman_consumption.protein = (
-            nonshutoff_excess_protein + biofuels.protein + feed.protein
-        )
+        nonhuman_consumption = biofuels + feed + nonshutoff_excess
 
         return nonhuman_consumption
 
-    def calculate_exceedance_past_crops(self, crops, nonhuman_consumption_before_cap):
+    def calculate_max_running_net_demand(
+        self, outdoor_crops, biofuels_before_cap, feed_before_cap
+    ):
         """
-        Calculate the exceedance of the biofuel and feed usage past the outdoor crops
+        Calculate the exceedance of the biofuel and feed usage past the outdoor outdoor_crops
         production on a monthly basis for each nutrient.
+
+        Example:
+
+        outdoor crops:
+            kcals:   10, 20, 10, 10
+            fat:     10, 30, 20, 20
+            protein: 10, 30, 20, 20
+            month:    1   2   3   4
+
+        nonhuman_consumption:
+            kcals:    5, 20, 10, 15
+            fat:      5, 15, 25, 20
+            protein: 25, 15, 20, 20
+            month:    1   2   3   4
+
+        supply_minus_demand:
+            kcals:    5,  0,  0, -5
+            fat:      5, 15, -5,  0
+            protein:-15, 15,  0,  0
+            month:    1   2   3   4
+
+        running_net_supply:
+            kcals:    5,  5,  5,  0
+            fat:      5, 20, 15, 15
+            protein:-15,  0,  0,  0
+            month:    1   2   3   4
+
+        min_running_net_supply:
+            kcals:    0
+            fat:      5
+            protein:-15
+            month: allmonths
+
+        max_running_net_demand:
+            kcals:    0
+            fat:      -5
+            protein: 15
+            month: allmonths
+
+
+        For all month combined, how much original stored food is needed to make up for
+        each macronutrient?
+
+        Answer:
+            We sum up all the discrepancies between supply and demand.
+            The stored food will need to make up for the minimum total shortage added
+            up.
+
         """
-        total_exceeding_outdoor_crops = Food()
 
-        # this is a rather fancy way to calculate the total exceedance in all the months
-        # that contain more feed and biofuels nutrient usage than that nutrient usage
-        # is available by looping through the nutrient names (kcals, fat, protein)
-        for nutrient_name in Food.get_nutrient_names():
-            # if nutrient_name == "fat" or nutrient_name == "protein":
-            #     # TODO
-            #     continue
+        nonhuman_consumption_before_cap = biofuels_before_cap + feed_before_cap
+        assert nonhuman_consumption_before_cap.all_greater_than_or_equal_zero()
 
-            exceeding_sum = 0  # initialize to zero
+        supply_minus_demand = outdoor_crops - nonhuman_consumption_before_cap
 
-            for i in range(self.NMONTHS):
-                nonhuman_consumption_nutrient = getattr(
-                    nonhuman_consumption_before_cap, nutrient_name
-                )
-                crop_nutrient = getattr(crops, nutrient_name)
-                if nonhuman_consumption_nutrient[i] > crop_nutrient[i]:
-                    exceeding_sum += nonhuman_consumption_nutrient[i] - crop_nutrient[i]
-
-            # set the total_exceeding_outdoor_crops nutrient to the sum of exceedances
-            # of that nutrient
-            setattr(total_exceeding_outdoor_crops, nutrient_name, exceeding_sum)
-
-        return total_exceeding_outdoor_crops
-
-    def get_reduction_in_biofuels_ratio(
-        self,
-        biofuels_before_cap,
-        to_reduce_nonhuman_consumption,
-        biofuel_duration,
-    ):
-        """
-        If there's a limit based on crops+stored food,
-        changes the returned ratio of biofuel usage accordingly.
-
-        Assumption: total_exceeding_outdoor_crops > stored_food
-        Assumption: biofuel usage is constant for all months it is nonzero
-
-        Arguments:
-            total_exceeding_outdoor_crops (float): total exceedance of the nonhuman
-                consumption beyond the outdoor crops
-            stored_food (float): total amount of stored food
-
-        Returns:
-        The ratio biofuels needs to be reduced by. This is the same ratio for all
-        nutrients. 1==100% reduction here.
-        """
-        for month in range(self.NMONTHS):
-            assert (
-                biofuels_before_cap.kcals[month] == biofuels_before_cap.kcals[0]
-                or biofuels_before_cap.kcals[0] == 0
-            ), """ERROR: biofuels has to be constant every month it's nonzero. 
-                First month with error: """ + str(
-                month
-            )
-
-        assert biofuels_before_cap.get_first_month() > Food(
-            kcals=0, fat=0, protein=0
-        ), """ERROR: Biofuels first month must be nonzero if trying to reduce biofuels to match available stored food and outdoor growing"""
-
-        # the amount to try to reduce biofuels by is split into each month biofuels is
-        # used
-        remainder_per_biofuel_month = to_reduce_nonhuman_consumption / biofuel_duration
-
-        # the  biofuels are consistent every month and the duration is nonzero,
-        # so we just look at the first month
-        to_reduce_nonhuman_consumption = (
-            biofuels_before_cap.get_first_month() - remainder_per_biofuel_month
+        running_supply_minus_demand = (
+            supply_minus_demand.get_running_total_nutrients_sum()
         )
 
-        # the lowest to_reduce_nonhuman_consumption nutrient will be used to assign total biofuels used
-        (
-            nutrient_name,
-            min_remaining,
-        ) = to_reduce_nonhuman_consumption.get_min_nutrient()
-        print("min_remaining")
-        print(min_remaining)
-        quit()
+        PLOT_RUNNING_TOTAL = False
+        if PLOT_RUNNING_TOTAL:
+            running_supply_minus_demand.plot("running total")
 
-        if min_remaining > 0:
-            # in the case that the most used up nutrient is still able to be made up
-            # for by a reduction in biofuels
-            biofuel_amount_nutrient = getattr(biofuels_before_cap, nutrient_name)
+        max_running_net_demand = -running_supply_minus_demand.get_min_all_months()
 
-            # the ratio of biofuels to get to the minimum nutrient
-            biofuel_ratio = min_remaining / biofuel_amount_nutrient
-
-            assert (
-                biofuel_ratio > 0 and biofuel_ratio < 1
-            ), """ERROR: biofuel ratio
-            reduction must be between zero and one"""
-
-            print("biofuel_amount_nutrient")
-            print(biofuel_amount_nutrient)
-            # the reduction in biofuels is the original minus the new expected amount
-            return 1 - biofuel_ratio
-        else:
-            # reduction is 100%
-            return 1
-
-    def get_reduction_in_feed_ratio(
-        self,
-        feed_before_cap,
-        to_reduce_nonhuman_consumption,
-        feed_duration,
-    ):
-        """
-        If there's a limit based on crops+stored food,
-        changes the returned ratio of feed usage accordingly.
-
-        Assumption: total_exceeding_outdoor_crops > stored_food
-        Assumption: feed usage is constant for all months it is nonzero
-
-        Arguments:
-            feed_before_cap,
-            to_reduce_nonhuman_consumption,
-            feed_duration,
-
-        Returns:
-        The ratio feed needs to be reduced by. This is the same ratio for all
-        nutrients. 1==100% reduction here.
-        """
-
-        assert (
-            feed_before_cap.kcals == feed_before_cap.kcals[0]
-            or feed_before_cap.kcals == 0
-        ).all(), "ERROR: feed has to be constant every month it's nonzero"
-
-        # the amount to try to reduce feed by is split into each month feed is
-        # used
-        remainder_per_feed_month = to_reduce_nonhuman_consumption / feed_duration
-
-        # the  feed are consistent every month and the duration is nonzero,
-        # so we just look at the first month
-        to_reduce_nonhuman_consumption = (
-            feed_before_cap.get_first_month() - remainder_per_feed_month
-        )
-
-        assert (
-            feed_before_cap.get_first_month() > 0
-        ), """ERROR: Feed first month must be nonzero if trying to reduce feed to match 
-            available stored food and outdoor growing"""
-
-        # the lowest to_reduce_nonhuman_consumption nutrient will be used to assign total feed used
-        (
-            nutrient_name,
-            min_remaining,
-        ) = to_reduce_nonhuman_consumption.get_min_nutrient()
-
-        if min_remaining > 0:
-            # in the case that the most used up nutrient is still able to be made up
-            # for by a reduction in feed
-            feed_amount_nutrient = getattr(feed_before_cap, nutrient_name)
-
-            # the ratio of feed to get to the minimum nutrient
-            feed_ratio = min_remaining / feed_amount_nutrient
-
-            # the reduction in feed is the original minus the new expected amount
-            return 1 - feed_ratio
-        else:
-            # reduction is 100%
-            return 1
+        return max_running_net_demand

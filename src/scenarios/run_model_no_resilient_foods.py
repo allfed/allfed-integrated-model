@@ -58,10 +58,13 @@ def run_model_no_resilient_foods(plot_figures=True):
         constants_for_params
     )
 
-    constants_for_params = (
-        scenarios_loader.set_nuclear_winter_global_disruption_to_crops(
-            constants_for_params
-        )
+    # constants_for_params = (
+    #     scenarios_loader.set_nuclear_winter_global_disruption_to_crops(
+    #         constants_for_params
+    #     )
+    # )
+    constants_for_params = scenarios_loader.set_disruption_to_crops_to_zero(
+        constants_for_params
     )
 
     constants_for_params["EXCESS_FEED_KCALS"] = np.array(

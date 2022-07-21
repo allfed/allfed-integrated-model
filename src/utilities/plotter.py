@@ -1012,8 +1012,8 @@ class Plotter:
         plt.xlabel("month")
         plt.ylabel("ratios to baseline production")
         plt.title("fraction of crop production per month, including seasonality")
-        plt.xlim([0, 12 * 5])
-        plt.ylim([0, 1.5])
+        # plt.xlim([0, 12 * 5])
+        # plt.ylim([0, 1.5])
         plt.show()
 
     def plot_monthly_reductions_no_seasonality(all_months_reductions):
@@ -1027,6 +1027,96 @@ class Plotter:
         plt.title("fraction of crop production per month, not including seasonality")
         plt.xlabel("month")
         plt.ylabel("ratio to baseline production")
-        plt.xlim([0, 12 * 5])
-        plt.ylim([0, 1.5])
+        # plt.xlim([0, 12 * 5])
+        # plt.ylim([0, max()])
+        plt.show()
+
+    def plot_food(food, title):
+        """
+        Plot the food generically with the 3 macronutrients.
+        """
+        food.make_sure_is_a_list()
+
+        vals1 = food.kcals
+        title1 = food.kcals_units
+        vals2 = food.fat
+        title2 = food.fat_units
+        vals3 = food.protein
+        title3 = food.protein_units
+
+        # Placing the plots in the plane
+        fig, ax = plt.subplots(2, 2)
+        plot1 = plt.subplot2grid((2, 2), (0, 0), colspan=1, rowspan=2)
+        plot2 = plt.subplot2grid((2, 2), (0, 1))
+        plot3 = plt.subplot2grid((2, 2), (1, 1))
+
+        # Using Numpy to create an array x
+        x = np.arange(len(vals1))
+
+        # Plot for vals1
+        plot1.plot(x, vals1)
+        plot1.set_ylabel(title1.split(" each month")[0])
+        plot1.set_xlabel("month")
+        plot1.set_title("kcals: " + title1)
+
+        # Plot for  vals2
+        plot2.plot(x, vals2)
+        plot2.set_ylabel(title2.split(" each month")[0])
+        plot2.set_xlabel("month")
+        plot2.set_title("fat: " + title2)
+
+        # Plot for vals3
+        plot3.plot(x, vals3)
+        plot3.set_ylabel(title3.split(" each month")[0])
+        plot3.set_xlabel("month")
+        plot3.set_title("protein: " + title3)
+
+        # Packing all the plots and displaying them
+        plt.tight_layout()
+        fig.suptitle(title)
+        plt.show()
+
+    def plot_food_alternative(food, title):
+        """
+        Plot the food generically with the 3 macronutrients (alternative layout).
+        """
+        food.make_sure_is_a_list()
+
+        vals1 = food.kcals
+        title1 = food.kcals_units
+        vals2 = food.fat
+        title2 = food.fat_units
+        vals3 = food.protein
+        title3 = food.protein_units
+
+        # Placing the plots in the plane
+        fig, ax = plt.subplots(3, 1)
+        plot1 = plt.subplot2grid((3, 1), (0, 0))
+        plot2 = plt.subplot2grid((3, 1), (1, 0))
+        plot3 = plt.subplot2grid((3, 1), (2, 0))
+
+        # Using Numpy to create an array x
+        x = np.arange(len(vals1))
+
+        # Plot for vals1
+        plot1.plot(x, vals1)
+        plot1.set_ylabel(title1.split(" each month")[0])
+        plot1.set_xlabel("month")
+        plot1.set_title(title1)
+
+        # Plot for  vals2
+        plot2.plot(x, vals2)
+        plot2.set_ylabel(title2.split(" each month")[0])
+        plot2.set_xlabel("month")
+        plot2.set_title(title2)
+
+        # Plot for vals3
+        plot3.plot(x, vals3)
+        plot3.set_ylabel(title3.split(" each month")[0])
+        plot3.set_xlabel("month")
+        plot3.set_title(title3)
+
+        # Packing all the plots and displaying them
+        plt.tight_layout()
+        fig.suptitle(title)
         plt.show()

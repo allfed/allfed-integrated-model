@@ -104,7 +104,6 @@ class OutdoorCrops(Food):
         # @ Florian: https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673
         #            does that link work for you?
         month_index = self.STARTING_MONTH_NUM - 1
-
         JAN_FRACTION = constants_for_params["SEASONALITY"][0]
         FEB_FRACTION = constants_for_params["SEASONALITY"][1]
         MAR_FRACTION = constants_for_params["SEASONALITY"][2]
@@ -117,6 +116,30 @@ class OutdoorCrops(Food):
         OCT_FRACTION = constants_for_params["SEASONALITY"][9]
         NOV_FRACTION = constants_for_params["SEASONALITY"][10]
         DEC_FRACTION = constants_for_params["SEASONALITY"][11]
+
+        SUM = np.sum(
+            np.array(
+                [
+                    JAN_FRACTION,
+                    FEB_FRACTION,
+                    MAR_FRACTION,
+                    APR_FRACTION,
+                    MAY_FRACTION,
+                    JUN_FRACTION,
+                    JUL_FRACTION,
+                    AUG_FRACTION,
+                    SEP_FRACTION,
+                    OCT_FRACTION,
+                    NOV_FRACTION,
+                    DEC_FRACTION,
+                ]
+            )
+        )
+        # seasonality does not have a net effect on average production over a year
+        print(SUM)
+        assert (SUM < 1.001 and SUM > 0.999) or SUM == 0
+
+        print("months_cycle")
 
         # tons dry carb equivalent
         JAN_YIELD = JAN_FRACTION * self.ANNUAL_YIELD
@@ -217,8 +240,9 @@ class OutdoorCrops(Food):
         # 11 years of reductions should be 12*11 months.
         assert len(self.all_months_reductions) == 12 * 11
 
-        PLOT_WITH_SEASONALITY = False
-        if PLOT_WITH_SEASONALITY:
+        PLOT_NO_SEASONALITY = False
+        if PLOT_NO_SEASONALITY:
+            print("Plotting with no seasonality")
             Plotter.plot_monthly_reductions_no_seasonality(self.all_months_reductions)
 
         month_cycle_starting_january = [
@@ -264,7 +288,7 @@ class OutdoorCrops(Food):
 
         PLOT_WITH_SEASONALITY = False
         if PLOT_WITH_SEASONALITY:
-
+            print("Plotting with seasonality")
             # ratios between baseline production and actual production
             ratios = np.divide(
                 self.NO_ROT_KCALS_GROWN, self.ANNUAL_YIELD * 4e6 / 1e9 / 12
@@ -305,5 +329,11 @@ class OutdoorCrops(Food):
         self.kcals = self.crops_food_produced
         self.fat = self.OG_FRACTION_FAT * self.crops_food_produced
         self.protein = self.OG_FRACTION_PROTEIN * self.crops_food_produced
+
+        self.set_units(
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
+        )
 
         return self.crops_food_produced

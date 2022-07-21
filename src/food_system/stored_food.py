@@ -90,3 +90,9 @@ class StoredFood(Food):
         self.kcals = self.INITIAL_SF_KCALS
         self.fat = self.INITIAL_SF_KCALS * self.SF_FRACTION_FAT
         self.protein = self.INITIAL_SF_KCALS * self.SF_FRACTION_PROTEIN
+
+        self.set_units(
+            kcals_units="billion kcals",
+            fat_units="thousand tons",
+            protein_units="thousand tons",
+        )

@@ -247,7 +247,6 @@ class Scenarios:
     # SEASONALITY
 
     def set_country_seasonality_baseline(self, constants_for_params, country_data):
-
         # fractional production per month
         constants_for_params["SEASONALITY"] = [
             country_data["seasonality_m" + str(i)] for i in range(1, 13)
@@ -872,21 +871,6 @@ class Scenarios:
         constants_for_params["ADD_METHANE_SCP"] = False
         constants_for_params["ADD_SEAWEED"] = False
         constants_for_params["ADD_STORED_FOOD"] = True
-
-        constants_for_params["SEASONALITY"] = [
-            0.1564,
-            0.0461,
-            0.0650,
-            0.1017,
-            0.0772,
-            0.0785,
-            0.0667,
-            0.0256,
-            0.0163,
-            0.1254,
-            0.1183,
-            0.1228,
-        ]
 
         ##### ERROR CHECKING, TO BE REMOVED WHEN SUFFICIENT BY-COUNTRY
         ##### RESILIENT FOOD DATA ARE AVAILABLE

@@ -751,7 +751,7 @@ class Analyzer:
         sum_before = np.sum(
             (
                 np.array(self.humans_fed_kcals_optimizer)[:feed_delay]
-                - self.constants["POP"] / 1e9
+                - self.constants["POP_BILLIONS"]
             )
         )
 
@@ -761,7 +761,7 @@ class Analyzer:
             self.excess_after_run = (
                 (
                     np.array(self.humans_fed_kcals_optimizer)
-                    - self.constants["POP"] / 1e9
+                    - self.constants["POP_BILLIONS"]
                 )
                 * self.constants["KCALS_MONTHLY"]
                 * FRACTION_EXCESS_TO_REMOVE_NEXT_TIME

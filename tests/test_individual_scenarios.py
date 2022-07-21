@@ -21,7 +21,7 @@ if module_path not in sys.path:
     sys.path.append(module_path)
 
 from src.scenarios import run_model_baseline
-from src.scenarios import run_baseline_by_country_no_trade
+from src.scenarios import run_model_no_trade_baseline
 from src.scenarios import run_model_no_resilient_foods
 from src.scenarios import run_model_with_resilient_foods
 from src.scenarios import monte_carlo
@@ -48,9 +48,7 @@ def test_run_baseline_by_country_no_trade():
     Returns:
         None
     """
-    run_baseline_by_country_no_trade.run_baseline_by_country_no_trade(
-        plot_figures=False
-    )
+    run_model_no_trade_baseline.run_baseline_by_country_no_trade(plot_figures=False)
 
 
 def test_run_model_no_resilient_foods():
@@ -66,7 +64,7 @@ def test_run_model_no_resilient_foods():
 
 
 def test_run_model_with_resilient_foods():
-    """
+    """_
     Runs the model without resilient food for testing
 
     Arguments:

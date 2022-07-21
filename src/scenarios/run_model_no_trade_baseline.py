@@ -112,7 +112,7 @@ def run_baseline_by_country_no_trade(plot_figures=True):
 
         constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
 
-        constants_for_params = scenarios_loader.set_immediate_shutoff(
+        constants_for_params = scenarios_loader.set_continued_feed_biofuels(
             constants_for_params
         )
 
@@ -147,7 +147,7 @@ def run_baseline_by_country_no_trade(plot_figures=True):
         print("")
 
         if plot_figures:
-            PLOT_EACH_FIGURE = True
+            PLOT_EACH_FIGURE = False
             if PLOT_EACH_FIGURE:
                 Plotter.plot_fig_s1abcd(analysis, analysis, 84)
 
