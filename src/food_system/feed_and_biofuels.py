@@ -166,6 +166,10 @@ class FeedAndBiofuels:
     def iteratively_determine_reduction_in_nonhuman_consumption(
         self, stored_food, outdoor_crops, biofuels_before_cap, feed_before_cap
     ):
+        """
+        This function iteratively determines the amount of nonhuman consumption by
+        reducing the amount of biofuels and feed used.
+        """
 
         demand_more_than_supply = True
 

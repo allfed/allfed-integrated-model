@@ -48,7 +48,11 @@ class Parameters:
         }
         self.SIMULATION_STARTING_MONTH_NUM = months_dict[self.SIMULATION_STARTING_MONTH]
 
-    def computeParameters(self, constants, VERBOSE=False):
+    def computeParameters(self, constants, scenario, VERBOSE=False):
+
+        # ensure every parameter has been initialized for the scenario
+        scenario.check_all_set()
+
         constants_for_params = constants["inputs"]  # single valued inputs to optimizer
         constants_for_params["STARTING_MONTH_NUM"] = self.SIMULATION_STARTING_MONTH_NUM
 
@@ -524,7 +528,7 @@ class Parameters:
         print("")
         print("INITIAL_SF_KCALS million tons dry caloric")
         print(INITIAL_SF_KCALS * 1e9 / 4e6 / 1e6)
-        print("INITIAL_SF_FAT million tonds")
+        print("INITIAL_SF_FAT million tons")
 
         print(INITIAL_SF_KCALS * SF_FRACTION_FAT / 1e3)
         print("INITIAL_SF_PROTEIN million tons")

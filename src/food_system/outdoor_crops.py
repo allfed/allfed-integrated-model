@@ -272,6 +272,7 @@ class OutdoorCrops(Food):
         for i in range(self.NMONTHS):
             cycle_index = i % 12
             month_kcals = self.months_cycle[cycle_index]
+            # TODO
             self.KCALS_GROWN.append(
                 month_kcals
                 * (

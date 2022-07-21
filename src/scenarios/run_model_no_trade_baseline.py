@@ -80,9 +80,9 @@ def run_baseline_by_country_no_trade(plot_figures=True):
     world.loc[world.name == "Kosovo", "iso_a3"] = "KOS"
 
     constants_loader = Parameters()
-    scenarios_loader = Scenarios()
 
     def run_optimizer_for_country(country_code, country_data):
+        scenarios_loader = Scenarios()
 
         # initialize country specific food system properties
         constants_for_params = scenarios_loader.init_country_food_system_properties(
@@ -90,6 +90,10 @@ def run_baseline_by_country_no_trade(plot_figures=True):
         )
 
         constants_for_params = scenarios_loader.set_country_seasonality_baseline(
+            constants_for_params, country_data
+        )
+
+        constants_for_params = scenarios_loader.set_country_waste_to_doubled_prices(
             constants_for_params, country_data
         )
 
@@ -110,11 +114,17 @@ def run_baseline_by_country_no_trade(plot_figures=True):
 
         constants_for_params = scenarios_loader.set_fish_baseline(constants_for_params)
 
-        constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
+        # constants_for_params = scenarios_loader.set_long_delayed_shutoff(
+        #     constants_for_params
+        # )
 
-        constants_for_params = scenarios_loader.set_continued_feed_biofuels(
+        constants_for_params = scenarios_loader.set_immediate_shutoff(
             constants_for_params
         )
+
+        # constants_for_params = scenarios_loader.set_continued_feed_biofuels(
+        #     constants_for_params
+        # )
 
         constants_for_params = scenarios_loader.set_disruption_to_crops_to_zero(
             constants_for_params
@@ -133,7 +143,7 @@ def run_baseline_by_country_no_trade(plot_figures=True):
         (
             single_valued_constants,
             multi_valued_constants,
-        ) = constants_loader.computeParameters(constants)
+        ) = constants_loader.computeParameters(constants, scenarios_loader)
         single_valued_constants["CHECK_CONSTRAINTS"] = False
         optimizer = Optimizer()
         [time_months, time_months_middle, analysis] = optimizer.optimize(
@@ -145,6 +155,9 @@ def run_baseline_by_country_no_trade(plot_figures=True):
         print("No trade expected kcals/capita/day 2020")
         print(needs_ratio * 2100)
         print("")
+        PRINT_SCENARIO_PROPERTIES = True
+        if PRINT_SCENARIO_PROPERTIES:
+            print(scenarios_loader.scenario_description)
 
         if plot_figures:
             PLOT_EACH_FIGURE = False
