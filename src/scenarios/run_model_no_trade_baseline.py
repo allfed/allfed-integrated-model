@@ -80,8 +80,17 @@ def run_baseline_by_country_no_trade(plot_figures=True):
     world.loc[world.name == "Kosovo", "iso_a3"] = "KOS"
 
     def run_optimizer_for_country(country_code, country_data):
-        # if country_code != "BEN":
-        #     return 0
+
+        # if not (
+        #     country_code == "USA"
+        #     or country_code == "CHN"
+        #     or country_code == "AUS"
+        #     or country_code == "IND"
+        #     or country_code == "PAK"
+        #     or country_code == "BRA"
+        #     or country_code == "F5707+GBR"
+        # ):
+        #     return np.nan
         scenarios_loader = Scenarios()
 
         # initialize country specific food system properties
@@ -114,7 +123,7 @@ def run_baseline_by_country_no_trade(plot_figures=True):
 
         constants_for_params = scenarios_loader.set_fish_baseline(constants_for_params)
 
-        constants_for_params = scenarios_loader.set_long_delayed_shutoff(
+        constants_for_params = scenarios_loader.set_continued_feed_biofuels(
             constants_for_params
         )
 
@@ -158,6 +167,7 @@ def run_baseline_by_country_no_trade(plot_figures=True):
         print("")
         print("")
         print("")
+
         return needs_ratio
 
     def fill_data_for_map(country_code, needs_ratio):
@@ -180,8 +190,10 @@ def run_baseline_by_country_no_trade(plot_figures=True):
             world.loc[world_index, "needs_ratio"] = kcals_ratio_capped
 
     # iterate over each country from spreadsheet, run the optimizer, plot the result
-    og_sum = 0
+    net_pop_fed = 0
+    net_pop = 0
     for index, country_data in no_trade_table.iterrows():
+
         country_code = country_data["iso3"]
         country_name = country_data["country"]
 
@@ -193,11 +205,26 @@ def run_baseline_by_country_no_trade(plot_figures=True):
 
         needs_ratio = run_optimizer_for_country(country_code, country_data)
 
+        if np.isnan(needs_ratio):
+            continue
+
         if country_code == "F5707+GBR":
             for c in UK_27_Plus_GBR_countries:
                 fill_data_for_map(c, needs_ratio)
         else:
             fill_data_for_map(country_code, needs_ratio)
+        if needs_ratio >= 1:
+            capped_ratio = 1
+        else:
+            capped_ratio = needs_ratio
+
+        net_pop_fed += capped_ratio * population
+        net_pop += population
+
+    print("Net population considered: " + str(net_pop / 1e9) + " Billion people")
+    print(
+        "Fraction of this population fed: " + str(float(net_pop_fed) / float(net_pop))
+    )
 
     plt.close()
     mn = 0
