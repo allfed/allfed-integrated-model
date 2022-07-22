@@ -871,7 +871,7 @@ class Scenarios:
         constants_for_params["OG_USE_BETTER_ROTATION"] = False
 
         constants_for_params["INCLUDE_PROTEIN"] = True
-        constants_for_params["INCLUDE_FAT"] = False
+        constants_for_params["INCLUDE_FAT"] = True
 
         # (no difference between harvests in the different countries!)
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7
