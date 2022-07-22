@@ -251,11 +251,12 @@ class Food(UnitConversions):
         """
         Adds two foods together.
         """
+        assert self.units == other.units
+
         kcals = self.kcals + other.kcals
         fat = self.fat + other.fat
         protein = self.protein + other.protein
 
-        assert self.units == other.units
 
         return Food(
             kcals, fat, protein, self.kcals_units, self.fat_units, self.protein_units
@@ -265,11 +266,11 @@ class Food(UnitConversions):
         """
         Subtracts two food nutrient quantities from each other.
         """
+        assert self.units == other.units
+
         kcals = self.kcals - other.kcals
         fat = self.fat - other.fat
         protein = self.protein - other.protein
-
-        assert self.units == other.units
 
         return Food(
             kcals, fat, protein, self.kcals_units, self.fat_units, self.protein_units
