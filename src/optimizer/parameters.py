@@ -261,10 +261,10 @@ class Parameters:
         time_consts["greenhouse_fat_per_ha"] = greenhouse_fat_per_ha
         time_consts["greenhouse_protein_per_ha"] = greenhouse_protein_per_ha
         time_consts["production_kcals_scp_per_month"] = production_kcals_scp_per_month
+        time_consts["production_fat_scp_per_month"] = production_fat_scp_per_month
         time_consts[
             "production_protein_scp_per_month"
         ] = production_protein_scp_per_month
-        time_consts["production_fat_scp_per_month"] = production_fat_scp_per_month
         time_consts["production_kcals_fish_per_month"] = production_kcals_fish_per_month
         time_consts[
             "production_protein_fish_per_month"

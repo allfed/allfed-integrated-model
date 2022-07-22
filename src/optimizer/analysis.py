@@ -562,7 +562,6 @@ class Analyzer:
             h_e_milk_protein / self.constants["PROTEIN_MONTHLY"] / 1e9
         )
 
-        # h_e_balance.plot("balace")
         self.billions_fed_h_e_balance = h_e_balance.in_units_billions_fed()
 
         # useful for plotting meat and dairy
