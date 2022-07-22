@@ -336,5 +336,5 @@ class OutdoorCrops(Food):
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
-
+        # self.plot("crops_food_produced")
         return self.crops_food_produced

@@ -23,10 +23,11 @@ module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
+from src.food_system.unit_conversions import UnitConversions
 from src.utilities.plotter import Plotter
 
 
-class Food:
+class Food(UnitConversions):
     """
     A food always has calories, fat, and protein.
     Food applies to biofuels and feed properties as well.
@@ -107,6 +108,30 @@ class Food:
 
     """
 
+    # public property used to convert between units
+    conversions = UnitConversions()
+
+    @classmethod
+    def get_Food_class(cls):
+        """
+        get this class
+        """
+        return cls
+
+    @classmethod
+    def get_conversions(cls):
+        """
+        return the class conversions object
+        this is only used by the parent UnitConversions class
+        """
+        conversions = cls.conversions
+
+        assert conversions.NUTRITION_PROPERTIES_ASSIGNED, """ERROR: you must 
+            assign the conversions property before attempting to convert between
+            food units"""
+
+        return conversions
+
     @classmethod
     def get_nutrient_names(cls):
         """
@@ -161,6 +186,7 @@ class Food:
         """
         Initializes the food with the given macronutrients, and set the default units.
         """
+        super().__init__()
         self.kcals = kcals
         self.fat = fat
         self.protein = protein
@@ -217,23 +243,6 @@ class Food:
         assert type(self.kcals) == list or type(self.kcals) == np.ndarray
         assert type(self.fat) == list or type(self.fat) == np.ndarray
         assert type(self.protein) == list or type(self.protein) == np.ndarray
-
-    # units functions
-
-    def set_units(self, kcals_units, fat_units, protein_units):
-        """
-        Sets the units of the food (for example, billion_kcals,thousand_tons, dry
-        caloric tons, kcals/capita/day, or percent of global food supply).
-        default units are billion kcals, thousand tons fat, thousand tons protein
-        For convenience and as a memory tool, set the units, and make sure that whenever
-        an operation on a different food is used, the units are compatible
-
-        """
-        self.kcals_units = kcals_units
-        self.fat_units = fat_units
-        self.protein_units = protein_units
-
-        self.units = [kcals_units, fat_units, protein_units]
 
     # These are all for mathematical operations on the food's macronutrients, such as
     # adding, subtracting, multiplying, and dividing.
@@ -404,14 +413,6 @@ class Food:
         """
         return type(self.kcals) == list or type(self.kcals) == np.ndarray
 
-    def get_units(self):
-        """
-        update and return the unit values as a 3 element array
-        """
-        self.units = [self.kcals_units, self.fat_units, self.protein_units]
-
-        return self.units
-
     # comparisons between the quantities of nutrients
     # only compares kcals with kcals, fat with fat, and protein with protein, not
     # between the units.
@@ -422,9 +423,9 @@ class Food:
             self.validate_if_list()
 
             return (
-                (self.kcals > 0).all()
-                and (self.fat > 0).all()
-                and (self.protein > 0).all()
+                (np.array(self.kcals) > 0).all()
+                and (np.array(self.fat) > 0).all()
+                and (np.array(self.protein) > 0).all()
             )
 
         return (self.kcals > 0) and (self.fat > 0) and (self.protein > 0)
@@ -623,28 +624,44 @@ class Food:
             self.validate_if_list()
 
             return (
-                (self.kcals == 0).all()
-                and (self.fat == 0).all()
-                and (self.protein == 0).all()
+                (np.array(self.kcals) == 0).all()
+                and (np.array(self.fat) == 0).all()
+                and (np.array(self.protein) == 0).all()
             )
 
         return self.kcals == 0 and self.fat == 0 and self.protein == 0
 
     def all_greater_than_zero(self):
         """
-        Returns True if the food's macronutrients are equal to zero.
+        Returns True if the food's macronutrients are greater than zero.
         """
         if self.is_list_monthly():
 
             self.validate_if_list()
 
             return (
-                (self.kcals > 0).all()
-                and (self.fat > 0).all()
-                and (self.protein > 0).all()
+                (np.array(self.kcals) > 0).all()
+                and (np.array(self.fat) > 0).all()
+                and (np.array(self.protein) > 0).all()
             )
 
         return self.kcals > 0 and self.fat > 0 and self.protein > 0
+
+    def any_greater_than_zero(self):
+        """
+        Returns True if any of the food's macronutrients are greater than zero.
+        """
+        if self.is_list_monthly():
+
+            self.validate_if_list()
+
+            return (
+                (np.array(self.kcals) > 0).any()
+                or (np.array(self.fat) > 0).any()
+                or (np.array(self.protein) > 0).any()
+            )
+
+        return self.kcals > 0 or self.fat > 0 or self.protein > 0
 
     def all_greater_than_or_equal_zero(self):
         """
@@ -655,9 +672,9 @@ class Food:
             self.validate_if_list()
 
             return (
-                (self.kcals >= 0).all()
-                and (self.fat >= 0).all()
-                and (self.protein >= 0).all()
+                (np.array(self.kcals) >= 0).all()
+                and (np.array(self.fat) >= 0).all()
+                and (np.array(self.protein) >= 0).all()
             )
 
         return self.kcals >= 0 and self.fat >= 0 and self.protein >= 0
@@ -743,14 +760,18 @@ class Food:
 
         self.validate_if_list()
 
-        return Food(
+        food_sum = Food(
             sum(self.kcals),
             sum(self.fat),
             sum(self.protein),
-            self.kcals_units.split(" each month")[0],  # remove the " each month" part
-            self.fat_units.split(" each month")[0],  # remove the " each month" part
-            self.protein_units.split(" each month")[0],  # remove the " each month" part
+            self.kcals_units,
+            self.fat_units,
+            self.protein_units,
         )
+
+        food_sum.set_units_from_list_to_total()
+
+        return food_sum
 
     def get_running_total_nutrients_sum(self):
         """
@@ -802,30 +823,35 @@ class Food:
         """
         self.validate_if_list()
 
-        return Food(
+        food_at_month = Food(
             self.kcals[index],
             self.fat[index],
             self.protein[index],
-            self.kcals_units.replace(" each month", " per month"),
-            self.fat_units.replace(" each month", " per month"),
-            self.protein_units.replace(" each month", " per month"),
+            self.kcals_units,
+            self.fat_units,
+            self.protein_units,
         )
+
+        food_at_month.set_units_from_list_to_element()
+
+        return food_at_month
 
     def get_min_all_months(self):
         """
         create a food with the minimum of every month as a total nutrient
         """
-        return Food(
+        min_all_months = Food(
             kcals=min(self.kcals),
             fat=min(self.fat),
             protein=min(self.protein),
-            # remove the " each month" part
-            kcals_units=self.kcals_units.split(" each month")[0],
-            # remove the " each month" part
-            fat_units=self.fat_units.split(" each month")[0],
-            # remove the " each month" part
-            protein_units=self.protein_units.split(" each month")[0],
+            kcals_units=self.kcals_units,
+            fat_units=self.fat_units,
+            protein_units=self.protein_units,
         )
+
+        min_all_months.set_units_from_list_to_total()
+
+        return min_all_months
 
     def negative_values_to_zero(self):
         """

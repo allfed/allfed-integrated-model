@@ -119,8 +119,6 @@ class Plotter:
                     analysis.kcals_fed
                     / analysis.constants["CONVERSION_TO_KCALS"]
                     / analysis.constants["inputs"]["NUTRITION"]["KCALS_DAILY"],
-                    marker="o",
-                    markersize=6,
                     color="blue",
                     linestyle="solid",
                 )
@@ -130,8 +128,6 @@ class Plotter:
                     analysis.protein_fed
                     / analysis.constants["CONVERSION_TO_PROTEIN"]
                     / analysis.constants["inputs"]["NUTRITION"]["PROTEIN_DAILY"],
-                    marker="^",
-                    markersize=6,
                     color="red",
                     linestyle="dotted",
                 )
@@ -142,8 +138,6 @@ class Plotter:
                     analysis.fat_fed
                     / analysis.constants["CONVERSION_TO_FAT"]
                     / analysis.constants["inputs"]["NUTRITION"]["FAT_DAILY"],
-                    marker="x",
-                    markersize=6,
                     color="green",
                     linestyle="dashed",
                 )
@@ -291,8 +285,6 @@ class Plotter:
                     analysis.kcals_fed
                     / analysis.constants["CONVERSION_TO_KCALS"]
                     / analysis.constants["inputs"]["NUTRITION"]["KCALS_DAILY"],
-                    marker="o",
-                    markersize=6,
                     color="blue",
                     linestyle="solid",
                 )
@@ -302,8 +294,6 @@ class Plotter:
                     analysis.protein_fed
                     / analysis.constants["CONVERSION_TO_PROTEIN"]
                     / analysis.constants["inputs"]["NUTRITION"]["PROTEIN_DAILY"],
-                    marker="^",
-                    markersize=6,
                     color="red",
                     linestyle="dotted",
                 )
@@ -313,8 +303,6 @@ class Plotter:
                     analysis.fat_fed
                     / analysis.constants["CONVERSION_TO_FAT"]
                     / analysis.constants["inputs"]["NUTRITION"]["FAT_DAILY"],
-                    marker="x",
-                    markersize=6,
                     color="green",
                     linestyle="dashed",
                 )
@@ -635,8 +623,6 @@ class Plotter:
                     analysis.kcals_fed
                     / analysis.constants["CONVERSION_TO_KCALS"]
                     / analysis.constants["inputs"]["NUTRITION"]["KCALS_DAILY"],
-                    marker="o",
-                    markersize=6,
                     color="blue",
                     linestyle="solid",
                 )
@@ -646,8 +632,6 @@ class Plotter:
                     analysis.protein_fed
                     / analysis.constants["CONVERSION_TO_PROTEIN"]
                     / analysis.constants["inputs"]["NUTRITION"]["PROTEIN_DAILY"],
-                    marker="^",
-                    markersize=6,
                     color="red",
                     linestyle="dotted",
                 )
@@ -657,8 +641,6 @@ class Plotter:
                     analysis.fat_fed
                     / analysis.constants["CONVERSION_TO_FAT"]
                     / analysis.constants["inputs"]["NUTRITION"]["FAT_DAILY"],
-                    marker="x",
-                    markersize=6,
                     color="green",
                     linestyle="dashed",
                 )
@@ -808,8 +790,6 @@ class Plotter:
                     analysis.kcals_fed
                     / analysis.constants["CONVERSION_TO_KCALS"]
                     / analysis.constants["inputs"]["NUTRITION"]["KCALS_DAILY"],
-                    marker="o",
-                    markersize=6,
                     color="blue",
                     linestyle="solid",
                 )
@@ -819,8 +799,6 @@ class Plotter:
                     analysis.fat_fed
                     / analysis.constants["CONVERSION_TO_FAT"]
                     / analysis.constants["inputs"]["NUTRITION"]["FAT_DAILY"],
-                    marker="x",
-                    markersize=6,
                     color="green",
                     linestyle="dashed",
                 )
@@ -830,8 +808,6 @@ class Plotter:
                     analysis.protein_fed
                     / analysis.constants["CONVERSION_TO_PROTEIN"]
                     / analysis.constants["inputs"]["NUTRITION"]["PROTEIN_DAILY"],
-                    marker="^",
-                    markersize=6,
                     color="red",
                     linestyle="dotted",
                 )

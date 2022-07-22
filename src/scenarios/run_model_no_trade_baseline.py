@@ -79,9 +79,9 @@ def run_baseline_by_country_no_trade(plot_figures=True):
     world.loc[world.name == "Norway", "iso_a3"] = "NOR"
     world.loc[world.name == "Kosovo", "iso_a3"] = "KOS"
 
-    constants_loader = Parameters()
-
     def run_optimizer_for_country(country_code, country_data):
+        # if country_code != "BEN":
+        #     return 0
         scenarios_loader = Scenarios()
 
         # initialize country specific food system properties
@@ -100,11 +100,11 @@ def run_baseline_by_country_no_trade(plot_figures=True):
         # set params that are true for baseline climate,
         # regardless of whether country or global scenario
 
-        constants_for_params = scenarios_loader.get_baseline_scenario(
+        constants_for_params = scenarios_loader.get_baseline_climate_scenario(
             constants_for_params
         )
 
-        constants_for_params = scenarios_loader.set_baseline_nutrition_profile(
+        constants_for_params = scenarios_loader.set_catastrophe_nutrition_profile(
             constants_for_params
         )
 
@@ -114,17 +114,9 @@ def run_baseline_by_country_no_trade(plot_figures=True):
 
         constants_for_params = scenarios_loader.set_fish_baseline(constants_for_params)
 
-        # constants_for_params = scenarios_loader.set_long_delayed_shutoff(
-        #     constants_for_params
-        # )
-
-        constants_for_params = scenarios_loader.set_immediate_shutoff(
+        constants_for_params = scenarios_loader.set_long_delayed_shutoff(
             constants_for_params
         )
-
-        # constants_for_params = scenarios_loader.set_continued_feed_biofuels(
-        #     constants_for_params
-        # )
 
         constants_for_params = scenarios_loader.set_disruption_to_crops_to_zero(
             constants_for_params
@@ -138,6 +130,9 @@ def run_baseline_by_country_no_trade(plot_figures=True):
         constants = {}
         constants["inputs"] = constants_for_params
 
+        optimizer = Optimizer()
+        constants_loader = Parameters()
+
         print(country_name)
 
         (
@@ -145,7 +140,7 @@ def run_baseline_by_country_no_trade(plot_figures=True):
             multi_valued_constants,
         ) = constants_loader.computeParameters(constants, scenarios_loader)
         single_valued_constants["CHECK_CONSTRAINTS"] = False
-        optimizer = Optimizer()
+
         [time_months, time_months_middle, analysis] = optimizer.optimize(
             single_valued_constants, multi_valued_constants
         )
@@ -155,15 +150,14 @@ def run_baseline_by_country_no_trade(plot_figures=True):
         print("No trade expected kcals/capita/day 2020")
         print(needs_ratio * 2100)
         print("")
-        PRINT_SCENARIO_PROPERTIES = True
-        if PRINT_SCENARIO_PROPERTIES:
-            print(scenarios_loader.scenario_description)
 
         if plot_figures:
             PLOT_EACH_FIGURE = False
             if PLOT_EACH_FIGURE:
                 Plotter.plot_fig_s1abcd(analysis, analysis, 84)
-
+        print("")
+        print("")
+        print("")
         return needs_ratio
 
     def fill_data_for_map(country_code, needs_ratio):

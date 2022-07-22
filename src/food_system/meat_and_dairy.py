@@ -240,16 +240,16 @@ class MeatAndDairy:
         # exceeding present-day cattle meat maintained production
         # assert((ratio_maintained_cattle <= 1)[0:47].all())
         if (ratio_maintained_cattle[0:47] >= 1).any():
+            print("")
+            print(
+                "WARNING: cattle maintained is exceeding 2020 baseline levels in months:"
+            )
+            print(np.where(ratio_maintained_cattle[0:47] >= 1))
+            print(
+                "Consider whether the predicted amount of human edible feed fed to animals is reasonable."
+            )
+            print("")
             pass
-            # print("")
-            # print(
-            #     "WARNING: cattle maintained is exceeding 2020 baseline levels in months:"
-            # )
-            # print(np.where(ratio_maintained_cattle[0:47] >= 1))
-            # print(
-            #     "Consider whether the predicted amount of human edible feed fed to animals is reasonable."
-            # )
-            # print("")
 
         self.ratio_not_maintained_cattle[self.ratio_not_maintained_cattle < 0] = 0
 
@@ -374,11 +374,9 @@ class MeatAndDairy:
                     self.human_inedible_feed[m] / self.INEDIBLE_TO_DAIRY_CONVERSION
                 )
                 if max_dairy <= DAIRY_LIMIT:
-                    # print("APPENDING MAX DAIRY")
                     self.dairy_milk_produced.append(max_dairy)
                     self.cattle_maintained.append(0)
                     continue
-                # print("APPENDING DAIRY LIMIT")
                 self.dairy_milk_produced.append(DAIRY_LIMIT)
                 inedible_for_cattle = (
                     self.human_inedible_feed[m] - DAIRY_LIMIT_FEED_USAGE

@@ -24,11 +24,13 @@ from src.food_system.methane_scp import MethaneSCP
 from src.food_system.seaweed import Seaweed
 from src.food_system.feed_and_biofuels import FeedAndBiofuels
 
+from src.food_system.food import Food
+from src.food_system.unit_conversions import UnitConversions
+
 
 class Parameters:
     def __init__(self):
-
-        self.DAYS_IN_MONTH = 30
+        self.FIRST_TIME_RUN = True
         self.SIMULATION_STARTING_MONTH = "MAY"
         # Dictionary of the months to set the starting point of the model to
         # the months specified in parameters.py
@@ -48,10 +50,15 @@ class Parameters:
         }
         self.SIMULATION_STARTING_MONTH_NUM = months_dict[self.SIMULATION_STARTING_MONTH]
 
-    def computeParameters(self, constants, scenario, VERBOSE=False):
+    def computeParameters(self, constants, scenarios_loader, VERBOSE=False):
+        PRINT_SCENARIO_PROPERTIES = True
+        assert self.FIRST_TIME_RUN
+        self.FIRST_TIME_RUN = False
+        if PRINT_SCENARIO_PROPERTIES:
+            print(scenarios_loader.scenario_description)
 
-        # ensure every parameter has been initialized for the scenario
-        scenario.check_all_set()
+        # ensure every parameter has been initialized for the scenarios_loader
+        scenarios_loader.check_all_set()
 
         constants_for_params = constants["inputs"]  # single valued inputs to optimizer
         constants_for_params["STARTING_MONTH_NUM"] = self.SIMULATION_STARTING_MONTH_NUM
@@ -63,7 +70,6 @@ class Parameters:
 
         # full months duration of simulation
         NMONTHS = constants_for_params["NMONTHS"]
-        NDAYS = NMONTHS * self.DAYS_IN_MONTH
         ADD_FISH = constants_for_params["ADD_FISH"]
         ADD_SEAWEED = constants_for_params["ADD_SEAWEED"]
         ADD_MEAT = constants_for_params["ADD_MEAT"]
@@ -83,24 +89,15 @@ class Parameters:
         # from the spreadsheet down to this "standard" level.
         # we also add 20% loss, according to the sorts of loss seen in this spreadsheet
         KCALS_DAILY = constants_for_params["NUTRITION"]["KCALS_DAILY"]
-        PROTEIN_DAILY = constants_for_params["NUTRITION"]["PROTEIN_DAILY"]
         FAT_DAILY = constants_for_params["NUTRITION"]["FAT_DAILY"]
+        PROTEIN_DAILY = constants_for_params["NUTRITION"]["PROTEIN_DAILY"]
 
-        # kcals per person
-        self.KCALS_MONTHLY = KCALS_DAILY * self.DAYS_IN_MONTH
-
-        # in thousands of tons (grams per ton == 1e6) per month
-        self.FAT_MONTHLY = FAT_DAILY / 1e6 * self.DAYS_IN_MONTH / 1000
-
-        # in thousands of tons (grams per ton == 1e6) per month per person
-        self.PROTEIN_MONTHLY = PROTEIN_DAILY / 1e6 * self.DAYS_IN_MONTH / 1000
-
-        # in billions of kcals per month for population
-        self.BILLION_KCALS_NEEDED = self.KCALS_MONTHLY * self.POP_BILLIONS
-        # in thousands of tons per month for population
-        self.THOU_TONS_FAT_NEEDED = self.FAT_MONTHLY * self.POP
-        # in thousands of tons per month for population
-        self.THOU_TONS_PROTEIN_NEEDED = self.PROTEIN_MONTHLY * self.POP
+        Food.conversions.set_nutrition_requirements(
+            kcals_daily=KCALS_DAILY,
+            fat_daily=FAT_DAILY,
+            protein_daily=PROTEIN_DAILY,
+            population=self.POP,
+        )
 
         print("self.POP_BILLIONS")
         print(self.POP_BILLIONS)
@@ -223,10 +220,13 @@ class Parameters:
         # assumed to be nonhuman_consumption crops being feed to animals
         CROP_WASTE = 1 - constants_for_params["WASTE"]["CROPS"] / 100
 
-        h_e_balance_kcals = -nonhuman_consumption.kcals * CROP_WASTE + h_e_created_kcals
-        h_e_balance_fat = -nonhuman_consumption.fat * CROP_WASTE + h_e_created_fat
-        h_e_balance_protein = (
-            -nonhuman_consumption.protein * CROP_WASTE + h_e_created_protein
+        h_e_balance = Food(
+            kcals=-nonhuman_consumption.kcals * CROP_WASTE + h_e_created_kcals,
+            fat=-nonhuman_consumption.fat * CROP_WASTE + h_e_created_fat,
+            protein=-nonhuman_consumption.protein * CROP_WASTE + h_e_created_protein,
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
         )
 
         #### CONSTANTS FOR METHANE SINGLE CELL PROTEIN ####
@@ -280,9 +280,7 @@ class Parameters:
         time_consts["h_e_created_kcals"] = h_e_created_kcals
         time_consts["h_e_created_fat"] = h_e_created_fat
         time_consts["h_e_created_protein"] = h_e_created_protein
-        time_consts["h_e_balance_kcals"] = h_e_balance_kcals
-        time_consts["h_e_balance_fat"] = h_e_balance_fat
-        time_consts["h_e_balance_protein"] = h_e_balance_protein
+        time_consts["h_e_balance"] = h_e_balance
         time_consts["cattle_maintained_kcals"] = cattle_maintained_kcals
         time_consts["cattle_maintained_fat"] = cattle_maintained_fat
         time_consts["cattle_maintained_protein"] = cattle_maintained_protein
@@ -301,8 +299,6 @@ class Parameters:
         constants = {}
         constants["VERBOSE"] = VERBOSE
         constants["NMONTHS"] = NMONTHS
-        constants["NDAYS"] = NDAYS
-        constants["DAYS_IN_MONTH"] = self.DAYS_IN_MONTH
         constants["POP"] = self.POP
         constants["POP_BILLIONS"] = self.POP_BILLIONS
 
@@ -320,16 +316,18 @@ class Parameters:
         constants["CONVERSION_TO_FAT"] = CONVERSION_TO_FAT
         constants["CONVERSION_TO_PROTEIN"] = CONVERSION_TO_PROTEIN
 
-        constants["BILLION_KCALS_NEEDED"] = self.BILLION_KCALS_NEEDED
-        constants["THOU_TONS_FAT_NEEDED"] = self.THOU_TONS_FAT_NEEDED
-        constants["THOU_TONS_PROTEIN_NEEDED"] = self.THOU_TONS_PROTEIN_NEEDED
+        constants["BILLION_KCALS_NEEDED"] = Food.conversions.billion_kcals_needed
+        constants["THOU_TONS_FAT_NEEDED"] = Food.conversions.thou_tons_fat_needed
+        constants[
+            "THOU_TONS_PROTEIN_NEEDED"
+        ] = Food.conversions.thou_tons_protein_needed
 
         constants["KCALS_DAILY"] = KCALS_DAILY
         constants["FAT_DAILY"] = FAT_DAILY
         constants["PROTEIN_DAILY"] = PROTEIN_DAILY
-        constants["KCALS_MONTHLY"] = self.KCALS_MONTHLY
-        constants["PROTEIN_MONTHLY"] = self.PROTEIN_MONTHLY
-        constants["FAT_MONTHLY"] = self.FAT_MONTHLY
+        constants["KCALS_MONTHLY"] = Food.conversions.kcals_monthly
+        constants["PROTEIN_MONTHLY"] = Food.conversions.protein_monthly
+        constants["FAT_MONTHLY"] = Food.conversions.fat_monthly
 
         constants["SF_FRACTION_FAT"] = stored_food.SF_FRACTION_FAT
         constants["SF_FRACTION_PROTEIN"] = stored_food.SF_FRACTION_PROTEIN
@@ -402,13 +400,13 @@ class Parameters:
 
         if PRINT_FIRST_MONTH_CONSTANTS:
             self.print_constants(
-                constants, time_consts, feed, stored_food, biofuels, methane_scp
+                constants, time_consts, feed_and_biofuels, stored_food, methane_scp
             )
 
         return (constants, time_consts)
 
     def print_constants(
-        self, constants, time_consts, feed, stored_food, biofuels, methane_scp
+        self, constants, time_consts, feed_and_biofuels, stored_food, methane_scp
     ):
         print(
             """
@@ -538,28 +536,28 @@ class Parameters:
         print(100 * SF_FRACTION_FAT)
         print("INITIAL_SF_PROTEIN percentage")
         print(100 * SF_FRACTION_PROTEIN)
-        if feed.FEED_MONTHLY_USAGE_KCALS > 0:
+        if feed_and_biofuels.FEED_MONTHLY_USAGE.kcals > 0:
             print("")
             print("INITIAL_FEED_KCALS million tons dry caloric monthly")
-            print(-feed.FEED_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
+            print(-feed_and_biofuels.FEED_MONTHLY_USAGE.kcals * 1e9 / 4e6 / 1e6)
             print("INITIAL_FEED_FAT million tons monthly")
-            print(-feed.FEED_MONTHLY_USAGE_FAT / 1e3)
+            print(-feed_and_biofuels.FEED_MONTHLY_USAGE.fat / 1e3)
             print("INITIAL_FEED_PROTEIN million tons monthly")
-            print(-feed.FEED_MONTHLY_USAGE_PROTEIN / 1e3)
+            print(-feed_and_biofuels.FEED_MONTHLY_USAGE.protein / 1e3)
             print("")
-            print("INITIAL_FEED_FAT percentage")
+            print("INITIAL_FEED_fat percentage")
             print(
                 100
-                * feed.FEED_MONTHLY_USAGE_FAT
+                * feed_and_biofuels.FEED_MONTHLY_USAGE.fat
                 / 1e3
-                / (feed.FEED_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
+                / (feed_and_biofuels.FEED_MONTHLY_USAGE.kcals * 1e9 / 4e6 / 1e6)
             )
             print("INITIAL_FEED_PROTEIN percentage")
             print(
                 100
-                * feed.FEED_MONTHLY_USAGE_PROTEIN
+                * feed_and_biofuels.FEED_MONTHLY_USAGE.protein
                 / 1e3
-                / (feed.FEED_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
+                / (feed_and_biofuels.FEED_MONTHLY_USAGE.kcals * 1e9 / 4e6 / 1e6)
             )
             print("")
             CPM = np.array(self.chicken_pork_kcals)[0]
@@ -774,27 +772,27 @@ class Parameters:
             )
             print("")
             print("")
-        if time_consts["biofuels_kcals"][0] > 0:
+        if feed_and_biofuels.biofuels.any_greater_than_zero():
             # 1000 tons protein/fat per dry caloric ton
             print("INITIAL_BIOFUEL_KCALS million tons dry caloric monthly")
-            print(-biofuels.BIOFUEL_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
+            print(-feed_and_biofuels.BIOFUEL_MONTHLY_USAGE.kcals * 1e9 / 4e6 / 1e6)
             print("INITIAL_BIOFUEL_FAT million tons monthly")
-            print(-biofuels.BIOFUEL_MONTHLY_USAGE_FAT / 1e3)
+            print(-feed_and_biofuels.BIOFUEL_MONTHLY_USAGE.fat / 1e3)
             print("INITIAL_BIOFUEL_PROTEIN million tons monthly")
-            print(-biofuels.BIOFUEL_MONTHLY_USAGE_PROTEIN / 1e3)
+            print(-feed_and_biofuels.BIOFUEL_MONTHLY_USAGE.protein / 1e3)
             print("INITIAL_BIOFUEL_FAT percentage")
             print(
                 100
-                * biofuels.BIOFUEL_MONTHLY_USAGE_FAT
+                * feed_and_biofuels.BIOFUEL_MONTHLY_USAGE.fat
                 / 1e3
-                / (biofuels.BIOFUEL_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
+                / (feed_and_biofuels.BIOFUEL_MONTHLY_USAGE.kcals * 1e9 / 4e6 / 1e6)
             )
             print("INITIAL_BIOFUEL_PROTEIN percentage")
             print(
                 100
-                * biofuels.BIOFUEL_MONTHLY_USAGE_PROTEIN
+                * feed_and_biofuels.BIOFUEL_MONTHLY_USAGE.protein
                 / 1e3
-                / (biofuels.BIOFUEL_MONTHLY_USAGE_KCALS * 1e9 / 4e6 / 1e6)
+                / (feed_and_biofuels.BIOFUEL_MONTHLY_USAGE.kcals * 1e9 / 4e6 / 1e6)
             )
         else:
             print("No biofuel usage")
@@ -808,36 +806,20 @@ class Parameters:
             production_protein_scp_per_month = time_consts[
                 "production_protein_scp_per_month"
             ]
-            print("daily calories SCP")
-            print(
-                np.array(production_kcals_scp_per_month)
-                * 1e9
-                / self.DAYS_IN_MONTH
-                / self.POP
+
+            production_scp = Food(
+                kcals=production_kcals_scp_per_month,
+                fat=production_fat_scp_per_month,
+                protein=production_protein_scp_per_month,
+                kcals_units="billion kcals each month",
+                fat_units="thousand tons each month",
+                protein_units="thousand tons each month",
             )
-            print("daily kg SCP")
-            print(
-                np.array(production_kcals_scp_per_month)
-                * 1e9
-                / self.DAYS_IN_MONTH
-                / self.POP
-                / methane_scp.SCP_KCALS_PER_KG
+
+            production_scp.in_units_kcals_grams_gram_per_capita(
+                methane_scp.SCP_KCALS_PER_KG,
+                methane_scp.SCP_FRAC_PROTEIN,
+                methane_scp.SCP_FRAC_FAT,
             )
-            print("daily grams protein SCP")
-            print(
-                np.array(production_kcals_scp_per_month)
-                * 1e9
-                / self.DAYS_IN_MONTH
-                / self.POP
-                / methane_scp.SCP_KCALS_PER_KG
-                * methane_scp.SCP_FRAC_PROTEIN
-                * 1000
-            )
-            print("1000 tons per month protein SCP")
-            print(
-                np.array(production_kcals_scp_per_month)
-                * 1e9
-                / methane_scp.SCP_KCALS_PER_KG
-                * methane_scp.SCP_FRAC_PROTEIN
-                / 1e6
-            )
+            print("production scp")
+            print(production_scp)

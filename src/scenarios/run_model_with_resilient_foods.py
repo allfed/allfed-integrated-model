@@ -3,6 +3,8 @@ import os
 import sys
 import copy
 
+from pulp import const
+
 module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
     sys.path.append(module_path)
@@ -27,37 +29,10 @@ def run_model_with_resilient_foods(plot_figures=True):
         None
     """
 
-    scenarios_loader = Scenarios()
+    scenarios_loader, constants_for_params = set_common_resilient_properties()
 
     constants = {}
     constants["CHECK_CONSTRAINTS"] = False
-
-    constants_for_params = scenarios_loader.init_global_food_system_properties()
-
-    constants_for_params = scenarios_loader.get_resilient_food_scenario(
-        constants_for_params
-    )
-
-    constants_for_params = scenarios_loader.set_catastrophe_nutrition_profile(
-        constants_for_params
-    )
-
-    constants_for_params = scenarios_loader.set_global_seasonality_nuclear_winter(
-        constants_for_params
-    )
-    constants_for_params = scenarios_loader.set_stored_food_buffer_zero(
-        constants_for_params
-    )
-
-    constants_for_params = scenarios_loader.set_fish_nuclear_winter_reduction(
-        constants_for_params
-    )
-
-    constants_for_params = (
-        scenarios_loader.set_nuclear_winter_global_disruption_to_crops(
-            constants_for_params
-        )
-    )
 
     # No excess calories
     constants_for_params["EXCESS_FEED_KCALS"] = np.array(
@@ -65,9 +40,7 @@ def run_model_with_resilient_foods(plot_figures=True):
     )
 
     constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
-    constants_for_params = scenarios_loader.set_short_delayed_shutoff(
-        constants_for_params
-    )
+    constants_for_params = scenarios_loader.set_immediate_shutoff(constants_for_params)
 
     optimizer = Optimizer()
     constants_loader = Parameters()
@@ -76,7 +49,7 @@ def run_model_with_resilient_foods(plot_figures=True):
     (
         single_valued_constants,
         multi_valued_constants,
-    ) = constants_loader.computeParameters(constants_for_optimizer)
+    ) = constants_loader.computeParameters(constants_for_optimizer, scenarios_loader)
 
     single_valued_constants["CHECK_CONSTRAINTS"] = False
     [time_months, time_months_middle, analysis] = optimizer.optimize(
@@ -97,16 +70,27 @@ def run_model_with_resilient_foods(plot_figures=True):
         [0] * constants_for_params["NMONTHS"]
     )
 
+    constants_loader = Parameters()
     optimizer = Optimizer()
     constants["inputs"] = constants_for_params
     constants_for_optimizer = copy.deepcopy(constants)
     (
         single_valued_constants,
         multi_valued_constants,
-    ) = constants_loader.computeParameters(constants_for_optimizer)
+    ) = constants_loader.computeParameters(constants_for_optimizer, scenarios_loader)
+
+    scenarios_loader, constants_for_params = set_common_resilient_properties()
 
     constants_for_params = scenarios_loader.set_global_waste_to_doubled_prices(
         constants_for_params
+    )
+    constants_for_params = scenarios_loader.set_short_delayed_shutoff(
+        constants_for_params
+    )
+
+    # No excess calories
+    constants_for_params["EXCESS_FEED_KCALS"] = np.array(
+        [0] * constants_for_params["NMONTHS"]
     )
 
     single_valued_constants["CHECK_CONSTRAINTS"] = False
@@ -120,17 +104,28 @@ def run_model_with_resilient_foods(plot_figures=True):
     )
     print(analysis.percent_people_fed / 100 * 2100)
     print("")
+    optimizer = Optimizer()
+    constants_loader = Parameters()
 
     constants["inputs"] = constants_for_params
     constants_for_optimizer = copy.deepcopy(constants)
     (
         single_valued_constants,
         multi_valued_constants,
-    ) = constants_loader.computeParameters(constants_for_optimizer)
+    ) = constants_loader.computeParameters(constants_for_optimizer, scenarios_loader)
 
     single_valued_constants["CHECK_CONSTRAINTS"] = False
     [time_months, time_months_middle, analysis] = optimizer.optimize(
         single_valued_constants, multi_valued_constants
+    )
+
+    scenarios_loader, constants_for_params = set_common_resilient_properties()
+
+    constants_for_params = scenarios_loader.set_global_waste_to_doubled_prices(
+        constants_for_params
+    )
+    constants_for_params = scenarios_loader.set_short_delayed_shutoff(
+        constants_for_params
     )
 
     people_fed = analysis.percent_people_fed / 100 * 7.8
@@ -141,11 +136,8 @@ def run_model_with_resilient_foods(plot_figures=True):
 
     excess_per_month = np.array([0] * constants_for_params["NMONTHS"])
 
-    # don't try to feed more animals in the  months before feed shutoff
-    excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = (
-        excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET]
-        + analysis.excess_after_run[feed_delay:N_MONTHS_TO_CALCULATE_DIET]
-    )
+    # No excess calories
+    constants_for_params["EXCESS_FEED_KCALS"] = excess_per_month
 
     feed_delay = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
 
@@ -153,11 +145,13 @@ def run_model_with_resilient_foods(plot_figures=True):
     print("Calculating 2100 calorie diet, excess feed to animals")
     while True:
 
+        constants_loader = Parameters()
+        optimizer = Optimizer()
         constants["inputs"] = constants_for_params
         (
             single_valued_constants,
             multi_valued_constants,
-        ) = constants_loader.computeParameters(constants)
+        ) = constants_loader.computeParameters(constants, scenarios_loader)
 
         single_valued_constants["CHECK_CONSTRAINTS"] = False
         [time_months, time_months_middle, analysis] = optimizer.optimize(
@@ -194,6 +188,39 @@ def run_model_with_resilient_foods(plot_figures=True):
     if plot_figures:
         Plotter.plot_fig_2abcd(analysis1, analysis2, 48)
     print("Diet computation complete")
+
+
+def set_common_resilient_properties():
+    scenarios_loader = Scenarios()
+
+    constants_for_params = scenarios_loader.init_global_food_system_properties()
+
+    constants_for_params = scenarios_loader.get_resilient_food_scenario(
+        constants_for_params
+    )
+
+    constants_for_params = scenarios_loader.set_catastrophe_nutrition_profile(
+        constants_for_params
+    )
+
+    constants_for_params = scenarios_loader.set_global_seasonality_nuclear_winter(
+        constants_for_params
+    )
+    constants_for_params = scenarios_loader.set_stored_food_buffer_zero(
+        constants_for_params
+    )
+
+    constants_for_params = scenarios_loader.set_fish_nuclear_winter_reduction(
+        constants_for_params
+    )
+
+    constants_for_params = (
+        scenarios_loader.set_nuclear_winter_global_disruption_to_crops(
+            constants_for_params
+        )
+    )
+
+    return scenarios_loader, constants_for_params
 
 
 if __name__ == "__main__":

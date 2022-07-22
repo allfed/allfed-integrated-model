@@ -29,17 +29,82 @@ def run_model_baseline(plot_figures=True):
     Returns:
         None
     """
-    scenarios_loader = Scenarios()
 
     constants = {}
     constants["CHECK_CONSTRAINTS"] = False
 
+    scenarios_loader, constants_for_params = set_common_baseline_properties()
+
+    constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
+
+    constants_for_params = scenarios_loader.set_immediate_shutoff(constants_for_params)
+
+    constants_loader = Parameters()
+    optimizer = Optimizer()
+
+    constants["inputs"] = constants_for_params
+    (
+        single_valued_constants,
+        multi_valued_constants,
+    ) = constants_loader.computeParameters(constants, scenarios_loader)
+
+    single_valued_constants["CHECK_CONSTRAINTS"] = False
+    [time_months, time_months_middle, analysis] = optimizer.optimize(
+        single_valued_constants, multi_valued_constants
+    )
+
+    print("")
+    print("Maximum usable kcals/capita/day 2020, no waste, primary production")
+    print(analysis.percent_people_fed / 100 * 2100)
+    print("")
+
+    analysis1 = analysis
+
+    scenarios_loader, constants_for_params = set_common_baseline_properties()
+
+    constants_for_params = scenarios_loader.set_continued_feed_biofuels(
+        constants_for_params
+    )
+
+    constants_for_params = scenarios_loader.set_global_waste_to_baseline_prices(
+        constants_for_params
+    )
+
+    # No excess calories -- excess calories is set when the model is run and needs to be reset each time.
+    constants_for_params["EXCESS_FEED_KCALS"] = np.array(
+        [0] * constants_for_params["NMONTHS"]
+    )
+
+    constants_loader = Parameters()
+    optimizer = Optimizer()
+    constants["inputs"] = constants_for_params
+    (
+        single_valued_constants,
+        multi_valued_constants,
+    ) = constants_loader.computeParameters(constants, scenarios_loader)
+
+    single_valued_constants["CHECK_CONSTRAINTS"] = False
+
+    [time_months, time_months_middle, analysis] = optimizer.optimize(
+        single_valued_constants, multi_valued_constants
+    )
+
+    analysis2 = analysis
+
+    if plot_figures:
+        Plotter.plot_fig_s1abcd(analysis1, analysis2, 72)
+
+
+def set_common_baseline_properties():
+    scenarios_loader = Scenarios()
     # initialize global food system properties
     constants_for_params = scenarios_loader.init_global_food_system_properties()
 
     # set params that are true for baseline regardless of whether country or global
 
-    constants_for_params = scenarios_loader.get_baseline_scenario(constants_for_params)
+    constants_for_params = scenarios_loader.get_baseline_climate_scenario(
+        constants_for_params
+    )
 
     constants_for_params = scenarios_loader.set_baseline_nutrition_profile(
         constants_for_params
@@ -55,10 +120,6 @@ def run_model_baseline(plot_figures=True):
 
     constants_for_params = scenarios_loader.set_fish_baseline(constants_for_params)
 
-    constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
-
-    constants_for_params = scenarios_loader.set_immediate_shutoff(constants_for_params)
-
     constants_for_params = scenarios_loader.set_disruption_to_crops_to_zero(
         constants_for_params
     )
@@ -67,58 +128,7 @@ def run_model_baseline(plot_figures=True):
     constants_for_params["EXCESS_FEED_KCALS"] = np.array(
         [0] * constants_for_params["NMONTHS"]
     )
-
-    constants_loader = Parameters()
-    optimizer = Optimizer()
-
-    constants["inputs"] = constants_for_params
-    (
-        single_valued_constants,
-        multi_valued_constants,
-    ) = constants_loader.computeParameters(constants)
-
-    single_valued_constants["CHECK_CONSTRAINTS"] = False
-    [time_months, time_months_middle, analysis] = optimizer.optimize(
-        single_valued_constants, multi_valued_constants
-    )
-
-    print("")
-    print("Maximum usable kcals/capita/day 2020, no waste, primary production")
-    print(analysis.percent_people_fed / 100 * 2100)
-    print("")
-
-    analysis1 = analysis
-
-    constants_for_params = scenarios_loader.set_continued_feed_biofuels(
-        constants_for_params
-    )
-
-    constants_for_params = scenarios_loader.set_global_waste_to_baseline_prices(
-        constants_for_params
-    )
-
-    # No excess calories -- excess calories is set when the model is run and needs to be reset each time.
-    constants_for_params["EXCESS_FEED_KCALS"] = np.array(
-        [0] * constants_for_params["NMONTHS"]
-    )
-
-    optimizer = Optimizer()
-    constants["inputs"] = constants_for_params
-    (
-        single_valued_constants,
-        multi_valued_constants,
-    ) = constants_loader.computeParameters(constants)
-
-    single_valued_constants["CHECK_CONSTRAINTS"] = False
-
-    [time_months, time_months_middle, analysis] = optimizer.optimize(
-        single_valued_constants, multi_valued_constants
-    )
-
-    analysis2 = analysis
-
-    if plot_figures:
-        Plotter.plot_fig_s1abcd(analysis1, analysis2, 72)
+    return scenarios_loader, constants_for_params
 
 
 if __name__ == "__main__":

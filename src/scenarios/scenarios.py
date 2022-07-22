@@ -82,6 +82,16 @@ class Scenarios:
         self.NONHUMAN_CONSUMPTION_SET = True
         return constants_for_params
 
+    def delete_me(self, constants_for_params):
+        self.scenario_description += "\n\tcontinued_feed_biofuels"
+        self.scenario_description += "\n\tcontinued_feed_biofuels"
+        assert self.NONHUMAN_CONSUMPTION_SET == False
+        constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 0
+        constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 1
+
+        self.NONHUMAN_CONSUMPTION_SET = True
+        return constants_for_params
+
     # WASTE
 
     def set_waste_to_zero(self, constants_for_params):
@@ -676,7 +686,7 @@ class Scenarios:
             "stocks_kcals_dec"
         ]
 
-        # TODO: ALTER THESE TO CORRECT CLOBAL FRACTIONS
+        # TODO: ALTER BELOW TO CORRECT GLOBAL FRACTIONS
 
         # Single cell protein fraction of global production
         constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"] = 1
@@ -844,8 +854,8 @@ class Scenarios:
 
     # SPECIFIC SCENARIOS
 
-    def get_baseline_scenario(self, constants_for_params):
-        self.scenario_description += "\n\tbaseline_scenario"
+    def get_baseline_climate_scenario(self, constants_for_params):
+        self.scenario_description += "\n\tbaseline_climate_scenario"
         assert self.SCENARIO_SET == False
 
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 0
@@ -861,7 +871,7 @@ class Scenarios:
         constants_for_params["OG_USE_BETTER_ROTATION"] = False
 
         constants_for_params["INCLUDE_PROTEIN"] = True
-        constants_for_params["INCLUDE_FAT"] = True
+        constants_for_params["INCLUDE_FAT"] = False
 
         # (no difference between harvests in the different countries!)
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7
@@ -978,11 +988,11 @@ class Scenarios:
         constants_for_params["STORED_FOOD_SMOOTHING"] = True
 
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
-        constants_for_params["ADD_DAIRY"] = False
+        constants_for_params["ADD_DAIRY"] = True
         constants_for_params["ADD_FISH"] = True
         constants_for_params["ADD_GREENHOUSES"] = False
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
-        constants_for_params["ADD_MEAT"] = False
+        constants_for_params["ADD_MEAT"] = True
         constants_for_params["ADD_METHANE_SCP"] = False
         constants_for_params["ADD_SEAWEED"] = False
         constants_for_params["ADD_STORED_FOOD"] = True

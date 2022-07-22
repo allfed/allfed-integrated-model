@@ -201,9 +201,7 @@ class Optimizer:
             multi_valued_constants["h_e_milk_kcals"],
             multi_valued_constants["h_e_milk_fat"],
             multi_valued_constants["h_e_milk_protein"],
-            multi_valued_constants["h_e_balance_kcals"],
-            multi_valued_constants["h_e_balance_fat"],
-            multi_valued_constants["h_e_balance_protein"],
+            multi_valued_constants["h_e_balance"],
         )
         analysis.analyze_results(model, self.time_months_middle)
         return [self.time_months, self.time_months_middle, analysis]
@@ -491,7 +489,6 @@ class Optimizer:
         CROPS_WASTE = 1 - self.single_valued_constants["inputs"]["WASTE"]["CROPS"] / 100
 
         # numbers scaled to percent of per person human needs per month
-
         model += (
             variables["humans_fed_kcals"][month]
             == (

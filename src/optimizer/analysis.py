@@ -487,9 +487,7 @@ class Analyzer:
         h_e_milk_kcals,
         h_e_milk_fat,
         h_e_milk_protein,
-        h_e_balance_kcals,
-        h_e_balance_fat,
-        h_e_balance_protein,
+        h_e_balance,
     ):
 
         self.billions_fed_meat_kcals_tmp = np.divide(
@@ -564,17 +562,8 @@ class Analyzer:
             h_e_milk_protein / self.constants["PROTEIN_MONTHLY"] / 1e9
         )
 
-        self.billions_fed_h_e_balance_kcals = (
-            h_e_balance_kcals / self.constants["KCALS_MONTHLY"]
-        )
-
-        self.billions_fed_h_e_balance_fat = (
-            h_e_balance_fat / self.constants["FAT_MONTHLY"] / 1e9
-        )
-
-        self.billions_fed_h_e_balance_protein = (
-            h_e_balance_protein / self.constants["PROTEIN_MONTHLY"] / 1e9
-        )
+        # h_e_balance.plot("balace")
+        self.billions_fed_h_e_balance = h_e_balance.in_units_billions_fed()
 
         # useful for plotting meat and dairy
 
@@ -1056,33 +1045,52 @@ class Analyzer:
             + self.billions_fed_h_e_milk_protein
         )
 
+        population_billions = self.constants["inputs"]["POP"] / 1e9
+
+        # convert from billions fed to percentage fed to reduce rounding errors
+        kcals_fed_percent = 100 * (self.kcals_fed / population_billions)
+        humans_fed_kcals_optimizer_percent = 100 * (
+            np.array(self.humans_fed_kcals_optimizer) / population_billions
+        )
         assert (
             abs(
                 np.divide(
-                    self.kcals_fed - np.array(self.humans_fed_kcals_optimizer),
-                    self.kcals_fed,
+                    kcals_fed_percent - np.array(humans_fed_kcals_optimizer_percent),
+                    kcals_fed_percent,
                 )
             )
             < 1e-6
         ).all()
         if self.constants["inputs"]["INCLUDE_FAT"]:
+            # convert from billions fed to percentage fed to reduce rounding errors
+            fat_fed_percent = 100 * (self.fat_fed / population_billions)
+            humans_fed_fat_optimizer_percent = 100 * (
+                np.array(self.humans_fed_fat_optimizer) / population_billions
+            )
+
             assert (
                 abs(
                     np.divide(
-                        self.fat_fed - np.array(self.humans_fed_fat_optimizer),
-                        self.fat_fed,
+                        fat_fed_percent - np.array(humans_fed_fat_optimizer_percent),
+                        fat_fed_percent,
                     )
                 )
                 < 1e-6
             ).all()
 
         if self.constants["inputs"]["INCLUDE_PROTEIN"]:
+            # convert from billions fed to percentage fed to reduce rounding errors
+            protein_fed_percent = 100 * (self.protein_fed / population_billions)
+            humans_fed_protein_optimizer_percent = 100 * (
+                np.array(self.humans_fed_protein_optimizer) / population_billions
+            )
 
             assert (
                 abs(
                     np.divide(
-                        self.protein_fed - np.array(self.humans_fed_protein_optimizer),
-                        self.protein_fed,
+                        protein_fed_percent
+                        - np.array(humans_fed_protein_optimizer_percent),
+                        protein_fed_percent,
                     )
                 )
                 < 1e-6
@@ -1127,6 +1135,7 @@ class Analyzer:
             + self.billions_fed_h_e_meat_kcals
             + self.billions_fed_h_e_milk_kcals
         )
+        import matplotlib.pyplot as plt
 
         fractional_difference = np.divide(
             (
@@ -1134,11 +1143,13 @@ class Analyzer:
                 + self.billions_fed_h_e_meat_kcals
                 + self.billions_fed_h_e_milk_kcals
             )
-            - (np.array(division) + self.billions_fed_h_e_balance_kcals),
+            - (np.array(division) + self.billions_fed_h_e_balance.kcals),
             denominator,
         )
 
-        fractional_difference = np.where(denominator == 0, 0, fractional_difference)
+        fractional_difference = np.where(
+            np.abs(denominator) <= 1e-6, 0, fractional_difference
+        )
 
         assert (abs(fractional_difference) < 1e-6).all()
 
@@ -1151,6 +1162,11 @@ class Analyzer:
                     division.append(0)
                 else:
                     division.append(zipped_lists[0] / zipped_lists[1])
+            numerator = (
+                SF_OG_fat
+                + self.billions_fed_h_e_meat_fat
+                + self.billions_fed_h_e_milk_fat
+            ) - (np.array(division) + self.billions_fed_h_e_balance.fat)
 
             denominator = (
                 SF_OG_fat
@@ -1158,17 +1174,14 @@ class Analyzer:
                 + self.billions_fed_h_e_milk_fat
             )
 
-            fractional_difference = np.divide(
-                (
-                    SF_OG_fat
-                    + self.billions_fed_h_e_meat_fat
-                    + self.billions_fed_h_e_milk_fat
-                )
-                - (np.array(division) + self.billions_fed_h_e_balance_fat),
-                denominator,
-            )
+            numerator_percent = 100 * (numerator / population_billions)
+            denominator_percent = 100 * (np.array(denominator) / population_billions)
 
-            fractional_difference = np.where(denominator == 0, 0, fractional_difference)
+            fractional_difference = np.divide(numerator_percent, denominator_percent)
+
+            fractional_difference = np.where(
+                np.abs(denominator) <= 0.1, 0, fractional_difference
+            )
 
             assert (abs(fractional_difference) < 1e-6).all()
 
@@ -1187,6 +1200,12 @@ class Analyzer:
 
             # a separate problem is if we have a primary restriction on protein or fat rather than calories, the rebalancer will try to get the calories the same for each month, but then even if there are enough calories, this will force protein used to be more than is available from outdoor growing and stored food.
 
+            numerator = (
+                SF_OG_protein
+                + self.billions_fed_h_e_meat_protein
+                + self.billions_fed_h_e_milk_protein
+            ) - (np.array(division) + self.billions_fed_h_e_balance.protein)
+
             denominator = (
                 SF_OG_protein
                 + self.billions_fed_h_e_meat_protein
@@ -1194,17 +1213,17 @@ class Analyzer:
             )
 
             fractional_difference = np.divide(
-                (
-                    SF_OG_protein
-                    + self.billions_fed_h_e_meat_protein
-                    + self.billions_fed_h_e_milk_protein
-                )
-                - (np.array(division) + self.billions_fed_h_e_balance_protein),
+                numerator,
                 denominator,
             )
+            numerator_percent = 100 * (numerator / population_billions)
+            denominator_percent = 100 * (np.array(denominator) / population_billions)
 
-            fractional_difference = np.where(denominator == 0, 0, fractional_difference)
+            fractional_difference = np.divide(numerator_percent, denominator_percent)
 
+            fractional_difference = np.where(
+                np.abs(denominator) <= 0.1, 0, fractional_difference
+            )
             assert (abs(fractional_difference) < 1e-6).all()
 
         self.percent_people_fed = model.objective.value()

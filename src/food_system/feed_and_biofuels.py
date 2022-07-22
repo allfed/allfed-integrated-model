@@ -12,6 +12,7 @@ Created on Wed Jul 17
 """
 
 from operator import mod
+from pydoc import safeimport
 import numpy as np
 import collections
 
@@ -40,7 +41,8 @@ class FeedAndBiofuels:
             fat_units="tons per year",
             protein_units="tons per year",
         )
-        self.AMOUNT_TO_REDUCE_RATIO_EACH_ITERATION = 0.01  # 10% reduction
+        self.AMOUNT_TO_REDUCE_RATIO_EACH_ITERATION = 0.05  # 5% reduction
+        self.SAFETY_MARGIN = 0.1
 
     def set_nonhuman_consumption_with_cap(
         self, constants_for_params, outdoor_crops, stored_food
@@ -99,7 +101,10 @@ class FeedAndBiofuels:
         )
 
         # this is the total exceedance beyond outdoor growing
-        max_net_demand = self.calculate_max_running_net_demand(
+        (
+            max_net_demand,
+            running_supply_minus_demand,
+        ) = self.calculate_max_running_net_demand(
             outdoor_crops, biofuels_before_cap, feed_before_cap
         )
 
@@ -133,7 +138,7 @@ class FeedAndBiofuels:
 
         # no macronutrients exceed availability from stored foods
         exceeds_less_than_stored_food = max_net_demand.all_less_than_or_equal(
-            stored_food
+            stored_food * (1 - self.SAFETY_MARGIN)
         )
 
         # the negative amount can be made up for by stored food, so there's no need
@@ -157,6 +162,7 @@ class FeedAndBiofuels:
             stored_food, outdoor_crops, biofuels_before_cap, feed_before_cap
         )
 
+        print("Ratio:", ratio)
         self.biofuels = biofuels_before_cap * ratio
         self.feed = feed_before_cap * ratio
 
@@ -183,7 +189,10 @@ class FeedAndBiofuels:
                 ratio = 0
                 break
 
-            max_net_demand = self.calculate_max_running_net_demand(
+            (
+                max_net_demand,
+                running_supply_minus_demand,
+            ) = self.calculate_max_running_net_demand(
                 outdoor_crops, biofuels_before_cap * ratio, feed_before_cap * ratio
             )
 
@@ -191,8 +200,17 @@ class FeedAndBiofuels:
 
         assert 1 >= ratio >= 0
 
-        print("Final ratio for feed and biofuels:" + str(ratio))
-        return ratio
+        print("Ratio BEFORE margin reduction:", ratio)
+        print("running_supply_minus_demand")
+
+        PLOT_RUNNING_TOTAL = False
+        if PLOT_RUNNING_TOTAL:
+            running_supply_minus_demand.plot()
+
+        if ratio <= self.SAFETY_MARGIN:
+            return 0
+        else:
+            return ratio - self.SAFETY_MARGIN
 
     def get_biofuel_usage_before_cap(self, biofuel_duration):
         """
@@ -432,10 +450,5 @@ class FeedAndBiofuels:
             supply_minus_demand.get_running_total_nutrients_sum()
         )
 
-        PLOT_RUNNING_TOTAL = False
-        if PLOT_RUNNING_TOTAL:
-            running_supply_minus_demand.plot("running total")
-
         max_running_net_demand = -running_supply_minus_demand.get_min_all_months()
-
-        return max_running_net_demand
+        return max_running_net_demand, running_supply_minus_demand
