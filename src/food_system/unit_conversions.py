@@ -30,6 +30,8 @@ class UnitConversions:
     def __init__(self):
         self.NUTRITION_PROPERTIES_ASSIGNED = False
 
+    # getters and setters
+
     def set_nutrition_requirements(
         self, kcals_daily, fat_daily, protein_daily, population
     ):
@@ -72,31 +74,85 @@ class UnitConversions:
 
         self.NUTRITION_PROPERTIES_ASSIGNED = True
 
+    def get_units_from_list_to_total(self):
+        """
+        gets the units so that they reflect that of a single month
+        """
+        # remove the " each month" part of the units
+        kcals_units = self.kcals_units.split(" each month")[0]
+
+        # remove the " each month" part of the units
+        fat_units = self.fat_units.split(" each month")[0]
+
+        # remove the " each month" part of the units
+        protein_units = self.protein_units.split(" each month")[0]
+
+        return [kcals_units, fat_units, protein_units]
+
     def set_units_from_list_to_total(self):
         """
         sets the units so that they reflect that of a single month
         """
         # remove the " each month" part of the units
-        self.kcals_units = self.kcals_units.split(" each month")[0]
+        [
+            self.kcals_units,
+            self.fat_units,
+            self.protein_units,
+        ] = self.get_units_from_list_to_total()
 
-        # remove the " each month" part of the units
-        self.fat_units = self.fat_units.split(" each month")[0]
+    def get_units_from_list_to_element(self):
+        """
+        gets the units so that they reflect that of a single month
+        """
+        # replace the " each month" part of the units with "per month"
+        kcals_units = self.kcals_units.replace(" each month", " per month")
 
-        # remove the " each month" part of the units
-        self.protein_units = self.protein_units.split(" each month")[0]
+        # replace the " each month" part of the units with "per month"
+        fat_units = self.fat_units.replace(" each month", " per month")
+
+        # replace the " each month" part of the units with "per month"
+        protein_units = self.protein_units.replace(" each month", " per month")
+
+        return [kcals_units, fat_units, protein_units]
 
     def set_units_from_list_to_element(self):
         """
         sets the units so that they reflect that of a single month
         """
-        # replace the " each month" part of the units with "per month"
-        self.kcals_units = self.kcals_units.replace(" each month", " per month")
+        [
+            self.kcals_units,
+            self.fat_units,
+            self.protein_units,
+        ] = self.get_units_from_list_to_element()
 
-        # replace the " each month" part of the units with "per month"
-        self.fat_units = self.fat_units.replace(" each month", " per month")
+    def get_units_from_element_to_list(self):
+        """
+        gets the units so that they reflect that of a list of months
+        """
+        assert "each month" not in self.kcals_units
+        assert "each month" not in self.fat_units
+        assert "each month" not in self.protein_units
 
-        # replace the " each month" part of the units with "per month"
-        self.protein_units = self.protein_units.replace(" each month", " per month")
+        # add " each month" to units to signify a food list
+        kcals_units = self.kcals_units + " each month"
+
+        # add " each month" to units to signify a food list
+        fat_units = self.fat_units + " each month"
+
+        # add " each month" to units to signify a food list
+        protein_units = self.protein_units + " each month"
+
+        return [kcals_units, fat_units, protein_units]
+
+    def set_units_from_element_to_list(self):
+        """
+        sets the units so that they reflect that of a list of months
+        """
+        [
+            self.kcals_units,
+            self.fat_units,
+            self.protein_units,
+        ] = self.get_units_from_element_to_list()
 
     def get_units(self):
         """
@@ -121,6 +177,8 @@ class UnitConversions:
 
         self.units = [kcals_units, fat_units, protein_units]
 
+    # examine properties of units
+
     def print_units(self):
         """
         Prints the units of the nutrients
@@ -128,6 +186,26 @@ class UnitConversions:
         print("    kcals: ", self.kcals_units)
         print("    fat: ", self.fat_units)
         print("    protein: ", self.protein_units)
+
+    def is_a_ratio(self):
+        if (
+            "ratio" in self.kcals_units
+            and "ratio" in self.fat_units
+            and "ratio" in self.protein_units
+        ):
+            return True
+        else:
+            return False
+
+    def is_units_percent(self):
+        if (
+            "percent" in self.kcals_units
+            and "percent" in self.fat_units
+            and "percent" in self.protein_units
+        ):
+            return True
+        else:
+            return False
 
     # CONVERSIONS BETWEEN UNITS
 

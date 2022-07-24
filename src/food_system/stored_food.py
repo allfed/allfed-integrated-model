@@ -35,6 +35,7 @@ class StoredFood(Food):
         # Mike's spreadsheet: https://docs.google.com/spreadsheets/d / 19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=806987252
 
         self.buffer_ratio = constants_for_params["BUFFER_RATIO"]
+        self.CROP_WASTE = constants_for_params["CROP_WASTE"]
 
         self.SF_FRACTION_FAT = outdoor_crops.OG_FRACTION_FAT
         self.SF_FRACTION_PROTEIN = outdoor_crops.OG_FRACTION_PROTEIN
@@ -87,9 +88,11 @@ class StoredFood(Food):
         # convert to billion kcals
         self.INITIAL_SF_KCALS = self.TONS_DRY_CALORIC_EQIVALENT_SF * 4e6 / 1e9
 
-        self.kcals = self.INITIAL_SF_KCALS
-        self.fat = self.INITIAL_SF_KCALS * self.SF_FRACTION_FAT
-        self.protein = self.INITIAL_SF_KCALS * self.SF_FRACTION_PROTEIN
+        self.kcals = self.INITIAL_SF_KCALS * self.CROP_WASTE
+        self.fat = self.INITIAL_SF_KCALS * self.SF_FRACTION_FAT * self.CROP_WASTE
+        self.protein = (
+            self.INITIAL_SF_KCALS * self.SF_FRACTION_PROTEIN * self.CROP_WASTE
+        )
 
         self.set_units(
             kcals_units="billion kcals",

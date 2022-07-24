@@ -18,10 +18,9 @@ if module_path not in sys.path:
     sys.path.append(module_path)
 
 # import some python files from this integrated model repository
-from src.optimizer.optimizer import Optimizer
-from src.optimizer.parameters import Parameters
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
+from src.scenarios.run_scenario import ScenarioRunner
 
 
 class MonteCarlo:
@@ -104,7 +103,9 @@ class MonteCarlo:
             ).item()
         else:
             print("Computing input variables")
-            comp_variables = MonteCarlo.get_variables(N_comparison, constants_for_params)
+            comp_variables = MonteCarlo.get_variables(
+                N_comparison, constants_for_params
+            )
             np.save(
                 "../../data/comp_variables_" + str(N_comparison) + ".npy",
                 comp_variables,
@@ -336,46 +337,19 @@ class MonteCarlo:
             "BIOFUEL_SHUTOFF_MONTHS_delay"
         ][i]
 
-        constants = {}
-        constants["inputs"] = constants_for_params
-        constants_for_optimizer = copy.deepcopy(constants)
-        constants_loader = Parameters()
-        (
-            single_valued_constants,
-            multi_valued_constants,
-        ) = constants_loader.computeParameters(constants_for_optimizer)
-
-        failed_to_optimize = False  # until proven otherwise
-        optimizer = Optimizer()
-        try:
-            single_valued_constants["CHECK_CONSTRAINTS"] = False
-            [time_months, time_months_middle, analysis] = optimizer.optimize(
-                single_valued_constants, multi_valued_constants
-            )
-            print(analysis.percent_people_fed)
-
-        except AssertionError as msg:
-            print(msg)
-            failed_to_optimize = True
-            print("Warning: Optimization failed. Continuing.")
-            # quit()
-            return (np.nan, i)
-        except Exception as ex:
-            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-            message = template.format(type(ex).__name__, ex.args)
-            print(message)
-            failed_to_optimize = True
-            print("Warning: Optimization failed. Continuing.")
-            return (np.nan, i)
+        scenario_runner = ScenarioRunner()
+        results = scenario_runner.run_and_analyze_scenario(
+            constants_for_params, scenarios_loader
+        )
 
         PLOT_EACH_SCENARIO = False
         if PLOT_EACH_SCENARIO:
-            Plotter.plot_people_fed_combined(analysis)
+            Plotter.plot_people_fed_combined(results)
             Plotter.plot_people_fed_kcals(
-                analysis, "People fed minus waste and biofuels", 84
+                results, "People fed minus waste and biofuels", 84
             )
 
-        fed = analysis.percent_people_fed
+        fed = results.percent_people_fed
         if np.isnan(fed):
             failed_to_optimize = True
             print("Warning: Total people fed could not be calculated. Continuing.")
@@ -384,9 +358,10 @@ class MonteCarlo:
             failed_index = i
         else:
             failed_index = -1
-        VERBOSE = True
+
+        PRINT_PROGRESS_AS_GO = True
         MAX_TO_PRINT = int(N / 10)
-        if i % MAX_TO_PRINT == 0 and VERBOSE:
+        if i % MAX_TO_PRINT == 0 and PRINT_PROGRESS_AS_GO:
             print(
                 str(i + 1)
                 + " out of "
@@ -395,7 +370,7 @@ class MonteCarlo:
                 + str(fed / 100 * 2100)
                 + " kcals"
             )
-        return (analysis.percent_people_fed, failed_index)
+        return (results.percent_people_fed, failed_index)
 
     # https://www.kth.se/blogs/pdc/2019/02/parallel-programming-in-python-multiprocessing-part-1/
     def slice_data(data, nprocs):

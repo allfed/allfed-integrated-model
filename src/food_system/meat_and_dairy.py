@@ -240,16 +240,17 @@ class MeatAndDairy:
         # exceeding present-day cattle meat maintained production
         # assert((ratio_maintained_cattle <= 1)[0:47].all())
         if (ratio_maintained_cattle[0:47] >= 1).any():
-            print("")
-            print(
-                "WARNING: cattle maintained is exceeding 2020 baseline levels in months:"
-            )
-            print(np.where(ratio_maintained_cattle[0:47] >= 1))
-            print(
-                "Consider whether the predicted amount of human edible feed fed to animals is reasonable."
-            )
-            print("")
-            pass
+            PRINT_CATTLE_WARNING = True
+            if PRINT_CATTLE_WARNING:
+                print("")
+                print(
+                    "WARNING: cattle maintained is exceeding 2020 baseline levels in months:"
+                )
+                print(np.where(ratio_maintained_cattle[0:47] >= 1))
+                print(
+                    "Consider whether the predicted amount of human edible feed fed to animals is reasonable."
+                )
+                print("")
 
         self.ratio_not_maintained_cattle[self.ratio_not_maintained_cattle < 0] = 0
 
@@ -334,7 +335,14 @@ class MeatAndDairy:
             * self.LARGE_ANIMAL_PROTEIN_PER_KG
             / 1e6
         )
-
+        print("cattle_h_e_maintained_fat")
+        print(cattle_h_e_maintained_fat)
+        print("self.chicken_pork_fat")
+        print(self.chicken_pork_fat)
+        print("cattle_h_e_maintained_kcals")
+        print(cattle_h_e_maintained_kcals)
+        print("self.chicken_pork_kcals")
+        print(self.chicken_pork_kcals)
         h_e_meat_kcals = np.array(
             cattle_h_e_maintained_kcals + self.chicken_pork_kcals
         ) * (1 - self.MEAT_WASTE / 100)
@@ -365,7 +373,8 @@ class MeatAndDairy:
 
         # monthly in dry caloric tons inedible feed
         DAIRY_LIMIT_FEED_USAGE = DAIRY_LIMIT * self.INEDIBLE_TO_DAIRY_CONVERSION
-
+        print("self.human_inedible_feed")
+        print(self.human_inedible_feed)
         self.dairy_milk_produced = []  # tons
         self.cattle_maintained = []  # tons
         for m in range(self.NMONTHS):
@@ -392,6 +401,7 @@ class MeatAndDairy:
             else:
                 self.cattle_maintained.append(0)
 
+        # assign the resulting remaining limit to dairy past inedible sources
         self.h_e_fed_dairy_limit = DAIRY_LIMIT - np.array(self.dairy_milk_produced)
 
     def get_dairy_produced(self):
@@ -543,3 +553,81 @@ class MeatAndDairy:
             h_e_milk_protein = np.array([0] * self.NMONTHS)
 
         return (h_e_milk_kcals, h_e_milk_fat, h_e_milk_protein)
+
+    def cap_fat_protein_to_amount_used(
+        self,
+        feed,
+        h_e_meat_fat,
+        h_e_meat_protein,
+        h_e_milk_fat,
+        h_e_milk_protein,
+    ):
+        # Cap the max created by the amount used, as conversion can't be > 1,
+        # but the actual conversion only uses kcals
+        # Add a little buffer to be safe -- it's probably at best a 90% conversion ratio.
+        BEST_POSSIBLE_CONVERSION_RATIO = 0.9
+
+        assert feed.all_greater_than_or_equal_to_zero()
+
+        return_h_e_meat_fat = np.array([])
+        return_h_e_meat_protein = np.array([])
+        return_h_e_milk_fat = np.array([])
+        return_h_e_milk_protein = np.array([])
+        for i in range(self.NMONTHS):
+            if i == 0:
+                print("meat plus milk greater?")
+                print(h_e_milk_fat[i] + h_e_meat_fat[i] > feed.fat[i])
+                print(
+                    h_e_milk_fat[i] + h_e_meat_fat[i]
+                    > feed.fat[i] * BEST_POSSIBLE_CONVERSION_RATIO
+                )
+            if (
+                h_e_milk_fat[i] + h_e_meat_fat[i]
+                > feed.fat[i] * BEST_POSSIBLE_CONVERSION_RATIO
+            ):
+                adjustment_ratio = (
+                    BEST_POSSIBLE_CONVERSION_RATIO
+                    * feed.fat[i]
+                    / (h_e_milk_fat[i] + h_e_meat_fat[i])
+                )
+                return_h_e_meat_fat = np.append(
+                    return_h_e_meat_fat, adjustment_ratio * h_e_meat_fat[i]
+                )
+                return_h_e_milk_fat = np.append(
+                    return_h_e_milk_fat, adjustment_ratio * h_e_milk_fat[i]
+                )
+            else:
+                return_h_e_meat_fat = np.append(return_h_e_meat_fat, h_e_meat_fat[i])
+                return_h_e_milk_fat = np.append(return_h_e_milk_fat, h_e_milk_fat[i])
+
+            if (
+                h_e_milk_protein[i] + h_e_meat_protein[i]
+                > BEST_POSSIBLE_CONVERSION_RATIO * feed.protein[i]
+            ):
+                adjustment_ratio = (
+                    BEST_POSSIBLE_CONVERSION_RATIO
+                    * feed.protein[i]
+                    / (h_e_milk_protein[i] + h_e_meat_protein[i])
+                )
+                return_h_e_meat_protein = np.append(
+                    return_h_e_meat_protein, adjustment_ratio * h_e_meat_protein[i]
+                )
+                return_h_e_milk_protein = np.append(
+                    return_h_e_milk_protein, adjustment_ratio * h_e_milk_protein[i]
+                )
+            else:
+                return_h_e_meat_protein = np.append(
+                    return_h_e_meat_protein, h_e_meat_protein[i]
+                )
+                return_h_e_milk_protein = np.append(
+                    return_h_e_milk_protein, h_e_milk_protein[i]
+                )
+        print("return_h_e_meat_fat[0]+return_h_e_milk_fat[0]")
+        print(return_h_e_meat_fat[0] + return_h_e_milk_fat[0])
+
+        return (
+            return_h_e_meat_fat,
+            return_h_e_meat_protein,
+            return_h_e_milk_fat,
+            return_h_e_milk_protein,
+        )

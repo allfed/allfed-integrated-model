@@ -8,9 +8,8 @@ if module_path not in sys.path:
 
 # import some python files from this integrated model repository
 from src.utilities.plotter import Plotter
-from src.optimizer.optimizer import Optimizer
-from src.optimizer.parameters import Parameters
 from src.scenarios.scenarios import Scenarios
+from src.scenarios.run_scenario import ScenarioRunner
 
 
 def run_model_baseline(plot_figures=True):
@@ -39,26 +38,21 @@ def run_model_baseline(plot_figures=True):
 
     constants_for_params = scenarios_loader.set_immediate_shutoff(constants_for_params)
 
-    constants_loader = Parameters()
-    optimizer = Optimizer()
-
-    constants["inputs"] = constants_for_params
-    (
-        single_valued_constants,
-        multi_valued_constants,
-    ) = constants_loader.computeParameters(constants, scenarios_loader)
-
-    single_valued_constants["CHECK_CONSTRAINTS"] = False
-    [time_months, time_months_middle, analysis] = optimizer.optimize(
-        single_valued_constants, multi_valued_constants
+    scenario_runner = ScenarioRunner()
+    results = scenario_runner.run_and_analyze_scenario(
+        constants_for_params, scenarios_loader
     )
 
     print("")
-    print("Maximum usable kcals/capita/day 2020, no waste, primary production")
-    print(analysis.percent_people_fed / 100 * 2100)
+    print("")
     print("")
 
-    analysis1 = analysis
+    print("")
+    print("Maximum usable kcals/capita/day 2020, no waste, primary production")
+    print(results.percent_people_fed / 100 * 2100)
+    print("")
+
+    results1 = results
 
     scenarios_loader, constants_for_params = set_common_baseline_properties()
 
@@ -75,24 +69,15 @@ def run_model_baseline(plot_figures=True):
         [0] * constants_for_params["NMONTHS"]
     )
 
-    constants_loader = Parameters()
-    optimizer = Optimizer()
-    constants["inputs"] = constants_for_params
-    (
-        single_valued_constants,
-        multi_valued_constants,
-    ) = constants_loader.computeParameters(constants, scenarios_loader)
-
-    single_valued_constants["CHECK_CONSTRAINTS"] = False
-
-    [time_months, time_months_middle, analysis] = optimizer.optimize(
-        single_valued_constants, multi_valued_constants
+    scenario_runner = ScenarioRunner()
+    results = scenario_runner.run_and_analyze_scenario(
+        constants_for_params, scenarios_loader
     )
 
-    analysis2 = analysis
+    results2 = results
 
     if plot_figures:
-        Plotter.plot_fig_s1abcd(analysis1, analysis2, 72)
+        Plotter.plot_fig_s1abcd(results1, results2, 72)
 
 
 def set_common_baseline_properties():

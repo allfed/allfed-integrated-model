@@ -20,10 +20,9 @@ if module_path not in sys.path:
     sys.path.append(module_path)
 
 # import some python files from this integrated model repository
-from src.optimizer.optimizer import Optimizer
 from src.utilities.plotter import Plotter
-from src.optimizer.parameters import Parameters
 from src.scenarios.scenarios import Scenarios
+from src.scenarios.run_scenario import ScenarioRunner
 
 
 def run_baseline_by_country_no_trade(plot_figures=True):
@@ -123,7 +122,7 @@ def run_baseline_by_country_no_trade(plot_figures=True):
 
         constants_for_params = scenarios_loader.set_fish_baseline(constants_for_params)
 
-        constants_for_params = scenarios_loader.set_continued_feed_biofuels(
+        constants_for_params = scenarios_loader.set_long_delayed_shutoff(
             constants_for_params
         )
 
@@ -136,38 +135,20 @@ def run_baseline_by_country_no_trade(plot_figures=True):
             [0] * constants_for_params["NMONTHS"]
         )
 
-        constants = {}
-        constants["inputs"] = constants_for_params
-
-        optimizer = Optimizer()
-        constants_loader = Parameters()
-
         print(country_name)
 
-        (
-            single_valued_constants,
-            multi_valued_constants,
-        ) = constants_loader.computeParameters(constants, scenarios_loader)
-        single_valued_constants["CHECK_CONSTRAINTS"] = False
-
-        [time_months, time_months_middle, analysis] = optimizer.optimize(
-            single_valued_constants, multi_valued_constants
+        scenario_runner = ScenarioRunner()
+        results = scenario_runner.run_and_analyze_scenario(
+            constants_for_params, scenarios_loader
         )
-
-        needs_ratio = analysis.percent_people_fed / 100
-
-        print("No trade expected kcals/capita/day 2020")
-        print(needs_ratio * 2100)
-        print("")
 
         if plot_figures:
             PLOT_EACH_FIGURE = False
             if PLOT_EACH_FIGURE:
-                Plotter.plot_fig_s1abcd(analysis, analysis, 84)
+                Plotter.plot_fig_s1abcd(results, results, 84)
         print("")
         print("")
         print("")
-
         return needs_ratio
 
     def fill_data_for_map(country_code, needs_ratio):
@@ -220,12 +201,10 @@ def run_baseline_by_country_no_trade(plot_figures=True):
 
         net_pop_fed += capped_ratio * population
         net_pop += population
-
+    ratio_fed = str(round(float(net_pop_fed) / float(net_pop), 4))
     print("Net population considered: " + str(net_pop / 1e9) + " Billion people")
-    print(
-        "Fraction of this population fed: " + str(float(net_pop_fed) / float(net_pop))
-    )
-
+    print("Fraction of this population fed: " + ratio_fed)
+    print("")
     plt.close()
     mn = 0
     mx = 1
@@ -238,8 +217,12 @@ def run_baseline_by_country_no_trade(plot_figures=True):
     if plot_figures:
         pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
         plt.title("Fraction of minimum macronutritional needs with no trade")
-        plt.show()
-        plt.close()
+        # plt.show()
+        # plt.close()
+        plt.savefig(
+            "../../results/no_food_trade/baseline_ratio_fed_" + ratio_fed + ".png",
+            dpi=300,
+        )
 
 
 if __name__ == "__main__":

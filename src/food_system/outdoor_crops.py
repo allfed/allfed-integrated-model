@@ -1,7 +1,6 @@
 ################################# Outdoor Crops ###############################
 ##                                                                            #
 ##       Functions and constants relating to outdoor crop production          #
-##    IMPORTANT NOTE: CROP WASTE *IS* SUBTRACTED, BUT IT'S IN THE OPTIMIZER   #
 ##                                                                            #
 ###############################################################################
 
@@ -136,10 +135,7 @@ class OutdoorCrops(Food):
             )
         )
         # seasonality does not have a net effect on average production over a year
-        print(SUM)
         assert (SUM < 1.001 and SUM > 0.999) or SUM == 0
-
-        print("months_cycle")
 
         # tons dry carb equivalent
         JAN_YIELD = JAN_FRACTION * self.ANNUAL_YIELD
@@ -336,5 +332,7 @@ class OutdoorCrops(Food):
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
-        # self.plot("crops_food_produced")
-        return self.crops_food_produced
+
+        CROP_WASTE = constants_for_params["WASTE"]["CROPS"]
+
+        return self.crops_food_produced * CROP_WASTE

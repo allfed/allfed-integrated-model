@@ -11,9 +11,9 @@ if module_path not in sys.path:
 
 # import some python files from this integrated model repository
 from src.utilities.plotter import Plotter
-from src.optimizer.optimizer import Optimizer
-from src.optimizer.parameters import Parameters
 from src.scenarios.scenarios import Scenarios
+from src.scenarios.run_scenario import ScenarioRunner
+from src.optimizer.optimizer import Optimizer
 
 
 def run_model_with_resilient_foods(plot_figures=True):
@@ -42,42 +42,22 @@ def run_model_with_resilient_foods(plot_figures=True):
     constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
     constants_for_params = scenarios_loader.set_immediate_shutoff(constants_for_params)
 
-    optimizer = Optimizer()
-    constants_loader = Parameters()
-    constants["inputs"] = constants_for_params
-    constants_for_optimizer = copy.deepcopy(constants)
-    (
-        single_valued_constants,
-        multi_valued_constants,
-    ) = constants_loader.computeParameters(constants_for_optimizer, scenarios_loader)
-
-    single_valued_constants["CHECK_CONSTRAINTS"] = False
-    [time_months, time_months_middle, analysis] = optimizer.optimize(
-        single_valued_constants, multi_valued_constants
-    )
-
     print("")
     print("no waste estimated people fed (kcals/capita/day)")
-    print(analysis.percent_people_fed / 100 * 2100)
+    print(results.percent_people_fed / 100 * 2100)
     print("")
 
-    np.save(
-        "../../data/resilient_food_primary_analysis.npy", analysis, allow_pickle=True
-    )
+    np.save("../../data/resilient_food_primary_results.npy", results, allow_pickle=True)
 
     # No excess calories
     constants_for_params["EXCESS_FEED_KCALS"] = np.array(
         [0] * constants_for_params["NMONTHS"]
     )
 
-    constants_loader = Parameters()
-    optimizer = Optimizer()
-    constants["inputs"] = constants_for_params
-    constants_for_optimizer = copy.deepcopy(constants)
-    (
-        single_valued_constants,
-        multi_valued_constants,
-    ) = constants_loader.computeParameters(constants_for_optimizer, scenarios_loader)
+    scenario_runner = ScenarioRunner()
+    results = scenario_runner.run_and_analyze_scenario(
+        constants_for_params, scenarios_loader
+    )
 
     scenarios_loader, constants_for_params = set_common_resilient_properties()
 
@@ -94,29 +74,20 @@ def run_model_with_resilient_foods(plot_figures=True):
     )
 
     single_valued_constants["CHECK_CONSTRAINTS"] = False
-    [time_months, time_months_middle, analysis] = optimizer.optimize(
+    [time_months, time_months_middle, results] = optimizer.optimize(
         single_valued_constants, multi_valued_constants
     )
 
-    analysis1 = analysis
+    results1 = results
     print(
         "Food available after waste, feed ramp down and biofuel ramp down, with resilient foods (kcals per capita per day)"
     )
-    print(analysis.percent_people_fed / 100 * 2100)
+    print(results.percent_people_fed / 100 * 2100)
     print("")
-    optimizer = Optimizer()
-    constants_loader = Parameters()
 
-    constants["inputs"] = constants_for_params
-    constants_for_optimizer = copy.deepcopy(constants)
-    (
-        single_valued_constants,
-        multi_valued_constants,
-    ) = constants_loader.computeParameters(constants_for_optimizer, scenarios_loader)
-
-    single_valued_constants["CHECK_CONSTRAINTS"] = False
-    [time_months, time_months_middle, analysis] = optimizer.optimize(
-        single_valued_constants, multi_valued_constants
+    scenario_runner = ScenarioRunner()
+    results = scenario_runner.run_and_analyze_scenario(
+        constants_for_params, scenarios_loader
     )
 
     scenarios_loader, constants_for_params = set_common_resilient_properties()
@@ -128,7 +99,7 @@ def run_model_with_resilient_foods(plot_figures=True):
         constants_for_params
     )
 
-    people_fed = analysis.percent_people_fed / 100 * 7.8
+    percent_fed = results.percent_people_fed
     feed_delay = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
 
     # these months are used to estimate the diet before the full scale-up of resilient foods makes there be way too much food to make sense economically
@@ -145,48 +116,50 @@ def run_model_with_resilient_foods(plot_figures=True):
     print("Calculating 2100 calorie diet, excess feed to animals")
     while True:
 
-        constants_loader = Parameters()
-        optimizer = Optimizer()
-        constants["inputs"] = constants_for_params
-        (
-            single_valued_constants,
-            multi_valued_constants,
-        ) = constants_loader.computeParameters(constants, scenarios_loader)
-
-        single_valued_constants["CHECK_CONSTRAINTS"] = False
-        [time_months, time_months_middle, analysis] = optimizer.optimize(
-            single_valued_constants, multi_valued_constants
+        scenario_runner = ScenarioRunner()
+        results = scenario_runner.run_and_analyze_scenario(
+            constants_for_params, scenarios_loader
         )
 
-        if people_fed > 7.79 and people_fed < 7.81:
+        if percent_fed > 99.9 and percent_fed < 100.1:
             break
 
         assert feed_delay >= constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
 
         # rapidly feed more to people until it's close to 2100 kcals, then
         # slowly feed more to people
-        if people_fed < 8.3 and people_fed > 7.8:
+        SMALL_INCREASE_IN_EXCESS = 0.1
+        LARGE_INCREASE_IN_EXCESS = 3
+        if percent_fed < 106 and percent_fed > 100:
             excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = excess_per_month[
                 feed_delay:N_MONTHS_TO_CALCULATE_DIET
-            ] + np.linspace(200, 200, N_MONTHS_TO_CALCULATE_DIET - feed_delay)
+            ] + np.linspace(
+                SMALL_INCREASE_IN_EXCESS,
+                SMALL_INCREASE_IN_EXCESS,
+                N_MONTHS_TO_CALCULATE_DIET - feed_delay,
+            )
         else:
             excess_per_month[feed_delay:N_MONTHS_TO_CALCULATE_DIET] = excess_per_month[
                 feed_delay:N_MONTHS_TO_CALCULATE_DIET
-            ] + np.linspace(15000, 15000, N_MONTHS_TO_CALCULATE_DIET - feed_delay)
+            ] + np.linspace(
+                LARGE_INCREASE_IN_EXCESS,
+                LARGE_INCREASE_IN_EXCESS,
+                N_MONTHS_TO_CALCULATE_DIET - feed_delay,
+            )
         constants_for_params["EXCESS_FEED_KCALS"] = excess_per_month
         print("Diet computation complete")
 
-        people_fed = analysis.percent_people_fed / 100 * 7.8
+        percent_fed = results.percent_people_fed
 
-        excess_per_month = excess_per_month + analysis.excess_after_run
+        excess_per_month = excess_per_month + results.excess_after_run
 
         n = n + 1
 
-    analysis2 = analysis
+    results2 = results
 
     # last month plotted is month 48
     if plot_figures:
-        Plotter.plot_fig_2abcd(analysis1, analysis2, 48)
+        Plotter.plot_fig_2abcd(results1, results2, 48)
     print("Diet computation complete")
 
 

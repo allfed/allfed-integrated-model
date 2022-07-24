@@ -11,15 +11,15 @@ if module_path not in sys.path:
 # import some python files from this integrated model repository
 from src.utilities.plotter import Plotter
 
-resilient_food_primary_production_analysis = np.load(
-    "../data/resilient_food_primary_analysis.npy", allow_pickle=True
+resilient_food_primary_production_results = np.load(
+    "../data/resilient_food_primary_results.npy", allow_pickle=True
 ).item()
-no_resilient_food_primary_production_analysis = np.load(
-    "../data/no_resilient_food_primary_analysis.npy", allow_pickle=True
+no_resilient_food_primary_production_results = np.load(
+    "../data/no_resilient_food_primary_results.npy", allow_pickle=True
 ).item()
 Plotter.plot_fig_s2abcd(
-    resilient_food_primary_production_analysis,
-    no_resilient_food_primary_production_analysis,
+    resilient_food_primary_production_results,
+    no_resilient_food_primary_production_results,
     48,
     72,
 )

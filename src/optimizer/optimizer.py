@@ -16,10 +16,6 @@ module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-# import some python files from this integrated model repository
-from src.optimizer.analysis import Analyzer
-from src.utilities.validate import Validator
-
 
 class Optimizer:
     def __init__(self):
@@ -85,126 +81,19 @@ class Optimizer:
                 model, variables, month, maximize_constraints
             )
 
-        # print(model)
-
+        PRINT_PULP_MESSAGES = False
         model += variables["objective_function"]
-        status = model.solve(
-            pulp.PULP_CBC_CMD(gapRel=0.0001, msg=single_valued_constants["VERBOSE"])
-        )
-        assert status == 1
+        status = model.solve(pulp.PULP_CBC_CMD(gapRel=0.0001, msg=PRINT_PULP_MESSAGES))
 
-        if single_valued_constants["VERBOSE"]:
-            print("optimization successful")
+        assert status == 1, "ERROR: OPTIMIZATION FAILED!"
 
-        if single_valued_constants["CHECK_CONSTRAINTS"]:
-            print("")
-            print("VALIDATION")
-            print("")
-            print("")
-            Validator.checkConstraintsSatisfied(
-                model,
-                status,
-                maximize_constraints,
-                model.variables(),
-                single_valued_constants["VERBOSE"],
-            )
-
-        analysis = Analyzer(single_valued_constants)
-
-        show_output = False
-
-        analysis.compute_excess_after_run(model)
-
-        analysis.scenario_is_impossible = False
-
-        analysis.calc_fraction_OG_SF_to_humans(
+        return (
             model,
-            variables["crops_food_eaten_no_rotation"],
-            variables["crops_food_eaten_with_rotation"],
-            variables["stored_food_eaten"],
-            multi_valued_constants["nonhuman_consumption_kcals"],
-            multi_valued_constants["nonhuman_consumption_fat_used"],
-            multi_valued_constants["nonhuman_consumption_protein_used"],
+            variables,
+            maximize_constraints,
+            single_valued_constants,
+            multi_valued_constants,
         )
-
-        if analysis.scenario_is_impossible:
-            print("")
-            print("ERROR:Scenario is impossible")
-            print("")
-            quit()
-
-        # if no stored food, plot shows zero
-        analysis.analyze_SF_results(variables["stored_food_eaten"], show_output)
-
-        # extract numeric seaweed results in terms of people fed and raw
-        # tons wet
-
-        # if seaweed not added to model, plot shows zero
-        analysis.analyze_seaweed_results(
-            variables["seaweed_wet_on_farm"],
-            variables["used_area"],
-            multi_valued_constants["built_area"],
-            variables["seaweed_food_produced"],
-            show_output,
-        )
-
-        # if no cellulosic sugar, plot shows zero
-        analysis.analyze_CS_results(
-            multi_valued_constants["production_kcals_CS_per_month"],
-        )
-
-        # if no scp, plot shows zero
-        analysis.analyze_SCP_results(
-            multi_valued_constants["production_kcals_scp_per_month"],
-            multi_valued_constants["production_fat_scp_per_month"],
-            multi_valued_constants["production_protein_scp_per_month"],
-        )
-
-        # if no fish, plot shows zero
-        analysis.analyze_fish_results(
-            multi_valued_constants["production_kcals_fish_per_month"],
-            multi_valued_constants["production_fat_fish_per_month"],
-            multi_valued_constants["production_protein_fish_per_month"],
-        )
-
-        # if no greenhouses, plot shows zero
-        analysis.analyze_GH_results(
-            multi_valued_constants["greenhouse_kcals_per_ha"],
-            multi_valued_constants["greenhouse_fat_per_ha"],
-            multi_valued_constants["greenhouse_protein_per_ha"],
-            multi_valued_constants["greenhouse_area"],
-            show_output,
-        )
-
-        # if no outdoor food, plot shows zero
-        analysis.analyze_OG_results(
-            variables["crops_food_eaten_no_rotation"],
-            variables["crops_food_eaten_with_rotation"],
-            variables["crops_food_storage_no_rotation"],
-            variables["crops_food_storage_rotation"],
-            multi_valued_constants["crops_food_produced"],
-            show_output,
-        )
-
-        # if nonegg nondairy meat isn't included, these results plot shows zero
-        analysis.analyze_meat_dairy_results(
-            multi_valued_constants["meat_eaten"],
-            multi_valued_constants["dairy_milk_kcals"],
-            multi_valued_constants["dairy_milk_fat"],
-            multi_valued_constants["dairy_milk_protein"],
-            multi_valued_constants["cattle_maintained_kcals"],
-            multi_valued_constants["cattle_maintained_fat"],
-            multi_valued_constants["cattle_maintained_protein"],
-            multi_valued_constants["h_e_meat_kcals"],
-            multi_valued_constants["h_e_meat_fat"],
-            multi_valued_constants["h_e_meat_protein"],
-            multi_valued_constants["h_e_milk_kcals"],
-            multi_valued_constants["h_e_milk_fat"],
-            multi_valued_constants["h_e_milk_protein"],
-            multi_valued_constants["h_e_balance"],
-        )
-        analysis.analyze_results(model, self.time_months_middle)
-        return [self.time_months, self.time_months_middle, analysis]
 
     def add_seaweed_to_model(self, model, variables, month):
         # assume that the only harvest opportunity is once a month
@@ -273,23 +162,23 @@ class Optimizer:
         variables["stored_food_start"][month] = LpVariable(
             "Stored_Food_Start_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["INITIAL_SF_KCALS"],
+            self.single_valued_constants["INITIAL_stored_food_KCALS"],
         )
         variables["stored_food_end"][month] = LpVariable(
             "Stored_Food_End_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["INITIAL_SF_KCALS"],
+            self.single_valued_constants["INITIAL_stored_food_KCALS"],
         )
         variables["stored_food_eaten"][month] = LpVariable(
             "Stored_Food_Eaten_During_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["INITIAL_SF_KCALS"],
+            self.single_valued_constants["INITIAL_stored_food_KCALS"],
         )
 
         if month == 0:  # first Month
             model += (
                 variables["stored_food_start"][0]
-                == self.single_valued_constants["INITIAL_SF_KCALS"],
+                == self.single_valued_constants["INITIAL_stored_food_KCALS"],
                 "Stored_Food_Start_Month_0_Constraint",
             )
         else:
@@ -308,14 +197,18 @@ class Optimizer:
                     variables["stored_food_eaten"][month]
                     <= variables["stored_food_eaten"][month - 1]
                     * self.single_valued_constants["inputs"]["FLUCTUATION_LIMIT"],
-                    "Small_Change_Plus_SF_Eaten_Month_" + str(month) + "_Constraint",
+                    "Small_Change_Plus_stored_food_Eaten_Month_"
+                    + str(month)
+                    + "_Constraint",
                 )
 
                 model += (
                     variables["stored_food_eaten"][month]
                     >= variables["stored_food_eaten"][month - 1]
                     * (1 / self.single_valued_constants["inputs"]["FLUCTUATION_LIMIT"]),
-                    "Small_Change_Minus_SF_Eaten_Month_" + str(month) + "_Constraint",
+                    "Small_Change_Minus_stored_food_Eaten_Month_"
+                    + str(month)
+                    + "_Constraint",
                 )
 
         model += (
@@ -486,25 +379,24 @@ class Optimizer:
         # seaweed_food_produced*seaweed_kcals is in units billions kcals
         # billions kcals needed is in units billion kcals per month for
         # the whole population
-        CROPS_WASTE = 1 - self.single_valued_constants["inputs"]["WASTE"]["CROPS"] / 100
 
         # numbers scaled to percent of per person human needs per month
         model += (
             variables["humans_fed_kcals"][month]
             == (
-                variables["stored_food_eaten"][month] * CROPS_WASTE
-                + variables["crops_food_eaten_no_rotation"][month] * CROPS_WASTE
+                variables["stored_food_eaten"][month]
+                + variables["crops_food_eaten_no_rotation"][month]
                 + variables["crops_food_eaten_with_rotation"][month]
                 * self.single_valued_constants["OG_ROTATION_FRACTION_KCALS"]
-                * CROPS_WASTE
-                - self.multi_valued_constants["nonhuman_consumption_kcals"][month]
-                * CROPS_WASTE
+                - self.multi_valued_constants["nonhuman_consumption"].kcals[month]
                 + variables["seaweed_food_produced"][month]
                 * self.single_valued_constants["SEAWEED_KCALS"]
                 + self.multi_valued_constants["dairy_milk_kcals"][month]
                 + self.multi_valued_constants["cattle_maintained_kcals"][month]
                 + self.multi_valued_constants["meat_eaten"][month]
-                + self.multi_valued_constants["production_kcals_CS_per_month"][month]
+                + self.multi_valued_constants["production_kcals_cell_sugar_per_month"][
+                    month
+                ]
                 + self.multi_valued_constants["production_kcals_scp_per_month"][month]
                 + self.multi_valued_constants["greenhouse_area"][month]
                 * self.multi_valued_constants["greenhouse_kcals_per_ha"][month]
@@ -523,17 +415,11 @@ class Optimizer:
                 == (
                     variables["stored_food_eaten"][month]
                     * self.single_valued_constants["SF_FRACTION_FAT"]
-                    * CROPS_WASTE
                     + variables["crops_food_eaten_no_rotation"][month]
                     * self.single_valued_constants["OG_FRACTION_FAT"]
-                    * CROPS_WASTE
                     + variables["crops_food_eaten_with_rotation"][month]
                     * self.single_valued_constants["OG_ROTATION_FRACTION_FAT"]
-                    * CROPS_WASTE
-                    - self.multi_valued_constants["nonhuman_consumption_fat_used"][
-                        month
-                    ]
-                    * CROPS_WASTE
+                    - self.multi_valued_constants["nonhuman_consumption"].fat[month]
                     + variables["seaweed_food_produced"][month]
                     * self.single_valued_constants["SEAWEED_FAT"]
                     + self.multi_valued_constants["dairy_milk_fat"][month]
@@ -560,17 +446,11 @@ class Optimizer:
                 == (
                     variables["stored_food_eaten"][month]
                     * self.single_valued_constants["SF_FRACTION_PROTEIN"]
-                    * CROPS_WASTE
                     + variables["crops_food_eaten_no_rotation"][month]
                     * self.single_valued_constants["OG_FRACTION_PROTEIN"]
-                    * CROPS_WASTE
                     + variables["crops_food_eaten_with_rotation"][month]
                     * self.single_valued_constants["OG_ROTATION_FRACTION_PROTEIN"]
-                    * CROPS_WASTE
-                    - self.multi_valued_constants["nonhuman_consumption_protein_used"][
-                        month
-                    ]
-                    * CROPS_WASTE
+                    - self.multi_valued_constants["nonhuman_consumption"].protein[month]
                     + variables["seaweed_food_produced"][month]
                     * self.single_valued_constants["SEAWEED_PROTEIN"]
                     + self.multi_valued_constants["dairy_milk_protein"][month]
@@ -599,8 +479,10 @@ class Optimizer:
             + variables["crops_food_eaten_no_rotation"][month]
             + variables["crops_food_eaten_with_rotation"][month]
             * self.single_valued_constants["OG_ROTATION_FRACTION_KCALS"]
-            >= self.multi_valued_constants["nonhuman_consumption_kcals"][month],
-            "Excess_Kcals_Less_Than_SF_And_OG_" + str(month) + "_Constraint",
+            >= self.multi_valued_constants["nonhuman_consumption"].kcals[month],
+            "Excess_Kcals_Less_Than_stored_food_And_outdoor_crops_"
+            + str(month)
+            + "_Constraint",
         )
 
         if self.single_valued_constants["inputs"]["INCLUDE_FAT"]:
@@ -611,8 +493,10 @@ class Optimizer:
                 * self.single_valued_constants["OG_FRACTION_FAT"]
                 + variables["crops_food_eaten_with_rotation"][month]
                 * self.single_valued_constants["OG_ROTATION_FRACTION_FAT"]
-                >= self.multi_valued_constants["nonhuman_consumption_fat_used"][month],
-                "Excess_Fat_Less_Than_SF_And_OG_" + str(month) + "_Constraint",
+                >= self.multi_valued_constants["nonhuman_consumption"].fat[month],
+                "Excess_Fat_Less_Than_stored_food_And_outdoor_crops_"
+                + str(month)
+                + "_Constraint",
             )
 
         if self.single_valued_constants["inputs"]["INCLUDE_PROTEIN"]:
@@ -623,10 +507,10 @@ class Optimizer:
                 * self.single_valued_constants["OG_FRACTION_PROTEIN"]
                 + variables["crops_food_eaten_with_rotation"][month]
                 * self.single_valued_constants["OG_ROTATION_FRACTION_PROTEIN"]
-                >= self.multi_valued_constants["nonhuman_consumption_protein_used"][
-                    month
-                ],
-                "Excess_Protein_Less_Than_SF_And_OG_" + str(month) + "_Constraint",
+                >= self.multi_valued_constants["nonhuman_consumption"].protein[month],
+                "Excess_Protein_Less_Than_stored_food_And_outdoor_crops_"
+                + str(month)
+                + "_Constraint",
             )
 
         ##### helps reduce wild fluctutions in people fed #######

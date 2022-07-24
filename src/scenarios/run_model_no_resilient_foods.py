@@ -8,10 +8,9 @@ if module_path not in sys.path:
     sys.path.append(module_path)
 
 # import some python files from this integrated model repository
-from src.optimizer.optimizer import Optimizer
 from src.utilities.plotter import Plotter
-from src.optimizer.parameters import Parameters
 from src.scenarios.scenarios import Scenarios
+from src.scenarios.run_scenario import ScenarioRunner
 
 
 def run_model_no_resilient_foods(plot_figures=True):
@@ -41,25 +40,21 @@ def run_model_no_resilient_foods(plot_figures=True):
 
     constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
 
-    constants_loader = Parameters()
-    optimizer = Optimizer()
-    constants["inputs"] = constants_for_params
-    (
-        single_valued_constants,
-        multi_valued_constants,
-    ) = constants_loader.computeParameters(constants, scenarios_loader)
-
-    single_valued_constants["CHECK_CONSTRAINTS"] = False
-    [time_months, time_months_middle, analysis] = optimizer.optimize(
-        single_valued_constants, multi_valued_constants
+    scenario_runner = ScenarioRunner()
+    results = scenario_runner.run_and_analyze_scenario(
+        constants_for_params, scenarios_loader
     )
+
+    print("")
     print("")
     print("Estimated Kcals/capita/day, no resilient foods, no waste")
-    print(analysis.percent_people_fed / 100 * 2100)
+    print(results.percent_people_fed / 100 * 2100)
     print("")
 
     np.save(
-        "../../data/no_resilient_food_primary_analysis.npy", analysis, allow_pickle=True
+        "../../data/no_resilient_food_primary_results.npy",
+        results,
+        allow_pickle=True,
     )
 
     constants_for_params["EXCESS_FEED_KCALS"] = np.array(
@@ -87,7 +82,7 @@ def run_model_no_resilient_foods(plot_figures=True):
     ) = constants_loader.computeParameters(constants, scenarios_loader)
 
     single_valued_constants["CHECK_CONSTRAINTS"] = False
-    [time_months, time_months_middle, analysis] = optimizer.optimize(
+    [time_months, time_months_middle, results] = optimizer.optimize(
         single_valued_constants, multi_valued_constants
     )
 
@@ -95,11 +90,11 @@ def run_model_no_resilient_foods(plot_figures=True):
         "Estimated Kcals/capita/day, no resilient foods, minus waste & delayed halt of nonhuman consumption "
     )
 
-    print(analysis.percent_people_fed / 100 * 2100)
+    print(results.percent_people_fed / 100 * 2100)
     print("")
 
     if plot_figures:
-        Plotter.plot_fig_1ab(analysis, 77)
+        Plotter.plot_fig_1ab(results, 77)
 
 
 def set_common_no_resilient_properties():
