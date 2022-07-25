@@ -345,7 +345,9 @@ class Food(UnitConversions):
 
     def __eq__(self, other):
         """
-        Returns True if the two foods are equal.
+        Returns True if the two foods are equal. This also works
+        for comparing monthly foods to each other, as their units
+        contain 'each month'.
         """
 
         assert self.units == other.units
@@ -358,7 +360,9 @@ class Food(UnitConversions):
 
     def __ne__(self, other):
         """
-        Returns False if the two foods are not equal.
+        Returns False if the two foods are not equal. his also works
+        for comparing monthly foods to each other, as their units
+        contain 'each month'.
         """
 
         assert self.units == other.units
@@ -419,7 +423,9 @@ class Food(UnitConversions):
     # between the units.
 
     def is_never_negative(self):
-
+        """
+        Checks wether the food's macronutrients are never negative.
+        """
         if self.is_list_monthly():
             self.validate_if_list()
 
