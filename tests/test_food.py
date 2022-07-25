@@ -8,7 +8,10 @@ def create_food_monthly(kcals=[1,2,1], fat=[1,2,2], protein=[1,2,2]):
     """
     creates a food instance that has monthly values and returns it
     """
-    food_monthly = Food(kcals=kcals, fat=fat, protein=protein, kcals_units="kcals each months", fat_units="kcals each months", protein_units="kcals each months")
+    food_monthly = Food(kcals=kcals, fat=fat, protein=protein,
+                         kcals_units="kcals each months",
+                         fat_units="kcals each months",
+                         protein_units="kcals each months")
     return food_monthly
 
 
@@ -641,3 +644,228 @@ def test_all_greater_than_zero_scalar_food():
     food2 = Food(kcals=0, fat=0, protein=0)
     assert food1.all_greater_than_zero() == True
     assert food2.all_greater_than_zero() == False
+
+
+def test_all_greater_than_zero_monthly_food():
+    """
+    Tests if all nutrients of a food are greater than zero
+    """
+    food1 = create_food_monthly()
+    food2 = create_food_monthly(kcals=[0,0,0], fat=[0,0,0], protein=[0,0,0])
+    assert food1.all_greater_than_zero() == True
+    assert food2.all_greater_than_zero() == False
+
+
+def test_any_greater_than_zero_scalar_food():
+    """
+    Tests if any nutrient of a food is greater than zero
+    """
+    food1 = Food(kcals=1, fat=0, protein=0)
+    food2 = Food(kcals=0, fat=0, protein=0)
+    assert food1.any_greater_than_zero() == True
+    assert food2.any_greater_than_zero() == False
+
+
+def test_any_greater_than_zero_monthly_food():
+    """
+    Tests if any nutrient of a food is greater than zero
+    """
+    food1 = create_food_monthly()
+    food2 = create_food_monthly(kcals=[0,0,0], fat=[0,0,0], protein=[0,0,0])
+    food3 = create_food_monthly(kcals=[0,1,0], fat=[0,0,0], protein=[0,0,0])
+    assert food1.any_greater_than_zero() == True
+    assert food2.any_greater_than_zero() == False
+    assert food3.any_greater_than_zero() == True
+
+
+def test_all_greater_or_equal_zero_scalar_food():
+    """
+    Tests if all nutrients of a food are greater or equal to zero
+    """
+    food1 = Food(kcals=1, fat=0, protein=0)
+    food2 = Food(kcals=0, fat=0, protein=0)
+    assert food1.all_greater_than_or_equal_zero() == True
+    assert food2.all_greater_than_or_equal_zero() == True
+
+
+def test_all_greater_or_equal_zero_monthly_food():
+    """
+    Tests if all nutrients of a food are greater or equal to zero
+    """
+    food1 = create_food_monthly()
+    food2 = create_food_monthly(kcals=[0,0,0], fat=[0,0,0], protein=[0,0,0])
+    assert food1.all_greater_than_or_equal_zero() == True
+    assert food2.all_greater_than_or_equal_zero() == True
+    
+
+def test_to_list():
+    """
+    Tests if the to_list function works
+    """
+    food_scalar = Food()
+    assert list(food_scalar.as_list()) == [0, 0, 0]
+
+
+def test_to_list_monthly():
+    """
+    Tests if the to_list function works
+    """
+    # Waiting for clarification on how to test this
+    pass
+
+
+def test_min_nutrient_scalar_food():
+    """
+    Tests if the get_min_nutrient function works
+    """
+    food = Food(kcals=1, fat=1, protein=0, kcals_units= "thousand tons")  
+    assert food.get_min_nutrient() == ('protein', 0)
+
+
+def test_min_nutrient_monthly_food():
+    """
+    Tests if the get_min_nutrient function works
+    This should fail, as this is only defined for scalar foods
+    """
+    food = Food(kcals=[1,1,1], fat=[1,1,1], protein=[0,0,0], kcals_units= "thousand tons each months", protein_units="thousand tons each months", fat_units="thousand tons each months")
+    with pytest.raises(AssertionError):
+        assert food.get_min_nutrient() == ('protein', 0)
+
+
+def test_max_nutrient_scalar_food():
+    """
+    Tests if the get_max_nutrient function works
+    """
+    food = Food(kcals=1, fat=0, protein=0, kcals_units= "thousand tons")  
+    assert food.get_max_nutrient() == ('kcals', 1)
+
+
+def test_max_nutrient_monthly_food():
+    """
+    Tests if the get_max_nutrient function works
+    This should fail, as this is only defined for scalar foods
+    """
+    food = Food(kcals=[1,1,1], fat=[1,1,1], protein=[0,0,0], kcals_units= "thousand tons each months", protein_units="thousand tons each months", fat_units="thousand tons each months")
+    with pytest.raises(AssertionError):
+        assert food.get_max_nutrient() == ('kcals', 1)
+
+
+def test_get_nutrients_sum_scalar_food():
+    """
+    Tests if the get_nutrients_sum function works
+    This should fail, as this is only defined for monthly foods
+    """
+    food = Food()
+    with pytest.raises(AssertionError):
+        assert food.get_nutrients_sum() == 3
+
+
+def test_get_nutrients_sum_monthly_food():
+    """
+    Tests if the get_nutrients_sum function works
+    """
+    food = create_food_monthly()
+    food = food.get_nutrients_sum()
+    assert food.kcals == 4
+    assert food.fat == 5
+    assert food.protein == 5
+    assert food.kcals_units == "kcals"
+    assert food.protein_units == "kcals"
+    assert food.fat_units == "kcals"
+
+
+def test_get_running_total_nutrients_sum_scalar_food():
+    """
+    Tests if the get_running_total_nutrients_sum function works
+    This should fail, as this is only defined for monthly foods
+    """
+    food = Food()
+    with pytest.raises(AssertionError):
+        assert food.get_running_total_nutrients_sum() == 3
+
+
+def test_get_running_total_nutrients_sum_monthly_food():
+    """
+    Tests if the get_running_total_nutrients_sum function works
+    """
+    food = create_food_monthly(kcals=[1,1,1], fat=[1,1,1], protein=[1,1,1])
+    food = food.get_running_total_nutrients_sum()
+    assert food.kcals == [1,2,3]
+    assert food.fat == [1,2,3]
+    assert food.protein == [1,2,3]
+    # make sure the units aren't changed
+    assert food.kcals_units == "kcals each months"
+    assert food.protein_units == "kcals each months"
+    assert food.fat_units == "kcals each months"
+
+
+def test_get_month_scalar_food():
+    """
+    Tests if the get_months function works
+    This should fail, as this is only defined for monthly foods
+    """
+    food = Food()
+    with pytest.raises(AssertionError):
+        assert food.get_month(1) == 3
+
+
+def test_get_month_monthly_food():
+    """
+    Tests if the get_months function works
+    """
+    food = create_food_monthly(kcals=[1,1,1], fat=[1,1,1], protein=[1,1,1])
+    food = food.get_month(1)
+    assert food.kcals == 1
+    assert food.fat == 1
+    assert food.protein == 1
+    assert food.kcals_units == "kcals per months"
+    assert food.protein_units == "kcals per months"
+    assert food.fat_units == "kcals per months"
+
+
+def test_get_min_all_months_scalar_food():
+    """
+    Tests if the get_min_all_months function works
+    This should fail, as this is only defined for monthly foods
+    """
+    food = Food()
+    with pytest.raises(AssertionError):
+        assert food.get_min_all_months() == 3
+
+
+def test_get_min_all_months_monthly_food():
+    """
+    Tests if the get_min_all_months function works
+    """
+    food = create_food_monthly(kcals=[1,2,2], fat=[1,2,2], protein=[1,2,2])
+    food = food.get_min_all_months()
+    assert food.kcals == 1
+    assert food.fat == 1
+    assert food.protein == 1
+    assert food.kcals_units == "kcals"
+    assert food.protein_units == "kcals"
+    assert food.fat_units == "kcals"
+
+
+def test_negative_values_to_zero_scalar_food():
+    """
+    Tests if the negative_values_to_zero function works
+    """
+    food = Food(kcals=-1, fat=-1, protein=-1)  
+    assert food.negative_values_to_zero() == Food(kcals=0, fat=0, protein=0)
+
+
+def test_negative_values_to_zero_monthly_food():
+    """
+    Tests if the negative_values_to_zero function works for monthly foods
+    """
+    food = create_food_monthly(kcals=[-1,-1,-1], fat=[-1,-1,-1], protein=[-1,-1,-1])
+    food = food.negative_values_to_zero()
+    assert food.kcals == [0,0,0]
+    assert food.fat == [0,0,0]
+    assert food.protein == [0,0,0]
+    assert food.kcals_units == "kcals each months"
+    assert food.protein_units == "kcals each months"
+    assert food.fat_units == "kcals each months"
+
+
