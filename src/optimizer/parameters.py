@@ -14,7 +14,7 @@ module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-from src.food_system.meat_and_dairy import MeatAndDairy
+from src.food_system.meat_and_milk import MeatAndDairy
 from src.food_system.outdoor_crops import OutdoorCrops
 from src.food_system.seafood import Seafood
 from src.food_system.stored_food import StoredFood
@@ -75,7 +75,7 @@ class Parameters:
         ADD_FISH = constants_for_params["ADD_FISH"]
         ADD_SEAWEED = constants_for_params["ADD_SEAWEED"]
         ADD_MEAT = constants_for_params["ADD_MEAT"]
-        ADD_DAIRY = constants_for_params["ADD_DAIRY"]
+        ADD_MILK = constants_for_params["ADD_MILK"]
 
         ADD_STORED_FOOD = constants_for_params["ADD_STORED_FOOD"]
         ADD_METHANE_SCP = constants_for_params["ADD_METHANE_SCP"]
@@ -157,84 +157,82 @@ class Parameters:
         nonhuman_consumption = feed_and_biofuels.nonhuman_consumption
         print("feed_and_biofuels.feed", feed_and_biofuels.feed)
         # print("nonhuman_consumption", nonhuman_consumption)
-        ####LIVESTOCK, EGG, DAIRY INITIAL VARIABLES####
+        ####LIVESTOCK, EGG, MILK INITIAL VARIABLES####
 
-        meat_and_dairy = MeatAndDairy(constants_for_params)
+        meat_and_milk = MeatAndDairy(constants_for_params)
 
-        meat_and_dairy.calculate_meat_dairy_from_human_inedible_feed(
-            constants_for_params
-        )
+        meat_and_milk.calculate_meat_milk_from_human_inedible_feed(constants_for_params)
 
-        meat_and_dairy.calculate_meat_and_dairy_from_excess(
+        meat_and_milk.calculate_meat_and_milk_from_excess(
             feed_and_biofuels.kcals_fed_to_animals
         )
 
-        h_e_fed_dairy_produced = meat_and_dairy.h_e_fed_dairy_produced
+        grain_fed_milk_produced = meat_and_milk.grain_fed_milk_produced
 
         (
             chicken_pork_kcals,
             chicken_pork_fat,
             chicken_pork_protein,
-            h_e_meat_kcals,
-            h_e_meat_fat,
-            h_e_meat_protein,
-        ) = meat_and_dairy.get_meat_from_human_edible_feed()
+            grain_fed_meat_kcals,
+            grain_fed_meat_fat,
+            grain_fed_meat_protein,
+        ) = meat_and_milk.get_meat_from_human_edible_feed()
 
-        meat_and_dairy.calculate_animals_culled(constants_for_params)
+        meat_and_milk.calculate_animals_culled(constants_for_params)
 
-        meat_and_dairy.calculate_meat_nutrition()
+        meat_and_milk.calculate_meat_nutrition()
 
         feed_shutoff_delay_months = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
 
-        meat_culled = meat_and_dairy.get_culled_meat(
+        meat_culled = meat_and_milk.get_culled_meat(
             constants_for_params, feed_shutoff_delay_months
         )
         (
-            h_e_milk_kcals,
-            h_e_milk_fat,
-            h_e_milk_protein,
-        ) = meat_and_dairy.get_dairy_from_human_edible_feed(constants_for_params)
+            grain_fed_milk_kcals,
+            grain_fed_milk_fat,
+            grain_fed_milk_protein,
+        ) = meat_and_milk.get_milk_from_human_edible_feed(constants_for_params)
 
         (
-            dairy_milk_kcals,
-            dairy_milk_fat,
-            dairy_milk_protein,
-        ) = meat_and_dairy.get_dairy_produced()
+            grazing_milk_kcals,
+            grazing_milk_fat,
+            grazing_milk_protein,
+        ) = meat_and_milk.get_milk_produced()
 
-        self.chicken_pork_kcals = meat_and_dairy.chicken_pork_kcals
-        self.chicken_pork_fat = meat_and_dairy.chicken_pork_fat
-        self.chicken_pork_protein = meat_and_dairy.chicken_pork_protein
-        self.cattle_h_e_maintained = meat_and_dairy.cattle_h_e_maintained
+        self.chicken_pork_kcals = meat_and_milk.chicken_pork_kcals
+        self.chicken_pork_fat = meat_and_milk.chicken_pork_fat
+        self.chicken_pork_protein = meat_and_milk.chicken_pork_protein
+        self.cattle_feedlot_maintained = meat_and_milk.cattle_feedlot_maintained
 
         (
-            cattle_maintained_kcals,
-            cattle_maintained_fat,
-            cattle_maintained_protein,
-        ) = meat_and_dairy.get_cattle_maintained()
+            cattle_grazing_maintained_kcals,
+            cattle_grazing_maintained_fat,
+            cattle_grazing_maintained_protein,
+        ) = meat_and_milk.get_cattle_grazing_maintained()
 
-        print("h_e_meat_fat")
-        print(h_e_meat_fat)
-        print("h_e_milk_fat")
-        print(h_e_milk_fat)
+        print("grain_fed_meat_fat")
+        print(grain_fed_meat_fat)
+        print("grain_fed_milk_fat")
+        print(grain_fed_milk_fat)
         print("feed_and_biofuels.feed.fat[0]")
         print(feed_and_biofuels.feed.fat[0])
-        print("h_e_meat_fat[0]+h_e_milk_fat[0]")
-        print(h_e_meat_fat[0] + h_e_milk_fat[0])
+        print("grain_fed_meat_fat[0]+grain_fed_milk_fat[0]")
+        print(grain_fed_meat_fat[0] + grain_fed_milk_fat[0])
         (
-            h_e_meat_fat,
-            h_e_meat_protein,
-            h_e_milk_fat,
-            h_e_milk_protein,
-        ) = meat_and_dairy.cap_fat_protein_to_amount_used(
+            grain_fed_meat_fat,
+            grain_fed_meat_protein,
+            grain_fed_milk_fat,
+            grain_fed_milk_protein,
+        ) = meat_and_milk.cap_fat_protein_to_amount_used(
             feed_and_biofuels.feed,
-            h_e_meat_fat,
-            h_e_meat_protein,
-            h_e_milk_fat,
-            h_e_milk_protein,
+            grain_fed_meat_fat,
+            grain_fed_meat_protein,
+            grain_fed_milk_fat,
+            grain_fed_milk_protein,
         )
-        h_e_created_kcals = h_e_meat_kcals + h_e_milk_kcals
-        h_e_created_fat = h_e_meat_fat + h_e_milk_fat
-        h_e_created_protein = h_e_meat_protein + h_e_milk_protein
+        grain_fed_created_kcals = grain_fed_meat_kcals + grain_fed_milk_kcals
+        grain_fed_created_fat = grain_fed_meat_fat + grain_fed_milk_fat
+        grain_fed_created_protein = grain_fed_meat_protein + grain_fed_milk_protein
 
         print("feed_and_biofuels.feed.fat")
         print(feed_and_biofuels.feed.fat)
@@ -244,8 +242,8 @@ class Parameters:
 
         print("nonhuman_consumption.fat")
         print(nonhuman_consumption.fat)
-        print("h_e_created_fat")
-        print(h_e_created_fat)
+        print("grain_fed_created_fat")
+        print(grain_fed_created_fat)
         print("")
         print("")
         print("")
@@ -261,10 +259,10 @@ class Parameters:
         print("")
         print("nonhuman_consumption.fat")
         print(nonhuman_consumption.fat)
-        h_e_balance = Food(
-            kcals=-nonhuman_consumption.kcals + h_e_created_kcals,
-            fat=-nonhuman_consumption.fat + h_e_created_fat,
-            protein=-nonhuman_consumption.protein + h_e_created_protein,
+        grain_fed_balance = Food(
+            kcals=-nonhuman_consumption.kcals + grain_fed_created_kcals,
+            fat=-nonhuman_consumption.fat + grain_fed_created_fat,
+            protein=-nonhuman_consumption.protein + grain_fed_created_protein,
             kcals_units="billion kcals each month",
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
@@ -302,15 +300,15 @@ class Parameters:
         # they should be removed from the extract results file and put into a separate
         # file.
         #
-        # dairy_milk_kcals
-        # cattle_maintained_kcals
-        # meat_eaten
+        # grazing_milk_kcals
+        # cattle_grazing_maintained_kcals
+        # meat_culled
         # production_kcals_cell_sugar_per_month
         # production_kcals_scp_per_month
         # greenhouse_area
         # greenhouse_kcals_per_ha
         # production_kcals_fish_per_month
-        # h_e_created_kcals
+        # grain_fed_created_kcals
 
         time_consts["built_area"] = built_area
         time_consts["crops_food_produced"] = crops_food_produced  # no waste
@@ -330,25 +328,27 @@ class Parameters:
         time_consts[
             "production_kcals_cell_sugar_per_month"
         ] = production_kcals_cell_sugar_per_month
-        time_consts["dairy_milk_kcals"] = dairy_milk_kcals
-        time_consts["dairy_milk_fat"] = dairy_milk_fat
-        time_consts["dairy_milk_protein"] = dairy_milk_protein
-        time_consts["h_e_milk_kcals"] = h_e_milk_kcals
-        time_consts["h_e_milk_fat"] = h_e_milk_fat
-        time_consts["h_e_milk_protein"] = h_e_milk_protein
-        time_consts["h_e_created_kcals"] = h_e_created_kcals
-        time_consts["h_e_created_fat"] = h_e_created_fat
-        time_consts["h_e_created_protein"] = h_e_created_protein
-        time_consts["h_e_balance"] = h_e_balance
-        time_consts["cattle_maintained_kcals"] = cattle_maintained_kcals
-        time_consts["cattle_maintained_fat"] = cattle_maintained_fat
-        time_consts["cattle_maintained_protein"] = cattle_maintained_protein
+        time_consts["grazing_milk_kcals"] = grazing_milk_kcals
+        time_consts["grazing_milk_fat"] = grazing_milk_fat
+        time_consts["grazing_milk_protein"] = grazing_milk_protein
+        time_consts["grain_fed_milk_kcals"] = grain_fed_milk_kcals
+        time_consts["grain_fed_milk_fat"] = grain_fed_milk_fat
+        time_consts["grain_fed_milk_protein"] = grain_fed_milk_protein
+        time_consts["grain_fed_created_kcals"] = grain_fed_created_kcals
+        time_consts["grain_fed_created_fat"] = grain_fed_created_fat
+        time_consts["grain_fed_created_protein"] = grain_fed_created_protein
+        time_consts["grain_fed_balance"] = grain_fed_balance
+        time_consts["cattle_grazing_maintained_kcals"] = cattle_grazing_maintained_kcals
+        time_consts["cattle_grazing_maintained_fat"] = cattle_grazing_maintained_fat
+        time_consts[
+            "cattle_grazing_maintained_protein"
+        ] = cattle_grazing_maintained_protein
         time_consts["greenhouse_area"] = greenhouse_area
-        time_consts["meat_eaten"] = meat_culled
-        time_consts["h_e_meat_kcals"] = h_e_meat_kcals
-        time_consts["h_e_meat_fat"] = h_e_meat_fat
-        time_consts["h_e_meat_protein"] = h_e_meat_protein
-        time_consts["h_e_fed_dairy_produced"] = h_e_fed_dairy_produced
+        time_consts["meat_culled"] = meat_culled
+        time_consts["grain_fed_meat_kcals"] = grain_fed_meat_kcals
+        time_consts["grain_fed_meat_fat"] = grain_fed_meat_fat
+        time_consts["grain_fed_meat_protein"] = grain_fed_meat_protein
+        time_consts["grain_fed_milk_produced"] = grain_fed_milk_produced
         time_consts["nonhuman_consumption"] = nonhuman_consumption
 
         # store variables useful for extractor
@@ -363,7 +363,7 @@ class Parameters:
         constants["ADD_SEAWEED"] = ADD_SEAWEED
         constants["ADD_GREENHOUSES"] = ADD_GREENHOUSES
         constants["ADD_MEAT"] = ADD_MEAT
-        constants["ADD_DAIRY"] = ADD_DAIRY
+        constants["ADD_MILK"] = ADD_MILK
         constants["ADD_OUTDOOR_GROWING"] = ADD_OUTDOOR_GROWING
         constants["ADD_CELLULOSIC_SUGAR"] = ADD_CELLULOSIC_SUGAR
         constants["ADD_METHANE_SCP"] = ADD_METHANE_SCP
@@ -399,10 +399,10 @@ class Parameters:
             "OG_ROTATION_FRACTION_PROTEIN"
         ] = outdoor_crops.OG_ROTATION_FRACTION_PROTEIN
 
-        constants["MEAT_FRACTION_FAT"] = meat_and_dairy.MEAT_FRACTION_FAT
-        constants["MEAT_FRACTION_PROTEIN"] = meat_and_dairy.MEAT_FRACTION_PROTEIN
+        constants["MEAT_FRACTION_FAT"] = meat_and_milk.MEAT_FRACTION_FAT
+        constants["MEAT_FRACTION_PROTEIN"] = meat_and_milk.MEAT_FRACTION_PROTEIN
 
-        constants["CULL_DURATION_MONTHS"] = meat_and_dairy.CULL_DURATION_MONTHS
+        constants["CULL_DURATION_MONTHS"] = meat_and_milk.CULL_DURATION_MONTHS
 
         constants["INITIAL_SEAWEED"] = seaweed.INITIAL_SEAWEED
         constants["SEAWEED_KCALS"] = seaweed.SEAWEED_KCALS
@@ -418,39 +418,35 @@ class Parameters:
         constants[
             "INITIAL_stored_food_KCALS"
         ] = stored_food.INITIAL_stored_food_KCALS  # no waste
-        constants["INITIAL_MEAT"] = meat_and_dairy.INITIAL_MEAT
+        constants["INITIAL_MEAT"] = meat_and_milk.INITIAL_MEAT
 
         constants["FISH_KCALS"] = seafood.FISH_KCALS
         constants["FISH_FAT"] = seafood.FISH_FAT
         constants["FISH_PROTEIN"] = seafood.FISH_PROTEIN
 
-        constants["KG_PER_SMALL_ANIMAL"] = meat_and_dairy.KG_PER_SMALL_ANIMAL
-        constants["KG_PER_MEDIUM_ANIMAL"] = meat_and_dairy.KG_PER_MEDIUM_ANIMAL
-        constants["KG_PER_LARGE_ANIMAL"] = meat_and_dairy.KG_PER_LARGE_ANIMAL
+        constants["KG_PER_SMALL_ANIMAL"] = meat_and_milk.KG_PER_SMALL_ANIMAL
+        constants["KG_PER_MEDIUM_ANIMAL"] = meat_and_milk.KG_PER_MEDIUM_ANIMAL
+        constants["KG_PER_LARGE_ANIMAL"] = meat_and_milk.KG_PER_LARGE_ANIMAL
 
-        constants[
-            "LARGE_ANIMAL_KCALS_PER_KG"
-        ] = meat_and_dairy.LARGE_ANIMAL_KCALS_PER_KG
-        constants["LARGE_ANIMAL_FAT_PER_KG"] = meat_and_dairy.LARGE_ANIMAL_FAT_PER_KG
+        constants["LARGE_ANIMAL_KCALS_PER_KG"] = meat_and_milk.LARGE_ANIMAL_KCALS_PER_KG
+        constants["LARGE_ANIMAL_FAT_PER_KG"] = meat_and_milk.LARGE_ANIMAL_FAT_PER_KG
         constants[
             "LARGE_ANIMAL_PROTEIN_PER_KG"
-        ] = meat_and_dairy.LARGE_ANIMAL_PROTEIN_PER_KG
+        ] = meat_and_milk.LARGE_ANIMAL_PROTEIN_PER_KG
 
         constants[
             "MEDIUM_ANIMAL_KCALS_PER_KG"
-        ] = meat_and_dairy.MEDIUM_ANIMAL_KCALS_PER_KG
-        constants["MEDIUM_ANIMAL_FAT_PER_KG"] = meat_and_dairy.MEDIUM_ANIMAL_FAT_PER_KG
+        ] = meat_and_milk.MEDIUM_ANIMAL_KCALS_PER_KG
+        constants["MEDIUM_ANIMAL_FAT_PER_KG"] = meat_and_milk.MEDIUM_ANIMAL_FAT_PER_KG
         constants[
             "MEDIUM_ANIMAL_PROTEIN_PER_KG"
-        ] = meat_and_dairy.MEDIUM_ANIMAL_PROTEIN_PER_KG
+        ] = meat_and_milk.MEDIUM_ANIMAL_PROTEIN_PER_KG
 
-        constants[
-            "SMALL_ANIMAL_KCALS_PER_KG"
-        ] = meat_and_dairy.SMALL_ANIMAL_KCALS_PER_KG
-        constants["SMALL_ANIMAL_FAT_PER_KG"] = meat_and_dairy.SMALL_ANIMAL_FAT_PER_KG
+        constants["SMALL_ANIMAL_KCALS_PER_KG"] = meat_and_milk.SMALL_ANIMAL_KCALS_PER_KG
+        constants["SMALL_ANIMAL_FAT_PER_KG"] = meat_and_milk.SMALL_ANIMAL_FAT_PER_KG
         constants[
             "SMALL_ANIMAL_PROTEIN_PER_KG"
-        ] = meat_and_dairy.SMALL_ANIMAL_PROTEIN_PER_KG
+        ] = meat_and_milk.SMALL_ANIMAL_PROTEIN_PER_KG
 
         constants["inputs"] = constants_for_params
 
@@ -635,7 +631,7 @@ class Parameters:
             LARGE_ANIMAL_FAT_PER_KG = constants["LARGE_ANIMAL_FAT_PER_KG"]
             LARGE_ANIMAL_PROTEIN_PER_KG = constants["LARGE_ANIMAL_PROTEIN_PER_KG"]
             CM = (
-                np.array(self.cattle_h_e_maintained)[0]
+                np.array(self.cattle_feedlot_maintained)[0]
                 * 1000
                 * constants["LARGE_ANIMAL_KCALS_PER_KG"]
                 / 1e9
@@ -716,11 +712,13 @@ class Parameters:
 
             MEAT_WASTE = constants["inputs"]["WASTE"]["MEAT"]
 
-            CM_IN_KCALS = time_consts["cattle_maintained_kcals"][0] / (
+            CM_IN_KCALS = time_consts["cattle_grazing_maintained_kcals"][0] / (
                 1 - MEAT_WASTE / 100
             )
-            CM_IN_FAT = time_consts["cattle_maintained_fat"][0] / (1 - MEAT_WASTE / 100)
-            CM_IN_PROTEIN = time_consts["cattle_maintained_protein"][0] / (
+            CM_IN_FAT = time_consts["cattle_grazing_maintained_fat"][0] / (
+                1 - MEAT_WASTE / 100
+            )
+            CM_IN_PROTEIN = time_consts["cattle_grazing_maintained_protein"][0] / (
                 1 - MEAT_WASTE / 100
             )
 
@@ -756,34 +754,34 @@ class Parameters:
         else:
             print("No Feed Usage")
 
-        if constants["ADD_DAIRY"]:
-            dairy_milk_kcals = time_consts["dairy_milk_kcals"][0]
-            dairy_milk_fat = time_consts["dairy_milk_fat"][0]
-            dairy_milk_protein = time_consts["dairy_milk_protein"][0]
-            DAIRY_WASTE = constants["inputs"]["WASTE"]["DAIRY"]
-            print("INITIAL_DAIRY_KCALS million tons dry caloric monthly")
-            print(dairy_milk_kcals / (1 - DAIRY_WASTE / 100) * 1e9 / 4e6 / 1e6)
+        if constants["ADD_MILK"]:
+            grazing_milk_kcals = time_consts["grazing_milk_kcals"][0]
+            grazing_milk_fat = time_consts["grazing_milk_fat"][0]
+            grazing_milk_protein = time_consts["grazing_milk_protein"][0]
+            MILK_WASTE = constants["inputs"]["WASTE"]["MILK"]
+            print("INITIAL_MILK_KCALS million tons dry caloric monthly")
+            print(grazing_milk_kcals / (1 - MILK_WASTE / 100) * 1e9 / 4e6 / 1e6)
 
-            print("INITIAL_DAIRY_FAT million tons monthly")
-            print(dairy_milk_fat / (1 - DAIRY_WASTE / 100) / 1e3)
-            print("INITIAL_DAIRY_PROTEIN million tons monthly")
-            print(dairy_milk_protein / (1 - DAIRY_WASTE / 100) / 1e3)
+            print("INITIAL_MILK_FAT million tons monthly")
+            print(grazing_milk_fat / (1 - MILK_WASTE / 100) / 1e3)
+            print("INITIAL_MILK_PROTEIN million tons monthly")
+            print(grazing_milk_protein / (1 - MILK_WASTE / 100) / 1e3)
             print("")
-            print("INITIAL_DAIRY_FAT percentage")
+            print("INITIAL_MILK_FAT percentage")
             print(
                 100
-                * dairy_milk_fat
-                / (1 - DAIRY_WASTE / 100)
+                * grazing_milk_fat
+                / (1 - MILK_WASTE / 100)
                 / 1e3
-                / (dairy_milk_kcals / (1 - DAIRY_WASTE / 100) * 1e9 / 4e6 / 1e6)
+                / (grazing_milk_kcals / (1 - MILK_WASTE / 100) * 1e9 / 4e6 / 1e6)
             )
-            print("INITIAL_DAIRY_PROTEIN percentage")
+            print("INITIAL_MILK_PROTEIN percentage")
             print(
                 100
-                * dairy_milk_protein
-                / (1 - DAIRY_WASTE / 100)
+                * grazing_milk_protein
+                / (1 - MILK_WASTE / 100)
                 / 1e3
-                / (dairy_milk_kcals / (1 - DAIRY_WASTE / 100) * 1e9 / 4e6 / 1e6)
+                / (grazing_milk_kcals / (1 - MILK_WASTE / 100) * 1e9 / 4e6 / 1e6)
             )
             print("")
         if constants["ADD_FISH"]:

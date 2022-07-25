@@ -1,7 +1,7 @@
 tests:
 calculate_reduction_to_biofuels with uneven biofuels
 calculate_reduction_to_feed with uneven feed
-run with exceedances and test that it creates an appropriate amount of meat and dairy at the end
+run with exceedances and test that it creates an appropriate amount of meat and milk at the end
 test the exceedance to see that it actually gives a correct calculate_exceedance_past_crops result
 run calculate_reduction_to_feed 
 test that biofuels is zero if feed is large enough and nonzero if small

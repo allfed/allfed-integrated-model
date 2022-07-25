@@ -64,19 +64,19 @@ class Plotter:
             ykcals.append(extractor.billions_fed_seaweed_kcals)
             ykcals.append(
                 (
-                    extractor.billions_fed_milk_kcals
-                    + extractor.billions_fed_h_e_milk_kcals
+                    extractor.billions_fed_grazing_milk_kcals
+                    + extractor.billions_fed_grain_fed_milk_kcals
                 )
             )
             ykcals.append(
                 (
-                    extractor.billions_fed_meat_kcals
-                    + extractor.billions_fed_h_e_meat_kcals
+                    extractor.billions_fed_meat_culled_grazing_kcals
+                    + extractor.billions_fed_grain_fed_meat_kcals
                 )
             )
-            ykcals.append(extractor.billions_fed_immediate_OG_kcals)
-            ykcals.append(extractor.billions_fed_new_stored_OG_kcals)
-            ykcals.append(extractor.billions_fed_SF_kcals)
+            ykcals.append(extractor.billions_fed_immediate_outdoor_crops_kcals)
+            ykcals.append(extractor.billions_fed_new_stored_outdoor_crops_kcals)
+            ykcals.append(extractor.billions_fed_stored_food_kcals)
 
             if label == "a":
                 ax.text(
@@ -230,19 +230,19 @@ class Plotter:
                 ykcals.append(extractor.billions_fed_seaweed_kcals)
                 ykcals.append(
                     (
-                        extractor.billions_fed_milk_kcals
-                        + extractor.billions_fed_h_e_milk_kcals
+                        extractor.billions_fed_grazing_milk_kcals
+                        + extractor.billions_fed_grain_fed_milk_kcals
                     )
                 )
                 ykcals.append(
                     (
-                        extractor.billions_fed_meat_kcals
-                        + extractor.billions_fed_h_e_meat_kcals
+                        extractor.billions_fed_meat_culled_grazing_kcals
+                        + extractor.billions_fed_grain_fed_meat_kcals
                     )
                 )
-                ykcals.append(extractor.billions_fed_immediate_OG_kcals)
-                ykcals.append(extractor.billions_fed_new_stored_OG_kcals)
-                ykcals.append(extractor.billions_fed_SF_kcals)
+                ykcals.append(extractor.billions_fed_immediate_outdoor_crops_kcals)
+                ykcals.append(extractor.billions_fed_new_stored_outdoor_crops_kcals)
+                ykcals.append(extractor.billions_fed_stored_food_kcals)
 
                 ax.text(
                     -0.06,
@@ -573,19 +573,19 @@ class Plotter:
                 ykcals.append(extractor.billions_fed_seaweed_kcals)
                 ykcals.append(
                     (
-                        extractor.billions_fed_milk_kcals
-                        + extractor.billions_fed_h_e_milk_kcals
+                        extractor.billions_fed_grazing_milk_kcals
+                        + extractor.billions_fed_grain_fed_milk_kcals
                     )
                 )
                 ykcals.append(
                     (
-                        extractor.billions_fed_meat_kcals
-                        + extractor.billions_fed_h_e_meat_kcals
+                        extractor.billions_fed_meat_culled_grazing_kcals
+                        + extractor.billions_fed_grain_fed_meat_kcals
                     )
                 )
-                ykcals.append(extractor.billions_fed_immediate_OG_kcals)
-                ykcals.append(extractor.billions_fed_new_stored_OG_kcals)
-                ykcals.append(extractor.billions_fed_SF_kcals)
+                ykcals.append(extractor.billions_fed_immediate_outdoor_crops_kcals)
+                ykcals.append(extractor.billions_fed_new_stored_outdoor_crops_kcals)
+                ykcals.append(extractor.billions_fed_stored_food_kcals)
 
                 ax.text(
                     -0.06,
@@ -735,19 +735,19 @@ class Plotter:
                 ykcals.append(extractor.billions_fed_seaweed_kcals)
                 ykcals.append(
                     (
-                        extractor.billions_fed_milk_kcals
-                        + extractor.billions_fed_h_e_milk_kcals
+                        extractor.billions_fed_grazing_milk_kcals
+                        + extractor.billions_fed_grain_fed_milk_kcals
                     )
                 )
                 ykcals.append(
                     (
-                        extractor.billions_fed_meat_kcals
-                        + extractor.billions_fed_h_e_meat_kcals
+                        extractor.billions_fed_meat_culled_grazing_kcals
+                        + extractor.billions_fed_grain_fed_meat_kcals
                     )
                 )
-                ykcals.append(extractor.billions_fed_immediate_OG_kcals)
-                ykcals.append(extractor.billions_fed_new_stored_OG_kcals)
-                ykcals.append(extractor.billions_fed_SF_kcals)
+                ykcals.append(extractor.billions_fed_immediate_outdoor_crops_kcals)
+                ykcals.append(extractor.billions_fed_new_stored_outdoor_crops_kcals)
+                ykcals.append(extractor.billions_fed_stored_food_kcals)
 
                 ax.text(
                     -0.06,
@@ -951,7 +951,7 @@ class Plotter:
         else:
             legend = legend + [""]
 
-        if extractor.constants["ADD_DAIRY"]:
+        if extractor.constants["ADD_MILK"]:
             legend = legend + ["Dairy Milk"]
         else:
             legend = legend + [""]

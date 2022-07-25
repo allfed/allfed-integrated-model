@@ -100,7 +100,7 @@ class Scenarios:
         constants_for_params["WASTE"] = {}
         constants_for_params["WASTE"]["SUGAR"] = 0  # %
         constants_for_params["WASTE"]["MEAT"] = 0  # %
-        constants_for_params["WASTE"]["DAIRY"] = 0  # %
+        constants_for_params["WASTE"]["MILK"] = 0  # %
         constants_for_params["WASTE"]["SEAFOOD"] = 0  # %
         constants_for_params["WASTE"]["CROPS"] = 0  # %
         constants_for_params["WASTE"]["SEAWEED"] = 0  # %
@@ -119,7 +119,7 @@ class Scenarios:
         distribution_loss["SUGAR"] = 0.09
         distribution_loss["CROPS"] = 4.96
         distribution_loss["MEAT"] = 0.80
-        distribution_loss["DAIRY"] = 2.12
+        distribution_loss["MILK"] = 2.12
         distribution_loss["SEAFOOD"] = 0.17
         distribution_loss["SEAWEED"] = distribution_loss["SEAFOOD"]
 
@@ -128,7 +128,7 @@ class Scenarios:
         total_waste["SUGAR"] = distribution_loss["SUGAR"] + retail_waste
         total_waste["CROPS"] = distribution_loss["CROPS"] + retail_waste
         total_waste["MEAT"] = distribution_loss["MEAT"] + retail_waste
-        total_waste["DAIRY"] = distribution_loss["DAIRY"] + retail_waste
+        total_waste["MILK"] = distribution_loss["MILK"] + retail_waste
         total_waste["SEAFOOD"] = distribution_loss["SEAFOOD"] + retail_waste
         total_waste["SEAWEED"] = distribution_loss["SEAWEED"] + retail_waste
 
@@ -194,7 +194,7 @@ class Scenarios:
         distribution_loss["SUGAR"] = country_data["distribution_loss_sugar"]
         distribution_loss["CROPS"] = country_data["distribution_loss_crops"]
         distribution_loss["MEAT"] = country_data["distribution_loss_meat"]
-        distribution_loss["DAIRY"] = country_data["distribution_loss_dairy"]
+        distribution_loss["MILK"] = country_data["distribution_loss_milk"]
         distribution_loss["SEAFOOD"] = country_data["distribution_loss_seafood"]
         distribution_loss["SEAWEED"] = distribution_loss["SEAFOOD"]
 
@@ -203,7 +203,7 @@ class Scenarios:
         total_waste["SUGAR"] = distribution_loss["SUGAR"] + retail_waste
         total_waste["CROPS"] = distribution_loss["CROPS"] + retail_waste
         total_waste["MEAT"] = distribution_loss["MEAT"] + retail_waste
-        total_waste["DAIRY"] = distribution_loss["DAIRY"] + retail_waste
+        total_waste["MILK"] = distribution_loss["MILK"] + retail_waste
         total_waste["SEAFOOD"] = distribution_loss["SEAFOOD"] + retail_waste
         total_waste["SEAWEED"] = distribution_loss["SEAWEED"] + retail_waste
 
@@ -553,7 +553,7 @@ class Scenarios:
             FISH_TONS_WET_2018 * FISH_PROTEIN_RATIO
         )
         # annual tons milk production
-        constants_for_params["TONS_DAIRY_ANNUAL"] = 879e6
+        constants_for_params["TONS_MILK_ANNUAL"] = 879e6
 
         # annual tons chicken and pork production
         constants_for_params["TONS_CHICKEN_AND_PORK_ANNUAL"] = 250e6
@@ -613,7 +613,7 @@ class Scenarios:
         constants_for_params["FEED_PROTEIN"] = country_data["feed_protein"]
 
         # total head count of milk cattle
-        constants_for_params["INITIAL_MILK_CATTLE"] = country_data["dairy_cows"]
+        constants_for_params["INITIAL_MILK_CATTLE"] = country_data["milk_cows"]
 
         # total head count of small sized animals
         constants_for_params["INIT_SMALL_ANIMALS"] = country_data["small_animals"]
@@ -638,7 +638,7 @@ class Scenarios:
         constants_for_params["FISH_PROTEIN_TONS_ANNUAL"] = country_data["aq_protein"]
 
         # annual tons milk production
-        constants_for_params["TONS_DAIRY_ANNUAL"] = country_data["dairy"]
+        constants_for_params["TONS_MILK_ANNUAL"] = country_data["milk"]
 
         # annual tons chicken and pork production
         constants_for_params["TONS_CHICKEN_AND_PORK_ANNUAL"] = (
@@ -894,7 +894,7 @@ class Scenarios:
         constants_for_params["STORED_FOOD_SMOOTHING"] = False
 
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
-        constants_for_params["ADD_DAIRY"] = True
+        constants_for_params["ADD_MILK"] = True
         constants_for_params["ADD_FISH"] = True
         constants_for_params["ADD_GREENHOUSES"] = False
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
@@ -966,7 +966,7 @@ class Scenarios:
         constants_for_params["STORED_FOOD_SMOOTHING"] = True
 
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = True
-        constants_for_params["ADD_DAIRY"] = True
+        constants_for_params["ADD_MILK"] = True
         constants_for_params["ADD_FISH"] = True
         constants_for_params["ADD_GREENHOUSES"] = True
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
@@ -1015,7 +1015,7 @@ class Scenarios:
         constants_for_params["STORED_FOOD_SMOOTHING"] = True
 
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
-        constants_for_params["ADD_DAIRY"] = True
+        constants_for_params["ADD_MILK"] = True
         constants_for_params["ADD_FISH"] = True
         constants_for_params["ADD_GREENHOUSES"] = False
         constants_for_params["ADD_OUTDOOR_GROWING"] = True

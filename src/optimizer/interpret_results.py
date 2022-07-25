@@ -23,6 +23,9 @@ module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
+# TODO: DELETE ME WITHOUT REMORSE
+# strand 2 : optimizer fed sum works?
+
 
 class Interpreter:
     """
@@ -39,78 +42,187 @@ class Interpreter:
         people fed in list form, and converts the naive people fed which includes
         negative feed, into a purely list of values, where the negative feed has been
         subtracted from the sum of outdoor growing and stored food.
+
+        ANYTHING assigned to "self" here is part of a useful result that will either
+        be printed or plotted as a result
+
+        In no other function is anything assigned to "self" (other than functions)
         """
-        analysis.calc_fraction_outdoor_crops_stored_food_to_humans(
-            model,
-            variables["crops_food_eaten_no_rotation"],
-            variables["crops_food_eaten_with_rotation"],
-            variables["stored_food_eaten"],
+
+        # NOTE: this long function is like this because I wanted to be really
+        # obvious what was being assigned in this class and to put it right at the top.
+
+        self.stored_food = extracted_results.stored_food.in_units_percent_fed()
+
+        self.outdoor_crops = extracted_results.outdoor_crops.in_units_percent_fed()
+
+        self.seaweed = extracted_results.seaweed.in_units_percent_fed()
+
+        self.cell_sugar = extracted_results.cell_sugar.in_units_percent_fed()
+
+        self.scp = extracted_results.scp.in_units_percent_fed()
+
+        self.greenhouse = extracted_results.greenhouse.in_units_percent_fed()
+
+        self.fish = extracted_results.fish.in_units_percent_fed()
+
+        self.meat_culled_plus_grazing_cattle_maintained = (
+            extracted_results.meat_culled_plus_grazing_cattle_maintained.in_units_percent_fed()
         )
 
-        [
-            optimizer_fed_sum,
-            stored_food,
-            seaweed,
-            outdoor_crops,
-            immediate_outdoor_crops,
-            new_stored_outdoor_crops,
-        ] = self.get_sum_and_stored_food_and_outdoor_crops_percents(extracted_results)
+        self.grazing_milk = extracted_results.grazing_milk.in_units_percent_fed()
+
+        self.grain_fed_meat = extracted_results.grain_fed_meat.in_units_percent_fed()
+
+        self.grain_fed_milk = extracted_results.grain_fed_milk.in_units_percent_fed()
+
+        self.immediate_outdoor_crops = (
+            extracted_results.immediate_outdoor_crops.in_units_percent_fed()
+        )
+
+        self.new_stored_outdoor_crops = (
+            extracted_results.new_stored_outdoor_crops.in_units_percent_fed()
+        )
 
         nonhuman_consumption = multi_valued_constants[
             "nonhuman_consumption"
         ].in_units_percent_fed()
 
-        # rounding errors can be introduced by the optimizer. We correct them here.
-        (
-            stored_food,
-            seaweed,
-            outdoor_crops,
-            immediate_outdoor_crops,
-            new_stored_outdoor_crops,
-            outdoor_crops_plus_stored_food_rounded,
-        ) = self.correct_and_validate_rounding_errors(
-            stored_food,
-            seaweed,
-            outdoor_crops,
-            immediate_outdoor_crops,
-            new_stored_outdoor_crops,
-            nonhuman_consumption,
-        )
+        optimizer_fed_sum = self.get_sum_by_subtracting_nonhuman(nonhuman_consumption)
 
         (
             self.percent_people_fed,
             self.constraining_nutrient,
         ) = self.get_percent_people_fed(optimizer_fed_sum)
 
-        # get the ratio for stored_food and outdoor_crops (after subtracting feed and
-        # biofuels)
+        # rounding errors can be introduced by the optimizer. We correct them here.
+        # ... at least the ones that we can identify.
+        # We also round everything to within 0.1% of its value,
+        # in terms of % people fed.
+        (
+            self.stored_food_rounded,
+            self.seaweed_rounded,
+            self.outdoor_crops_rounded,
+            self.immediate_outdoor_crops_rounded,
+            self.new_stored_outdoor_crops_rounded,
+            self.outdoor_crops_plus_stored_food_rounded,
+        ) = self.correct_and_validate_rounding_errors(nonhuman_consumption)
+
+        # get the ratio for stored_food_rounded and outdoor_crops (after subtracting
+        # feed and biofuels)
         to_humans_ratio = self.get_ratio_for_stored_food_and_outdoor_crops(
-            stored_food,
-            outdoor_crops,
+            self.stored_food_rounded,
+            self.outdoor_crops_rounded,
+            self.outdoor_crops_plus_stored_food_rounded,
             nonhuman_consumption,
-            outdoor_crops_plus_stored_food_rounded,
         )
 
-        # apply the reduction to stored food and outdoor crops
-        self.stored_food_fed_to_humans = to_humans_ratio * extracted_results.stored_food
-        self.outdoor_crops_fed_to_humans = (
-            to_humans_ratio * extracted_results.outdoor_crops
+        # TODO: git diff on the import scripts to be sure nothing WONKY is going on
+
+        # TODO: delete this printout
+        print("to_humans_ratio")
+        print(to_humans_ratio)
+
+        (
+            self.stored_food_fed_to_humans,
+            self.outdoor_crops_fed_to_humans,
+            self.immediate_outdoor_crops_fed_to_humans,
+            self.new_stored_outdoor_crops_fed_to_humans,
+        ) = self.get_amount_fed_to_humans(
+            self.stored_food_rounded,
+            self.outdoor_crops_rounded,
+            self.immediate_outdoor_crops_rounded,
+            self.new_stored_outdoor_crops_rounded,
+            to_humans_ratio,
         )
+
+        assert self.get_sum_by_adding_to_humans() == optimizer_fed_sum
+
+        return self
+
+    def get_amount_fed_to_humans(
+        self,
+        stored_food_rounded,
+        outdoor_crops_rounded,
+        immediate_outdoor_crops_rounded,
+        new_stored_outdoor_crops_rounded,
+        to_humans_ratio,
+    ):
+
+        # apply the reduction to stored food and outdoor crops
+        stored_food_fed_to_humans = to_humans_ratio * stored_food_rounded
+        outdoor_crops_fed_to_humans = to_humans_ratio * outdoor_crops_rounded
 
         # NOTE: immediate and new used may be slightly different than the outdoor
         #       crops due to rounding errors
 
         # used for plotting immediate vs food stored in the scenario
-        self.immediate_outdoor_crops_fed_to_humans = (
-            to_humans_ratio * extracted_results.immediate_outdoor_crops
+        immediate_outdoor_crops_fed_to_humans = (
+            to_humans_ratio * immediate_outdoor_crops_rounded
         )
 
         # used for plotting immediate vs food stored in the scenario
-        self.new_stored_outdoor_crops_fed_to_humans = (
-            to_humans_ratio * extracted_results.new_stored_outdoor_crops
+        new_stored_outdoor_crops_fed_to_humans = (
+            to_humans_ratio * new_stored_outdoor_crops_rounded
         )
 
-        return self
+        return (
+            stored_food_fed_to_humans,
+            outdoor_crops_fed_to_humans,
+            immediate_outdoor_crops_fed_to_humans,
+            new_stored_outdoor_crops_fed_to_humans,
+        )
+
+    def get_sum_by_adding_to_humans(self):
+        """
+        sum the resulting nutrients from the extracted_results, but subtract nonhuman
+        to get the ratio
+
+        also rounds result to 1 decimal place in terms of percent fed (within 0.1% of
+        it's value)
+        """
+
+        to_humans_fed_sum = (
+            self.stored_food_fed_to_humans
+            + self.outdoor_crops_fed_to_humans
+            + self.seaweed
+            + self.cell_sugar
+            + self.scp
+            + self.greenhouse
+            + self.fish
+            + self.meat_culled_plus_grazing_cattle_maintained
+            + self.grazing_milk
+            + self.grain_fed_meat
+            + self.grain_fed_milk
+        )
+
+        return to_humans_fed_sum.get_rounded_to_decimal(decimals=1)
+
+    def get_sum_by_subtracting_nonhuman(self, nonhuman_consumption):
+        """
+        sum the resulting nutrients from the extracted_results, but do this by adding
+        all the amounts determined to go to humans
+
+        also rounds result to 1 decimal place in terms of percent fed (within 0.1% of
+        it's value)
+        """
+
+        optimizer_fed_sum = (
+            self.stored_food
+            + self.outdoor_crops
+            + self.seaweed
+            + self.cell_sugar
+            + self.scp
+            + self.greenhouse
+            + self.fish
+            + self.meat_culled_plus_grazing_cattle_maintained
+            + self.grazing_milk
+            + self.grain_fed_meat
+            + self.grain_fed_milk
+            - nonhuman_consumption
+        )
+
+        return optimizer_fed_sum.get_rounded_to_decimal(decimals=1)
 
     def print_kcals_per_capita_per_day(self, interpreted_results):
         """
@@ -207,279 +319,7 @@ class Interpreter:
             print("Estimated percent people fed is " + str(percent_people_fed) + "%")
         return [percent_people_fed, min_nutrient]
 
-    def get_sum_and_stored_food_and_outdoor_crops_percents(self, extracted_results):
-        """
-        sum the resulting nutrients from the extracted_results
-        """
-
-        optimizer_fed_sum = (
-            extracted_results.stored_food
-            + extracted_results.outdoor_crops
-            + extracted_results.meat
-            + extracted_results.seaweed
-            + extracted_results.milk
-            + extracted_results.cell_sugar
-            + extracted_results.scp
-            + extracted_results.greenhouse
-            + extracted_results.fish
-            + extracted_results.h_e_meat
-            + extracted_results.h_e_milk
-        )
-
-        stored_food = extracted_results.stored_food.in_units_percent_fed()
-        outdoor_crops = extracted_results.outdoor_crops.in_units_percent_fed()
-        meat = extracted_results.meat.in_units_percent_fed()
-        seaweed = extracted_results.seaweed.in_units_percent_fed()
-        milk = extracted_results.milk.in_units_percent_fed()
-        cell_sugar = extracted_results.cell_sugar.in_units_percent_fed()
-        scp = extracted_results.scp.in_units_percent_fed()
-        greenhouse = extracted_results.greenhouse.in_units_percent_fed()
-        fish = extracted_results.fish.in_units_percent_fed()
-        h_e_meat = extracted_results.h_e_meat.in_units_percent_fed()
-        h_e_milk = extracted_results.h_e_milk.in_units_percent_fed()
-
-        immediate_outdoor_crops = (
-            extracted_results.immediate_outdoor_crops.in_units_percent_fed()
-        )
-        new_stored_outdoor_crops = (
-            extracted_results.new_stored_outdoor_crops.in_units_percent_fed()
-        )
-
-        optimizer_fed_sum = (
-            stored_food
-            + outdoor_crops
-            + meat
-            + seaweed
-            + milk
-            + cell_sugar
-            + scp
-            + greenhouse
-            + fish
-            + h_e_meat
-            + h_e_milk
-        )
-
-        return [
-            optimizer_fed_sum,
-            stored_food,
-            seaweed,
-            outdoor_crops,
-            immediate_outdoor_crops,
-            new_stored_outdoor_crops,
-        ]
-
-    def calc_fraction_outdoor_crops_stored_food_to_humans(
-        self,
-        model,
-        crops_food_eaten_no_rotation,
-        crops_food_eaten_with_rotation,
-        stored_food_eaten,
-        excess_calories,
-        excess_fat_used,
-        excess_protein_used,
-    ):
-
-        # it seems impossible for there to be more fat used for feed than actually produced from all the sources, if the optimizer spits out a positive number of people fed in terms of fat.
-        # The estimate for amount used for feed divides the excess by all the sources (except human edible feed). If the excess is greater than the sources, we have a problem.
-        # The sources actually added to get humans_fed_fat, does however include the excess as a negative number. The excess is added to humans_fat_fed to cancel this. Also, humans_fed_fat includes meat and milk from human edible.
-        # So the only reason it doesnt actually go negative is because the optimizer takes an optimization including the human edible fat which pushes it to some positive balance of people fed in terms of fat.
-        # So its not impossible, it just means that the part of the excess which required more fat had to come from the animal outputs themselves.
-        # By adding a requirement that the fat, calories and protein need to be satisfied before human edible produce meat is taken into account we will have 100% of resources spent on meeting these requirements and 0% going to humans. The optimizer will still
-        print("excess_fat_used")
-        print(excess_fat_used)
-        print(
-            "(np.array(outdoor_crops_fat) + np.array(stored_food_fat)) * self.constants[FAT_MONTHLY] * 1e9"
-        )
-        print(
-            (np.array(outdoor_crops_fat) + np.array(stored_food_fat))
-            * self.constants["FAT_MONTHLY"]
-            * 1e9
-        )
-        outdoor_crops_stored_food_fraction_fat_to_feed = np.divide(
-            excess_fat_used,
-            (np.array(outdoor_crops_fat) + np.array(stored_food_fat))
-            * self.constants["FAT_MONTHLY"]
-            * 1e9,
-        )
-
-        outdoor_crops_stored_food_fraction_fat_to_feed = np.where(
-            total_production == 0, 0, outdoor_crops_stored_food_fraction_fat_to_feed
-        )
-
-        outdoor_crops_stored_food_fraction_fat_to_humans = (
-            1 - outdoor_crops_stored_food_fraction_fat_to_feed
-        )
-
-        if (outdoor_crops_stored_food_fraction_fat_to_humans < 0).any():
-            assert (outdoor_crops_stored_food_fraction_fat_to_humans > -1e-6).all()
-            outdoor_crops_stored_food_fraction_fat_to_humans = np.where(
-                np.array(outdoor_crops_stored_food_fraction_fat_to_humans) < 0,
-                0,
-                np.array(outdoor_crops_stored_food_fraction_fat_to_humans),
-            )
-        print("outdoor_crops_stored_food_fraction_fat_to_humans")
-        print(outdoor_crops_stored_food_fraction_fat_to_humans)
-        outdoor_crops_stored_food_fraction_protein_to_feed = np.divide(
-            excess_protein_used,
-            (np.array(outdoor_crops_protein) + np.array(stored_food_protein))
-            * self.constants["PROTEIN_MONTHLY"]
-            * 1e9,
-        )
-        outdoor_crops_stored_food_fraction_protein_to_feed = np.where(
-            total_production == 0, 0, outdoor_crops_stored_food_fraction_protein_to_feed
-        )
-
-        outdoor_crops_stored_food_fraction_protein_to_humans = (
-            1 - outdoor_crops_stored_food_fraction_protein_to_feed
-        )
-
-        FEED_NAN = np.isnan(outdoor_crops_stored_food_fraction_kcals_to_feed).any()
-
-        MORE_THAN_AVAILABLE_USED_FOR_FEED = not (
-            outdoor_crops_stored_food_fraction_kcals_to_feed <= 1 + 1e-5
-        ).all()
-
-        NEGATIVE_FRACTION_FEED = not (
-            outdoor_crops_stored_food_fraction_kcals_to_feed >= 0
-        ).all()
-
-        if FEED_NAN:
-            print("ERROR: Feed not a number")
-            quit()
-
-        if MORE_THAN_AVAILABLE_USED_FOR_FEED:
-            print("")
-            print(
-                "ERROR: Attempted to feed more food to animals than exists available outdoor growing fat, calories, or protein. Scenario is impossible."
-            )
-            quit()
-
-        if NEGATIVE_FRACTION_FEED:
-            print("ERROR: fraction feed to humans is negative")
-            quit()
-
-        assert (outdoor_crops_stored_food_fraction_kcals_to_feed <= 1 + 1e-5).all()
-
-        if (outdoor_crops_stored_food_fraction_kcals_to_feed >= 1).any():
-            outdoor_crops_stored_food_fraction_kcals_to_humans[
-                outdoor_crops_stored_food_fraction_kcals_to_feed >= 1
-            ] = 0
-
-        assert (outdoor_crops_stored_food_fraction_kcals_to_feed >= 0).all()
-        if self.constants["inputs"]["INCLUDE_FAT"]:
-            assert (outdoor_crops_stored_food_fraction_fat_to_feed <= 1 + 1e-5).all()
-            assert (outdoor_crops_stored_food_fraction_fat_to_feed >= 0).all()
-        if self.constants["inputs"]["INCLUDE_PROTEIN"]:
-            assert (
-                outdoor_crops_stored_food_fraction_protein_to_feed <= 1 + 1e-5
-            ).all()
-            assert (outdoor_crops_stored_food_fraction_protein_to_feed >= 0).all()
-
-    def get_crop_produced_monthly(self):
-        """
-        get the crop produced monthly, rather than the amount eaten
-        incorporates rotations
-        """
-        og_produced_kcals = np.concatenate(
-            [
-                np.array(
-                    crops_food_produced[
-                        0 : self.constants["inputs"][
-                            "INITIAL`HARVEST_DURATION_IN_MONTHS"
-                        ]
-                    ]
-                ),
-                np.array(
-                    crops_food_produced[
-                        self.constants["inputs"]["INITIAL_HARVEST_DURATION_IN_MONTHS"] :
-                    ]
-                )
-                * self.constants["OG_ROTATION_FRACTION_KCALS"],
-            ]
-        )
-
-        self.billions_fed_outdoor_crops_produced_fat = (
-            np.concatenate(
-                [
-                    np.array(
-                        crops_food_produced[
-                            0 : self.constants["inputs"][
-                                "INITIAL_HARVEST_DURATION_IN_MONTHS"
-                            ]
-                        ]
-                    )
-                    * self.constants["OG_FRACTION_FAT"],
-                    np.array(
-                        crops_food_produced[
-                            self.constants["inputs"][
-                                "INITIAL_HARVEST_DURATION_IN_MONTHS"
-                            ] :
-                        ]
-                    )
-                    * self.constants["OG_ROTATION_FRACTION_FAT"],
-                ]
-            )
-            / self.constants["FAT_MONTHLY"]
-            / 1e9
-        )
-
-        self.billions_fed_outdoor_crops_produced_protein = (
-            np.concatenate(
-                [
-                    np.array(
-                        crops_food_produced[
-                            0 : self.constants["inputs"][
-                                "INITIAL_HARVEST_DURATION_IN_MONTHS"
-                            ]
-                        ]
-                    )
-                    * self.constants["OG_FRACTION_PROTEIN"],
-                    np.array(
-                        crops_food_produced[
-                            self.constants["inputs"][
-                                "INITIAL_HARVEST_DURATION_IN_MONTHS"
-                            ] :
-                        ]
-                    )
-                    * self.constants["OG_ROTATION_FRACTION_PROTEIN"],
-                ]
-            )
-            / self.constants["PROTEIN_MONTHLY"]
-            / 1e9
-        )
-
-        self.outdoor_crops_produced = Food(
-            kcals=self.billions_fed_outdoor_crops_produced_kcals,
-            fat=self.billions_fed_outdoor_crops_produced_fat,
-            protein=self.billions_fed_outdoor_crops_produced_protein,
-            kcals_units="billion people fed each month",
-            fat_units="billion people fed each month",
-            protein_units="billion people fed each month",
-        )
-
-        self.billions_fed_outdoor_crops_produced_kcals = np.multiply(
-            og_produced_kcals / self.constants["KCALS_MONTHLY"],
-            self.outdoor_crops_stored_food_fraction_kcals_to_humans,
-        )
-        self.billions_fed_outdoor_crops_produced_fat = np.multiply(
-            self.billions_fed_outdoor_crops_produced_fat,
-            self.outdoor_crops_stored_food_fraction_fat_to_humans,
-        )
-
-        self.billions_fed_outdoor_crops_produced_protein = np.multiply(
-            self.billions_fed_outdoor_crops_produced_protein,
-            self.outdoor_crops_stored_food_fraction_protein_to_humans,
-        )
-
-    def correct_and_validate_rounding_errors(
-        self,
-        stored_food,
-        seaweed,
-        outdoor_crops,
-        immediate_outdoor_crops,
-        new_stored_outdoor_crops,
-        nonhuman_consumption,
-    ):
+    def correct_and_validate_rounding_errors(self, nonhuman_consumption):
         """
         any round error we might expect to be very small and easily fixable is corrected
         here. "small" is with respect to percent people fed
@@ -495,22 +335,22 @@ class Interpreter:
             == new_stored_outdoor_crops.NMONTHS
         )
 
-        assert stored_food.is_units_percent()
-        assert seaweed.is_units_percent()
-        assert outdoor_crops.is_units_percent()
-        assert immediate_outdoor_crops.is_units_percent()
-        assert new_stored_outdoor_crops.is_units_percent()
+        assert self.stored_food.is_units_percent()
+        assert self.seaweed.is_units_percent()
+        assert self.outdoor_crops.is_units_percent()
+        assert self.immediate_outdoor_crops.is_units_percent()
+        assert self.new_stored_outdoor_crops.is_units_percent()
 
         assert nonhuman_consumption.is_units_percent()
 
-        stored_food_rounded = stored_food.get_rounded_to_decimal(1)
-        seaweed_rounded = seaweed.get_rounded_to_decimal(1)
-        outdoor_crops_rounded = outdoor_crops.get_rounded_to_decimal(1)
+        stored_food_rounded = self.stored_food.get_rounded_to_decimal(1)
+        seaweed_rounded = self.seaweed.get_rounded_to_decimal(1)
+        outdoor_crops_rounded = self.outdoor_crops.get_rounded_to_decimal(1)
         immediate_outdoor_crops_rounded = (
-            immediate_outdoor_crops.get_rounded_to_decimal(1)
+            self.immediate_outdoor_crops.get_rounded_to_decimal(1)
         )
         new_stored_outdoor_crops_rounded = (
-            new_stored_outdoor_crops.get_rounded_to_decimal(1)
+            self.new_stored_outdoor_crops.get_rounded_to_decimal(1)
         )
 
         # if the value was a little less than zero, when rounded it would no longer be

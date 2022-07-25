@@ -38,7 +38,6 @@ class Optimizer:
 
         #### MODEL GENERATION LOOP ####
         self.time_months = []
-        self.time_months_middle = []
 
         NMONTHS = single_valued_constants["NMONTHS"]
 
@@ -60,10 +59,6 @@ class Optimizer:
         variables["humans_fed_protein"] = [0] * NMONTHS
 
         for month in range(0, self.single_valued_constants["NMONTHS"]):
-            self.time_months.append(month)
-            self.time_months.append(month + 1)
-            self.time_months_middle.append(month + 0.5)
-
             if single_valued_constants["ADD_SEAWEED"]:
                 (model, variables) = self.add_seaweed_to_model(model, variables, month)
 
@@ -391,9 +386,9 @@ class Optimizer:
                 - self.multi_valued_constants["nonhuman_consumption"].kcals[month]
                 + variables["seaweed_food_produced"][month]
                 * self.single_valued_constants["SEAWEED_KCALS"]
-                + self.multi_valued_constants["dairy_milk_kcals"][month]
-                + self.multi_valued_constants["cattle_maintained_kcals"][month]
-                + self.multi_valued_constants["meat_eaten"][month]
+                + self.multi_valued_constants["grazing_milk_kcals"][month]
+                + self.multi_valued_constants["cattle_grazing_maintained_kcals"][month]
+                + self.multi_valued_constants["meat_culled"][month]
                 + self.multi_valued_constants["production_kcals_cell_sugar_per_month"][
                     month
                 ]
@@ -401,7 +396,7 @@ class Optimizer:
                 + self.multi_valued_constants["greenhouse_area"][month]
                 * self.multi_valued_constants["greenhouse_kcals_per_ha"][month]
                 + self.multi_valued_constants["production_kcals_fish_per_month"][month]
-                + self.multi_valued_constants["h_e_created_kcals"][month]
+                + self.multi_valued_constants["grain_fed_created_kcals"][month]
             )
             / self.single_valued_constants["BILLION_KCALS_NEEDED"]
             * 100,
@@ -422,9 +417,11 @@ class Optimizer:
                     - self.multi_valued_constants["nonhuman_consumption"].fat[month]
                     + variables["seaweed_food_produced"][month]
                     * self.single_valued_constants["SEAWEED_FAT"]
-                    + self.multi_valued_constants["dairy_milk_fat"][month]
-                    + self.multi_valued_constants["cattle_maintained_fat"][month]
-                    + self.multi_valued_constants["meat_eaten"][month]
+                    + self.multi_valued_constants["grazing_milk_fat"][month]
+                    + self.multi_valued_constants["cattle_grazing_maintained_fat"][
+                        month
+                    ]
+                    + self.multi_valued_constants["meat_culled"][month]
                     * self.single_valued_constants["MEAT_FRACTION_FAT"]
                     + self.multi_valued_constants["production_fat_scp_per_month"][month]
                     + self.multi_valued_constants["greenhouse_area"][month]
@@ -432,7 +429,7 @@ class Optimizer:
                     + self.multi_valued_constants["production_fat_fish_per_month"][
                         month
                     ]
-                    + self.multi_valued_constants["h_e_created_fat"][month]
+                    + self.multi_valued_constants["grain_fed_created_fat"][month]
                 )
                 / self.single_valued_constants["THOU_TONS_FAT_NEEDED"]
                 * 100,
@@ -453,26 +450,28 @@ class Optimizer:
                     - self.multi_valued_constants["nonhuman_consumption"].protein[month]
                     + variables["seaweed_food_produced"][month]
                     * self.single_valued_constants["SEAWEED_PROTEIN"]
-                    + self.multi_valued_constants["dairy_milk_protein"][month]
-                    + self.multi_valued_constants["cattle_maintained_protein"][month]
+                    + self.multi_valued_constants["grazing_milk_protein"][month]
+                    + self.multi_valued_constants["cattle_grazing_maintained_protein"][
+                        month
+                    ]
                     + self.multi_valued_constants["production_protein_scp_per_month"][
                         month
                     ]
-                    + self.multi_valued_constants["meat_eaten"][month]
+                    + self.multi_valued_constants["meat_culled"][month]
                     * self.single_valued_constants["MEAT_FRACTION_PROTEIN"]
                     + self.multi_valued_constants["greenhouse_area"][month]
                     * self.multi_valued_constants["greenhouse_protein_per_ha"][month]
                     + self.multi_valued_constants["production_protein_fish_per_month"][
                         month
                     ]
-                    + self.multi_valued_constants["h_e_created_protein"][month]
+                    + self.multi_valued_constants["grain_fed_created_protein"][month]
                 )
                 / self.single_valued_constants["THOU_TONS_PROTEIN_NEEDED"]
                 * 100,
                 "Protein_Fed_Month_" + str(month) + "_Constraint",
             )
 
-        # no feeding human edible maintained meat or dairy to animals or biofuels
+        # no feeding human edible maintained meat or milk to animals or biofuels
 
         model += (
             variables["stored_food_eaten"][month]

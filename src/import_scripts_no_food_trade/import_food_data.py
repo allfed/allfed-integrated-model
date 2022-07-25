@@ -57,9 +57,9 @@ col_names["grasses"] = {
     "Inedible food for ruminants - Year 10 - '000 tonnes": "grasses_y10",
 }
 
-col_names["dairy"] = {
+col_names["milk"] = {
     "ISO3 Country Code": "iso3",
-    "Current milk output - '000 tonnes wet value": "dairy",
+    "Current milk output - '000 tonnes wet value": "milk",
 }
 
 col_names["meat"] = {
@@ -74,7 +74,7 @@ col_names["head_counts"] = {
     "Small animal count": "small_animals",
     "Medium animal count": "medium_animals",
     "Large animal count": "large_animals",
-    "Dairy cow count": "dairy_cows",
+    "Dairy cow count": "milk_cows",
 }
 
 col_names["biofuel"] = {
@@ -148,7 +148,7 @@ col_names["food_waste"] = {
     "Crops (Greenhouses/ outdoor growing)": "distribution_loss_crops",
     "Sugar": "distribution_loss_sugar",
     "Meat": "distribution_loss_meat",
-    "Dairy": "distribution_loss_dairy",
+    "Dairy": "distribution_loss_milk",
     "Seafood": "distribution_loss_seafood",
     "% wasted - pre disaster": "retail_waste_baseline",
     "% wasted - post disaster - food prices double": "retail_waste_price_double",
@@ -196,7 +196,7 @@ food_names = {
     "population": "Population",
     "aquaculture": "Seafood - excluding seaweeds",
     "grasses": "Grazing",
-    "dairy": "Grazing",
+    "milk": "Grazing",
     "meat": "Meat Production",
     "head_counts": "Head Counts",
     "biofuel": "Biofuel",
@@ -261,7 +261,7 @@ for i in range(1, 11):
     )
 
 # convert to tons wet annually
-dataframe_dict["dairy"]["dairy"] = dataframe_dict["dairy"]["dairy"] * 1000
+dataframe_dict["milk"]["milk"] = dataframe_dict["milk"]["milk"] * 1000
 
 
 # convert to tons dry caloric

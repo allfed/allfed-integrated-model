@@ -41,8 +41,12 @@ class FeedAndBiofuels:
             fat_units="tons per year",
             protein_units="tons per year",
         )
-        self.AMOUNT_TO_REDUCE_RATIO_EACH_ITERATION = 0.05  # 5% reduction
-        self.SAFETY_MARGIN = 0.1
+
+        # TODO: DELETE THIS IF NO ERRORS
+        # self.AMOUNT_TO_REDUCE_RATIO_EACH_ITERATION = 0.05  # 5% reduction
+        # self.SAFETY_MARGIN = 0.1
+        self.AMOUNT_TO_REDUCE_RATIO_EACH_ITERATION = 0.01  # 1% reduction
+        self.SAFETY_MARGIN = 0
 
     def set_nonhuman_consumption_with_cap(
         self, constants_for_params, outdoor_crops, stored_food

@@ -37,10 +37,6 @@ class Validator:
         outdoor_crops = interpreter.outdoor_crops_outdoor_crops
         stored_food = interpreter.stored_food_outdoor_crops
 
-        self.ensure_consumption_zero_if_stored_food_plus_outdoor_crops_zero(
-            stored_food_plus_outdoor_crops, nonhuman_consumption
-        )
-
         self.YES_THIS_ONE_PROBABLY_DOES_SOMETHING_USEFUL_question_mark()
 
         (
@@ -57,9 +53,7 @@ class Validator:
             protein_total_from_optimizer,
         )
 
-        self.ensure_immediate_and_new_stored_add_correctly_to_sources(
-            immediate, new_stored, outdoor_crops, stored_food
-        )
+        self.ensure_any_nonzero_kcals_have_nonzero_fat_and_protein(interpreter)
 
     def check_constraints_satisfied(self, model, maximize_constraints, variables):
         """
@@ -229,17 +223,17 @@ class Validator:
 
         denominator = (
             stored_food_outdoor_crops_kcals
-            + self.billions_fed_h_e_meat_kcals
-            + self.billions_fed_h_e_milk_kcals
+            + self.billions_fed_grain_fed_meat_kcals
+            + self.billions_fed_grain_fed_milk_kcals
         )
 
         fractional_difference = np.divide(
             (
                 stored_food_outdoor_crops_kcals
-                + self.billions_fed_h_e_meat_kcals
-                + self.billions_fed_h_e_milk_kcals
+                + self.billions_fed_grain_fed_meat_kcals
+                + self.billions_fed_grain_fed_milk_kcals
             )
-            - (np.array(division) + self.billions_fed_h_e_balance.kcals),
+            - (np.array(division) + self.billions_fed_grain_fed_balance.kcals),
             denominator,
         )
 
@@ -325,9 +319,9 @@ class Validator:
                 index += 1
             numerator = (
                 stored_food_outdoor_crops_fat
-                + self.billions_fed_h_e_meat_fat
-                + self.billions_fed_h_e_milk_fat
-            ) - (np.array(division) + self.billions_fed_h_e_balance.fat)
+                + self.billions_fed_grain_fed_meat_fat
+                + self.billions_fed_grain_fed_milk_fat
+            ) - (np.array(division) + self.billions_fed_grain_fed_balance.fat)
 
             # stored_food_outdoor_crops_fat + MEAT_MILK_H_E ==
             # (stored_food_outdoor_crops_fat/outdoor_crops_SF_FRACTION_FAT_TO_HUMANS + BALANCE_FAT)
@@ -446,13 +440,13 @@ class Validator:
             # DELETEME
 
             print(
-                "stored_food_outdoor_crops_fat+ self.billions_fed_h_e_meat_fat+ self.billions_fed_h_e_milk_fat"
+                "stored_food_outdoor_crops_fat+ self.billions_fed_grain_fed_meat_fat+ self.billions_fed_grain_fed_milk_fat"
             )
             print(
                 (
                     stored_food_outdoor_crops_fat
-                    + self.billions_fed_h_e_meat_fat
-                    + self.billions_fed_h_e_milk_fat
+                    + self.billions_fed_grain_fed_meat_fat
+                    + self.billions_fed_grain_fed_milk_fat
                 )
                 / population_billions
                 * 100
@@ -460,16 +454,16 @@ class Validator:
 
             print("np.array(division)")
             print(100 * (np.array(division) / population_billions))
-            print("np.array(division) + self.billions_fed_h_e_balance.fat")
+            print("np.array(division) + self.billions_fed_grain_fed_balance.fat")
             print(
-                (np.array(division) + self.billions_fed_h_e_balance.fat)
+                (np.array(division) + self.billions_fed_grain_fed_balance.fat)
                 / population_billions
                 * 100
             )
             denominator = (
                 stored_food_outdoor_crops_fat
-                + self.billions_fed_h_e_meat_fat
-                + self.billions_fed_h_e_milk_fat
+                + self.billions_fed_grain_fed_meat_fat
+                + self.billions_fed_grain_fed_milk_fat
             )
 
             numerator_percent = 100 * (numerator / population_billions)
@@ -510,14 +504,14 @@ class Validator:
 
             numerator = (
                 stored_food_outdoor_crops_protein
-                + self.billions_fed_h_e_meat_protein
-                + self.billions_fed_h_e_milk_protein
-            ) - (np.array(division) + self.billions_fed_h_e_balance.protein)
+                + self.billions_fed_grain_fed_meat_protein
+                + self.billions_fed_grain_fed_milk_protein
+            ) - (np.array(division) + self.billions_fed_grain_fed_balance.protein)
 
             denominator = (
                 stored_food_outdoor_crops_protein
-                + self.billions_fed_h_e_meat_protein
-                + self.billions_fed_h_e_milk_protein
+                + self.billions_fed_grain_fed_meat_protein
+                + self.billions_fed_grain_fed_milk_protein
             )
 
             fractional_difference = np.divide(
@@ -549,7 +543,7 @@ class Validator:
         )
 
         assert (
-            (self.sf + self.rot + self.no_rot - self.excess)
+            (self.sf + self.rotation + self.no_rotation - self.excess)
             .in_units_percent()
             .all_greater_than(small_percent_threshold)
         ), """There are too few calories 
@@ -560,7 +554,9 @@ class Validator:
            precision. Consider reducing precision. Quitting."""
 
         if (
-            -(self.sf + self.rot + self.no_rot - self.excess).in_units_percent()
+            -(
+                self.sf + self.rotation + self.no_rotation - self.excess
+            ).in_units_percent()
         ).any_greater_than_or_equal_to(small_percent_threshold):
             print("")
             print(
@@ -575,8 +571,14 @@ class Validator:
         just look at the reported result of the objective of the optimizer
         """
 
-        percent_people_fed_reported_directly_by_optimizer = model.objective.value()
-        percent_people_fed_by_summing_all_foods = interpeter.percent_people_fed
+        decimals = 1
+
+        percent_people_fed_reported_directly_by_optimizer = round(
+            model.objective.value(), decimals
+        )
+        percent_people_fed_by_summing_all_foods = round(
+            interpeter.percent_people_fed, decimals
+        )
 
         # WE MIGHT WANT TO USE THIS INSTEAD, WE SHALL SEE
         # assert (
@@ -585,55 +587,12 @@ class Validator:
         #     < percent_people_fed_by_summing_all_foods + 0.1
         # ), "ERROR: The optimizer and the extracted results do not match"
         assert (
-            percent_people_fed_by_summing_all_foods
-            < percent_people_fed_reported_directly_by_optimizer
-            < percent_people_fed_by_summing_all_foods
+            percent_people_fed_reported_directly_by_optimizer
+            == percent_people_fed_by_summing_all_foods
         ), "ERROR: The optimizer and the extracted results do not match"
 
-    def ensure_interpreted_food_to_humans_same_as_food_from_optimizer(self, results):
-        """
-        ensure that the total food to humans plus food to other equals the total food
-
-        Does this by summing the food results directly from the extractor,
-        and comparing to the food results from the intepreter
-
-        """
-
-        total_food_to_humans = results.x + results.x + results.x
-        total_food_to_other = results.x + results.x + results.x
-        total_food = total_food_to_humans + total_food_to_other
-
-        assert (
-            total_food - 0.1 < results.total_food - total_food < total_food + 0.1
-        ), "ERROR: The total food to humans plus food to other does not equal the total food"
-
-    def ensure_consumption_zero_if_stored_food_plus_outdoor_crops_zero(
-        self, stored_food_plus_outdoor_crops, nonhuman_consumption
+    def ensure_any_nonzero_kcals_have_nonzero_fat_and_protein(
+        self, interpreter_results
     ):
-        """
-        ensure that the consumption of nonhuman food is zero where the stored food plus
-        outdoor crops is zero
-        """
-
-        nonhuman_consumption_where_stored_food_plus_outdoor_crops_zero = np.where(
-            stored_food_plus_outdoor_crops <= 0, nonhuman_consumption, 0
-        )
-
-        assert (
-            nonhuman_consumption_where_stored_food_plus_outdoor_crops_zero == 0
-        ).all()
-
-    def ensure_immediate_and_new_stored_add_correctly_to_sources(
-        self, immediate, new_stored, outdoor_crops, stored_food
-    ):
-
-        difference = (immediate + new_stored) - (outdoor_crops + new_stored)
-        difference_rounded = difference.get_rounded_to_decimal(1)
-
-        assert difference_rounded.is_units_percent()
-
-        assert (
-            difference_rounded.kcals == 0
-        ).all(), """ERROR: Immediate 
-            and new stored sources do not add up to the sources of outdoor crops 
-            and stored food"""
+        # true for every food source and also for feed and biofuels independently.
+        
