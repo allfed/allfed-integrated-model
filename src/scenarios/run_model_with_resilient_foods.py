@@ -42,9 +42,13 @@ def run_model_with_resilient_foods(plot_figures=True):
     constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
     constants_for_params = scenarios_loader.set_immediate_shutoff(constants_for_params)
 
+    scenario_runner = ScenarioRunner()
+    results = scenario_runner.run_and_analyze_scenario(
+        constants_for_params, scenarios_loader
+    )
     print("")
-    print("no waste estimated people fed (kcals/capita/day)")
-    print(results.percent_people_fed / 100 * 2100)
+    print("no waste estimated people fed (percent)")
+    print(results.percent_people_fed)
     print("")
 
     np.save("../../data/resilient_food_primary_results.npy", results, allow_pickle=True)
@@ -52,11 +56,6 @@ def run_model_with_resilient_foods(plot_figures=True):
     # No excess calories
     constants_for_params["EXCESS_FEED_KCALS"] = np.array(
         [0] * constants_for_params["NMONTHS"]
-    )
-
-    scenario_runner = ScenarioRunner()
-    results = scenario_runner.run_and_analyze_scenario(
-        constants_for_params, scenarios_loader
     )
 
     scenarios_loader, constants_for_params = set_common_resilient_properties()
@@ -73,14 +72,14 @@ def run_model_with_resilient_foods(plot_figures=True):
         [0] * constants_for_params["NMONTHS"]
     )
 
-    single_valued_constants["CHECK_CONSTRAINTS"] = False
-    [time_months, time_months_middle, results] = optimizer.optimize(
-        single_valued_constants, multi_valued_constants
+    scenario_runner = ScenarioRunner()
+    results = scenario_runner.run_and_analyze_scenario(
+        constants_for_params, scenarios_loader
     )
 
     results1 = results
     print(
-        "Food available after waste, feed ramp down and biofuel ramp down, with resilient foods (kcals per capita per day)"
+        "Food available after waste, feed ramp down and biofuel ramp down, with resilient foods (percent)"
     )
     print(results.percent_people_fed / 100 * 2100)
     print("")

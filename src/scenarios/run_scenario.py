@@ -45,7 +45,6 @@ class ScenarioRunner:
 
         returns: the interpreted results
         """
-        extractor = Extractor(constants_for_params)
         interpreter = Interpreter()
         validator = Validator()
 
@@ -55,6 +54,8 @@ class ScenarioRunner:
             single_valued_constants,
             multi_valued_constants,
         ) = self.compute_parameters(constants_for_params, scenarios_loader)
+
+        extractor = Extractor(single_valued_constants)
 
         # actually make PuLP optimize effective people fed based on all the constants
         # we've determined
@@ -72,7 +73,6 @@ class ScenarioRunner:
 
         # TODO: eventually all the values not directly solved by the optimizer should
         # be removed from extracted_results
-        validator.validate_optimizer(model)
 
         #  interpret the results, nicer for plotting, reporting, and printing results
         interpreted_results = interpreter.interpret_results(
@@ -82,7 +82,7 @@ class ScenarioRunner:
         # ensure no errors were made in the extraction and interpretation, or if the
         # optimizer did not correctly satisfy constraints within a reasonable margin
         # of error
-        validator.validate_results(model, interpreted_results)
+        validator.validate_results(model, extracted_results, interpreted_results)
 
         PRINT_NEEDS_RATIO = True
         if PRINT_NEEDS_RATIO:

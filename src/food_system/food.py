@@ -252,6 +252,110 @@ class Food(UnitConversions):
         assert type(self.fat) == np.ndarray
         assert type(self.protein) == np.ndarray
 
+    def ensure_other_list_zero_if_this_is_zero(self, other_list):
+        """
+        Get the value of the elements where the passed in list is zero, otherwise
+        returned elements are zero.
+        """
+        self.make_sure_is_a_list()
+        other_list.make_sure_is_a_list()
+
+        assert other_list.NMONTHS == self.NMONTHS
+
+        # values with zeros are zeros in all of our unit systems! How convenient.
+        # That's why there's no need to check units.
+
+        # here's an example of what np.where does in this context:
+        #   >>> self = np.array([1005,693,0,532,786])   # random numbers
+        #   >>> list_with_zeros = np.array([0,1,3,0,5]) # random numbers
+        #   >>> replacement = np.array([101,62,23,3,0]) # random numbers
+        #   >>>
+        #   >>> # replace with the replacement if list_with_zeros is zero
+        #   >>> processed_list = np.where(
+        #   >>>     list_with_zeros == 0,
+        #   >>>     replacement,
+        #   >>>     self,
+        #   >>> )
+        #   >>>
+        #   >>> print(processed_list)
+        #   [101 693   0   3 786]
+
+        # where self is nonzero, we don't care, so we set it to zero
+
+        processed_list_kcals = np.where(
+            self.kcals == 0,
+            other_list.kcals,
+            0,
+        )
+
+        processed_list_fat = np.where(
+            self.fat == 0,
+            other_list.fat,
+            0,
+        )
+
+        processed_list_protein = np.where(
+            self.protein == 0,
+            other_list.protein,
+            0,
+        )
+
+        processed_list = Food(
+            kcals=processed_list_kcals,
+            fat=processed_list_fat,
+            protein=processed_list_protein,
+            kcals_units=self.kcals_units,
+            fat_units=self.fat_units,
+            protein_units=self.protein_units,
+        )
+
+        assert processed_list.all_equals_zero()
+
+    def make_sure_fat_protein_zero_if_kcals_is_zero(self):
+        """
+        Get the value of the elements where the passed in list is zero, otherwise
+        returned elements are zero.
+        """
+
+        if self.is_list_monthly():
+            self.validate_if_list()
+            # where self is nonzero, we don't care, so we set it to zero
+
+            fat_all_the_places_kcals_zero = np.where(
+                self.kcals == 0,
+                self.fat,
+                0,
+            )
+
+            protein_all_the_places_kcals_zero = np.where(
+                self.kcals == 0,
+                self.protein,
+                0,
+            )
+
+            assert (fat_all_the_places_kcals_zero == 0).all()
+            assert (protein_all_the_places_kcals_zero == 0).all()
+
+        else:
+
+            if self.kcals == 0:
+                assert self.fat == 0
+                assert self.protein == 0
+
+    def make_sure_not_nan(self):
+        """
+        Make sure that the food is not a nan number, or fail the assertion
+        """
+        if self.is_list_monthly:
+            self.validate_if_list()
+            assert not np.isnan(self.kcals).any()
+            assert not np.isnan(self.fat).any()
+            assert not np.isnan(self.protein).any()
+        else:
+            assert not np.isnan(self.kcals)
+            assert not np.isnan(self.fat)
+            assert not np.isnan(self.protein)
+
     # These are all for mathematical operations on the food's macronutrients, such as
     # adding, subtracting, multiplying, and dividing.
 
@@ -286,10 +390,42 @@ class Food(UnitConversions):
     def __truediv__(self, other):
         """
         Divides a food's macronutrients by a number.
+
+        Works for food / food, and food list / food list, and food / number.
+
+        cases:
+            this is a food list, other is a food list
+            this is a food, other is a food
+            this is a food, other is a number
+
         """
         if type(other) == Food:
 
             assert self.units == other.units
+
+            if self.is_list_monthly():
+                assert other.is_list_monthly(), """Error: for food lists, can
+                    only divide by food lists at the moment. Consider implementing
+                    additional cases."""
+
+                self.validate_if_list()
+                other.validate_if_list()
+
+                with np.errstate(divide="ignore"):
+                    # ignoring divide by zero warnings
+                    # (that's fine, divide by zero expected)
+                    return Food(
+                        np.divide(self.kcals, other.kcals),
+                        np.divide(self.fat, other.fat),
+                        np.divide(self.protein, other.protein),
+                        "ratio each month",
+                        "ratio each month",
+                        "ratio each month",
+                    )
+
+            assert not other.is_list_monthly(), """Error: for foods, can only divide 
+                by foods or numbers at the moment, not food lists. Consider
+                implementing additional cases."""
 
             return Food(
                 self.kcals / other.kcals,
@@ -346,10 +482,30 @@ class Food(UnitConversions):
                 other is a ratio, this is a ratio
 
         """
-
         if not self.is_list_monthly():
             if type(other) == Food:
                 # this is a food and other is a food
+                if other.is_list_monthly():
+                    # this is a food and other is a food list
+
+                    this_is_the_ratio = self.is_a_ratio()
+
+                    assert this_is_the_ratio, """unable to multiply a food by a food list
+                     where the non-list food is not a ratio, consider implementing 
+                     this feature"""
+
+                    kcals_units = other.kcals_units
+                    fat_units = other.fat_units
+                    protein_units = other.protein_units
+
+                    return Food(
+                        kcals=self.kcals * np.array(other.kcals),
+                        fat=self.fat * np.array(other.fat),
+                        protein=self.protein * np.array(other.protein),
+                        kcals_units=kcals_units,
+                        fat_units=fat_units,
+                        protein_units=protein_units,
+                    )
 
                 this_is_the_ratio = self.is_a_ratio()
                 other_is_the_ratio = other.is_a_ratio()
@@ -379,28 +535,6 @@ class Food(UnitConversions):
 
                 assert self.get_units() == other.get_units_from_element_to_list()
 
-            if other.is_list_monthly():
-                # this is a food and other is a food list
-
-                this_is_the_ratio = self.is_a_ratio()
-
-                assert this_is_the_ratio, """unable to multiply a food by a food list
-                 where the non-list food is not a ratio, consider implementing 
-                 this feature"""
-
-                kcals_units = other.kcals_units
-                fat_units = other.fat_units
-                protein_units = other.protein_units
-
-                return Food(
-                    kcals=self.kcals * np.array(other.kcals),
-                    fat=self.fat * np.array(other.fat),
-                    protein=self.protein * np.array(other.protein),
-                    kcals_units=kcals_units,
-                    fat_units=fat_units,
-                    protein_units=protein_units,
-                )
-
             # this is a food and other is a non food
 
             return Food(
@@ -415,14 +549,48 @@ class Food(UnitConversions):
         self.make_sure_is_a_list()
         self.validate_if_list()
 
-        # this is a food list and other is a food
         if type(other) == Food:
+
+            if other.is_list_monthly():
+                # this is a food list and other is a food list
+
+                other.validate_if_list()
+
+                this_is_the_ratio = self.is_a_ratio()
+                other_is_the_ratio = other.is_a_ratio()
+
+                assert (
+                    this_is_the_ratio or other_is_the_ratio
+                ), "list multiplication only works if one or both is a ratios right now"
+
+                if this_is_the_ratio:
+                    kcals_units = other.kcals_units
+                    fat_units = other.fat_units
+                    protein_units = other.protein_units
+
+                if other_is_the_ratio:
+                    kcals_units = self.kcals_units
+                    fat_units = self.fat_units
+                    protein_units = self.protein_units
+
+                return Food(
+                    kcals=np.multiply(np.array(self.kcals), np.array(other.kcals)),
+                    fat=np.multiply(np.array(self.fat), np.array(other.fat)),
+                    protein=np.multiply(
+                        np.array(self.protein), np.array(other.protein)
+                    ),
+                    kcals_units=kcals_units,
+                    fat_units=fat_units,
+                    protein_units=protein_units,
+                )
+
+            # this is a food list and other is a food
 
             other_is_the_ratio = other.is_a_ratio()
 
             assert other_is_the_ratio, """unable to multiply a food list by a food
-             where the non-list food is not a ratio, consider implementing 
-             this feature"""
+                where the non-list food is not a ratio, consider implementing 
+                this feature"""
 
             kcals_units = self.kcals_units
             fat_units = self.fat_units
@@ -432,37 +600,6 @@ class Food(UnitConversions):
                 kcals=self.kcals * other.kcals,
                 fat=self.fat * other.fat,
                 protein=self.protein * other.protein,
-                kcals_units=kcals_units,
-                fat_units=fat_units,
-                protein_units=protein_units,
-            )
-
-        if other.is_list_monthly():
-            # this is a food list and other is a food list
-
-            other.validate_if_list()
-
-            this_is_the_ratio = self.is_a_ratio()
-            other_is_the_ratio = other.is_a_ratio()
-
-            assert (
-                this_is_the_ratio or other_is_the_ratio
-            ), "list multiplication only works if one or both is a ratios right now"
-
-            if this_is_the_ratio:
-                kcals_units = other.kcals_units
-                fat_units = other.fat_units
-                protein_units = other.protein_units
-
-            if other_is_the_ratio:
-                kcals_units = self.kcals_units
-                fat_units = self.fat_units
-                protein_units = self.protein_units
-
-            return Food(
-                kcals=np.multiply(np.array(self.kcals), np.array(other.kcals)),
-                fat=np.multiply(np.array(self.fat), np.array(other.fat)),
-                protein=np.multiply(np.array(self.protein), np.array(other.protein)),
                 kcals_units=kcals_units,
                 fat_units=fat_units,
                 protein_units=protein_units,
@@ -692,24 +829,40 @@ class Food(UnitConversions):
         """
         Returns True if the food's macronutrients are less than or equal to
         the other food's.
+
+        cases:
+            this is food, other is food
+            this is food, other is food list
+            this is food list, other is food
+            this is food list, other is food list
         """
 
-        assert self.units == other.units
-
-        if self.is_list_monthly():
-
-            self.validate_if_list()
+        # this is food, other is food
+        if (not self.is_list_monthly()) and (not other.is_list_monthly()):
+            assert self.units == other.units
 
             return (
-                (np.array(self.kcals - other.kcals) <= 0).all()
-                and (np.array(self.fat - other.fat) <= 0).all()
-                and (np.array(self.protein - other.protein) <= 0).all()
+                self.kcals <= other.kcals
+                and self.fat <= other.fat
+                and self.protein <= other.protein
             )
 
+        if (not self.is_list_monthly()) and other.is_list_monthly():
+            # this is food, other is food list
+            assert self.get_units_from_element_to_list() == other.get_units()
+
+        if self.is_list_monthly() and not other.is_list_monthly():
+            # this is food list, other is food
+            assert self.get_units() == other.get_units_from_element_to_list()
+
+        # this is food list, other is food list
+        if (self.is_list_monthly()) and other.is_list_monthly():
+            assert self.units == other.units
+
         return (
-            self.kcals <= other.kcals
-            and self.fat <= other.fat
-            and self.protein <= other.protein
+            (self.kcals <= other.kcals).all()
+            and (self.fat <= other.fat).all()
+            and (self.protein <= other.protein).all()
         )
 
     def any_greater_than_or_equal_to(self, other):
@@ -851,33 +1004,37 @@ class Food(UnitConversions):
         """
         Returns the minimum nutrient of the food.
 
-        NOTE: only works on single valued instances of nutrients, not arrays.
+        Can return the minimum of any month of any nutrient if a food list, or just
+        `the minimum of any nutrient if a food
 
         Returns:
         (minimum nutrient name, minimum nutrient value)
         """
         assert self.kcals_units == self.fat_units == self.protein_units
 
-        self.make_sure_not_a_list()
+        if self.is_list_monthly():
+            to_find_min_of = self.get_min_all_months()
+        else:
+            to_find_min_of = self
 
         nutrients_dict = {
-            "kcals": self.kcals,
-            "fat": self.fat,
-            "protein": self.protein,
+            "kcals": to_find_min_of.kcals,
+            "fat": to_find_min_of.fat,
+            "protein": to_find_min_of.protein,
         }
 
         # Using min() + list comprehension + values()
         # Finding min value keys in dictionary
         min_nutrient_val = min(nutrients_dict.values())
-        min_key = [
+        min_nutrient_name = [
             key for key in nutrients_dict if nutrients_dict[key] == min_nutrient_val
         ][0]
 
-        assert min_nutrient_val <= self.kcals
-        assert min_nutrient_val <= self.fat
-        assert min_nutrient_val <= self.protein
+        assert min_nutrient_val <= to_find_min_of.kcals
+        assert min_nutrient_val <= to_find_min_of.fat
+        assert min_nutrient_val <= to_find_min_of.protein
 
-        return (min_key, min_nutrient_val)
+        return (min_nutrient_name, min_nutrient_val)
 
     def get_max_nutrient(self):
         """
@@ -1000,6 +1157,8 @@ class Food(UnitConversions):
         """
         create a food with the minimum of every month as a total nutrient
         """
+        self.make_sure_is_a_list()
+
         min_all_months = Food(
             kcals=min(self.kcals),
             fat=min(self.fat),
@@ -1117,11 +1276,12 @@ class Food(UnitConversions):
         # make sure all the same lengths of the lists
         assert list_with_zeros.NMONTHS == self.NMONTHS
 
-        if replacement.is_list_monthly():
-            assert self.NMONTHS == replacement.NMONTHS
-            assert self.get_units() == replacement.get_units()
-        elif type(replacement) == Food:
-            assert self.get_units() == replacement.get_units_from_element_to_list()
+        if type(replacement) == Food:
+            if replacement.is_list_monthly():
+                assert self.NMONTHS == replacement.NMONTHS
+                assert self.get_units() == replacement.get_units()
+            else:
+                assert self.get_units() == replacement.get_units_from_element_to_list()
 
         # here's an example of what np.where does in this context:
         #   >>> self = np.array([1005,693,0,532,786])   # random numbers
@@ -1140,7 +1300,7 @@ class Food(UnitConversions):
         #   >>> print(processed_list)
         #   [101 693   0   3 786]
 
-        if replacement.is_list_monthly() or type(replacement) == Food:
+        if type(replacement) == Food:
             # replacement specified per nutrient
             processed_list_kcals = np.where(
                 list_with_zeros.kcals == 0,
@@ -1189,62 +1349,3 @@ class Food(UnitConversions):
         )
 
         return processed_list
-
-    def ensure_other_list_zero_if_this_is_zero(self, other_list):
-        """
-        Get the value of the elements where the passed in list is zero, otherwise
-        returned elements are zero.
-        """
-        self.make_sure_is_a_list()
-        other_list.make_sure_is_a_list()
-
-        assert other_list.NMONTHS == self.NMONTHS
-
-        # values with zeros are zeros in all of our unit systems! How convenient.
-        # That's why there's no need to check units.
-
-        # here's an example of what np.where does in this context:
-        #   >>> self = np.array([1005,693,0,532,786])   # random numbers
-        #   >>> list_with_zeros = np.array([0,1,3,0,5]) # random numbers
-        #   >>> replacement = np.array([101,62,23,3,0]) # random numbers
-        #   >>>
-        #   >>> # replace with the replacement if list_with_zeros is zero
-        #   >>> processed_list = np.where(
-        #   >>>     list_with_zeros == 0,
-        #   >>>     replacement,
-        #   >>>     self,
-        #   >>> )
-        #   >>>
-        #   >>> print(processed_list)
-        #   [101 693   0   3 786]
-
-        # where self is nonzero, we don't care, so we set it to zero
-
-        processed_list_kcals = np.where(
-            self.kcals == 0,
-            other_list.kcals,
-            0,
-        )
-
-        processed_list_fat = np.where(
-            self.fat == 0,
-            other_list.fat,
-            0,
-        )
-
-        processed_list_protein = np.where(
-            self.protein == 0,
-            other_list.protein,
-            0,
-        )
-
-        processed_list = Food(
-            kcals=processed_list_kcals,
-            fat=processed_list_fat,
-            protein=processed_list_protein,
-            kcals_units=self.kcals_units,
-            fat_units=self.fat_units,
-            protein_units=self.protein_units,
-        )
-
-        assert processed_list.all_equals_zero()

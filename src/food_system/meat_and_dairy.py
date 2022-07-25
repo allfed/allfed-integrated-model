@@ -138,7 +138,7 @@ class MeatAndDairy:
             self.MEAT_FRACTION_FAT = 0
             self.MEAT_FRACTION_PROTEIN = 0
 
-    def calculate_meat_and_milk_from_excess(self, kcals_fed_to_animals):
+    def calculate_meat_and_dairy_from_excess(self, kcals_fed_to_animals):
 
         # each unit of excess kcals (with associated fat and protein)
         # are fed first to milk, then to pigs and chickens, then to cattle
@@ -505,7 +505,7 @@ class MeatAndDairy:
         if not constants_for_params["CULL_ANIMALS"]:
             assert max(meat_culled) == 0
 
-        return meat_culled
+        return np.array(meat_culled)
 
     def calculate_animals_culled(self, constants_for_params):
         if constants_for_params["CULL_ANIMALS"]:
@@ -580,13 +580,6 @@ class MeatAndDairy:
         return_grain_fed_milk_fat = np.array([])
         return_grain_fed_milk_protein = np.array([])
         for i in range(self.NMONTHS):
-            if i == 0:
-                print("meat plus milk greater?")
-                print(grain_fed_milk_fat[i] + grain_fed_meat_fat[i] > feed.fat[i])
-                print(
-                    grain_fed_milk_fat[i] + grain_fed_meat_fat[i]
-                    > feed.fat[i] * BEST_POSSIBLE_CONVERSION_RATIO
-                )
             if (
                 grain_fed_milk_fat[i] + grain_fed_meat_fat[i]
                 > feed.fat[i] * BEST_POSSIBLE_CONVERSION_RATIO
@@ -634,8 +627,6 @@ class MeatAndDairy:
                 return_grain_fed_milk_protein = np.append(
                     return_grain_fed_milk_protein, grain_fed_milk_protein[i]
                 )
-        print("return_grain_fed_meat_fat[0]+return_grain_fed_milk_fat[0]")
-        print(return_grain_fed_meat_fat[0] + return_grain_fed_milk_fat[0])
 
         return (
             return_grain_fed_meat_fat,

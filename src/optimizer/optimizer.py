@@ -78,7 +78,9 @@ class Optimizer:
 
         PRINT_PULP_MESSAGES = False
         model += variables["objective_function"]
-        status = model.solve(pulp.PULP_CBC_CMD(gapRel=0.0001, msg=PRINT_PULP_MESSAGES))
+        status = model.solve(
+            pulp.PULP_CBC_CMD(gapRel=0.0001, msg=PRINT_PULP_MESSAGES, fracGap=0.001)
+        )
 
         assert status == 1, "ERROR: OPTIMIZATION FAILED!"
 
@@ -157,23 +159,23 @@ class Optimizer:
         variables["stored_food_start"][month] = LpVariable(
             "Stored_Food_Start_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["INITIAL_stored_food_KCALS"],
+            self.single_valued_constants["INITIAL_SF_KCALS"],
         )
         variables["stored_food_end"][month] = LpVariable(
             "Stored_Food_End_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["INITIAL_stored_food_KCALS"],
+            self.single_valued_constants["INITIAL_SF_KCALS"],
         )
         variables["stored_food_eaten"][month] = LpVariable(
             "Stored_Food_Eaten_During_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["INITIAL_stored_food_KCALS"],
+            self.single_valued_constants["INITIAL_SF_KCALS"],
         )
 
         if month == 0:  # first Month
             model += (
                 variables["stored_food_start"][0]
-                == self.single_valued_constants["INITIAL_stored_food_KCALS"],
+                == self.single_valued_constants["INITIAL_SF_KCALS"],
                 "Stored_Food_Start_Month_0_Constraint",
             )
         else:

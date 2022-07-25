@@ -23,8 +23,7 @@ module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-# TODO: DELETE ME WITHOUT REMORSE
-# strand 2 : optimizer fed sum works?
+from src.food_system.food import Food
 
 
 class Interpreter:
@@ -46,11 +45,33 @@ class Interpreter:
         ANYTHING assigned to "self" here is part of a useful result that will either
         be printed or plotted as a result
 
-        In no other function is anything assigned to "self" (other than functions)
         """
 
-        # NOTE: this long function is like this because I wanted to be really
-        # obvious what was being assigned in this class and to put it right at the top.
+        self.assign_percent_fed_from_extractor(extracted_results)
+        self.assign_kcals_effective_from_extractor(extracted_results)
+
+        # now the same, but in units effective kcals per day
+        # all these are just used for plotting only
+
+        # TODO: only used for plotting, should remove eventually
+        self.constants = extracted_results.constants
+        self.assign_time_months_middle(self.constants["NMONTHS"])
+
+        # nonhuman consumption in units percent people fed
+
+        nonhuman_consumption_billions_fed = multi_valued_constants[
+            "nonhuman_consumption"
+        ]
+
+        self.nonhuman_consumption_percent = (
+            nonhuman_consumption_billions_fed.in_units_percent_fed()
+        )
+
+        self.assign_interpreted_properties(extracted_results)
+
+        return self
+
+    def assign_percent_fed_from_extractor(self, extracted_results):
 
         self.stored_food = extracted_results.stored_food.in_units_percent_fed()
 
@@ -84,16 +105,63 @@ class Interpreter:
             extracted_results.new_stored_outdoor_crops.in_units_percent_fed()
         )
 
-        nonhuman_consumption = multi_valued_constants[
-            "nonhuman_consumption"
-        ].in_units_percent_fed()
+    def assign_kcals_effective_from_extractor(self, extracted_results):
 
-        optimizer_fed_sum = self.get_sum_by_subtracting_nonhuman(nonhuman_consumption)
+        self.stored_food_kcals_eff = extracted_results.stored_food.in_units_kcals_eff()
+
+        self.outdoor_crops_kcals_eff = (
+            extracted_results.outdoor_crops.in_units_kcals_eff()
+        )
+
+        self.seaweed_kcals_eff = extracted_results.seaweed.in_units_kcals_eff()
+
+        self.cell_sugar_kcals_eff = extracted_results.cell_sugar.in_units_kcals_eff()
+
+        self.scp_kcals_eff = extracted_results.scp.in_units_kcals_eff()
+
+        self.greenhouse_kcals_eff = extracted_results.greenhouse.in_units_kcals_eff()
+
+        self.fish_kcals_eff = extracted_results.fish.in_units_kcals_eff()
+
+        self.meat_culled_plus_grazing_cattle_maintained_kcals_eff = (
+            extracted_results.meat_culled_plus_grazing_cattle_maintained.in_units_kcals_eff()
+        )
+
+        self.grazing_milk_kcals_eff = (
+            extracted_results.grazing_milk.in_units_kcals_eff()
+        )
+
+        self.grain_fed_meat_kcals_eff = (
+            extracted_results.grain_fed_meat.in_units_kcals_eff()
+        )
+
+        self.grain_fed_milk_kcals_eff = (
+            extracted_results.grain_fed_milk.in_units_kcals_eff()
+        )
+
+        self.immediate_outdoor_crops_kcals_eff = (
+            extracted_results.immediate_outdoor_crops.in_units_kcals_eff()
+        )
+
+        self.new_stored_outdoor_crops_kcals_eff = (
+            extracted_results.new_stored_outdoor_crops.in_units_kcals_eff()
+        )
+
+    def assign_time_months_middle(self, NMONTHS):
+        self.time_months_middle = []
+        for month in range(0, NMONTHS):
+            self.time_months_middle.append(month + 0.5)
+
+    def assign_interpreted_properties(self, extracted_results):
+
+        humans_fed_sum = self.get_sum_by_subtracting_nonhuman(
+            self.nonhuman_consumption_percent
+        )
 
         (
             self.percent_people_fed,
             self.constraining_nutrient,
-        ) = self.get_percent_people_fed(optimizer_fed_sum)
+        ) = self.get_percent_people_fed(humans_fed_sum)
 
         # rounding errors can be introduced by the optimizer. We correct them here.
         # ... at least the ones that we can identify.
@@ -105,19 +173,17 @@ class Interpreter:
             self.outdoor_crops_rounded,
             self.immediate_outdoor_crops_rounded,
             self.new_stored_outdoor_crops_rounded,
-            self.outdoor_crops_plus_stored_food_rounded,
-        ) = self.correct_and_validate_rounding_errors(nonhuman_consumption)
+            self.outdoor_crops_plus_stored_food,
+        ) = self.correct_and_validate_rounding_errors(self.nonhuman_consumption_percent)
 
         # get the ratio for stored_food_rounded and outdoor_crops (after subtracting
         # feed and biofuels)
         to_humans_ratio = self.get_ratio_for_stored_food_and_outdoor_crops(
             self.stored_food_rounded,
             self.outdoor_crops_rounded,
-            self.outdoor_crops_plus_stored_food_rounded,
-            nonhuman_consumption,
+            self.outdoor_crops_plus_stored_food,
+            self.nonhuman_consumption_percent,
         )
-
-        # TODO: git diff on the import scripts to be sure nothing WONKY is going on
 
         # TODO: delete this printout
         print("to_humans_ratio")
@@ -129,16 +195,26 @@ class Interpreter:
             self.immediate_outdoor_crops_fed_to_humans,
             self.new_stored_outdoor_crops_fed_to_humans,
         ) = self.get_amount_fed_to_humans(
-            self.stored_food_rounded,
-            self.outdoor_crops_rounded,
-            self.immediate_outdoor_crops_rounded,
-            self.new_stored_outdoor_crops_rounded,
+            self.stored_food,
+            self.outdoor_crops,
+            self.immediate_outdoor_crops,
+            self.new_stored_outdoor_crops,
             to_humans_ratio,
         )
 
-        assert self.get_sum_by_adding_to_humans() == optimizer_fed_sum
+        print("humans_fed_sum")
+        print(humans_fed_sum)
+        self.kcals_fed = humans_fed_sum.kcals
+        self.fat_fed = humans_fed_sum.kcals
+        self.protein_fed = humans_fed_sum.kcals
 
-        return self
+        print("self.get_sum_by_adding_to_humans")
+        print(self.get_sum_by_adding_to_humans())
+
+        difference = humans_fed_sum - self.get_sum_by_adding_to_humans()
+
+        # checking that the two ways of adding up food to humans match
+        assert difference.get_rounded_to_decimal(decimals=1).all_equals_zero()
 
     def get_amount_fed_to_humans(
         self,
@@ -156,7 +232,6 @@ class Interpreter:
         # NOTE: immediate and new used may be slightly different than the outdoor
         #       crops due to rounding errors
 
-        # used for plotting immediate vs food stored in the scenario
         immediate_outdoor_crops_fed_to_humans = (
             to_humans_ratio * immediate_outdoor_crops_rounded
         )
@@ -196,7 +271,7 @@ class Interpreter:
             + self.grain_fed_milk
         )
 
-        return to_humans_fed_sum.get_rounded_to_decimal(decimals=1)
+        return to_humans_fed_sum
 
     def get_sum_by_subtracting_nonhuman(self, nonhuman_consumption):
         """
@@ -206,8 +281,44 @@ class Interpreter:
         also rounds result to 1 decimal place in terms of percent fed (within 0.1% of
         it's value)
         """
+        print("self.stored_food")
+        print(self.stored_food.get_units())
+        print("")
+        print("self.outdoor_crops")
+        print(self.outdoor_crops.get_units())
+        print("")
+        print("self.seaweed")
+        print(self.seaweed.get_units())
+        print("")
+        print("self.cell_sugar")
+        print(self.cell_sugar.get_units())
+        print("")
+        print("self.scp")
+        print(self.scp.get_units())
+        print("")
+        print("self.greenhouse")
+        print(self.greenhouse.get_units())
+        print("")
+        print("self.fish")
+        print(self.fish.get_units())
+        print("")
+        print("self.meat_culled_plus_grazing_cattle_maintained")
+        print(self.meat_culled_plus_grazing_cattle_maintained.get_units())
+        print("")
+        print("self.grazing_milk")
+        print(self.grazing_milk.get_units())
+        print("")
+        print("self.grain_fed_meat")
+        print(self.grain_fed_meat.get_units())
+        print("")
+        print("self.grain_fed_milk")
+        print(self.grain_fed_milk.get_units())
+        print("")
+        print("nonhuman_consumption")
+        print(nonhuman_consumption.get_units())
+        print("")
 
-        optimizer_fed_sum = (
+        humans_fed_sum = (
             self.stored_food
             + self.outdoor_crops
             + self.seaweed
@@ -222,7 +333,7 @@ class Interpreter:
             - nonhuman_consumption
         )
 
-        return optimizer_fed_sum.get_rounded_to_decimal(decimals=1)
+        return humans_fed_sum
 
     def print_kcals_per_capita_per_day(self, interpreted_results):
         """
@@ -230,7 +341,7 @@ class Interpreter:
         result.
         """
 
-        needs_ratio = interpreted_results.percent_people_fed.kcals / 100
+        needs_ratio = interpreted_results.percent_people_fed / 100
 
         print("No trade expected kcals/capita/day 2020")
         print(needs_ratio * 2100)
@@ -258,11 +369,8 @@ class Interpreter:
 
         to_humans_ratio = remainder_to_humans / outdoor_crops_plus_stored_food_rounded
 
-        to_humans_ratio.set_units(
-            kcals_units="ratio each month",
-            fat_units="ratio each month",
-            protein_units="ratio each month",
-        )
+        print("to_humans_ratio")
+        print(to_humans_ratio)
 
         # make sure if either outdoor_crops_plus_stored_food_rounded or
         # nonhuman_consumption is zero, the other is zero
@@ -282,17 +390,21 @@ class Interpreter:
         # We don't expect any situation where some animals are fed but no humans are!
         # check that any time outdoor_crops_plus_stored_food_rounded is zero,
         # outdoor_crops_plus_stored_food_rounded - nonhuman_consumption is also zero
-        remainder_to_humans.make_sure_other_list_zero_if_this_is_zero(
+        remainder_to_humans.ensure_other_list_zero_if_this_is_zero(
             other_list=nonhuman_consumption
         )
 
-        # feed plus human consumption of stored food and outdoor crops adds up to the
-        # total outdoor crops
-        assert (
+        difference = (
             to_humans_ratio * outdoor_crops_plus_stored_food_rounded
             + nonhuman_consumption
-            == outdoor_crops_plus_stored_food_rounded
+            - outdoor_crops_plus_stored_food_rounded
         )
+
+        decimals = 1
+        assert difference.get_rounded_to_decimal(
+            decimals
+        ).all_equals_zero(), """feed plus human consumption of stored food 
+            and outdoor crops must add up to the total outdoor crops"""
 
         # cannot have negative stored food and outdoor crops fed to humans
         # also ensures that there are no np.nan's left in the ratio.
@@ -304,12 +416,15 @@ class Interpreter:
 
         return to_humans_ratio
 
-    def get_percent_people_fed(self, optimizer_fed_sum):
+    def get_percent_people_fed(self, humans_fed_sum):
         """
         get the minimum nutrients required to meet the needs of the population in any month, for kcals, fat, and protein
         """
-        fed_as_string = str("result of scenario\n") + str(optimizer_fed_sum)
-        (min_nutrient, percent_people_fed) = optimizer_fed_sum.min_nutrient()
+        fed_as_string = str("result of scenario\n") + str(humans_fed_sum)
+
+        assert humans_fed_sum.is_units_percent()
+
+        (min_nutrient, percent_people_fed) = humans_fed_sum.get_min_nutrient()
 
         PRINT_FED = True
         if PRINT_FED:
@@ -328,11 +443,11 @@ class Interpreter:
               the optimizer!
         """
         assert (
-            stored_food.NMONTHS
-            == outdoor_crops.NMONTHS
-            == seaweed.NMONTHS
-            == immediate_outdoor_crops.NMONTHS
-            == new_stored_outdoor_crops.NMONTHS
+            self.stored_food.NMONTHS
+            == self.outdoor_crops.NMONTHS
+            == self.seaweed.NMONTHS
+            == self.immediate_outdoor_crops.NMONTHS
+            == self.new_stored_outdoor_crops.NMONTHS
         )
 
         assert self.stored_food.is_units_percent()
@@ -343,14 +458,15 @@ class Interpreter:
 
         assert nonhuman_consumption.is_units_percent()
 
-        stored_food_rounded = self.stored_food.get_rounded_to_decimal(1)
-        seaweed_rounded = self.seaweed.get_rounded_to_decimal(1)
-        outdoor_crops_rounded = self.outdoor_crops.get_rounded_to_decimal(1)
+        stored_food_rounded = self.stored_food.get_rounded_to_decimal(3)
+        seaweed_rounded = self.seaweed.get_rounded_to_decimal(3)
+        outdoor_crops_rounded = self.outdoor_crops.get_rounded_to_decimal(3)
+
         immediate_outdoor_crops_rounded = (
-            self.immediate_outdoor_crops.get_rounded_to_decimal(1)
+            self.immediate_outdoor_crops.get_rounded_to_decimal(3)
         )
         new_stored_outdoor_crops_rounded = (
-            self.new_stored_outdoor_crops.get_rounded_to_decimal(1)
+            self.new_stored_outdoor_crops.get_rounded_to_decimal(3)
         )
 
         # if the value was a little less than zero, when rounded it would no longer be
@@ -368,16 +484,14 @@ class Interpreter:
         # outdoor_crops, we make sure nonhuman consumption is less than or equal to
         # the sum within a reasonable percent error
 
-        outdoor_crops_plus_stored_food_rounded = (
-            outdoor_crops_rounded + stored_food_rounded
-        )
+        outdoor_crops_plus_stored_food = self.outdoor_crops + self.stored_food
 
         difference_consumption_supply = (
-            outdoor_crops_plus_stored_food_rounded - nonhuman_consumption
+            outdoor_crops_plus_stored_food - nonhuman_consumption
         )
 
         difference_consumption_supply_rounded = (
-            difference_consumption_supply.get_rounded_to_decimal(1)
+            difference_consumption_supply.get_rounded_to_decimal(3)
         )
 
         assert difference_consumption_supply_rounded.all_greater_than_or_equal_to_zero()
@@ -387,18 +501,17 @@ class Interpreter:
         # prevent rounding errors later on down the line when estimating the total
         # food going to humans from all the different food sources
 
-        outdoor_crops_plus_stored_food_rounded = (
-            outdoor_crops_plus_stored_food_rounded.replace_if_list_with_zeros_is_zero(
+        outdoor_crops_plus_stored_food = (
+            outdoor_crops_plus_stored_food.replace_if_list_with_zeros_is_zero(
                 list_with_zeros=difference_consumption_supply_rounded,
                 replacement=nonhuman_consumption,
             )
         )
-
         return (
-            stored_food,
-            seaweed,
-            outdoor_crops,
-            immediate_outdoor_crops,
-            new_stored_outdoor_crops,
-            outdoor_crops_plus_stored_food_rounded,
+            stored_food_rounded,
+            seaweed_rounded,
+            outdoor_crops_rounded,
+            immediate_outdoor_crops_rounded,
+            new_stored_outdoor_crops_rounded,
+            outdoor_crops_plus_stored_food,
         )

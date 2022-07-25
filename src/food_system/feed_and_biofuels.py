@@ -24,7 +24,7 @@ class FeedAndBiofuels:
 
         self.NMONTHS = constants_for_params["NMONTHS"]
 
-        self.FEED = Food(
+        self.feed_per_year = Food(
             kcals=constants_for_params["FEED_KCALS"],
             fat=constants_for_params["FEED_FAT"],
             protein=constants_for_params["FEED_PROTEIN"],
@@ -33,7 +33,7 @@ class FeedAndBiofuels:
             protein_units="tons per year",
         )
 
-        self.BIOFUEL = Food(
+        self.biofuel_per_year = Food(
             kcals=constants_for_params["BIOFUEL_KCALS"],
             fat=constants_for_params["BIOFUEL_FAT"],
             protein=constants_for_params["BIOFUEL_PROTEIN"],
@@ -123,7 +123,7 @@ class FeedAndBiofuels:
         )
 
         self.nonhuman_consumption = self.get_nonhuman_consumption_with_cap(
-            constants_for_params, self.biofuels, self.feed, CROP_WASTE
+            constants_for_params, self.biofuels, self.feed
         )
 
     def set_biofuels_and_feed_usage(
@@ -155,8 +155,8 @@ class FeedAndBiofuels:
             # therefore
             # TOTAL_SF_OG = SF_OG*waste - nonhuman_consumption*waste
 
-            self.biofuels = biofuels_before_cap * CROP_WASTE
-            self.feed = feed_before_cap * CROP_WASTE
+            self.biofuels = biofuels_before_cap * (1 - CROP_WASTE / 100)
+            self.feed = feed_before_cap * (1 - CROP_WASTE / 100)
 
             # feed to animals does not have additional waste applied (waste is applied
             # after the meat production, and thus is part of meat waste)
@@ -185,15 +185,19 @@ class FeedAndBiofuels:
         # therefore
         # TOTAL_SF_OG = SF_OG*waste - nonhuman_consumption*waste
 
-        self.biofuels = biofuels_before_cap * ratio * CROP_WASTE
-        self.feed = feed_before_cap * ratio * CROP_WASTE
+        self.biofuels = biofuels_before_cap * ratio * (1 - CROP_WASTE / 100)
+        self.feed = feed_before_cap * ratio * (1 - CROP_WASTE / 100)
 
         # feed to animals does not have additional waste applied (waste is applied
         # after the meat production, and thus is part of meat waste)
         self.kcals_fed_to_animals = excess_feed_kcals + self.feed.kcals
 
-        assert self.biofuels.all_less_than_or_equal_to(biofuels_before_cap * CROP_WASTE)
-        assert self.feed.all_less_than_or_equal_to(feed_before_cap * CROP_WASTE)
+        assert self.biofuels.all_less_than_or_equal_to(
+            biofuels_before_cap * (1 - CROP_WASTE / 100)
+        )
+        assert self.feed.all_less_than_or_equal_to(
+            feed_before_cap * (1 - CROP_WASTE / 100)
+        )
 
     def iteratively_determine_reduction_in_nonhuman_consumption(
         self, stored_food, outdoor_crops, biofuels_before_cap, feed_before_cap
@@ -245,39 +249,43 @@ class FeedAndBiofuels:
         number of nonzero biofuel months for biofuels to be used.
         """
 
-        self.BIOFUEL_MONTHLY_USAGE = Food()
-
-        self.BIOFUEL_MONTHLY_USAGE.kcals = (
-            self.BIOFUEL.kcals / 12 * 4e6 / 1e9
+        biofuel_monthly_usage_kcals = (
+            self.biofuel_per_year.kcals / 12 * 4e6 / 1e9
         )  # billions kcals
-        self.BIOFUEL_MONTHLY_USAGE.fat = self.BIOFUEL.fat / 12 / 1e3  # thousand tons
-        self.BIOFUEL_MONTHLY_USAGE.protein = (
-            self.BIOFUEL.protein / 12 / 1e3
+        biofuel_monthly_usage_fat = (
+            self.biofuel_per_year.fat / 12 / 1e3
+        )  # thousand tons
+        biofuel_monthly_usage_protein = (
+            self.biofuel_per_year.protein / 12 / 1e3
         )  # thousand tons
 
-        assert self.BIOFUEL_MONTHLY_USAGE.all_greater_than_or_equal_to_zero()
-
-        self.BIOFUEL_MONTHLY_USAGE.set_units(
+        self.biofuel_monthly_usage = Food(
+            kcals=biofuel_monthly_usage_kcals,
+            fat=biofuel_monthly_usage_fat,
+            protein=biofuel_monthly_usage_protein,
             kcals_units="billion kcals per month",
             fat_units="thousand tons per month",
             protein_units="thousand tons per month",
         )
 
-        biofuels_before_cap = Food()
+        assert self.biofuel_monthly_usage.all_greater_than_or_equal_to_zero()
 
-        biofuels_before_cap.kcals = [
-            self.BIOFUEL_MONTHLY_USAGE.kcals
+        biofuels_before_cap_kcals = [
+            self.biofuel_monthly_usage.kcals
         ] * biofuel_duration + [0] * (self.NMONTHS - biofuel_duration)
 
-        biofuels_before_cap.fat = [
-            self.BIOFUEL_MONTHLY_USAGE.fat
+        biofuels_before_cap_fat = [
+            self.biofuel_monthly_usage.fat
         ] * biofuel_duration + [0] * (self.NMONTHS - biofuel_duration)
 
-        biofuels_before_cap.protein = [
-            self.BIOFUEL_MONTHLY_USAGE.protein
+        biofuels_before_cap_protein = [
+            self.biofuel_monthly_usage.protein
         ] * biofuel_duration + [0] * (self.NMONTHS - biofuel_duration)
 
-        biofuels_before_cap.set_units(
+        biofuels_before_cap = Food(
+            kcals=biofuels_before_cap_kcals,
+            fat=biofuels_before_cap_fat,
+            protein=biofuels_before_cap_protein,
             kcals_units="billion kcals each month",
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
@@ -294,11 +302,11 @@ class FeedAndBiofuels:
 
         self.FEED_MONTHLY_USAGE = Food(
             # thousand tons annually to billion kcals per month
-            kcals=self.FEED.kcals / 12 * 4e6 / 1e9,
+            kcals=self.feed_per_year.kcals / 12 * 4e6 / 1e9,
             # tons annually to thousand tons per month
-            fat=self.FEED.fat / 12 / 1e3,
+            fat=self.feed_per_year.fat / 12 / 1e3,
             # tons annually to thousand tons per month
-            protein=self.FEED.protein / 12 / 1e3,
+            protein=self.feed_per_year.protein / 12 / 1e3,
             kcals_units="billion kcals per month",
             fat_units="thousand tons per month",
             protein_units="thousand tons per month",
@@ -400,17 +408,14 @@ class FeedAndBiofuels:
 
         # totals human edible used for animal feed and biofuels
         # excess is directly supplied separately from the feed_shutoff used.
-        nonshutoff_excess = (
-            Food(
-                kcals=constants_for_params["EXCESS_FEED_KCALS"],
-                fat=nonshutoff_excess_fat,
-                protein=nonshutoff_excess_protein,
-                kcals_units="billion kcals each month",
-                fat_units="thousand tons each month",
-                protein_units="thousand tons each month",
-            )
-            * CROP_WASTE
-        )
+        nonshutoff_excess = Food(
+            kcals=constants_for_params["EXCESS_FEED_KCALS"],
+            fat=nonshutoff_excess_fat,
+            protein=nonshutoff_excess_protein,
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
+        ) * (1 - CROP_WASTE / 100)
 
         nonhuman_consumption = biofuels + feed + nonshutoff_excess
 

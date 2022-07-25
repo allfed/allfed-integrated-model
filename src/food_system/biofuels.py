@@ -14,11 +14,11 @@ class Biofuels:
 
     def set_biofuel_usage(self, constants_for_params):
 
-        self.BIOFUEL_MONTHLY_USAGE_KCALS = (
+        self.biofuel_monthly_usage_KCALS = (
             self.BIOFUEL_KCALS / 12 * 4e6 / 1e9
         )  # billions kcals
-        self.BIOFUEL_MONTHLY_USAGE_FAT = self.BIOFUEL_FAT / 12 / 1e3  # thousand tons
-        self.BIOFUEL_MONTHLY_USAGE_PROTEIN = (
+        self.biofuel_monthly_usage_FAT = self.BIOFUEL_FAT / 12 / 1e3  # thousand tons
+        self.biofuel_monthly_usage_PROTEIN = (
             self.BIOFUEL_PROTEIN / 12 / 1e3
         )  # thousand tons
 
@@ -26,12 +26,12 @@ class Biofuels:
         # "Monthly flows" tab @Morgan: Link broken
 
         biofuel_delay = constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
-        self.biofuels_kcals = [self.BIOFUEL_MONTHLY_USAGE_KCALS] * biofuel_delay + [
+        self.biofuels_kcals = [self.biofuel_monthly_usage_KCALS] * biofuel_delay + [
             0
         ] * (self.NMONTHS - biofuel_delay)
-        self.biofuels_fat = [self.BIOFUEL_MONTHLY_USAGE_FAT] * biofuel_delay + [0] * (
+        self.biofuels_fat = [self.biofuel_monthly_usage_FAT] * biofuel_delay + [0] * (
             self.NMONTHS - biofuel_delay
         )
-        self.biofuels_protein = [self.BIOFUEL_MONTHLY_USAGE_PROTEIN] * biofuel_delay + [
+        self.biofuels_protein = [self.biofuel_monthly_usage_PROTEIN] * biofuel_delay + [
             0
         ] * (self.NMONTHS - biofuel_delay)

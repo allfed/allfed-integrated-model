@@ -30,8 +30,8 @@ class Plotter:
     def __init__(self):
         pass
 
-    def plot_fig_1ab(extractor1, xlim):
-        legend = Plotter.get_people_fed_legend(extractor1, True)
+    def plot_fig_1ab(interpreter1, xlim):
+        legend = Plotter.get_people_fed_legend(interpreter1, True)
         fig = plt.figure()
         pal = [
             "#1e7ecd",
@@ -46,37 +46,37 @@ class Plotter:
         ]
         for i, label in enumerate(("a", "b")):
             if label == "a":
-                extractor = extractor1
+                interpreter = interpreter1
             if label == "b":
-                extractor = extractor1
+                interpreter = interpreter1
             ax = fig.add_subplot(1, 2, i + 1)
             ax.set_xlim([0.5, xlim])
 
             ykcals = []
-            ykcals.append(extractor.billions_fed_fish_kcals)
+            ykcals.append(interpreter.fish_kcals_eff.kcals)
             ykcals.append(
                 (
-                    np.array(extractor.billions_fed_CS_kcals)
-                    + np.array(extractor.billions_fed_SCP_kcals)
+                    np.array(interpreter.cell_sugar_kcals_eff.kcals)
+                    + np.array(interpreter.scp_kcals_eff.kcals)
                 )
             )
-            ykcals.append(extractor.billions_fed_GH_kcals)
-            ykcals.append(extractor.billions_fed_seaweed_kcals)
+            ykcals.append(interpreter.greenhouse_kcals_eff.kcals)
+            ykcals.append(interpreter.seaweed_kcals_eff.kcals)
             ykcals.append(
                 (
-                    extractor.billions_fed_grazing_milk_kcals
-                    + extractor.billions_fed_grain_fed_milk_kcals
+                    interpreter.grazing_milk_kcals_eff.kcals
+                    + interpreter.grain_fed_milk_kcals_eff.kcals
                 )
             )
             ykcals.append(
                 (
-                    extractor.billions_fed_meat_culled_grazing_kcals
-                    + extractor.billions_fed_grain_fed_meat_kcals
+                    interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_eff.kcals
+                    + interpreter.grain_fed_meat_kcals_eff.kcals
                 )
             )
-            ykcals.append(extractor.billions_fed_immediate_outdoor_crops_kcals)
-            ykcals.append(extractor.billions_fed_new_stored_outdoor_crops_kcals)
-            ykcals.append(extractor.billions_fed_stored_food_kcals)
+            ykcals.append(interpreter.immediate_outdoor_crops_kcals_eff.kcals)
+            ykcals.append(interpreter.new_stored_outdoor_crops_kcals_eff.kcals)
+            ykcals.append(interpreter.stored_food_kcals_eff.kcals)
 
             if label == "a":
                 ax.text(
@@ -90,15 +90,15 @@ class Plotter:
                     ha="right",
                 )
                 ax.stackplot(
-                    extractor.time_months_middle,
-                    np.array(ykcals) / extractor.constants["CONVERSION_TO_KCALS"],
+                    interpreter.time_months_middle,
+                    np.array(ykcals),
                     labels=legend,
                     colors=pal,
                 )
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
                 maxy = max(sum([x[0:xlim] for x in ykcals]))
-                ax.set_ylim([0, maxy / extractor.constants["CONVERSION_TO_KCALS"]])
+                ax.set_ylim([0, maxy])
 
                 plt.ylabel("Calories / capita / day")
             if label == "b":
@@ -115,35 +115,29 @@ class Plotter:
                 plt.xlabel("Months since May ASRS onset")
 
                 ax.plot(
-                    extractor.time_months_middle,
-                    extractor.kcals_fed
-                    / extractor.constants["CONVERSION_TO_KCALS"]
-                    / extractor.constants["inputs"]["NUTRITION"]["KCALS_DAILY"],
+                    interpreter.time_months_middle,
+                    interpreter.kcals_fed,
                     color="blue",
                     linestyle="solid",
                 )
 
                 ax.plot(
-                    extractor.time_months_middle,
-                    extractor.protein_fed
-                    / extractor.constants["CONVERSION_TO_PROTEIN"]
-                    / extractor.constants["inputs"]["NUTRITION"]["PROTEIN_DAILY"],
+                    interpreter.time_months_middle,
+                    interpreter.protein_fed,
                     color="red",
                     linestyle="dotted",
                 )
 
                 # 1 gram of fat is 9 kcals.
                 ax.plot(
-                    extractor.time_months_middle,
-                    extractor.fat_fed
-                    / extractor.constants["CONVERSION_TO_FAT"]
-                    / extractor.constants["inputs"]["NUTRITION"]["FAT_DAILY"],
+                    interpreter.time_months_middle,
+                    interpreter.fat_fed,
                     color="green",
                     linestyle="dashed",
                 )
 
-                ax.set_ylabel("Fraction of minimum recommendation")
-                ax.set_ylim(Plotter.getylim_nutrients(extractor, xlim))
+                ax.set_ylabel("Percent of minimum recommendation")
+                ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
             if label == "a":
                 # get the handles
@@ -182,8 +176,8 @@ class Plotter:
         print("saved figure 1ab")
         plt.show()
 
-    def plot_fig_2abcd(extractor1, extractor2, xlim):
-        legend = Plotter.get_people_fed_legend(extractor1, True)
+    def plot_fig_2abcd(interpreter1, interpreter2, xlim):
+        legend = Plotter.get_people_fed_legend(interpreter1, True)
         fig = plt.figure()
         pal = [
             "#1e7ecd",
@@ -199,13 +193,13 @@ class Plotter:
 
         for i, label in enumerate(("a", "b", "c", "d")):
             if label == "a":
-                extractor = extractor1
+                interpreter = interpreter1
             if label == "b":
-                extractor = extractor1
+                interpreter = interpreter1
             if label == "c":
-                extractor = extractor2
+                interpreter = interpreter2
             if label == "d":
-                extractor = extractor2
+                interpreter = interpreter2
             ax = fig.add_subplot(2, 2, i + 1)
             ax.set_xlim([0.5, xlim])
             if label == "a":
@@ -219,30 +213,30 @@ class Plotter:
             if label == "a" or label == "c":
 
                 ykcals = []
-                ykcals.append(extractor.billions_fed_fish_kcals)
+                ykcals.append(interpreter.fish_kcals_eff.kcals)
                 ykcals.append(
                     (
-                        np.array(extractor.billions_fed_CS_kcals)
-                        + np.array(extractor.billions_fed_SCP_kcals)
+                        np.array(interpreter.cell_sugar_kcals_eff.kcals)
+                        + np.array(interpreter.scp_kcals_eff.kcals)
                     )
                 )
-                ykcals.append(extractor.billions_fed_GH_kcals)
-                ykcals.append(extractor.billions_fed_seaweed_kcals)
+                ykcals.append(interpreter.greenhouse_kcals_eff.kcals)
+                ykcals.append(interpreter.seaweed_kcals_eff.kcals)
                 ykcals.append(
                     (
-                        extractor.billions_fed_grazing_milk_kcals
-                        + extractor.billions_fed_grain_fed_milk_kcals
+                        interpreter.grazing_milk_kcals_eff.kcals
+                        + interpreter.grain_fed_milk_kcals_eff.kcals
                     )
                 )
                 ykcals.append(
                     (
-                        extractor.billions_fed_meat_culled_grazing_kcals
-                        + extractor.billions_fed_grain_fed_meat_kcals
+                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_eff.kcals
+                        + interpreter.grain_fed_meat_kcals_eff.kcals
                     )
                 )
-                ykcals.append(extractor.billions_fed_immediate_outdoor_crops_kcals)
-                ykcals.append(extractor.billions_fed_new_stored_outdoor_crops_kcals)
-                ykcals.append(extractor.billions_fed_stored_food_kcals)
+                ykcals.append(interpreter.immediate_outdoor_crops_kcals_eff.kcals)
+                ykcals.append(interpreter.new_stored_outdoor_crops_kcals_eff.kcals)
+                ykcals.append(interpreter.stored_food_kcals_eff.kcals)
 
                 ax.text(
                     -0.06,
@@ -255,8 +249,8 @@ class Plotter:
                     ha="right",
                 )
                 ax.stackplot(
-                    extractor.time_months_middle,
-                    np.array(ykcals) / extractor.constants["CONVERSION_TO_KCALS"],
+                    interpreter.time_months_middle,
+                    np.array(ykcals),
                     labels=legend,
                     colors=pal,
                 )
@@ -264,7 +258,7 @@ class Plotter:
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
                 maxy = max(sum([x[0:xlim] for x in ykcals]))
-                ax.set_ylim([0, maxy / extractor.constants["CONVERSION_TO_KCALS"]])
+                ax.set_ylim([0, maxy])
 
                 plt.ylabel("Calories / capita / day")
             if label == "b" or label == "d":
@@ -281,34 +275,28 @@ class Plotter:
                 plt.xlabel("Months since May ASRS onset")
 
                 ax.plot(
-                    extractor.time_months_middle,
-                    extractor.kcals_fed
-                    / extractor.constants["CONVERSION_TO_KCALS"]
-                    / extractor.constants["inputs"]["NUTRITION"]["KCALS_DAILY"],
+                    interpreter.time_months_middle,
+                    interpreter.kcals_fed,
                     color="blue",
                     linestyle="solid",
                 )
 
                 ax.plot(
-                    extractor.time_months_middle,
-                    extractor.protein_fed
-                    / extractor.constants["CONVERSION_TO_PROTEIN"]
-                    / extractor.constants["inputs"]["NUTRITION"]["PROTEIN_DAILY"],
+                    interpreter.time_months_middle,
+                    interpreter.protein_fed,
                     color="red",
                     linestyle="dotted",
                 )
 
                 ax.plot(
-                    extractor.time_months_middle,
-                    extractor.fat_fed
-                    / extractor.constants["CONVERSION_TO_FAT"]
-                    / extractor.constants["inputs"]["NUTRITION"]["FAT_DAILY"],
+                    interpreter.time_months_middle,
+                    interpreter.fat_fed,
                     color="green",
                     linestyle="dashed",
                 )
 
-                ax.set_ylabel("Fraction of minimum recommendation")
-                ax.set_ylim(Plotter.getylim_nutrients(extractor, xlim))
+                ax.set_ylabel("Percent of minimum recommendation")
+                ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
             if label == "c":
                 # ax.legend(loc='center left', frameon=False,bbox_to_anchor=(0, -0.2), shadow=False,)
@@ -331,7 +319,7 @@ class Plotter:
                     shadow=False,
                     labels=["Calories", "Fat", "Protein"],
                 )
-                ax.set_ylim(Plotter.getylim_nutrients(extractor, xlim))
+                ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
             plt.xlabel("Months since May ASRS onset")
 
@@ -519,8 +507,8 @@ class Plotter:
         print("saved figure s1")
         plt.show()
 
-    def plot_fig_s2abcd(extractor1, extractor2, xlim1, xlim2):
-        legend = Plotter.get_people_fed_legend(extractor1, True)
+    def plot_fig_s2abcd(interpreter1, interpreter2, xlim1, xlim2):
+        legend = Plotter.get_people_fed_legend(interpreter1, True)
         fig = plt.figure()
         pal = [
             "#1e7ecd",
@@ -536,13 +524,13 @@ class Plotter:
 
         for i, label in enumerate(("a", "b", "c", "d")):
             if label == "a":
-                extractor = extractor1
+                interpreter = interpreter1
             if label == "b":
-                extractor = extractor1
+                interpreter = interpreter1
             if label == "c":
-                extractor = extractor2
+                interpreter = interpreter2
             if label == "d":
-                extractor = extractor2
+                interpreter = interpreter2
             ax = fig.add_subplot(2, 2, i + 1)
             if label == "a":
                 xlim = xlim1
@@ -562,30 +550,30 @@ class Plotter:
             if label == "a" or label == "c":
 
                 ykcals = []
-                ykcals.append(extractor.billions_fed_fish_kcals)
+                ykcals.append(interpreter.fish_kcals_eff.kcals)
                 ykcals.append(
                     (
-                        np.array(extractor.billions_fed_CS_kcals)
-                        + np.array(extractor.billions_fed_SCP_kcals)
+                        np.array(interpreter.cell_sugar_kcals_eff.kcals)
+                        + np.array(interpreter.scp_kcals_eff.kcals)
                     )
                 )
-                ykcals.append(extractor.billions_fed_GH_kcals)
-                ykcals.append(extractor.billions_fed_seaweed_kcals)
+                ykcals.append(interpreter.greenhouse_kcals_eff.kcals)
+                ykcals.append(interpreter.seaweed_kcals_eff.kcals)
                 ykcals.append(
                     (
-                        extractor.billions_fed_grazing_milk_kcals
-                        + extractor.billions_fed_grain_fed_milk_kcals
+                        interpreter.grazing_milk_kcals_eff.kcals
+                        + interpreter.grain_fed_milk_kcals_eff.kcals
                     )
                 )
                 ykcals.append(
                     (
-                        extractor.billions_fed_meat_culled_grazing_kcals
-                        + extractor.billions_fed_grain_fed_meat_kcals
+                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_eff.kcals
+                        + interpreter.grain_fed_meat_kcals_eff.kcals
                     )
                 )
-                ykcals.append(extractor.billions_fed_immediate_outdoor_crops_kcals)
-                ykcals.append(extractor.billions_fed_new_stored_outdoor_crops_kcals)
-                ykcals.append(extractor.billions_fed_stored_food_kcals)
+                ykcals.append(interpreter.immediate_outdoor_crops_kcals_eff.kcals)
+                ykcals.append(interpreter.new_stored_outdoor_crops_kcals_eff.kcals)
+                ykcals.append(interpreter.stored_food_kcals_eff.kcals)
 
                 ax.text(
                     -0.06,
@@ -598,8 +586,8 @@ class Plotter:
                     ha="right",
                 )
                 ax.stackplot(
-                    extractor.time_months_middle,
-                    np.array(ykcals) / extractor.constants["CONVERSION_TO_KCALS"],
+                    interpreter.time_months_middle,
+                    np.array(ykcals),
                     labels=legend,
                     colors=pal,
                 )
@@ -619,34 +607,28 @@ class Plotter:
                 plt.xlabel("Months since May ASRS onset")
 
                 ax.plot(
-                    extractor.time_months_middle,
-                    extractor.kcals_fed
-                    / extractor.constants["CONVERSION_TO_KCALS"]
-                    / extractor.constants["inputs"]["NUTRITION"]["KCALS_DAILY"],
+                    interpreter.time_months_middle,
+                    interpreter.kcals_fed,
                     color="blue",
                     linestyle="solid",
                 )
 
                 ax.plot(
-                    extractor.time_months_middle,
-                    extractor.protein_fed
-                    / extractor.constants["CONVERSION_TO_PROTEIN"]
-                    / extractor.constants["inputs"]["NUTRITION"]["PROTEIN_DAILY"],
+                    interpreter.time_months_middle,
+                    interpreter.protein_fed,
                     color="red",
                     linestyle="dotted",
                 )
 
                 ax.plot(
-                    extractor.time_months_middle,
-                    extractor.fat_fed
-                    / extractor.constants["CONVERSION_TO_FAT"]
-                    / extractor.constants["inputs"]["NUTRITION"]["FAT_DAILY"],
+                    interpreter.time_months_middle,
+                    interpreter.fat_fed,
                     color="green",
                     linestyle="dashed",
                 )
 
-                ax.set_ylabel("Fraction of minimum recommendation")
-                ax.set_ylim(Plotter.getylim_nutrients(extractor, xlim))
+                ax.set_ylabel("Percent of minimum recommendation")
+                ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
             if label == "c":
                 # ax.legend(loc='center left', frameon=False,bbox_to_anchor=(0, -0.2), shadow=False,)
@@ -669,14 +651,14 @@ class Plotter:
                     shadow=False,
                     labels=["Calories", "Fat", "Protein"],
                 )
-                ax.set_ylim(Plotter.getylim_nutrients(extractor, xlim))
+                ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
             if label == "a":
                 maxy = max(sum([x[0:xlim1] for x in ykcals]))
-                ax.set_ylim([0, maxy / extractor.constants["CONVERSION_TO_KCALS"]])
+                ax.set_ylim([0, maxy])
             if label == "c":
                 maxy = max(sum([x[0:xlim2] for x in ykcals]))
-                ax.set_ylim([0, maxy / extractor.constants["CONVERSION_TO_KCALS"]])
+                ax.set_ylim([0, maxy])
 
             plt.xlabel("Months since May ASRS")
 
@@ -687,8 +669,8 @@ class Plotter:
         print("saved figure s2abcd")
         plt.show()
 
-    def plot_fig_s1abcd(extractor1, extractor2, xlim):
-        legend = Plotter.get_people_fed_legend(extractor1, False)
+    def plot_fig_s1abcd(interpreter1, interpreter2, xlim):
+        legend = Plotter.get_people_fed_legend(interpreter1, False)
         fig = plt.figure()
         pal = [
             "#1e7ecd",
@@ -704,13 +686,13 @@ class Plotter:
 
         for i, label in enumerate(("a", "b", "c", "d")):
             if label == "a":
-                extractor = extractor1
+                interpreter = interpreter1
             if label == "b":
-                extractor = extractor1
+                interpreter = interpreter1
             if label == "c":
-                extractor = extractor2
+                interpreter = interpreter2
             if label == "d":
-                extractor = extractor2
+                interpreter = interpreter2
             ax = fig.add_subplot(2, 2, i + 1)
             ax.set_xlim([0.5, xlim])
             if label == "a":
@@ -724,30 +706,30 @@ class Plotter:
             if label == "a" or label == "c":
 
                 ykcals = []
-                ykcals.append(extractor.billions_fed_fish_kcals)
+                ykcals.append(interpreter.fish_kcals_eff.kcals)
                 ykcals.append(
                     (
-                        np.array(extractor.billions_fed_CS_kcals)
-                        + np.array(extractor.billions_fed_SCP_kcals)
+                        np.array(interpreter.cell_sugar_kcals_eff.kcals)
+                        + np.array(interpreter.scp_kcals_eff.kcals)
                     )
                 )
-                ykcals.append(extractor.billions_fed_GH_kcals)
-                ykcals.append(extractor.billions_fed_seaweed_kcals)
+                ykcals.append(interpreter.greenhouse_kcals_eff.kcals)
+                ykcals.append(interpreter.seaweed_kcals_eff.kcals)
                 ykcals.append(
                     (
-                        extractor.billions_fed_grazing_milk_kcals
-                        + extractor.billions_fed_grain_fed_milk_kcals
+                        interpreter.grazing_milk_kcals_eff.kcals
+                        + interpreter.grain_fed_milk_kcals_eff.kcals
                     )
                 )
                 ykcals.append(
                     (
-                        extractor.billions_fed_meat_culled_grazing_kcals
-                        + extractor.billions_fed_grain_fed_meat_kcals
+                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_eff.kcals
+                        + interpreter.grain_fed_meat_kcals_eff.kcals
                     )
                 )
-                ykcals.append(extractor.billions_fed_immediate_outdoor_crops_kcals)
-                ykcals.append(extractor.billions_fed_new_stored_outdoor_crops_kcals)
-                ykcals.append(extractor.billions_fed_stored_food_kcals)
+                ykcals.append(interpreter.immediate_outdoor_crops_kcals_eff.kcals)
+                ykcals.append(interpreter.new_stored_outdoor_crops_kcals_eff.kcals)
+                ykcals.append(interpreter.stored_food_kcals_eff.kcals)
 
                 ax.text(
                     -0.06,
@@ -760,8 +742,8 @@ class Plotter:
                     ha="right",
                 )
                 ax.stackplot(
-                    extractor.time_months_middle,
-                    np.array(ykcals) / extractor.constants["CONVERSION_TO_KCALS"],
+                    interpreter.time_months_middle,
+                    np.array(ykcals),
                     labels=legend,
                     colors=pal,
                 )
@@ -769,7 +751,7 @@ class Plotter:
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
                 maxy = max(sum([x[0:xlim] for x in ykcals]))
-                # ax.set_ylim([0, maxy / extractor.constants["CONVERSION_TO_KCALS"]])
+                # ax.set_ylim([0, maxy])
 
                 plt.ylabel("Calories / capita / day")
             if label == "b" or label == "d":
@@ -786,35 +768,29 @@ class Plotter:
                 plt.xlabel("Months since May ASRS onset")
 
                 ax.plot(
-                    extractor.time_months_middle,
-                    extractor.kcals_fed
-                    / extractor.constants["CONVERSION_TO_KCALS"]
-                    / extractor.constants["inputs"]["NUTRITION"]["KCALS_DAILY"],
+                    interpreter.time_months_middle,
+                    interpreter.kcals_fed,
                     color="blue",
                     linestyle="solid",
                 )
 
                 ax.plot(
-                    extractor.time_months_middle,
-                    extractor.fat_fed
-                    / extractor.constants["CONVERSION_TO_FAT"]
-                    / extractor.constants["inputs"]["NUTRITION"]["FAT_DAILY"],
+                    interpreter.time_months_middle,
+                    interpreter.fat_fed,
                     color="green",
                     linestyle="dashed",
                 )
 
                 ax.plot(
-                    extractor.time_months_middle,
-                    extractor.protein_fed
-                    / extractor.constants["CONVERSION_TO_PROTEIN"]
-                    / extractor.constants["inputs"]["NUTRITION"]["PROTEIN_DAILY"],
+                    interpreter.time_months_middle,
+                    interpreter.protein_fed,
                     color="red",
                     linestyle="dotted",
                 )
 
-                ax.set_ylabel("Fraction of minimum recommendation")
+                ax.set_ylabel("Percent of minimum recommendation")
 
-                # ax.set_ylim(Plotter.getylim_nutrients(extractor, xlim))
+                # ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
             if label == "c":
                 # ax.legend(loc='center left', frameon=False,bbox_to_anchor=(0, -0.2), shadow=False,)
@@ -837,7 +813,7 @@ class Plotter:
                     shadow=False,
                     labels=["Calories", "Fat", "Protein"],
                 )
-                # ax.set_ylim(Plotter.getylim_nutrients(extractor, xlim))
+                # ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
             plt.xlabel("Months since May")
 
@@ -848,24 +824,12 @@ class Plotter:
         print("saved figure s1abcd")
         plt.show()
 
-    def getylim_nutrients(extractor, xlim):
-        kcals = (
-            extractor.kcals_fed
-            / extractor.constants["CONVERSION_TO_KCALS"]
-            / extractor.constants["inputs"]["NUTRITION"]["KCALS_DAILY"]
-        )
+    def getylim_nutrients(interpreter, xlim):
+        kcals = interpreter.kcals_fed
 
-        protein = (
-            extractor.protein_fed
-            / extractor.constants["CONVERSION_TO_PROTEIN"]
-            / extractor.constants["inputs"]["NUTRITION"]["PROTEIN_DAILY"]
-        )
+        protein = interpreter.protein_fed
 
-        fat = (
-            extractor.fat_fed
-            / extractor.constants["CONVERSION_TO_FAT"]
-            / extractor.constants["inputs"]["NUTRITION"]["FAT_DAILY"]
-        )
+        fat = interpreter.fat_fed
 
         min_plot = (
             min([min(fat[0:xlim]), min(protein[0:xlim]), min(kcals[0:xlim])]) - 0.2
@@ -911,7 +875,7 @@ class Plotter:
         print("95% upper")
         print(np.percentile(np.array(data), 97.5))
 
-    def get_people_fed_legend(extractor, is_nuclear_winter):
+    def get_people_fed_legend(interpreter, is_nuclear_winter):
         if not is_nuclear_winter:
             stored_food_label = (
                 "Crops consumed that month that were\nstored before simulation"
@@ -928,50 +892,50 @@ class Plotter:
             )
 
         legend = []
-        if extractor.constants["ADD_FISH"]:
+        if interpreter.constants["ADD_FISH"]:
             legend = legend + ["Marine Fish"]
         else:
             legend = legend + [""]
 
         if (
-            extractor.constants["ADD_CELLULOSIC_SUGAR"]
-            or extractor.constants["ADD_METHANE_SCP"]
+            interpreter.constants["ADD_CELLULOSIC_SUGAR"]
+            or interpreter.constants["ADD_METHANE_SCP"]
         ):
             legend = legend + ["Industrial Foods"]
         else:
             legend = legend + [""]
 
-        if extractor.constants["ADD_GREENHOUSES"]:
+        if interpreter.constants["ADD_GREENHOUSES"]:
             legend = legend + ["Greenhouses"]
         else:
             legend = legend + [""]
 
-        if extractor.constants["ADD_SEAWEED"]:
+        if interpreter.constants["ADD_SEAWEED"]:
             legend = legend + ["Seaweed"]
         else:
             legend = legend + [""]
 
-        if extractor.constants["ADD_MILK"]:
+        if interpreter.constants["ADD_MILK"]:
             legend = legend + ["Dairy Milk"]
         else:
             legend = legend + [""]
 
-        if extractor.constants["ADD_MEAT"]:
+        if interpreter.constants["ADD_MEAT"]:
             legend = legend + ["Meat"]
         else:
             legend = legend + [""]
 
-        if extractor.constants["ADD_OUTDOOR_GROWING"]:
+        if interpreter.constants["ADD_OUTDOOR_GROWING"]:
             legend = legend + ["Outdoor Crops consumed immediately"]
         else:
             legend = legend + [""]
 
-        if extractor.constants["ADD_OUTDOOR_GROWING"]:
+        if interpreter.constants["ADD_OUTDOOR_GROWING"]:
             legend = legend + [OG_stored_label]
         else:
             legend = legend + [""]
 
-        if extractor.constants["ADD_STORED_FOOD"]:
+        if interpreter.constants["ADD_STORED_FOOD"]:
             legend = legend + [stored_food_label]
         else:
             legend = legend + [""]

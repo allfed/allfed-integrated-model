@@ -9,8 +9,8 @@ if module_path not in sys.path:
 
 # import some python files from this integrated model repository
 from src.utilities.plotter import Plotter
-from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
+from src.scenarios.scenarios import Scenarios
 
 
 def run_model_no_resilient_foods(plot_figures=True):
@@ -47,7 +47,7 @@ def run_model_no_resilient_foods(plot_figures=True):
 
     print("")
     print("")
-    print("Estimated Kcals/capita/day, no resilient foods, no waste")
+    print("Estimated percet people fed, no resilient foods, no waste")
     print(results.percent_people_fed / 100 * 2100)
     print("")
 
@@ -71,23 +71,13 @@ def run_model_no_resilient_foods(plot_figures=True):
         constants_for_params
     )
 
-    constants["inputs"] = constants_for_params
-
-    constants_loader = Parameters()
-    optimizer = Optimizer()
-
-    (
-        single_valued_constants,
-        multi_valued_constants,
-    ) = constants_loader.computeParameters(constants, scenarios_loader)
-
-    single_valued_constants["CHECK_CONSTRAINTS"] = False
-    [time_months, time_months_middle, results] = optimizer.optimize(
-        single_valued_constants, multi_valued_constants
+    scenario_runner = ScenarioRunner()
+    results = scenario_runner.run_and_analyze_scenario(
+        constants_for_params, scenarios_loader
     )
 
     print(
-        "Estimated Kcals/capita/day, no resilient foods, minus waste & delayed halt of nonhuman consumption "
+        "Estimated percent people fed, no resilient foods, minus waste & delayed halt of nonhuman consumption "
     )
 
     print(results.percent_people_fed / 100 * 2100)

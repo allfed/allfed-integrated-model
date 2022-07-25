@@ -9,51 +9,38 @@
 
 import os
 import sys
+import numpy as np
 
 module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-import matplotlib.pyplot as plt
-import numpy as np
+
+from src.food_system.food import Food
 
 
 class Validator:
     def __init__(self):
         pass
 
-    def validate_optimization(self, model):
-        """
-        validate things directly from the optimizer, including
-        """
-        self.ensure_food_to_humans_plus_food_to_other_equals_total_food(interpreter)
+    def validate_results(self, model, extracted_results, interpreted_results):
 
-    def validate_interpretation(self, model, interpreter):
+        self.ensure_optimizer_returns_same_as_sum_nutrients(model, interpreted_results)
 
-        self.ensure_optimizer_returns_same_as_sum_nutrients(model, interpreter)
-
-        new_stored = interpreter.new_stored_outdoor_crops
-        immediate = interpreter.immediate_outdoor_crops
-        outdoor_crops = interpreter.outdoor_crops_outdoor_crops
-        stored_food = interpreter.stored_food_outdoor_crops
-
-        self.YES_THIS_ONE_PROBABLY_DOES_SOMETHING_USEFUL_question_mark()
+        # TODO: DELETE THIS if not useful
+        # self.YES_THIS_ONE_PROBABLY_DOES_SOMETHING_USEFUL_question_mark()
 
         (
             kcals_total_from_optimizer,
             fat_total_from_optimizer,
             protein_total_from_optimizer,
-        ) = interpreter.get_objective_optimization_results(
+        ) = extracted_results.get_objective_optimization_results(
             model,
         )
 
-        self.not_REALLY_sure_AT_ALL_what_THIS_one_DOES_lol(
-            kcals_total_from_optimizer,
-            fat_total_from_optimizer,
-            protein_total_from_optimizer,
-        )
-
-        self.ensure_any_nonzero_kcals_have_nonzero_fat_and_protein(interpreter)
+        self.ensure_any_nonzero_kcals_have_nonzero_fat_and_protein(interpreted_results)
+        self.ensure_never_nan(interpreted_results)
+        self.ensure_all_greater_than_or_equal_to_zero(interpreted_results)
 
     def check_constraints_satisfied(self, model, maximize_constraints, variables):
         """
@@ -134,437 +121,46 @@ class Validator:
         print("for constraint:")
         print(constraintlist[max_index])
 
-    def not_REALLY_sure_AT_ALL_what_THIS_one_DOES_lol(self):
+    # TODO : DELETE THIS CODE IF IT DOESN'T END UP USEFUL
+    # def YES_THIS_ONE_PROBABLY_DOES_SOMETHING_USEFUL_question_mark(
+    #     self, stored_food, rotation, no_rotation, excess
+    # ):
 
-        population_billions = self.constants["inputs"]["POP"] / 1e9
+    #     # OKAY,THIS VALIDATION IS JUST MAKING SURE FEED (with additional excess) AND BIOFUELS ARE ALWAYS LESS THAN STORED FOOD PLUS outdoor_crops, WITH NO WASTE APPLIED ON EITHER SIDE AS WASTE IS THE SAME (BOTH ARE CROPS WASTE)
+    #     small_percent_threshold = Food(
+    #         -0.01,
+    #         -0.01,
+    #         -0.01,
+    #         "percent people fed per month",
+    #         "percent people fed per month",
+    #         "percent people fed per month",
+    #     )
 
-        # convert from billions fed to percentage fed to reduce rounding errors
-        kcals_fed_percent = 100 * (self.kcals_fed / population_billions)
-        humans_fed_kcals_optimizer_percent = 100 * (
-            np.array(self.humans_fed_kcals_optimizer) / population_billions
-        )
+    #     assert (
+    #         (self.sf + self.rotation + self.no_rotation - self.excess)
+    #         .in_units_percent()
+    #         .all_greater_than(small_percent_threshold)
+    #     ), """There are too few calories
+    #     available to meet the caloric excess
+    #     provided to the simulator. This is probably because the optimizer seems to have
+    #      failed to sufficiently meet the constraint to limit total food fed to animals
+    #       to the sum of stored food and outdoor growing within a reasonable degree of
+    #        precision. Consider reducing precision. Quitting."""
 
-        assert (
-            abs(
-                np.divide(
-                    kcals_fed_percent - np.array(humans_fed_kcals_optimizer_percent),
-                    kcals_fed_percent,
-                )
-            )
-            < 1e-6
-        ).all()
-        if self.constants["inputs"]["INCLUDE_FAT"]:
-            # convert from billions fed to percentage fed to reduce rounding errors
-            fat_fed_percent = 100 * (self.fat_fed / population_billions)
-            humans_fed_fat_optimizer_percent = 100 * (
-                np.array(self.humans_fed_fat_optimizer) / population_billions
-            )
+    #     if (
+    #         -(
+    #             self.sf + self.rotation + self.no_rotation - self.excess
+    #         ).in_units_percent()
+    #     ).any_greater_than_or_equal_to(small_percent_threshold):
+    #         print("")
+    #         print(
+    #             """WARNING: All of the outdoor growing and stored food is being fed to
+    #             animals and none to humans"""
+    #         )
 
-            assert (
-                abs(
-                    np.divide(
-                        fat_fed_percent - np.array(humans_fed_fat_optimizer_percent),
-                        fat_fed_percent,
-                    )
-                )
-                < 1e-6
-            ).all()
-
-        if self.constants["inputs"]["INCLUDE_PROTEIN"]:
-            # convert from billions fed to percentage fed to reduce rounding errors
-            protein_fed_percent = 100 * (self.protein_fed / population_billions)
-            humans_fed_protein_optimizer_percent = 100 * (
-                np.array(self.humans_fed_protein_optimizer) / population_billions
-            )
-
-            assert (
-                abs(
-                    np.divide(
-                        protein_fed_percent
-                        - np.array(humans_fed_protein_optimizer_percent),
-                        protein_fed_percent,
-                    )
-                )
-                < 1e-6
-            ).all()
-
-        stored_food_outdoor_crops_kcals = np.array(
-            self.billions_fed_stored_food_kcals
-        ) + np.array(self.billions_fed_outdoor_crops_kcals)
-        stored_food_outdoor_crops_fat = np.array(
-            self.billions_fed_stored_food_fat
-        ) + np.array(self.billions_fed_outdoor_crops_fat)
-        stored_food_outdoor_crops_protein = np.array(
-            self.billions_fed_stored_food_protein
-        ) + np.array(self.billions_fed_outdoor_crops_protein)
-
-        # if it takes all the available ag production to produce minimum for biofuel and animal feed demands
-        division = []
-
-        for zipped_lists in zip(
-            stored_food_outdoor_crops_kcals,
-            self.outdoor_crops_stored_food_fraction_kcals_to_humans,
-            self.excess,
-        ):
-
-            if zipped_lists[1] <= 0:
-                assert zipped_lists[0] >= -1e-5
-                division.append(zipped_lists[2] / self.constants["KCALS_MONTHLY"])
-            else:
-                division.append(zipped_lists[0] / zipped_lists[1])
-
-        # stored_food_outdoor_crops_kcals =
-
-        # a-b==a*c
-        # if a==b,c == 0
-        # if b>a, we don't have enough stored food and outdoor_crops to produced food, and should quit.
-        # This may happen even if there is plenty of food to go around, because the stored food needs to
-        # If we optimize such that stored food is used in one part while culled meat is used in another, and that generates excess calories above world demand
-
-        denominator = (
-            stored_food_outdoor_crops_kcals
-            + self.billions_fed_grain_fed_meat_kcals
-            + self.billions_fed_grain_fed_milk_kcals
-        )
-
-        fractional_difference = np.divide(
-            (
-                stored_food_outdoor_crops_kcals
-                + self.billions_fed_grain_fed_meat_kcals
-                + self.billions_fed_grain_fed_milk_kcals
-            )
-            - (np.array(division) + self.billions_fed_grain_fed_balance.kcals),
-            denominator,
-        )
-
-        # stored_food_outdoor_crops_kcals + MEAT_MILK_H_E
-        # ==
-        # THING + MEAT_MILK_H_E - BIOFUELS_KCALS - FEED_KCALS
-        #
-        # simplify by subrtaction of input parameter:
-        #
-        # stored_food_outdoor_crops_kcals
-        # ==
-        # THING - BIOFUELS_KCALS - FEED_KCALS
-        #
-        # where THING = depends:
-        #          outdoor_crops_stored_food_fraction_kcals_to_humans <= 0:
-        #               THING = BIOFUELS_KCALS + FEED_KCALS
-        #          outdoor_crops_stored_food_fraction_kcals_to_humans > 0:
-        #               THING = stored_food_outdoor_crops_kcals / outdoor_crops_stored_food_fraction_kcals_to_humans
-        #               where
-        #               outdoor_crops_stored_food_fraction_kcals_to_humans
-        #                   = 1 - (BIOFUELS_KCALS + FEED_KCALS) / stored_food_outdoor_crops_kcals
-        #               so
-        #               THING
-        #                   = stored_food_outdoor_crops_kcals
-        #                     /
-        #                     (1 - (BIOFUELS_KCALS + FEED_KCALS) / stored_food_outdoor_crops_kcals)
-        # In case outdoor_crops_stored_food_fraction_kcals_to_humans <= 0: (all og and sf going to nonhuman consumption):
-        #
-        # stored_food_outdoor_crops_kcals
-        # ==
-        # 0
-        #
-        # OK! that makes sense. Any situtation with all to nonhuman would be wierd and
-        # rare low og and sf so this bug wouldn't matter
-        #
-        #
-        # In case outdoor_crops_stored_food_fraction_kcals_to_humans > 0: (all og and sf going to nonhuman consumption):
-        #
-        # stored_food_outdoor_crops_kcals
-        # ==
-        # stored_food_outdoor_crops_kcals / (1 - (BIOFUELS_KCALS + FEED_KCALS) / stored_food_outdoor_crops_kcals)
-        # - BIOFUELS_KCALS - FEED_KCALS
-        #
-        # 1 + (BIOFUELS_KCALS + FEED_KCALS)/stored_food_outdoor_crops_KCALS
-        # ==
-        # 1 / (1 - (BIOFUELS_KCALS + FEED_KCALS) / stored_food_outdoor_crops_kcals)
-        #
-        # if we let x= (BIOFUELS_KCALS + FEED_KCALS) / stored_food_outdoor_crops_kcals)
-        #
-        # we see as x is small:
-        #
-        #   1+x == 1/(1-x) ~= 1+x
-        #
-
-        fractional_difference = np.where(
-            np.abs(denominator) <= 1e-6, 0, fractional_difference
-        )
-
-        assert (abs(fractional_difference) < 1e-6).all()
-
-        if self.constants["inputs"]["INCLUDE_FAT"]:
-            division = []
-            print("stored_food_outdoor_crops_fat")
-            print(stored_food_outdoor_crops_fat)
-            index = 0
-            print("self.outdoor_crops_stored_food_fraction_fat_to_humans")
-            print(self.outdoor_crops_stored_food_fraction_fat_to_humans)
-            for zipped_lists in zip(
-                stored_food_outdoor_crops_fat,
-                self.outdoor_crops_stored_food_fraction_fat_to_humans,
-            ):
-                if zipped_lists[1] < 0:
-                    assert zipped_lists[0] >= -1e-5
-                    if index == 0:
-                        print("IN WIERD CONDITION FIRST")
-                    division.append(0)
-                else:
-                    if index == 0:
-                        print("NOT IN WIERD CONDITION FIRST")
-                    if index == 4:
-                        print("NOT IN WIERD CONDITION LATER")
-                    division.append(zipped_lists[0] / zipped_lists[1])
-                index += 1
-            numerator = (
-                stored_food_outdoor_crops_fat
-                + self.billions_fed_grain_fed_meat_fat
-                + self.billions_fed_grain_fed_milk_fat
-            ) - (np.array(division) + self.billions_fed_grain_fed_balance.fat)
-
-            # stored_food_outdoor_crops_fat + MEAT_MILK_H_E ==
-            # (stored_food_outdoor_crops_fat/outdoor_crops_SF_FRACTION_FAT_TO_HUMANS + BALANCE_FAT)
-            #
-            # BALANCE_FAT = MEAT_MILK_H_E - FEED_FAT - BIOFUEL_FAT
-            #
-            # stored_food_outdoor_crops_fat == THING - FEED_FAT - BIOFUEL_FAT
-            #
-            # THING = stored_food_outdoor_crops_fat * (1-(FEED_FAT-BIOFUEL_FAT)/stored_food_outdoor_crops_fat)
-            #
-            # how it's being modified:
-            #
-            # stored_food_outdoor_crops_fat * (1-(FEED_FAT+BIOFUEL_FAT)/stored_food_outdoor_crops_fat)
-            # ==
-            # stored_food_outdoor_crops_fat - (FEED_FAT+BIOFUEL_FAT) * (1-(FEED_FAT+BIOFUEL_FAT)/stored_food_outdoor_crops_fat)
-            #
-            # stored_food_outdoor_crops_fat - (FEED_FAT+BIOFUEL_FAT)
-            # ==
-            # stored_food_outdoor_crops_fat - (FEED_FAT+BIOFUEL_FAT) -(FEED_FAT+BIOFUEL_FAT)/stored_food_outdoor_crops_fat)
-            #
-            # THING must be greater than stored_food_outdoor_crops_FAT. It's everything!
-            # It's taking the result, and scaling it up by dividing the fraction of "everything" to animals -> if you scale stored_food_outdoor_crops_fat up before subtracting feed and biofuels, so you get stored_food_outdoor_crops_fat.
-            #
-            # THING = SCALED_UP_stored_food_outdoor_crops_fat = stored_food_outdoor_crops_fat/self.outdoor_crops_stored_food_fraction_fat_to_humans
-            #
-            # outdoor_crops_stored_food_fraction_fat_to_feed  = excess_fat_used / stored_food_outdoor_crops_fat
-            # THING = 1 - excess_fat_used / stored_food_outdoor_crops_fat
-            #
-
-            #
-            #
-            # balance fat is just the result of feed and biofuels on the overall balance
-            #
-            #
-            # I *think* this is checking total fat is equal to nonhuman fat plus human fat
-            #
-            # The only reason to do this is to check the optimizer.
-            #
-            # stored_food_outdoor_crops_fat + MEAT_MILK_HE ==
-            # (stored_food_outdoor_crops_fat/outdoor_crops_SF_FRACTION_FAT_TO_HUMANS - EXCESS_NONHUMAN)
-            #
-            #
-            #
-            #
-
-            #
-            # (all the sources except using human edible fed food) + (-excess provided)
-            # (all the sources except using human edible fed food)*(fraction fed to humans)
-            #
-            #
-            #
-            # FRACTION_TO_FEED
-            #      = nonhuman_consumption.fat / (np.array(outdoor_crops_fat) + np.array(stored_food_fat))
-            #
-            # MEAT_MILK ==
-            # (outdoor_crops_SF_FRACTION_FAT_TO_HUMANS*(MEAT_MILK-WASTE*(feed_fat+biofuels_fat)))
-            #
-            # outdoor_crops_stored_food_fat * FRACTION_TO_NONHUMAN = FEED_USAGE
-            #
-            #
-            #
-            #
-            # MEAT_MILK * FRACTION_TO_FEED = MEAT_MILK - FEED_USAGE
-            #
-            # MEAT_MILK * FEED_USAGE/TOTAL = MEAT_MILK - FEED_USAGE
-
-            # stored_food_outdoor_crops_fat + MEAT_MILK ==
-            # (stored_food_outdoor_crops_fat/outdoor_crops_SF_FRACTION_FAT_TO_HUMANS+ BALANCE_FAT)
-            #
-            # MEAT_MILK: sent in from parameters
-            #
-            #   So really we have the following check:
-            #
-            # stored_food_outdoor_crops_fat = stored_food_outdoor_crops_fat*FRAC_TO_HUMANS - FAT_USED_FOR_FEED
-            #
-            # SOURCES:
-            #           stored_food_outdoor_crops_fat: optimized
-            #           FRAC_TO_HUMAN=stored_food_outdoor_crops_fat/outdoor_crops_SF_FRACTION_FAT_TO_HUMANS:
-            #                   outdoor_crops_SF_FRACTION_FAT_TO_HUMANS: derived from ratio
-            #                       nonhuman_consumption.fat
-            #                       / (np.array(outdoor_crops_fat) + np.array(stored_food_fat))
-            #
-            #                       nonhuman_consumption.fat: sent in from parameters
-            #                      stored_food_fat and outdoor_crops_fat: optimized
-            #               FAT_USED_FOR_FEED: nonhuman_consumption.fat from parameters
-            #
-            # Which leaves us with sources of error from stored_food_fat, outdoor_crops_fat, and stored_food_outdoor_crops_fat
-            #
-            # stored_food_fat = self.to_monthly_list(
-            #     stored_food_eaten,
-            #     self.constants["SF_FRACTION_FAT"] / self.constants["FAT_MONTHLY"] / 1e9,
-            #     False,
-            # )
-            # self.billions_fed_stored_food_fat = np.multiply(
-            #     self.to_monthly_list(
-            #         stored_food_eaten,
-            #
-            #         * self.constants["SF_FRACTION_FAT"]
-            #         / self.constants["FAT_MONTHLY"]
-            #         / 1e9,
-            #                     #     ),
-            #     self.outdoor_crops_stored_food_fraction_fat_to_humans,
-            # )
-            print(
-                "why billions_fed h e meat and billions fed he milk fat not equal to the balance?"
-            )
-            print(
-                "stored_food_outdoor_crops EQUALS ZERO:"
-                + str(
-                    100 * stored_food_outdoor_crops_fat[0] / population_billions < 0.1
-                )
-            )
-            print(
-                "DIV EQUALS ZERO:" + str(100 * division[0] / population_billions < 0.1)
-            )
-            # DELETEME
-
-            print(
-                "stored_food_outdoor_crops_fat+ self.billions_fed_grain_fed_meat_fat+ self.billions_fed_grain_fed_milk_fat"
-            )
-            print(
-                (
-                    stored_food_outdoor_crops_fat
-                    + self.billions_fed_grain_fed_meat_fat
-                    + self.billions_fed_grain_fed_milk_fat
-                )
-                / population_billions
-                * 100
-            )
-
-            print("np.array(division)")
-            print(100 * (np.array(division) / population_billions))
-            print("np.array(division) + self.billions_fed_grain_fed_balance.fat")
-            print(
-                (np.array(division) + self.billions_fed_grain_fed_balance.fat)
-                / population_billions
-                * 100
-            )
-            denominator = (
-                stored_food_outdoor_crops_fat
-                + self.billions_fed_grain_fed_meat_fat
-                + self.billions_fed_grain_fed_milk_fat
-            )
-
-            numerator_percent = 100 * (numerator / population_billions)
-            denominator_percent = 100 * (np.array(denominator) / population_billions)
-
-            fractional_difference = np.divide(numerator_percent, denominator_percent)
-
-            # THe fractional difference is enforcing the condition that the optimizer
-            # has taken all the fat remaining after enforced feed, and used it for humans
-            fractional_difference = np.where(
-                np.abs(denominator_percent) <= 0.1, 0, fractional_difference
-            )
-
-            print("numerator_percent")
-            print(numerator_percent)
-            print("denominator_percent")
-            print(denominator_percent)
-            print("fractional_difference")
-            print(fractional_difference)
-
-            assert (abs(fractional_difference) < 1e-4).all()
-
-        if self.constants["inputs"]["INCLUDE_PROTEIN"]:
-
-            division = []
-            for zipped_lists in zip(
-                stored_food_outdoor_crops_protein,
-                self.outdoor_crops_stored_food_fraction_protein_to_humans,
-            ):
-
-                if zipped_lists[1] <= 0:
-                    assert zipped_lists[0] >= -1e-5
-                    division.append(0)
-                else:
-                    division.append(zipped_lists[0] / zipped_lists[1])
-
-            # a separate problem is if we have a primary restriction on protein or fat rather than calories, the rebalancer will try to get the calories the same for each month, but then even if there are enough calories, this will force protein used to be more than is available from outdoor growing and stored food.
-
-            numerator = (
-                stored_food_outdoor_crops_protein
-                + self.billions_fed_grain_fed_meat_protein
-                + self.billions_fed_grain_fed_milk_protein
-            ) - (np.array(division) + self.billions_fed_grain_fed_balance.protein)
-
-            denominator = (
-                stored_food_outdoor_crops_protein
-                + self.billions_fed_grain_fed_meat_protein
-                + self.billions_fed_grain_fed_milk_protein
-            )
-
-            fractional_difference = np.divide(
-                numerator,
-                denominator,
-            )
-            numerator_percent = 100 * (numerator / population_billions)
-            denominator_percent = 100 * (np.array(denominator) / population_billions)
-
-            fractional_difference = np.divide(numerator_percent, denominator_percent)
-
-            fractional_difference = np.where(
-                np.abs(denominator) <= 0.1, 0, fractional_difference
-            )
-            assert (abs(fractional_difference) < 1e-6).all()
-
-    def YES_THIS_ONE_PROBABLY_DOES_SOMETHING_USEFUL_question_mark(
-        self, stored_food, rotation, no_rotation, excess
+    def ensure_optimizer_returns_same_as_sum_nutrients(
+        self, model, interpreted_results
     ):
-
-        # OKAY,THIS VALIDATION IS JUST MAKING SURE FEED (with additional excess) AND BIOFUELS ARE ALWAYS LESS THAN STORED FOOD PLUS outdoor_crops, WITH NO WASTE APPLIED ON EITHER SIDE AS WASTE IS THE SAME (BOTH ARE CROPS WASTE)
-        small_percent_threshold = Food(
-            -0.01,
-            -0.01,
-            -0.01,
-            "percent people fed per month",
-            "percent people fed per month",
-            "percent people fed per month",
-        )
-
-        assert (
-            (self.sf + self.rotation + self.no_rotation - self.excess)
-            .in_units_percent()
-            .all_greater_than(small_percent_threshold)
-        ), """There are too few calories 
-        available to meet the caloric excess 
-        provided to the simulator. This is probably because the optimizer seems to have
-         failed to sufficiently meet the constraint to limit total food fed to animals
-          to the sum of stored food and outdoor growing within a reasonable degree of
-           precision. Consider reducing precision. Quitting."""
-
-        if (
-            -(
-                self.sf + self.rotation + self.no_rotation - self.excess
-            ).in_units_percent()
-        ).any_greater_than_or_equal_to(small_percent_threshold):
-            print("")
-            print(
-                """WARNING: All of the outdoor growing and stored food is being fed to 
-                animals and none to humans"""
-            )
-
-    def ensure_optimizer_returns_same_as_sum_nutrients(self, model, interpeter):
         """
         ensure there was no major error in the optimizer or in analysis which caused
         the sums reported to differ between adding up all the extracted variables and
@@ -573,26 +169,174 @@ class Validator:
 
         decimals = 1
 
-        percent_people_fed_reported_directly_by_optimizer = round(
-            model.objective.value(), decimals
+        percent_people_fed_reported_directly_by_optimizer = model.objective.value()
+        percent_people_fed_by_summing_all_foods = interpreted_results.percent_people_fed
+        difference = round(
+            percent_people_fed_reported_directly_by_optimizer
+            - percent_people_fed_by_summing_all_foods,
+            decimals,
         )
-        percent_people_fed_by_summing_all_foods = round(
-            interpeter.percent_people_fed, decimals
-        )
-
         # WE MIGHT WANT TO USE THIS INSTEAD, WE SHALL SEE
         # assert (
         #     percent_people_fed_by_summing_all_foods - 0.1
         #     < percent_people_fed_reported_directly_by_optimizer
         #     < percent_people_fed_by_summing_all_foods + 0.1
         # ), "ERROR: The optimizer and the extracted results do not match"
-        assert (
-            percent_people_fed_reported_directly_by_optimizer
-            == percent_people_fed_by_summing_all_foods
-        ), "ERROR: The optimizer and the extracted results do not match"
+        assert difference == 0, (
+            """ERROR: The optimizer and the extracted results do not match.
+        optimizer: """
+            + str(percent_people_fed_reported_directly_by_optimizer)
+            + "\n      summing each food source extracted: "
+            + str(percent_people_fed_by_summing_all_foods)
+        )
 
     def ensure_any_nonzero_kcals_have_nonzero_fat_and_protein(
-        self, interpreter_results
+        self, interpreted_results
     ):
-        # true for every food source and also for feed and biofuels independently.
-        
+        """
+        checks that for any month where kcals is zero for any of the foods,
+        then fat and protein must also be zero.
+
+        True for every food source and also for feed and biofuels independently.
+        """
+
+        interpreted_results.cell_sugar.make_sure_fat_protein_zero_if_kcals_is_zero()
+
+        interpreted_results.scp.make_sure_fat_protein_zero_if_kcals_is_zero()
+
+        interpreted_results.greenhouse.make_sure_fat_protein_zero_if_kcals_is_zero()
+
+        interpreted_results.fish.make_sure_fat_protein_zero_if_kcals_is_zero()
+
+        interpreted_results.meat_culled_plus_grazing_cattle_maintained.make_sure_fat_protein_zero_if_kcals_is_zero()
+
+        interpreted_results.grazing_milk.make_sure_fat_protein_zero_if_kcals_is_zero()
+
+        interpreted_results.grain_fed_meat.make_sure_fat_protein_zero_if_kcals_is_zero()
+
+        interpreted_results.grain_fed_milk.make_sure_fat_protein_zero_if_kcals_is_zero()
+
+        interpreted_results.immediate_outdoor_crops.make_sure_fat_protein_zero_if_kcals_is_zero()
+
+        interpreted_results.new_stored_outdoor_crops.make_sure_fat_protein_zero_if_kcals_is_zero()
+
+        # nonhuman consumption in units percent people fed
+
+        interpreted_results.nonhuman_consumption_percent.make_sure_fat_protein_zero_if_kcals_is_zero()
+
+        interpreted_results.stored_food_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.seaweed_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.outdoor_crops_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.immediate_outdoor_crops_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.new_stored_outdoor_crops_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.stored_food_fed_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.outdoor_crops_fed_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.immediate_outdoor_crops_fed_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.new_stored_outdoor_crops_fed_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
+
+    def ensure_never_nan(self, interpreted_results):
+        """
+        checks that the interpreter results are always defined as a real number
+        """
+
+        interpreted_results.stored_food.make_sure_not_nan()
+
+        interpreted_results.outdoor_crops.make_sure_not_nan()
+
+        interpreted_results.seaweed.make_sure_not_nan()
+
+        interpreted_results.cell_sugar.make_sure_not_nan()
+
+        interpreted_results.scp.make_sure_not_nan()
+
+        interpreted_results.greenhouse.make_sure_not_nan()
+
+        interpreted_results.fish.make_sure_not_nan()
+
+        interpreted_results.meat_culled_plus_grazing_cattle_maintained.make_sure_not_nan()
+
+        interpreted_results.grazing_milk.make_sure_not_nan()
+
+        interpreted_results.grain_fed_meat.make_sure_not_nan()
+
+        interpreted_results.grain_fed_milk.make_sure_not_nan()
+
+        interpreted_results.immediate_outdoor_crops.make_sure_not_nan()
+
+        interpreted_results.new_stored_outdoor_crops.make_sure_not_nan()
+
+        # nonhuman consumption in units percent people fed
+
+        interpreted_results.nonhuman_consumption_percent.make_sure_not_nan()
+
+        interpreted_results.stored_food_rounded.make_sure_not_nan()
+        interpreted_results.seaweed_rounded.make_sure_not_nan()
+        interpreted_results.outdoor_crops_rounded.make_sure_not_nan()
+        interpreted_results.immediate_outdoor_crops_rounded.make_sure_not_nan()
+        interpreted_results.new_stored_outdoor_crops_rounded.make_sure_not_nan()
+        interpreted_results.stored_food_fed_to_humans.make_sure_not_nan()
+        interpreted_results.outdoor_crops_fed_to_humans.make_sure_not_nan()
+        interpreted_results.immediate_outdoor_crops_fed_to_humans.make_sure_not_nan()
+        interpreted_results.new_stored_outdoor_crops_fed_to_humans.make_sure_not_nan()
+
+    def ensure_all_greater_than_or_equal_to_zero(self, interpreted_results):
+        """
+        checks that all the results variables are greater than or equal to zero
+        """
+
+        assert interpreted_results.cell_sugar.all_greater_than_or_equal_to_zero()
+
+        assert interpreted_results.scp.all_greater_than_or_equal_to_zero()
+
+        assert interpreted_results.greenhouse.all_greater_than_or_equal_to_zero()
+
+        assert interpreted_results.fish.all_greater_than_or_equal_to_zero()
+
+        assert (
+            interpreted_results.meat_culled_plus_grazing_cattle_maintained.all_greater_than_or_equal_to_zero()
+        )
+
+        assert interpreted_results.grazing_milk.all_greater_than_or_equal_to_zero()
+
+        assert interpreted_results.grain_fed_meat.all_greater_than_or_equal_to_zero()
+
+        assert interpreted_results.grain_fed_milk.all_greater_than_or_equal_to_zero()
+
+        assert (
+            interpreted_results.immediate_outdoor_crops.all_greater_than_or_equal_to_zero()
+        )
+
+        assert (
+            interpreted_results.new_stored_outdoor_crops.all_greater_than_or_equal_to_zero()
+        )
+
+        # nonhuman consumption in units percent people fed
+        assert (
+            interpreted_results.nonhuman_consumption_percent.all_greater_than_or_equal_to_zero()
+        )
+
+        assert (
+            interpreted_results.stored_food_rounded.all_greater_than_or_equal_to_zero()
+        )
+        assert interpreted_results.seaweed_rounded.all_greater_than_or_equal_to_zero()
+        assert (
+            interpreted_results.outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
+        )
+        assert (
+            interpreted_results.immediate_outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
+        )
+        assert (
+            interpreted_results.new_stored_outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
+        )
+        assert (
+            interpreted_results.stored_food_fed_to_humans.all_greater_than_or_equal_to_zero()
+        )
+        assert (
+            interpreted_results.outdoor_crops_fed_to_humans.all_greater_than_or_equal_to_zero()
+        )
+        assert (
+            interpreted_results.immediate_outdoor_crops_fed_to_humans.all_greater_than_or_equal_to_zero()
+        )
+        assert (
+            interpreted_results.new_stored_outdoor_crops_fed_to_humans.all_greater_than_or_equal_to_zero()
+        )
