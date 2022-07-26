@@ -527,8 +527,15 @@ class Parameters:
         time_consts["grain_fed_created_fat"] = grain_fed_created_fat
         time_consts["grain_fed_created_protein"] = grain_fed_created_protein
 
-        # post waste
         feed = feed_and_biofuels.feed
+
+        # post waste
+        assert (feed.fat >= grain_fed_meat_fat_capped + grain_fed_milk_fat_capped).all()
+
+        assert (
+            feed.protein
+            >= grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
+        ).all()
 
         assert (feed.kcals >= grain_fed_created_kcals).all()
 

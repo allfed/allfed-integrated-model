@@ -668,13 +668,6 @@ class MeatAndDairy:
                 grain_fed_milk_fat[i] + grain_fed_meat_fat[i]
                 > feed.fat[i] * BEST_POSSIBLE_CONVERSION_RATIO
             ):
-                if i == 2:
-                    print("greater than!")
-                    print("month")
-                    print("grain_fed_milk_fat[i] + grain_fed_meat_fat[i]")
-                    print(grain_fed_milk_fat[i] + grain_fed_meat_fat[i])
-                    print("feed.fat[i]")
-                    print(feed.fat[i])
                 adjustment_ratio = (
                     BEST_POSSIBLE_CONVERSION_RATIO
                     * feed.fat[i]
