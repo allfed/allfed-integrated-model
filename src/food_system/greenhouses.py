@@ -114,9 +114,9 @@ class Greenhouses:
     # estimate and decreasing the estimated fat and protein by the same
     # factor that kcals are decreased by
     def get_greenhouse_yield_per_ha(self, constants_for_params, outdoor_crops):
-        KCAL_RATIO = outdoor_crops.KCAL_RATIO_ROT
-        FAT_RATIO = outdoor_crops.FAT_RATIO_ROT
-        PROTEIN_RATIO = outdoor_crops.PROTEIN_RATIO_ROT
+        KCAL_RATIO = outdoor_crops.KCAL_RATIO_ROTATION
+        FAT_RATIO = outdoor_crops.FAT_RATIO_ROTATION
+        PROTEIN_RATIO = outdoor_crops.PROTEIN_RATIO_ROTATION
 
         if not self.ADD_GREENHOUSES:
             greenhouse_kcals_per_ha = [0] * self.NMONTHS

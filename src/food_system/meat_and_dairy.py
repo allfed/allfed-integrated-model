@@ -236,13 +236,14 @@ class MeatAndDairy:
         if not self.ADD_MILK:
             grain_fed_milk_produced_prewaste = np.array([0] * self.NMONTHS)
 
-        print("grain_fed_milk_produced_prewaste")
-        print(grain_fed_milk_produced_prewaste)
+        # TODO: DELFETE ME
+        # print("grain_fed_milk_produced_prewaste")
+        # print(grain_fed_milk_produced_prewaste)
 
-        print("cattle_grain_fed_maintained_prewaste")
-        print(cattle_grain_fed_maintained_prewaste)
-        print("chicken_pork_maintained_prewaste")
-        print(chicken_pork_maintained_prewaste)
+        # print("cattle_grain_fed_maintained_prewaste")
+        # print(cattle_grain_fed_maintained_prewaste)
+        # print("chicken_pork_maintained_prewaste")
+        # print(chicken_pork_maintained_prewaste)
         self.grain_fed_milk_produced_prewaste = grain_fed_milk_produced_prewaste
         self.cattle_grain_fed_maintained_prewaste = cattle_grain_fed_maintained_prewaste
         self.chicken_pork_maintained_prewaste = chicken_pork_maintained_prewaste
@@ -392,6 +393,8 @@ class MeatAndDairy:
         self.chicken_pork_fat = self.chicken_pork_prewaste_fat * (
             1 - self.MEAT_WASTE / 100
         )
+        # print("self.chicken_pork_fat")
+        # print(self.chicken_pork_fat)
         self.chicken_pork_protein = self.chicken_pork_prewaste_protein * (
             1 - self.MEAT_WASTE / 100
         )
@@ -429,6 +432,8 @@ class MeatAndDairy:
             grain_fed_meat_kcals = np.array([0] * self.NMONTHS)
             grain_fed_meat_fat = np.array([0] * self.NMONTHS)
             grain_fed_meat_protein = np.array([0] * self.NMONTHS)
+
+        # print("Grain fed meat fat:", grain_fed_meat_fat)
 
         return (
             grain_fed_meat_kcals,
@@ -629,6 +634,7 @@ class MeatAndDairy:
             grain_fed_milk_fat = np.array([0] * self.NMONTHS)
             grain_fed_milk_protein = np.array([0] * self.NMONTHS)
 
+        # print("grain_fed_milk_fat", grain_fed_milk_fat)
         return (grain_fed_milk_kcals, grain_fed_milk_fat, grain_fed_milk_protein)
 
     def cap_fat_protein_to_amount_used(
@@ -654,18 +660,21 @@ class MeatAndDairy:
         return_grain_fed_meat_protein = np.array([])
         return_grain_fed_milk_fat = np.array([])
         return_grain_fed_milk_protein = np.array([])
+        # print("feed")
+        # print(feed)
         for i in range(self.NMONTHS):
+
             if (
                 grain_fed_milk_fat[i] + grain_fed_meat_fat[i]
                 > feed.fat[i] * BEST_POSSIBLE_CONVERSION_RATIO
             ):
-                print("greater than!")
-                print("month")
-                print(i)
-                print("grain_fed_milk_fat[i] + grain_fed_meat_fat[i]")
-                print(grain_fed_milk_fat[i] + grain_fed_meat_fat[i])
-                print("feed.fat[i]")
-                print(feed.fat[i])
+                if i == 2:
+                    print("greater than!")
+                    print("month")
+                    print("grain_fed_milk_fat[i] + grain_fed_meat_fat[i]")
+                    print(grain_fed_milk_fat[i] + grain_fed_meat_fat[i])
+                    print("feed.fat[i]")
+                    print(feed.fat[i])
                 adjustment_ratio = (
                     BEST_POSSIBLE_CONVERSION_RATIO
                     * feed.fat[i]
@@ -677,6 +686,13 @@ class MeatAndDairy:
                 return_grain_fed_milk_fat = np.append(
                     return_grain_fed_milk_fat, adjustment_ratio * grain_fed_milk_fat[i]
                 )
+
+                difference = (
+                    return_grain_fed_meat_fat[i]
+                    + return_grain_fed_milk_fat[i]
+                    - feed.fat[i]
+                )
+                assert (np.round(difference, 3) == 0).all()
             else:
                 return_grain_fed_meat_fat = np.append(
                     return_grain_fed_meat_fat, grain_fed_meat_fat[i]
@@ -702,7 +718,20 @@ class MeatAndDairy:
                     return_grain_fed_milk_protein,
                     adjustment_ratio * grain_fed_milk_protein[i],
                 )
+
+                difference = np.subtract(
+                    return_grain_fed_meat_protein + return_grain_fed_milk_protein,
+                    feed.protein,
+                )
+
+                difference = (
+                    return_grain_fed_meat_protein[i]
+                    + return_grain_fed_milk_protein[i]
+                    - feed.protein[i]
+                )
+                assert (np.round(difference, 3) == 0).all()
             else:
+
                 return_grain_fed_meat_protein = np.append(
                     return_grain_fed_meat_protein, grain_fed_meat_protein[i]
                 )

@@ -149,6 +149,7 @@ def run_model_with_resilient_foods(plot_figures=True):
             feed_delay, excess_per_month, percent_fed
         )
 
+        # should be considered "pre waste"
         constants_for_params["EXCESS_FEED"] = excess_per_month
 
         n = n + 1

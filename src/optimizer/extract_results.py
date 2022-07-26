@@ -262,12 +262,12 @@ class Extractor:
             / 1e9
         )
 
-        print("billions_fed_fish_kcals")
-        print(billions_fed_fish_kcals)
-        print("billions_fed_fish_protein")
-        print(billions_fed_fish_protein)
-        print("billions_fed_fish_fat")
-        print(billions_fed_fish_fat)
+        # print("billions_fed_fish_kcals")
+        # print(billions_fed_fish_kcals)
+        # print("billions_fed_fish_protein")
+        # print(billions_fed_fish_protein)
+        # print("billions_fed_fish_fat")
+        # print(billions_fed_fish_fat)
 
         self.fish = Food(
             kcals=billions_fed_fish_kcals,
@@ -418,12 +418,12 @@ class Extractor:
             )
         )
 
-        print("billions_fed_outdoor_crops_kcals")
-        print(billions_fed_outdoor_crops_kcals)
-        print("billions_fed_outdoor_crops_fat")
-        print(billions_fed_outdoor_crops_fat)
-        print("billions_fed_outdoor_crops_protein")
-        print(billions_fed_outdoor_crops_protein)
+        # print("billions_fed_outdoor_crops_kcals")
+        # print(billions_fed_outdoor_crops_kcals)
+        # print("billions_fed_outdoor_crops_fat")
+        # print(billions_fed_outdoor_crops_fat)
+        # print("billions_fed_outdoor_crops_protein")
+        # print(billions_fed_outdoor_crops_protein)
 
         self.outdoor_crops = Food(
             kcals=billions_fed_outdoor_crops_kcals,

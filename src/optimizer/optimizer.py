@@ -377,43 +377,43 @@ class Optimizer:
         # billions kcals needed is in units billion kcals per month for
         # the whole population
 
-        print("nonhuman times CROPS_WASTE" + str(month))
+        # print("nonhuman times CROPS_WASTE" + str(month))
 
-        print(
-            round(self.multi_valued_constants["nonhuman_consumption"].kcals[month], 5)
-        )
+        # print(
+        #     round(self.multi_valued_constants["nonhuman_consumption"].kcals[month], 5)
+        # )
 
-        print(round(self.multi_valued_constants["grazing_milk_kcals"][month], 5))
+        # print(round(self.multi_valued_constants["grazing_milk_kcals"][month], 5))
 
-        print(
-            round(
-                self.multi_valued_constants["cattle_grazing_maintained_kcals"][month], 5
-            )
-        )
+        # print(
+        #     round(
+        #         self.multi_valued_constants["cattle_grazing_maintained_kcals"][month], 5
+        #     )
+        # )
 
-        print(round(self.multi_valued_constants["meat_culled"][month], 5))
+        # print(round(self.multi_valued_constants["meat_culled"][month], 5))
 
-        print(
-            round(
-                self.multi_valued_constants["production_kcals_cell_sugar_per_month"][
-                    month
-                ],
-                3,
-            )
-        )
+        # print(
+        #     round(
+        #         self.multi_valued_constants["production_kcals_cell_sugar_per_month"][
+        #             month
+        #         ],
+        #         3,
+        #     )
+        # )
 
-        print(
-            round(
-                self.multi_valued_constants["production_kcals_scp_per_month"][month], 5
-            )
-        )
-        print(round(self.multi_valued_constants["greenhouse_area"][month], 5))
-        print(
-            round(
-                self.multi_valued_constants["production_kcals_fish_per_month"][month], 5
-            )
-        )
-        print(round(self.multi_valued_constants["grain_fed_created_kcals"][month], 5))
+        # print(
+        #     round(
+        #         self.multi_valued_constants["production_kcals_scp_per_month"][month], 5
+        #     )
+        # )
+        # print(round(self.multi_valued_constants["greenhouse_area"][month], 5))
+        # print(
+        #     round(
+        #         self.multi_valued_constants["production_kcals_fish_per_month"][month], 5
+        #     )
+        # )
+        # print(round(self.multi_valued_constants["grain_fed_created_kcals"][month], 5))
 
         # numbers scaled to percent of per person human needs per month
         model += (
@@ -464,8 +464,8 @@ class Optimizer:
         #         self.multi_valued_constants["production_fat_fish_per_month"][month], 5
         #     )
         # )
-        print("grain_fed_fat")
-        print(round(self.multi_valued_constants["grain_fed_created_fat"][month], 5))
+        # print("grain_fed_fat")
+        # print(round(self.multi_valued_constants["grain_fed_created_fat"][month], 5))
 
         if self.single_valued_constants["inputs"]["INCLUDE_FAT"]:
             # fat monthly is in units thousand tons

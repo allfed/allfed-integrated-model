@@ -67,7 +67,7 @@ class OutdoorCrops(Food):
 
             self.OG_ROTATION_FRACTION_KCALS = 1
 
-            self.KCAL_RATIO_ROT = 1
+            self.KCAL_RATIO_ROTATION = 1
             self.FAT_ROTATION_RATIO = constants_for_params["ROTATION_IMPROVEMENTS"][
                 "FAT_RATIO"
             ]
@@ -82,18 +82,17 @@ class OutdoorCrops(Food):
                 self.OG_FRACTION_PROTEIN * self.PROTEIN_ROTATION_RATIO
             )
 
-            self.FAT_RATIO_ROT = self.OG_ROTATION_FRACTION_FAT
-            self.PROTEIN_RATIO_ROT = self.OG_ROTATION_FRACTION_PROTEIN
-
+            self.FAT_RATIO_ROTATION = self.OG_ROTATION_FRACTION_FAT
+            self.PROTEIN_RATIO_ROTATION = self.OG_ROTATION_FRACTION_PROTEIN
         else:
             self.OG_KCAL_REDUCED = 1
             self.OG_ROTATION_FRACTION_KCALS = 1
             self.OG_ROTATION_FRACTION_FAT = self.OG_FRACTION_FAT
             self.OG_ROTATION_FRACTION_PROTEIN = self.OG_FRACTION_PROTEIN
 
-            self.KCAL_RATIO_ROT = 1
-            self.FAT_RATIO_ROT = self.OG_FRACTION_FAT
-            self.PROTEIN_RATIO_ROT = self.OG_FRACTION_PROTEIN
+            self.KCAL_RATIO_ROTATION = 1
+            self.FAT_RATIO_ROTATION = self.OG_FRACTION_FAT
+            self.PROTEIN_RATIO_ROTATION = self.OG_FRACTION_PROTEIN
 
     def calculate_monthly_production(self, constants_for_params):
         # assumption: outdoor crop production is very similar in nutritional
@@ -333,6 +332,6 @@ class OutdoorCrops(Food):
             protein_units="thousand tons each month",
         )
 
-        CROP_WASTE = constants_for_params["WASTE"]["CROPS"]
+        self.CROP_WASTE = constants_for_params["WASTE"]["CROPS"]
 
-        return self.crops_food_produced * (1 - CROP_WASTE / 100)
+        return self.crops_food_produced * (1 - self.CROP_WASTE / 100)
