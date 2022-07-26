@@ -282,8 +282,6 @@ class OutdoorCrops(Food):
             self.NO_ROT_KCALS_GROWN.append(
                 month_kcals * (1 - ((1 - self.all_months_reductions[i + month_index])))
             )
-        print("KCALS_GROWN")
-        print(self.KCALS_GROWN)
 
         PLOT_WITH_SEASONALITY = False
         if PLOT_WITH_SEASONALITY:
@@ -328,6 +326,7 @@ class OutdoorCrops(Food):
         self.kcals = np.array(self.crops_food_produced)
         self.fat = np.array(self.OG_FRACTION_FAT * self.crops_food_produced)
         self.protein = np.array(self.OG_FRACTION_PROTEIN * self.crops_food_produced)
+
         self.set_units(
             kcals_units="billion kcals each month",
             fat_units="thousand tons each month",

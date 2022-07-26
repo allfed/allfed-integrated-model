@@ -233,9 +233,9 @@ class UnitConversions:
         # get the child class so can initialize the Food class
         Food = self.get_Food_class()
 
-        kcal_conversion = 1 / conversions.kcals_monthly
-        fat_conversion = 1 / conversions.fat_monthly / 1e9
-        protein_conversion = 1 / conversions.protein_monthly / 1e9
+        billion_kcal_conversion = 1 / conversions.kcals_monthly
+        thou_tons_fat_conversion = 1 / conversions.fat_monthly / 1e9
+        thou_tons_protein_conversion = 1 / conversions.protein_monthly / 1e9
 
         if (
             self.kcals_units == "billion kcals each month"
@@ -243,9 +243,9 @@ class UnitConversions:
             and self.protein_units == "thousand tons each month"
         ):
             return Food(
-                kcals=self.kcals * kcal_conversion,
-                fat=self.fat * fat_conversion,
-                protein=self.protein * protein_conversion,
+                kcals=self.kcals * billion_kcal_conversion,
+                fat=self.fat * thou_tons_fat_conversion,
+                protein=self.protein * thou_tons_protein_conversion,
                 kcals_units="billion people fed each month",
                 fat_units="billion people fed each month",
                 protein_units="billion people fed each month",
@@ -256,9 +256,40 @@ class UnitConversions:
             and self.protein_units == "thousand tons per month"
         ):
             return Food(
-                kcals=self.kcals * kcal_conversion,
-                fat=self.fat * fat_conversion,
-                protein=self.protein * protein_conversion,
+                kcals=self.kcals * billion_kcal_conversion,
+                fat=self.fat * thou_tons_fat_conversion,
+                protein=self.protein * thou_tons_protein_conversion,
+                kcals_units="billion people fed per month",
+                fat_units="billion people fed per month",
+                protein_units="billion people fed per month",
+            )
+
+        percent_people_kcal_conversion = conversions.population / 1e9 / 100
+        percent_people_fat_conversion = conversions.population / 1e9 / 100
+        percent_people_protein_conversion = conversions.population / 1e9 / 100
+
+        if (
+            self.kcals_units == "percent people fed per month"
+            and self.fat_units == "percent people fed per month"
+            and self.protein_units == "percent people fed per month"
+        ):
+            return Food(
+                kcals=self.kcals * percent_people_kcal_conversion,
+                fat=self.fat * percent_people_fat_conversion,
+                protein=self.protein * percent_people_protein_conversion,
+                kcals_units="billion people fed per month",
+                fat_units="billion people fed per month",
+                protein_units="billion people fed per month",
+            )
+        if (
+            self.kcals_units == "percent people fed per month"
+            and self.fat_units == "percent people fed per month"
+            and self.protein_units == "percent people fed per month"
+        ):
+            return Food(
+                kcals=self.kcals * percent_people_kcal_conversion,
+                fat=self.fat * percent_people_fat_conversion,
+                protein=self.protein * percent_people_protein_conversion,
                 kcals_units="billion people fed per month",
                 fat_units="billion people fed per month",
                 protein_units="billion people fed per month",
@@ -364,6 +395,66 @@ class UnitConversions:
             print("    kcals: percent people fed per/each month")
             print("    fat: percent people fed per/each month")
             print("    protein: percent people fed per/each month")
+            success = False
+            assert success
+
+    def in_units_bil_kcals_thou_tons_thou_tons_per_month(self):
+        """
+        If the existing units are understood by this function, it tries to convert the
+        values and units to percent of people fed.
+        """
+
+        # getting this instance of the UnitConversions from the child class
+        conversions = self.get_conversions()
+
+        # okay, okay, maybe the way I did this child/parent thing is not ideal...
+        # get the child class so can initialize the Food class
+        Food = self.get_Food_class()
+
+        percent_kcal_conversion = (
+            1e9 * conversions.kcals_monthly * conversions.population / 100
+        )
+        percent_fat_conversion = conversions.fat_monthly * conversions.population / 100
+        percent_protein_conversion = (
+            conversions.protein_monthly * conversions.population / 100
+        )
+
+        if (
+            self.kcals_units == "percent people fed each month"
+            and self.fat_units == "percent people fed each month"
+            and self.protein_units == "percent people fed each month"
+        ):
+            return Food(
+                kcals=self.kcals * percent_kcal_conversion,
+                fat=self.fat * percent_fat_conversion,
+                protein=self.protein * percent_protein_conversion,
+                kcals_units="billion kcals each month",
+                fat_units="thousand tons each month",
+                protein_units="thousand tons each month",
+            )
+
+        if (
+            self.kcals_units == "percent people fed per month"
+            and self.fat_units == "percent people fed per month"
+            and self.protein_units == "percent people fed per month"
+        ):
+            return Food(
+                kcals=self.kcals * percent_kcal_conversion,
+                fat=self.fat * percent_fat_conversion,
+                protein=self.protein * percent_protein_conversion,
+                kcals_units="billion kcals per month",
+                fat_units="thousand tons per month",
+                protein_units="thousand tons per month",
+            )
+        else:
+
+            print("Error: conversion from these units not known")
+            print("From units:")
+            self.print_units()
+            print("To units:")
+            print("    kcals: billion kcals per/each month")
+            print("    fat: thousand tons per/each month")
+            print("    protein: thousand tons per/each month")
             success = False
             assert success
 

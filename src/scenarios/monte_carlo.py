@@ -21,6 +21,7 @@ if module_path not in sys.path:
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
+from src.food_system.food import Food
 
 
 class MonteCarlo:
@@ -69,8 +70,16 @@ class MonteCarlo:
         )
 
         # No excess calories
-        excess_per_month = np.array([0] * constants_for_params["NMONTHS"])
-        constants_for_params["EXCESS_FEED_KCALS"] = excess_per_month
+        excess_per_month = Food(
+            kcals=[0] * constants_for_params["NMONTHS"],
+            fat=[0] * constants_for_params["NMONTHS"],
+            protein=[0] * constants_for_params["NMONTHS"],
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
+        )
+
+        constants_for_params["EXCESS_FEED"] = excess_per_month
 
         # resilient foods used for simulation
         res_foods = (
@@ -408,9 +417,7 @@ class MonteCarlo:
 
                 # multi_result = [pool.apply_async(MonteCarlo.run_scenario, ( variables, constants_for_params, inp, N)) for inp in inp_lists]
                 # result = [x for p in multi_result for x in p.get()]
-                print(result)
-                # print(result)
-                # quit()
+
                 fed_list = []
                 for i in range(0, len(result)):
                     (fed, failed_index) = result[i]

@@ -444,6 +444,26 @@ class Food(UnitConversions):
             kcals, fat, protein, self.kcals_units, self.fat_units, self.protein_units
         )
 
+    def __getitem__(self, key):
+        """
+        Returns the value of the macronutrient at the given index or range of indices.
+
+        NOTE: if key is a length 1 index, then this won't properly update units
+        to " per month" and may cause an error down the line!
+        """
+        self.make_sure_is_a_list()
+
+        self.validate_if_list()
+
+        return Food(
+            kcals=self.kcals[key],
+            fat=self.fat[key],
+            protein=self.protein[key],
+            kcals_units=self.kcals_units,
+            fat_units=self.fat_units,
+            protein_units=self.protein_units,
+        )
+
     def __mul__(self, other):
         """
         Multiplies a food's macronutrients by a number.

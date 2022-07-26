@@ -315,7 +315,6 @@ for i in range(0, len(pulp_countries)):
                 "Value"
             ]
         )
-        # print(pulp)
     pulp_csv = np.vstack([pulp_csv, [pulp_country, country_name, pulp]])
 
 

@@ -159,23 +159,23 @@ class Optimizer:
         variables["stored_food_start"][month] = LpVariable(
             "Stored_Food_Start_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["INITIAL_SF_KCALS"],
+            self.single_valued_constants["stored_food"].kcals,
         )
         variables["stored_food_end"][month] = LpVariable(
             "Stored_Food_End_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["INITIAL_SF_KCALS"],
+            self.single_valued_constants["stored_food"].kcals,
         )
         variables["stored_food_eaten"][month] = LpVariable(
             "Stored_Food_Eaten_During_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["INITIAL_SF_KCALS"],
+            self.single_valued_constants["stored_food"].kcals,
         )
 
         if month == 0:  # first Month
             model += (
                 variables["stored_food_start"][0]
-                == self.single_valued_constants["INITIAL_SF_KCALS"],
+                == self.single_valued_constants["stored_food"].kcals,
                 "Stored_Food_Start_Month_0_Constraint",
             )
         else:
@@ -377,6 +377,44 @@ class Optimizer:
         # billions kcals needed is in units billion kcals per month for
         # the whole population
 
+        print("nonhuman times CROPS_WASTE" + str(month))
+
+        print(
+            round(self.multi_valued_constants["nonhuman_consumption"].kcals[month], 5)
+        )
+
+        print(round(self.multi_valued_constants["grazing_milk_kcals"][month], 5))
+
+        print(
+            round(
+                self.multi_valued_constants["cattle_grazing_maintained_kcals"][month], 5
+            )
+        )
+
+        print(round(self.multi_valued_constants["meat_culled"][month], 5))
+
+        print(
+            round(
+                self.multi_valued_constants["production_kcals_cell_sugar_per_month"][
+                    month
+                ],
+                3,
+            )
+        )
+
+        print(
+            round(
+                self.multi_valued_constants["production_kcals_scp_per_month"][month], 5
+            )
+        )
+        print(round(self.multi_valued_constants["greenhouse_area"][month], 5))
+        print(
+            round(
+                self.multi_valued_constants["production_kcals_fish_per_month"][month], 5
+            )
+        )
+        print(round(self.multi_valued_constants["grain_fed_created_kcals"][month], 5))
+
         # numbers scaled to percent of per person human needs per month
         model += (
             variables["humans_fed_kcals"][month]
@@ -405,6 +443,30 @@ class Optimizer:
             "Kcals_Fed_Month_" + str(month) + "_Constraint",
         )
 
+        # print(round(self.multi_valued_constants["nonhuman_consumption"].fat[month], 5))
+
+        # print(round(self.multi_valued_constants["grazing_milk_fat"][month], 5))
+
+        # print(
+        #     round(
+        #         self.multi_valued_constants["cattle_grazing_maintained_fat"][month], 5
+        #     )
+        # )
+
+        # print(round(self.multi_valued_constants["meat_culled"][month], 5))
+
+        # print(
+        #     round(self.multi_valued_constants["production_fat_scp_per_month"][month], 5)
+        # )
+        # print(round(self.multi_valued_constants["greenhouse_area"][month], 5))
+        # print(
+        #     round(
+        #         self.multi_valued_constants["production_fat_fish_per_month"][month], 5
+        #     )
+        # )
+        print("grain_fed_fat")
+        print(round(self.multi_valued_constants["grain_fed_created_fat"][month], 5))
+
         if self.single_valued_constants["inputs"]["INCLUDE_FAT"]:
             # fat monthly is in units thousand tons
             model += (
@@ -424,7 +486,7 @@ class Optimizer:
                         month
                     ]
                     + self.multi_valued_constants["meat_culled"][month]
-                    * self.single_valued_constants["MEAT_FRACTION_FAT"]
+                    * self.single_valued_constants["MEAT_CULLED_FRACTION_FAT"]
                     + self.multi_valued_constants["production_fat_scp_per_month"][month]
                     + self.multi_valued_constants["greenhouse_area"][month]
                     * self.multi_valued_constants["greenhouse_fat_per_ha"][month]
@@ -460,7 +522,7 @@ class Optimizer:
                         month
                     ]
                     + self.multi_valued_constants["meat_culled"][month]
-                    * self.single_valued_constants["MEAT_FRACTION_PROTEIN"]
+                    * self.single_valued_constants["MEAT_CULLED_FRACTION_PROTEIN"]
                     + self.multi_valued_constants["greenhouse_area"][month]
                     * self.multi_valued_constants["greenhouse_protein_per_ha"][month]
                     + self.multi_valued_constants["production_protein_fish_per_month"][

@@ -337,8 +337,7 @@ for i in range(0, len(prod_iso3)):
     for index, product in products.iterrows():
         # find the particular icountry_names = [tem.
         n = nutrition[nutrition["Item"] == product["Item"]]
-        # print('Unit')
-        # print(product['Unit'])
+
         # if the match could not be found, continue
         if len(n) == 0:
             continue
@@ -349,8 +348,7 @@ for i in range(0, len(prod_iso3)):
         kcals_per_kg = float(n["Calories"])  # kcals / kg
         fat_frac = float(n["Fat"])  # fraction by weight
         protein_frac = float(n["Protein"])  # fraction by weight
-        # print("fat_frac")
-        # print(fat_frac)
+
         # production Calories is units tons per year
         if np.isnan(product["Value"]):
             tons = 0

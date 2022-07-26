@@ -24,6 +24,7 @@ if module_path not in sys.path:
     sys.path.append(module_path)
 
 from src.food_system.food import Food
+import numpy as np
 
 
 class Interpreter:
@@ -113,6 +114,10 @@ class Interpreter:
             extracted_results.outdoor_crops.in_units_kcals_eff()
         )
 
+        # TODO: DELETE ME!
+        # print("outdoor_crops_kcals_eff", self.outdoor_crops_kcals_eff)
+        # print("outdoor_crops percent", self.outdoor_crops)
+
         self.seaweed_kcals_eff = extracted_results.seaweed.in_units_kcals_eff()
 
         self.cell_sugar_kcals_eff = extracted_results.cell_sugar.in_units_kcals_eff()
@@ -185,10 +190,6 @@ class Interpreter:
             self.nonhuman_consumption_percent,
         )
 
-        # TODO: delete this printout
-        print("to_humans_ratio")
-        print(to_humans_ratio)
-
         (
             self.stored_food_fed_to_humans,
             self.outdoor_crops_fed_to_humans,
@@ -202,14 +203,9 @@ class Interpreter:
             to_humans_ratio,
         )
 
-        print("humans_fed_sum")
-        print(humans_fed_sum)
         self.kcals_fed = humans_fed_sum.kcals
         self.fat_fed = humans_fed_sum.kcals
         self.protein_fed = humans_fed_sum.kcals
-
-        print("self.get_sum_by_adding_to_humans")
-        print(self.get_sum_by_adding_to_humans())
 
         difference = humans_fed_sum - self.get_sum_by_adding_to_humans()
 
@@ -281,42 +277,6 @@ class Interpreter:
         also rounds result to 1 decimal place in terms of percent fed (within 0.1% of
         it's value)
         """
-        print("self.stored_food")
-        print(self.stored_food.get_units())
-        print("")
-        print("self.outdoor_crops")
-        print(self.outdoor_crops.get_units())
-        print("")
-        print("self.seaweed")
-        print(self.seaweed.get_units())
-        print("")
-        print("self.cell_sugar")
-        print(self.cell_sugar.get_units())
-        print("")
-        print("self.scp")
-        print(self.scp.get_units())
-        print("")
-        print("self.greenhouse")
-        print(self.greenhouse.get_units())
-        print("")
-        print("self.fish")
-        print(self.fish.get_units())
-        print("")
-        print("self.meat_culled_plus_grazing_cattle_maintained")
-        print(self.meat_culled_plus_grazing_cattle_maintained.get_units())
-        print("")
-        print("self.grazing_milk")
-        print(self.grazing_milk.get_units())
-        print("")
-        print("self.grain_fed_meat")
-        print(self.grain_fed_meat.get_units())
-        print("")
-        print("self.grain_fed_milk")
-        print(self.grain_fed_milk.get_units())
-        print("")
-        print("nonhuman_consumption")
-        print(nonhuman_consumption.get_units())
-        print("")
 
         humans_fed_sum = (
             self.stored_food
@@ -343,7 +303,7 @@ class Interpreter:
 
         needs_ratio = interpreted_results.percent_people_fed / 100
 
-        print("No trade expected kcals/capita/day 2020")
+        print("Expected kcals/capita/day")
         print(needs_ratio * 2100)
         print("")
 
@@ -368,9 +328,6 @@ class Interpreter:
         )
 
         to_humans_ratio = remainder_to_humans / outdoor_crops_plus_stored_food_rounded
-
-        print("to_humans_ratio")
-        print(to_humans_ratio)
 
         # make sure if either outdoor_crops_plus_stored_food_rounded or
         # nonhuman_consumption is zero, the other is zero
@@ -420,15 +377,12 @@ class Interpreter:
         """
         get the minimum nutrients required to meet the needs of the population in any month, for kcals, fat, and protein
         """
-        fed_as_string = str("result of scenario\n") + str(humans_fed_sum)
-
         assert humans_fed_sum.is_units_percent()
 
         (min_nutrient, percent_people_fed) = humans_fed_sum.get_min_nutrient()
 
         PRINT_FED = True
         if PRINT_FED:
-            print(fed_as_string)
 
             print("Nutrients with constraining values are: " + str(min_nutrient))
             print("Estimated percent people fed is " + str(percent_people_fed) + "%")
@@ -515,3 +469,110 @@ class Interpreter:
             new_stored_outdoor_crops_rounded,
             outdoor_crops_plus_stored_food,
         )
+
+    def increase_excess_to_feed(
+        self,
+        feed_delay,
+        excess_per_month,
+        percent_fed,
+    ):
+        """
+        when calculating the excess calories, the amount of human edible feed
+        used can't be more than the excess calories. Because the baseline feed
+        usage is higher than in nuclear winter, we don't want to increase
+        feed usage before the shutoff.
+
+        this function adds an additional amount of excess at a consistent percentage
+        in the months of interest (months to calculate diet)
+        """
+
+        # these months are used to estimate the diet before the full scale-up of resilient foods makes there be way too much food to make sense economically
+        N_MONTHS_TO_CALCULATE_DIET = 49
+
+        # rapidly feed more to people until it's close to 2100 kcals, then
+        # slowly feed more to people
+        SMALL_INCREASE_IN_EXCESS = 0.01
+        LARGE_INCREASE_IN_EXCESS = 0.1
+
+        excess_per_month_percent = excess_per_month.in_units_percent_fed()
+
+        baseline_feed = excess_per_month_percent[:feed_delay]
+
+        part_at_end_to_leave_unchanged = excess_per_month_percent[
+            N_MONTHS_TO_CALCULATE_DIET:
+        ]
+
+        after_shutoff_feed = excess_per_month_percent[
+            feed_delay:N_MONTHS_TO_CALCULATE_DIET
+        ]
+
+        if percent_fed < 106 and percent_fed > 100:
+
+            additional_excess_to_add_percent = np.linspace(
+                SMALL_INCREASE_IN_EXCESS,
+                SMALL_INCREASE_IN_EXCESS,
+                N_MONTHS_TO_CALCULATE_DIET - feed_delay,
+            )
+        else:
+            additional_excess_to_add_percent = np.linspace(
+                LARGE_INCREASE_IN_EXCESS,
+                LARGE_INCREASE_IN_EXCESS,
+                N_MONTHS_TO_CALCULATE_DIET - feed_delay,
+            )
+
+        assert len(additional_excess_to_add_percent) == len(after_shutoff_feed.kcals)
+
+        # don't add any additional feed before the shutoff, that's already at
+        # baseline feed levels
+        new_excess_kcals = after_shutoff_feed.kcals + additional_excess_to_add_percent
+        new_excess_fat = after_shutoff_feed.fat + additional_excess_to_add_percent
+        new_excess_protein = (
+            after_shutoff_feed.protein + additional_excess_to_add_percent
+        )
+
+        total_kcals = np.append(
+            np.append(baseline_feed.kcals, new_excess_kcals),
+            part_at_end_to_leave_unchanged.kcals,
+        )
+        total_fat = np.append(
+            np.append(baseline_feed.fat, new_excess_fat),
+            part_at_end_to_leave_unchanged.fat,
+        )
+        total_protein = np.append(
+            np.append(baseline_feed.protein, new_excess_protein),
+            part_at_end_to_leave_unchanged.protein,
+        )
+
+        excess_per_month = Food(
+            kcals=total_kcals,
+            fat=total_fat,
+            protein=total_protein,
+            kcals_units=excess_per_month_percent.kcals_units,
+            fat_units=excess_per_month_percent.fat_units,
+            protein_units=excess_per_month_percent.protein_units,
+        )
+
+        excess_per_month.plot("excess")
+
+        # convert back to the units used for feed and biofuels, rather than percent
+        return excess_per_month.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+
+    def get_additional_feed_given_percent_fed(self, constants_for_params, percent_fed):
+        """
+        This function is used to calculate and return the extra feed used in the
+        scenario given the equivalnet percent of humans that would be fed with the
+        same number of kcals
+
+        assume animals need and use human levels of fat and protein per kcal
+        """
+
+        post_shutoff_additional_feed = Food(
+            kcals=percent_fed,
+            fat=percent_fed,
+            protein=percent_fed,
+            kcals_units="percent people fed each month",
+            fat_units="percent people fed each month",
+            protein_units="percent people fed each month",
+        ).in_units_bil_kcals_thou_tons_thou_tons_per_month()
+
+        return post_shutoff_additional_feed

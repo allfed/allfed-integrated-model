@@ -635,8 +635,6 @@ def main():
 
     nw_csv = clean_up_eswatini(nw_csv)
 
-    # print(nw_csv)
-
     np.savetxt(
         "../../data/no_food_trade/nuclear_winter_csv.csv",
         nw_csv,

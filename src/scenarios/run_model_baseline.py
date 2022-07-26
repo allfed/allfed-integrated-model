@@ -10,6 +10,7 @@ if module_path not in sys.path:
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
+from src.food_system.food import Food
 
 
 def run_model_baseline(plot_figures=True):
@@ -65,14 +66,22 @@ def run_model_baseline(plot_figures=True):
     )
 
     # No excess calories -- excess calories is set when the model is run and needs to be reset each time.
-    constants_for_params["EXCESS_FEED_KCALS"] = np.array(
-        [0] * constants_for_params["NMONTHS"]
+    constants_for_params["EXCESS_FEED"] = Food(
+        kcals=[0] * constants_for_params["NMONTHS"],
+        fat=[0] * constants_for_params["NMONTHS"],
+        protein=[0] * constants_for_params["NMONTHS"],
+        kcals_units="billion kcals each month",
+        fat_units="thousand tons each month",
+        protein_units="thousand tons each month",
     )
 
     scenario_runner = ScenarioRunner()
     results = scenario_runner.run_and_analyze_scenario(
         constants_for_params, scenarios_loader
     )
+
+    print("Maximum usable kcals/capita/day 2020, after waste and feed")
+    print(results.percent_people_fed / 100 * 2100)
 
     results2 = results
 
@@ -110,9 +119,15 @@ def set_common_baseline_properties():
     )
 
     # No excess calories
-    constants_for_params["EXCESS_FEED_KCALS"] = np.array(
-        [0] * constants_for_params["NMONTHS"]
+    constants_for_params["EXCESS_FEED"] = Food(
+        kcals=[0] * constants_for_params["NMONTHS"],
+        fat=[0] * constants_for_params["NMONTHS"],
+        protein=[0] * constants_for_params["NMONTHS"],
+        kcals_units="billion kcals each month",
+        fat_units="thousand tons each month",
+        protein_units="thousand tons each month",
     )
+
     return scenarios_loader, constants_for_params
 
 

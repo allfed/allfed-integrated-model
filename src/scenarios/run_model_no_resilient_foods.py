@@ -11,6 +11,7 @@ if module_path not in sys.path:
 from src.utilities.plotter import Plotter
 from src.scenarios.run_scenario import ScenarioRunner
 from src.scenarios.scenarios import Scenarios
+from src.food_system.food import Food
 
 
 def run_model_no_resilient_foods(plot_figures=True):
@@ -57,8 +58,14 @@ def run_model_no_resilient_foods(plot_figures=True):
         allow_pickle=True,
     )
 
-    constants_for_params["EXCESS_FEED_KCALS"] = np.array(
-        [0] * constants_for_params["NMONTHS"]
+    # No excess calories
+    constants_for_params["EXCESS_FEED"] = Food(
+        kcals=[0] * constants_for_params["NMONTHS"],
+        fat=[0] * constants_for_params["NMONTHS"],
+        protein=[0] * constants_for_params["NMONTHS"],
+        kcals_units="billion kcals each month",
+        fat_units="thousand tons each month",
+        protein_units="thousand tons each month",
     )
 
     scenarios_loader, constants_for_params = set_common_no_resilient_properties()
@@ -120,8 +127,14 @@ def set_common_no_resilient_properties():
     #     constants_for_params
     # )
 
-    constants_for_params["EXCESS_FEED_KCALS"] = np.array(
-        [0] * constants_for_params["NMONTHS"]
+    # No excess calories
+    constants_for_params["EXCESS_FEED"] = Food(
+        kcals=[0] * constants_for_params["NMONTHS"],
+        fat=[0] * constants_for_params["NMONTHS"],
+        protein=[0] * constants_for_params["NMONTHS"],
+        kcals_units="billion kcals each month",
+        fat_units="thousand tons each month",
+        protein_units="thousand tons each month",
     )
 
     return scenarios_loader, constants_for_params

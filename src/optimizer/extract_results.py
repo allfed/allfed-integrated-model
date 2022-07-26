@@ -22,7 +22,6 @@ from src.food_system.food import Food
 class Extractor:
     def __init__(self, constants):
         self.constants = constants
-        print(constants)
 
     def extract_results(
         self, model, variables, single_valued_constants, multi_valued_constants
@@ -97,7 +96,6 @@ class Extractor:
             multi_valued_constants["grain_fed_milk_kcals"],
             multi_valued_constants["grain_fed_milk_fat"],
             multi_valued_constants["grain_fed_milk_protein"],
-            multi_valued_constants["grain_fed_balance"],
         )
 
         return self
@@ -264,6 +262,13 @@ class Extractor:
             / 1e9
         )
 
+        print("billions_fed_fish_kcals")
+        print(billions_fed_fish_kcals)
+        print("billions_fed_fish_protein")
+        print(billions_fed_fish_protein)
+        print("billions_fed_fish_fat")
+        print(billions_fed_fish_fat)
+
         self.fish = Food(
             kcals=billions_fed_fish_kcals,
             fat=billions_fed_fish_fat,
@@ -317,22 +322,9 @@ class Extractor:
             1 / self.constants["KCALS_MONTHLY"],
         )
 
-        print("billions_fed_immediate_outdoor_crops_kcals")
-        print(billions_fed_immediate_outdoor_crops_kcals)
-        print("billions_fed_new_stored_outdoor_crops_kcals")
-        print(billions_fed_new_stored_outdoor_crops_kcals)
-
         billions_fed_no_rotation = no_rotation / self.constants["KCALS_MONTHLY"]
         billions_fed_rotation = rotation / self.constants["KCALS_MONTHLY"]
-        print("billions_fed_no_rotation")
-        print(billions_fed_no_rotation)
-        print("billions_fed_rotation")
-        print(billions_fed_rotation)
-        print(
-            np.array(billions_fed_immediate_outdoor_crops_kcals)
-            + np.array(billions_fed_new_stored_outdoor_crops_kcals)
-        )
-        print(np.array(billions_fed_no_rotation) + np.array(billions_fed_rotation))
+
         difference = (
             np.array(billions_fed_immediate_outdoor_crops_kcals)
             + np.array(billions_fed_new_stored_outdoor_crops_kcals)
@@ -426,6 +418,13 @@ class Extractor:
             )
         )
 
+        print("billions_fed_outdoor_crops_kcals")
+        print(billions_fed_outdoor_crops_kcals)
+        print("billions_fed_outdoor_crops_fat")
+        print(billions_fed_outdoor_crops_fat)
+        print("billions_fed_outdoor_crops_protein")
+        print(billions_fed_outdoor_crops_protein)
+
         self.outdoor_crops = Food(
             kcals=billions_fed_outdoor_crops_kcals,
             fat=billions_fed_outdoor_crops_fat,
@@ -477,11 +476,6 @@ class Extractor:
                 * self.constants["OG_ROTATION_FRACTION_KCALS"],
             ]
         )
-        print("self.combined_produced_kcals")
-        print(self.combined_produced_kcals)
-        # constants["inputs"][
-        #                             "INITIAL_HARVEST_DURATION_IN_MONTHS"
-        #                         ]
 
         billions_fed_outdoor_crops_produced_fat = (
             np.concatenate(
@@ -614,7 +608,6 @@ class Extractor:
         grain_fed_milk_kcals,
         grain_fed_milk_fat,
         grain_fed_milk_protein,
-        grain_fed_balance,
     ):
         # meat takes human edible, culled, and inedible independently
         #
@@ -653,7 +646,9 @@ class Extractor:
 
         billions_fed_meat_culled_fat = np.multiply(
             meat_culled,
-            self.constants["MEAT_FRACTION_FAT"] / self.constants["FAT_MONTHLY"] / 1e9,
+            self.constants["MEAT_CULLED_FRACTION_FAT"]
+            / self.constants["FAT_MONTHLY"]
+            / 1e9,
         )
 
         billions_fed_meat_culled_grazing_fat = (
@@ -665,7 +660,7 @@ class Extractor:
 
         billions_fed_meat_culled_protein = np.multiply(
             meat_culled,
-            self.constants["MEAT_FRACTION_PROTEIN"]
+            self.constants["MEAT_CULLED_FRACTION_PROTEIN"]
             / self.constants["PROTEIN_MONTHLY"]
             / 1e9,
         )
@@ -749,7 +744,7 @@ class Extractor:
             protein_units="billion people fed each month",
         )
 
-        billions_fed_grain_fed_balance = grain_fed_balance.in_units_billions_fed()
+        # billions_fed_grain_fed_balance = grain_fed_balance.in_units_billions_fed()
 
     # if stored food isn't included, these results will be zero
     def extract_stored_food_results(self, stored_food_eaten):
