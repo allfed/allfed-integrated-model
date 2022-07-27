@@ -344,6 +344,7 @@ class Interpreter:
               equal to nonhuman consumption if there were rounding errors making the two
               slightly different.
         """
+
         remainder_to_humans = (
             outdoor_crops_plus_stored_food_rounded - nonhuman_consumption
         )
@@ -352,9 +353,10 @@ class Interpreter:
         # make sure if either outdoor_crops_plus_stored_food_rounded or
         # nonhuman_consumption is zero, the other is zero
 
-        outdoor_crops_plus_stored_food_rounded.ensure_other_list_zero_if_this_is_zero(
-            other_list=nonhuman_consumption
-        )
+        # TODO: Reinstate?
+        # outdoor_crops_plus_stored_food_rounded.ensure_other_list_zero_if_this_is_zero(
+        #     other_list=nonhuman_consumption
+        # )
 
         # remove all the places we would have had 0/0 => np.nan with 0/0 => 0
         # That's because if there's no food, nothing goes to humans, even if there's
@@ -367,9 +369,14 @@ class Interpreter:
         # We don't expect any situation where some animals are fed but no humans are!
         # check that any time outdoor_crops_plus_stored_food_rounded is zero,
         # outdoor_crops_plus_stored_food_rounded - nonhuman_consumption is also zero
-        remainder_to_humans.ensure_other_list_zero_if_this_is_zero(
-            other_list=nonhuman_consumption
-        )
+
+        # if stored food is greater than zero, and there is some usage by animals which
+        # generates fat and protein, it would make sense that ... DELETE ME
+
+        # TODO: Reinstate?
+        # remainder_to_humans.ensure_other_list_zero_if_this_is_zero(
+        #     other_list=nonhuman_consumption
+        # )
 
         difference = (
             to_humans_ratio * outdoor_crops_plus_stored_food_rounded
@@ -465,7 +472,7 @@ class Interpreter:
         )
 
         difference_consumption_supply_rounded = (
-            difference_consumption_supply.get_rounded_to_decimal(3)
+            difference_consumption_supply.get_rounded_to_decimal(2)
         )
 
         assert difference_consumption_supply_rounded.all_greater_than_or_equal_to_zero()
@@ -511,8 +518,8 @@ class Interpreter:
 
         # rapidly feed more to people until it's close to 2100 kcals, then
         # slowly feed more to people
-        SMALL_INCREASE_IN_EXCESS = 0.01
-        LARGE_INCREASE_IN_EXCESS = 0.1
+        SMALL_INCREASE_IN_EXCESS = 0.1
+        LARGE_INCREASE_IN_EXCESS = 1.0
 
         excess_per_month_percent = excess_per_month.in_units_percent_fed()
 
@@ -549,7 +556,6 @@ class Interpreter:
         new_excess_protein = (
             after_shutoff_feed.protein + additional_excess_to_add_percent
         )
-
         total_kcals = np.append(
             np.append(baseline_feed.kcals, new_excess_kcals),
             part_at_end_to_leave_unchanged.kcals,
@@ -571,8 +577,6 @@ class Interpreter:
             fat_units=excess_per_month_percent.fat_units,
             protein_units=excess_per_month_percent.protein_units,
         )
-
-        excess_per_month.plot("excess")
 
         # convert back to the units used for feed and biofuels, rather than percent
         return excess_per_month.in_units_bil_kcals_thou_tons_thou_tons_per_month()

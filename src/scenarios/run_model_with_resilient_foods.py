@@ -140,7 +140,10 @@ def run_model_with_resilient_foods(plot_figures=True):
             constants_for_params, scenarios_loader
         )
 
-        if percent_fed > 99.9 and percent_fed < 100.1:
+        print("percent_fed")
+        print(percent_fed)
+
+        if percent_fed > 99.8 and percent_fed < 100.2:
             break
 
         assert feed_delay >= constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
@@ -148,15 +151,16 @@ def run_model_with_resilient_foods(plot_figures=True):
         excess_per_month = results.increase_excess_to_feed(
             feed_delay, excess_per_month, percent_fed
         )
+        percent_fed = results.percent_people_fed
 
         # should be considered "pre waste"
         constants_for_params["EXCESS_FEED"] = excess_per_month
 
         n = n + 1
 
-        # last month plotted is month 48
-        if plot_figures:
-            Plotter.plot_fig_2abcd(results1, results, 48)
+        # # last month plotted is month 48
+        # if plot_figures:
+        #     Plotter.plot_fig_2abcd(results1, results, 48)
 
     results2 = results
 

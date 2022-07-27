@@ -191,13 +191,14 @@ class Scenarios:
 
         distribution_loss = {}
 
-        distribution_loss["SUGAR"] = country_data["distribution_loss_sugar"]
-        distribution_loss["CROPS"] = country_data["distribution_loss_crops"]
-        distribution_loss["MEAT"] = country_data["distribution_loss_meat"]
-        distribution_loss["MILK"] = country_data["distribution_loss_milk"]
-        distribution_loss["SEAFOOD"] = country_data["distribution_loss_seafood"]
+        distribution_loss["SUGAR"] = country_data["distribution_loss_sugar"] * 100
+        distribution_loss["CROPS"] = country_data["distribution_loss_crops"] * 100
+        distribution_loss["MEAT"] = country_data["distribution_loss_meat"] * 100
+        distribution_loss["MILK"] = country_data["distribution_loss_dairy"] * 100
+        distribution_loss["SEAFOOD"] = country_data["distribution_loss_seafood"] * 100
         distribution_loss["SEAWEED"] = distribution_loss["SEAFOOD"]
-
+        print("distribution_loss")
+        print(distribution_loss)
         total_waste = {}
 
         total_waste["SUGAR"] = distribution_loss["SUGAR"] + retail_waste
@@ -217,7 +218,7 @@ class Scenarios:
         3x prices (note, currently set to 2019, not 2020)
         """
 
-        RETAIL_WASTE = country_data["retail_waste_price_triple"]
+        RETAIL_WASTE = country_data["retail_waste_price_triple"] * 100
 
         total_waste = self.get_total_country_waste(RETAIL_WASTE, country_data)
 
@@ -234,8 +235,9 @@ class Scenarios:
         2x prices (note, currently set to 2019, not 2020)
         """
 
-        RETAIL_WASTE = country_data["retail_waste_price_double"]
-
+        RETAIL_WASTE = country_data["retail_waste_price_double"] * 100
+        print("RETAIL_WASTE")
+        print(RETAIL_WASTE)
         total_waste = self.get_total_country_waste(RETAIL_WASTE, country_data)
 
         constants_for_params["WASTE"] = total_waste
@@ -250,7 +252,7 @@ class Scenarios:
         overall waste, on farm+distribution+retail
         1x prices (note, currently set to 2019, not 2020)
         """
-        RETAIL_WASTE = country_data["retail_waste_baseline"]
+        RETAIL_WASTE = country_data["retail_waste_baseline"] * 100
 
         total_waste = self.get_total_country_waste(RETAIL_WASTE, country_data)
 
@@ -613,7 +615,7 @@ class Scenarios:
         constants_for_params["FEED_PROTEIN"] = country_data["feed_protein"]
 
         # total head count of milk cattle
-        constants_for_params["INITIAL_MILK_CATTLE"] = country_data["milk_cows"]
+        constants_for_params["INITIAL_MILK_CATTLE"] = country_data["dairy_cows"]
 
         # total head count of small sized animals
         constants_for_params["INIT_SMALL_ANIMALS"] = country_data["small_animals"]
@@ -638,7 +640,7 @@ class Scenarios:
         constants_for_params["FISH_PROTEIN_TONS_ANNUAL"] = country_data["aq_protein"]
 
         # annual tons milk production
-        constants_for_params["TONS_MILK_ANNUAL"] = country_data["milk"]
+        constants_for_params["TONS_MILK_ANNUAL"] = country_data["dairy"]
 
         # annual tons chicken and pork production
         constants_for_params["TONS_CHICKEN_AND_PORK_ANNUAL"] = (

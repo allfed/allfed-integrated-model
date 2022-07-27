@@ -677,9 +677,11 @@ class Food(UnitConversions):
         """
         ALTERNATIVE_LAYOUT = False
         if ALTERNATIVE_LAYOUT:
-            Plotter.plot_food_alternative(self, title)
+            saveloc = Plotter.plot_food_alternative(self, title)
         else:
-            Plotter.plot_food(self, title)
+            saveloc = Plotter.plot_food(self, title)
+
+        return saveloc
 
     def __str__(self):
         """

@@ -12,6 +12,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 from matplotlib.ticker import MaxNLocator
+
+font = {"family": "normal", "weight": "bold", "size": 7}
+
+matplotlib.rc("font", **font)
 import matplotlib.gridspec as gridspec
 import os
 import sys
@@ -24,6 +28,8 @@ if module_path not in sys.path:
 # in some linux win manager setups matplotlib plotting doesn't seem to play nice
 # matplotlib.use('Svg')
 # matplotlib.use('QtAgg')
+
+from src.utilities.make_powerpoint import MakePowerpoint
 
 
 class Plotter:
@@ -682,6 +688,219 @@ class Plotter:
         plt.show()
 
     def plot_fig_s1abcd(interpreter1, interpreter2, xlim):
+
+        # mp = MakePowerpoint()
+        # mp.create_title_slide("baseline no trade, each food")
+
+        # save_title_string = "fish_kcals_equivalent primary"
+        # saveloc = interpreter1.fish_kcals_equivalent.plot(save_title_string)
+
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the primary plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = "cell_sugar_kcals_equivalent primary"
+        # saveloc = interpreter1.cell_sugar_kcals_equivalent.plot(save_title_string)
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the primary plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # saveloc = interpreter1.scp_kcals_equivalent.plot("scp_kcals_equivalent primary")
+        # save_title_string = "greenhouse_kcals_equivalent primary"
+        # saveloc = interpreter1.greenhouse_kcals_equivalent.plot(save_title_string)
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the primary plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = "seaweed_kcals_equivalent primary"
+        # saveloc = interpreter1.seaweed_kcals_equivalent.plot(save_title_string)
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the primary plot",
+        #     figure_save_loc=saveloc,
+        # )
+        # save_title_string = "grazing_milk_kcals_equivalent primary"
+        # saveloc = interpreter1.grazing_milk_kcals_equivalent.plot(save_title_string)
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the primary plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = "grain_fed_milk_kcals_equivalent primary"
+        # saveloc = interpreter1.grain_fed_milk_kcals_equivalent.plot(save_title_string)
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the primary plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = (
+        #     "meat_culled_plus_grazing_cattle_maintained_kcals_equivalent primary"
+        # )
+        # saveloc = interpreter1.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.plot(
+        #     save_title_string
+        # )
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the primary plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = "grain_fed_meat_kcals_equivalent primary"
+        # saveloc = interpreter1.grain_fed_meat_kcals_equivalent.plot(save_title_string)
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the primary plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = "immediate_outdoor_crops_to_humans_kcals_equivalent primary"
+        # saveloc = interpreter1.immediate_outdoor_crops_to_humans_kcals_equivalent.plot(
+        #     save_title_string
+        # )
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the primary plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = (
+        #     "new_stored_outdoor_crops_to_humans_kcals_equivalent primary"
+        # )
+        # saveloc = interpreter1.new_stored_outdoor_crops_to_humans_kcals_equivalent.plot(
+        #     save_title_string
+        # )
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the primary plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = "stored_food_to_humans_kcals_equivalent primary"
+        # saveloc = interpreter1.stored_food_to_humans_kcals_equivalent.plot(
+        #     save_title_string
+        # )
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the primary plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = "fish_kcals_equivalent with feed"
+        # saveloc = interpreter2.fish_kcals_equivalent.plot(save_title_string)
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the with feed plot",
+        #     figure_save_loc=saveloc,
+        # )
+        # save_title_string = "cell_sugar_kcals_equivalent with feed"
+        # saveloc = interpreter2.cell_sugar_kcals_equivalent.plot(save_title_string)
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the with feed plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = "scp_kcals_equivalent with feed"
+        # saveloc = interpreter2.scp_kcals_equivalent.plot(save_title_string)
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the with feed plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = "greenhouse_kcals_equivalent with feed"
+        # saveloc = interpreter2.greenhouse_kcals_equivalent.plot(save_title_string)
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the with feed plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = "seaweed_kcals_equivalent with feed"
+        # saveloc = interpreter2.seaweed_kcals_equivalent.plot(save_title_string)
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the with feed plot",
+        #     figure_save_loc=saveloc,
+        # )
+        # save_title_string = "grazing_milk_kcals_equivalent with feed"
+        # saveloc = interpreter2.grazing_milk_kcals_equivalent.plot(save_title_string)
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the with feed plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = "grain_fed_milk_kcals_equivalent with feed"
+        # saveloc = interpreter2.grain_fed_milk_kcals_equivalent.plot(save_title_string)
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the with feed plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = (
+        #     "meat_culled_plus_grazing_cattle_maintained_kcals_equivalent with feed"
+        # )
+        # saveloc = interpreter2.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.plot(
+        #     save_title_string
+        # )
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the with feed plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = "grain_fed_meat_kcals_equivalent with feed"
+        # saveloc = interpreter2.grain_fed_meat_kcals_equivalent.plot(save_title_string)
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the with feed plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = (
+        #     "immediate_outdoor_crops_to_humans_kcals_equivalent with feed"
+        # )
+        # saveloc = interpreter2.immediate_outdoor_crops_to_humans_kcals_equivalent.plot(
+        #     save_title_string
+        # )
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the with feed plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = (
+        #     "new_stored_outdoor_crops_to_humans_kcals_equivalent with feed"
+        # )
+        # saveloc = interpreter2.new_stored_outdoor_crops_to_humans_kcals_equivalent.plot(
+        #     save_title_string
+        # )
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the with feed plot",
+        #     figure_save_loc=saveloc,
+        # )
+
+        # save_title_string = "stored_food_to_humans_kcals_equivalent with feed"
+        # saveloc = interpreter2.stored_food_to_humans_kcals_equivalent.plot(
+        #     save_title_string
+        # )
+        # mp.insert_slide(
+        #     title_below=save_title_string,
+        #     description="one of each of the foods to humans in the with feed plot",
+        #     figure_save_loc=saveloc,
+        # )
+
         legend = Plotter.get_people_fed_legend(interpreter1, False)
         fig = plt.figure()
         pal = [
@@ -765,7 +984,7 @@ class Plotter:
 
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
-                maxy = max(sum([x[0:xlim] for x in ykcals]))
+                # maxy = max(sum([x[0:xlim] for x in ykcals]))
                 # ax.set_ylim([0, maxy])
 
                 plt.ylabel("Calories / capita / day")
@@ -805,7 +1024,7 @@ class Plotter:
 
                 ax.set_ylabel("Percent of minimum recommendation")
 
-                # ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
+                ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
             if label == "c":
                 # ax.legend(loc='center left', frameon=False,bbox_to_anchor=(0, -0.2), shadow=False,)
@@ -828,16 +1047,26 @@ class Plotter:
                     shadow=False,
                     labels=["Calories", "Fat", "Protein"],
                 )
-                # ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
+                ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
             plt.xlabel("Months since May")
 
-        fig.set_figheight(12)
-        fig.set_figwidth(8)
+        # fig.set_figheight(12)
+        # fig.set_figwidth(8)
         plt.tight_layout()
-        # plt.savefig('../../results/fig_s1abcd.png')
+
+        saveloc = "../../results/fig_s1abcd.png"
+        plt.savefig(saveloc, dpi=600)
         print("saved figure s1abcd")
+        # plt.close()
         plt.show()
+
+        # mp.insert_slide(
+        #     title_below="baseline climate with food trade",
+        #     description="kcals all added in a stackplot",
+        #     figure_save_loc=saveloc,
+        # )
+        # mp.save_ppt("../../results/large_reports/baseline_test.pptx")
 
     def getylim_nutrients(interpreter, xlim):
         kcals = interpreter.kcals_fed
@@ -847,11 +1076,11 @@ class Plotter:
         fat = interpreter.fat_fed
 
         min_plot = (
-            min([min(fat[0:xlim]), min(protein[0:xlim]), min(kcals[0:xlim])]) - 0.2
+            min([min(fat[0:xlim]), min(protein[0:xlim]), min(kcals[0:xlim])]) - 20
         )
 
         max_plot = (
-            max([max(fat[0:xlim]), max(protein[0:xlim]), max(kcals[0:xlim])]) + 0.2
+            max([max(fat[0:xlim]), max(protein[0:xlim]), max(kcals[0:xlim])]) + 20
         )
 
         return [min_plot, max_plot]
@@ -1029,7 +1258,18 @@ class Plotter:
         # Packing all the plots and displaying them
         plt.tight_layout()
         fig.suptitle(title)
+        # plt.show()
+
+        saveloc = "../../results/large_reports/" + title + ".png"
+
+        plt.savefig(
+            saveloc,
+            dpi=300,
+        )
+        # plt.ioff()
+        # plt.close()
         plt.show()
+        return saveloc
 
     def plot_food_alternative(food, title):
         """
@@ -1074,4 +1314,17 @@ class Plotter:
         # Packing all the plots and displaying them
         plt.tight_layout()
         fig.suptitle(title)
+        # plt.show()
+        # plt.ioff()
+        # plt.close()
         plt.show()
+
+        saveloc = "../../results/large_reports/" + title + ".png"
+
+        plt.savefig(
+            saveloc,
+            dpi=300,
+        )
+        plt.ioff()
+        plt.close()
+        return saveloc

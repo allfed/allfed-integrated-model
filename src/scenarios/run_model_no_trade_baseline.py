@@ -81,7 +81,8 @@ def run_baseline_by_country_no_trade(plot_figures=True):
 
     def run_optimizer_for_country(country_code, country_data):
 
-        # if not (
+        if country_code == "BRB":
+            return np.nan
         #     country_code == "USA"
         #     or country_code == "CHN"
         #     or country_code == "AUS"
@@ -123,7 +124,7 @@ def run_baseline_by_country_no_trade(plot_figures=True):
 
         constants_for_params = scenarios_loader.set_fish_baseline(constants_for_params)
 
-        constants_for_params = scenarios_loader.set_long_delayed_shutoff(
+        constants_for_params = scenarios_loader.set_short_delayed_shutoff(
             constants_for_params
         )
 
@@ -146,18 +147,18 @@ def run_baseline_by_country_no_trade(plot_figures=True):
         print(country_name)
 
         scenario_runner = ScenarioRunner()
-        results = scenario_runner.run_and_analyze_scenario(
+        interpreted_results = scenario_runner.run_and_analyze_scenario(
             constants_for_params, scenarios_loader
         )
 
         if plot_figures:
             PLOT_EACH_FIGURE = False
             if PLOT_EACH_FIGURE:
-                Plotter.plot_fig_s1abcd(results, results, 84)
+                Plotter.plot_fig_s1abcd(interpreted_results, interpreted_results, 84)
         print("")
         print("")
         print("")
-        return needs_ratio
+        return interpreted_results.percent_people_fed / 100
 
     def fill_data_for_map(country_code, needs_ratio):
         if country_code == "SWT":
@@ -210,27 +211,12 @@ def run_baseline_by_country_no_trade(plot_figures=True):
         net_pop_fed += capped_ratio * population
         net_pop += population
     ratio_fed = str(round(float(net_pop_fed) / float(net_pop), 4))
+
     print("Net population considered: " + str(net_pop / 1e9) + " Billion people")
     print("Fraction of this population fed: " + ratio_fed)
     print("")
-    plt.close()
-    mn = 0
-    mx = 1
-    ax = world.plot(
-        column="needs_ratio",
-        legend=True,
-        cmap="viridis",
-        legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"},
-    )
     if plot_figures:
-        pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
-        plt.title("Fraction of minimum macronutritional needs with no trade")
-        # plt.show()
-        # plt.close()
-        plt.savefig(
-            "../../results/no_food_trade/baseline_ratio_fed_" + ratio_fed + ".png",
-            dpi=300,
-        )
+        Plotter.plot_map_of_countries_fed()
 
 
 if __name__ == "__main__":

@@ -282,10 +282,17 @@ class MeatAndDairy:
         # self.ratio_not_maintained_cattle[self.ratio_not_maintained_cattle < 0] = 0
 
         # does not consider waste
-        self.ratio_maintained_chicken_pork = (
-            np.array(self.chicken_pork_maintained_prewaste)
-            / present_day_tons_per_month_chicken_pork_prewaste
-        )
+        print("chicken_pork_maintained_prewaste")
+        print(self.chicken_pork_maintained_prewaste)
+        if present_day_tons_per_month_chicken_pork_prewaste > 0:
+            self.ratio_maintained_chicken_pork = (
+                np.array(self.chicken_pork_maintained_prewaste)
+                / present_day_tons_per_month_chicken_pork_prewaste
+            )
+        else:
+            self.ratio_maintained_chicken_pork = np.zeros(
+                len(self.chicken_pork_maintained_prewaste)
+            )
 
         assert (self.ratio_maintained_chicken_pork >= 0).all()
 
@@ -697,11 +704,6 @@ class MeatAndDairy:
                 return_grain_fed_milk_protein = np.append(
                     return_grain_fed_milk_protein,
                     adjustment_ratio * grain_fed_milk_protein[i],
-                )
-
-                difference = np.subtract(
-                    return_grain_fed_meat_protein + return_grain_fed_milk_protein,
-                    feed.protein,
                 )
 
                 difference = (

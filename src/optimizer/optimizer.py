@@ -236,7 +236,6 @@ class Optimizer:
             "Crops_Food_Eaten_No_Rotation_During_Month_" + str(month) + "_Variable",
             lowBound=0,
         )
-        SCALE = 1
 
         if month == 0:
 
@@ -370,7 +369,6 @@ class Optimizer:
                 "Seaweed_Limit_Kcals_" + str(month) + "_Constraint",
             )
 
-        # numbers scaled to percent of per person human needs per month
         model += (
             variables["humans_fed_kcals"][month]
             == (

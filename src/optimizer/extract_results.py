@@ -332,7 +332,6 @@ class Extractor:
         ).all(), """ERROR: Immediate 
             and new stored sources do not add up to the sources of outdoor crops 
             and stored food"""
-
         billions_fed_outdoor_crops_kcals = np.array(
             self.to_monthly_list(
                 crops_food_eaten_no_rotation,
@@ -418,7 +417,7 @@ class Extractor:
             kcals_units="billion people fed each month",
             fat_units="billion people fed each month",
             protein_units="billion people fed each month",
-        )
+        ).get_rounded_to_decimal(6)
 
         self.new_stored_outdoor_crops = Food(
             kcals=np.array(billions_fed_new_stored_outdoor_crops_kcals),
@@ -454,7 +453,7 @@ class Extractor:
             kcals_units="billion people fed each month",
             fat_units="billion people fed each month",
             protein_units="billion people fed each month",
-        )
+        ).get_rounded_to_decimal(6)
 
         to_immediate_ratio = self.immediate_outdoor_crops / self.outdoor_crops
 
@@ -469,7 +468,9 @@ class Extractor:
         to_immediate_ratio.fat = to_immediate_ratio.kcals
         to_immediate_ratio.protein = to_immediate_ratio.kcals
 
-        self.immediate_outdoor_crops = self.outdoor_crops * to_immediate_ratio
+        self.immediate_outdoor_crops = (
+            self.outdoor_crops * to_immediate_ratio
+        ).get_rounded_to_decimal(6)
 
         # make sure we haven't messed up and changed total outdoor growing production
         # each month
@@ -770,8 +771,6 @@ class Extractor:
             fat_units="billion people fed each month",
             protein_units="billion people fed each month",
         )
-
-        # billions_fed_grain_fed_balance = grain_fed_balance.in_units_billions_fed()
 
     # if stored food isn't included, these results will be zero
     def extract_stored_food_results(self, stored_food_eaten):

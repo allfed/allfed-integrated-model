@@ -58,7 +58,7 @@ class Parameters:
         assert self.FIRST_TIME_RUN
         self.FIRST_TIME_RUN = False
 
-        PRINT_SCENARIO_PROPERTIES = True
+        PRINT_SCENARIO_PROPERTIES = False
         if PRINT_SCENARIO_PROPERTIES:
             print(scenarios_loader.scenario_description)
 
@@ -136,7 +136,7 @@ class Parameters:
 
         constants["inputs"] = constants_for_params
 
-        PRINT_FIRST_MONTH_CONSTANTS = False
+        PRINT_FIRST_MONTH_CONSTANTS = True
 
         if PRINT_FIRST_MONTH_CONSTANTS:
             print_parameters = PrintParameters()
@@ -514,7 +514,9 @@ class Parameters:
         feed = feed_and_biofuels.feed
 
         # post waste
-        assert (feed.fat >= grain_fed_meat_fat_capped + grain_fed_milk_fat_capped).all()
+
+        difference = feed.fat - grain_fed_meat_fat_capped + grain_fed_milk_fat_capped
+        assert (np.round(difference, 3) >= 0).all()
 
         assert (
             feed.protein

@@ -412,7 +412,7 @@ class UnitConversions:
         Food = self.get_Food_class()
 
         percent_kcal_conversion = (
-            1e9 * conversions.kcals_monthly * conversions.population / 100
+            conversions.kcals_monthly * conversions.population / 1e9 / 100
         )
         percent_fat_conversion = conversions.fat_monthly * conversions.population / 100
         percent_protein_conversion = (

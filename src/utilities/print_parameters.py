@@ -7,6 +7,8 @@ module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
+from src.food_system.food import Food
+
 
 class PrintParameters:
     def __init__(self):
@@ -458,12 +460,12 @@ class PrintParameters:
             if (grain_fed_milk_kcals > 0).any():
                 grain_fed_milk_fat = time_consts["grain_fed_milk_fat"][0]
                 grain_fed_milk_protein = time_consts["grain_fed_milk_protein"][0]
-                print("INITIAL_MILK_KCALS million tons dry caloric monthly")
+                print("INITIAL_GRAIN_MILK_KCALS million tons dry caloric monthly")
                 print(grain_fed_milk_kcals / (1 - MILK_WASTE / 100) * 1e9 / 4e6 / 1e6)
 
-                print("INITIAL_MILK_FAT million tons monthly")
+                print("INITIAL_GRAIN_MILK_FAT million tons monthly")
                 print(grain_fed_milk_fat / (1 - MILK_WASTE / 100) / 1e3)
-                print("INITIAL_MILK_PROTEIN million tons monthly")
+                print("INITIAL_GRAIN_MILK_PROTEIN million tons monthly")
                 print(grain_fed_milk_protein / (1 - MILK_WASTE / 100) / 1e3)
                 print("")
                 print("INITIAL_MILK_FAT percentage")
