@@ -229,10 +229,10 @@ class Validator:
         interpreted_results.outdoor_crops_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.immediate_outdoor_crops_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.new_stored_outdoor_crops_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
-        interpreted_results.stored_food_fed_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
-        interpreted_results.outdoor_crops_fed_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
-        interpreted_results.immediate_outdoor_crops_fed_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
-        interpreted_results.new_stored_outdoor_crops_fed_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.stored_food_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.outdoor_crops_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.immediate_outdoor_crops_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.new_stored_outdoor_crops_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
 
     def ensure_never_nan(self, interpreted_results):
         """
@@ -274,10 +274,10 @@ class Validator:
         interpreted_results.outdoor_crops_rounded.make_sure_not_nan()
         interpreted_results.immediate_outdoor_crops_rounded.make_sure_not_nan()
         interpreted_results.new_stored_outdoor_crops_rounded.make_sure_not_nan()
-        interpreted_results.stored_food_fed_to_humans.make_sure_not_nan()
-        interpreted_results.outdoor_crops_fed_to_humans.make_sure_not_nan()
-        interpreted_results.immediate_outdoor_crops_fed_to_humans.make_sure_not_nan()
-        interpreted_results.new_stored_outdoor_crops_fed_to_humans.make_sure_not_nan()
+        interpreted_results.stored_food_to_humans.make_sure_not_nan()
+        interpreted_results.outdoor_crops_to_humans.make_sure_not_nan()
+        interpreted_results.immediate_outdoor_crops_to_humans.make_sure_not_nan()
+        interpreted_results.new_stored_outdoor_crops_to_humans.make_sure_not_nan()
 
     def ensure_all_greater_than_or_equal_to_zero(self, interpreted_results):
         """
@@ -329,14 +329,14 @@ class Validator:
             interpreted_results.new_stored_outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
         )
         assert (
-            interpreted_results.stored_food_fed_to_humans.all_greater_than_or_equal_to_zero()
+            interpreted_results.stored_food_to_humans.all_greater_than_or_equal_to_zero()
         )
         assert (
-            interpreted_results.outdoor_crops_fed_to_humans.all_greater_than_or_equal_to_zero()
+            interpreted_results.outdoor_crops_to_humans.all_greater_than_or_equal_to_zero()
         )
         assert (
-            interpreted_results.immediate_outdoor_crops_fed_to_humans.all_greater_than_or_equal_to_zero()
+            interpreted_results.immediate_outdoor_crops_to_humans.all_greater_than_or_equal_to_zero()
         )
         assert (
-            interpreted_results.new_stored_outdoor_crops_fed_to_humans.all_greater_than_or_equal_to_zero()
+            interpreted_results.new_stored_outdoor_crops_to_humans.all_greater_than_or_equal_to_zero()
         )

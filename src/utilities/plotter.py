@@ -53,30 +53,34 @@ class Plotter:
             ax.set_xlim([0.5, xlim])
 
             ykcals = []
-            ykcals.append(interpreter.fish_kcals_eff.kcals)
+            ykcals.append(interpreter.fish_kcals_equivalent.kcals)
             ykcals.append(
                 (
-                    np.array(interpreter.cell_sugar_kcals_eff.kcals)
-                    + np.array(interpreter.scp_kcals_eff.kcals)
+                    np.array(interpreter.cell_sugar_kcals_equivalent.kcals)
+                    + np.array(interpreter.scp_kcals_equivalent.kcals)
                 )
             )
-            ykcals.append(interpreter.greenhouse_kcals_eff.kcals)
-            ykcals.append(interpreter.seaweed_kcals_eff.kcals)
+            ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
+            ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
             ykcals.append(
                 (
-                    interpreter.grazing_milk_kcals_eff.kcals
-                    + interpreter.grain_fed_milk_kcals_eff.kcals
+                    interpreter.grazing_milk_kcals_equivalent.kcals
+                    + interpreter.grain_fed_milk_kcals_equivalent.kcals
                 )
             )
             ykcals.append(
                 (
-                    interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_eff.kcals
-                    + interpreter.grain_fed_meat_kcals_eff.kcals
+                    interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                    + interpreter.grain_fed_meat_kcals_equivalent.kcals
                 )
             )
-            ykcals.append(interpreter.immediate_outdoor_crops_kcals_eff.kcals)
-            ykcals.append(interpreter.new_stored_outdoor_crops_kcals_eff.kcals)
-            ykcals.append(interpreter.stored_food_kcals_eff.kcals)
+            ykcals.append(
+                interpreter.immediate_outdoor_crops_to_humans_kcals_equivalent.kcals
+            )
+            ykcals.append(
+                interpreter.new_stored_outdoor_crops_to_humans_kcals_equivalent.kcals
+            )
+            ykcals.append(interpreter.stored_food_to_humans_kcals_equivalent.kcals)
 
             if label == "a":
                 ax.text(
@@ -213,30 +217,34 @@ class Plotter:
             if label == "a" or label == "c":
 
                 ykcals = []
-                ykcals.append(interpreter.fish_kcals_eff.kcals)
+                ykcals.append(interpreter.fish_kcals_equivalent.kcals)
                 ykcals.append(
                     (
-                        np.array(interpreter.cell_sugar_kcals_eff.kcals)
-                        + np.array(interpreter.scp_kcals_eff.kcals)
+                        np.array(interpreter.cell_sugar_kcals_equivalent.kcals)
+                        + np.array(interpreter.scp_kcals_equivalent.kcals)
                     )
                 )
-                ykcals.append(interpreter.greenhouse_kcals_eff.kcals)
-                ykcals.append(interpreter.seaweed_kcals_eff.kcals)
+                ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
+                ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
                 ykcals.append(
                     (
-                        interpreter.grazing_milk_kcals_eff.kcals
-                        + interpreter.grain_fed_milk_kcals_eff.kcals
+                        interpreter.grazing_milk_kcals_equivalent.kcals
+                        + interpreter.grain_fed_milk_kcals_equivalent.kcals
                     )
                 )
                 ykcals.append(
                     (
-                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_eff.kcals
-                        + interpreter.grain_fed_meat_kcals_eff.kcals
+                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                        + interpreter.grain_fed_meat_kcals_equivalent.kcals
                     )
                 )
-                ykcals.append(interpreter.immediate_outdoor_crops_kcals_eff.kcals)
-                ykcals.append(interpreter.new_stored_outdoor_crops_kcals_eff.kcals)
-                ykcals.append(interpreter.stored_food_kcals_eff.kcals)
+                ykcals.append(
+                    interpreter.immediate_outdoor_crops_to_humans_kcals_equivalent.kcals
+                )
+                ykcals.append(
+                    interpreter.new_stored_outdoor_crops_to_humans_kcals_equivalent.kcals
+                )
+                ykcals.append(interpreter.stored_food_to_humans_kcals_equivalent.kcals)
 
                 ax.text(
                     -0.06,
@@ -550,30 +558,34 @@ class Plotter:
             if label == "a" or label == "c":
 
                 ykcals = []
-                ykcals.append(interpreter.fish_kcals_eff.kcals)
+                ykcals.append(interpreter.fish_kcals_equivalent.kcals)
                 ykcals.append(
                     (
-                        np.array(interpreter.cell_sugar_kcals_eff.kcals)
-                        + np.array(interpreter.scp_kcals_eff.kcals)
+                        np.array(interpreter.cell_sugar_kcals_equivalent.kcals)
+                        + np.array(interpreter.scp_kcals_equivalent.kcals)
                     )
                 )
-                ykcals.append(interpreter.greenhouse_kcals_eff.kcals)
-                ykcals.append(interpreter.seaweed_kcals_eff.kcals)
+                ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
+                ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
                 ykcals.append(
                     (
-                        interpreter.grazing_milk_kcals_eff.kcals
-                        + interpreter.grain_fed_milk_kcals_eff.kcals
+                        interpreter.grazing_milk_kcals_equivalent.kcals
+                        + interpreter.grain_fed_milk_kcals_equivalent.kcals
                     )
                 )
                 ykcals.append(
                     (
-                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_eff.kcals
-                        + interpreter.grain_fed_meat_kcals_eff.kcals
+                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                        + interpreter.grain_fed_meat_kcals_equivalent.kcals
                     )
                 )
-                ykcals.append(interpreter.immediate_outdoor_crops_kcals_eff.kcals)
-                ykcals.append(interpreter.new_stored_outdoor_crops_kcals_eff.kcals)
-                ykcals.append(interpreter.stored_food_kcals_eff.kcals)
+                ykcals.append(
+                    interpreter.immediate_outdoor_crops_to_humans_kcals_equivalent.kcals
+                )
+                ykcals.append(
+                    interpreter.new_stored_outdoor_crops_to_humans_kcals_equivalent.kcals
+                )
+                ykcals.append(interpreter.stored_food_to_humans_kcals_equivalent.kcals)
 
                 ax.text(
                     -0.06,
@@ -706,31 +718,34 @@ class Plotter:
             if label == "a" or label == "c":
 
                 ykcals = []
-                ykcals.append(interpreter.fish_kcals_eff.kcals)
+                ykcals.append(interpreter.fish_kcals_equivalent.kcals)
                 ykcals.append(
                     (
-                        np.array(interpreter.cell_sugar_kcals_eff.kcals)
-                        + np.array(interpreter.scp_kcals_eff.kcals)
+                        np.array(interpreter.cell_sugar_kcals_equivalent.kcals)
+                        + np.array(interpreter.scp_kcals_equivalent.kcals)
                     )
                 )
-                ykcals.append(interpreter.greenhouse_kcals_eff.kcals)
-                ykcals.append(interpreter.seaweed_kcals_eff.kcals)
+                ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
+                ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
                 ykcals.append(
                     (
-                        interpreter.grazing_milk_kcals_eff.kcals
-                        + interpreter.grain_fed_milk_kcals_eff.kcals
+                        interpreter.grazing_milk_kcals_equivalent.kcals
+                        + interpreter.grain_fed_milk_kcals_equivalent.kcals
                     )
                 )
                 ykcals.append(
                     (
-                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_eff.kcals
-                        + interpreter.grain_fed_meat_kcals_eff.kcals
+                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                        + interpreter.grain_fed_meat_kcals_equivalent.kcals
                     )
                 )
-                ykcals.append(interpreter.immediate_outdoor_crops_kcals_eff.kcals)
-                ykcals.append(interpreter.new_stored_outdoor_crops_kcals_eff.kcals)
-                ykcals.append(interpreter.stored_food_kcals_eff.kcals)
-
+                ykcals.append(
+                    interpreter.immediate_outdoor_crops_to_humans_kcals_equivalent.kcals
+                )
+                ykcals.append(
+                    interpreter.new_stored_outdoor_crops_to_humans_kcals_equivalent.kcals
+                )
+                ykcals.append(interpreter.stored_food_to_humans_kcals_equivalent.kcals)
                 ax.text(
                     -0.06,
                     1.1,

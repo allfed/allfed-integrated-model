@@ -20,23 +20,30 @@ class Seafood:
             / 1e9
             / 12
         )
-
         # units of 1000s tons protein monthly
         # (so, global value is in the hundreds of thousands of tons)
-        self.FISH_PROTEIN = constants_for_params["FISH_PROTEIN_TONS_ANNUAL"] / 1e3 / 12
+        self.FISH_PROTEIN = (
+            constants_for_params["FISH_PROTEIN_TONS_ANNUAL"]
+            / 1e3
+            / 12
+            * (1 - FISH_WASTE / 100)
+        )
 
         # units of 1000s tons fat
         # (so, global value is in the tens of thousands of tons)
-        self.FISH_FAT = constants_for_params["FISH_FAT_TONS_ANNUAL"] / 1e3 / 12
+        self.FISH_FAT = (
+            constants_for_params["FISH_FAT_TONS_ANNUAL"]
+            / 1e3
+            / 12
+            * (1 - FISH_WASTE / 100)
+        )
 
     # includes all seafood (except seaweed), not just fish
     def get_seafood_production(self, constants_for_params):
 
         # Based on Xia et al. (2021): Global Famine after Nuclear War
 
-        FISH_PERCENT_EACH_MONTH_LONG = (
-            constants_for_params["FISH_PERCENT_MONTHLY"]
-        )
+        FISH_PERCENT_EACH_MONTH_LONG = constants_for_params["FISH_PERCENT_MONTHLY"]
 
         FISH_PERCENT_EACH_MONTH = FISH_PERCENT_EACH_MONTH_LONG[0 : self.NMONTHS]
 

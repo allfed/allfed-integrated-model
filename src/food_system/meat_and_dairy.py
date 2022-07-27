@@ -237,13 +237,7 @@ class MeatAndDairy:
             grain_fed_milk_produced_prewaste = np.array([0] * self.NMONTHS)
 
         # TODO: DELFETE ME
-        # print("grain_fed_milk_produced_prewaste")
-        # print(grain_fed_milk_produced_prewaste)
 
-        # print("cattle_grain_fed_maintained_prewaste")
-        # print(cattle_grain_fed_maintained_prewaste)
-        # print("chicken_pork_maintained_prewaste")
-        # print(chicken_pork_maintained_prewaste)
         self.grain_fed_milk_produced_prewaste = grain_fed_milk_produced_prewaste
         self.cattle_grain_fed_maintained_prewaste = cattle_grain_fed_maintained_prewaste
         self.chicken_pork_maintained_prewaste = chicken_pork_maintained_prewaste
@@ -393,8 +387,6 @@ class MeatAndDairy:
         self.chicken_pork_fat = self.chicken_pork_prewaste_fat * (
             1 - self.MEAT_WASTE / 100
         )
-        # print("self.chicken_pork_fat")
-        # print(self.chicken_pork_fat)
         self.chicken_pork_protein = self.chicken_pork_prewaste_protein * (
             1 - self.MEAT_WASTE / 100
         )
@@ -432,8 +424,6 @@ class MeatAndDairy:
             grain_fed_meat_kcals = np.array([0] * self.NMONTHS)
             grain_fed_meat_fat = np.array([0] * self.NMONTHS)
             grain_fed_meat_protein = np.array([0] * self.NMONTHS)
-
-        # print("Grain fed meat fat:", grain_fed_meat_fat)
 
         return (
             grain_fed_meat_kcals,
@@ -634,7 +624,6 @@ class MeatAndDairy:
             grain_fed_milk_fat = np.array([0] * self.NMONTHS)
             grain_fed_milk_protein = np.array([0] * self.NMONTHS)
 
-        # print("grain_fed_milk_fat", grain_fed_milk_fat)
         return (grain_fed_milk_kcals, grain_fed_milk_fat, grain_fed_milk_protein)
 
     def cap_fat_protein_to_amount_used(
@@ -660,8 +649,6 @@ class MeatAndDairy:
         return_grain_fed_meat_protein = np.array([])
         return_grain_fed_milk_fat = np.array([])
         return_grain_fed_milk_protein = np.array([])
-        # print("feed")
-        # print(feed)
         for i in range(self.NMONTHS):
 
             if (

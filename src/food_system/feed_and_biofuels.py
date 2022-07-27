@@ -113,9 +113,7 @@ class FeedAndBiofuels:
 
         waste_adjustment = 1 - outdoor_crops.CROP_WASTE / 100
         biofuels_before_cap = biofuels_before_cap_prewaste * waste_adjustment
-        print("feed_before_cap")
         feed_before_cap = feed_before_cap_prewaste * waste_adjustment
-        print(feed_before_cap)
         # this is the total exceedance beyond outdoor growing max of any month
         # cumulative
         (
@@ -188,8 +186,6 @@ class FeedAndBiofuels:
 
             self.biofuels = biofuels_before_cap
             self.feed = feed_before_cap
-            print("self.feed")
-            print(self.feed)
             # feed to animals does not have additional waste applied (waste is applied
             # after the meat production, and thus is part of meat waste)
             self.fed_to_animals_prewaste = (
@@ -212,8 +208,6 @@ class FeedAndBiofuels:
             biofuels_before_cap,
             feed_before_cap,
         )
-
-        # print("Ratio reduction in feed needed to make scenario possible:", ratio)
 
         self.biofuels = biofuels_before_cap * ratio
         self.feed = feed_before_cap * ratio
@@ -262,9 +256,6 @@ class FeedAndBiofuels:
             demand_more_than_supply = max_net_demand.any_greater_than(stored_food)
 
         assert 1 >= ratio >= 0
-
-        # print("Ratio BEFORE margin reduction:", ratio)
-        # print("running_supply_minus_demand")
 
         PLOT_RUNNING_TOTAL = False
         if PLOT_RUNNING_TOTAL:
@@ -348,9 +339,6 @@ class FeedAndBiofuels:
             protein_units="thousand tons per month",
         )
 
-        print("feed_monthly_usage post")
-        print(self.feed_monthly_usage_prewaste * (1 - 0.2883))
-
         assert self.feed_monthly_usage_prewaste.all_greater_than_or_equal_to_zero()
 
         baseline_feed_before_cap_prewaste_kcals = np.array(
@@ -392,8 +380,6 @@ class FeedAndBiofuels:
 
         excess_feed_prewaste = constants_for_params["EXCESS_FEED"]
 
-        # print("feed_before_cap_prewaste")
-        # print(feed_before_cap_prewaste)
         nonhuman_consumption_prewaste = (
             biofuels_before_cap_prewaste
             + feed_before_cap_prewaste

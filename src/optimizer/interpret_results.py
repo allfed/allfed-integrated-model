@@ -49,7 +49,7 @@ class Interpreter:
         """
 
         self.assign_percent_fed_from_extractor(extracted_results)
-        self.assign_kcals_effective_from_extractor(extracted_results)
+        self.assign_kcals_equivalent_from_extractor(extracted_results)
 
         # now the same, but in units effective kcals per day
         # all these are just used for plotting only
@@ -106,50 +106,72 @@ class Interpreter:
             extracted_results.new_stored_outdoor_crops.in_units_percent_fed()
         )
 
-    def assign_kcals_effective_from_extractor(self, extracted_results):
+    def assign_kcals_equivalent_from_extractor(self, extracted_results):
 
-        self.stored_food_kcals_eff = extracted_results.stored_food.in_units_kcals_eff()
-
-        self.outdoor_crops_kcals_eff = (
-            extracted_results.outdoor_crops.in_units_kcals_eff()
+        self.stored_food_kcals_equivalent = (
+            extracted_results.stored_food.in_units_kcals_equivalent()
         )
 
-        # TODO: DELETE ME!
-        # print("outdoor_crops_kcals_eff", self.outdoor_crops_kcals_eff)
-        # print("outdoor_crops percent", self.outdoor_crops)
-
-        self.seaweed_kcals_eff = extracted_results.seaweed.in_units_kcals_eff()
-
-        self.cell_sugar_kcals_eff = extracted_results.cell_sugar.in_units_kcals_eff()
-
-        self.scp_kcals_eff = extracted_results.scp.in_units_kcals_eff()
-
-        self.greenhouse_kcals_eff = extracted_results.greenhouse.in_units_kcals_eff()
-
-        self.fish_kcals_eff = extracted_results.fish.in_units_kcals_eff()
-
-        self.meat_culled_plus_grazing_cattle_maintained_kcals_eff = (
-            extracted_results.meat_culled_plus_grazing_cattle_maintained.in_units_kcals_eff()
+        self.outdoor_crops_kcals_equivalent = (
+            extracted_results.outdoor_crops.in_units_kcals_equivalent()
         )
 
-        self.grazing_milk_kcals_eff = (
-            extracted_results.grazing_milk.in_units_kcals_eff()
+        self.seaweed_kcals_equivalent = (
+            extracted_results.seaweed.in_units_kcals_equivalent()
         )
 
-        self.grain_fed_meat_kcals_eff = (
-            extracted_results.grain_fed_meat.in_units_kcals_eff()
+        self.cell_sugar_kcals_equivalent = (
+            extracted_results.cell_sugar.in_units_kcals_equivalent()
         )
 
-        self.grain_fed_milk_kcals_eff = (
-            extracted_results.grain_fed_milk.in_units_kcals_eff()
+        self.scp_kcals_equivalent = extracted_results.scp.in_units_kcals_equivalent()
+
+        self.greenhouse_kcals_equivalent = (
+            extracted_results.greenhouse.in_units_kcals_equivalent()
         )
 
-        self.immediate_outdoor_crops_kcals_eff = (
-            extracted_results.immediate_outdoor_crops.in_units_kcals_eff()
+        self.fish_kcals_equivalent = extracted_results.fish.in_units_kcals_equivalent()
+
+        self.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent = (
+            extracted_results.meat_culled_plus_grazing_cattle_maintained.in_units_kcals_equivalent()
         )
 
-        self.new_stored_outdoor_crops_kcals_eff = (
-            extracted_results.new_stored_outdoor_crops.in_units_kcals_eff()
+        self.grazing_milk_kcals_equivalent = (
+            extracted_results.grazing_milk.in_units_kcals_equivalent()
+        )
+
+        self.grain_fed_meat_kcals_equivalent = (
+            extracted_results.grain_fed_meat.in_units_kcals_equivalent()
+        )
+
+        self.grain_fed_milk_kcals_equivalent = (
+            extracted_results.grain_fed_milk.in_units_kcals_equivalent()
+        )
+
+        self.immediate_outdoor_crops_kcals_equivalent = (
+            extracted_results.immediate_outdoor_crops.in_units_kcals_equivalent()
+        )
+
+        self.new_stored_outdoor_crops_kcals_equivalent = (
+            extracted_results.new_stored_outdoor_crops.in_units_kcals_equivalent()
+        )
+
+    def set_to_humans_properties_kcals_equivalent(self, extracted_results):
+
+        self.stored_food_to_humans_kcals_equivalent = (
+            self.stored_food_to_humans.in_units_kcals_equivalent()
+        )
+
+        self.outdoor_crops_to_humans_kcals_equivalent = (
+            self.outdoor_crops_to_humans.in_units_kcals_equivalent()
+        )
+
+        self.immediate_outdoor_crops_to_humans_kcals_equivalent = (
+            self.immediate_outdoor_crops_to_humans.in_units_kcals_equivalent()
+        )
+
+        self.new_stored_outdoor_crops_to_humans_kcals_equivalent = (
+            self.new_stored_outdoor_crops_to_humans.in_units_kcals_equivalent()
         )
 
     def assign_time_months_middle(self, NMONTHS):
@@ -184,17 +206,15 @@ class Interpreter:
         # get the ratio for stored_food_rounded and outdoor_crops (after subtracting
         # feed and biofuels)
         to_humans_ratio = self.get_ratio_for_stored_food_and_outdoor_crops(
-            self.stored_food_rounded,
-            self.outdoor_crops_rounded,
             self.outdoor_crops_plus_stored_food,
             self.nonhuman_consumption_percent,
         )
 
         (
-            self.stored_food_fed_to_humans,
-            self.outdoor_crops_fed_to_humans,
-            self.immediate_outdoor_crops_fed_to_humans,
-            self.new_stored_outdoor_crops_fed_to_humans,
+            self.stored_food_to_humans,
+            self.outdoor_crops_to_humans,
+            self.immediate_outdoor_crops_to_humans,
+            self.new_stored_outdoor_crops_to_humans,
         ) = self.get_amount_fed_to_humans(
             self.stored_food,
             self.outdoor_crops,
@@ -203,9 +223,11 @@ class Interpreter:
             to_humans_ratio,
         )
 
+        self.set_to_humans_properties_kcals_equivalent(extracted_results)
+
         self.kcals_fed = humans_fed_sum.kcals
-        self.fat_fed = humans_fed_sum.kcals
-        self.protein_fed = humans_fed_sum.kcals
+        self.fat_fed = humans_fed_sum.fat
+        self.protein_fed = humans_fed_sum.protein
 
         difference = humans_fed_sum - self.get_sum_by_adding_to_humans()
 
@@ -214,34 +236,30 @@ class Interpreter:
 
     def get_amount_fed_to_humans(
         self,
-        stored_food_rounded,
-        outdoor_crops_rounded,
-        immediate_outdoor_crops_rounded,
-        new_stored_outdoor_crops_rounded,
+        stored_food,
+        outdoor_crops,
+        immediate_outdoor_crops,
+        new_stored_outdoor_crops,
         to_humans_ratio,
     ):
 
         # apply the reduction to stored food and outdoor crops
-        stored_food_fed_to_humans = to_humans_ratio * stored_food_rounded
-        outdoor_crops_fed_to_humans = to_humans_ratio * outdoor_crops_rounded
+        stored_food_to_humans = to_humans_ratio * stored_food
+        outdoor_crops_to_humans = to_humans_ratio * outdoor_crops
 
         # NOTE: immediate and new used may be slightly different than the outdoor
         #       crops due to rounding errors
 
-        immediate_outdoor_crops_fed_to_humans = (
-            to_humans_ratio * immediate_outdoor_crops_rounded
-        )
+        immediate_outdoor_crops_to_humans = to_humans_ratio * immediate_outdoor_crops
 
         # used for plotting immediate vs food stored in the scenario
-        new_stored_outdoor_crops_fed_to_humans = (
-            to_humans_ratio * new_stored_outdoor_crops_rounded
-        )
+        new_stored_outdoor_crops_to_humans = to_humans_ratio * new_stored_outdoor_crops
 
         return (
-            stored_food_fed_to_humans,
-            outdoor_crops_fed_to_humans,
-            immediate_outdoor_crops_fed_to_humans,
-            new_stored_outdoor_crops_fed_to_humans,
+            stored_food_to_humans,
+            outdoor_crops_to_humans,
+            immediate_outdoor_crops_to_humans,
+            new_stored_outdoor_crops_to_humans,
         )
 
     def get_sum_by_adding_to_humans(self):
@@ -254,8 +272,8 @@ class Interpreter:
         """
 
         to_humans_fed_sum = (
-            self.stored_food_fed_to_humans
-            + self.outdoor_crops_fed_to_humans
+            self.stored_food_to_humans
+            + self.outdoor_crops_to_humans
             + self.seaweed
             + self.cell_sugar
             + self.scp
@@ -309,14 +327,17 @@ class Interpreter:
 
     def get_ratio_for_stored_food_and_outdoor_crops(
         self,
-        stored_food,
-        outdoor_crops,
         outdoor_crops_plus_stored_food_rounded,
         nonhuman_consumption,
     ):
         """
         This function returns the ratio of stored food and outdoor crops that would
-        be fed to humans, assuming that the rest goes to nonhuman consumption
+        be fed to humans, assuming that the rest goes to nonhuman consumption.
+
+        It doesn't put any limit on the calories eaten by humans, technically the model
+        just keeps metabolic waste at a similiar rate of waste based on the food price
+        assigned, and then just continues feeding humans at their minimum macronutrient
+        as high as it can.
 
         NOTE: outdoor_crops_plus_stored_food_rounded may not be exactly the same as
               the sum of stored food and outdoor crops, because the sum has been set
@@ -328,7 +349,6 @@ class Interpreter:
         )
 
         to_humans_ratio = remainder_to_humans / outdoor_crops_plus_stored_food_rounded
-
         # make sure if either outdoor_crops_plus_stored_food_rounded or
         # nonhuman_consumption is zero, the other is zero
 

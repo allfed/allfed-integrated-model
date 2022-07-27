@@ -262,13 +262,6 @@ class Extractor:
             / 1e9
         )
 
-        # print("billions_fed_fish_kcals")
-        # print(billions_fed_fish_kcals)
-        # print("billions_fed_fish_protein")
-        # print(billions_fed_fish_protein)
-        # print("billions_fed_fish_fat")
-        # print(billions_fed_fish_fat)
-
         self.fish = Food(
             kcals=billions_fed_fish_kcals,
             fat=billions_fed_fish_fat,
@@ -418,26 +411,10 @@ class Extractor:
             )
         )
 
-        # print("billions_fed_outdoor_crops_kcals")
-        # print(billions_fed_outdoor_crops_kcals)
-        # print("billions_fed_outdoor_crops_fat")
-        # print(billions_fed_outdoor_crops_fat)
-        # print("billions_fed_outdoor_crops_protein")
-        # print(billions_fed_outdoor_crops_protein)
-
         self.outdoor_crops = Food(
             kcals=billions_fed_outdoor_crops_kcals,
             fat=billions_fed_outdoor_crops_fat,
             protein=billions_fed_outdoor_crops_protein,
-            kcals_units="billion people fed each month",
-            fat_units="billion people fed each month",
-            protein_units="billion people fed each month",
-        )
-
-        self.immediate_outdoor_crops = Food(
-            kcals=np.array(billions_fed_immediate_outdoor_crops_kcals),
-            fat=np.zeros(len(billions_fed_immediate_outdoor_crops_kcals)),
-            protein=np.zeros(len(billions_fed_immediate_outdoor_crops_kcals)),
             kcals_units="billion people fed each month",
             fat_units="billion people fed each month",
             protein_units="billion people fed each month",
@@ -451,6 +428,56 @@ class Extractor:
             fat_units="billion people fed each month",
             protein_units="billion people fed each month",
         )
+
+        # keep the same ratios between the nutrients (it's just the outdoor growing
+        # ratio). This is only used for plotting.
+
+        to_new_stored_ratio = self.new_stored_outdoor_crops / self.outdoor_crops
+
+        # make sure if either outdoor_crops or
+        # nonhuman_consumption is zero, the other is zero
+        # remove all the places we would have had 0/0 => np.nan with 0/0 => 0
+        to_new_stored_ratio = to_new_stored_ratio.replace_if_list_with_zeros_is_zero(
+            list_with_zeros=self.outdoor_crops,
+            replacement=0,
+        )
+
+        to_new_stored_ratio.fat = to_new_stored_ratio.kcals
+        to_new_stored_ratio.protein = to_new_stored_ratio.kcals
+
+        self.new_stored_outdoor_crops = self.outdoor_crops * to_new_stored_ratio
+
+        self.immediate_outdoor_crops = Food(
+            kcals=np.array(billions_fed_immediate_outdoor_crops_kcals),
+            fat=np.zeros(len(billions_fed_immediate_outdoor_crops_kcals)),
+            protein=np.zeros(len(billions_fed_immediate_outdoor_crops_kcals)),
+            kcals_units="billion people fed each month",
+            fat_units="billion people fed each month",
+            protein_units="billion people fed each month",
+        )
+
+        to_immediate_ratio = self.immediate_outdoor_crops / self.outdoor_crops
+
+        # make sure if either outdoor_crops or
+        # nonhuman_consumption is zero, the other is zero
+        # remove all the places we would have had 0/0 => np.nan with 0/0 => 0
+        to_immediate_ratio = to_immediate_ratio.replace_if_list_with_zeros_is_zero(
+            list_with_zeros=self.outdoor_crops,
+            replacement=0,
+        )
+
+        to_immediate_ratio.fat = to_immediate_ratio.kcals
+        to_immediate_ratio.protein = to_immediate_ratio.kcals
+
+        self.immediate_outdoor_crops = self.outdoor_crops * to_immediate_ratio
+
+        # make sure we haven't messed up and changed total outdoor growing production
+        # each month
+
+        difference = self.outdoor_crops - (
+            self.immediate_outdoor_crops + self.new_stored_outdoor_crops
+        )
+        assert difference.get_rounded_to_decimal(3).all_equals_zero()
 
     # if cellulosic sugar isn't included, these results will be zero
 

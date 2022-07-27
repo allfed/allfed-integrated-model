@@ -370,51 +370,6 @@ class Optimizer:
                 "Seaweed_Limit_Kcals_" + str(month) + "_Constraint",
             )
 
-        # finds billions of people fed that month per nutrient
-
-        # stored food eaten*sf_fraction_kcals is in units billions kcals monthly
-        # seaweed_food_produced*seaweed_kcals is in units billions kcals
-        # billions kcals needed is in units billion kcals per month for
-        # the whole population
-
-        # print("nonhuman times CROPS_WASTE" + str(month))
-
-        # print(
-        #     round(self.multi_valued_constants["nonhuman_consumption"].kcals[month], 5)
-        # )
-
-        # print(round(self.multi_valued_constants["grazing_milk_kcals"][month], 5))
-
-        # print(
-        #     round(
-        #         self.multi_valued_constants["cattle_grazing_maintained_kcals"][month], 5
-        #     )
-        # )
-
-        # print(round(self.multi_valued_constants["meat_culled"][month], 5))
-
-        # print(
-        #     round(
-        #         self.multi_valued_constants["production_kcals_cell_sugar_per_month"][
-        #             month
-        #         ],
-        #         3,
-        #     )
-        # )
-
-        # print(
-        #     round(
-        #         self.multi_valued_constants["production_kcals_scp_per_month"][month], 5
-        #     )
-        # )
-        # print(round(self.multi_valued_constants["greenhouse_area"][month], 5))
-        # print(
-        #     round(
-        #         self.multi_valued_constants["production_kcals_fish_per_month"][month], 5
-        #     )
-        # )
-        # print(round(self.multi_valued_constants["grain_fed_created_kcals"][month], 5))
-
         # numbers scaled to percent of per person human needs per month
         model += (
             variables["humans_fed_kcals"][month]
@@ -442,30 +397,6 @@ class Optimizer:
             * 100,
             "Kcals_Fed_Month_" + str(month) + "_Constraint",
         )
-
-        # print(round(self.multi_valued_constants["nonhuman_consumption"].fat[month], 5))
-
-        # print(round(self.multi_valued_constants["grazing_milk_fat"][month], 5))
-
-        # print(
-        #     round(
-        #         self.multi_valued_constants["cattle_grazing_maintained_fat"][month], 5
-        #     )
-        # )
-
-        # print(round(self.multi_valued_constants["meat_culled"][month], 5))
-
-        # print(
-        #     round(self.multi_valued_constants["production_fat_scp_per_month"][month], 5)
-        # )
-        # print(round(self.multi_valued_constants["greenhouse_area"][month], 5))
-        # print(
-        #     round(
-        #         self.multi_valued_constants["production_fat_fish_per_month"][month], 5
-        #     )
-        # )
-        # print("grain_fed_fat")
-        # print(round(self.multi_valued_constants["grain_fed_created_fat"][month], 5))
 
         if self.single_valued_constants["inputs"]["INCLUDE_FAT"]:
             # fat monthly is in units thousand tons

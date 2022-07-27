@@ -136,7 +136,7 @@ class Parameters:
 
         constants["inputs"] = constants_for_params
 
-        PRINT_FIRST_MONTH_CONSTANTS = True
+        PRINT_FIRST_MONTH_CONSTANTS = False
 
         if PRINT_FIRST_MONTH_CONSTANTS:
             print_parameters = PrintParameters()
@@ -415,12 +415,6 @@ class Parameters:
 
         time_consts["meat_culled"] = meat_culled
 
-        # TODO: DELETE ME!
-        # print("grain_fed_created_fat.in_units_percent_fed()")
-        # print(grain_fed_balance.in_units_percent_fed())
-
-        # store variables useful for extractor
-
         return meat_and_dairy, constants, time_consts
 
     def init_grazing_params(self, constants_for_params, time_consts, meat_and_dairy):
@@ -443,8 +437,6 @@ class Parameters:
             cattle_grazing_maintained_fat,
             cattle_grazing_maintained_protein,
         ) = meat_and_dairy.get_cattle_grazing_maintained()
-        # print("cattle_grazing_maintained_fat")
-        # print(cattle_grazing_maintained_fat)
 
         time_consts["cattle_grazing_maintained_kcals"] = cattle_grazing_maintained_kcals
         time_consts["cattle_grazing_maintained_fat"] = cattle_grazing_maintained_fat
@@ -464,7 +456,6 @@ class Parameters:
         # to the feed and biofuels before subtracting from stored food and crops.
         # any reasonable cap of production should reflect a cap on the actual amount available
         # to humans.
-        CROP_WASTE = 1 - constants_for_params["WASTE"]["CROPS"] / 100
 
         # "grain" in all cases just means the stored food + outdoor crop production that is human edible and used for feed
         # this calculation is pre-waste for meat and feed
@@ -504,19 +495,12 @@ class Parameters:
             grain_fed_milk_protein,
         )
 
-        # print(feed_and_biofuels.feed.kcals)
-
         time_consts["grain_fed_meat_kcals"] = grain_fed_meat_kcals
         time_consts["grain_fed_meat_fat"] = grain_fed_meat_fat_capped
         time_consts["grain_fed_meat_protein"] = grain_fed_meat_protein_capped
         time_consts["grain_fed_milk_kcals"] = grain_fed_milk_kcals
         time_consts["grain_fed_milk_fat"] = grain_fed_milk_fat_capped
         time_consts["grain_fed_milk_protein"] = grain_fed_milk_protein_capped
-
-        # print("meat fat")
-        # print(grain_fed_meat_fat)
-        # print("milk fat")
-        # print(grain_fed_milk_fat)
 
         grain_fed_created_kcals = grain_fed_meat_kcals + grain_fed_milk_kcals
         grain_fed_created_fat = grain_fed_meat_fat_capped + grain_fed_milk_fat_capped
@@ -536,6 +520,15 @@ class Parameters:
             feed.protein
             >= grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
         ).all()
+
+        if (
+            feed.protein
+            == grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
+        ).any():
+            print("WARNING: BOUNDING GRAIN FED PROTEIN PRODUCED BY FEED USAGE!")
+
+        if (feed.fat == grain_fed_meat_fat_capped + grain_fed_milk_fat_capped).any():
+            print("WARNING: BOUNDING GRAIN FED FAT PRODUCED BY FEED USAGE!")
 
         assert (feed.kcals >= grain_fed_created_kcals).all()
 

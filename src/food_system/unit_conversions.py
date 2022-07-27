@@ -458,7 +458,7 @@ class UnitConversions:
             success = False
             assert success
 
-    def in_units_kcals_eff(self):
+    def in_units_kcals_equivalent(self):
         """
         If the existing units are understood by this function, it tries to convert the
         values and units to effective kcals per capita per day for each nutrient.
@@ -471,9 +471,15 @@ class UnitConversions:
         # get the child class so can initialize the Food class
         Food = self.get_Food_class()
 
-        kcal_conversion = 1e9 / conversions.population * conversions.kcals_daily
-        fat_conversion = 1e9 / conversions.population * conversions.kcals_daily
-        protein_conversion = 1e9 / conversions.population * conversions.kcals_daily
+        billion_people_kcal_conversion = (
+            1e9 / conversions.population * conversions.kcals_daily
+        )
+        billion_people_fat_conversion = (
+            1e9 / conversions.population * conversions.kcals_daily
+        )
+        billion_people_protein_conversion = (
+            1e9 / conversions.population * conversions.kcals_daily
+        )
 
         if (
             self.kcals_units == "billion people fed each month"
@@ -481,9 +487,9 @@ class UnitConversions:
             and self.protein_units == "billion people fed each month"
         ):
             return Food(
-                kcals=self.kcals * kcal_conversion,
-                fat=self.fat * fat_conversion,
-                protein=self.protein * protein_conversion,
+                kcals=self.kcals * billion_people_kcal_conversion,
+                fat=self.fat * billion_people_fat_conversion,
+                protein=self.protein * billion_people_protein_conversion,
                 kcals_units="kcals per capita per day each month",
                 fat_units="effective kcals per capita per day each month",
                 protein_units="effective kcals per capita per day each month",
@@ -494,9 +500,40 @@ class UnitConversions:
             and self.protein_units == "billion people fed per month"
         ):
             return Food(
-                kcals=self.kcals * kcal_conversion,
-                fat=self.fat * fat_conversion,
-                protein=self.protein * protein_conversion,
+                kcals=self.kcals * billion_people_kcal_conversion,
+                fat=self.fat * billion_people_fat_conversion,
+                protein=self.protein * billion_people_protein_conversion,
+                kcals_units="kcals per capita per day per month",
+                fat_units="effective kcals per capita per day per month",
+                protein_units="effective kcals per capita per day per month",
+            )
+
+        percent_kcal_conversion = conversions.kcals_daily / 100
+        percent_fat_conversion = conversions.kcals_daily / 100
+        percent_protein_conversion = conversions.kcals_daily / 100
+
+        if (
+            self.kcals_units == "percent people fed each month"
+            and self.fat_units == "percent people fed each month"
+            and self.protein_units == "percent people fed each month"
+        ):
+            return Food(
+                kcals=self.kcals * percent_kcal_conversion,
+                fat=self.fat * percent_fat_conversion,
+                protein=self.protein * percent_protein_conversion,
+                kcals_units="kcals per capita per day each month",
+                fat_units="effective kcals per capita per day each month",
+                protein_units="effective kcals per capita per day each month",
+            )
+        if (
+            self.kcals_units == "percent people fed per month"
+            and self.fat_units == "percent people fed per month"
+            and self.protein_units == "percent people fed per month"
+        ):
+            return Food(
+                kcals=self.kcals * percent_kcal_conversion,
+                fat=self.fat * percent_fat_conversion,
+                protein=self.protein * percent_protein_conversion,
                 kcals_units="kcals per capita per day per month",
                 fat_units="effective kcals per capita per day per month",
                 protein_units="effective kcals per capita per day per month",
