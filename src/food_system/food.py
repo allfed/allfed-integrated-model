@@ -363,11 +363,11 @@ class Food(UnitConversions):
         """
         Adds two foods together.
         """
+        assert self.units == other.units
+
         kcals = self.kcals + other.kcals
         fat = self.fat + other.fat
         protein = self.protein + other.protein
-
-        assert self.units == other.units
 
         return Food(
             kcals, fat, protein, self.kcals_units, self.fat_units, self.protein_units
@@ -377,11 +377,11 @@ class Food(UnitConversions):
         """
         Subtracts two food nutrient quantities from each other.
         """
+        assert self.units == other.units
+
         kcals = self.kcals - other.kcals
         fat = self.fat - other.fat
         protein = self.protein - other.protein
-
-        assert self.units == other.units
 
         return Food(
             kcals, fat, protein, self.kcals_units, self.fat_units, self.protein_units
@@ -645,7 +645,9 @@ class Food(UnitConversions):
 
     def __eq__(self, other):
         """
-        Returns True if the two foods are equal.
+        Returns True if the two foods are equal. This also works
+        for comparing monthly foods to each other, as their units
+        contain 'each month'.
         """
 
         assert self.units == other.units
@@ -658,7 +660,9 @@ class Food(UnitConversions):
 
     def __ne__(self, other):
         """
-        Returns False if the two foods are not equal.
+        Returns False if the two foods are not equal. his also works
+        for comparing monthly foods to each other, as their units
+        contain 'each month'.
         """
 
         assert self.units == other.units
@@ -721,7 +725,9 @@ class Food(UnitConversions):
     # between the units.
 
     def is_never_negative(self):
-
+        """
+        Checks wether the food's macronutrients are never negative.
+        """
         if self.is_list_monthly():
             self.validate_if_list()
 
@@ -1096,6 +1102,7 @@ class Food(UnitConversions):
         Sum up the nutrients in all the months, then alter the units to remove
          "each month"
         """
+        assert self.is_list_monthly()
 
         self.validate_if_list()
 
@@ -1116,6 +1123,7 @@ class Food(UnitConversions):
         """
         Running sum of the nutrients in all the months, don't alter units
         """
+        assert self.is_list_monthly()
         kcals_copy = copy.deepcopy(self.kcals)
         running_sum_kcals = 0
         to_return_kcals = kcals_copy
@@ -1153,13 +1161,15 @@ class Food(UnitConversions):
         Just get the first month's nutrient values and convert the units from "each" to
         "per"
         """
+        assert self.is_list_monthly()
         return self.get_month(0)
 
     def get_month(self, index):
         """
-        Get the first month's nutrient values, and convert the units from "each" to
+        Get the i month's nutrient values, and convert the units from "each" to
         "per"
         """
+        assert self.is_list_monthly()
         self.validate_if_list()
 
         food_at_month = Food(
@@ -1180,7 +1190,6 @@ class Food(UnitConversions):
         create a food with the minimum of every month as a total nutrient
         """
         self.make_sure_is_a_list()
-
         min_all_months = Food(
             kcals=min(self.kcals),
             fat=min(self.fat),
