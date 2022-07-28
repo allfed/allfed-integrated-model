@@ -86,7 +86,11 @@ def run_model_baseline(plot_figures=True):
     results2 = results
 
     if plot_figures:
-        Plotter.plot_fig_s1abcd(results1, results2, 72)
+        Plotter.start_pptx("Each food plotted individually")
+
+        Plotter.plot_fig_s1abcd(results1, results2, 72, True)
+
+        Plotter.end_pptx("../../results/large_reports/baseline_with_trade.pptx")
 
 
 def set_common_baseline_properties():
@@ -117,6 +121,11 @@ def set_common_baseline_properties():
     constants_for_params = scenarios_loader.set_disruption_to_crops_to_zero(
         constants_for_params
     )
+
+    constants_for_params = scenarios_loader.include_protein(constants_for_params)
+
+    constants_for_params = scenarios_loader.include_fat(constants_for_params)
+    constants_for_params = scenarios_loader.dont_cull_animals(constants_for_params)
 
     # No excess calories
     constants_for_params["EXCESS_FEED"] = Food(

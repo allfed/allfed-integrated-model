@@ -266,7 +266,7 @@ class MeatAndDairy:
         # exceeding present-day cattle meat maintained production
         # assert((ratio_maintained_cattle <= 1)[0:47].all())
         if (ratio_maintained_cattle[0:47] >= 1).any():
-            PRINT_CATTLE_WARNING = True
+            PRINT_CATTLE_WARNING = False
             if PRINT_CATTLE_WARNING:
                 print("")
                 print(
@@ -278,12 +278,7 @@ class MeatAndDairy:
                 )
                 print("")
 
-        # TODO: delete me
-        # self.ratio_not_maintained_cattle[self.ratio_not_maintained_cattle < 0] = 0
-
         # does not consider waste
-        print("chicken_pork_maintained_prewaste")
-        print(self.chicken_pork_maintained_prewaste)
         if present_day_tons_per_month_chicken_pork_prewaste > 0:
             self.ratio_maintained_chicken_pork = (
                 np.array(self.chicken_pork_maintained_prewaste)
@@ -568,7 +563,7 @@ class MeatAndDairy:
                         - self.CULL_DURATION_MONTHS
                         - feed_shutoff_delay_months
                     )
-                )
+                )[0 : self.NMONTHS]
             else:
                 meat_culled_prewaste = [0] * self.NMONTHS
         else:

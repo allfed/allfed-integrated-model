@@ -48,12 +48,7 @@ def test_run_baseline_by_country_no_trade():
     Returns:
         None
     """
-    run_model_no_trade_baseline.run_baseline_by_country_no_trade(
-        plot_map=True,
-        show_figures=False,
-        create_pptx_with_all_countries=False,
-        scenario_option=[],
-    )
+    run_model_no_trade_baseline.run_baseline_by_country_no_trade(plot_figures=False)
 
 
 def test_run_model_no_resilient_foods():

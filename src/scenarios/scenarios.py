@@ -21,6 +21,9 @@ class Scenarios:
         self.DISRUPTION_SET = False
         self.GENERIC_INITIALIZED_SET = False
         self.SCENARIO_SET = False
+        self.PROTEIN_SET = False
+        self.FAT_SET = False
+        self.CULLING_PARAM_SET = False
 
         # convenient to understand what scenario is being run exactly
         self.scenario_description = "Scenario properties:\n"
@@ -39,6 +42,9 @@ class Scenarios:
         assert self.FISH_SET
         assert self.DISRUPTION_SET
         assert self.SCENARIO_SET
+        assert self.PROTEIN_SET
+        assert self.FAT_SET
+        assert self.CULLING_PARAM_SET
 
     # FEED AND BIOFUELS
 
@@ -197,8 +203,6 @@ class Scenarios:
         distribution_loss["MILK"] = country_data["distribution_loss_dairy"] * 100
         distribution_loss["SEAFOOD"] = country_data["distribution_loss_seafood"] * 100
         distribution_loss["SEAWEED"] = distribution_loss["SEAFOOD"]
-        print("distribution_loss")
-        print(distribution_loss)
         total_waste = {}
 
         total_waste["SUGAR"] = distribution_loss["SUGAR"] + retail_waste
@@ -236,8 +240,6 @@ class Scenarios:
         """
 
         RETAIL_WASTE = country_data["retail_waste_price_double"] * 100
-        print("RETAIL_WASTE")
-        print(RETAIL_WASTE)
         total_waste = self.get_total_country_waste(RETAIL_WASTE, country_data)
 
         constants_for_params["WASTE"] = total_waste
@@ -871,26 +873,9 @@ class Scenarios:
 
         constants_for_params["OG_USE_BETTER_ROTATION"] = False
 
-        constants_for_params["INCLUDE_PROTEIN"] = True
-        if constants_for_params["INCLUDE_PROTEIN"]:
-            self.scenario_description += "\ninclude protein"
-        else:
-            self.scenario_description += "\ndon't include protein"
-
-        constants_for_params["INCLUDE_FAT"] = True
-        if constants_for_params["INCLUDE_FAT"]:
-            self.scenario_description += "\ninclude fat"
-        else:
-            self.scenario_description += "\ndon't include fat"
-
         # (no difference between harvests in the different countries!)
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7
 
-        constants_for_params["CULL_ANIMALS"] = False
-        if constants_for_params["CULL_ANIMALS"]:
-            self.scenario_description += "\ncull_animals"
-        else:
-            self.scenario_description += "\ndon't cull animals"
         constants_for_params["KCAL_SMOOTHING"] = False
         constants_for_params["MEAT_SMOOTHING"] = False
         constants_for_params["STORED_FOOD_SMOOTHING"] = False
@@ -908,6 +893,50 @@ class Scenarios:
         constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
 
         self.SCENARIO_SET = True
+        return constants_for_params
+
+    def include_protein(self, constants_for_params):
+        assert self.PROTEIN_SET == False
+        self.scenario_description += "\ninclude protein"
+        constants_for_params["INCLUDE_PROTEIN"] = True
+        self.PROTEIN_SET = True
+        return constants_for_params
+
+    def dont_include_protein(self, constants_for_params):
+        assert self.PROTEIN_SET == False
+        self.scenario_description += "\ndon't include protein"
+        constants_for_params["INCLUDE_PROTEIN"] = False
+        self.PROTEIN_SET = True
+        return constants_for_params
+
+    def include_fat(self, constants_for_params):
+        assert self.FAT_SET == False
+        self.scenario_description += "\ninclude fat"
+        constants_for_params["INCLUDE_FAT"] = True
+        self.FAT_SET = True
+
+        return constants_for_params
+
+    def dont_include_fat(self, constants_for_params):
+        assert self.FAT_SET == False
+        self.scenario_description += "\ndon't include fat"
+        constants_for_params["INCLUDE_FAT"] = False
+        self.FAT_SET = True
+        return constants_for_params
+
+    def cull_animals(self, constants_for_params):
+        assert self.CULLING_PARAM_SET == False
+        self.scenario_description += "\ninclude culled animals"
+        constants_for_params["CULL_ANIMALS"] = True
+        self.CULLING_PARAM_SET = True
+
+        return constants_for_params
+
+    def dont_cull_animals(self, constants_for_params):
+        assert self.CULLING_PARAM_SET == False
+        self.scenario_description += "\ndon't include culled animals"
+        constants_for_params["CULL_ANIMALS"] = False
+        self.CULLING_PARAM_SET = True
         return constants_for_params
 
     def get_resilient_food_scenario(self, constants_for_params):
@@ -957,12 +986,6 @@ class Scenarios:
         constants_for_params["DELAY"]["GREENHOUSE_MONTHS"] = 2
         constants_for_params["DELAY"]["SEAWEED_MONTHS"] = 1
 
-        constants_for_params["CULL_ANIMALS"] = True
-
-        if constants_for_params["CULL_ANIMALS"]:
-            self.scenario_description += "\ncull_animals"
-        else:
-            self.scenario_description += "\ndon't cull animals"
         constants_for_params["KCAL_SMOOTHING"] = True
         constants_for_params["MEAT_SMOOTHING"] = True
         constants_for_params["STORED_FOOD_SMOOTHING"] = True

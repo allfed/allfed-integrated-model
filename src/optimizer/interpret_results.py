@@ -408,7 +408,7 @@ class Interpreter:
 
         (min_nutrient, percent_people_fed) = humans_fed_sum.get_min_nutrient()
 
-        PRINT_FED = True
+        PRINT_FED = False
         if PRINT_FED:
 
             print("Nutrients with constraining values are: " + str(min_nutrient))
@@ -474,7 +474,6 @@ class Interpreter:
         difference_consumption_supply_rounded = (
             difference_consumption_supply.get_rounded_to_decimal(2)
         )
-
         assert difference_consumption_supply_rounded.all_greater_than_or_equal_to_zero()
 
         # wherever the difference in consumption is zero, that means humand and nonhuman

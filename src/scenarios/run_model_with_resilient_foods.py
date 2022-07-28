@@ -200,6 +200,11 @@ def set_common_resilient_properties():
         )
     )
 
+    constants_for_params = scenarios_loader.include_protein(constants_for_params)
+
+    constants_for_params = scenarios_loader.include_fat(constants_for_params)
+    constants_for_params = scenarios_loader.cull_animals(constants_for_params)
+
     return scenarios_loader, constants_for_params
 
 

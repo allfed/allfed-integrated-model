@@ -117,6 +117,10 @@ def set_common_no_resilient_properties():
     constants_for_params = scenarios_loader.set_fish_nuclear_winter_reduction(
         constants_for_params
     )
+    constants_for_params = scenarios_loader.include_protein(constants_for_params)
+
+    constants_for_params = scenarios_loader.include_fat(constants_for_params)
+    constants_for_params = scenarios_loader.cull_animals(constants_for_params)
 
     constants_for_params = (
         scenarios_loader.set_nuclear_winter_global_disruption_to_crops(

@@ -84,7 +84,7 @@ class ScenarioRunner:
         # of error
         validator.validate_results(model, extracted_results, interpreted_results)
 
-        PRINT_NEEDS_RATIO = True
+        PRINT_NEEDS_RATIO = False
         if PRINT_NEEDS_RATIO:
             interpreter.print_kcals_per_capita_per_day(interpreted_results)
 

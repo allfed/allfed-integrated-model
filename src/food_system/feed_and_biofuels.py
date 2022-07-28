@@ -125,8 +125,6 @@ class FeedAndBiofuels:
         ) = self.calculate_max_running_net_demand_postwaste(
             outdoor_crops, biofuels_before_cap, feed_before_cap
         )
-        print("max_net_demand")
-        print(max_net_demand)
 
         self.set_biofuels_and_feed_usage_postwaste(
             max_net_demand,
@@ -180,14 +178,16 @@ class FeedAndBiofuels:
             return
 
         if not excess_feed_prewaste.all_equals_zero():
-            print(
-                """WARNING: There was an excess feed assigned in the EXCESS_FEED
-              variable. This implies that a diet calculation is being run, in
-              order to reduce the calories per person per day to 2100.
-              However, feed and biofuels are exceeding
-              available outdoor growing and stored food!
-              Make sure this makes sense."""
-            )
+            PRINT_WARNING = False
+            if PRINT_WARNING:
+                print(
+                    """WARNING: There was an excess feed assigned in the EXCESS_FEED
+                  variable. This implies that a diet calculation is being run, in
+                  order to reduce the calories per person per day to 2100.
+                  However, feed and biofuels are exceeding
+                  available outdoor growing and stored food!
+                  Make sure this makes sense."""
+                )
 
         ratio = self.iteratively_determine_reduction_in_nonhuman_consumption_postwaste(
             stored_food,
@@ -195,12 +195,6 @@ class FeedAndBiofuels:
             biofuels_before_cap,
             feed_before_cap,
         )
-        print("ratio biofuels and feed to set")
-        print(ratio)
-        print("biofuels_before_cap.fat[0]")
-        print(biofuels_before_cap.fat[0])
-        print("feed_before_cap.fat[0]")
-        print(feed_before_cap.fat[0])
         self.biofuels = biofuels_before_cap * ratio
         self.feed = feed_before_cap * ratio
 
@@ -243,8 +237,6 @@ class FeedAndBiofuels:
                 biofuels_before_cap * ratio,
                 feed_before_cap * ratio,
             )
-            print("max_net_demand")
-            print(max_net_demand)
             # running_supply_minus_demand.in_units_percent_fed().plot()
 
             demand_more_than_supply = max_net_demand.any_greater_than(stored_food)

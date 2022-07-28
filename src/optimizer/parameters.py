@@ -58,7 +58,7 @@ class Parameters:
         assert self.FIRST_TIME_RUN
         self.FIRST_TIME_RUN = False
 
-        PRINT_SCENARIO_PROPERTIES = False
+        PRINT_SCENARIO_PROPERTIES = True
         if PRINT_SCENARIO_PROPERTIES:
             print(scenarios_loader.scenario_description)
 
@@ -136,7 +136,7 @@ class Parameters:
 
         constants["inputs"] = constants_for_params
 
-        PRINT_FIRST_MONTH_CONSTANTS = True
+        PRINT_FIRST_MONTH_CONSTANTS = False
 
         if PRINT_FIRST_MONTH_CONSTANTS:
             print_parameters = PrintParameters()
@@ -523,14 +523,18 @@ class Parameters:
             >= grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
         ).all()
 
-        if (
-            feed.protein
-            == grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
-        ).any():
-            print("WARNING: BOUNDING GRAIN FED PROTEIN PRODUCED BY FEED USAGE!")
+        PRINT_BOUND_WARNING = False
+        if PRINT_BOUND_WARNING:
+            if (
+                feed.protein
+                == grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
+            ).any():
+                print("WARNING: BOUNDING GRAIN FED PROTEIN PRODUCED BY FEED USAGE!")
 
-        if (feed.fat == grain_fed_meat_fat_capped + grain_fed_milk_fat_capped).any():
-            print("WARNING: BOUNDING GRAIN FED FAT PRODUCED BY FEED USAGE!")
+            if (
+                feed.fat == grain_fed_meat_fat_capped + grain_fed_milk_fat_capped
+            ).any():
+                print("WARNING: BOUNDING GRAIN FED FAT PRODUCED BY FEED USAGE!")
 
         assert (feed.kcals >= grain_fed_created_kcals).all()
 
