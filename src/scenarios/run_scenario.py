@@ -55,8 +55,6 @@ class ScenarioRunner:
             multi_valued_constants,
         ) = self.compute_parameters(constants_for_params, scenarios_loader)
 
-        extractor = Extractor(single_valued_constants)
-
         # actually make PuLP optimize effective people fed based on all the constants
         # we've determined
         (
@@ -66,6 +64,7 @@ class ScenarioRunner:
             multi_valued_constants,
         ) = self.run_optimizer(single_valued_constants, multi_valued_constants)
 
+        extractor = Extractor(single_valued_constants)
         #  get values from all the optimizer in list and integer formats
         extracted_results = extractor.extract_results(
             model, variables, single_valued_constants, multi_valued_constants
@@ -87,48 +86,6 @@ class ScenarioRunner:
         PRINT_NEEDS_RATIO = False
         if PRINT_NEEDS_RATIO:
             interpreter.print_kcals_per_capita_per_day(interpreted_results)
-
-        """
-        seems to be important for with resilient foods code?
-        optimizer = Optimizer()
-        constants_loader = Parameters()
-        constants["inputs"] = constants_for_params
-        constants_for_optimizer = copy.deepcopy(constants)
-        (
-            single_valued_constants,
-            multi_valued_constants,
-        ) = constants_loader.computeParameters(constants_for_optimizer, scenarios_loader)
-
-        single_valued_constants["CHECK_CONSTRAINTS"] = False
-        [time_months, time_months_middle, extractor] = optimizer.optimize(
-            single_valued_constants, multi_valued_constants
-        )
-
-        SEEMS to be important for monte carlo...
-        try:
-            single_valued_constants["CHECK_CONSTRAINTS"] = False
-            [time_months, time_months_middle, extractor] = optimizer.optimize(
-                single_valued_constants, multi_valued_constants
-            )
-            print(extractor.percent_people_fed)
-
-        except AssertionError as msg:
-            print(msg)
-            failed_to_optimize = True
-            print("Warning: Optimization failed. Continuing.")
-            # quit()
-            return (np.nan, i)
-        except Exception as ex:
-            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-            message = template.format(type(ex).__name__, ex.args)
-            print(message)
-            failed_to_optimize = True
-            print("Warning: Optimization failed. Continuing.")
-            return (np.nan, i)
-
-
-
-        """
 
         return interpreted_results
 
