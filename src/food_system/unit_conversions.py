@@ -82,6 +82,11 @@ class UnitConversions:
         """
         gets the units so that they reflect that of a single month
         """
+        # Make sure this only happens for monthly food
+        assert "each month" in self.kcals_units
+        assert "each month" in self.fat_units
+        assert "each month" in self.protein_units
+
         # remove the " each month" part of the units
         kcals_units = self.kcals_units.split(" each month")[0]
 
@@ -97,6 +102,10 @@ class UnitConversions:
         """
         sets the units so that they reflect that of a single month
         """
+        # Make sure this only happens for monthly food
+        assert "each month" in self.kcals_units
+        assert "each month" in self.fat_units
+        assert "each month" in self.protein_units
         # remove the " each month" part of the units
         [
             self.kcals_units,
@@ -108,6 +117,11 @@ class UnitConversions:
         """
         gets the units so that they reflect that of a single month
         """
+        # Make sure this only happens for monthly food
+        assert "each month" in self.kcals_units
+        assert "each month" in self.fat_units
+        assert "each month" in self.protein_units
+
         # replace the " each month" part of the units with "per month"
         kcals_units = self.kcals_units.replace(" each month", " per month")
 
@@ -123,6 +137,10 @@ class UnitConversions:
         """
         sets the units so that they reflect that of a single month
         """
+        # Make sure this only happens for monthly food
+        assert "each month" in self.kcals_units
+        assert "each month" in self.fat_units
+        assert "each month" in self.protein_units
         [
             self.kcals_units,
             self.fat_units,
@@ -136,7 +154,6 @@ class UnitConversions:
         assert "each month" not in self.kcals_units
         assert "each month" not in self.fat_units
         assert "each month" not in self.protein_units
-
         # add " each month" to units to signify a food list
         kcals_units = self.kcals_units + " each month"
 
@@ -152,6 +169,9 @@ class UnitConversions:
         """
         sets the units so that they reflect that of a list of months
         """
+        assert "each month" not in self.kcals_units
+        assert "each month" not in self.fat_units
+        assert "each month" not in self.protein_units
         [
             self.kcals_units,
             self.fat_units,
@@ -175,6 +195,9 @@ class UnitConversions:
         an operation on a different food is used, the units are compatible
 
         """
+        # Make sure this can only happen for monthly food if "each month" is in the units
+
+
         self.kcals_units = kcals_units
         self.fat_units = fat_units
         self.protein_units = protein_units
