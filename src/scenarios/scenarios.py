@@ -12,6 +12,7 @@ class Scenarios:
     def __init__(self):
         # used to ensure the properties of scenarios are set twice or left unset
         self.NONHUMAN_CONSUMPTION_SET = False
+        self.EXCESS_SET = False
         self.WASTE_SET = False
         self.NUTRITION_PROFILE_SET = False
         self.STORED_FOOD_BUFFER_SET = False
@@ -33,6 +34,7 @@ class Scenarios:
         Ensure all properties of scenarios have been set
         """
         assert self.NONHUMAN_CONSUMPTION_SET
+        assert self.EXCESS_SET
         assert self.WASTE_SET
         assert self.NUTRITION_PROFILE_SET
         assert self.STORED_FOOD_BUFFER_SET
@@ -88,14 +90,22 @@ class Scenarios:
         self.NONHUMAN_CONSUMPTION_SET = True
         return constants_for_params
 
-    def delete_me(self, constants_for_params):
-        self.scenario_description += "\ncontinued_feed_biofuels"
-        self.scenario_description += "\ncontinued_feed_biofuels"
-        assert self.NONHUMAN_CONSUMPTION_SET == False
-        constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 0
-        constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 1
+    # EXCESS FEED
 
-        self.NONHUMAN_CONSUMPTION_SET = True
+    def set_excess_to_zero(self, constants_for_params):
+        self.scenario_description += "\nwaste_to_zero"
+        assert self.EXCESS_SET == False
+        constants_for_params["EXCESS_FEED_PERCENT"] = np.zeros(constants_for_params['NMONTHS'])
+
+        self.EXCESS_SET = True
+        return constants_for_params
+
+    def set_excess(self,constants_for_params,excess):
+        self.scenario_description += "\nwaste_to_zero"
+        assert self.EXCESS_SET == False
+        constants_for_params["EXCESS_FEED_PERCENT"] = excess
+
+        self.EXCESS_SET = True
         return constants_for_params
 
     # WASTE

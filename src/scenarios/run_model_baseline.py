@@ -65,16 +65,6 @@ def run_model_baseline(plot_figures=True):
         constants_for_params
     )
 
-    # No excess calories -- excess calories is set when the model is run and needs to be reset each time.
-    constants_for_params["EXCESS_FEED"] = Food(
-        kcals=[0] * constants_for_params["NMONTHS"],
-        fat=[0] * constants_for_params["NMONTHS"],
-        protein=[0] * constants_for_params["NMONTHS"],
-        kcals_units="billion kcals each month",
-        fat_units="thousand tons each month",
-        protein_units="thousand tons each month",
-    )
-
     scenario_runner = ScenarioRunner()
     results = scenario_runner.run_and_analyze_scenario(
         constants_for_params, scenarios_loader
@@ -104,6 +94,10 @@ def set_common_baseline_properties():
         constants_for_params
     )
 
+    constants_for_params = scenarios_loader.set_excess_to_zero(
+        constants_for_params
+    )
+
     constants_for_params = scenarios_loader.set_baseline_nutrition_profile(
         constants_for_params
     )
@@ -124,18 +118,8 @@ def set_common_baseline_properties():
 
     constants_for_params = scenarios_loader.include_protein(constants_for_params)
 
-    constants_for_params = scenarios_loader.include_fat(constants_for_params)
+    constants_for_params = scenarios_loader.dont_include_fat(constants_for_params)
     constants_for_params = scenarios_loader.dont_cull_animals(constants_for_params)
-
-    # No excess calories
-    constants_for_params["EXCESS_FEED"] = Food(
-        kcals=[0] * constants_for_params["NMONTHS"],
-        fat=[0] * constants_for_params["NMONTHS"],
-        protein=[0] * constants_for_params["NMONTHS"],
-        kcals_units="billion kcals each month",
-        fat_units="thousand tons each month",
-        protein_units="thousand tons each month",
-    )
 
     return scenarios_loader, constants_for_params
 

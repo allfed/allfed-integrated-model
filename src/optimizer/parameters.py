@@ -210,6 +210,8 @@ class Parameters:
             kcals_daily=KCALS_DAILY,
             fat_daily=FAT_DAILY,
             protein_daily=PROTEIN_DAILY,
+            include_fat=constants_for_params["INCLUDE_FAT"],
+            include_protein=constants_for_params["INCLUDE_PROTEIN"],
             population=self.POP,
         )
 
@@ -382,10 +384,18 @@ class Parameters:
             constants_for_params, outdoor_crops, stored_food
         )
 
+        # make sure nonhuman consumption is always less than or equal to outdoor crops+stored food for all nutrients, pre-waste
+        feed_and_biofuels.set_nonhuman_consumption_with_cap(
+            constants_for_params, outdoor_crops, stored_food
+        )
+
         nonhuman_consumption = feed_and_biofuels.nonhuman_consumption
 
         # post waste
         time_consts["nonhuman_consumption"] = nonhuman_consumption
+        time_consts["excess_feed"] = feed_and_biofuels.get_excess_food_usage_from_percents(constants_for_params["EXCESS_FEED_PERCENT"])
+        
+        
 
         return time_consts, feed_and_biofuels
 

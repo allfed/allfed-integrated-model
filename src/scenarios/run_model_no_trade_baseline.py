@@ -39,10 +39,6 @@ def run_baseline_by_country_no_trade(
     scenario_option=[],
 ):
     if create_pptx_with_all_countries:
-        import os
-
-        if not os.path.exists("../../results/large_reports"):
-            os.mkdir("../../results/large_reports")
         Plotter.start_pptx("Baseline no trade")
     """
     Runs the baseline model by country and without trade
@@ -128,6 +124,10 @@ def run_baseline_by_country_no_trade(
                 constants_for_params
             )
 
+            constants_for_params = scenario_loader.set_excess_to_zero(
+                constants_for_params
+            )
+            
             constants_for_params = scenario_loader.set_fish_baseline(
                 constants_for_params
             )
@@ -151,17 +151,6 @@ def run_baseline_by_country_no_trade(
             constants_for_params, scenario_loader = set_depending_on_option(
                 country_data, scenario_option
             )
-        # No excess calories
-
-        # No excess calories
-        constants_for_params["EXCESS_FEED"] = Food(
-            kcals=[0] * constants_for_params["NMONTHS"],
-            fat=[0] * constants_for_params["NMONTHS"],
-            protein=[0] * constants_for_params["NMONTHS"],
-            kcals_units="billion kcals each month",
-            fat_units="thousand tons each month",
-            protein_units="thousand tons each month",
-        )
 
         PRINT_COUNTRY = True
         if PRINT_COUNTRY:
@@ -189,7 +178,7 @@ def run_baseline_by_country_no_trade(
                     84,
                     country_data["country"],
                     show_figures,
-                    scenario_loader.scenario_description,
+                    "Mean fed:"+self.mean_fed+"\n"+scenario_loader.scenario_description,
                 )
             percent_people_fed = interpreted_results.percent_people_fed
         except Exception as e:
@@ -299,6 +288,10 @@ def set_depending_on_option(country_data, scenario_option):
     )
 
     constants_for_params = scenario_loader.set_disruption_to_crops_to_zero(
+        constants_for_params
+    )
+
+    constants_for_params = scenarios_loader.set_excess_to_zero(
         constants_for_params
     )
 
