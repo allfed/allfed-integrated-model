@@ -296,7 +296,7 @@ class Food(UnitConversions):
             )
         else:
             processed_list_fat = np.zeros(len(processed_list_kcals))
-        
+
         if self.conversions.include_protein:
             processed_list_protein = np.where(
                 self.protein == 0,
@@ -700,22 +700,19 @@ class Food(UnitConversions):
         return_string = ""
         kcal_string = "    kcals: % s % s\n" % (
             np.round(self.kcals, 5),
-            self.kcals_units
+            self.kcals_units,
         )
 
         return_string = return_string + kcal_string
 
-        if(self.conversions.include_fat):
-            fat_string = "    fat: % s % s\n" % (
-                np.round(self.fat, 5),
-                self.fat_units
-            )
+        if self.conversions.include_fat:
+            fat_string = "    fat: % s % s\n" % (np.round(self.fat, 5), self.fat_units)
             return_string = return_string + fat_string
 
-        if(self.conversions.include_protein):
+        if self.conversions.include_protein:
             protein_string = "    protein: % s % s\n" % (
                 np.round(self.protein, 5),
-                self.protein_units
+                self.protein_units,
             )
             return_string = return_string + protein_string
 
@@ -773,8 +770,8 @@ class Food(UnitConversions):
     # def all_greater_than(self, other):
     #     """
     #     Returns True if the food's macronutrients are greater than the other food's.
-        
-    #     if don't include fat or protein, does not check respective nutrients 
+
+    #     if don't include fat or protein, does not check respective nutrients
 
     #     """
     #     assert self.units == other.units
@@ -805,7 +802,10 @@ class Food(UnitConversions):
             return (
                 (np.array(self.kcals) >= 0).all()
                 and ((np.array(self.fat) >= 0).all() or self.conversions.exclude_fat)
-                and ((np.array(self.protein) >= 0).all() or self.conversions.exclude_protein)
+                and (
+                    (np.array(self.protein) >= 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
         return (
@@ -826,8 +826,14 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals - other.kcals) > 0).all()
-                and ((np.array(self.fat - other.fat) > 0).all() or self.conversions.exclude_fat)
-                and ((np.array(self.protein - other.protein) > 0).all() or self.conversions.exclude_protein)
+                and (
+                    (np.array(self.fat - other.fat) > 0).all()
+                    or self.conversions.exclude_fat
+                )
+                and (
+                    (np.array(self.protein - other.protein) > 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
         return (
@@ -849,8 +855,14 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals - other.kcals) < 0).all()
-                and ((np.array(self.fat - other.fat) < 0).all() or self.conversions.exclude_fat)
-                and ((np.array(self.protein - other.protein) < 0).all() or self.conversions.exclude_protein)
+                and (
+                    (np.array(self.fat - other.fat) < 0).all()
+                    or self.conversions.exclude_fat
+                )
+                and (
+                    (np.array(self.protein - other.protein) < 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
         return (
@@ -872,8 +884,14 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals - other.kcals) > 0).any()
-                or ((np.array(self.fat - other.fat) > 0).any()  and self.conversions.exclude_fat)
-                or ((np.array(self.protein - other.protein) > 0).any()  and self.conversions.exclude_protein)
+                or (
+                    (np.array(self.fat - other.fat) > 0).any()
+                    and self.conversions.exclude_fat
+                )
+                or (
+                    (np.array(self.protein - other.protein) > 0).any()
+                    and self.conversions.exclude_protein
+                )
             )
 
         return (
@@ -895,14 +913,20 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals - other.kcals) < 0).any()
-                or ((np.array(self.fat - other.fat) < 0).any() and self.conversions.exclude_fat)
-                or ((np.array(self.protein - other.protein) < 0).any() and self.conversions.exclude_protein)
+                or (
+                    (np.array(self.fat - other.fat) < 0).any()
+                    and self.conversions.exclude_fat
+                )
+                or (
+                    (np.array(self.protein - other.protein) < 0).any()
+                    and self.conversions.exclude_protein
+                )
             )
 
         return (
             self.kcals < other.kcals
-            or (self.fat < other.fat  and self.conversions.exclude_fat)
-            or (self.protein < other.protein  and self.conversions.exclude_protein)
+            or (self.fat < other.fat and self.conversions.exclude_fat)
+            or (self.protein < other.protein and self.conversions.exclude_protein)
         )
 
     def all_greater_than_or_equal_to(self, other):
@@ -918,8 +942,14 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals - other.kcals) >= 0).all()
-                and ((np.array(self.fat - other.fat) >= 0).all()  or self.conversions.exclude_fat)
-                and ((np.array(self.protein - other.protein) >= 0).all()  or self.conversions.exclude_protein)
+                and (
+                    (np.array(self.fat - other.fat) >= 0).all()
+                    or self.conversions.exclude_fat
+                )
+                and (
+                    (np.array(self.protein - other.protein) >= 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
         return (
@@ -964,8 +994,11 @@ class Food(UnitConversions):
 
         return (
             (self.kcals <= other.kcals).all()
-            and ((self.fat <= other.fat).all()  or self.conversions.exclude_fat)
-            and ((self.protein <= other.protein).all()  or self.conversions.exclude_protein)
+            and ((self.fat <= other.fat).all() or self.conversions.exclude_fat)
+            and (
+                (self.protein <= other.protein).all()
+                or self.conversions.exclude_protein
+            )
         )
 
     def any_greater_than_or_equal_to(self, other):
@@ -981,8 +1014,14 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals - other.kcals) >= 0).any()
-                or ((np.array(self.fat - other.fat) >= 0).any() and self.conversions.exclude_fat)
-                or ((np.array(self.protein - other.protein) >= 0).any() and self.conversions.exclude_protein)
+                or (
+                    (np.array(self.fat - other.fat) >= 0).any()
+                    and self.conversions.exclude_fat
+                )
+                or (
+                    (np.array(self.protein - other.protein) >= 0).any()
+                    and self.conversions.exclude_protein
+                )
             )
 
         return (
@@ -1003,8 +1042,14 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals - other.kcals) <= 0).any()
-                or ((np.array(self.fat - other.fat) <= 0).any() and self.conversions.exclude_fat)
-                or ((np.array(self.protein - other.protein) <= 0).any() and self.conversions.exclude_protein)
+                or (
+                    (np.array(self.fat - other.fat) <= 0).any()
+                    and self.conversions.exclude_fat
+                )
+                or (
+                    (np.array(self.protein - other.protein) <= 0).any()
+                    and self.conversions.exclude_protein
+                )
             )
 
         assert self.units == other.units
@@ -1026,10 +1071,17 @@ class Food(UnitConversions):
             return (
                 (np.array(self.kcals) == 0).all()
                 and ((np.array(self.fat) == 0).all() or self.conversions.exclude_fat)
-                and ((np.array(self.protein) == 0).all() or self.conversions.exclude_protein)
+                and (
+                    (np.array(self.protein) == 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
-        return self.kcals == 0 and (self.fat == 0 or self.conversions.exclude_fat) and (self.protein == 0 or self.conversions.exclude_protein)
+        return (
+            self.kcals == 0
+            and (self.fat == 0 or self.conversions.exclude_fat)
+            and (self.protein == 0 or self.conversions.exclude_protein)
+        )
 
     def any_equals_zero(self):
         """
@@ -1042,10 +1094,17 @@ class Food(UnitConversions):
             return (
                 (np.array(self.kcals) == 0).any()
                 or ((np.array(self.fat) == 0).any() and self.conversions.exclude_fat)
-                or ((np.array(self.protein) == 0).any() and self.conversions.exclude_protein)
+                or (
+                    (np.array(self.protein) == 0).any()
+                    and self.conversions.exclude_protein
+                )
             )
 
-        return self.kcals == 0 or (self.fat == 0 and self.conversions.exclude_fat) or (self.protein == 0 and self.conversions.exclude_protein)
+        return (
+            self.kcals == 0
+            or (self.fat == 0 and self.conversions.exclude_fat)
+            or (self.protein == 0 and self.conversions.exclude_protein)
+        )
 
     def all_greater_than_zero(self):
         """
@@ -1061,7 +1120,11 @@ class Food(UnitConversions):
                 and (np.array(self.protein) > 0).all()
             )
 
-        return self.kcals > 0 and (self.fat > 0 or self.conversions.exclude_fat) and (self.protein > 0 or self.conversions.exclude_protein)
+        return (
+            self.kcals > 0
+            and (self.fat > 0 or self.conversions.exclude_fat)
+            and (self.protein > 0 or self.conversions.exclude_protein)
+        )
 
     def any_greater_than_zero(self):
         """
@@ -1074,10 +1137,17 @@ class Food(UnitConversions):
             return (
                 (np.array(self.kcals) > 0).any()
                 or ((np.array(self.fat) > 0).any() or self.conversions.exclude_fat)
-                or ((np.array(self.protein) > 0).any() or self.conversions.exclude_protein)
+                or (
+                    (np.array(self.protein) > 0).any()
+                    or self.conversions.exclude_protein
+                )
             )
 
-        return self.kcals > 0 or (self.fat > 0 and self.conversions.exclude_fat) or (self.protein > 0 and self.conversions.exclude_protein)
+        return (
+            self.kcals > 0
+            or (self.fat > 0 and self.conversions.exclude_fat)
+            or (self.protein > 0 and self.conversions.exclude_protein)
+        )
 
     def all_greater_than_or_equal_to_zero(self):
         """
@@ -1090,10 +1160,17 @@ class Food(UnitConversions):
             return (
                 (np.array(self.kcals) >= 0).all()
                 and ((np.array(self.fat) >= 0).all() or self.conversions.exclude_fat)
-                and ((np.array(self.protein) >= 0).all() or self.conversions.exclude_protein)
+                and (
+                    (np.array(self.protein) >= 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
-        return self.kcals >= 0 and (self.fat >= 0 or self.conversions.exclude_fat) and (self.protein >= 0 or self.conversions.exclude_protein)
+        return (
+            self.kcals >= 0
+            and (self.fat >= 0 or self.conversions.exclude_fat)
+            and (self.protein >= 0 or self.conversions.exclude_protein)
+        )
 
     # Helper functions to get properties of the three nutrient values
 
@@ -1138,10 +1215,13 @@ class Food(UnitConversions):
 
         assert min_nutrient_val <= to_find_min_of.kcals
         # sometimes, this function causes an error for a single fat or protein
-        # because the condition before the "or" is false, but doesn't find this for 
+        # because the condition before the "or" is false, but doesn't find this for
         # the other because  the condition before the "or" is true
         assert min_nutrient_val <= to_find_min_of.fat or self.conversions.exclude_fat
-        assert min_nutrient_val <= to_find_min_of.protein or self.conversions.exclude_protein
+        assert (
+            min_nutrient_val <= to_find_min_of.protein
+            or self.conversions.exclude_protein
+        )
 
         return (min_nutrient_name, min_nutrient_val)
 
@@ -1158,7 +1238,6 @@ class Food(UnitConversions):
         assert self.kcals_units == self.fat_units == self.protein_units
 
         self.make_sure_not_a_list()
-
 
         nutrients_dict = {}
         nutrients_dict["kcals"] = self.kcals

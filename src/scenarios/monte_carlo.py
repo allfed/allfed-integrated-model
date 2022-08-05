@@ -51,10 +51,8 @@ class MonteCarlo:
             constants_for_params
         )
 
-        constants_for_params = scenarios_loader.set_excess_to_zero(
-            constants_for_params
-        )
-        
+        constants_for_params = scenarios_loader.set_excess_to_zero(constants_for_params)
+
         constants_for_params = scenarios_loader.set_stored_food_buffer_zero(
             constants_for_params
         )

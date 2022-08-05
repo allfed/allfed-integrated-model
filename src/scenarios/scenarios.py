@@ -95,12 +95,14 @@ class Scenarios:
     def set_excess_to_zero(self, constants_for_params):
         self.scenario_description += "\nwaste_to_zero"
         assert self.EXCESS_SET == False
-        constants_for_params["EXCESS_FEED_PERCENT"] = np.zeros(constants_for_params['NMONTHS'])
+        constants_for_params["EXCESS_FEED_PERCENT"] = np.zeros(
+            constants_for_params["NMONTHS"]
+        )
 
         self.EXCESS_SET = True
         return constants_for_params
 
-    def set_excess(self,constants_for_params,excess):
+    def set_excess(self, constants_for_params, excess):
         self.scenario_description += "\nwaste_to_zero"
         assert self.EXCESS_SET == False
         constants_for_params["EXCESS_FEED_PERCENT"] = excess

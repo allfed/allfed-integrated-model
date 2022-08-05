@@ -94,9 +94,7 @@ def set_common_baseline_properties():
         constants_for_params
     )
 
-    constants_for_params = scenarios_loader.set_excess_to_zero(
-        constants_for_params
-    )
+    constants_for_params = scenarios_loader.set_excess_to_zero(constants_for_params)
 
     constants_for_params = scenarios_loader.set_baseline_nutrition_profile(
         constants_for_params

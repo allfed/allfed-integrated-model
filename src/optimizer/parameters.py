@@ -393,9 +393,11 @@ class Parameters:
 
         # post waste
         time_consts["nonhuman_consumption"] = nonhuman_consumption
-        time_consts["excess_feed"] = feed_and_biofuels.get_excess_food_usage_from_percents(constants_for_params["EXCESS_FEED_PERCENT"])
-        
-        
+        time_consts[
+            "excess_feed"
+        ] = feed_and_biofuels.get_excess_food_usage_from_percents(
+            constants_for_params["EXCESS_FEED_PERCENT"]
+        )
 
         return time_consts, feed_and_biofuels
 

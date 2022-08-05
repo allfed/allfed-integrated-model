@@ -135,8 +135,7 @@ class Plotter:
                     linestyle="solid",
                 )
 
-
-                if(interpreter.include_protein):
+                if interpreter.include_protein:
                     ax.plot(
                         interpreter.time_months_middle,
                         interpreter.protein_fed,
@@ -144,7 +143,7 @@ class Plotter:
                         linestyle="dotted",
                     )
 
-                if(interpreter.include_fat):
+                if interpreter.include_fat:
                     # 1 gram of fat is 9 kcals.
                     ax.plot(
                         interpreter.time_months_middle,
@@ -320,7 +319,7 @@ class Plotter:
                     linestyle="solid",
                 )
 
-                if(interpreter.include_fat):
+                if interpreter.include_fat:
                     ax.plot(
                         interpreter.time_months_middle,
                         interpreter.fat_fed,
@@ -328,7 +327,7 @@ class Plotter:
                         linestyle="dashed",
                     )
 
-                if(interpreter.include_protein):
+                if interpreter.include_protein:
                     ax.plot(
                         interpreter.time_months_middle,
                         interpreter.protein_fed,
@@ -657,7 +656,7 @@ class Plotter:
                     color="blue",
                     linestyle="solid",
                 )
-                if(interpreter.include_fat):
+                if interpreter.include_fat:
                     ax.plot(
                         interpreter.time_months_middle,
                         interpreter.fat_fed,
@@ -665,7 +664,7 @@ class Plotter:
                         linestyle="dashed",
                     )
 
-                if(interpreter.include_protein):
+                if interpreter.include_protein:
                     ax.plot(
                         interpreter.time_months_middle,
                         interpreter.protein_fed,
@@ -1050,8 +1049,8 @@ class Plotter:
                     color="blue",
                     linestyle="solid",
                 )
-                
-                if(interpreter.include_fat):
+
+                if interpreter.include_fat:
                     ax.plot(
                         interpreter.time_months_middle,
                         interpreter.fat_fed,
@@ -1059,7 +1058,7 @@ class Plotter:
                         linestyle="dashed",
                     )
 
-                if(interpreter.include_protein):
+                if interpreter.include_protein:
                     ax.plot(
                         interpreter.time_months_middle,
                         interpreter.protein_fed,
@@ -1118,12 +1117,12 @@ class Plotter:
     def getylim_nutrients(interpreter, xlim):
         kcals = interpreter.kcals_fed
 
-        if(interpreter.include_fat):
+        if interpreter.include_fat:
             fat = interpreter.fat_fed
         else:
             fat = interpreter.kcals_fed
 
-        if(interpreter.include_protein):
+        if interpreter.include_protein:
             protein = interpreter.protein_fed
         else:
             protein = interpreter.kcals_fed

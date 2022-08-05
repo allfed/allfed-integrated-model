@@ -33,7 +33,13 @@ class UnitConversions:
     # getters and setters
 
     def set_nutrition_requirements(
-        self, kcals_daily, fat_daily, protein_daily, include_fat, include_protein,population
+        self,
+        kcals_daily,
+        fat_daily,
+        protein_daily,
+        include_fat,
+        include_protein,
+        population,
     ):
         """
         Returns the macronutrients of the food.
@@ -193,9 +199,9 @@ class UnitConversions:
         Prints the units of the nutrients
         """
         print("    kcals: ", self.kcals_units)
-        if(self.conversions.include_fat):
+        if self.conversions.include_fat:
             print("    fat: ", self.fat_units)
-        if(self.conversions.include_protein):
+        if self.conversions.include_protein:
             print("    protein: ", self.protein_units)
 
     def is_a_ratio(self):

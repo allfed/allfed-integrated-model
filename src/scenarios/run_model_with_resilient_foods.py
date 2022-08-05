@@ -38,9 +38,7 @@ def run_model_with_resilient_foods(plot_figures=True):
     constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
     constants_for_params = scenarios_loader.set_immediate_shutoff(constants_for_params)
 
-    constants_for_params = scenarios_loader.set_excess_to_zero(
-        constants_for_params
-    )
+    constants_for_params = scenarios_loader.set_excess_to_zero(constants_for_params)
 
     scenario_runner = ScenarioRunner()
     results = scenario_runner.run_and_analyze_scenario(
@@ -62,9 +60,7 @@ def run_model_with_resilient_foods(plot_figures=True):
         constants_for_params
     )
 
-    constants_for_params = scenarios_loader.set_excess_to_zero(
-        constants_for_params
-    )
+    constants_for_params = scenarios_loader.set_excess_to_zero(constants_for_params)
 
     scenario_runner = ScenarioRunner()
     results = scenario_runner.run_and_analyze_scenario(
@@ -92,9 +88,7 @@ def run_model_with_resilient_foods(plot_figures=True):
         constants_for_params
     )
 
-    constants_for_params = scenarios_loader.set_excess_to_zero(
-        constants_for_params
-    )
+    constants_for_params = scenarios_loader.set_excess_to_zero(constants_for_params)
 
     percent_fed = results.percent_people_fed
     feed_delay = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
@@ -127,22 +121,17 @@ def run_model_with_resilient_foods(plot_figures=True):
             constants_for_params
         )
 
-        excess_per_month = results.get_increased_excess_to_feed(
-            feed_delay, percent_fed
-        )
+        excess_per_month = results.get_increased_excess_to_feed(feed_delay, percent_fed)
 
         constants_for_params = scenarios_loader.set_excess(
             constants_for_params, excess_per_month
         )
 
-
-
-        #DELETE if you see this >>>> 
+        # DELETE if you see this >>>>
         # constants_for_params = scenarios_loader.get_additional_feed_given_excess_per_month(
         #     constants_for_params, excess_per_month
         # )
         # <<<<
-
 
         percent_fed = results.percent_people_fed
 

@@ -254,7 +254,7 @@ class Interpreter:
         # >>> np.min([a,b,c],axis=0)
         # array([2, 2, 0])
         assert humans_fed_sum.is_units_percent()
-        min_fed = np.min([self.kcals_fed,self.fat_fed,self.protein_fed],axis=0)
+        min_fed = np.min([self.kcals_fed, self.fat_fed, self.protein_fed], axis=0)
 
         mean_fed = np.mean(min_fed)
         return mean_fed
@@ -582,4 +582,3 @@ class Interpreter:
 
         # kcals per month, units percent
         return excess_per_month
-

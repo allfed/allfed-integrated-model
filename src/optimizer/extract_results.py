@@ -98,7 +98,7 @@ class Extractor:
             multi_valued_constants["grain_fed_milk_protein"],
         )
 
-        self.excess_feed = multi_valued_constants["excess_feed"] 
+        self.excess_feed = multi_valued_constants["excess_feed"]
 
         return self
 

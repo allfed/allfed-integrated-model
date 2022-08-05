@@ -93,10 +93,8 @@ def set_common_no_resilient_properties():
         constants_for_params
     )
 
-    constants_for_params = scenarios_loader.set_excess_to_zero(
-        constants_for_params
-    )
-    
+    constants_for_params = scenarios_loader.set_excess_to_zero(constants_for_params)
+
     constants_for_params = scenarios_loader.set_catastrophe_nutrition_profile(
         constants_for_params
     )
