@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 # Functions go here
 class MakePowerpoint:
-    def init(self):
+    def __init__(self):
         pass
 
     def create_title_slide(self, the_title):
@@ -34,15 +34,6 @@ class MakePowerpoint:
         pic = placeholder.insert_picture(figure_save_loc)
         subtitle = slide.placeholders[2]
         subtitle.text = description
-
-    # def add_slide_from_fig(self, fig, plt, save_title_string, title_below, description):
-
-    #     # commented stuff doesn't really work...
-    #     # a = fig.get_axes()
-    #     # ax = a[0]
-    #     # the_title = ax.title.get_text()
-
-    #     self.insert_slide(title_below, description, save_)
 
     def save_ppt(self, pres_name):
         self.prs.save(pres_name)

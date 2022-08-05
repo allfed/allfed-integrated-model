@@ -46,6 +46,250 @@ class Scenarios:
         assert self.FAT_SET
         assert self.CULLING_PARAM_SET
 
+    # INITIALIZATION
+
+    def init_generic_scenario(self):
+        assert self.GENERIC_INITIALIZED_SET == False
+        constants_for_params = {}
+
+        # the following are used for all scenarios
+        constants_for_params["NMONTHS"] = 84
+
+        # not used unless smoothing true
+        # useful for ensuring output variables don't fluctuate wildly
+        constants_for_params["FLUCTUATION_LIMIT"] = 1.5
+
+        constants_for_params["DELAY"] = {}
+        constants_for_params["CULL_DURATION_MONTHS"] = 60
+
+        self.GENERIC_INITIALIZED_SET = True
+        return constants_for_params
+
+    def init_global_food_system_properties(self):
+        self.scenario_description += "\nglobal_food_system"
+        assert self.SCALE_SET == False
+
+        constants_for_params = self.init_generic_scenario()
+
+        # global human population (2020)
+        constants_for_params["POP"] = 7.8e9
+
+        # annual tons dry carb equivalent
+        constants_for_params["BASELINE_CROP_KCALS"] = 3898e6
+
+        # annual tons fat
+        constants_for_params["BASELINE_CROP_FAT"] = 322e6
+
+        # annual tons protein
+        constants_for_params["BASELINE_CROP_PROTEIN"] = 350e6
+
+        # annual tons dry carb equivalent
+        constants_for_params["BIOFUEL_KCALS"] = 623e6
+
+        # annual tons fat
+        constants_for_params["BIOFUEL_FAT"] = 124e6
+
+        # annual tons protein
+        constants_for_params["BIOFUEL_PROTEIN"] = 32e6
+
+        # annual tons dry carb equivalent
+        constants_for_params["FEED_KCALS"] = 1447.96e6
+
+        # annual tons fat
+        constants_for_params["FEED_FAT"] = 60e6
+
+        # annual tons protein
+        constants_for_params["FEED_PROTEIN"] = 147e6
+
+        # total stocks at the end of the month in dry caloric tons
+        # this is total stored food available
+        # if all of it were used for the whole earth, including private stocks
+        # but not including a 2 month in-transit or the estimated 2 weeks to 1
+        # month of stocks in people's homes, grocery stores, and food
+        # warehouses
+        constants_for_params["END_OF_MONTH_STOCKS"] = {}
+        constants_for_params["END_OF_MONTH_STOCKS"]["JAN"] = 1960.922e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["FEB"] = 1784.277e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["MAR"] = 1624.673e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["APR"] = 1492.822e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["MAY"] = 1359.236e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["JUN"] = 1245.351e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["JUL"] = 1246.485e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["AUG"] = 1140.824e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["SEP"] = 1196.499e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["OCT"] = 1487.030e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["NOV"] = 1642.406e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["DEC"] = 1813.862e6
+
+        # total head count of milk cattle
+        constants_for_params["INITIAL_MILK_CATTLE"] = 264e6
+
+        # total head count of small sized animals
+        constants_for_params["INIT_SMALL_ANIMALS"] = 28.2e9
+
+        # total head count of medium sized animals
+        constants_for_params["INIT_MEDIUM_ANIMALS"] = 3.2e9
+
+        # total head count of large sized animals minus milk cows
+        constants_for_params["INIT_LARGE_ANIMALS_WITH_MILK_COWS"] = 1.9e9
+
+        # converting from kcals to dry caloric tons:
+        # 4e6 kcals = 1 dry caloric ton
+        constants_for_params["FISH_DRY_CALORIC_ANNUAL"] = 27.5e6
+        constants_for_params["FISH_FAT_TONS_ANNUAL"] = 4e6
+        constants_for_params["FISH_PROTEIN_TONS_ANNUAL"] = 17e6
+
+        # annual tons milk production
+        constants_for_params["TONS_MILK_ANNUAL"] = 879e6
+
+        # annual tons chicken and pork production
+        constants_for_params["TONS_CHICKEN_AND_PORK_ANNUAL"] = 250e6
+
+        # annual tons cattle beef production
+        constants_for_params["TONS_BEEF_ANNUAL"] = 74.2e6
+
+        # Single cell protein fraction of global production
+        constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"] = 1
+
+        # Cellulosic sugar fraction of global production
+        constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"] = 1
+
+        # 1000s of tons wet
+        constants_for_params["INITIAL_SEAWEED"] = 1
+
+        # 1000s of hectares
+        constants_for_params["INITIAL_AREA"] = 1
+
+        self.SCALE_SET = True
+        return constants_for_params
+
+    def init_country_food_system_properties(self, country_data):
+        self.scenario_description += "\ncountry_food_system"
+        assert self.SCALE_SET == False
+
+        constants_for_params = self.init_generic_scenario()
+
+        # global human population (2020)
+        constants_for_params["POP"] = country_data["population"]
+
+        # annual tons dry carb equivalent
+        constants_for_params["BASELINE_CROP_KCALS"] = country_data["crop_kcals"]
+
+        # annual tons fat
+        constants_for_params["BASELINE_CROP_FAT"] = country_data["crop_fat"]
+
+        # annual tons protein
+        constants_for_params["BASELINE_CROP_PROTEIN"] = country_data["crop_protein"]
+
+        # annual tons dry carb equivalent
+        constants_for_params["BIOFUEL_KCALS"] = country_data["biofuel_kcals"]
+
+        # annual tons fat
+        constants_for_params["BIOFUEL_FAT"] = country_data["biofuel_fat"]
+
+        # annual tons protein
+        constants_for_params["BIOFUEL_PROTEIN"] = country_data["biofuel_protein"]
+
+        # annual tons dry carb equivalent
+        constants_for_params["FEED_KCALS"] = country_data["feed_kcals"]
+
+        # annual tons fat
+        constants_for_params["FEED_FAT"] = country_data["feed_fat"]
+
+        # annual tons protein
+        constants_for_params["FEED_PROTEIN"] = country_data["feed_protein"]
+
+        # total head count of milk cattle
+        constants_for_params["INITIAL_MILK_CATTLE"] = country_data["dairy_cows"]
+
+        # total head count of small sized animals
+        constants_for_params["INIT_SMALL_ANIMALS"] = country_data["small_animals"]
+
+        # total head count of medium sized animals
+        constants_for_params["INIT_MEDIUM_ANIMALS"] = country_data["medium_animals"]
+
+        # total head count of large sized animals minus milk cows
+        constants_for_params["INIT_LARGE_ANIMALS_WITH_MILK_COWS"] = country_data[
+            "large_animals"
+        ]
+
+        # fish kcals per month, billions
+        constants_for_params["FISH_DRY_CALORIC_ANNUAL"] = country_data["aq_kcals"]
+
+        # units of 1000s tons fat
+        # (so, global value is in the tens of thousands of tons)
+        constants_for_params["FISH_FAT_TONS_ANNUAL"] = country_data["aq_fat"]
+
+        # units of 1000s tons protein monthly
+        # (so, global value is in the hundreds of thousands of tons)
+        constants_for_params["FISH_PROTEIN_TONS_ANNUAL"] = country_data["aq_protein"]
+
+        # annual tons milk production
+        constants_for_params["TONS_MILK_ANNUAL"] = country_data["dairy"]
+
+        # annual tons chicken and pork production
+        constants_for_params["TONS_CHICKEN_AND_PORK_ANNUAL"] = (
+            country_data["chicken"] + country_data["pork"]
+        )
+
+        # annual tons cattle beef production
+        constants_for_params["TONS_BEEF_ANNUAL"] = country_data["beef"]
+
+        constants_for_params["END_OF_MONTH_STOCKS"] = {}
+        constants_for_params["END_OF_MONTH_STOCKS"]["JAN"] = country_data[
+            "stocks_kcals_jan"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["FEB"] = country_data[
+            "stocks_kcals_feb"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["MAR"] = country_data[
+            "stocks_kcals_mar"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["APR"] = country_data[
+            "stocks_kcals_apr"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["MAY"] = country_data[
+            "stocks_kcals_may"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["JUN"] = country_data[
+            "stocks_kcals_jun"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["JUL"] = country_data[
+            "stocks_kcals_jul"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["AUG"] = country_data[
+            "stocks_kcals_aug"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["SEP"] = country_data[
+            "stocks_kcals_sep"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["OCT"] = country_data[
+            "stocks_kcals_oct"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["NOV"] = country_data[
+            "stocks_kcals_nov"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["DEC"] = country_data[
+            "stocks_kcals_dec"
+        ]
+
+        # TODO: ALTER BELOW TO CORRECT GLOBAL FRACTIONS
+
+        # Single cell protein fraction of global production
+        constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"] = 1
+
+        # Cellulosic sugar fraction of global production
+        constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"] = 1
+
+        # 1000s of tons wet
+        constants_for_params["INITIAL_SEAWEED"] = 1
+
+        # 1000s of hectares
+        constants_for_params["INITIAL_AREA"] = 1
+
+        self.SCALE_SET = True
+        return constants_for_params
+
     # FEED AND BIOFUELS
 
     def set_immediate_shutoff(self, constants_for_params):
@@ -84,16 +328,6 @@ class Scenarios:
         constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = constants_for_params[
             "NMONTHS"
         ]
-
-        self.NONHUMAN_CONSUMPTION_SET = True
-        return constants_for_params
-
-    def delete_me(self, constants_for_params):
-        self.scenario_description += "\ncontinued_feed_biofuels"
-        self.scenario_description += "\ncontinued_feed_biofuels"
-        assert self.NONHUMAN_CONSUMPTION_SET == False
-        constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 0
-        constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 1
 
         self.NONHUMAN_CONSUMPTION_SET = True
         return constants_for_params
@@ -451,262 +685,6 @@ class Scenarios:
         self.SEASONALITY_SET = True
         return constants_for_params
 
-    # INITIALIZATION
-
-    def init_generic_scenario(self):
-        assert self.GENERIC_INITIALIZED_SET == False
-        constants_for_params = {}
-
-        # the following are used for all scenarios
-        constants_for_params["NMONTHS"] = 84
-
-        # not used unless smoothing true
-        # useful for ensuring output variables don't fluctuate wildly
-        constants_for_params["FLUCTUATION_LIMIT"] = 1.5
-
-        constants_for_params["DELAY"] = {}
-        constants_for_params["CULL_DURATION_MONTHS"] = 60
-
-        self.GENERIC_INITIALIZED_SET = True
-        return constants_for_params
-
-    def init_global_food_system_properties(self):
-        self.scenario_description += "\nglobal_food_system"
-        assert self.SCALE_SET == False
-
-        constants_for_params = self.init_generic_scenario()
-
-        # global human population (2020)
-        constants_for_params["POP"] = 7.8e9
-
-        # annual tons dry carb equivalent
-        constants_for_params["BASELINE_CROP_KCALS"] = 3898e6
-
-        # annual tons fat
-        constants_for_params["BASELINE_CROP_FAT"] = 322e6
-
-        # annual tons protein
-        constants_for_params["BASELINE_CROP_PROTEIN"] = 350e6
-
-        # annual tons dry carb equivalent
-        constants_for_params["BIOFUEL_KCALS"] = 623e6
-
-        # annual tons fat
-        constants_for_params["BIOFUEL_FAT"] = 124e6
-
-        # annual tons protein
-        constants_for_params["BIOFUEL_PROTEIN"] = 32e6
-
-        # annual tons dry carb equivalent
-        constants_for_params["FEED_KCALS"] = 1385e6
-
-        # annual tons fat
-        constants_for_params["FEED_FAT"] = 60e6
-
-        # annual tons protein
-        constants_for_params["FEED_PROTEIN"] = 147e6
-
-        # total stocks at the end of the month in dry caloric tons
-        # this is total stored food available
-        # if all of it were used for the whole earth, including private stocks
-        # but not including a 2 month in-transit or the estimated 2 weeks to 1
-        # month of stocks in people's homes, grocery stores, and food
-        # warehouses
-        constants_for_params["END_OF_MONTH_STOCKS"] = {}
-        constants_for_params["END_OF_MONTH_STOCKS"]["JAN"] = 1960.922e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["FEB"] = 1784.277e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["MAR"] = 1624.673e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["APR"] = 1492.822e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["MAY"] = 1359.236e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["JUN"] = 1245.351e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["JUL"] = 1246.485e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["AUG"] = 1140.824e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["SEP"] = 1196.499e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["OCT"] = 1487.030e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["NOV"] = 1642.406e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["DEC"] = 1813.862e6
-
-        # total head count of milk cattle
-        constants_for_params["INITIAL_MILK_CATTLE"] = 264e6
-
-        # total head count of small sized animals
-        constants_for_params["INIT_SMALL_ANIMALS"] = 28.2e9
-
-        # total head count of medium sized animals
-        constants_for_params["INIT_MEDIUM_ANIMALS"] = 3.2e9
-
-        # total head count of large sized animals minus milk cows
-        constants_for_params["INIT_LARGE_ANIMALS_WITH_MILK_COWS"] = 1.9e9
-
-        FISH_KCALS_PER_TON = 1310 * 1e3
-        FISH_FAT_RATIO = 0.0048  # units: ton fat per ton wet
-        FISH_PROTEIN_RATIO = 0.0204  # units: ton protein per ton wet
-
-        # annual tons fish
-        FISH_TONS_WET_2018 = 168936.71 * 1e3
-
-        # converting from kcals to dry caloric tons:
-        # 4e6 kcals = 1 dry caloric ton
-        constants_for_params["FISH_DRY_CALORIC_ANNUAL"] = (
-            FISH_TONS_WET_2018 * FISH_KCALS_PER_TON / 4e6
-        )
-        constants_for_params["FISH_FAT_TONS_ANNUAL"] = (
-            FISH_TONS_WET_2018 * FISH_FAT_RATIO
-        )
-        constants_for_params["FISH_PROTEIN_TONS_ANNUAL"] = (
-            FISH_TONS_WET_2018 * FISH_PROTEIN_RATIO
-        )
-        # annual tons milk production
-        constants_for_params["TONS_MILK_ANNUAL"] = 879e6
-
-        # annual tons chicken and pork production
-        constants_for_params["TONS_CHICKEN_AND_PORK_ANNUAL"] = 250e6
-
-        # annual tons cattle beef production
-        constants_for_params["TONS_BEEF_ANNUAL"] = 74.2e6
-
-        # Single cell protein fraction of global production
-        constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"] = 1
-
-        # Cellulosic sugar fraction of global production
-        constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"] = 1
-
-        # 1000s of tons wet
-        constants_for_params["INITIAL_SEAWEED"] = 1
-
-        # 1000s of hectares
-        constants_for_params["INITIAL_AREA"] = 1
-
-        self.SCALE_SET = True
-        return constants_for_params
-
-    def init_country_food_system_properties(self, country_data):
-        self.scenario_description += "\ncountry_food_system"
-        assert self.SCALE_SET == False
-
-        constants_for_params = self.init_generic_scenario()
-
-        # global human population (2020)
-        constants_for_params["POP"] = country_data["population"]
-
-        # annual tons dry carb equivalent
-        constants_for_params["BASELINE_CROP_KCALS"] = country_data["crop_kcals"]
-
-        # annual tons fat
-        constants_for_params["BASELINE_CROP_FAT"] = country_data["crop_fat"]
-
-        # annual tons protein
-        constants_for_params["BASELINE_CROP_PROTEIN"] = country_data["crop_protein"]
-
-        # annual tons dry carb equivalent
-        constants_for_params["BIOFUEL_KCALS"] = country_data["biofuel_kcals"]
-
-        # annual tons fat
-        constants_for_params["BIOFUEL_FAT"] = country_data["biofuel_fat"]
-
-        # annual tons protein
-        constants_for_params["BIOFUEL_PROTEIN"] = country_data["biofuel_protein"]
-
-        # annual tons dry carb equivalent
-        constants_for_params["FEED_KCALS"] = country_data["feed_kcals"]
-
-        # annual tons fat
-        constants_for_params["FEED_FAT"] = country_data["feed_fat"]
-
-        # annual tons protein
-        constants_for_params["FEED_PROTEIN"] = country_data["feed_protein"]
-
-        # total head count of milk cattle
-        constants_for_params["INITIAL_MILK_CATTLE"] = country_data["dairy_cows"]
-
-        # total head count of small sized animals
-        constants_for_params["INIT_SMALL_ANIMALS"] = country_data["small_animals"]
-
-        # total head count of medium sized animals
-        constants_for_params["INIT_MEDIUM_ANIMALS"] = country_data["medium_animals"]
-
-        # total head count of large sized animals minus milk cows
-        constants_for_params["INIT_LARGE_ANIMALS_WITH_MILK_COWS"] = country_data[
-            "large_animals"
-        ]
-
-        # fish kcals per month, billions
-        constants_for_params["FISH_DRY_CALORIC_ANNUAL"] = country_data["aq_kcals"]
-
-        # units of 1000s tons fat
-        # (so, global value is in the tens of thousands of tons)
-        constants_for_params["FISH_FAT_TONS_ANNUAL"] = country_data["aq_fat"]
-
-        # units of 1000s tons protein monthly
-        # (so, global value is in the hundreds of thousands of tons)
-        constants_for_params["FISH_PROTEIN_TONS_ANNUAL"] = country_data["aq_protein"]
-
-        # annual tons milk production
-        constants_for_params["TONS_MILK_ANNUAL"] = country_data["dairy"]
-
-        # annual tons chicken and pork production
-        constants_for_params["TONS_CHICKEN_AND_PORK_ANNUAL"] = (
-            country_data["chicken"] + country_data["pork"]
-        )
-
-        # annual tons cattle beef production
-        constants_for_params["TONS_BEEF_ANNUAL"] = country_data["beef"]
-
-        constants_for_params["END_OF_MONTH_STOCKS"] = {}
-        constants_for_params["END_OF_MONTH_STOCKS"]["JAN"] = country_data[
-            "stocks_kcals_jan"
-        ]
-        constants_for_params["END_OF_MONTH_STOCKS"]["FEB"] = country_data[
-            "stocks_kcals_feb"
-        ]
-        constants_for_params["END_OF_MONTH_STOCKS"]["MAR"] = country_data[
-            "stocks_kcals_mar"
-        ]
-        constants_for_params["END_OF_MONTH_STOCKS"]["APR"] = country_data[
-            "stocks_kcals_apr"
-        ]
-        constants_for_params["END_OF_MONTH_STOCKS"]["MAY"] = country_data[
-            "stocks_kcals_may"
-        ]
-        constants_for_params["END_OF_MONTH_STOCKS"]["JUN"] = country_data[
-            "stocks_kcals_jun"
-        ]
-        constants_for_params["END_OF_MONTH_STOCKS"]["JUL"] = country_data[
-            "stocks_kcals_jul"
-        ]
-        constants_for_params["END_OF_MONTH_STOCKS"]["AUG"] = country_data[
-            "stocks_kcals_aug"
-        ]
-        constants_for_params["END_OF_MONTH_STOCKS"]["SEP"] = country_data[
-            "stocks_kcals_sep"
-        ]
-        constants_for_params["END_OF_MONTH_STOCKS"]["OCT"] = country_data[
-            "stocks_kcals_oct"
-        ]
-        constants_for_params["END_OF_MONTH_STOCKS"]["NOV"] = country_data[
-            "stocks_kcals_nov"
-        ]
-        constants_for_params["END_OF_MONTH_STOCKS"]["DEC"] = country_data[
-            "stocks_kcals_dec"
-        ]
-
-        # TODO: ALTER BELOW TO CORRECT GLOBAL FRACTIONS
-
-        # Single cell protein fraction of global production
-        constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"] = 1
-
-        # Cellulosic sugar fraction of global production
-        constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"] = 1
-
-        # 1000s of tons wet
-        constants_for_params["INITIAL_SEAWEED"] = 1
-
-        # 1000s of hectares
-        constants_for_params["INITIAL_AREA"] = 1
-
-        self.SCALE_SET = True
-        return constants_for_params
-
     # FISH
 
     def set_fish_nuclear_winter_reduction(self, constants_for_params):
@@ -917,28 +895,6 @@ class Scenarios:
 
         return constants_for_params
 
-    def dont_include_fat(self, constants_for_params):
-        assert self.FAT_SET == False
-        self.scenario_description += "\ndon't include fat"
-        constants_for_params["INCLUDE_FAT"] = False
-        self.FAT_SET = True
-        return constants_for_params
-
-    def cull_animals(self, constants_for_params):
-        assert self.CULLING_PARAM_SET == False
-        self.scenario_description += "\ninclude culled animals"
-        constants_for_params["CULL_ANIMALS"] = True
-        self.CULLING_PARAM_SET = True
-
-        return constants_for_params
-
-    def dont_cull_animals(self, constants_for_params):
-        assert self.CULLING_PARAM_SET == False
-        self.scenario_description += "\ndon't include culled animals"
-        constants_for_params["CULL_ANIMALS"] = False
-        self.CULLING_PARAM_SET = True
-        return constants_for_params
-
     def get_resilient_food_scenario(self, constants_for_params):
         self.scenario_description += "\nget_resilient_food_scenario"
         assert self.SCENARIO_SET == False
@@ -1020,9 +976,6 @@ class Scenarios:
 
         constants_for_params["OG_USE_BETTER_ROTATION"] = False
 
-        constants_for_params["INCLUDE_PROTEIN"] = True
-        constants_for_params["INCLUDE_FAT"] = True
-
         constants_for_params["GREENHOUSE_GAIN_PCT"] = 0
 
         constants_for_params[
@@ -1034,7 +987,6 @@ class Scenarios:
 
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7
 
-        constants_for_params["CULL_ANIMALS"] = True
         constants_for_params["KCAL_SMOOTHING"] = False
         constants_for_params["MEAT_SMOOTHING"] = True
         constants_for_params["STORED_FOOD_SMOOTHING"] = True
@@ -1056,4 +1008,26 @@ class Scenarios:
                 "ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY. THIS IS BECAUSE WE HAVE NOT YET IMPORTED BY-COUNTRY CROP PRODUCTION IN A NUCLEAR WINTER"
             )
         self.SCENARIO_SET = True
+        return constants_for_params
+
+    def dont_include_fat(self, constants_for_params):
+        assert self.FAT_SET == False
+        self.scenario_description += "\ndon't include fat"
+        constants_for_params["INCLUDE_FAT"] = False
+        self.FAT_SET = True
+        return constants_for_params
+
+    def cull_animals(self, constants_for_params):
+        assert self.CULLING_PARAM_SET == False
+        self.scenario_description += "\ninclude culled animals"
+        constants_for_params["CULL_ANIMALS"] = True
+        self.CULLING_PARAM_SET = True
+
+        return constants_for_params
+
+    def dont_cull_animals(self, constants_for_params):
+        assert self.CULLING_PARAM_SET == False
+        self.scenario_description += "\ndon't include culled animals"
+        constants_for_params["CULL_ANIMALS"] = False
+        self.CULLING_PARAM_SET = True
         return constants_for_params

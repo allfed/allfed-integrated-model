@@ -35,18 +35,16 @@ class OutdoorCrops(Food):
         self.SEED_PERCENT = 100 * (92 / 3898)
 
         # tonnes dry carb equivalent
-        self.ANNUAL_YIELD = (
-            0.96 * self.BASELINE_CROP_KCALS * (1 - self.SEED_PERCENT / 100)
-        )
+        self.ANNUAL_YIELD = self.BASELINE_CROP_KCALS * (1 - self.SEED_PERCENT / 100)
 
         # 1000 tons fat per billion kcals
-        self.OG_FRACTION_FAT = (
-            1.02 * (self.BASELINE_CROP_FAT / 1e3) / (self.ANNUAL_YIELD * 4e6 / 1e9)
+        self.OG_FRACTION_FAT = (self.BASELINE_CROP_FAT / 1e3) / (
+            self.ANNUAL_YIELD * 4e6 / 1e9
         )
 
         # 1000 tons protein per billion kcals
-        self.OG_FRACTION_PROTEIN = (
-            0.93 * (self.BASELINE_CROP_PROTEIN / 1e3) / (self.ANNUAL_YIELD * 4e6 / 1e9)
+        self.OG_FRACTION_PROTEIN = (self.BASELINE_CROP_PROTEIN / 1e3) / (
+            self.ANNUAL_YIELD * 4e6 / 1e9
         )
         # if production is zero, then protein fraction is zero
         if self.ANNUAL_YIELD == 0:

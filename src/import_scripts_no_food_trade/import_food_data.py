@@ -142,7 +142,15 @@ col_names["food_stocks"] = {
     "Nov": "stocks_kcals_nov",  # million tons that month in that country
     "Dec": "stocks_kcals_dec",  # million tons that month in that country
 }
-
+col_names["greenhouses"] = {
+    "ISO3 Country Code": "iso3",
+    "Country Crop Area ('000 Hectares)": "crop_area_1000ha",
+    "Latitude": "Latitude",
+    "Whether above latitude threshold (23)": "above_lat_23_boolean",
+    "Fraction of total crop area - below 23 latitude": (
+        "fraction_crop_area_below_lat_23"
+    ),
+}
 col_names["food_waste"] = {
     "ISO3 Country Code": "iso3",
     "Crops (Greenhouses/ outdoor growing)": "distribution_loss_crops",
@@ -172,7 +180,32 @@ col_names["methane_scp"] = {
 }
 
 
-col_names["greenhouses"] = {
+col_names["example_easier_format"] = {
+    "ISO3 Country Code": "iso3",
+    "reduction_year1_may": "reduction_year1_may",
+    "reduction_year1_june": "reduction_year1_june",
+    "reduction_year1_july": "reduction_year1_july",
+    "reduction_year1_august": "reduction_year1_august",
+    "reduction_year1_september": "reduction_year1_september",
+    "reduction_year1_october": "reduction_year1_october",
+    "reduction_year1_november": "reduction_year1_november",
+    "reduction_year1_december": "reduction_year1_december",
+    "reduction_year2_january": "reduction_year2_january",
+    "reduction_year2_february": "reduction_year2_february",
+    "reduction_year2_march": "reduction_year2_march",
+    "reduction_year2_april": "reduction_year2_april",
+    "reduction_year2_may": "reduction_year2_may",
+    "reduction_year2_june": "reduction_year2_june",
+    "reduction_year2_july": "reduction_year2_july",
+    "reduction_year2_august": "reduction_year2_august",
+    "reduction_year2_september": "reduction_year2_september",
+    "reduction_year2_october": "reduction_year2_october",
+    "reduction_year2_november": "reduction_year2_november",
+    "reduction_year2_december": "reduction_year2_december",
+}
+
+
+col_names["Seasonality Post War"] = {
     "ISO3 Country Code": "iso3",
     "Country Crop Area ('000 Hectares)": "crop_area_1000ha",
     "Latitude": "Latitude",
@@ -209,6 +242,7 @@ food_names = {
     "cellulosic_sugar": "Cellulosic Sugar",
     "methane_scp": "Methane SCP",
     "greenhouses": "Greenhouses",
+    # "crop_nuclear_winter": "example_easier_format",
 }
 
 for pandas_name, excel_name in food_names.items():
@@ -343,7 +377,8 @@ dataframe_dict["crop_nuclear_winter"]["reduction_year4"] = (
 dataframe_dict["crop_nuclear_winter"]["reduction_year5"] = (
     dataframe_dict["crop_nuclear_winter"]["reduction_year5"] / 100
 )
-
+# print("crop_nuclear_winter")
+# print(crop_nuclear_winter)
 
 # nuclear winter remove nan values by assuming zero yield
 # (-1 => change from baseline to -100% of baseline, meaning zero crop growth)

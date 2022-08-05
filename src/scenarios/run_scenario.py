@@ -136,3 +136,155 @@ class ScenarioRunner:
             )
 
         return (model, variables, single_valued_constants, multi_valued_constants)
+
+    def set_depending_on_option(self, country_data, scenario_option):
+        scenario_loader = Scenarios()
+
+        if scenario_option["scale"] == "global":
+            constants_for_params = scenario_loader.init_global_food_system_properties()
+        if scenario_option["scale"] == "country":
+            constants_for_params = scenario_loader.init_country_food_system_properties(
+                country_data
+            )
+
+        if scenario_option["shutoff"] == "immediate":
+            constants_for_params = scenario_loader.set_immediate_shutoff(
+                constants_for_params
+            )
+        if scenario_option["shutoff"] == "short_delayed_shutoff":
+            constants_for_params = scenario_loader.set_short_delayed_shutoff(
+                constants_for_params
+            )
+        if scenario_option["shutoff"] == "long_delayed_shutoff":
+            constants_for_params = scenario_loader.set_long_delayed_shutoff(
+                constants_for_params
+            )
+        if scenario_option["shutoff"] == "continued":
+            constants_for_params = scenario_loader.set_continued_feed_biofuels(
+                constants_for_params
+            )
+
+        if scenario_option["waste"] == "zero":
+            constants_for_params = scenario_loader.set_waste_to_zero(
+                constants_for_params
+            )
+        if scenario_option["waste"] == "tripled_prices_in_country":
+            constants_for_params = scenario_loader.set_global_waste_to_tripled_prices(
+                constants_for_params
+            )
+        if scenario_option["waste"] == "doubled_prices_in_country":
+            constants_for_params = scenario_loader.set_global_waste_to_doubled_prices(
+                constants_for_params
+            )
+        if scenario_option["waste"] == "baseline_in_country":
+            constants_for_params = scenario_loader.set_global_waste_to_baseline_prices(
+                constants_for_params
+            )
+
+        if scenario_option["waste"] == "tripled_prices_globally":
+            constants_for_params = scenario_loader.set_country_waste_to_tripled_prices(
+                constants_for_params, country_data
+            )
+        if scenario_option["waste"] == "doubled_prices_globally":
+            constants_for_params = scenario_loader.set_country_waste_to_doubled_prices(
+                constants_for_params, country_data
+            )
+        if scenario_option["waste"] == "baseline_globally":
+            constants_for_params = scenario_loader.set_country_waste_to_baseline_prices(
+                constants_for_params, country_data
+            )
+
+        if scenario_option["nutrition"] == "baseline":
+            constants_for_params = scenario_loader.set_baseline_nutrition_profile(
+                constants_for_params
+            )
+        if scenario_option["nutrition"] == "catastrophe":
+            constants_for_params = scenario_loader.set_catastrophe_nutrition_profile(
+                constants_for_params
+            )
+
+        if scenario_option["buffer"] == "zero":
+            constants_for_params = scenario_loader.set_stored_food_buffer_zero(
+                constants_for_params
+            )
+        if scenario_option["buffer"] == "baseline":
+            constants_for_params = scenario_loader.set_stored_food_buffer_as_baseline(
+                constants_for_params
+            )
+
+        if scenario_option["seasonality"] == "baseline_in_country":
+            constants_for_params = scenario_loader.set_country_seasonality_baseline(
+                constants_for_params, country_data
+            )
+        if scenario_option["seasonality"] == "nuclear_winter_in_country":
+            constants_for_params = (
+                scenario_loader.set_country_seasonality_nuclear_winter(
+                    constants_for_params, country_data
+                )
+            )
+        if scenario_option["seasonality"] == "baseline_globally":
+            constants_for_params = scenario_loader.set_global_seasonality_baseline(
+                constants_for_params
+            )
+        if scenario_option["seasonality"] == "nuclear_winter_globally":
+            constants_for_params = (
+                scenario_loader.set_global_seasonality_nuclear_winter(
+                    constants_for_params
+                )
+            )
+
+        if scenario_option["fish"] == "nuclear_winter":
+            constants_for_params = scenario_loader.set_fish_nuclear_winter_reduction(
+                constants_for_params
+            )
+        if scenario_option["fish"] == "baseline":
+            constants_for_params = scenario_loader.set_fish_baseline(
+                constants_for_params
+            )
+
+        if scenario_option["crop_disruption"] == "zero":
+            constants_for_params = scenario_loader.set_disruption_to_crops_to_zero(
+                constants_for_params
+            )
+        if scenario_option["crop_disruption"] == "nuclear_winter":
+            constants_for_params = (
+                scenario_loader.set_nuclear_winter_global_disruption_to_crops(
+                    constants_for_params
+                )
+            )
+
+        if scenario_option["protein"] == "required":
+            constants_for_params = scenario_loader.include_protein(constants_for_params)
+        if scenario_option["protein"] == "not_required":
+            constants_for_params = scenario_loader.dont_include_protein(
+                constants_for_params
+            )
+
+        if scenario_option["fat"] == "required":
+            constants_for_params = scenario_loader.include_fat(constants_for_params)
+        if scenario_option["fat"] == "not_required":
+            constants_for_params = scenario_loader.dont_include_fat(
+                constants_for_params
+            )
+
+        if scenario_option["cull"] == "do_eat_culled":
+            constants_for_params = scenario_loader.cull_animals(constants_for_params)
+        if scenario_option["cull"] == "dont_eat_culled":
+            constants_for_params = scenario_loader.dont_cull_animals(
+                constants_for_params
+            )
+
+        if scenario_option["scenario"] == "baseline_climate":
+            constants_for_params = scenario_loader.get_baseline_climate_scenario(
+                constants_for_params
+            )
+        if scenario_option["scenario"] == "resilient_food_nuclear_winter":
+            constants_for_params = scenario_loader.get_resilient_food_scenario(
+                constants_for_params
+            )
+        if scenario_option["scenario"] == "no_resilient_food_nuclear_winter":
+            constants_for_params = scenario_loader.get_no_resilient_food_scenario(
+                constants_for_params
+            )
+
+        return constants_for_params, scenario_loader

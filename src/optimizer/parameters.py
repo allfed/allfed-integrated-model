@@ -482,18 +482,23 @@ class Parameters:
         # Cap the max created by the amount used, as conversion can't be > 1,
         # but the actual conversion only uses kcals
         # this is post waste
-        (
-            grain_fed_meat_fat_capped,
-            grain_fed_meat_protein_capped,
-            grain_fed_milk_fat_capped,
-            grain_fed_milk_protein_capped,
-        ) = meat_and_dairy.cap_fat_protein_to_amount_used(
-            feed_and_biofuels.feed,
-            grain_fed_meat_fat,
-            grain_fed_meat_protein,
-            grain_fed_milk_fat,
-            grain_fed_milk_protein,
-        )
+
+        # (
+        #     grain_fed_meat_fat_capped,
+        #     grain_fed_meat_protein_capped,
+        #     grain_fed_milk_fat_capped,
+        #     grain_fed_milk_protein_capped,
+        # ) = meat_and_dairy.cap_fat_protein_to_amount_used(
+        #     feed_and_biofuels.feed,
+        #     grain_fed_meat_fat,
+        #     grain_fed_meat_protein,
+        #     grain_fed_milk_fat,
+        #     grain_fed_milk_protein,
+        # )
+        grain_fed_meat_fat_capped = grain_fed_meat_fat
+        grain_fed_meat_protein_capped = grain_fed_meat_protein
+        grain_fed_milk_fat_capped = grain_fed_milk_fat
+        grain_fed_milk_protein_capped = grain_fed_milk_protein
 
         time_consts["grain_fed_meat_kcals"] = grain_fed_meat_kcals
         time_consts["grain_fed_meat_fat"] = grain_fed_meat_fat_capped
@@ -515,26 +520,29 @@ class Parameters:
 
         # post waste
 
-        difference = feed.fat - grain_fed_meat_fat_capped + grain_fed_milk_fat_capped
-        assert (np.round(difference, 3) >= 0).all()
+        # TODO: reinstate if reinstate cap
+        # difference = feed.fat - grain_fed_meat_fat_capped + grain_fed_milk_fat_capped
+        # assert (np.round(difference, 3) >= 0).all()
 
+        # not really possible for animals to synthesize more protein than they eat,
+        # I believe
         assert (
             feed.protein
             >= grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
         ).all()
 
-        PRINT_BOUND_WARNING = False
-        if PRINT_BOUND_WARNING:
-            if (
-                feed.protein
-                == grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
-            ).any():
-                print("WARNING: BOUNDING GRAIN FED PROTEIN PRODUCED BY FEED USAGE!")
+        # PRINT_BOUND_WARNING = True
+        # if PRINT_BOUND_WARNING:
+        #     if (
+        #         feed.protein
+        #         == grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
+        #     ).any():
+        #         print("WARNING: BOUNDING GRAIN FED PROTEIN PRODUCED BY FEED USAGE!")
 
-            if (
-                feed.fat == grain_fed_meat_fat_capped + grain_fed_milk_fat_capped
-            ).any():
-                print("WARNING: BOUNDING GRAIN FED FAT PRODUCED BY FEED USAGE!")
+        #     if (
+        #         feed.fat == grain_fed_meat_fat_capped + grain_fed_milk_fat_capped
+        #     ).any():
+        #         print("WARNING: BOUNDING GRAIN FED FAT PRODUCED BY FEED USAGE!")
 
         assert (feed.kcals >= grain_fed_created_kcals).all()
 
