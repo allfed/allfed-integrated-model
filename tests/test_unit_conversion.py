@@ -3,6 +3,7 @@ Tests if the unit conversion is working as expected.
 """
 from pytest import approx
 from pytest import raises
+import numpy as np
 
 from src.food_system import unit_conversions as uc
 from src.food_system.food import Food
@@ -18,14 +19,17 @@ def test_initiliaze_unit_conversions():
 # to be used in the food class. Therefore, we need to run the unit conversion
 # in the food system class.
 
-def create_food_monthly(kcals=[1,2,1], fat=[1,2,2], protein=[1,2,2]):
+def create_food_monthly(kcals=[1,2,1], fat=[1,2,2], protein=[1,2,2], 
+                         kcals_units="kcals each months",
+                         fat_units="kcals each months",
+                         protein_units="kcals each months"):
     """
     creates a food instance that has monthly values and returns it
     """
     food_monthly = Food(kcals=kcals, fat=fat, protein=protein,
-                         kcals_units="kcals each months",
-                         fat_units="kcals each months",
-                         protein_units="kcals each months")
+                         kcals_units=kcals_units,
+                         fat_units=fat_units,
+                         protein_units=protein_units)
     return food_monthly
 
 
@@ -178,4 +182,75 @@ def test_get_units():
     assert units == ["kcals each months","kcals each months","kcals each months"]
 
 
-def test_set_units
+def test_set_units():
+    """
+    Tests if the right units are set
+    """
+    food1 = create_food_monthly()
+    food1.set_units(kcals_units="kcals each month", fat_units="kcals each month", protein_units="kcals each month")
+    assert food1.kcals_units == "kcals each month"
+    assert food1.fat_units == "kcals each month"
+    assert food1.protein_units == "kcals each month"
+
+
+def test_is_a_ratio_scalar_food():
+    """
+    Tests if the right units are set
+    """
+    food1 = Food()
+    assert food1.is_a_ratio() == False
+    food2 = Food(kcals_units="ratio", fat_units="ratio", protein_units="ratio")
+    assert food2.is_a_ratio() == True
+
+
+def test_is_a_ratio_monthly_food():
+    """
+    Tests if the right units are set
+    """
+    food1 = create_food_monthly()
+    assert food1.is_a_ratio() == False
+
+    food2 = create_food_monthly(kcals_units="ratio each month", fat_units="ratio each month", protein_units="ratio each month")
+    assert food2.is_a_ratio() == True
+
+
+def test_is_unit_percent_scalar_food():
+    """
+    Tests if the right units are set
+    """
+    food1 = Food()
+    assert food1.is_units_percent() == False
+    food2 = Food(kcals_units="percent", fat_units="percent", protein_units="percent")
+    assert food2.is_units_percent() == True
+
+
+def test_is_unit_percent_monthly_food():
+    """
+    Tests if the right units are set
+    """
+    food1 = create_food_monthly(kcals_units="percent each month", fat_units="percent each month", protein_units="percent each month")
+    assert food1.is_units_percent() == True
+    food2 = create_food_monthly(kcals_units="kcals each month", fat_units="kcals each month", protein_units="kcals each month")
+    assert food2.is_units_percent() == False
+
+
+def test_in_units_billions_fed():
+    """
+    Tests if the units are correctly converted to billions fed
+    """
+    # Test conversion from 
+    food = Food(kcals=1, protein=1, fat=1,
+                                kcals_units="billion kcals each month", 
+                                fat_units="thousand tons each month", 
+                                protein_units="thousand tons each month")
+    food.set_nutrition_requirements(1/30,1,1,1e9)
+    food_converted = food.in_units_billions_fed()
+    assert food_converted.kcals_units == "billion people fed each month"
+    assert food_converted.fat_units == "billion people fed each month"
+    assert food_converted.protein_units == "billion people fed each month"
+    print(food_converted.kcals)
+    assert (food_converted.kcals == np.array([1,1]) / (1/food.kcals_monthly)).all()
+
+
+
+
