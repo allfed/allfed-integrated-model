@@ -135,20 +135,22 @@ class Plotter:
                     linestyle="solid",
                 )
 
-                ax.plot(
-                    interpreter.time_months_middle,
-                    interpreter.protein_fed,
-                    color="red",
-                    linestyle="dotted",
-                )
+                if interpreter.include_protein:
+                    ax.plot(
+                        interpreter.time_months_middle,
+                        interpreter.protein_fed,
+                        color="red",
+                        linestyle="dotted",
+                    )
 
-                # 1 gram of fat is 9 kcals.
-                ax.plot(
-                    interpreter.time_months_middle,
-                    interpreter.fat_fed,
-                    color="green",
-                    linestyle="dashed",
-                )
+                if interpreter.include_fat:
+                    # 1 gram of fat is 9 kcals.
+                    ax.plot(
+                        interpreter.time_months_middle,
+                        interpreter.fat_fed,
+                        color="green",
+                        linestyle="dashed",
+                    )
 
                 ax.set_ylabel("Percent of minimum recommendation")
                 # ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
@@ -317,19 +319,21 @@ class Plotter:
                     linestyle="solid",
                 )
 
-                ax.plot(
-                    interpreter.time_months_middle,
-                    interpreter.protein_fed,
-                    color="red",
-                    linestyle="dotted",
-                )
+                if interpreter.include_fat:
+                    ax.plot(
+                        interpreter.time_months_middle,
+                        interpreter.fat_fed,
+                        color="green",
+                        linestyle="dashed",
+                    )
 
-                ax.plot(
-                    interpreter.time_months_middle,
-                    interpreter.fat_fed,
-                    color="green",
-                    linestyle="dashed",
-                )
+                if interpreter.include_protein:
+                    ax.plot(
+                        interpreter.time_months_middle,
+                        interpreter.protein_fed,
+                        color="red",
+                        linestyle="dotted",
+                    )
 
                 ax.set_ylabel("Percent of minimum recommendation")
                 ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
@@ -652,20 +656,21 @@ class Plotter:
                     color="blue",
                     linestyle="solid",
                 )
+                if interpreter.include_fat:
+                    ax.plot(
+                        interpreter.time_months_middle,
+                        interpreter.fat_fed,
+                        color="green",
+                        linestyle="dashed",
+                    )
 
-                ax.plot(
-                    interpreter.time_months_middle,
-                    interpreter.protein_fed,
-                    color="red",
-                    linestyle="dotted",
-                )
-
-                ax.plot(
-                    interpreter.time_months_middle,
-                    interpreter.fat_fed,
-                    color="green",
-                    linestyle="dashed",
-                )
+                if interpreter.include_protein:
+                    ax.plot(
+                        interpreter.time_months_middle,
+                        interpreter.protein_fed,
+                        color="red",
+                        linestyle="dotted",
+                    )
 
                 ax.set_ylabel("Percent of minimum recommendation")
                 ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
@@ -1045,19 +1050,21 @@ class Plotter:
                     linestyle="solid",
                 )
 
-                ax.plot(
-                    interpreter.time_months_middle,
-                    interpreter.fat_fed,
-                    color="green",
-                    linestyle="dashed",
-                )
+                if interpreter.include_fat:
+                    ax.plot(
+                        interpreter.time_months_middle,
+                        interpreter.fat_fed,
+                        color="green",
+                        linestyle="dashed",
+                    )
 
-                ax.plot(
-                    interpreter.time_months_middle,
-                    interpreter.protein_fed,
-                    color="red",
-                    linestyle="dotted",
-                )
+                if interpreter.include_protein:
+                    ax.plot(
+                        interpreter.time_months_middle,
+                        interpreter.protein_fed,
+                        color="red",
+                        linestyle="dotted",
+                    )
 
                 ax.set_ylabel("Percent of minimum recommendation")
 
@@ -1110,9 +1117,15 @@ class Plotter:
     def getylim_nutrients(interpreter, xlim):
         kcals = interpreter.kcals_fed
 
-        protein = interpreter.protein_fed
+        if interpreter.include_fat:
+            fat = interpreter.fat_fed
+        else:
+            fat = interpreter.kcals_fed
 
-        fat = interpreter.fat_fed
+        if interpreter.include_protein:
+            protein = interpreter.protein_fed
+        else:
+            protein = interpreter.kcals_fed
 
         min_plot = (
             min([min(fat[0:xlim]), min(protein[0:xlim]), min(kcals[0:xlim])]) - 20
@@ -1417,4 +1430,6 @@ class Plotter:
 
     @classmethod
     def end_pptx(crs, saveloc):
+        if not os.path.exists("../../results/large_reports"):
+            os.mkdir("../../results/large_reports")
         crs.mp.save_ppt(saveloc)
