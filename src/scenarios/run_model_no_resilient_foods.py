@@ -58,16 +58,6 @@ def run_model_no_resilient_foods(plot_figures=True):
         allow_pickle=True,
     )
 
-    # No excess calories
-    constants_for_params["EXCESS_FEED"] = Food(
-        kcals=[0] * constants_for_params["NMONTHS"],
-        fat=[0] * constants_for_params["NMONTHS"],
-        protein=[0] * constants_for_params["NMONTHS"],
-        kcals_units="billion kcals each month",
-        fat_units="thousand tons each month",
-        protein_units="thousand tons each month",
-    )
-
     scenarios_loader, constants_for_params = set_common_no_resilient_properties()
 
     constants_for_params = scenarios_loader.set_long_delayed_shutoff(
@@ -103,6 +93,8 @@ def set_common_no_resilient_properties():
         constants_for_params
     )
 
+    constants_for_params = scenarios_loader.set_excess_to_zero(constants_for_params)
+
     constants_for_params = scenarios_loader.set_catastrophe_nutrition_profile(
         constants_for_params
     )
@@ -126,19 +118,6 @@ def set_common_no_resilient_properties():
         scenarios_loader.set_nuclear_winter_global_disruption_to_crops(
             constants_for_params
         )
-    )
-    # constants_for_params = scenarios_loader.set_disruption_to_crops_to_zero(
-    #     constants_for_params
-    # )
-
-    # No excess calories
-    constants_for_params["EXCESS_FEED"] = Food(
-        kcals=[0] * constants_for_params["NMONTHS"],
-        fat=[0] * constants_for_params["NMONTHS"],
-        protein=[0] * constants_for_params["NMONTHS"],
-        kcals_units="billion kcals each month",
-        fat_units="thousand tons each month",
-        protein_units="thousand tons each month",
     )
 
     return scenarios_loader, constants_for_params

@@ -181,7 +181,7 @@ class PrintParameters:
 
         amount_to_cancel_waste = 1 / (1 - CROP_WASTE / 100)
 
-        CFP = time_consts["crops_food_produced"][0] * amount_to_cancel_waste
+        CFP = time_consts["outdoor_crops"].kcals[0] * amount_to_cancel_waste
 
         # 1000 tons protein or fat per dry caloric ton
         print("")
@@ -250,7 +250,7 @@ class PrintParameters:
         print(100 * (SF_FRACTION_PROTEIN / 1e3) / (1e9 / 4e6 / 1e6))
         if feed_and_biofuels.feed.kcals[0] * amount_to_cancel_waste > 0:
             print("")
-            print("INITIAL_FEED_KCALS million tons dry caloric monthly")
+            print("INITIAL_FEED_KCALS million tons dry caloric monthly postcap")
             print(
                 -feed_and_biofuels.feed.kcals[0]
                 * amount_to_cancel_waste
@@ -258,12 +258,12 @@ class PrintParameters:
                 / 4e6
                 / 1e6
             )
-            print("INITIAL_FEED_FAT million tons monthly")
+            print("INITIAL_FEED_FAT million tons monthly  postcap")
             print(-feed_and_biofuels.feed.fat[0] * amount_to_cancel_waste / 1e3)
-            print("INITIAL_FEED_PROTEIN million tons monthly")
+            print("INITIAL_FEED_PROTEIN million tons monthly postcap")
             print(-feed_and_biofuels.feed.protein[0] * amount_to_cancel_waste / 1e3)
             print("")
-            print("INITIAL_FEED_fat percentage")
+            print("INITIAL_FEED_fat percentage postcap")
             print(
                 100
                 * feed_and_biofuels.feed.fat[0]
@@ -277,7 +277,7 @@ class PrintParameters:
                     / 1e6
                 )
             )
-            print("INITIAL_FEED_PROTEIN percentage")
+            print("INITIAL_FEED_PROTEIN percentage  postcap")
             print(
                 100
                 * feed_and_biofuels.feed.protein[0]
@@ -416,14 +416,6 @@ class PrintParameters:
                 print("")
 
             print("")
-            if constants["inputs"]["CULL_ANIMALS"]:
-                print("INITIAL_CULLED_KCALS million tons dry caloric monthly")
-                print("INITIAL_CULLED_FAT million tons monthly")
-                print("INITIAL_CULLED_PROTEIN million tons monthly")
-                print("")
-                print("INITIAL_CULLED_FAT percentage")
-                print("INITIAL_CULLED_PROTEIN percentage")
-                print("")
         else:
             print("No Feed Usage")
 

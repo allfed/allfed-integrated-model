@@ -78,37 +78,28 @@ def create_several_maps_with_different_assumptions():
 
     this_simulation_combinations = {}
 
-    # this_simulation_combinations["waste"] = [
-    #     "baseline_in_country",
-    #     "doubled_prices_in_country",
-    # ]
-
-    # this_simulation_combinations["nutrition"] = ["baseline", "catastrophe"]
-
-    # this_simulation_combinations["buffer"] = ["baseline", "none"]
-
+    this_simulation_combinations["nutrition"] = ["baseline", "catastrophe"]
+    this_simulation_combinations["buffer"] = ["baseline", "zero"]
     # this_simulation_combinations["shutoff"] = ["continued", "short_delayed_shutoff"]
+    this_simulation_combinations["cull"] = ["dont_eat_culled", "do_eat_culled"]
+    this_simulation_combinations["waste"] = ["zero", "baseline_in_country"]
+    this_simulation_combinations["fat"] = ["required", "not_required"]
 
-    # this_simulation_combinations["cull"] = ["dont_eat_culled", "do_eat_culled"]
-
-    this_simulation_combinations["waste"] = ["baseline_in_country"]
-
-    this_simulation_combinations["nutrition"] = ["baseline"]
-
-    this_simulation_combinations["buffer"] = ["baseline"]
-
+    # # one example set of assumptions
+    # this_simulation_combinations["nutrition"] = ["baseline"]
+    # this_simulation_combinations["buffer"] = ["baseline"]
     this_simulation_combinations["shutoff"] = ["continued"]
-
-    this_simulation_combinations["cull"] = ["dont_eat_culled"]
+    # this_simulation_combinations["cull"] = ["dont_eat_culled"]
+    # this_simulation_combinations["waste"] = ["baseline_in_country"]
 
     # I don't really know why this works, but it certainly does.
     # I'm just combining things a lot like this example:
-
+    #
     # >>> kwargs = {'a': [1, 2, 3], 'b': [1, 2, 3]}
     # >>> flat = [[(k, v) for v in vs] for k, vs in kwargs.items()]
     # >>> flat
     # [[('b', 1), ('b', 2), ('b', 3)], [('a', 1), ('a', 2), ('a', 3)]]
-
+    #
     # >>> from itertools import product
     # >>> [dict(items) for items in product(*flat)]
     # [{'a': 1, 'b': 1},
@@ -133,7 +124,6 @@ def create_several_maps_with_different_assumptions():
     defaults["scale"] = "country"
     defaults["seasonality"] = "baseline_in_country"
     defaults["scenario"] = "baseline_climate"
-    defaults["fat"] = "required"
     defaults["protein"] = "required"
     defaults["crop_disruption"] = "zero"
     defaults["fish"] = "baseline"

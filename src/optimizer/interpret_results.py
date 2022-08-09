@@ -70,6 +70,9 @@ class Interpreter:
 
         self.assign_interpreted_properties(extracted_results)
 
+        self.include_fat = Food.conversions.include_fat
+        self.include_protein = Food.conversions.include_protein
+
         return self
 
     def assign_percent_fed_from_extractor(self, extracted_results):
@@ -189,7 +192,6 @@ class Interpreter:
             self.percent_people_fed,
             self.constraining_nutrient,
         ) = self.get_percent_people_fed(humans_fed_sum)
-
         # rounding errors can be introduced by the optimizer. We correct them here.
         # ... at least the ones that we can identify.
         # We also round everything to within 0.1% of its value,
@@ -223,6 +225,8 @@ class Interpreter:
             to_humans_ratio,
         )
 
+        self.excess_feed = extracted_results.excess_feed
+
         self.set_to_humans_properties_kcals_equivalent(extracted_results)
 
         self.kcals_fed = humans_fed_sum.kcals
@@ -233,6 +237,27 @@ class Interpreter:
 
         # checking that the two ways of adding up food to humans match
         assert difference.get_rounded_to_decimal(decimals=1).all_equals_zero()
+
+    def get_mean_min_nutrient(self):
+        """
+        for finding the minimum of any nutrient in any month
+        and then getting the mean people fed in all the months
+        This is useful for assessing what would have happened if stored food were not
+        a constraint on number of people fed
+
+        returns: the mean people fed in all months
+        """
+        # this is what the command below does
+        # >>> a = np.array([3,2,1])
+        # >>> b = np.array([2,2,6])
+        # >>> c = np.array([100,100,0])
+        # >>> np.min([a,b,c],axis=0)
+        # array([2, 2, 0])
+        assert humans_fed_sum.is_units_percent()
+        min_fed = np.min([self.kcals_fed, self.fat_fed, self.protein_fed], axis=0)
+
+        mean_fed = np.mean(min_fed)
+        return mean_fed
 
     def get_amount_fed_to_humans(
         self,
@@ -405,7 +430,6 @@ class Interpreter:
         get the minimum nutrients required to meet the needs of the population in any month, for kcals, fat, and protein
         """
         assert humans_fed_sum.is_units_percent()
-
         (min_nutrient, percent_people_fed) = humans_fed_sum.get_min_nutrient()
 
         PRINT_FED = False
@@ -470,10 +494,11 @@ class Interpreter:
         difference_consumption_supply = (
             outdoor_crops_plus_stored_food - nonhuman_consumption
         )
-
         difference_consumption_supply_rounded = (
-            difference_consumption_supply.get_rounded_to_decimal(2)
+            difference_consumption_supply.get_rounded_to_decimal(1)
         )
+        # print("difference_consumption_supply_rounded")
+        # print(difference_consumption_supply_rounded)
         assert difference_consumption_supply_rounded.all_greater_than_or_equal_to_zero()
 
         # wherever the difference in consumption is zero, that means humand and nonhuman
@@ -496,10 +521,9 @@ class Interpreter:
             outdoor_crops_plus_stored_food,
         )
 
-    def increase_excess_to_feed(
+    def get_increased_excess_to_feed(
         self,
         feed_delay,
-        excess_per_month,
         percent_fed,
     ):
         """
@@ -520,7 +544,7 @@ class Interpreter:
         SMALL_INCREASE_IN_EXCESS = 0.1
         LARGE_INCREASE_IN_EXCESS = 1.0
 
-        excess_per_month_percent = excess_per_month.in_units_percent_fed()
+        excess_per_month_percent = self.excess_feed.kcals
 
         baseline_feed = excess_per_month_percent[:feed_delay]
 
@@ -546,56 +570,16 @@ class Interpreter:
                 N_MONTHS_TO_CALCULATE_DIET - feed_delay,
             )
 
-        assert len(additional_excess_to_add_percent) == len(after_shutoff_feed.kcals)
+        assert len(additional_excess_to_add_percent) == len(after_shutoff_feed)
 
         # don't add any additional feed before the shutoff, that's already at
         # baseline feed levels
-        new_excess_kcals = after_shutoff_feed.kcals + additional_excess_to_add_percent
-        new_excess_fat = after_shutoff_feed.fat + additional_excess_to_add_percent
-        new_excess_protein = (
-            after_shutoff_feed.protein + additional_excess_to_add_percent
-        )
-        total_kcals = np.append(
-            np.append(baseline_feed.kcals, new_excess_kcals),
-            part_at_end_to_leave_unchanged.kcals,
-        )
-        total_fat = np.append(
-            np.append(baseline_feed.fat, new_excess_fat),
-            part_at_end_to_leave_unchanged.fat,
-        )
-        total_protein = np.append(
-            np.append(baseline_feed.protein, new_excess_protein),
-            part_at_end_to_leave_unchanged.protein,
+        new_excess_kcals = after_shutoff_feed + additional_excess_to_add_percent
+
+        excess_per_month = np.append(
+            np.append(baseline_feed, new_excess_kcals),
+            part_at_end_to_leave_unchanged,
         )
 
-        excess_per_month = Food(
-            kcals=total_kcals,
-            fat=total_fat,
-            protein=total_protein,
-            kcals_units=excess_per_month_percent.kcals_units,
-            fat_units=excess_per_month_percent.fat_units,
-            protein_units=excess_per_month_percent.protein_units,
-        )
-
-        # convert back to the units used for feed and biofuels, rather than percent
-        return excess_per_month.in_units_bil_kcals_thou_tons_thou_tons_per_month()
-
-    def get_additional_feed_given_percent_fed(self, constants_for_params, percent_fed):
-        """
-        This function is used to calculate and return the extra feed used in the
-        scenario given the equivalnet percent of humans that would be fed with the
-        same number of kcals
-
-        assume animals need and use human levels of fat and protein per kcal
-        """
-
-        post_shutoff_additional_feed = Food(
-            kcals=percent_fed,
-            fat=percent_fed,
-            protein=percent_fed,
-            kcals_units="percent people fed each month",
-            fat_units="percent people fed each month",
-            protein_units="percent people fed each month",
-        ).in_units_bil_kcals_thou_tons_thou_tons_per_month()
-
-        return post_shutoff_additional_feed
+        # kcals per month, units percent
+        return excess_per_month

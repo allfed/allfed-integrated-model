@@ -187,6 +187,7 @@ class Food(UnitConversions):
         Initializes the food with the given macronutrients, and set the default units.
         """
         super().__init__()
+
         self.kcals = kcals
         self.fat = fat
         self.protein = protein
@@ -281,24 +282,29 @@ class Food(UnitConversions):
         #   [101 693   0   3 786]
 
         # where self is nonzero, we don't care, so we set it to zero
-
         processed_list_kcals = np.where(
             self.kcals == 0,
             other_list.kcals,
             0,
         )
 
-        processed_list_fat = np.where(
-            self.fat == 0,
-            other_list.fat,
-            0,
-        )
+        if self.conversions.include_fat:
+            processed_list_fat = np.where(
+                self.fat == 0,
+                other_list.fat,
+                0,
+            )
+        else:
+            processed_list_fat = np.zeros(len(processed_list_kcals))
 
-        processed_list_protein = np.where(
-            self.protein == 0,
-            other_list.protein,
-            0,
-        )
+        if self.conversions.include_protein:
+            processed_list_protein = np.where(
+                self.protein == 0,
+                other_list.protein,
+                0,
+            )
+        else:
+            processed_list_protein = np.zeros(len(processed_list_kcals))
 
         processed_list = Food(
             kcals=processed_list_kcals,
@@ -333,14 +339,18 @@ class Food(UnitConversions):
                 0,
             )
 
-            assert (fat_all_the_places_kcals_zero == 0).all()
-            assert (protein_all_the_places_kcals_zero == 0).all()
+            if self.conversions.include_fat:
+                assert (fat_all_the_places_kcals_zero == 0).all()
+            if self.conversions.include_protein:
+                assert (protein_all_the_places_kcals_zero == 0).all()
 
         else:
 
             if self.kcals == 0:
-                assert self.fat == 0
-                assert self.protein == 0
+                if self.conversions.include_fat:
+                    assert self.fat == 0 or self.conversions.exclude_fat
+                if self.conversions.include_protein:
+                    assert self.protein == 0 or self.conversions.exclude_protein
 
     def make_sure_not_nan(self):
         """
@@ -691,14 +701,26 @@ class Food(UnitConversions):
         """
         Returns a string representation of the food.
         """
-        return "    kcals: % s % s\n    fat: % s  % s\n    protein: % s  % s" % (
+        return_string = ""
+        kcal_string = "    kcals: % s % s\n" % (
             np.round(self.kcals, 5),
             self.kcals_units,
-            np.round(self.fat, 5),
-            self.fat_units,
-            np.round(self.protein, 5),
-            self.protein_units,
         )
+
+        return_string = return_string + kcal_string
+
+        if self.conversions.include_fat:
+            fat_string = "    fat: % s % s\n" % (np.round(self.fat, 5), self.fat_units)
+            return_string = return_string + fat_string
+
+        if self.conversions.include_protein:
+            protein_string = "    protein: % s % s\n" % (
+                np.round(self.protein, 5),
+                self.protein_units,
+            )
+            return_string = return_string + protein_string
+
+        return return_string
 
     def __neg__(self):
         """
@@ -724,6 +746,56 @@ class Food(UnitConversions):
     # only compares kcals with kcals, fat with fat, and protein with protein, not
     # between the units.
 
+    # def is_never_negative(self):
+    #     """
+    #     Checks wether the food's macronutrients are never negative.
+
+    #     However, only checks for the nutrients that are included.
+    #     """
+    #     if self.is_list_monthly():
+    #         self.validate_if_list()
+
+    #         kcals_greater_than_zero = (np.array(self.kcals) >= 0).all()
+    #         fat_greater_than_zero = (np.array(self.fat) >= 0).all() or self.conversions.exclude_fat
+    #         protein_greater_than_zero = (np.array(self.protein) >= 0).all() or self.conversions.exclude_protein
+
+    #         return (
+    #             kcals_greater_than_zero
+    #             and fat_greater_than_zero
+    #             and protein_greater_than_zero
+    #         )
+
+    #     return (
+    #         self.kcals >= 0
+    #         and (self.fat >= 0 or self.conversions.exclude_fat)
+    #         and (self.protein >= 0 or self.conversions.exclude_protein)
+    #     )
+
+    # def all_greater_than(self, other):
+    #     """
+    #     Returns True if the food's macronutrients are greater than the other food's.
+
+    #     if don't include fat or protein, does not check respective nutrients
+
+    #     """
+    #     assert self.units == other.units
+
+    #     if self.is_list_monthly():
+
+    #         self.validate_if_list()
+
+    #         return (
+    #             (np.array(self.kcals - other.kcals) > 0).all()
+    #             and (np.array(self.fat - other.fat) > 0).all()
+    #             and (np.array(self.protein - other.protein) > 0).all()
+    #         )
+
+    #     return (
+    #         self.kcals > other.kcals
+    #         and self.fat > other.fat or self.conversions.exclude_fat
+    #         and self.protein > other.protein or self.conversions.exclude_protein
+    #     )
+
     def is_never_negative(self):
         """
         Checks wether the food's macronutrients are never negative.
@@ -732,12 +804,19 @@ class Food(UnitConversions):
             self.validate_if_list()
 
             return (
-                (np.array(self.kcals) > 0).all()
-                and (np.array(self.fat) > 0).all()
-                and (np.array(self.protein) > 0).all()
+                (np.array(self.kcals) >= 0).all()
+                and ((np.array(self.fat) >= 0).all() or self.conversions.exclude_fat)
+                and (
+                    (np.array(self.protein) >= 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
-        return (self.kcals > 0) and (self.fat > 0) and (self.protein > 0)
+        return (
+            self.kcals >= 0
+            and (self.fat >= 0 or self.conversions.exclude_fat)
+            and (self.protein >= 0 or self.conversions.exclude_protein)
+        )
 
     def all_greater_than(self, other):
         """
@@ -751,14 +830,20 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals - other.kcals) > 0).all()
-                and (np.array(self.fat - other.fat) > 0).all()
-                and (np.array(self.protein - other.protein) > 0).all()
+                and (
+                    (np.array(self.fat - other.fat) > 0).all()
+                    or self.conversions.exclude_fat
+                )
+                and (
+                    (np.array(self.protein - other.protein) > 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
         return (
             self.kcals > other.kcals
-            and self.fat > other.fat
-            and self.protein > other.protein
+            and (self.fat > other.fat or self.conversions.exclude_fat)
+            and (self.protein > other.protein or self.conversions.exclude_protein)
         )
 
     def all_less_than(self, other):
@@ -774,14 +859,20 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals - other.kcals) < 0).all()
-                and (np.array(self.fat - other.fat) < 0).all()
-                and (np.array(self.protein - other.protein) < 0).all()
+                and (
+                    (np.array(self.fat - other.fat) < 0).all()
+                    or self.conversions.exclude_fat
+                )
+                and (
+                    (np.array(self.protein - other.protein) < 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
         return (
             self.kcals < other.kcals
-            and self.fat < other.fat
-            and self.protein < other.protein
+            and (self.fat < other.fat or self.conversions.exclude_fat)
+            and (self.protein < other.protein or self.conversions.exclude_protein)
         )
 
     def any_greater_than(self, other):
@@ -797,15 +888,27 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals - other.kcals) > 0).any()
-                or (np.array(self.fat - other.fat) > 0).any()
-                or (np.array(self.protein - other.protein) > 0).any()
+                or (
+                    (np.array(self.fat - other.fat) > 0).any()
+                    and self.conversions.exclude_fat
+                )
+                or (
+                    (np.array(self.protein - other.protein) > 0).any()
+                    and self.conversions.exclude_protein
+                )
             )
 
-        return (
-            self.kcals > other.kcals
-            or self.fat > other.fat
-            or self.protein > other.protein
-        )
+        if self.conversions.include_fat:
+            greater_than_fat = self.fat > other.fat
+        else:
+            greater_than_fat = False
+
+        if self.conversions.include_protein:
+            greater_than_protein = self.protein > other.protein
+        else:
+            greater_than_protein = False
+
+        return self.kcals > other.kcals or greater_than_fat or greater_than_protein
 
     def any_less_than(self, other):
         """
@@ -820,15 +923,27 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals - other.kcals) < 0).any()
-                or (np.array(self.fat - other.fat) < 0).any()
-                or (np.array(self.protein - other.protein) < 0).any()
+                or (
+                    (np.array(self.fat - other.fat) < 0).any()
+                    and self.conversions.exclude_fat
+                )
+                or (
+                    (np.array(self.protein - other.protein) < 0).any()
+                    and self.conversions.exclude_protein
+                )
             )
 
-        return (
-            self.kcals < other.kcals
-            or self.fat < other.fat
-            or self.protein < other.protein
-        )
+        if self.conversions.include_fat:
+            less_than_fat = self.fat < other.fat
+        else:
+            less_than_fat = False
+
+        if self.conversions.include_protein:
+            less_than_protein = self.protein < other.protein
+        else:
+            less_than_protein = False
+
+        return self.kcals < other.kcals or less_than_fat or less_than_protein
 
     def all_greater_than_or_equal_to(self, other):
         """
@@ -843,14 +958,20 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals - other.kcals) >= 0).all()
-                and (np.array(self.fat - other.fat) >= 0).all()
-                and (np.array(self.protein - other.protein) >= 0).all()
+                and (
+                    (np.array(self.fat - other.fat) >= 0).all()
+                    or self.conversions.exclude_fat
+                )
+                and (
+                    (np.array(self.protein - other.protein) >= 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
         return (
             self.kcals >= other.kcals
-            and self.fat >= other.fat
-            and self.protein >= other.protein
+            and (self.fat >= other.fat or self.conversions.exclude_fat)
+            and (self.protein >= other.protein or self.conversions.exclude_protein)
         )
 
     def all_less_than_or_equal_to(self, other):
@@ -871,8 +992,8 @@ class Food(UnitConversions):
 
             return (
                 self.kcals <= other.kcals
-                and self.fat <= other.fat
-                and self.protein <= other.protein
+                and (self.fat <= other.fat or self.conversions.exclude_fat)
+                and (self.protein <= other.protein or self.conversions.exclude_protein)
             )
 
         if (not self.is_list_monthly()) and other.is_list_monthly():
@@ -889,8 +1010,11 @@ class Food(UnitConversions):
 
         return (
             (self.kcals <= other.kcals).all()
-            and (self.fat <= other.fat).all()
-            and (self.protein <= other.protein).all()
+            and ((self.fat <= other.fat).all() or self.conversions.exclude_fat)
+            and (
+                (self.protein <= other.protein).all()
+                or self.conversions.exclude_protein
+            )
         )
 
     def any_greater_than_or_equal_to(self, other):
@@ -906,14 +1030,20 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals - other.kcals) >= 0).any()
-                or (np.array(self.fat - other.fat) >= 0).any()
-                or (np.array(self.protein - other.protein) >= 0).any()
+                or (
+                    (np.array(self.fat - other.fat) >= 0).any()
+                    and self.conversions.exclude_fat
+                )
+                or (
+                    (np.array(self.protein - other.protein) >= 0).any()
+                    and self.conversions.exclude_protein
+                )
             )
 
         return (
             self.kcals >= other.kcals
-            or self.fat >= other.fat
-            or self.protein >= other.protein
+            or (self.fat >= other.fat and self.conversions.exclude_fat)
+            or (self.protein >= other.protein and self.conversions.exclude_protein)
         )
 
     def any_less_than_or_equal_to(self, other):
@@ -926,19 +1056,35 @@ class Food(UnitConversions):
 
             self.validate_if_list()
 
+            if self.conversions.include_fat:
+                less_than_fat = (self.fat - other.fat <= 0).any()
+            else:
+                less_than_fat = False
+
+            if self.conversions.include_protein:
+                less_than_protein = (self.protein - other.protein <= 0).any()
+            else:
+                less_than_protein = False
+
             return (
                 (np.array(self.kcals - other.kcals) <= 0).any()
-                or (np.array(self.fat - other.fat) <= 0).any()
-                or (np.array(self.protein - other.protein) <= 0).any()
+                or less_than_fat
+                or less_than_protein
             )
 
         assert self.units == other.units
 
-        return (
-            self.kcals <= other.kcals
-            or self.fat <= other.fat
-            or self.protein <= other.protein
-        )
+        if self.conversions.include_fat:
+            less_than_fat = self.fat <= other.fat
+        else:
+            less_than_fat = False
+
+        if self.conversions.include_protein:
+            less_than_protein = self.protein <= other.protein
+        else:
+            less_than_protein = False
+
+        return self.kcals <= other.kcals or less_than_fat or less_than_protein
 
     def all_equals_zero(self):
         """
@@ -950,11 +1096,18 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals) == 0).all()
-                and (np.array(self.fat) == 0).all()
-                and (np.array(self.protein) == 0).all()
+                and ((np.array(self.fat) == 0).all() or self.conversions.exclude_fat)
+                and (
+                    (np.array(self.protein) == 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
-        return self.kcals == 0 and self.fat == 0 and self.protein == 0
+        return (
+            self.kcals == 0
+            and (self.fat == 0 or self.conversions.exclude_fat)
+            and (self.protein == 0 or self.conversions.exclude_protein)
+        )
 
     def any_equals_zero(self):
         """
@@ -964,13 +1117,29 @@ class Food(UnitConversions):
 
             self.validate_if_list()
 
-            return (
-                (np.array(self.kcals) == 0).any()
-                or (np.array(self.fat) == 0).any()
-                or (np.array(self.protein) == 0).any()
-            )
+            if self.conversions.include_fat:
+                zero_fat = (np.array(self.fat) == 0).any()
+            else:
+                zero_fat = False
 
-        return self.kcals == 0 or self.fat == 0 or self.protein == 0
+            if self.conversions.include_protein:
+                zero_protein = (np.array(self.protein) == 0).any()
+            else:
+                zero_protein = False
+
+            return (np.array(self.kcals) == 0).any() or zero_fat or zero_protein
+
+        if self.conversions.include_fat:
+            zero_fat = self.fat == 0
+        else:
+            zero_fat = False
+
+        if self.conversions.include_protein:
+            zero_protein = self.protein == 0
+        else:
+            zero_protein = False
+
+        return self.kcals == 0 or zero_fat or zero_protein
 
     def all_greater_than_zero(self):
         """
@@ -986,7 +1155,11 @@ class Food(UnitConversions):
                 and (np.array(self.protein) > 0).all()
             )
 
-        return self.kcals > 0 and self.fat > 0 and self.protein > 0
+        return (
+            self.kcals > 0
+            and (self.fat > 0 or self.conversions.exclude_fat)
+            and (self.protein > 0 or self.conversions.exclude_protein)
+        )
 
     def any_greater_than_zero(self):
         """
@@ -996,13 +1169,29 @@ class Food(UnitConversions):
 
             self.validate_if_list()
 
-            return (
-                (np.array(self.kcals) > 0).any()
-                or (np.array(self.fat) > 0).any()
-                or (np.array(self.protein) > 0).any()
-            )
+            if self.conversions.include_fat:
+                zero_fat = (np.array(self.fat) > 0).any()
+            else:
+                zero_fat = False
 
-        return self.kcals > 0 or self.fat > 0 or self.protein > 0
+            if self.conversions.include_protein:
+                zero_protein = (np.array(self.protein) > 0).any()
+            else:
+                zero_protein = False
+
+            return (np.array(self.kcals) > 0).any() or zero_fat or zero_protein
+
+        if self.conversions.include_fat:
+            zero_fat = self.fat > 0
+        else:
+            zero_fat = False
+
+        if self.conversions.include_protein:
+            zero_protein = self.protein > 0
+        else:
+            zero_protein = False
+
+        return self.kcals > 0 or zero_fat or zero_protein
 
     def all_greater_than_or_equal_to_zero(self):
         """
@@ -1014,11 +1203,18 @@ class Food(UnitConversions):
 
             return (
                 (np.array(self.kcals) >= 0).all()
-                and (np.array(self.fat) >= 0).all()
-                and (np.array(self.protein) >= 0).all()
+                and ((np.array(self.fat) >= 0).all() or self.conversions.exclude_fat)
+                and (
+                    (np.array(self.protein) >= 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
-        return self.kcals >= 0 and self.fat >= 0 and self.protein >= 0
+        return (
+            self.kcals >= 0
+            and (self.fat >= 0 or self.conversions.exclude_fat)
+            and (self.protein >= 0 or self.conversions.exclude_protein)
+        )
 
     # Helper functions to get properties of the three nutrient values
 
@@ -1045,11 +1241,14 @@ class Food(UnitConversions):
         else:
             to_find_min_of = self
 
-        nutrients_dict = {
-            "kcals": to_find_min_of.kcals,
-            "fat": to_find_min_of.fat,
-            "protein": to_find_min_of.protein,
-        }
+        nutrients_dict = {}
+        nutrients_dict["kcals"] = to_find_min_of.kcals
+
+        if self.conversions.include_fat:
+            nutrients_dict["fat"] = to_find_min_of.fat
+
+        if self.conversions.include_protein:
+            nutrients_dict["protein"] = to_find_min_of.protein
 
         # Using min() + list comprehension + values()
         # Finding min value keys in dictionary
@@ -1059,8 +1258,14 @@ class Food(UnitConversions):
         ][0]
 
         assert min_nutrient_val <= to_find_min_of.kcals
-        assert min_nutrient_val <= to_find_min_of.fat
-        assert min_nutrient_val <= to_find_min_of.protein
+        # sometimes, this function causes an error for a single fat or protein
+        # because the condition before the "or" is false, but doesn't find this for
+        # the other because  the condition before the "or" is true
+        assert min_nutrient_val <= to_find_min_of.fat or self.conversions.exclude_fat
+        assert (
+            min_nutrient_val <= to_find_min_of.protein
+            or self.conversions.exclude_protein
+        )
 
         return (min_nutrient_name, min_nutrient_val)
 
@@ -1078,11 +1283,14 @@ class Food(UnitConversions):
 
         self.make_sure_not_a_list()
 
-        nutrients_dict = {
-            "kcals": self.kcals,
-            "fat": self.fat,
-            "protein": self.protein,
-        }
+        nutrients_dict = {}
+        nutrients_dict["kcals"] = self.kcals
+
+        if self.conversions.include_fat:
+            nutrients_dict["fat"] = self.fat
+
+        if self.conversions.include_protein:
+            nutrients_dict["protein"] = self.protein
 
         # Using max() + list comprehension + values()
         # Finding max value keys in dictionary
@@ -1092,8 +1300,8 @@ class Food(UnitConversions):
         ][0]
 
         assert max_nutrient_val >= self.kcals
-        assert max_nutrient_val >= self.fat
-        assert max_nutrient_val >= self.protein
+        assert max_nutrient_val >= self.fat or self.conversions.exclude_fat
+        assert max_nutrient_val >= self.protein or self.conversions.exclude_protein
 
         return (max_key, max_nutrient_val)
 
@@ -1258,32 +1466,6 @@ class Food(UnitConversions):
         )
 
         return rounded
-
-    # TODO: delete if this function is never used (IF YOU SEE THIS, PLEASE DELETE THIS COMMENTED CODE AND PUSH YOUR CHANGES WITHOUT REMORSE!!!)
-    # def get_elements_where_passed_in_list_zero(self, passed_in_list):
-    #     """
-    #     Get the value of the elements where the passed in list is zero, otherwise
-    #     returned elements are zero.
-    #     """
-    #     this_list_where_passed_in_list_zero = Food()
-
-    #     this_list_where_passed_in_list_zero.kcals = np.where(
-    #         passed_in_list.kcals == 0,
-    #         self.kcals,
-    #         0,
-    #     )
-
-    #     this_list_where_passed_in_list_zero.fat = np.where(
-    #         passed_in_list.fat == 0,
-    #         self.fat,
-    #         0,
-    #     )
-
-    #     this_list_where_passed_in_list_zero.protein = np.where(
-    #         passed_in_list.protein == 0,
-    #         self.protein,
-    #         0,
-    #     )
 
     #     return this_list_where_passed_in_list_zero
     def replace_if_list_with_zeros_is_zero(self, list_with_zeros, replacement):

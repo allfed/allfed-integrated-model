@@ -54,11 +54,18 @@ class Parameters:
         self.SIMULATION_STARTING_MONTH_NUM = months_dict[self.SIMULATION_STARTING_MONTH]
 
     def computeParameters(self, constants, scenarios_loader):
+        if (
+            constants["inputs"]["DELAY"]["FEED_SHUTOFF_MONTHS"] > 0
+            or constants["inputs"]["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] > 0
+        ):
+            assert (
+                constants["inputs"]["ADD_MEAT"] == True
+            ), "Meat needs to be added for continued feed usage to make sense"
 
         assert self.FIRST_TIME_RUN
         self.FIRST_TIME_RUN = False
 
-        PRINT_SCENARIO_PROPERTIES = True
+        PRINT_SCENARIO_PROPERTIES = False
         if PRINT_SCENARIO_PROPERTIES:
             print(scenarios_loader.scenario_description)
 
@@ -103,12 +110,9 @@ class Parameters:
 
         #### STORED FOOD VARIABLES ####
 
-        stored_food = StoredFood(constants_for_params, outdoor_crops)
-        stored_food.calculate_stored_food_to_use(self.SIMULATION_STARTING_MONTH_NUM)
-
-        constants["SF_FRACTION_FAT"] = stored_food.SF_FRACTION_FAT
-        constants["SF_FRACTION_PROTEIN"] = stored_food.SF_FRACTION_PROTEIN
-        constants["stored_food"] = stored_food
+        constants, stored_food = self.init_stored_food(
+            constants, constants_for_params, outdoor_crops
+        )
 
         #### FEED AND BIOFUEL VARIABLES ####
 
@@ -210,6 +214,8 @@ class Parameters:
             kcals_daily=KCALS_DAILY,
             fat_daily=FAT_DAILY,
             protein_daily=PROTEIN_DAILY,
+            include_fat=constants_for_params["INCLUDE_FAT"],
+            include_protein=constants_for_params["INCLUDE_PROTEIN"],
             population=self.POP,
         )
 
@@ -278,6 +284,19 @@ class Parameters:
 
         return constants, outdoor_crops
 
+    def init_stored_food(self, constants, constants_for_params, outdoor_crops):
+        stored_food = StoredFood(constants_for_params, outdoor_crops)
+        if constants["ADD_STORED_FOOD"]:
+            stored_food.calculate_stored_food_to_use(self.SIMULATION_STARTING_MONTH_NUM)
+        else:
+            stored_food.set_to_zero()
+
+        constants["SF_FRACTION_FAT"] = stored_food.SF_FRACTION_FAT
+        constants["SF_FRACTION_PROTEIN"] = stored_food.SF_FRACTION_PROTEIN
+        constants["stored_food"] = stored_food
+
+        return constants, stored_food
+
     def init_fish_params(self, constants, time_consts, constants_for_params):
         """
         Initialize seafood parameters, not including seaweed
@@ -320,10 +339,11 @@ class Parameters:
             greenhouse_protein_per_ha,
         ) = greenhouses.get_greenhouse_yield_per_ha(constants_for_params, outdoor_crops)
 
-        crops_food_produced = outdoor_crops.get_crop_production_minus_greenhouse_area(
+        # post-waste crops food produced
+        outdoor_crops.get_crop_production_minus_greenhouse_area(
             constants_for_params, greenhouses.greenhouse_fraction_area
         )
-        time_consts["crops_food_produced"] = crops_food_produced
+        time_consts["outdoor_crops"] = outdoor_crops
         time_consts["greenhouse_kcals_per_ha"] = greenhouse_kcals_per_ha
         time_consts["greenhouse_fat_per_ha"] = greenhouse_fat_per_ha
         time_consts["greenhouse_protein_per_ha"] = greenhouse_protein_per_ha
@@ -386,6 +406,11 @@ class Parameters:
 
         # post waste
         time_consts["nonhuman_consumption"] = nonhuman_consumption
+        time_consts[
+            "excess_feed"
+        ] = feed_and_biofuels.get_excess_food_usage_from_percents(
+            constants_for_params["EXCESS_FEED_PERCENT"]
+        )
 
         return time_consts, feed_and_biofuels
 
@@ -479,8 +504,12 @@ class Parameters:
             grain_fed_meat_protein,
         ) = meat_and_dairy.get_meat_from_human_edible_feed()
 
-        # Cap the max created by the amount used, as conversion can't be > 1,
-        # but the actual conversion only uses kcals
+        # Cap the max fat or protein created by the amount used,
+        # as I used to believe the conversion couldn't be > 1, but this isn't true
+        # so I have not reinstated. Still, it might be useful to prevent odd things
+        # where countries increase meat production and human edible fed livestock even
+        # if they don't have enough calories... .
+
         # this is post waste
 
         # (
@@ -495,6 +524,8 @@ class Parameters:
         #     grain_fed_milk_fat,
         #     grain_fed_milk_protein,
         # )
+
+        # this code is just circumventing the cap I've removed
         grain_fed_meat_fat_capped = grain_fed_meat_fat
         grain_fed_meat_protein_capped = grain_fed_meat_protein
         grain_fed_milk_fat_capped = grain_fed_milk_fat
@@ -520,16 +551,16 @@ class Parameters:
 
         # post waste
 
-        # TODO: reinstate if reinstate cap
+        # TODO: reinstate if reinstate cap on fat or protein produced
         # difference = feed.fat - grain_fed_meat_fat_capped + grain_fed_milk_fat_capped
         # assert (np.round(difference, 3) >= 0).all()
 
         # not really possible for animals to synthesize more protein than they eat,
         # I believe
-        assert (
-            feed.protein
-            >= grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
-        ).all()
+        # assert (
+        #     feed.protein
+        #     >= grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
+        # ).all()
 
         # PRINT_BOUND_WARNING = True
         # if PRINT_BOUND_WARNING:

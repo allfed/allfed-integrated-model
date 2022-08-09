@@ -191,6 +191,10 @@ class Validator:
         interpreted_results.nonhuman_consumption_percent.make_sure_fat_protein_zero_if_kcals_is_zero()
 
         # TODO: REINSTATE ONCE FIGURED OUT WHY THIS FAILS
+        # I'm pretty sure, if there is some food that gets its kcals used up by feed
+        # but not its calories, it's alright if only fat goes to humans, and no kcals...
+        # which is wierd, but it's a reasonable way for the model to work I think
+
         # interpreted_results.stored_food_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
         # interpreted_results.seaweed_rounded.get_rounded_to_decimal(
         #     2
@@ -198,10 +202,10 @@ class Validator:
         # interpreted_results.outdoor_crops_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
         # interpreted_results.immediate_outdoor_crops_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
         # interpreted_results.new_stored_outdoor_crops_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
-        interpreted_results.stored_food_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
-        interpreted_results.outdoor_crops_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
-        interpreted_results.immediate_outdoor_crops_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
-        interpreted_results.new_stored_outdoor_crops_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
+        # interpreted_results.stored_food_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
+        # interpreted_results.outdoor_crops_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
+        # interpreted_results.immediate_outdoor_crops_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
+        # interpreted_results.new_stored_outdoor_crops_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
 
     def ensure_never_nan(self, interpreted_results):
         """

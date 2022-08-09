@@ -45,11 +45,8 @@ class FeedAndBiofuels:
             protein_units="tons per year",
         )
 
-        # TODO: DELETE THIS IF NO ERRORS
-        # self.AMOUNT_TO_REDUCE_RATIO_EACH_ITERATION = 0.05  # 5% reduction
         self.AMOUNT_TO_REDUCE_RATIO_EACH_ITERATION = 0.05  # 1% reduction
-        # self.SAFETY_MARGIN = 0.1
-        self.SAFETY_MARGIN = 0.2
+        self.SAFETY_MARGIN = 0.1
 
     def set_nonhuman_consumption_with_cap(
         self, constants_for_params, outdoor_crops, stored_food
@@ -99,7 +96,9 @@ class FeedAndBiofuels:
 
         # excess feed is just using human levels of fat and protein. May need to be
         # altered to reflect more accurate usage.
-        excess_feed_prewaste = constants_for_params["EXCESS_FEED"]
+        excess_feed_prewaste = self.get_excess_food_usage_from_percents(
+            constants_for_params["EXCESS_FEED_PERCENT"]
+        )
 
         feed_duration = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
         feed_before_cap_prewaste = self.get_feed_usage_before_cap_prewaste(
@@ -197,8 +196,8 @@ class FeedAndBiofuels:
         )
         self.biofuels = biofuels_before_cap * ratio
         self.feed = feed_before_cap * ratio
-
         self.fed_to_animals_prewaste = self.feed / waste_adjustment
+
         assert self.biofuels.all_less_than_or_equal_to(biofuels_before_cap)
         assert self.feed.all_less_than_or_equal_to(feed_before_cap)
 
@@ -237,16 +236,12 @@ class FeedAndBiofuels:
                 biofuels_before_cap * ratio,
                 feed_before_cap * ratio,
             )
-            # running_supply_minus_demand.in_units_percent_fed().plot()
-
             demand_more_than_supply = max_net_demand.any_greater_than(stored_food)
-
         assert 1 >= ratio >= 0
 
         PLOT_RUNNING_TOTAL = False
         if PLOT_RUNNING_TOTAL:
             running_supply_minus_demand.plot("running_net_supply minus demand")
-
         if ratio <= self.SAFETY_MARGIN:
             return 0
         else:
@@ -349,7 +344,10 @@ class FeedAndBiofuels:
             protein_units="thousand tons each month",
         )
 
-        return baseline_feed_before_cap_prewaste + excess_feed_prewaste
+        return (
+            baseline_feed_before_cap_prewaste
+            + excess_feed_prewaste.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+        )
 
     def get_nonhuman_consumption_before_cap_prewaste(
         self,
@@ -374,9 +372,9 @@ class FeedAndBiofuels:
     ):
         """
         Calculate and set the total usage for consumption of biofuels and feed
+
+        assume animals need and use human levels of fat and protein per kcal
         """
-        # assume animals need and use human levels of fat and protein per kcal
-        # units grams per kcal same as units 1000s tons per billion kcals
 
         CROP_WASTE = constants_for_params["WASTE"]["CROPS"]
 
@@ -457,3 +455,18 @@ class FeedAndBiofuels:
         max_running_net_demand = -running_supply_minus_demand.get_min_all_months()
 
         return max_running_net_demand, running_supply_minus_demand
+
+    def get_excess_food_usage_from_percents(self, excess_feed_percent):
+
+        # TODO: ALTER BASED ON THE EXPECTED FEED FAT AND PROTEIN RATIOS
+        # (CURRENTLY IS JUST USING HUMAN NEEDS)
+
+        # No excess calories
+        return Food(
+            kcals=excess_feed_percent,
+            fat=excess_feed_percent,
+            protein=excess_feed_percent,
+            kcals_units="percent people fed each month",
+            fat_units="percent people fed each month",
+            protein_units="percent people fed each month",
+        )

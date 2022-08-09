@@ -12,6 +12,7 @@ class Scenarios:
     def __init__(self):
         # used to ensure the properties of scenarios are set twice or left unset
         self.NONHUMAN_CONSUMPTION_SET = False
+        self.EXCESS_SET = False
         self.WASTE_SET = False
         self.NUTRITION_PROFILE_SET = False
         self.STORED_FOOD_BUFFER_SET = False
@@ -33,6 +34,7 @@ class Scenarios:
         Ensure all properties of scenarios have been set
         """
         assert self.NONHUMAN_CONSUMPTION_SET
+        assert self.EXCESS_SET
         assert self.WASTE_SET
         assert self.NUTRITION_PROFILE_SET
         assert self.STORED_FOOD_BUFFER_SET
@@ -330,6 +332,26 @@ class Scenarios:
         ]
 
         self.NONHUMAN_CONSUMPTION_SET = True
+        return constants_for_params
+
+    # EXCESS FEED
+
+    def set_excess_to_zero(self, constants_for_params):
+        self.scenario_description += "\nexcess zero"
+        assert self.EXCESS_SET == False
+        constants_for_params["EXCESS_FEED_PERCENT"] = np.zeros(
+            constants_for_params["NMONTHS"]
+        )
+
+        self.EXCESS_SET = True
+        return constants_for_params
+
+    def set_excess(self, constants_for_params, excess):
+        self.scenario_description += "\n nonzero excess"
+        assert self.EXCESS_SET == False
+        constants_for_params["EXCESS_FEED_PERCENT"] = excess
+
+        self.EXCESS_SET = True
         return constants_for_params
 
     # WASTE
@@ -866,6 +888,7 @@ class Scenarios:
         constants_for_params["ADD_MEAT"] = True
         constants_for_params["ADD_METHANE_SCP"] = False
         constants_for_params["ADD_SEAWEED"] = False
+
         constants_for_params["ADD_STORED_FOOD"] = True
 
         constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
@@ -893,6 +916,13 @@ class Scenarios:
         constants_for_params["INCLUDE_FAT"] = True
         self.FAT_SET = True
 
+        return constants_for_params
+
+    def dont_include_fat(self, constants_for_params):
+        assert self.FAT_SET == False
+        self.scenario_description += "\ndon't include fat"
+        constants_for_params["INCLUDE_FAT"] = False
+        self.FAT_SET = True
         return constants_for_params
 
     def get_resilient_food_scenario(self, constants_for_params):
@@ -1008,13 +1038,6 @@ class Scenarios:
                 "ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY. THIS IS BECAUSE WE HAVE NOT YET IMPORTED BY-COUNTRY CROP PRODUCTION IN A NUCLEAR WINTER"
             )
         self.SCENARIO_SET = True
-        return constants_for_params
-
-    def dont_include_fat(self, constants_for_params):
-        assert self.FAT_SET == False
-        self.scenario_description += "\ndon't include fat"
-        constants_for_params["INCLUDE_FAT"] = False
-        self.FAT_SET = True
         return constants_for_params
 
     def cull_animals(self, constants_for_params):

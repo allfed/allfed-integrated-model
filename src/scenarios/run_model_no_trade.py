@@ -65,7 +65,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             protein_units="thousand tons each month",
         )
 
-        PRINT_COUNTRY = True
+        PRINT_COUNTRY = False
         if PRINT_COUNTRY:
 
             print("")
@@ -79,30 +79,35 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             print("")
             print("")
 
-        try:
+        USE_TRY_CATCH = True
+        if USE_TRY_CATCH:
+            try:
+                scenario_runner = ScenarioRunner()
+                interpreted_results = scenario_runner.run_and_analyze_scenario(
+                    constants_for_params, scenario_loader
+                )
+                percent_people_fed = interpreted_results.percent_people_fed
+            except Exception as e:
+                # print("TERRIBLE FAILURE!")
+                # print(country_name)
+                # print("exception:")
+                # print(e)
+                percent_people_fed = np.nan
+        else:
             scenario_runner = ScenarioRunner()
             interpreted_results = scenario_runner.run_and_analyze_scenario(
                 constants_for_params, scenario_loader
             )
-            if create_pptx_with_all_countries:
-                Plotter.plot_fig_1ab(
-                    interpreted_results,
-                    84,
-                    country_data["country"],
-                    show_figures,
-                    scenario_loader.scenario_description,
-                )
             percent_people_fed = interpreted_results.percent_people_fed
-        except Exception as e:
-            print("TERRIBLE FAILURE!")
-            print(country_name)
-            print("exception:")
-            print(e)
-            percent_people_fed = np.nan
-            print("")
-            print(scenario_loader.scenario_description)
-            print("")
-            print("")
+
+        if create_pptx_with_all_countries and show_figures:
+            Plotter.plot_fig_1ab(
+                interpreted_results,
+                84,
+                country_data["country"],
+                show_figures,
+                scenario_loader.scenario_description,
+            )
         return (
             percent_people_fed / 100,
             scenario_loader.scenario_description,
@@ -121,7 +126,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             if PRINT_NO_MATCH:
                 print("no match")
                 print(country_code_map)
-
         if len(country_map) == 1:
 
             # cap at 100% fed, surplus is not traded away in this scenario
@@ -201,10 +205,12 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         net_pop_fed = 0
         net_pop = 0
         scenario_description = ""
+        n_errors = 0
+        failed_countries = "Failed Countries: \n"
         for index, country_data in no_trade_table.iterrows():
 
             country_code = country_data["iso3"]
-            # if country_code != "USA":
+            # if country_code != "BGD":
             #     continue
 
             population = country_data["population"]
@@ -222,6 +228,10 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             )
 
             if np.isnan(needs_ratio):
+                n_errors += 1
+                country_name = country_data["country"]
+                failed_countries += " " + country_name
+
                 continue
 
             if country_code == "F5707+GBR":
@@ -236,11 +246,19 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
 
             net_pop_fed += capped_ratio * population
             net_pop += population
-        ratio_fed = str(round(float(net_pop_fed) / float(net_pop), 4))
-
+        if net_pop > 0:
+            ratio_fed = str(round(float(net_pop_fed) / float(net_pop), 4))
+        else:
+            ratio_fed = str(np.nan)
         print("Net population considered: " + str(net_pop / 1e9) + " Billion people")
         print("Fraction of this population fed: " + ratio_fed)
         print(scenario_description)
+        print("")
+        if n_errors > 0:
+            print("Errors: " + str(n_errors))
+            print(failed_countries)
+        print("")
+        print("")
         print("")
         if add_map_slide_to_pptx:
             Plotter.plot_map_of_countries_fed(
@@ -255,11 +273,15 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
 
     def run_many_options(self, scenario_options, title):
         Plotter.start_pptx("Various Scenario Options " + title)
-
-        print("scenario_options")
-        print(scenario_options)
+        print("Number of scenarios:")
+        print(len(scenario_options))
+        print("")
+        print("")
+        print("")
+        scenario_number = 1
         for scenario_option in scenario_options:
-
+            print("Scenario Number :" + str(scenario_number))
+            scenario_number += 1
             self.run_model_no_trade(
                 create_pptx_with_all_countries=False,
                 show_figures=False,

@@ -293,43 +293,44 @@ class OutdoorCrops(Food):
     def get_crop_production_minus_greenhouse_area(
         self, constants_for_params, greenhouse_fraction_area
     ):
+        self.CROP_WASTE = constants_for_params["WASTE"]["CROPS"]
 
         if self.ADD_OUTDOOR_GROWING:
 
             if constants_for_params["OG_USE_BETTER_ROTATION"]:
 
-                self.crops_food_produced = np.array([0] * self.NMONTHS)
+                crops_produced = np.array([0] * self.NMONTHS)
 
                 hd = (
                     constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"]
                     + constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"]
                 )
 
-                self.crops_food_produced[hd:] = np.multiply(
+                crops_produced[hd:] = np.multiply(
                     np.array(self.KCALS_GROWN[hd:]), (1 - greenhouse_fraction_area[hd:])
                 )
 
-                self.crops_food_produced[:hd] = np.multiply(
+                crops_produced[:hd] = np.multiply(
                     np.array(self.NO_ROT_KCALS_GROWN[:hd]),
                     (1 - greenhouse_fraction_area[:hd]),
                 )
 
             else:
-                self.crops_food_produced = np.array(self.NO_ROT_KCALS_GROWN)
+                crops_produced = np.array(self.NO_ROT_KCALS_GROWN)
 
         else:
-            self.crops_food_produced = np.array([0] * self.NMONTHS)
+            crops_produced = np.array([0] * self.NMONTHS)
 
-        self.kcals = np.array(self.crops_food_produced)
-        self.fat = np.array(self.OG_FRACTION_FAT * self.crops_food_produced)
-        self.protein = np.array(self.OG_FRACTION_PROTEIN * self.crops_food_produced)
+        self.kcals = np.array(crops_produced) * (1 - self.CROP_WASTE / 100)
+        self.fat = np.array(self.OG_FRACTION_FAT * crops_produced) * (
+            1 - self.CROP_WASTE / 100
+        )
+        self.protein = np.array(self.OG_FRACTION_PROTEIN * crops_produced) * (
+            1 - self.CROP_WASTE / 100
+        )
 
         self.set_units(
             kcals_units="billion kcals each month",
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
-
-        self.CROP_WASTE = constants_for_params["WASTE"]["CROPS"]
-
-        return self.crops_food_produced * (1 - self.CROP_WASTE / 100)

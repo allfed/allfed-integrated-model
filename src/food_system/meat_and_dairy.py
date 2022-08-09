@@ -266,7 +266,7 @@ class MeatAndDairy:
         # exceeding present-day cattle meat maintained production
         # assert((ratio_maintained_cattle <= 1)[0:47].all())
         if (ratio_maintained_cattle[0:47] >= 1).any():
-            PRINT_CATTLE_WARNING = True
+            PRINT_CATTLE_WARNING = False
             if PRINT_CATTLE_WARNING:
                 print("")
                 print(

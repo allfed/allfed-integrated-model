@@ -147,6 +147,8 @@ class ScenarioRunner:
                 country_data
             )
 
+        constants_for_params = scenario_loader.set_excess_to_zero(constants_for_params)
+
         if scenario_option["shutoff"] == "immediate":
             constants_for_params = scenario_loader.set_immediate_shutoff(
                 constants_for_params

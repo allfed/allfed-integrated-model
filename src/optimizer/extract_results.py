@@ -75,7 +75,7 @@ class Extractor:
         self.extract_outdoor_crops_results(
             variables["crops_food_eaten_no_rotation"],
             variables["crops_food_eaten_with_rotation"],
-            multi_valued_constants["crops_food_produced"],
+            multi_valued_constants["outdoor_crops"],
         )
         # TODO: MOVE THESE BACK IF NEEDED
         # variables["crops_food_storage_no_rotation"],
@@ -97,6 +97,8 @@ class Extractor:
             multi_valued_constants["grain_fed_milk_fat"],
             multi_valued_constants["grain_fed_milk_protein"],
         )
+
+        self.excess_feed = multi_valued_constants["excess_feed"]
 
         return self
 
@@ -172,11 +174,16 @@ class Extractor:
         for month in range(0, self.constants["NMONTHS"]):
             cf_produced = crops_kcals_produced[month]
             cf_produced_output.append(cf_produced)
-            cf_eaten = (
-                crops_food_eaten_no_rotation[month].varValue
-                + crops_food_eaten_with_rotation[month].varValue
-                * self.constants["OG_ROTATION_FRACTION_KCALS"]
-            )
+
+            # if the improved rotation was not used
+            if type(crops_food_eaten_with_rotation[0]) == type(0):
+                cf_eaten = crops_food_eaten_no_rotation[month].varValue
+            else:
+                cf_eaten = (
+                    crops_food_eaten_no_rotation[month].varValue
+                    + crops_food_eaten_with_rotation[month].varValue
+                    * self.constants["OG_ROTATION_FRACTION_KCALS"]
+                )
             cf_eaten_output.append(cf_eaten)
 
             if cf_produced <= cf_eaten:
@@ -276,12 +283,12 @@ class Extractor:
         self,
         crops_food_eaten_no_rotation,
         crops_food_eaten_with_rotation,
-        crops_food_produced,
+        outdoor_crops,
     ):
         # crops_food_storage_no_rotation, TODO: DELETE IF NOT USED (these were args)
         # crops_food_storage_rotation,
 
-        self.set_crop_produced_monthly(crops_food_produced)
+        self.set_crop_produced_monthly(outdoor_crops)
 
         no_rotation = self.to_monthly_list(crops_food_eaten_no_rotation, 1)
         rotation = self.to_monthly_list(
@@ -482,7 +489,7 @@ class Extractor:
 
     # if cellulosic sugar isn't included, these results will be zero
 
-    def set_crop_produced_monthly(self, crops_food_produced):
+    def set_crop_produced_monthly(self, outdoor_crops):
         """
         get the crop produced monthly, rather than the amount eaten
         incorporates rotations
@@ -490,14 +497,14 @@ class Extractor:
         self.combined_produced_kcals = np.concatenate(
             [
                 np.array(
-                    crops_food_produced[
+                    outdoor_crops.kcals[
                         0 : self.constants["inputs"][
                             "INITIAL_HARVEST_DURATION_IN_MONTHS"
                         ]
                     ]
                 ),
                 np.array(
-                    crops_food_produced[
+                    outdoor_crops.kcals[
                         self.constants["inputs"]["INITIAL_HARVEST_DURATION_IN_MONTHS"] :
                     ]
                 )
@@ -509,21 +516,19 @@ class Extractor:
             np.concatenate(
                 [
                     np.array(
-                        crops_food_produced[
+                        outdoor_crops.fat[
                             0 : self.constants["inputs"][
                                 "INITIAL_HARVEST_DURATION_IN_MONTHS"
                             ]
                         ]
-                    )
-                    * self.constants["OG_FRACTION_FAT"],
+                    ),
                     np.array(
-                        crops_food_produced[
+                        outdoor_crops.fat[
                             self.constants["inputs"][
                                 "INITIAL_HARVEST_DURATION_IN_MONTHS"
                             ] :
                         ]
-                    )
-                    * self.constants["OG_ROTATION_FRACTION_FAT"],
+                    ),
                 ]
             )
             / self.constants["FAT_MONTHLY"]
@@ -534,21 +539,19 @@ class Extractor:
             np.concatenate(
                 [
                     np.array(
-                        crops_food_produced[
+                        outdoor_crops.protein[
                             0 : self.constants["inputs"][
                                 "INITIAL_HARVEST_DURATION_IN_MONTHS"
                             ]
                         ]
-                    )
-                    * self.constants["OG_FRACTION_PROTEIN"],
+                    ),
                     np.array(
-                        crops_food_produced[
+                        outdoor_crops.protein[
                             self.constants["inputs"][
                                 "INITIAL_HARVEST_DURATION_IN_MONTHS"
                             ] :
                         ]
-                    )
-                    * self.constants["OG_ROTATION_FRACTION_PROTEIN"],
+                    ),
                 ]
             )
             / self.constants["PROTEIN_MONTHLY"]

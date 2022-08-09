@@ -35,18 +35,10 @@ def run_model_with_resilient_foods(plot_figures=True):
     constants = {}
     constants["CHECK_CONSTRAINTS"] = False
 
-    # No excess calories
-    constants_for_params["EXCESS_FEED"] = Food(
-        kcals=[0] * constants_for_params["NMONTHS"],
-        fat=[0] * constants_for_params["NMONTHS"],
-        protein=[0] * constants_for_params["NMONTHS"],
-        kcals_units="billion kcals each month",
-        fat_units="thousand tons each month",
-        protein_units="thousand tons each month",
-    )
-
     constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
     constants_for_params = scenarios_loader.set_immediate_shutoff(constants_for_params)
+
+    constants_for_params = scenarios_loader.set_excess_to_zero(constants_for_params)
 
     scenario_runner = ScenarioRunner()
     results = scenario_runner.run_and_analyze_scenario(
@@ -59,16 +51,6 @@ def run_model_with_resilient_foods(plot_figures=True):
 
     np.save("../../data/resilient_food_primary_results.npy", results, allow_pickle=True)
 
-    # No excess calories
-    constants_for_params["EXCESS_FEED"] = Food(
-        kcals=[0] * constants_for_params["NMONTHS"],
-        fat=[0] * constants_for_params["NMONTHS"],
-        protein=[0] * constants_for_params["NMONTHS"],
-        kcals_units="billion kcals each month",
-        fat_units="thousand tons each month",
-        protein_units="thousand tons each month",
-    )
-
     scenarios_loader, constants_for_params = set_common_resilient_properties()
 
     constants_for_params = scenarios_loader.set_global_waste_to_doubled_prices(
@@ -78,15 +60,7 @@ def run_model_with_resilient_foods(plot_figures=True):
         constants_for_params
     )
 
-    # No excess calories
-    constants_for_params["EXCESS_FEED"] = Food(
-        kcals=[0] * constants_for_params["NMONTHS"],
-        fat=[0] * constants_for_params["NMONTHS"],
-        protein=[0] * constants_for_params["NMONTHS"],
-        kcals_units="billion kcals each month",
-        fat_units="thousand tons each month",
-        protein_units="thousand tons each month",
-    )
+    constants_for_params = scenarios_loader.set_excess_to_zero(constants_for_params)
 
     scenario_runner = ScenarioRunner()
     results = scenario_runner.run_and_analyze_scenario(
@@ -114,19 +88,10 @@ def run_model_with_resilient_foods(plot_figures=True):
         constants_for_params
     )
 
+    constants_for_params = scenarios_loader.set_excess_to_zero(constants_for_params)
+
     percent_fed = results.percent_people_fed
     feed_delay = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
-
-    excess_per_month = Food(
-        kcals=[0] * constants_for_params["NMONTHS"],
-        fat=[0] * constants_for_params["NMONTHS"],
-        protein=[0] * constants_for_params["NMONTHS"],
-        kcals_units="billion kcals each month",
-        fat_units="thousand tons each month",
-        protein_units="thousand tons each month",
-    )
-
-    constants_for_params["EXCESS_FEED"] = excess_per_month
 
     # No excess calories
     feed_delay = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
@@ -139,7 +104,6 @@ def run_model_with_resilient_foods(plot_figures=True):
         results = scenario_runner.run_and_analyze_scenario(
             constants_for_params, scenarios_loader
         )
-
         print("percent_fed")
         print(percent_fed)
 
@@ -148,13 +112,28 @@ def run_model_with_resilient_foods(plot_figures=True):
 
         assert feed_delay >= constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
 
-        excess_per_month = results.increase_excess_to_feed(
-            feed_delay, excess_per_month, percent_fed
-        )
-        percent_fed = results.percent_people_fed
+        scenarios_loader, constants_for_params = set_common_resilient_properties()
 
-        # should be considered "pre waste"
-        constants_for_params["EXCESS_FEED"] = excess_per_month
+        constants_for_params = scenarios_loader.set_global_waste_to_doubled_prices(
+            constants_for_params
+        )
+        constants_for_params = scenarios_loader.set_short_delayed_shutoff(
+            constants_for_params
+        )
+
+        excess_per_month = results.get_increased_excess_to_feed(feed_delay, percent_fed)
+
+        constants_for_params = scenarios_loader.set_excess(
+            constants_for_params, excess_per_month
+        )
+
+        # DELETE if you see this >>>>
+        # constants_for_params = scenarios_loader.get_additional_feed_given_excess_per_month(
+        #     constants_for_params, excess_per_month
+        # )
+        # <<<<
+
+        percent_fed = results.percent_people_fed
 
         n = n + 1
 
