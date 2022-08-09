@@ -2,7 +2,25 @@
 Test Suite for the food module.
 """
 import pytest
+import numpy as np
+
+import os
+import sys
+
+module_path = os.path.abspath(os.path.join(".."))
+if module_path not in sys.path:
+    sys.path.append(module_path)
+
 from src.food_system.food import Food
+
+Food.conversions.set_nutrition_requirements(
+    kcals_daily=100,
+    fat_daily=10,
+    protein_daily=10,
+    include_fat=True,
+    include_protein=True,
+    population=1000,
+)
 
 
 def create_food_monthly(kcals=[1, 2, 1], fat=[1, 2, 2], protein=[1, 2, 2]):
@@ -13,9 +31,9 @@ def create_food_monthly(kcals=[1, 2, 1], fat=[1, 2, 2], protein=[1, 2, 2]):
         kcals=kcals,
         fat=fat,
         protein=protein,
-        kcals_units="kcals each months",
-        fat_units="kcals each months",
-        protein_units="kcals each months",
+        kcals_units="kcals each month",
+        fat_units="kcals each month",
+        protein_units="kcals each month",
     )
     return food_monthly
 
@@ -39,8 +57,8 @@ def test_validate_if_list_failed():
             fat=[1, 2, 3],
             protein=[1, 2, 3],
             kcals_units="kcals",
-            fat_units="kcals each months",
-            protein_units="kcals each months",
+            fat_units="kcals each month",
+            protein_units="kcals each month",
         )
 
 
@@ -60,6 +78,33 @@ def test_make_sure_is_a_list():
     food1 = Food(kcals=1, fat=1, protein=1)
     with pytest.raises(AssertionError):
         food1.make_sure_is_a_list()
+
+
+def test_ensure_other_list_zero_if_this_is_zero():
+    """
+    Tests ensure_other_list_zero_if_this_is_zero
+
+    This test requires both foods to be list type.
+
+    """
+    # TODO: @Morgan rewrite this test please, so it works
+    food1 = Food(
+        kcals=[0, 0, 0, 0],
+        fat=[0, 0, 0, 0],
+        protein=[0, 0, 0, 0],
+        kcals_units="kcals each month",
+        fat_units="kcals each month",
+        protein_units="kcals each month",
+    )
+    food2 = Food(
+        kcals=[0, 0, 0, 0],
+        fat=[0, 0, 0, 0],
+        protein=[0, 0, 0, 0],
+        kcals_units="kcals each month",
+        fat_units="kcals each month",
+        protein_units="kcals each month",
+    )
+    food1.ensure_other_list_zero_if_this_is_zero(food2)
 
 
 def test_get_nutrient_names():
@@ -117,9 +162,9 @@ def test_addition_monthly_food():
     assert food3.kcals == [2, 4, 2]
     assert food3.fat == [2, 4, 4]
     assert food3.protein == [2, 4, 4]
-    assert food3.kcals_units == "kcals each months"
-    assert food3.fat_units == "kcals each months"
-    assert food3.protein_units == "kcals each months"
+    assert food3.kcals_units == "kcals each month"
+    assert food3.fat_units == "kcals each month"
+    assert food3.protein_units == "kcals each month"
 
 
 def test_failed_addition():
@@ -157,9 +202,9 @@ def test_subtraction_monthly_food():
     assert food3.kcals == [0, 0, 0]
     assert food3.fat == [0, 0, 0]
     assert food3.protein == [0, 0, 0]
-    assert food3.kcals_units == "kcals each months"
-    assert food3.fat_units == "kcals each months"
-    assert food3.protein_units == "kcals each months"
+    assert food3.kcals_units == "kcals each month"
+    assert food3.fat_units == "kcals each month"
+    assert food3.protein_units == "kcals each month"
 
 
 def test_failed_subtraction():
@@ -208,9 +253,9 @@ def test_multiplication_monthly_food_by_scalar_food():
     assert food3.kcals == [1, 2, 1]
     assert food3.fat == [1, 2, 2]
     assert food3.protein == [1, 2, 2]
-    assert food3.kcals_units == "kcals each months"
-    assert food3.fat_units == "kcals each months"
-    assert food3.protein_units == "kcals each months"
+    assert food3.kcals_units == "kcals each month"
+    assert food3.fat_units == "kcals each month"
+    assert food3.protein_units == "kcals each month"
 
 
 def test_multiplication_monthly_food():
@@ -223,9 +268,9 @@ def test_multiplication_monthly_food():
     assert food3.kcals == [1, 2, 2]
     assert food3.fat == [1, 2, 4]
     assert food3.protein == [1, 2, 4]
-    assert food3.kcals_units == "kcals each months"
-    assert food3.fat_units == "kcals each months"
-    assert food3.protein_units == "kcals each months"
+    assert food3.kcals_units == "kcals each month"
+    assert food3.fat_units == "kcals each month"
+    assert food3.protein_units == "kcals each month"
 
 
 def test_failed_multiplication_by_food():
@@ -315,9 +360,9 @@ def test_negation_monthly_food():
     assert food2.kcals == [-1, -2, -1]
     assert food2.fat == [-1, -2, -2]
     assert food2.protein == [-1, -2, -2]
-    assert food2.kcals_units == "kcals each months"
-    assert food2.fat_units == "kcals each months"
-    assert food2.protein_units == "kcals each months"
+    assert food2.kcals_units == "kcals each month"
+    assert food2.fat_units == "kcals each month"
+    assert food2.protein_units == "kcals each month"
 
 
 def test_food_failed_negation():
@@ -772,9 +817,9 @@ def test_min_nutrient_monthly_food():
         kcals=[1, 1, 1],
         fat=[1, 1, 1],
         protein=[0, 0, 0],
-        kcals_units="thousand tons each months",
-        protein_units="thousand tons each months",
-        fat_units="thousand tons each months",
+        kcals_units="thousand tons each month",
+        protein_units="thousand tons each month",
+        fat_units="thousand tons each month",
     )
     with pytest.raises(AssertionError):
         assert food.get_min_nutrient() == ("protein", 0)
@@ -797,9 +842,9 @@ def test_max_nutrient_monthly_food():
         kcals=[1, 1, 1],
         fat=[1, 1, 1],
         protein=[0, 0, 0],
-        kcals_units="thousand tons each months",
-        protein_units="thousand tons each months",
-        fat_units="thousand tons each months",
+        kcals_units="thousand tons each month",
+        protein_units="thousand tons each month",
+        fat_units="thousand tons each month",
     )
     with pytest.raises(AssertionError):
         assert food.get_max_nutrient() == ("kcals", 1)
@@ -849,9 +894,9 @@ def test_get_running_total_nutrients_sum_monthly_food():
     assert food.fat == [1, 2, 3]
     assert food.protein == [1, 2, 3]
     # make sure the units aren't changed
-    assert food.kcals_units == "kcals each months"
-    assert food.protein_units == "kcals each months"
-    assert food.fat_units == "kcals each months"
+    assert food.kcals_units == "kcals each month"
+    assert food.protein_units == "kcals each month"
+    assert food.fat_units == "kcals each month"
 
 
 def test_get_month_scalar_food():
@@ -921,6 +966,6 @@ def test_negative_values_to_zero_monthly_food():
     assert food.kcals == [0, 0, 0]
     assert food.fat == [0, 0, 0]
     assert food.protein == [0, 0, 0]
-    assert food.kcals_units == "kcals each months"
-    assert food.protein_units == "kcals each months"
-    assert food.fat_units == "kcals each months"
+    assert food.kcals_units == "kcals each month"
+    assert food.protein_units == "kcals each month"
+    assert food.fat_units == "kcals each month"
