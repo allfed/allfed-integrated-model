@@ -402,7 +402,7 @@ class Food(UnitConversions):
         cases:
             this is a food list, other is a food list
             this is a food, other is a food
-            this is a food, other is a number
+            this is a food, other is a numberFAILED tests/test_food.py::test_addition_monthly_food - ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
 
         """
         if type(other) == Food:
@@ -441,14 +441,14 @@ class Food(UnitConversions):
                 "ratio",
                 "ratio",
             )
+        else:
+            kcals = self.kcals / other
+            fat = self.fat / other
+            protein = self.protein / other
 
-        kcals = self.kcals / other
-        fat = self.fat / other
-        protein = self.protein / other
-
-        return Food(
-            kcals, fat, protein, self.kcals_units, self.fat_units, self.protein_units
-        )
+            return Food(
+                kcals, fat, protein, self.kcals_units, self.fat_units, self.protein_units
+            )
 
     def __getitem__(self, key):
         """
@@ -456,6 +456,7 @@ class Food(UnitConversions):
 
         NOTE: if key is a length 1 index, then this won't properly update units
         to " per month" and may cause an error down the line!
+        TODO: Make sure this cannot happen
         """
         self.make_sure_is_a_list()
 
@@ -605,6 +606,7 @@ class Food(UnitConversions):
                     protein=np.multiply(
                         np.array(self.protein), np.array(other.protein)
                     ),
+                    # TODO: @Morgan what's going on here?
                     kcals_units=kcals_units,
                     fat_units=fat_units,
                     protein_units=protein_units,
@@ -655,31 +657,40 @@ class Food(UnitConversions):
         for comparing monthly foods to each other, as their units
         contain 'each month'.
         """
-
         assert self.units == other.units
-
-        return (
-            self.kcals == other.kcals
-            and self.fat == other.fat
-            and self.protein == other.protein
-        )
+        if self.is_list_monthly():
+            return (
+                (self.kcals == other.kcals).all()
+                and (self.fat == other.fat).all()
+                and (self.protein == other.protein).all()
+            )
+        else:
+            return (
+                self.kcals == other.kcals
+                and self.fat == other.fat
+                and self.protein == other.protein
+            )
 
     def __ne__(self, other):
         """
-        Returns False if the two foods are not equal. his also works
+        Returns False if the two foods are not equal. This also works
         for comparing monthly foods to each other, as their units
         contain 'each month'.
         """
-
         assert self.units == other.units
+        if self.is_list_monthly():
+            return (
+                (self.kcals != other.kcals).all()
+                and (self.fat != other.fat).all()
+                and (self.protein != other.protein).all()
+            )
+        else:
+            return (
+                self.kcals != other.kcals
+                and self.fat != other.fat
+                and self.protein != other.protein
+            )
 
-        return (
-            self.kcals != other.kcals
-            or self.fat != other.fat
-            or self.protein != other.protein
-        )
-
-    # functions which access properties of this food
 
     def plot(self, title="generic food object over time"):
         """
@@ -1423,7 +1434,7 @@ class Food(UnitConversions):
 
         return rounded
 
-    #     return this_list_where_passed_in_list_zero
+
     def replace_if_list_with_zeros_is_zero(self, list_with_zeros, replacement):
         """
         replace with the replacement if list_with_zeros is zero
