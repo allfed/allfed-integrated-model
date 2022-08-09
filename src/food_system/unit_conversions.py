@@ -16,6 +16,7 @@ Created on Tue Jul 19
 """
 import os
 import sys
+import numpy as np
 
 module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
@@ -93,6 +94,11 @@ class UnitConversions:
         """
         gets the units so that they reflect that of a single month
         """
+        # Make sure this only happens for monthly food
+        assert "each month" in self.kcals_units
+        assert "each month" in self.fat_units
+        assert "each month" in self.protein_units
+
         # remove the " each month" part of the units
         kcals_units = self.kcals_units.split(" each month")[0]
 
@@ -108,6 +114,10 @@ class UnitConversions:
         """
         sets the units so that they reflect that of a single month
         """
+        # Make sure this only happens for monthly food
+        assert "each month" in self.kcals_units
+        assert "each month" in self.fat_units
+        assert "each month" in self.protein_units
         # remove the " each month" part of the units
         [
             self.kcals_units,
@@ -119,6 +129,11 @@ class UnitConversions:
         """
         gets the units so that they reflect that of a single month
         """
+        # Make sure this only happens for monthly food
+        assert "each month" in self.kcals_units
+        assert "each month" in self.fat_units
+        assert "each month" in self.protein_units
+
         # replace the " each month" part of the units with "per month"
         kcals_units = self.kcals_units.replace(" each month", " per month")
 
@@ -134,6 +149,10 @@ class UnitConversions:
         """
         sets the units so that they reflect that of a single month
         """
+        # Make sure this only happens for monthly food
+        assert "each month" in self.kcals_units
+        assert "each month" in self.fat_units
+        assert "each month" in self.protein_units
         [
             self.kcals_units,
             self.fat_units,
@@ -147,7 +166,6 @@ class UnitConversions:
         assert "each month" not in self.kcals_units
         assert "each month" not in self.fat_units
         assert "each month" not in self.protein_units
-
         # add " each month" to units to signify a food list
         kcals_units = self.kcals_units + " each month"
 
@@ -163,6 +181,9 @@ class UnitConversions:
         """
         sets the units so that they reflect that of a list of months
         """
+        assert "each month" not in self.kcals_units
+        assert "each month" not in self.fat_units
+        assert "each month" not in self.protein_units
         [
             self.kcals_units,
             self.fat_units,
@@ -186,6 +207,7 @@ class UnitConversions:
         an operation on a different food is used, the units are compatible
 
         """
+        # Make sure this can only happen for monthly food if "each month" is in the units
         self.kcals_units = kcals_units
         self.fat_units = fat_units
         self.protein_units = protein_units
@@ -238,7 +260,8 @@ class UnitConversions:
         If the existing units are understood by this function, it tries to convert the
         values and units to billions of people fed.
         """
-
+        # @Morgan: Is there a reason this is done as if,if,if and not as if,elif,else?
+        
         # getting this instance of the UnitConversions from the child class
         conversions = self.get_conversions()
 
@@ -262,19 +285,6 @@ class UnitConversions:
                 kcals_units="billion people fed each month",
                 fat_units="billion people fed each month",
                 protein_units="billion people fed each month",
-            )
-        if (
-            self.kcals_units == "billion kcals per month"
-            and self.fat_units == "thousand tons per month"
-            and self.protein_units == "thousand tons per month"
-        ):
-            return Food(
-                kcals=self.kcals * billion_kcal_conversion,
-                fat=self.fat * thou_tons_fat_conversion,
-                protein=self.protein * thou_tons_protein_conversion,
-                kcals_units="billion people fed per month",
-                fat_units="billion people fed per month",
-                protein_units="billion people fed per month",
             )
 
         percent_people_kcal_conversion = conversions.population / 1e9 / 100
