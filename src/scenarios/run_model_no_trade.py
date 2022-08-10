@@ -65,7 +65,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             protein_units="thousand tons each month",
         )
 
-        PRINT_COUNTRY = False
+        PRINT_COUNTRY = True
         if PRINT_COUNTRY:
 
             print("")
@@ -88,8 +88,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 )
                 percent_people_fed = interpreted_results.percent_people_fed
             except Exception as e:
-                # print("TERRIBLE FAILURE!")
-                # print(country_name)
                 # print("exception:")
                 # print(e)
                 percent_people_fed = np.nan
@@ -100,7 +98,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             )
             percent_people_fed = interpreted_results.percent_people_fed
 
-        if create_pptx_with_all_countries and show_figures:
+        if create_pptx_with_all_countries and not np.isnan(percent_people_fed):
             Plotter.plot_fig_1ab(
                 interpreted_results,
                 84,
@@ -280,7 +278,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         print("")
         scenario_number = 1
         for scenario_option in scenario_options:
-            print("Scenario Number :" + str(scenario_number))
+            print("Scenario Number: " + str(scenario_number))
             scenario_number += 1
             self.run_model_no_trade(
                 create_pptx_with_all_countries=False,

@@ -257,7 +257,12 @@ class MeatAndDairy:
             np.array(self.cattle_grazing_maintained_prewaste)
             + np.array(self.cattle_grain_fed_maintained_prewaste)
         ) / present_day_tons_per_month_cattle_prewaste
-        self.ratio_not_maintained_cattle = 1 - ratio_maintained_cattle
+
+        # cannot be negative
+        self.ratio_not_maintained_cattle = np.max(
+            [1 - ratio_maintained_cattle, np.zeros(len(ratio_maintained_cattle))],
+            axis=0,
+        )
 
         all_non_negative = np.array(ratio_maintained_cattle >= 0).all()
         assert all_non_negative
@@ -464,7 +469,6 @@ class MeatAndDairy:
                 )
             else:
                 self.cattle_grazing_maintained_prewaste.append(0)
-
         # assign the resulting remaining limit to milk past inedible sources
         self.grain_fed_milk_limit_prewaste = MILK_LIMIT_PREWASTE - np.array(
             self.grazing_milk_produced_prewaste

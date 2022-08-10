@@ -47,28 +47,24 @@ def run_baseline_by_country_no_trade(
     this_simulation = {}
     this_simulation["scale"] = "country"
     this_simulation["seasonality"] = "baseline_in_country"
-    this_simulation["fat"] = "required"
-    this_simulation["protein"] = "required"
     this_simulation["crop_disruption"] = "zero"
-
     this_simulation["scenario"] = "baseline_climate"
-    this_simulation["waste"] = "baseline_in_country"
+    this_simulation["fish"] = "baseline"
 
-    this_simulation["nutrition"] = "baseline"
-
-    this_simulation["buffer"] = "baseline"
-
-    this_simulation["shutoff"] = "continued"
-
+    this_simulation["waste"] = "doubled_prices_in_country"
+    this_simulation["fat"] = "not_required"
+    this_simulation["protein"] = "not_required"
+    this_simulation["nutrition"] = "catastrophe"
+    this_simulation["buffer"] = "zero"
+    this_simulation["shutoff"] = "short_delayed_shutoff"
     this_simulation["cull"] = "do_eat_culled"
 
-    this_simulation["fish"] = "baseline"
     scenario_runner = ScenarioRunnerNoTrade()
 
     scenario_runner.run_model_no_trade(
-        create_pptx_with_all_countries=True,
+        create_pptx_with_all_countries=create_pptx_with_all_countries,
         show_figures=show_figures,
-        add_map_slide_to_pptx=False,
+        add_map_slide_to_pptx=plot_map,
         scenario_option=this_simulation,
     )
 
@@ -80,17 +76,17 @@ def create_several_maps_with_different_assumptions():
 
     this_simulation_combinations["nutrition"] = ["baseline", "catastrophe"]
     this_simulation_combinations["buffer"] = ["baseline", "zero"]
-    # this_simulation_combinations["shutoff"] = ["continued", "short_delayed_shutoff"]
+    this_simulation_combinations["shutoff"] = ["continued", "short_delayed_shutoff"]
     this_simulation_combinations["cull"] = ["dont_eat_culled", "do_eat_culled"]
-    this_simulation_combinations["waste"] = ["zero", "baseline_in_country"]
+    # this_simulation_combinations["waste"] = ["zero", "baseline_in_country"]
     this_simulation_combinations["fat"] = ["required", "not_required"]
 
     # # one example set of assumptions
     # this_simulation_combinations["nutrition"] = ["baseline"]
     # this_simulation_combinations["buffer"] = ["baseline"]
-    this_simulation_combinations["shutoff"] = ["continued"]
+    # this_simulation_combinations["shutoff"] = ["continued"]
     # this_simulation_combinations["cull"] = ["dont_eat_culled"]
-    # this_simulation_combinations["waste"] = ["baseline_in_country"]
+    this_simulation_combinations["waste"] = ["baseline_in_country"]
 
     # I don't really know why this works, but it certainly does.
     # I'm just combining things a lot like this example:
@@ -124,7 +120,6 @@ def create_several_maps_with_different_assumptions():
     defaults["scale"] = "country"
     defaults["seasonality"] = "baseline_in_country"
     defaults["scenario"] = "baseline_climate"
-    defaults["protein"] = "required"
     defaults["crop_disruption"] = "zero"
     defaults["fish"] = "baseline"
 
@@ -132,17 +127,17 @@ def create_several_maps_with_different_assumptions():
     for option in options:
         options_including_defaults.append(defaults | option)
 
+    scenario_runner = ScenarioRunnerNoTrade()
     scenario_runner.run_many_options(
         scenario_options=options_including_defaults, title="baseline"
     )
 
 
 if __name__ == "__main__":
-    CREATE_SEVERAL_MAPS_PPTX = True
-    scenario_runner = ScenarioRunnerNoTrade()
+    CREATE_SEVERAL_MAPS_PPTX = False
     if CREATE_SEVERAL_MAPS_PPTX:
         create_several_maps_with_different_assumptions()
 
-    CREATE_PPTX_EACH_COUNTRY = False
+    CREATE_PPTX_EACH_COUNTRY = True
     if CREATE_PPTX_EACH_COUNTRY:
-        run_baseline_by_country_no_trade()
+        run_baseline_by_country_no_trade(show_figures=False)

@@ -14,7 +14,7 @@ import sys
 
 # Change to the same location as the original source code, so the relative
 # file paths still work
-#os.chdir("../src/scenarios")
+os.chdir("../src/scenarios")
 
 module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
@@ -22,6 +22,7 @@ if module_path not in sys.path:
 
 from src.scenarios import run_model_baseline
 from src.scenarios import run_model_no_trade_baseline
+from src.scenarios import run_model_no_trade_no_resilient_foods
 from src.scenarios import run_model_no_resilient_foods
 from src.scenarios import run_model_with_resilient_foods
 from src.scenarios import monte_carlo
@@ -49,7 +50,24 @@ def test_run_baseline_by_country_no_trade():
         None
     """
     run_model_no_trade_baseline.run_baseline_by_country_no_trade(
-        plot_map=True,
+        plot_map=False,
+        show_figures=False,
+        create_pptx_with_all_countries=False,
+        scenario_option=[],
+    )
+
+
+def test_run_nuclear_winter_by_country_no_trade_no_resilient_foods():
+    """
+    Runs the baseline by country and without trade model for testing
+
+    Arguments:
+
+    Returns:
+        None
+    """
+    run_model_no_trade_no_resilient_foods.run_nuclear_winter_by_country_no_trade(
+        plot_map=False,
         show_figures=False,
         create_pptx_with_all_countries=False,
         scenario_option=[],
@@ -96,6 +114,7 @@ def test_run_monte_carlo():
 if __name__ == "__main__":
     test_run_model_baseline()
     test_run_baseline_by_country_no_trade()
+    test_run_nuclear_winter_by_country_no_trade_no_resilient_foods()
     test_run_model_no_resilient_foods()
     test_run_model_with_resilient_foods()
     test_run_monte_carlo()

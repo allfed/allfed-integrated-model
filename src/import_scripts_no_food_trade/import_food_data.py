@@ -180,31 +180,6 @@ col_names["methane_scp"] = {
 }
 
 
-col_names["example_easier_format"] = {
-    "ISO3 Country Code": "iso3",
-    "reduction_year1_may": "reduction_year1_may",
-    "reduction_year1_june": "reduction_year1_june",
-    "reduction_year1_july": "reduction_year1_july",
-    "reduction_year1_august": "reduction_year1_august",
-    "reduction_year1_september": "reduction_year1_september",
-    "reduction_year1_october": "reduction_year1_october",
-    "reduction_year1_november": "reduction_year1_november",
-    "reduction_year1_december": "reduction_year1_december",
-    "reduction_year2_january": "reduction_year2_january",
-    "reduction_year2_february": "reduction_year2_february",
-    "reduction_year2_march": "reduction_year2_march",
-    "reduction_year2_april": "reduction_year2_april",
-    "reduction_year2_may": "reduction_year2_may",
-    "reduction_year2_june": "reduction_year2_june",
-    "reduction_year2_july": "reduction_year2_july",
-    "reduction_year2_august": "reduction_year2_august",
-    "reduction_year2_september": "reduction_year2_september",
-    "reduction_year2_october": "reduction_year2_october",
-    "reduction_year2_november": "reduction_year2_november",
-    "reduction_year2_december": "reduction_year2_december",
-}
-
-
 col_names["Seasonality Post War"] = {
     "ISO3 Country Code": "iso3",
     "Country Crop Area ('000 Hectares)": "crop_area_1000ha",
@@ -242,7 +217,6 @@ food_names = {
     "cellulosic_sugar": "Cellulosic Sugar",
     "methane_scp": "Methane SCP",
     "greenhouses": "Greenhouses",
-    # "crop_nuclear_winter": "example_easier_format",
 }
 
 for pandas_name, excel_name in food_names.items():

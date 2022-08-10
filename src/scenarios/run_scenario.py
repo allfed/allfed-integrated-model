@@ -248,10 +248,16 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.set_disruption_to_crops_to_zero(
                 constants_for_params
             )
-        if scenario_option["crop_disruption"] == "nuclear_winter":
+        if scenario_option["crop_disruption"] == "global_nuclear_winter":
             constants_for_params = (
                 scenario_loader.set_nuclear_winter_global_disruption_to_crops(
                     constants_for_params
+                )
+            )
+        if scenario_option["crop_disruption"] == "country_nuclear_winter":
+            constants_for_params = (
+                scenario_loader.set_nuclear_winter_country_disruption_to_crops(
+                    constants_for_params, country_data
                 )
             )
 

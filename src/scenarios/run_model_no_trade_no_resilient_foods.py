@@ -23,7 +23,7 @@ if module_path not in sys.path:
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 
 
-def run_baseline_by_country_no_trade(
+def run_nuclear_winter_by_country_no_trade(
     plot_map=True,
     show_figures=True,
     create_pptx_with_all_countries=True,
@@ -32,20 +32,17 @@ def run_baseline_by_country_no_trade(
     # now we have a list of all the options we want to test
     this_simulation = {}
     this_simulation["scale"] = "country"
+    this_simulation["scenario"] = "no_resilient_food_nuclear_winter"
     this_simulation["seasonality"] = "nuclear_winter_in_country"
-    this_simulation["fat"] = "required"
-    this_simulation["protein"] = "required"
-    this_simulation["crop_disruption"] = "zero"
-    this_simulation["fish"] = "baseline"
+    this_simulation["crop_disruption"] = "country_nuclear_winter"
+    this_simulation["fish"] = "nuclear_winter"
 
+    this_simulation["fat"] = "not_required"
+    this_simulation["protein"] = "not_required"
     this_simulation["waste"] = "doubled_prices_in_country"
-
     this_simulation["nutrition"] = "catastrophe"
-
-    this_simulation["buffer"] = "none"
-
+    this_simulation["buffer"] = "zero"
     this_simulation["shutoff"] = "short_delayed_shutoff"
-
     this_simulation["cull"] = "do_eat_culled"
 
     scenario_runner = ScenarioRunnerNoTrade()
@@ -63,28 +60,22 @@ def create_several_maps_with_different_assumptions():
 
     this_simulation_combinations = {}
 
-    # this_simulation_combinations["waste"] = [
-    #     "baseline_country_in_country",
-    #     "doubled_prices_in_country",
-    # ]
+    this_simulation_combinations["waste"] = [
+        "baseline_in_country",
+        "doubled_prices_in_country",
+    ]
 
-    # this_simulation_combinations["nutrition"] = ["baseline", "catastrophe"]
+    this_simulation_combinations["nutrition"] = ["baseline", "catastrophe"]
+    this_simulation_combinations["buffer"] = ["baseline", "zero"]
+    this_simulation_combinations["shutoff"] = ["continued", "short_delayed_shutoff"]
+    this_simulation_combinations["cull"] = ["dont_eat_culled", "do_eat_culled"]
+    this_simulation_combinations["fat"] = ["required", "not_required"]
 
-    # this_simulation_combinations["buffer"] = ["baseline", "none"]
-
-    # this_simulation_combinations["shutoff"] = ["continued", "short_delayed_shutoff"]
-
-    # this_simulation_combinations["cull"] = ["dont_eat_culled", "do_eat_culled"]
-
-    this_simulation_combinations["waste"] = ["baseline_country_in_country"]
-
-    this_simulation_combinations["nutrition"] = ["baseline"]
-
-    this_simulation_combinations["buffer"] = ["baseline"]
-
-    this_simulation_combinations["shutoff"] = ["continued"]
-
-    this_simulation_combinations["cull"] = ["dont_eat_culled"]
+    # this_simulation_combinations["waste"] = ["tripled_prices_in_country"]
+    # this_simulation_combinations["nutrition"] = ["baseline"]
+    # this_simulation_combinations["buffer"] = ["baseline"]
+    # this_simulation_combinations["shutoff"] = ["continued"]
+    # this_simulation_combinations["cull"] = ["dont_eat_culled"]
 
     # I don't really know why this works, but it certainly does.
     # I'm just combining things a lot like this example:
@@ -116,32 +107,28 @@ def create_several_maps_with_different_assumptions():
     # now we have a list of all the options we want to test
     defaults = {}
     defaults["scale"] = "country"
-    defaults["seasonality"] = "baseline_in_country"
+    defaults["seasonality"] = "nuclear_winter_in_country"
     defaults["fat"] = "required"
     defaults["protein"] = "required"
-    defaults["crop_disruption"] = "zero"
+    defaults["crop_disruption"] = "country_nuclear_winter"
     defaults["fish"] = "baseline"
+    defaults["scenario"] = "no_resilient_food_nuclear_winter"
 
     options_including_defaults = []
     for option in options:
         options_including_defaults.append(defaults | option)
 
+    scenario_runner = ScenarioRunnerNoTrade()
     scenario_runner.run_many_options(
-        scenario_options=options_including_defaults, title="baseline"
+        scenario_options=options_including_defaults, title="nuclear winter no response"
     )
 
 
 if __name__ == "__main__":
-    CREATE_SEVERAL_MAPS_PPTX = True
-    scenario_runner = ScenarioRunnerNoTrade()
+    CREATE_SEVERAL_MAPS_PPTX = False
     if CREATE_SEVERAL_MAPS_PPTX:
         create_several_maps_with_different_assumptions()
 
-    CREATE_PPTX_EACH_COUNTRY = False
+    CREATE_PPTX_EACH_COUNTRY = True
     if CREATE_PPTX_EACH_COUNTRY:
-        scenario_runner.run_model_no_trade(
-            plot_map=True,
-            show_figures=False,
-            create_pptx_with_all_countries=True,
-            scenario_option=[],
-        )
+        run_nuclear_winter_by_country_no_trade(show_figures=False)

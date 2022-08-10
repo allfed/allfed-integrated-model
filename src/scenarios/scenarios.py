@@ -613,7 +613,7 @@ class Scenarios:
     def set_country_seasonality_nuclear_winter(
         self, constants_for_params, country_data
     ):
-        self.scenario_description += "set_country_seasonality_nuclear_winter\n"
+        self.scenario_description += "\nset_country_seasonality_nuclear_winter"
         assert self.SEASONALITY_SET == False
 
         # fractional production per month
@@ -621,20 +621,19 @@ class Scenarios:
             country_data["seasonality_m" + str(i)] for i in range(1, 13)
         ]
 
+        # TODO: I am pretty sure this should be 12?
         constants_for_params["HUMAN_INEDIBLE_FEED"] = np.array(
-            list(
-                np.array([country_data["grasses_year1"]] * 8),
-                np.array([country_data["grasses_year2"]] * 12),
-                np.array([country_data["grasses_year3"]] * 12),
-                np.array([country_data["grasses_year4"]] * 12),
-                np.array([country_data["grasses_year5"]] * 12),
-                np.array([country_data["grasses_year6"]] * 12),
-                np.array([country_data["grasses_year7"]] * 12),
-                np.array([country_data["grasses_year8"]] * 12),
-                np.array([country_data["grasses_year9"]] * 12),
-                np.array([country_data["grasses_year10"]] * 12),
-            )
-        )
+            [country_data["grasses_y1"]] * 12
+            + [country_data["grasses_y2"]] * 12
+            + [country_data["grasses_y3"]] * 12
+            + [country_data["grasses_y4"]] * 12
+            + [country_data["grasses_y5"]] * 12
+            + [country_data["grasses_y6"]] * 12
+            + [country_data["grasses_y7"]] * 12
+            + [country_data["grasses_y8"]] * 12
+            + [country_data["grasses_y9"]] * 12
+            + [country_data["grasses_y10"]] * 12
+        ).flatten()
 
         self.SEASONALITY_SET = True
         return constants_for_params
@@ -856,6 +855,49 @@ class Scenarios:
         self.DISRUPTION_SET = True
         return constants_for_params
 
+    def set_nuclear_winter_country_disruption_to_crops(
+        self, constants_for_params, country_data
+    ):
+        self.scenario_description += "\nnuclear_winter_country_disruption_to_crops"
+        assert self.DISRUPTION_SET == False
+
+        constants_for_params["DISRUPTION_CROPS_YEAR1"] = -country_data[
+            "reduction_year1"
+        ]
+        constants_for_params["DISRUPTION_CROPS_YEAR2"] = -country_data[
+            "reduction_year2"
+        ]
+        constants_for_params["DISRUPTION_CROPS_YEAR3"] = -country_data[
+            "reduction_year3"
+        ]
+        constants_for_params["DISRUPTION_CROPS_YEAR4"] = -country_data[
+            "reduction_year4"
+        ]
+        constants_for_params["DISRUPTION_CROPS_YEAR5"] = -country_data[
+            "reduction_year5"
+        ]
+        constants_for_params["DISRUPTION_CROPS_YEAR6"] = -country_data[
+            "reduction_year5"
+        ]
+        constants_for_params["DISRUPTION_CROPS_YEAR7"] = -country_data[
+            "reduction_year5"
+        ]
+        constants_for_params["DISRUPTION_CROPS_YEAR8"] = -country_data[
+            "reduction_year5"
+        ]
+        constants_for_params["DISRUPTION_CROPS_YEAR9"] = -country_data[
+            "reduction_year5"
+        ]
+        constants_for_params["DISRUPTION_CROPS_YEAR10"] = -country_data[
+            "reduction_year5"
+        ]
+        constants_for_params["DISRUPTION_CROPS_YEAR11"] = -country_data[
+            "reduction_year5"
+        ]
+
+        self.DISRUPTION_SET = True
+        return constants_for_params
+
     # SPECIFIC SCENARIOS
 
     def get_baseline_climate_scenario(self, constants_for_params):
@@ -1031,12 +1073,13 @@ class Scenarios:
         constants_for_params["ADD_SEAWEED"] = False
         constants_for_params["ADD_STORED_FOOD"] = True
 
-        ##### ERROR CHECKING, TO BE REMOVED WHEN SUFFICIENT BY-COUNTRY
-        ##### RESILIENT FOOD DATA ARE AVAILABLE
-        if constants_for_params["POP"] < 7e9:
-            raise RuntimeError(
-                "ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY. THIS IS BECAUSE WE HAVE NOT YET IMPORTED BY-COUNTRY CROP PRODUCTION IN A NUCLEAR WINTER"
-            )
+        # TODO: DELETE and remove this
+        # ##### ERROR CHECKING, TO BE REMOVED WHEN SUFFICIENT BY-COUNTRY
+        # ##### RESILIENT FOOD DATA ARE AVAILABLE
+        # if constants_for_params["POP"] < 7e9:
+        #     raise RuntimeError(
+        #         "ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY. THIS IS BECAUSE WE HAVE NOT YET IMPORTED BY-COUNTRY CROP PRODUCTION IN A NUCLEAR WINTER"
+        #     )
         self.SCENARIO_SET = True
         return constants_for_params
 

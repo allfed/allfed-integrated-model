@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+x  #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 This file contains the code for creating the nuclear winter crop production csv 

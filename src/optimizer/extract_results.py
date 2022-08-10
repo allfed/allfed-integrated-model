@@ -665,14 +665,14 @@ class Extractor:
         #   grain_fed_meat_kcals = cattle_feedlot_maintained + chicken_pork
         #   (plotted as billions_fed_grain_fed_meat_kcals)
 
-        billions_fed_meat_culled_kcals = np.divide(
-            meat_culled, self.constants["KCALS_MONTHLY"]
+        billions_fed_meat_culled_kcals = meat_culled / self.constants["KCALS_MONTHLY"]
+
+        billions_fed_cattle_grazing_maintained = (
+            np.array(cattle_grazing_maintained_kcals) / self.constants["KCALS_MONTHLY"]
         )
 
         billions_fed_meat_culled_grazing_kcals = (
-            billions_fed_meat_culled_kcals
-            + np.array(cattle_grazing_maintained_kcals)
-            / self.constants["KCALS_MONTHLY"]
+            billions_fed_meat_culled_kcals + billions_fed_cattle_grazing_maintained
         )
 
         billions_fed_meat_culled_fat = np.multiply(

@@ -265,20 +265,13 @@ class OutdoorCrops(Food):
         for i in range(self.NMONTHS):
             cycle_index = i % 12
             month_kcals = self.months_cycle[cycle_index]
-            # TODO: fix this function
+            baseline_reduction = 1 - self.all_months_reductions[i + month_index]
+
             self.KCALS_GROWN.append(
-                month_kcals
-                * (
-                    1
-                    - (
-                        self.OG_KCAL_REDUCED
-                        * (1 - self.all_months_reductions[i + month_index])
-                    )
-                )
+                month_kcals * (1 - self.OG_KCAL_REDUCED * baseline_reduction)
             )
-            self.NO_ROT_KCALS_GROWN.append(
-                month_kcals * (1 - ((1 - self.all_months_reductions[i + month_index])))
-            )
+
+            self.NO_ROT_KCALS_GROWN.append(month_kcals * (1 - baseline_reduction))
 
         PLOT_WITH_SEASONALITY = False
         if PLOT_WITH_SEASONALITY:
@@ -328,6 +321,11 @@ class OutdoorCrops(Food):
         self.protein = np.array(self.OG_FRACTION_PROTEIN * crops_produced) * (
             1 - self.CROP_WASTE / 100
         )
+
+        assert not np.isnan(
+            self.kcals
+        ).any(), """Error: the outdoor crop production expected is 
+            unknown, cannot compute optimization"""
 
         self.set_units(
             kcals_units="billion kcals each month",

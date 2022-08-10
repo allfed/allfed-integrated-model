@@ -264,7 +264,6 @@ class Validator:
         assert interpreted_results.greenhouse.all_greater_than_or_equal_to_zero()
 
         assert interpreted_results.fish.all_greater_than_or_equal_to_zero()
-
         assert (
             interpreted_results.meat_culled_plus_grazing_cattle_maintained.all_greater_than_or_equal_to_zero()
         )

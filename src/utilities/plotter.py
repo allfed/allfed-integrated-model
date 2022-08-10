@@ -111,7 +111,14 @@ class Plotter:
                 )
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
-                maxy = max(sum([x[0:xlim] for x in ykcals]))
+                # maxy = max(sum([x[0:xlim] for x in ykcals]))
+                # maxy = max([sum(x[0:xlim]) for x in ykcals])
+                maxy = 0
+                for i in range(xlim):
+                    maxy = max(maxy, sum([x[i] for x in ykcals]))
+
+                maxy += maxy / 20
+                ax.set_ylim([0, maxy])
                 # ax.set_ylim([0, maxy])
 
                 plt.ylabel("Calories / capita / day")
@@ -1241,7 +1248,8 @@ class Plotter:
     def plot_monthly_reductions_seasonally(ratios):
 
         month_nums = np.linspace(0, len(ratios), len(ratios))
-
+        print("ratios")
+        print(ratios)
         plt.scatter(month_nums, ratios)
         plt.plot(month_nums, ratios)
 
