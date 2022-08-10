@@ -1030,10 +1030,10 @@ class Scenarios:
 
         ##### ERROR CHECKING, TO BE REMOVED WHEN SUFFICIENT BY-COUNTRY
         ##### RESILIENT FOOD DATA ARE AVAILABLE
-        if constants_for_params["POP"] < 7e9:
-            raise RuntimeError(
-                "ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY"
-            )
+        # if constants_for_params["POP"] < 7e9:
+        #     raise RuntimeError(
+        #         "ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY"
+        #     )
 
         self.SCENARIO_SET = True
         return constants_for_params

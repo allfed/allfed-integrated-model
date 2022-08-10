@@ -60,6 +60,7 @@ class Greenhouses:
                 )
             )
             greenhouse_area = np.array(greenhouse_area_long[0 : self.NMONTHS])
+            # @li just multiply greenhouse_area by the fraction
             PRINT_BY_COUNTRY_WARNING = False
             if PRINT_BY_COUNTRY_WARNING:
                 print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
@@ -139,7 +140,6 @@ class Greenhouses:
                 * KCAL_RATIO
                 * (1 + constants_for_params["GREENHOUSE_GAIN_PCT"] / 100)
             )
-
             rotation_kcals_per_ha_long.append(gh_kcals)
 
             rotation_fat_per_ha_long.append(FAT_RATIO * gh_kcals)

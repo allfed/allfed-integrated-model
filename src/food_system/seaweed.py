@@ -34,9 +34,10 @@ class Seaweed:
 
         # 1000 tons (seaweed)
         self.INITIAL_SEAWEED = constants_for_params["INITIAL_SEAWEED"]
-
+        # @li multiply by fraction
         # 1000 tons (seaweed)
         self.INITIAL_AREA = constants_for_params["INITIAL_AREA"]
+        # @li multiply by fraction
 
         self.SEAWEED_WASTE = constants_for_params["WASTE"]["SEAWEED"]
 
