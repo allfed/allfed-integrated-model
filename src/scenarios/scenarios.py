@@ -924,16 +924,18 @@ class Scenarios:
         constants_for_params["MEAT_SMOOTHING"] = False
         constants_for_params["STORED_FOOD_SMOOTHING"] = False
 
-        constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
+        constants_for_params["ADD_OUTDOOR_GROWING"] = True
+        constants_for_params["ADD_STORED_FOOD"] = True
+
+        constants_for_params["ADD_MEAT"] = True
         constants_for_params["ADD_MILK"] = True
         constants_for_params["ADD_FISH"] = True
+
+        constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
         constants_for_params["ADD_GREENHOUSES"] = False
-        constants_for_params["ADD_OUTDOOR_GROWING"] = True
-        constants_for_params["ADD_MEAT"] = True
         constants_for_params["ADD_METHANE_SCP"] = False
         constants_for_params["ADD_SEAWEED"] = False
 
-        constants_for_params["ADD_STORED_FOOD"] = True
 
         constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
 
@@ -1016,9 +1018,9 @@ class Scenarios:
         constants_for_params["DELAY"]["GREENHOUSE_MONTHS"] = 2
         constants_for_params["DELAY"]["SEAWEED_MONTHS"] = 1
 
-        constants_for_params["KCAL_SMOOTHING"] = True
-        constants_for_params["MEAT_SMOOTHING"] = True
-        constants_for_params["STORED_FOOD_SMOOTHING"] = True
+        constants_for_params["KCAL_SMOOTHING"] = False
+        constants_for_params["MEAT_SMOOTHING"] = False
+        constants_for_params["STORED_FOOD_SMOOTHING"] = False
 
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = True
         constants_for_params["ADD_MILK"] = True
@@ -1062,10 +1064,11 @@ class Scenarios:
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7
 
         constants_for_params["KCAL_SMOOTHING"] = False
-        constants_for_params["MEAT_SMOOTHING"] = True
-        constants_for_params["STORED_FOOD_SMOOTHING"] = True
+        constants_for_params["MEAT_SMOOTHING"] = False
+        constants_for_params["STORED_FOOD_SMOOTHING"] = False
 
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
+
         constants_for_params["ADD_MILK"] = True
         constants_for_params["ADD_FISH"] = True
         constants_for_params["ADD_GREENHOUSES"] = False
@@ -1075,13 +1078,6 @@ class Scenarios:
         constants_for_params["ADD_SEAWEED"] = False
         constants_for_params["ADD_STORED_FOOD"] = True
 
-        # TODO: DELETE and remove this
-        # ##### ERROR CHECKING, TO BE REMOVED WHEN SUFFICIENT BY-COUNTRY
-        # ##### RESILIENT FOOD DATA ARE AVAILABLE
-        # if constants_for_params["POP"] < 7e9:
-        #     raise RuntimeError(
-        #         "ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY. THIS IS BECAUSE WE HAVE NOT YET IMPORTED BY-COUNTRY CROP PRODUCTION IN A NUCLEAR WINTER"
-        #     )
         self.SCENARIO_SET = True
         return constants_for_params
 

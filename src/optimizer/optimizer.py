@@ -33,6 +33,33 @@ class Optimizer:
             name="Least_Humans_Fed_Any_Month", lowBound=0
         )
 
+        # print("outdoor_crops")
+        # print(multi_valued_constants["outdoor_crops"]/single_valued_constants["BILLION_KCALS_NEEDED"] * 100)
+        # print("grazing_milk_kcals")
+        # print(multi_valued_constants["grazing_milk_kcals"]/single_valued_constants["BILLION_KCALS_NEEDED"] * 100)
+        # print("cattle_grazing_maintained_kcals")
+        # print(multi_valued_constants["cattle_grazing_maintained_kcals"]/single_valued_constants["BILLION_KCALS_NEEDED"] * 100)
+        # print("meat_culled")
+        # print(multi_valued_constants["meat_culled"]/single_valued_constants["BILLION_KCALS_NEEDED"] * 100)
+        # print("production_kcals_fish_per_month")
+        # print(multi_valued_constants["production_kcals_fish_per_month"]/single_valued_constants["BILLION_KCALS_NEEDED"] * 100)
+        # print("grain_fed_created_kcals")
+        # print(multi_valued_constants["grain_fed_created_kcals"]/single_valued_constants["BILLION_KCALS_NEEDED"] * 100)
+        # print("nonhuman_consumption")
+        # print(-multi_valued_constants["nonhuman_consumption"]/single_valued_constants["BILLION_KCALS_NEEDED"] * 100)
+
+        # print("sum of everything")
+        # print((multi_valued_constants["outdoor_crops"].kcals
+        # -multi_valued_constants["nonhuman_consumption"].kcals
+        # +multi_valued_constants["grazing_milk_kcals"]
+        # +multi_valued_constants["cattle_grazing_maintained_kcals"]
+        # +multi_valued_constants["meat_culled"]
+        # +multi_valued_constants["production_kcals_fish_per_month"]
+        # +multi_valued_constants["grain_fed_created_kcals"])/single_valued_constants["BILLION_KCALS_NEEDED"] * 100)
+
+        # print("stored food")
+        # print(single_valued_constants["stored_food"]/single_valued_constants["BILLION_KCALS_NEEDED"] * 100)
+
         self.single_valued_constants = single_valued_constants
         self.multi_valued_constants = multi_valued_constants
 
@@ -49,10 +76,10 @@ class Optimizer:
         variables["used_area"] = [0] * NMONTHS
         variables["seaweed_food_produced"] = [0] * NMONTHS
 
-        variables["crops_food_storage_no_rotation"] = [0] * NMONTHS
-        variables["crops_food_storage_rotation"] = [0] * NMONTHS
-        variables["crops_food_eaten_with_rotation"] = [0] * NMONTHS
-        variables["crops_food_eaten_no_rotation"] = [0] * NMONTHS
+        variables["crops_food_storage_no_relocation"] = [0] * NMONTHS
+        variables["crops_food_storage_relocated"] = [0] * NMONTHS
+        variables["crops_food_eaten_relocated"] = [0] * NMONTHS
+        variables["crops_food_eaten_no_relocation"] = [0] * NMONTHS
 
         variables["humans_fed_kcals"] = [0] * NMONTHS
         variables["humans_fed_fat"] = [0] * NMONTHS
@@ -78,6 +105,11 @@ class Optimizer:
 
         PRINT_PULP_MESSAGES = False
         model += variables["objective_function"]
+        # print("model")
+        # print(model)
+        # print("nonhuman_consumption 83")
+        # print(self.multi_valued_constants["nonhuman_consumption"].kcals[83]/single_valued_constants["BILLION_KCALS_NEEDED"] * 100)
+
         status = model.solve(
             pulp.PULP_CBC_CMD(gapRel=0.0001, msg=PRINT_PULP_MESSAGES, fracGap=0.001)
         )
@@ -179,6 +211,20 @@ class Optimizer:
                 == self.single_valued_constants["stored_food"].kcals,
                 "Stored_Food_Start_Month_0_Constraint",
             )
+
+        elif month ==  self.single_valued_constants["NMONTHS"] - 1:  # last month
+
+            model += (
+                variables["stored_food_end"][month] == 0,
+                "Stored_Food_End_Month_" + str(month) + "_Constraint",
+            )
+
+            model += (
+                variables["stored_food_start"][month]
+                == variables["stored_food_end"][month - 1],
+                "Stored_Food_Start_Month_" + str(month) + "_Constraint",
+            )
+
         else:
             model += (
                 variables["stored_food_start"][month]
@@ -213,54 +259,53 @@ class Optimizer:
             variables["stored_food_end"][month]
             == variables["stored_food_start"][month]
             - variables["stored_food_eaten"][month],
-            "Stored_Food_End_Month_" + str(month) + "_Constraint",
+            "Stored_Food_Eaten_During_Month_" + str(month) + "_Constraint",
         )
-
         return (model, variables)
 
-    def add_outdoor_crops_to_model_no_rotation(self, model, variables, month):
+    def add_outdoor_crops_to_model_no_relocation(self, model, variables, month):
 
-        variables["crops_food_storage_no_rotation"][month] = LpVariable(
-            "Crops_Food_Storage_No_Rotation_Month_" + str(month) + "_Variable",
+        variables["crops_food_storage_no_relocation"][month] = LpVariable(
+            "Crops_Food_Storage_No_Relocation_Month_" + str(month) + "_Variable",
             lowBound=0,
         )
-        variables["crops_food_eaten_no_rotation"][month] = LpVariable(
-            "Crops_Food_Eaten_No_Rotation_During_Month_" + str(month) + "_Variable",
+        variables["crops_food_eaten_no_relocation"][month] = LpVariable(
+            "Crops_Food_Eaten_No_Relocation_During_Month_" + str(month) + "_Variable",
             lowBound=0,
         )
 
         if month == 0:
 
             model += (
-                variables["crops_food_storage_no_rotation"][month]
+                variables["crops_food_storage_no_relocation"][month]
                 == self.multi_valued_constants["outdoor_crops"].kcals[month]
-                - variables["crops_food_eaten_no_rotation"][month],
-                "Crops_Food_Storage_No_Rotation_" + str(month) + "_Constraint",
+                - variables["crops_food_eaten_no_relocation"][month],
+                "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
             )
 
         elif month == self.single_valued_constants["NMONTHS"] - 1:  # last month
             model += (
-                variables["crops_food_storage_no_rotation"][month] == 0,
-                "Crops_Food_No_Rotation_None_Left_" + str(month) + "_Constraint",
+                variables["crops_food_storage_no_relocation"][month] == 0,
+                "Crops_Food_No_Relocation_None_Left_" + str(month) + "_Constraint",
             )
 
             model += (
-                variables["crops_food_storage_no_rotation"][month]
+                variables["crops_food_storage_no_relocation"][month]
                 == self.multi_valued_constants["outdoor_crops"].kcals[month]
-                + variables["crops_food_storage_no_rotation"][month - 1]
-                - variables["crops_food_eaten_no_rotation"][month],
-                "Crops_Food_No_Rotation_Storage_" + str(month) + "_Constraint",
+                + variables["crops_food_storage_no_relocation"][month - 1]
+                - variables["crops_food_eaten_no_relocation"][month],
+                "Crops_Food_No_Relocation_Storage_" + str(month) + "_Constraint",
             )
 
         else:
             # any month other than the first or last month
 
             model += (
-                variables["crops_food_storage_no_rotation"][month]
+                variables["crops_food_storage_no_relocation"][month]
                 == self.multi_valued_constants["outdoor_crops"].kcals[month]
-                - variables["crops_food_eaten_no_rotation"][month]
-                + variables["crops_food_storage_no_rotation"][month - 1],
-                "Crops_Food_Storage_No_Rotation_" + str(month) + "_Constraint",
+                - variables["crops_food_eaten_no_relocation"][month]
+                + variables["crops_food_storage_no_relocation"][month - 1],
+                "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
             )
 
         return (model, variables)
@@ -268,43 +313,43 @@ class Optimizer:
     # incorporate linear constraints for stored food consumption each month
     def add_outdoor_crops_to_model(self, model, variables, month):
         if not self.single_valued_constants["inputs"]["OG_USE_BETTER_ROTATION"]:
-            self.add_outdoor_crops_to_model_no_rotation(model, variables, month)
+            self.add_outdoor_crops_to_model_no_relocation(model, variables, month)
             return (model, variables)
 
-        variables["crops_food_storage_no_rotation"][month] = LpVariable(
-            "Crops_Food_Storage_No_Rotation_Month_" + str(month) + "_Variable",
+        variables["crops_food_storage_no_relocation"][month] = LpVariable(
+            "Crops_Food_Storage_No_Relocation_Month_" + str(month) + "_Variable",
             lowBound=0,
         )
-        variables["crops_food_eaten_no_rotation"][month] = LpVariable(
-            "Crops_Food_Eaten_No_Rotation_During_Month_" + str(month) + "_Variable",
+        variables["crops_food_eaten_no_relocation"][month] = LpVariable(
+            "Crops_Food_Eaten_No_Relocation_During_Month_" + str(month) + "_Variable",
             lowBound=0,
         )
 
-        variables["crops_food_storage_rotation"][month] = LpVariable(
-            "Crops_Food_Storage_Rotation_Month_" + str(month) + "_Variable", lowBound=0
+        variables["crops_food_storage_relocated"][month] = LpVariable(
+            "Crops_Food_Storage_Relocated_Month_" + str(month) + "_Variable", lowBound=0
         )
-        variables["crops_food_eaten_with_rotation"][month] = LpVariable(
-            "Crops_Food_Eaten_Rotation_During_Month_" + str(month) + "_Variable",
+        variables["crops_food_eaten_relocated"][month] = LpVariable(
+            "Crops_Food_Eaten_Relocated_During_Month_" + str(month) + "_Variable",
             lowBound=0,
         )
 
         if month == 0:  # first month
 
             model += (
-                variables["crops_food_storage_no_rotation"][month]
+                variables["crops_food_storage_no_relocation"][month]
                 == self.multi_valued_constants["outdoor_crops"].kcals[month]
-                - variables["crops_food_eaten_no_rotation"][month],
-                "Crops_Food_Storage_No_Rotation_" + str(month) + "_Constraint",
+                - variables["crops_food_eaten_no_relocation"][month],
+                "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
             )
 
             model += (
-                variables["crops_food_storage_rotation"][month] == 0,
-                "Crops_Food_Storage_Rotation_" + str(month) + "_Constraint",
+                variables["crops_food_storage_relocated"][month] == 0,
+                "Crops_Food_Storage_Relocated_" + str(month) + "_Constraint",
             )
 
             model += (
-                variables["crops_food_eaten_with_rotation"][month] == 0,
-                "Crops_Food_Eaten_Rotation_" + str(month) + "_Constraint",
+                variables["crops_food_eaten_relocated"][month] == 0,
+                "Crops_Food_Eaten_Relocated_" + str(month) + "_Constraint",
             )
 
         elif month == self.single_valued_constants["NMONTHS"] - 1:  # last month
@@ -317,32 +362,32 @@ class Optimizer:
             )
 
             model += (
-                variables["crops_food_storage_no_rotation"][month] == 0,
-                "Crops_Food_No_Rotation_None_Left_" + str(month) + "_Constraint",
+                variables["crops_food_storage_no_relocation"][month] == 0,
+                "Crops_Food_No_Relocation_None_Left_" + str(month) + "_Constraint",
             )
 
             model += (
-                variables["crops_food_storage_rotation"][month] == 0,
-                "Crops_Food_Rotation_None_Left_" + str(month) + "_Constraint",
+                variables["crops_food_storage_relocated"][month] == 0,
+                "Crops_Food_Relocated_None_Left_" + str(month) + "_Constraint",
             )
 
-            # note to self: is it a problem that the crops_food_storage_rotation is
+            # note to self: is it a problem that the crops_food_storage_relocated is
             # part of the following equation, and not excluded, as it is set to zero
             # in the assignment above?
 
             model += (
-                variables["crops_food_storage_rotation"][month]
+                variables["crops_food_storage_relocated"][month]
                 == self.multi_valued_constants["outdoor_crops"].kcals[month]
-                - variables["crops_food_eaten_with_rotation"][month]
-                + variables["crops_food_storage_rotation"][month - 1],
-                "Crops_Food_Rotation_Storage_" + str(month) + "_Constraint",
+                - variables["crops_food_eaten_relocated"][month]
+                + variables["crops_food_storage_relocated"][month - 1],
+                "Crops_Food_Relocated_Storage_" + str(month) + "_Constraint",
             )
 
             model += (
-                variables["crops_food_storage_no_rotation"][month]
-                == variables["crops_food_storage_no_rotation"][month - 1]
-                - variables["crops_food_eaten_no_rotation"][month],
-                "Crops_Food_No_Rotation_Storage_" + str(month) + "_Constraint",
+                variables["crops_food_storage_no_relocation"][month]
+                == variables["crops_food_storage_no_relocation"][month - 1]
+                - variables["crops_food_eaten_no_relocation"][month],
+                "Crops_Food_No_Relocation_Storage_" + str(month) + "_Constraint",
             )
 
         elif (
@@ -354,39 +399,39 @@ class Optimizer:
             # any month up to and including the harvest duration
 
             model += (
-                variables["crops_food_storage_rotation"][month] == 0,
+                variables["crops_food_storage_relocated"][month] == 0,
                 "Crops_Food_Storage_Rotation" + str(month) + "_Constraint",
             )
 
             model += (
-                variables["crops_food_eaten_with_rotation"][month] == 0,
+                variables["crops_food_eaten_relocated"][month] == 0,
                 "Crops_Food_Eaten_Rotation" + str(month) + "_Constraint",
             )
 
             model += (
-                variables["crops_food_storage_no_rotation"][month]
+                variables["crops_food_storage_no_relocation"][month]
                 == self.multi_valued_constants["outdoor_crops"].kcals[month]
-                - variables["crops_food_eaten_no_rotation"][month]
-                + variables["crops_food_storage_no_rotation"][month - 1],
-                "Crops_Food_Storage_No_Rotation_" + str(month) + "_Constraint",
+                - variables["crops_food_eaten_no_relocation"][month]
+                + variables["crops_food_storage_no_relocation"][month - 1],
+                "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
             )
 
         else:  # now producing rotation, but can still eat "no rotation" storage
             # not the first month, not the last month, and is a month after the rotation
             # switch
             model += (
-                variables["crops_food_storage_rotation"][month]
+                variables["crops_food_storage_relocated"][month]
                 == self.multi_valued_constants["outdoor_crops"].kcals[month]
-                - variables["crops_food_eaten_with_rotation"][month]
-                + variables["crops_food_storage_rotation"][month - 1],
-                "Crops_Food_Storage_Rotation_" + str(month) + "_Constraint",
+                - variables["crops_food_eaten_relocated"][month]
+                + variables["crops_food_storage_relocated"][month - 1],
+                "Crops_Food_Storage_Relocated_" + str(month) + "_Constraint",
             )
 
             model += (
-                variables["crops_food_storage_no_rotation"][month]
-                == variables["crops_food_storage_no_rotation"][month - 1]
-                - variables["crops_food_eaten_no_rotation"][month],
-                "Crops_Food_Storage_No_Rotation_" + str(month) + "_Constraint",
+                variables["crops_food_storage_no_relocation"][month]
+                == variables["crops_food_storage_no_relocation"][month - 1]
+                - variables["crops_food_eaten_no_relocation"][month],
+                "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
             )
 
         return (model, variables)
@@ -430,8 +475,8 @@ class Optimizer:
             variables["humans_fed_kcals"][month]
             == (
                 variables["stored_food_eaten"][month]
-                + variables["crops_food_eaten_no_rotation"][month]
-                + variables["crops_food_eaten_with_rotation"][month]
+                + variables["crops_food_eaten_no_relocation"][month]
+                + variables["crops_food_eaten_relocated"][month]
                 * self.single_valued_constants["OG_ROTATION_FRACTION_KCALS"]
                 - self.multi_valued_constants["nonhuman_consumption"].kcals[month]
                 + variables["seaweed_food_produced"][month]
@@ -461,9 +506,9 @@ class Optimizer:
                 == (
                     variables["stored_food_eaten"][month]
                     * self.single_valued_constants["SF_FRACTION_FAT"]
-                    + variables["crops_food_eaten_no_rotation"][month]
+                    + variables["crops_food_eaten_no_relocation"][month]
                     * self.single_valued_constants["OG_FRACTION_FAT"]
-                    + variables["crops_food_eaten_with_rotation"][month]
+                    + variables["crops_food_eaten_relocated"][month]
                     * self.single_valued_constants["OG_ROTATION_FRACTION_FAT"]
                     - self.multi_valued_constants["nonhuman_consumption"].fat[month]
                     + variables["seaweed_food_produced"][month]
@@ -494,9 +539,9 @@ class Optimizer:
                 == (
                     variables["stored_food_eaten"][month]
                     * self.single_valued_constants["SF_FRACTION_PROTEIN"]
-                    + variables["crops_food_eaten_no_rotation"][month]
+                    + variables["crops_food_eaten_no_relocation"][month]
                     * self.single_valued_constants["OG_FRACTION_PROTEIN"]
-                    + variables["crops_food_eaten_with_rotation"][month]
+                    + variables["crops_food_eaten_relocated"][month]
                     * self.single_valued_constants["OG_ROTATION_FRACTION_PROTEIN"]
                     - self.multi_valued_constants["nonhuman_consumption"].protein[month]
                     + variables["seaweed_food_produced"][month]
@@ -524,12 +569,17 @@ class Optimizer:
 
         # no feeding human edible maintained meat or milk to animals or biofuels
 
+        # DELETE: COMMENT THIS BACK IN
         model += (
-            variables["stored_food_eaten"][month]
-            + variables["crops_food_eaten_no_rotation"][month]
-            + variables["crops_food_eaten_with_rotation"][month]
-            * self.single_valued_constants["OG_ROTATION_FRACTION_KCALS"]
-            >= self.multi_valued_constants["nonhuman_consumption"].kcals[month],
+            (variables["stored_food_eaten"][month]
+            + variables["crops_food_eaten_no_relocation"][month]
+            + variables["crops_food_eaten_relocated"][month]
+            * self.single_valued_constants["OG_ROTATION_FRACTION_KCALS"])
+                / self.single_valued_constants["BILLION_KCALS_NEEDED"]
+                * 100
+            >= (self.multi_valued_constants["nonhuman_consumption"].kcals[month])
+                / self.single_valued_constants["BILLION_KCALS_NEEDED"]
+                * 100,
             "Excess_Kcals_Less_Than_stored_food_And_outdoor_crops_"
             + str(month)
             + "_Constraint",
@@ -537,13 +587,15 @@ class Optimizer:
 
         if self.single_valued_constants["inputs"]["INCLUDE_FAT"]:
             model += (
-                variables["stored_food_eaten"][month]
+                (variables["stored_food_eaten"][month]
                 * self.single_valued_constants["SF_FRACTION_FAT"]
-                + variables["crops_food_eaten_no_rotation"][month]
+                + variables["crops_food_eaten_no_relocation"][month]
                 * self.single_valued_constants["OG_FRACTION_FAT"]
-                + variables["crops_food_eaten_with_rotation"][month]
-                * self.single_valued_constants["OG_ROTATION_FRACTION_FAT"]
-                >= self.multi_valued_constants["nonhuman_consumption"].fat[month],
+                + variables["crops_food_eaten_relocated"][month]
+                * self.single_valued_constants["OG_ROTATION_FRACTION_FAT"])/ self.single_valued_constants["THOU_TONS_FAT_NEEDED"]
+                * 100
+                >= self.multi_valued_constants["nonhuman_consumption"].fat[month]/ self.single_valued_constants["THOU_TONS_FAT_NEEDED"]
+                * 100,
                 "Excess_Fat_Less_Than_stored_food_And_outdoor_crops_"
                 + str(month)
                 + "_Constraint",
@@ -551,13 +603,15 @@ class Optimizer:
 
         if self.single_valued_constants["inputs"]["INCLUDE_PROTEIN"]:
             model += (
-                variables["stored_food_eaten"][month]
+                (variables["stored_food_eaten"][month]
                 * self.single_valued_constants["SF_FRACTION_PROTEIN"]
-                + variables["crops_food_eaten_no_rotation"][month]
+                + variables["crops_food_eaten_no_relocation"][month]
                 * self.single_valued_constants["OG_FRACTION_PROTEIN"]
-                + variables["crops_food_eaten_with_rotation"][month]
-                * self.single_valued_constants["OG_ROTATION_FRACTION_PROTEIN"]
-                >= self.multi_valued_constants["nonhuman_consumption"].protein[month],
+                + variables["crops_food_eaten_relocated"][month]
+                * self.single_valued_constants["OG_ROTATION_FRACTION_PROTEIN"])/ self.single_valued_constants["THOU_TONS_PROTEIN_NEEDED"]
+                * 100
+                >= self.multi_valued_constants["nonhuman_consumption"].protein[month]/ self.single_valued_constants["THOU_TONS_PROTEIN_NEEDED"]
+                * 100,
                 "Excess_Protein_Less_Than_stored_food_And_outdoor_crops_"
                 + str(month)
                 + "_Constraint",

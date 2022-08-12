@@ -77,8 +77,14 @@ def run_model_no_resilient_foods(plot_figures=True):
     print("")
 
     if plot_figures:
-        Plotter.plot_fig_1ab(results, 77)
-
+        Plotter.plot_fig_1ab(
+            results,
+            77,
+            "World",
+            True,
+            False,
+            scenarios_loader.scenario_description,
+        )
 
 def set_common_no_resilient_properties():
     scenarios_loader = Scenarios()

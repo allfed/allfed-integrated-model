@@ -29,6 +29,22 @@ def run_nuclear_winter_by_country_no_trade(
     create_pptx_with_all_countries=True,
     scenario_option=[],
 ):
+
+    # country_food_system
+    #
+    # excess zero
+    # short_delayed_shutoff
+    # global_waste_to_baseline_prices
+    # baseline_nutrition_profile
+    # stored_food_buffer_as_baseline
+    # set_country_seasonality_nuclear_winter
+    # fish_baseline
+    # nuclear_winter_country_disruption_to_crops
+    # include protein
+    # include fat
+    # don't include culled animals
+    # get_no_resilient_food_scenario
+
     # now we have a list of all the options we want to test
     this_simulation = {}
     this_simulation["scale"] = "country"
@@ -37,13 +53,13 @@ def run_nuclear_winter_by_country_no_trade(
     this_simulation["crop_disruption"] = "country_nuclear_winter"
     this_simulation["fish"] = "nuclear_winter"
 
-    this_simulation["fat"] = "not_required"
-    this_simulation["protein"] = "not_required"
-    this_simulation["waste"] = "doubled_prices_in_country"
-    this_simulation["nutrition"] = "catastrophe"
-    this_simulation["buffer"] = "zero"
+    this_simulation["fat"] = "required"
+    this_simulation["protein"] = "required"
+    this_simulation["waste"] = "baseline_in_country"
+    this_simulation["nutrition"] = "baseline"
+    this_simulation["buffer"] = "baseline"
     this_simulation["shutoff"] = "short_delayed_shutoff"
-    this_simulation["cull"] = "do_eat_culled"
+    this_simulation["cull"] = "dont_eat_culled"
 
     scenario_runner = ScenarioRunnerNoTrade()
 
@@ -52,6 +68,7 @@ def run_nuclear_winter_by_country_no_trade(
         show_figures=show_figures,
         add_map_slide_to_pptx=plot_map,
         scenario_option=this_simulation,
+        countries_to_skip=["TWN"] # taiwan doesn't have crop results
     )
 
 
@@ -108,7 +125,6 @@ def create_several_maps_with_different_assumptions():
     defaults = {}
     defaults["scale"] = "country"
     defaults["seasonality"] = "nuclear_winter_in_country"
-    defaults["fat"] = "required"
     defaults["protein"] = "required"
     defaults["crop_disruption"] = "country_nuclear_winter"
     defaults["fish"] = "baseline"
@@ -120,15 +136,16 @@ def create_several_maps_with_different_assumptions():
 
     scenario_runner = ScenarioRunnerNoTrade()
     scenario_runner.run_many_options(
-        scenario_options=options_including_defaults, title="nuclear winter no response"
+        scenario_options=options_including_defaults, title="nuclear winter no response",
+        countries_to_skip = ["TWN"]
     )
 
 
 if __name__ == "__main__":
-    CREATE_SEVERAL_MAPS_PPTX = False
+    CREATE_SEVERAL_MAPS_PPTX = True
     if CREATE_SEVERAL_MAPS_PPTX:
         create_several_maps_with_different_assumptions()
 
-    CREATE_PPTX_EACH_COUNTRY = True
+    CREATE_PPTX_EACH_COUNTRY = False
     if CREATE_PPTX_EACH_COUNTRY:
-        run_nuclear_winter_by_country_no_trade(show_figures=False)
+        run_nuclear_winter_by_country_no_trade(show_figures=False,create_pptx_with_all_countries=False,plot_map=False)

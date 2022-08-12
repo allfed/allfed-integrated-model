@@ -4,6 +4,7 @@
 ##                                                                            #
 ###############################################################################
 
+import numpy as np
 
 class Seafood:
     def __init__(self, constants_for_params):
@@ -61,7 +62,7 @@ class Seafood:
             production_fat_fish_per_month = [0] * len(FISH_PERCENT_EACH_MONTH)
 
         return (
-            production_kcals_fish_per_month,
-            production_fat_fish_per_month,
-            production_protein_fish_per_month,
+            np.array(production_kcals_fish_per_month),
+            np.array(production_fat_fish_per_month),
+            np.array(production_protein_fish_per_month),
         )

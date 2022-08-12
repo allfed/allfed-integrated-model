@@ -89,14 +89,17 @@ class StoredFood(Food):
         self.INITIAL_SF_KCALS = self.TONS_DRY_CALORIC_EQIVALENT_SF * 4e6 / 1e9
 
         self.kcals = self.INITIAL_SF_KCALS * (1 - self.CROP_WASTE / 100)
+        
         self.fat = (
             self.INITIAL_SF_KCALS * self.SF_FRACTION_FAT * (1 - self.CROP_WASTE / 100)
         )
+        
         self.protein = (
             self.INITIAL_SF_KCALS
             * self.SF_FRACTION_PROTEIN
             * (1 - self.CROP_WASTE / 100)
         )
+        
 
         self.set_units(
             kcals_units="billion kcals",

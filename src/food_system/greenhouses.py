@@ -131,23 +131,23 @@ class Greenhouses:
                 greenhouse_protein_per_ha,
             )
 
-        rotation_fat_per_ha_long = []
-        rotation_protein_per_ha_long = []
-        rotation_kcals_per_ha_long = []
+        relocation_kcals_per_ha_long = []
+        relocated_fat_per_ha_long = []
+        relocation_protein_per_ha_long = []
         for kcals_per_month in self.GH_KCALS_GROWN_PER_HECTARE:
             gh_kcals = (
                 kcals_per_month
                 * KCAL_RATIO
                 * (1 + constants_for_params["GREENHOUSE_GAIN_PCT"] / 100)
             )
-            rotation_kcals_per_ha_long.append(gh_kcals)
+            relocation_kcals_per_ha_long.append(gh_kcals)
 
-            rotation_fat_per_ha_long.append(FAT_RATIO * gh_kcals)
+            relocated_fat_per_ha_long.append(FAT_RATIO * gh_kcals)
 
-            rotation_protein_per_ha_long.append(PROTEIN_RATIO * gh_kcals)
+            relocation_protein_per_ha_long.append(PROTEIN_RATIO * gh_kcals)
 
-        rotation_kcals_per_ha = rotation_kcals_per_ha_long[0 : self.NMONTHS]
-        rotation_fat_per_ha = rotation_fat_per_ha_long[0 : self.NMONTHS]
-        rotation_protein_per_ha = rotation_protein_per_ha_long[0 : self.NMONTHS]
+        relocation_kcals_per_ha = relocation_kcals_per_ha_long[0 : self.NMONTHS]
+        relocation_fat_per_ha = relocated_fat_per_ha_long[0 : self.NMONTHS]
+        relocation_protein_per_ha = relocation_protein_per_ha_long[0 : self.NMONTHS]
 
-        return (rotation_kcals_per_ha, rotation_fat_per_ha, rotation_protein_per_ha)
+        return (relocation_kcals_per_ha, relocation_fat_per_ha, relocation_protein_per_ha)

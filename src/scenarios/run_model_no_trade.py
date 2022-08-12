@@ -79,7 +79,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             print("")
             print("")
 
-        USE_TRY_CATCH = True
+        USE_TRY_CATCH = False
         if USE_TRY_CATCH:
             try:
                 scenario_runner = ScenarioRunner()
@@ -98,14 +98,16 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             )
             percent_people_fed = interpreted_results.percent_people_fed
 
-        if create_pptx_with_all_countries and not np.isnan(percent_people_fed):
-            Plotter.plot_fig_1ab(
-                interpreted_results,
-                84,
-                country_data["country"],
-                show_figures,
-                scenario_loader.scenario_description,
-            )
+        if not np.isnan(percent_people_fed):
+            if show_figures or create_pptx_with_all_countries:
+                Plotter.plot_fig_1ab(
+                    interpreted_results,
+                    84,
+                    country_data["country"],
+                    show_figures,
+                    create_pptx_with_all_countries,
+                    scenario_loader.scenario_description,
+                )
         return (
             percent_people_fed / 100,
             scenario_loader.scenario_description,
@@ -137,6 +139,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         show_figures=True,
         add_map_slide_to_pptx=True,
         scenario_option=[],
+        countries_to_skip=[],
     ):
         if len(scenario_option) == 0:
             print("ERROR: a scenario must be specified")
@@ -208,8 +211,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         for index, country_data in no_trade_table.iterrows():
 
             country_code = country_data["iso3"]
-            # if country_code != "USA":
             #     continue
+            if country_code in countries_to_skip:
+                continue
 
             population = country_data["population"]
 
@@ -269,13 +273,16 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         if create_pptx_with_all_countries:
             Plotter.end_pptx(saveloc="../../results/large_reports/no_food_trade.pptx")
 
-    def run_many_options(self, scenario_options, title):
-        Plotter.start_pptx("Various Scenario Options " + title)
+    def run_many_options(self, scenario_options, title, countries_to_skip=[]):
         print("Number of scenarios:")
         print(len(scenario_options))
         print("")
         print("")
         print("")
+        add_map_slide_to_pptx = False
+        if add_map_slide_to_pptx:
+            Plotter.start_pptx("Various Scenario Options " + title)
+
         scenario_number = 1
         for scenario_option in scenario_options:
             print("Scenario Number: " + str(scenario_number))
@@ -283,11 +290,14 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             self.run_model_no_trade(
                 create_pptx_with_all_countries=False,
                 show_figures=False,
-                add_map_slide_to_pptx=True,
+                add_map_slide_to_pptx=add_map_slide_to_pptx,
                 scenario_option=scenario_option,
+                countries_to_skip=countries_to_skip,
             )
-        Plotter.end_pptx(
-            saveloc="../../results/large_reports/various_scenario_options_"
-            + title
-            + ".pptx"
-        )
+
+        if add_map_slide_to_pptx:
+            Plotter.end_pptx(
+                saveloc="../../results/large_reports/various_scenario_options_"
+                + title
+                + ".pptx"
+            )

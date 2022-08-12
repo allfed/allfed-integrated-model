@@ -32,9 +32,6 @@ class Validator:
             extracted_results.constants["inputs"]["INCLUDE_PROTEIN"],
         )
 
-        # TODO: DELETE THIS if not useful
-        # self.YES_THIS_ONE_PROBABLY_DOES_SOMETHING_USEFUL_question_mark()
-
         (
             kcals_total_from_optimizer,
             fat_total_from_optimizer,

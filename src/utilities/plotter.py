@@ -39,8 +39,9 @@ class Plotter:
 
     @classmethod
     def plot_fig_1ab(
-        crs, interpreter, xlim, newtitle="", plot_figure=True, description=""
+        crs, interpreter, xlim, newtitle="", plot_figure=True,add_slide_with_fig=True, description=""
     ):
+        xlim = min(xlim,len(interpreter.time_months_middle))
         legend = Plotter.get_people_fed_legend(interpreter, True)
         fig = plt.figure()
         pal = [
@@ -201,8 +202,7 @@ class Plotter:
             saveloc,
             dpi=300,
         )
-
-        if not plot_figure:
+        if add_slide_with_fig:
             crs.mp.insert_slide(
                 title_below=newtitle
                 + ": Percent fed:"
@@ -212,8 +212,6 @@ class Plotter:
                 figure_save_loc=saveloc,
             )
 
-        # plt.savefig("../../results/fig_1ab" + newtitle + ".png")
-        # print("saved figure 1ab")
         if plot_figure:
             plt.show()
 
@@ -1319,7 +1317,6 @@ class Plotter:
         # Packing all the plots and displaying them
         plt.tight_layout()
         fig.suptitle(title)
-        # plt.show()
 
         saveloc = "../../results/large_reports/" + title + ".png"
 
@@ -1327,7 +1324,7 @@ class Plotter:
             saveloc,
             dpi=300,
         )
-        SHOWPLOT = False
+        SHOWPLOT = True
         if SHOWPLOT:
             plt.show()
         else:
@@ -1386,7 +1383,7 @@ class Plotter:
             dpi=300,
         )
 
-        SHOWPLOT = False
+        SHOWPLOT = True
         if SHOWPLOT:
             plt.show()
         else:
