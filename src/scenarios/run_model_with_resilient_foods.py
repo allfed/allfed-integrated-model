@@ -127,19 +127,10 @@ def run_model_with_resilient_foods(plot_figures=True):
             constants_for_params, excess_per_month
         )
 
-        # DELETE if you see this >>>>
-        # constants_for_params = scenarios_loader.get_additional_feed_given_excess_per_month(
-        #     constants_for_params, excess_per_month
-        # )
-        # <<<<
 
         percent_fed = results.percent_people_fed
 
         n = n + 1
-
-        # # last month plotted is month 48
-        # if plot_figures:
-        #     Plotter.plot_fig_2abcd(results1, results, 48)
 
     results2 = results
 

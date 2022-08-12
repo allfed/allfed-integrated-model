@@ -45,7 +45,7 @@ class FeedAndBiofuels:
             protein_units="tons per year",
         )
 
-        self.AMOUNT_TO_REDUCE_RATIO_EACH_ITERATION = 0.05  # 1% reduction
+        self.AMOUNT_TO_REDUCE_RATIO_EACH_ITERATION = 0.01  # 1% reduction
         self.SAFETY_MARGIN = 0.1
 
     def set_nonhuman_consumption_with_cap(
@@ -138,6 +138,7 @@ class FeedAndBiofuels:
             constants_for_params, self.biofuels, self.feed
         )
 
+
     def set_biofuels_and_feed_usage_postwaste(
         self,
         max_net_demand,
@@ -152,9 +153,7 @@ class FeedAndBiofuels:
         all_zero = max_net_demand.all_equals_zero()
 
         # whether macronutrients exceed availability from stored foods + og
-        exceeds_less_than_stored_food = max_net_demand.all_less_than_or_equal_to(
-            stored_food * (1 - self.SAFETY_MARGIN)
-        )
+        exceeds_less_than_stored_food = max_net_demand.all_less_than_or_equal_to(stored_food * (1 - self.SAFETY_MARGIN))
 
         # in order to get the pre-waste amount, we need to take the amount that we
         # calculated feed to be after cap and waste, and divide back out the waste
@@ -217,6 +216,10 @@ class FeedAndBiofuels:
 
         # initialized to zero but will be overwritten probably
         running_supply_minus_demand = Food()
+
+        # necessary for the way we've computed this cap to work out correctly
+        assert stored_food.SF_FRACTION_FAT == outdoor_crops.OG_FRACTION_FAT
+        assert stored_food.SF_FRACTION_PROTEIN == outdoor_crops.OG_FRACTION_PROTEIN
 
         ratio = 1  # initialize to an unchanged amount
         while demand_more_than_supply:
@@ -391,6 +394,9 @@ class FeedAndBiofuels:
         Calculate the exceedance of the biofuel and feed usage past the outdoor outdoor_crops
         production on a monthly basis for each nutrient.
 
+        NOTE: UPDATE:
+            I realized that the max amount of stored food or OG used each month by kcals, fat or protein needs to be summed, rather than the max of each individual nutrient
+
         Example:
 
         outdoor crops:
@@ -444,17 +450,28 @@ class FeedAndBiofuels:
 
         assert nonhuman_consumption_before_cap.all_greater_than_or_equal_to_zero()
 
-        # outdoor crops is post waste (as well as nonhuman_consumption_before_cap)
-        supply_minus_demand = outdoor_crops - nonhuman_consumption_before_cap
 
-        running_supply_minus_demand = (
-            supply_minus_demand.get_running_total_nutrients_sum()
+        amount_stored_food_and_outdoor_crops_used = (
+            nonhuman_consumption_before_cap.get_amount_used_other_food(outdoor_crops.OG_FRACTION_FAT, outdoor_crops.OG_FRACTION_PROTEIN)
         )
+        diff = amount_stored_food_and_outdoor_crops_used.fat/amount_stored_food_and_outdoor_crops_used.kcals - outdoor_crops.OG_FRACTION_FAT
 
-        # negative of the min is the max of the negative (this comment is not a koan!)
-        max_running_net_demand = -running_supply_minus_demand.get_min_all_months()
+        no_nans_diff = np.where(amount_stored_food_and_outdoor_crops_used.kcals==0,0,diff)
+        assert (np.round(no_nans_diff,4)==0).all()
 
-        return max_running_net_demand, running_supply_minus_demand
+        diff=(amount_stored_food_and_outdoor_crops_used.protein/amount_stored_food_and_outdoor_crops_used.kcals - outdoor_crops.OG_FRACTION_PROTEIN)
+
+        no_nans_diff = np.where(amount_stored_food_and_outdoor_crops_used.kcals==0,0,diff)
+        assert (np.round(no_nans_diff,4)==0).all()
+
+        # outdoor crops is post waste (as well as nonhuman_consumption_before_cap)
+        demand_minus_supply = amount_stored_food_and_outdoor_crops_used - outdoor_crops
+
+        running_demand_minus_supply = demand_minus_supply.get_running_total_nutrients_sum()
+
+        max_running_net_demand = running_demand_minus_supply.get_max_all_months()
+
+        return max_running_net_demand, running_demand_minus_supply
 
     def get_excess_food_usage_from_percents(self, excess_feed_percent):
 

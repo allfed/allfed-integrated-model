@@ -248,7 +248,6 @@ def test_in_units_billions_fed():
     assert food_converted.kcals_units == "billion people fed each month"
     assert food_converted.fat_units == "billion people fed each month"
     assert food_converted.protein_units == "billion people fed each month"
-    print(food_converted.kcals)
     assert (food_converted.kcals == np.array([1,1]) / (1/food.kcals_monthly)).all()
 
 

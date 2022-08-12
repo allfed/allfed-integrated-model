@@ -65,7 +65,7 @@ class Parameters:
         assert self.FIRST_TIME_RUN
         self.FIRST_TIME_RUN = False
 
-        PRINT_SCENARIO_PROPERTIES = False
+        PRINT_SCENARIO_PROPERTIES = True
         if PRINT_SCENARIO_PROPERTIES:
             print(scenarios_loader.scenario_description)
 
@@ -504,76 +504,23 @@ class Parameters:
             grain_fed_meat_protein,
         ) = meat_and_dairy.get_meat_from_human_edible_feed()
 
-        # Cap the max fat or protein created by the amount used,
-        # as I used to believe the conversion couldn't be > 1, but this isn't true
-        # so I have not reinstated. Still, it might be useful to prevent odd things
-        # where countries increase meat production and human edible fed livestock even
-        # if they don't have enough calories... .
-
-        # this is post waste
-
-        # (
-        #     grain_fed_meat_fat_capped,
-        #     grain_fed_meat_protein_capped,
-        #     grain_fed_milk_fat_capped,
-        #     grain_fed_milk_protein_capped,
-        # ) = meat_and_dairy.cap_fat_protein_to_amount_used(
-        #     feed_and_biofuels.feed,
-        #     grain_fed_meat_fat,
-        #     grain_fed_meat_protein,
-        #     grain_fed_milk_fat,
-        #     grain_fed_milk_protein,
-        # )
-
-        # this code is just circumventing the cap I've removed
-        grain_fed_meat_fat_capped = grain_fed_meat_fat
-        grain_fed_meat_protein_capped = grain_fed_meat_protein
-        grain_fed_milk_fat_capped = grain_fed_milk_fat
-        grain_fed_milk_protein_capped = grain_fed_milk_protein
-
         time_consts["grain_fed_meat_kcals"] = grain_fed_meat_kcals
-        time_consts["grain_fed_meat_fat"] = grain_fed_meat_fat_capped
-        time_consts["grain_fed_meat_protein"] = grain_fed_meat_protein_capped
+        time_consts["grain_fed_meat_fat"] = grain_fed_meat_fat
+        time_consts["grain_fed_meat_protein"] = grain_fed_meat_protein
         time_consts["grain_fed_milk_kcals"] = grain_fed_milk_kcals
-        time_consts["grain_fed_milk_fat"] = grain_fed_milk_fat_capped
-        time_consts["grain_fed_milk_protein"] = grain_fed_milk_protein_capped
+        time_consts["grain_fed_milk_fat"] = grain_fed_milk_fat
+        time_consts["grain_fed_milk_protein"] = grain_fed_milk_protein
 
         grain_fed_created_kcals = grain_fed_meat_kcals + grain_fed_milk_kcals
-        grain_fed_created_fat = grain_fed_meat_fat_capped + grain_fed_milk_fat_capped
+        grain_fed_created_fat = grain_fed_meat_fat + grain_fed_milk_fat
         grain_fed_created_protein = (
-            grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
+            grain_fed_meat_protein + grain_fed_milk_protein
         )
         time_consts["grain_fed_created_kcals"] = grain_fed_created_kcals
         time_consts["grain_fed_created_fat"] = grain_fed_created_fat
         time_consts["grain_fed_created_protein"] = grain_fed_created_protein
 
         feed = feed_and_biofuels.feed
-
-        # post waste
-
-        # TODO: reinstate if reinstate cap on fat or protein produced
-        # difference = feed.fat - grain_fed_meat_fat_capped + grain_fed_milk_fat_capped
-        # assert (np.round(difference, 3) >= 0).all()
-
-        # not really possible for animals to synthesize more protein than they eat,
-        # I believe
-        # assert (
-        #     feed.protein
-        #     >= grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
-        # ).all()
-
-        # PRINT_BOUND_WARNING = True
-        # if PRINT_BOUND_WARNING:
-        #     if (
-        #         feed.protein
-        #         == grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
-        #     ).any():
-        #         print("WARNING: BOUNDING GRAIN FED PROTEIN PRODUCED BY FEED USAGE!")
-
-        #     if (
-        #         feed.fat == grain_fed_meat_fat_capped + grain_fed_milk_fat_capped
-        #     ).any():
-        #         print("WARNING: BOUNDING GRAIN FED FAT PRODUCED BY FEED USAGE!")
 
         assert (feed.kcals >= grain_fed_created_kcals).all()
 

@@ -1,0 +1,135 @@
+
+
+
+
+
+
+Fiji
+
+
+
+self.nonhuman_consumption
+billion_kcal_conversion
+1.7706645226044095
+other method
+896444.0
+    kcals: [4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519] percent people fed each month
+
+KCALS_MONTHLY
+1.5873015873015872e-05
+crops_food_eaten_no_relocation
+[Crops_Food_Eaten_No_Relocation_During_Month_0_Variable, Crops_Food_Eaten_No_Relocation_During_Month_1_Variable, Crops_Food_Eaten_No_Relocation_During_Month_2_Variable, Crops_Food_Eaten_No_Relocation_During_Month_3_Variable, Crops_Food_Eaten_No_Relocation_During_Month_4_Variable, Crops_Food_Eaten_No_Relocation_During_Month_5_Variable, Crops_Food_Eaten_No_Relocation_During_Month_6_Variable, Crops_Food_Eaten_No_Relocation_During_Month_7_Variable, Crops_Food_Eaten_No_Relocation_During_Month_8_Variable, Crops_Food_Eaten_No_Relocation_During_Month_9_Variable, Crops_Food_Eaten_No_Relocation_During_Month_10_Variable, Crops_Food_Eaten_No_Relocation_During_Month_11_Variable, Crops_Food_Eaten_No_Relocation_During_Month_12_Variable, Crops_Food_Eaten_No_Relocation_During_Month_13_Variable, Crops_Food_Eaten_No_Relocation_During_Month_14_Variable, Crops_Food_Eaten_No_Relocation_During_Month_15_Variable, Crops_Food_Eaten_No_Relocation_During_Month_16_Variable, Crops_Food_Eaten_No_Relocation_During_Month_17_Variable, Crops_Food_Eaten_No_Relocation_During_Month_18_Variable, Crops_Food_Eaten_No_Relocation_During_Month_19_Variable, Crops_Food_Eaten_No_Relocation_During_Month_20_Variable, Crops_Food_Eaten_No_Relocation_During_Month_21_Variable, Crops_Food_Eaten_No_Relocation_During_Month_22_Variable, Crops_Food_Eaten_No_Relocation_During_Month_23_Variable, Crops_Food_Eaten_No_Relocation_During_Month_24_Variable, Crops_Food_Eaten_No_Relocation_During_Month_25_Variable, Crops_Food_Eaten_No_Relocation_During_Month_26_Variable, Crops_Food_Eaten_No_Relocation_During_Month_27_Variable, Crops_Food_Eaten_No_Relocation_During_Month_28_Variable, Crops_Food_Eaten_No_Relocation_During_Month_29_Variable, Crops_Food_Eaten_No_Relocation_During_Month_30_Variable, Crops_Food_Eaten_No_Relocation_During_Month_31_Variable, Crops_Food_Eaten_No_Relocation_During_Month_32_Variable, Crops_Food_Eaten_No_Relocation_During_Month_33_Variable, Crops_Food_Eaten_No_Relocation_During_Month_34_Variable, Crops_Food_Eaten_No_Relocation_During_Month_35_Variable, Crops_Food_Eaten_No_Relocation_During_Month_36_Variable, Crops_Food_Eaten_No_Relocation_During_Month_37_Variable, Crops_Food_Eaten_No_Relocation_During_Month_38_Variable, Crops_Food_Eaten_No_Relocation_During_Month_39_Variable, Crops_Food_Eaten_No_Relocation_During_Month_40_Variable, Crops_Food_Eaten_No_Relocation_During_Month_41_Variable, Crops_Food_Eaten_No_Relocation_During_Month_42_Variable, Crops_Food_Eaten_No_Relocation_During_Month_43_Variable, Crops_Food_Eaten_No_Relocation_During_Month_44_Variable, Crops_Food_Eaten_No_Relocation_During_Month_45_Variable, Crops_Food_Eaten_No_Relocation_During_Month_46_Variable, Crops_Food_Eaten_No_Relocation_During_Month_47_Variable, Crops_Food_Eaten_No_Relocation_During_Month_48_Variable, Crops_Food_Eaten_No_Relocation_During_Month_49_Variable, Crops_Food_Eaten_No_Relocation_During_Month_50_Variable, Crops_Food_Eaten_No_Relocation_During_Month_51_Variable, Crops_Food_Eaten_No_Relocation_During_Month_52_Variable, Crops_Food_Eaten_No_Relocation_During_Month_53_Variable, Crops_Food_Eaten_No_Relocation_During_Month_54_Variable, Crops_Food_Eaten_No_Relocation_During_Month_55_Variable, Crops_Food_Eaten_No_Relocation_During_Month_56_Variable, Crops_Food_Eaten_No_Relocation_During_Month_57_Variable, Crops_Food_Eaten_No_Relocation_During_Month_58_Variable, Crops_Food_Eaten_No_Relocation_During_Month_59_Variable, Crops_Food_Eaten_No_Relocation_During_Month_60_Variable, Crops_Food_Eaten_No_Relocation_During_Month_61_Variable, Crops_Food_Eaten_No_Relocation_During_Month_62_Variable, Crops_Food_Eaten_No_Relocation_During_Month_63_Variable, Crops_Food_Eaten_No_Relocation_During_Month_64_Variable, Crops_Food_Eaten_No_Relocation_During_Month_65_Variable, Crops_Food_Eaten_No_Relocation_During_Month_66_Variable, Crops_Food_Eaten_No_Relocation_During_Month_67_Variable, Crops_Food_Eaten_No_Relocation_During_Month_68_Variable, Crops_Food_Eaten_No_Relocation_During_Month_69_Variable, Crops_Food_Eaten_No_Relocation_During_Month_70_Variable, Crops_Food_Eaten_No_Relocation_During_Month_71_Variable, Crops_Food_Eaten_No_Relocation_During_Month_72_Variable, Crops_Food_Eaten_No_Relocation_During_Month_73_Variable, Crops_Food_Eaten_No_Relocation_During_Month_74_Variable, Crops_Food_Eaten_No_Relocation_During_Month_75_Variable, Crops_Food_Eaten_No_Relocation_During_Month_76_Variable, Crops_Food_Eaten_No_Relocation_During_Month_77_Variable, Crops_Food_Eaten_No_Relocation_During_Month_78_Variable, Crops_Food_Eaten_No_Relocation_During_Month_79_Variable, Crops_Food_Eaten_No_Relocation_During_Month_80_Variable, Crops_Food_Eaten_No_Relocation_During_Month_81_Variable, Crops_Food_Eaten_No_Relocation_During_Month_82_Variable, Crops_Food_Eaten_No_Relocation_During_Month_83_Variable]
+billions_fed_outdoor_crops_kcals
+[4.04761905e-05 4.04761905e-05 4.04761905e-05 4.04761905e-05
+ 4.04761905e-05 4.04761905e-05 4.04761905e-05 4.04761905e-05
+ 4.04761905e-05 4.04761905e-05 4.04761905e-05 4.04761905e-05
+ 6.02236937e-05 6.10199270e-05 6.18161603e-05 6.26123937e-05
+ 6.34086270e-05 6.42048587e-05 6.50010921e-05 6.57973254e-05
+ 6.65935587e-05 6.73897921e-05 6.81860238e-05 6.89822571e-05
+ 8.11627159e-05 8.12712937e-05 8.13798698e-05 8.14884476e-05
+ 8.15970254e-05 8.17056016e-05 8.18141794e-05 8.19227556e-05
+ 8.20313333e-05 8.21399111e-05 8.22484873e-05 8.23570651e-05
+ 8.34218000e-05 8.33856079e-05 8.33494143e-05 8.33132222e-05
+ 8.32770302e-05 8.32408381e-05 8.32046460e-05 8.31684524e-05
+ 8.31322603e-05 8.30960683e-05 8.30598762e-05 8.30236841e-05
+ 8.13816492e-05 8.13454571e-05 8.13092651e-05 8.12730730e-05
+ 8.12368794e-05 8.12006873e-05 8.11644952e-05 8.11283032e-05
+ 8.10921095e-05 8.10559175e-05 8.10197254e-05 8.09835333e-05
+ 7.16813984e-05 7.16090143e-05 7.15366286e-05 7.14642444e-05
+ 7.13918587e-05 7.13194746e-05 7.12470905e-05 7.11747048e-05
+ 7.11023206e-05 7.10299349e-05 7.09575508e-05 7.08851651e-05
+ 6.15830317e-05 6.15468397e-05 6.15106460e-05 6.14744540e-05
+ 6.14382619e-05 6.14020698e-05 6.13658762e-05 6.13296841e-05
+ 6.12934921e-05 6.12573000e-05 6.12211079e-05 6.11849143e-05]
+the actual percent fed kcals
+[4.51519453 4.51519453 4.51519453 4.51519453 4.51519453 4.51519453
+ 4.51519453 4.51519453 4.51519453 4.51519453 4.51519453 4.51519453
+ 6.71806534 6.80688665 6.89570797 6.98452928 7.07335059 7.16217173
+ 7.25099304 7.33981436 7.42863567 7.51745698 7.60627812 7.69509943
+ 9.05385232 9.06596437 9.07807625 9.0901883  9.10230036 9.11441223
+ 9.12652429 9.13863616 9.15074822 9.16286027 9.17497215 9.1870842
+ 9.30585737 9.30182007 9.2977826  9.29374531 9.28970802 9.28567073
+ 9.28163344 9.27759597 9.27355867 9.26952138 9.26548409 9.2614468
+ 9.07827474 9.07423745 9.07020016 9.06616286 9.06212539 9.0580881
+ 9.05405081 9.05001352 9.04597605 9.04193876 9.03790146 9.03386417
+ 7.99619367 7.98811909 7.98004433 7.97196974 7.96389498 7.9558204
+ 7.94774581 7.93967105 7.93159647 7.92352171 7.91544712 7.90737236
+ 6.86970204 6.86566475 6.86162728 6.85758999 6.85355269 6.8495154
+ 6.84547793 6.84144064 6.83740335 6.83336606 6.82932876 6.82529129]
+self.outdoor_crops.in_units_percent_fed()
+    kcals: [4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 6.71807 6.80689 6.89571 6.98453 7.07335 7.16217
+ 7.25099 7.33981 7.42864 7.51746 7.60628 7.6951  9.05385 9.06596 9.07808
+ 9.09019 9.1023  9.11441 9.12652 9.13864 9.15075 9.16286 9.17497 9.18708
+ 9.30586 9.30182 9.29778 9.29375 9.28971 9.28567 9.28163 9.2776  9.27356
+ 9.26952 9.26548 9.26145 9.07827 9.07424 9.0702  9.06616 9.06213 9.05809
+ 9.05405 9.05001 9.04598 9.04194 9.0379  9.03386 7.99619 7.98812 7.98004
+ 7.97197 7.96389 7.95582 7.94775 7.93967 7.9316  7.92352 7.91545 7.90737
+ 6.8697  6.86566 6.86163 6.85759 6.85355 6.84952 6.84548 6.84144 6.8374
+ 6.83337 6.82933 6.82529] percent people fed each month
+
+billion_kcal_conversion
+1.7706645226044095
+other method
+896444.0
+outdoor_crops_plus_stored_food
+nonhuman_consumption
+    kcals: [4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 6.71807 6.80689 6.89571 6.98453 7.07335 7.16217
+ 7.25099 7.33981 7.42864 7.51746 7.60628 7.6951  9.05385 9.06596 9.07808
+ 9.09019 9.1023  9.11441 9.12652 9.13864 9.15075 9.16286 9.17497 9.18708
+ 9.30586 9.30182 9.29778 9.29375 9.28971 9.28567 9.28163 9.2776  9.27356
+ 9.26952 9.26548 9.26145 9.07827 9.07424 9.0702  9.06616 9.06213 9.05809
+ 9.05405 9.05001 9.04598 9.04194 9.0379  9.03386 7.99619 7.98812 7.98004
+ 7.97197 7.96389 7.95582 7.94775 7.93967 7.9316  7.92352 7.91545 7.90737
+ 6.8697  6.86566 6.86163 6.85759 6.85355 6.84952 6.84548 6.84144 6.8374
+ 6.83337 6.82933 6.82529] percent people fed each month
+
+    kcals: [4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519 4.51519
+ 4.51519 4.51519 4.51519] percent people fed each month
+
+difference_consumption_supply_rounded
+    kcals: [0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  2.2 2.3 2.4 2.5 2.6 2.6
+ 2.7 2.8 2.9 3.  3.1 3.2 4.5 4.6 4.6 4.6 4.6 4.6 4.6 4.6 4.6 4.6 4.7 4.7
+ 4.8 4.8 4.8 4.8 4.8 4.8 4.8 4.8 4.8 4.8 4.8 4.7 4.6 4.6 4.6 4.6 4.5 4.5
+ 4.5 4.5 4.5 4.5 4.5 4.5 3.5 3.5 3.5 3.5 3.4 3.4 3.4 3.4 3.4 3.4 3.4 3.4
+ 2.4 2.4 2.3 2.3 2.3 2.3 2.3 2.3 2.3 2.3 2.3 2.3] percent people fed each month
+
+Net population considered: 0.000896444 Billion people
+Fraction of this population fed: 0.1067
+Scenario properties:
+
+country_food_system
+excess zero
+continued_feed_biofuels
+global_waste_to_doubled_prices
+catastrophe_nutrition_profile
+stored_food_buffer_as_baseline
+set_country_seasonality_nuclear_winter
+fish_nuclear_winter_reduction
+nuclear_winter_country_disruption_to_crops
+don't include protein
+don't include fat
+include culled animals
+get_no_resilient_food_scenario
+
+
+
+
