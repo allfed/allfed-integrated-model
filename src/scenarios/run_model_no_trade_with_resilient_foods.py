@@ -29,10 +29,14 @@ def run_nuclear_winter_by_country_no_trade(
     create_pptx_with_all_countries=True,
     scenario_option=[],
 ):
+
+    # @li alter these to be appropriate to with resilient food scenario
+    #  get_resilient_food_scenario
+
     # now we have a list of all the options we want to test
     this_simulation = {}
     this_simulation["scale"] = "country"
-    this_simulation["scenario"] = "no_resilient_food_nuclear_winter"
+    this_simulation["scenario"] = "with_resilient_food_nuclear_winter"
     this_simulation["seasonality"] = "nuclear_winter_in_country"
     this_simulation["crop_disruption"] = "country_nuclear_winter"
     this_simulation["fish"] = "nuclear_winter"

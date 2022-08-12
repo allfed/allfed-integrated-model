@@ -326,7 +326,6 @@ class OutdoorCrops(Food):
             self.kcals
         ).any(), """Error: the outdoor crop production expected is 
             unknown, cannot compute optimization"""
-
         self.set_units(
             kcals_units="billion kcals each month",
             fat_units="thousand tons each month",

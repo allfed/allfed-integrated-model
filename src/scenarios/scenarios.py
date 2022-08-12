@@ -277,6 +277,8 @@ class Scenarios:
 
         # TODO: ALTER BELOW TO CORRECT GLOBAL FRACTIONS
 
+        # @li this is the place to add in the country_data values (like percent_global_production and others from the import_food_data.py)
+
         # Single cell protein fraction of global production
         constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"] = 1
 
