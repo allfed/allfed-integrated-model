@@ -99,6 +99,11 @@ class Optimizer:
                     model, variables, month
                 )
 
+            # if single_valued_constants["ADD_CULLED_MEAT"]:
+            #     (model, variables) = self.add_culled_meat_to_model(
+            #         model, variables, month
+            #     )
+
             [model, variables, maximize_constraints] = self.add_objectives_to_model(
                 model, variables, month, maximize_constraints
             )
@@ -212,7 +217,7 @@ class Optimizer:
                 "Stored_Food_Start_Month_0_Constraint",
             )
 
-        elif month ==  self.single_valued_constants["NMONTHS"] - 1:  # last month
+        elif month == self.single_valued_constants["NMONTHS"] - 1:  # last month
 
             model += (
                 variables["stored_food_end"][month] == 0,
@@ -571,15 +576,17 @@ class Optimizer:
 
         # DELETE: COMMENT THIS BACK IN
         model += (
-            (variables["stored_food_eaten"][month]
-            + variables["crops_food_eaten_no_relocation"][month]
-            + variables["crops_food_eaten_relocated"][month]
-            * self.single_valued_constants["OG_ROTATION_FRACTION_KCALS"])
-                / self.single_valued_constants["BILLION_KCALS_NEEDED"]
-                * 100
+            (
+                variables["stored_food_eaten"][month]
+                + variables["crops_food_eaten_no_relocation"][month]
+                + variables["crops_food_eaten_relocated"][month]
+                * self.single_valued_constants["OG_ROTATION_FRACTION_KCALS"]
+            )
+            / self.single_valued_constants["BILLION_KCALS_NEEDED"]
+            * 100
             >= (self.multi_valued_constants["nonhuman_consumption"].kcals[month])
-                / self.single_valued_constants["BILLION_KCALS_NEEDED"]
-                * 100,
+            / self.single_valued_constants["BILLION_KCALS_NEEDED"]
+            * 100,
             "Excess_Kcals_Less_Than_stored_food_And_outdoor_crops_"
             + str(month)
             + "_Constraint",
@@ -587,14 +594,18 @@ class Optimizer:
 
         if self.single_valued_constants["inputs"]["INCLUDE_FAT"]:
             model += (
-                (variables["stored_food_eaten"][month]
-                * self.single_valued_constants["SF_FRACTION_FAT"]
-                + variables["crops_food_eaten_no_relocation"][month]
-                * self.single_valued_constants["OG_FRACTION_FAT"]
-                + variables["crops_food_eaten_relocated"][month]
-                * self.single_valued_constants["OG_ROTATION_FRACTION_FAT"])/ self.single_valued_constants["THOU_TONS_FAT_NEEDED"]
+                (
+                    variables["stored_food_eaten"][month]
+                    * self.single_valued_constants["SF_FRACTION_FAT"]
+                    + variables["crops_food_eaten_no_relocation"][month]
+                    * self.single_valued_constants["OG_FRACTION_FAT"]
+                    + variables["crops_food_eaten_relocated"][month]
+                    * self.single_valued_constants["OG_ROTATION_FRACTION_FAT"]
+                )
+                / self.single_valued_constants["THOU_TONS_FAT_NEEDED"]
                 * 100
-                >= self.multi_valued_constants["nonhuman_consumption"].fat[month]/ self.single_valued_constants["THOU_TONS_FAT_NEEDED"]
+                >= self.multi_valued_constants["nonhuman_consumption"].fat[month]
+                / self.single_valued_constants["THOU_TONS_FAT_NEEDED"]
                 * 100,
                 "Excess_Fat_Less_Than_stored_food_And_outdoor_crops_"
                 + str(month)
@@ -603,14 +614,18 @@ class Optimizer:
 
         if self.single_valued_constants["inputs"]["INCLUDE_PROTEIN"]:
             model += (
-                (variables["stored_food_eaten"][month]
-                * self.single_valued_constants["SF_FRACTION_PROTEIN"]
-                + variables["crops_food_eaten_no_relocation"][month]
-                * self.single_valued_constants["OG_FRACTION_PROTEIN"]
-                + variables["crops_food_eaten_relocated"][month]
-                * self.single_valued_constants["OG_ROTATION_FRACTION_PROTEIN"])/ self.single_valued_constants["THOU_TONS_PROTEIN_NEEDED"]
+                (
+                    variables["stored_food_eaten"][month]
+                    * self.single_valued_constants["SF_FRACTION_PROTEIN"]
+                    + variables["crops_food_eaten_no_relocation"][month]
+                    * self.single_valued_constants["OG_FRACTION_PROTEIN"]
+                    + variables["crops_food_eaten_relocated"][month]
+                    * self.single_valued_constants["OG_ROTATION_FRACTION_PROTEIN"]
+                )
+                / self.single_valued_constants["THOU_TONS_PROTEIN_NEEDED"]
                 * 100
-                >= self.multi_valued_constants["nonhuman_consumption"].protein[month]/ self.single_valued_constants["THOU_TONS_PROTEIN_NEEDED"]
+                >= self.multi_valued_constants["nonhuman_consumption"].protein[month]
+                / self.single_valued_constants["THOU_TONS_PROTEIN_NEEDED"]
                 * 100,
                 "Excess_Protein_Less_Than_stored_food_And_outdoor_crops_"
                 + str(month)

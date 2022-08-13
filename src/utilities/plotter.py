@@ -39,9 +39,15 @@ class Plotter:
 
     @classmethod
     def plot_fig_1ab(
-        crs, interpreter, xlim, newtitle="", plot_figure=True,add_slide_with_fig=True, description=""
+        crs,
+        interpreter,
+        xlim,
+        newtitle="",
+        plot_figure=True,
+        add_slide_with_fig=True,
+        description="",
     ):
-        xlim = min(xlim,len(interpreter.time_months_middle))
+        xlim = min(xlim, len(interpreter.time_months_middle))
         legend = Plotter.get_people_fed_legend(interpreter, True)
         fig = plt.figure()
         pal = [
@@ -1221,7 +1227,10 @@ class Plotter:
         else:
             legend = legend + [""]
 
-        if interpreter.constants["ADD_MEAT"]:
+        if (
+            interpreter.constants["ADD_CULLED_MEAT"]
+            or interpreter.constants["ADD_MAINTAINED_MEAT"]
+        ):
             legend = legend + ["Meat"]
         else:
             legend = legend + [""]

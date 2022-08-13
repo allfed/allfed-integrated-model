@@ -927,7 +927,7 @@ class Scenarios:
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
         constants_for_params["ADD_STORED_FOOD"] = True
 
-        constants_for_params["ADD_MEAT"] = True
+        constants_for_params["ADD_MAINTAINED_MEAT"] = True
         constants_for_params["ADD_MILK"] = True
         constants_for_params["ADD_FISH"] = True
 
@@ -935,7 +935,6 @@ class Scenarios:
         constants_for_params["ADD_GREENHOUSES"] = False
         constants_for_params["ADD_METHANE_SCP"] = False
         constants_for_params["ADD_SEAWEED"] = False
-
 
         constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
 
@@ -1027,7 +1026,7 @@ class Scenarios:
         constants_for_params["ADD_FISH"] = True
         constants_for_params["ADD_GREENHOUSES"] = True
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
-        constants_for_params["ADD_MEAT"] = True
+        constants_for_params["ADD_MAINTAINED_MEAT"] = True
         constants_for_params["ADD_METHANE_SCP"] = True
         constants_for_params["ADD_SEAWEED"] = True
         constants_for_params["ADD_STORED_FOOD"] = True
@@ -1073,7 +1072,7 @@ class Scenarios:
         constants_for_params["ADD_FISH"] = True
         constants_for_params["ADD_GREENHOUSES"] = False
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
-        constants_for_params["ADD_MEAT"] = True
+        constants_for_params["ADD_MAINTAINED_MEAT"] = True
         constants_for_params["ADD_METHANE_SCP"] = False
         constants_for_params["ADD_SEAWEED"] = False
         constants_for_params["ADD_STORED_FOOD"] = True
@@ -1084,7 +1083,7 @@ class Scenarios:
     def cull_animals(self, constants_for_params):
         assert self.CULLING_PARAM_SET == False
         self.scenario_description += "\ninclude culled animals"
-        constants_for_params["CULL_ANIMALS"] = True
+        constants_for_params["ADD_CULLED_MEAT"] = True
         self.CULLING_PARAM_SET = True
 
         return constants_for_params
@@ -1092,6 +1091,6 @@ class Scenarios:
     def dont_cull_animals(self, constants_for_params):
         assert self.CULLING_PARAM_SET == False
         self.scenario_description += "\ndon't include culled animals"
-        constants_for_params["CULL_ANIMALS"] = False
+        constants_for_params["ADD_CULLED_MEAT"] = False
         self.CULLING_PARAM_SET = True
         return constants_for_params

@@ -59,8 +59,8 @@ class Parameters:
             or constants["inputs"]["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] > 0
         ):
             assert (
-                constants["inputs"]["ADD_MEAT"] == True
-            ), "Meat needs to be added for continued feed usage to make sense"
+                constants["inputs"]["ADD_MAINTAINED_MEAT"] == True
+            ), "Maintained meat needs to be added for continued feed usage to make sense"
 
         assert self.FIRST_TIME_RUN
         self.FIRST_TIME_RUN = False
@@ -185,7 +185,8 @@ class Parameters:
         constants["NMONTHS"] = constants_for_params["NMONTHS"]
         constants["ADD_FISH"] = constants_for_params["ADD_FISH"]
         constants["ADD_SEAWEED"] = constants_for_params["ADD_SEAWEED"]
-        constants["ADD_MEAT"] = constants_for_params["ADD_MEAT"]
+        constants["ADD_MAINTAINED_MEAT"] = constants_for_params["ADD_MAINTAINED_MEAT"]
+        constants["ADD_CULLED_MEAT"] = constants_for_params["ADD_CULLED_MEAT"]
         constants["ADD_MILK"] = constants_for_params["ADD_MILK"]
         constants["ADD_STORED_FOOD"] = constants_for_params["ADD_STORED_FOOD"]
         constants["ADD_METHANE_SCP"] = constants_for_params["ADD_METHANE_SCP"]
@@ -513,9 +514,7 @@ class Parameters:
 
         grain_fed_created_kcals = grain_fed_meat_kcals + grain_fed_milk_kcals
         grain_fed_created_fat = grain_fed_meat_fat + grain_fed_milk_fat
-        grain_fed_created_protein = (
-            grain_fed_meat_protein + grain_fed_milk_protein
-        )
+        grain_fed_created_protein = grain_fed_meat_protein + grain_fed_milk_protein
         time_consts["grain_fed_created_kcals"] = grain_fed_created_kcals
         time_consts["grain_fed_created_fat"] = grain_fed_created_fat
         time_consts["grain_fed_created_protein"] = grain_fed_created_protein

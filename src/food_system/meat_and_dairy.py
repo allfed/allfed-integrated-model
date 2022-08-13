@@ -11,16 +11,15 @@ from src.food_system.food import Food
 class MeatAndDairy:
     def __init__(self, constants_for_params):
 
-        # time from slaughter livestock to it turning into food
-        # not functional yet
-
         self.KG_TO_1000_TONS = 1 / (1e6)
         self.ADD_MILK = constants_for_params["ADD_MILK"]
 
-        # we use this spreadsheeet @Morgan: Link broken
         self.NMONTHS = constants_for_params["NMONTHS"]
+
         # edible meat, organs, and fat added
-        self.ADD_MEAT = constants_for_params["ADD_MEAT"]
+        self.ADD_MAINTAINED_MEAT = constants_for_params["ADD_MAINTAINED_MEAT"]
+        self.ADD_CULLED_MEAT = constants_for_params["ADD_CULLED_MEAT"]
+
         self.KG_PER_SMALL_ANIMAL = 2.36
         self.KG_PER_MEDIUM_ANIMAL = 24.6
         self.KG_PER_LARGE_ANIMAL = 269.7
@@ -33,9 +32,7 @@ class MeatAndDairy:
         self.SMALL_ANIMAL_FAT_PER_KG = 0.076
         self.SMALL_ANIMAL_PROTEIN_PER_KG = 0.196
 
-        # @Morgan: Link broken
         # this one uses pigs from FAOstat, unlike the other two
-        # roww 264, "Nutrition Data From FAOstat" tab
         self.MEDIUM_ANIMAL_KCALS_PER_KG = 3590
         self.MEDIUM_ANIMAL_FAT_PER_KG = 0.34
         self.MEDIUM_ANIMAL_PROTEIN_PER_KG = 0.11
@@ -427,7 +424,7 @@ class MeatAndDairy:
             1 - self.MEAT_WASTE / 100
         )
 
-        if not self.ADD_MEAT:
+        if not self.ADD_MAINTAINED_MEAT:
             grain_fed_meat_kcals = np.array([0] * self.NMONTHS)
             grain_fed_meat_fat = np.array([0] * self.NMONTHS)
             grain_fed_meat_protein = np.array([0] * self.NMONTHS)
@@ -463,7 +460,7 @@ class MeatAndDairy:
                 self.grazing_milk_produced_prewaste.append(0)
                 inedible_for_cattle = self.human_inedible_feed[m]
 
-            if self.ADD_MEAT:
+            if self.ADD_MAINTAINED_MEAT:
                 self.cattle_grazing_maintained_prewaste.append(
                     inedible_for_cattle / self.INEDIBLE_TO_CATTLE_CONVERSION
                 )
@@ -504,7 +501,7 @@ class MeatAndDairy:
 
     def get_cattle_grazing_maintained(self):
 
-        if self.ADD_MEAT:
+        if self.ADD_MAINTAINED_MEAT:
 
             # billions kcals
             cattle_grazing_maintained_kcals = (
@@ -554,7 +551,7 @@ class MeatAndDairy:
         self, constants_for_params, feed_shutoff_delay_months
     ):
 
-        if constants_for_params["CULL_ANIMALS"]:
+        if self.ADD_CULLED_MEAT:
             self.CULL_DURATION_MONTHS = constants_for_params["CULL_DURATION_MONTHS"]
             if self.CULL_DURATION_MONTHS != 0:
                 meat_culled_prewaste = (
@@ -574,16 +571,16 @@ class MeatAndDairy:
             meat_culled_prewaste = [0] * self.NMONTHS
             self.CULL_DURATION_MONTHS = 0
 
-        if not self.ADD_MEAT:
+        if not self.ADD_MAINTAINED_MEAT:
             meat_culled_prewaste = [0] * self.NMONTHS
 
-        if not constants_for_params["CULL_ANIMALS"]:
+        if not self.ADD_CULLED_MEAT:
             assert max(meat_culled_prewaste) == 0
 
         return np.array(meat_culled_prewaste) * (1 - self.MEAT_WASTE / 100)
 
     def calculate_animals_culled(self, constants_for_params):
-        if constants_for_params["CULL_ANIMALS"]:
+        if self.ADD_CULLED_MEAT:
             self.init_small_animals_culled = self.INIT_SMALL_ANIMALS * (
                 1 - np.min(self.ratio_maintained_chicken_pork)
             )
