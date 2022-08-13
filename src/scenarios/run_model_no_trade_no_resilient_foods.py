@@ -59,7 +59,7 @@ def run_nuclear_winter_by_country_no_trade(
     this_simulation["nutrition"] = "baseline"
     this_simulation["buffer"] = "baseline"
     this_simulation["shutoff"] = "short_delayed_shutoff"
-    this_simulation["cull"] = "dont_eat_culled"
+    this_simulation["cull"] = "do_eat_culled"
 
     scenario_runner = ScenarioRunnerNoTrade()
 
@@ -68,7 +68,7 @@ def run_nuclear_winter_by_country_no_trade(
         show_figures=show_figures,
         add_map_slide_to_pptx=plot_map,
         scenario_option=this_simulation,
-        countries_to_skip=["TWN"] # taiwan doesn't have crop results
+        countries_to_skip=["TWN"],  # taiwan doesn't have crop results
     )
 
 
@@ -136,16 +136,19 @@ def create_several_maps_with_different_assumptions():
 
     scenario_runner = ScenarioRunnerNoTrade()
     scenario_runner.run_many_options(
-        scenario_options=options_including_defaults, title="nuclear winter no response",
-        countries_to_skip = ["TWN"]
+        scenario_options=options_including_defaults,
+        title="nuclear winter no response",
+        countries_to_skip=["TWN"],
     )
 
 
 if __name__ == "__main__":
-    CREATE_SEVERAL_MAPS_PPTX = True
+    CREATE_SEVERAL_MAPS_PPTX = False
     if CREATE_SEVERAL_MAPS_PPTX:
         create_several_maps_with_different_assumptions()
 
-    CREATE_PPTX_EACH_COUNTRY = False
+    CREATE_PPTX_EACH_COUNTRY = True
     if CREATE_PPTX_EACH_COUNTRY:
-        run_nuclear_winter_by_country_no_trade(show_figures=False,create_pptx_with_all_countries=False,plot_map=False)
+        run_nuclear_winter_by_country_no_trade(
+            show_figures=False, create_pptx_with_all_countries=False, plot_map=False
+        )

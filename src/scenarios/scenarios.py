@@ -62,7 +62,7 @@ class Scenarios:
         constants_for_params["FLUCTUATION_LIMIT"] = 1.5
 
         constants_for_params["DELAY"] = {}
-        constants_for_params["CULL_DURATION_MONTHS"] = 60
+        constants_for_params["MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE"] = 1
 
         self.GENERIC_INITIALIZED_SET = True
         return constants_for_params

@@ -426,6 +426,7 @@ class Parameters:
         """
 
         meat_and_dairy = MeatAndDairy(constants_for_params)
+        meat_and_dairy.calculate_meat_nutrition()
 
         time_consts, meat_and_dairy = self.init_grazing_params(
             constants_for_params, time_consts, meat_and_dairy
@@ -435,11 +436,9 @@ class Parameters:
             time_consts, meat_and_dairy, feed_and_biofuels, constants_for_params
         )
 
-        (constants, meat_culled, meat_and_dairy) = self.init_culled_meat_params(
+        (constants, culled_meat, meat_and_dairy) = self.init_culled_meat_params(
             constants_for_params, constants, meat_and_dairy
         )
-
-        time_consts["meat_culled"] = meat_culled
 
         return meat_and_dairy, constants, time_consts
 
@@ -539,17 +538,20 @@ class Parameters:
         meat_and_dairy.calculate_animals_culled(constants_for_params)
         meat_and_dairy.calculated_culled_meat()
 
-        feed_shutoff_delay_months = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
-        meat_culled = meat_and_dairy.get_culled_meat_post_waste(
-            constants_for_params, feed_shutoff_delay_months
+        MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE = constants_for_params[
+            "MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE"
+        ]
+        culled_meat = meat_and_dairy.get_culled_meat_post_waste(constants_for_params)
+
+        constants["max_culled_kcals"] = meat_and_dairy.calculate_meat_limits(
+            MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE, culled_meat
         )
+        constants["culled_meat"] = culled_meat
 
-        constants["MEAT_CULLED_FRACTION_FAT"] = meat_and_dairy.meat_culled_fraction_fat
+        constants["CULLED_MEAT_FRACTION_FAT"] = meat_and_dairy.culled_meat_fraction_fat
         constants[
-            "MEAT_CULLED_FRACTION_PROTEIN"
-        ] = meat_and_dairy.meat_culled_fraction_protein
-
-        constants["CULL_DURATION_MONTHS"] = meat_and_dairy.CULL_DURATION_MONTHS
+            "CULLED_MEAT_FRACTION_PROTEIN"
+        ] = meat_and_dairy.culled_meat_fraction_protein
 
         constants["KG_PER_SMALL_ANIMAL"] = meat_and_dairy.KG_PER_SMALL_ANIMAL
         constants["KG_PER_MEDIUM_ANIMAL"] = meat_and_dairy.KG_PER_MEDIUM_ANIMAL
@@ -558,24 +560,16 @@ class Parameters:
         constants[
             "LARGE_ANIMAL_KCALS_PER_KG"
         ] = meat_and_dairy.LARGE_ANIMAL_KCALS_PER_KG
-        constants["LARGE_ANIMAL_FAT_PER_KG"] = meat_and_dairy.LARGE_ANIMAL_FAT_PER_KG
+        constants["LARGE_ANIMAL_FAT_RATIO"] = meat_and_dairy.LARGE_ANIMAL_FAT_RATIO
         constants[
-            "LARGE_ANIMAL_PROTEIN_PER_KG"
-        ] = meat_and_dairy.LARGE_ANIMAL_PROTEIN_PER_KG
+            "LARGE_ANIMAL_PROTEIN_RATIO"
+        ] = meat_and_dairy.LARGE_ANIMAL_PROTEIN_RATIO
 
         constants[
             "MEDIUM_ANIMAL_KCALS_PER_KG"
         ] = meat_and_dairy.MEDIUM_ANIMAL_KCALS_PER_KG
-        constants["MEDIUM_ANIMAL_FAT_PER_KG"] = meat_and_dairy.MEDIUM_ANIMAL_FAT_PER_KG
-        constants[
-            "MEDIUM_ANIMAL_PROTEIN_PER_KG"
-        ] = meat_and_dairy.MEDIUM_ANIMAL_PROTEIN_PER_KG
 
         constants[
             "SMALL_ANIMAL_KCALS_PER_KG"
         ] = meat_and_dairy.SMALL_ANIMAL_KCALS_PER_KG
-        constants["SMALL_ANIMAL_FAT_PER_KG"] = meat_and_dairy.SMALL_ANIMAL_FAT_PER_KG
-        constants[
-            "SMALL_ANIMAL_PROTEIN_PER_KG"
-        ] = meat_and_dairy.SMALL_ANIMAL_PROTEIN_PER_KG
-        return (constants, meat_culled, meat_and_dairy)
+        return (constants, culled_meat, meat_and_dairy)

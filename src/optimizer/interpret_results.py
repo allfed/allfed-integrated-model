@@ -91,8 +91,8 @@ class Interpreter:
 
         self.fish = extracted_results.fish.in_units_percent_fed()
 
-        self.meat_culled_plus_grazing_cattle_maintained = (
-            extracted_results.meat_culled_plus_grazing_cattle_maintained.in_units_percent_fed()
+        self.culled_meat_plus_grazing_cattle_maintained = (
+            extracted_results.culled_meat_plus_grazing_cattle_maintained.in_units_percent_fed()
         )
 
         self.grazing_milk = extracted_results.grazing_milk.in_units_percent_fed()
@@ -135,8 +135,8 @@ class Interpreter:
 
         self.fish_kcals_equivalent = extracted_results.fish.in_units_kcals_equivalent()
 
-        self.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent = (
-            extracted_results.meat_culled_plus_grazing_cattle_maintained.in_units_kcals_equivalent()
+        self.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent = (
+            extracted_results.culled_meat_plus_grazing_cattle_maintained.in_units_kcals_equivalent()
         )
 
         self.grazing_milk_kcals_equivalent = (
@@ -304,7 +304,7 @@ class Interpreter:
             + self.scp
             + self.greenhouse
             + self.fish
-            + self.meat_culled_plus_grazing_cattle_maintained
+            + self.culled_meat_plus_grazing_cattle_maintained
             + self.grazing_milk
             + self.grain_fed_meat
             + self.grain_fed_milk
@@ -329,7 +329,7 @@ class Interpreter:
             + self.scp
             + self.greenhouse
             + self.fish
-            + self.meat_culled_plus_grazing_cattle_maintained
+            + self.culled_meat_plus_grazing_cattle_maintained
             + self.grazing_milk
             + self.grain_fed_meat
             + self.grain_fed_milk
@@ -436,7 +436,11 @@ class Interpreter:
         if PRINT_FED:
 
             print("Nutrients with constraining values are: " + str(min_nutrient))
-            print("Estimated percent people fed is " + str(round(percent_people_fed,1)) + "%")
+            print(
+                "Estimated percent people fed is "
+                + str(round(percent_people_fed, 1))
+                + "%"
+            )
         return [percent_people_fed, min_nutrient]
 
     def correct_and_validate_rounding_errors(self, nonhuman_consumption):

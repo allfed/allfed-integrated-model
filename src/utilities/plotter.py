@@ -87,7 +87,7 @@ class Plotter:
             )
             ykcals.append(
                 (
-                    interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                    interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
                     + interpreter.grain_fed_meat_kcals_equivalent.kcals
                 )
             )
@@ -275,7 +275,7 @@ class Plotter:
                 )
                 ykcals.append(
                     (
-                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                        interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
                         + interpreter.grain_fed_meat_kcals_equivalent.kcals
                     )
                 )
@@ -618,7 +618,7 @@ class Plotter:
                 )
                 ykcals.append(
                     (
-                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                        interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
                         + interpreter.grain_fed_meat_kcals_equivalent.kcals
                     )
                 )
@@ -778,9 +778,9 @@ class Plotter:
         )
 
         save_title_string = (
-            "meat_culled_plus_grazing_cattle_maintained_kcals_equivalent primary"
+            "culled_meat_plus_grazing_cattle_maintained_kcals_equivalent primary"
         )
-        saveloc = interpreter1.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.plot(
+        saveloc = interpreter1.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.plot(
             save_title_string
         )
         crs.mp.insert_slide(
@@ -884,9 +884,9 @@ class Plotter:
         )
 
         save_title_string = (
-            "meat_culled_plus_grazing_cattle_maintained_kcals_equivalent with feed"
+            "culled_meat_plus_grazing_cattle_maintained_kcals_equivalent with feed"
         )
-        saveloc = interpreter2.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.plot(
+        saveloc = interpreter2.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.plot(
             save_title_string
         )
         crs.mp.insert_slide(
@@ -1007,7 +1007,7 @@ class Plotter:
                 )
                 ykcals.append(
                     (
-                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                        interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
                         + interpreter.grain_fed_meat_kcals_equivalent.kcals
                     )
                 )

@@ -171,7 +171,7 @@ class Validator:
 
         interpreted_results.fish.make_sure_fat_protein_zero_if_kcals_is_zero()
 
-        interpreted_results.meat_culled_plus_grazing_cattle_maintained.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.culled_meat_plus_grazing_cattle_maintained.make_sure_fat_protein_zero_if_kcals_is_zero()
 
         interpreted_results.grazing_milk.make_sure_fat_protein_zero_if_kcals_is_zero()
 
@@ -223,7 +223,7 @@ class Validator:
 
         interpreted_results.fish.make_sure_not_nan()
 
-        interpreted_results.meat_culled_plus_grazing_cattle_maintained.make_sure_not_nan()
+        interpreted_results.culled_meat_plus_grazing_cattle_maintained.make_sure_not_nan()
 
         interpreted_results.grazing_milk.make_sure_not_nan()
 
@@ -262,7 +262,7 @@ class Validator:
 
         assert interpreted_results.fish.all_greater_than_or_equal_to_zero()
         assert (
-            interpreted_results.meat_culled_plus_grazing_cattle_maintained.all_greater_than_or_equal_to_zero()
+            interpreted_results.culled_meat_plus_grazing_cattle_maintained.all_greater_than_or_equal_to_zero()
         )
 
         assert interpreted_results.grazing_milk.all_greater_than_or_equal_to_zero()
