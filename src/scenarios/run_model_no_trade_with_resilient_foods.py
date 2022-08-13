@@ -56,6 +56,7 @@ def run_nuclear_winter_by_country_no_trade(
         show_figures=show_figures,
         add_map_slide_to_pptx=plot_map,
         scenario_option=this_simulation,
+        countries_to_skip=["TWN"],
     )
 
 
@@ -124,7 +125,9 @@ def create_several_maps_with_different_assumptions():
 
     scenario_runner = ScenarioRunnerNoTrade()
     scenario_runner.run_many_options(
-        scenario_options=options_including_defaults, title="nuclear winter no response"
+        scenario_options=options_including_defaults,
+        title="nuclear winter with response",
+        countries_to_skip=["TWN"],
     )
 
 
@@ -135,4 +138,6 @@ if __name__ == "__main__":
 
     CREATE_PPTX_EACH_COUNTRY = True
     if CREATE_PPTX_EACH_COUNTRY:
-        run_nuclear_winter_by_country_no_trade(show_figures=False)
+        run_nuclear_winter_by_country_no_trade(
+            show_figures=False, create_pptx_with_all_countries=False
+        )

@@ -46,7 +46,7 @@ class FeedAndBiofuels:
         )
 
         self.AMOUNT_TO_REDUCE_RATIO_EACH_ITERATION = 0.01  # 1% reduction
-        self.SAFETY_MARGIN = 0.1
+        self.SAFETY_MARGIN = 0.01
 
     def set_nonhuman_consumption_with_cap(
         self, constants_for_params, outdoor_crops, stored_food
@@ -138,7 +138,6 @@ class FeedAndBiofuels:
             constants_for_params, self.biofuels, self.feed
         )
 
-
     def set_biofuels_and_feed_usage_postwaste(
         self,
         max_net_demand,
@@ -153,7 +152,9 @@ class FeedAndBiofuels:
         all_zero = max_net_demand.all_equals_zero()
 
         # whether macronutrients exceed availability from stored foods + og
-        exceeds_less_than_stored_food = max_net_demand.all_less_than_or_equal_to(stored_food * (1 - self.SAFETY_MARGIN))
+        exceeds_less_than_stored_food = max_net_demand.all_less_than_or_equal_to(
+            stored_food * (1 - self.SAFETY_MARGIN)
+        )
 
         # in order to get the pre-waste amount, we need to take the amount that we
         # calculated feed to be after cap and waste, and divide back out the waste
@@ -450,24 +451,39 @@ class FeedAndBiofuels:
 
         assert nonhuman_consumption_before_cap.all_greater_than_or_equal_to_zero()
 
-
         amount_stored_food_and_outdoor_crops_used = (
-            nonhuman_consumption_before_cap.get_amount_used_other_food(outdoor_crops.OG_FRACTION_FAT, outdoor_crops.OG_FRACTION_PROTEIN)
+            nonhuman_consumption_before_cap.get_amount_used_other_food(
+                outdoor_crops.OG_FRACTION_FAT, outdoor_crops.OG_FRACTION_PROTEIN
+            )
         )
-        diff = amount_stored_food_and_outdoor_crops_used.fat/amount_stored_food_and_outdoor_crops_used.kcals - outdoor_crops.OG_FRACTION_FAT
+        diff = (
+            amount_stored_food_and_outdoor_crops_used.fat
+            / amount_stored_food_and_outdoor_crops_used.kcals
+            - outdoor_crops.OG_FRACTION_FAT
+        )
 
-        no_nans_diff = np.where(amount_stored_food_and_outdoor_crops_used.kcals==0,0,diff)
-        assert (np.round(no_nans_diff,4)==0).all()
+        no_nans_diff = np.where(
+            amount_stored_food_and_outdoor_crops_used.kcals == 0, 0, diff
+        )
+        assert (np.round(no_nans_diff, 4) == 0).all()
 
-        diff=(amount_stored_food_and_outdoor_crops_used.protein/amount_stored_food_and_outdoor_crops_used.kcals - outdoor_crops.OG_FRACTION_PROTEIN)
+        diff = (
+            amount_stored_food_and_outdoor_crops_used.protein
+            / amount_stored_food_and_outdoor_crops_used.kcals
+            - outdoor_crops.OG_FRACTION_PROTEIN
+        )
 
-        no_nans_diff = np.where(amount_stored_food_and_outdoor_crops_used.kcals==0,0,diff)
-        assert (np.round(no_nans_diff,4)==0).all()
+        no_nans_diff = np.where(
+            amount_stored_food_and_outdoor_crops_used.kcals == 0, 0, diff
+        )
+        assert (np.round(no_nans_diff, 4) == 0).all()
 
         # outdoor crops is post waste (as well as nonhuman_consumption_before_cap)
         demand_minus_supply = amount_stored_food_and_outdoor_crops_used - outdoor_crops
 
-        running_demand_minus_supply = demand_minus_supply.get_running_total_nutrients_sum()
+        running_demand_minus_supply = (
+            demand_minus_supply.get_running_total_nutrients_sum()
+        )
 
         max_running_net_demand = running_demand_minus_supply.get_max_all_months()
 

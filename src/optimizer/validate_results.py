@@ -261,9 +261,9 @@ class Validator:
         assert interpreted_results.greenhouse.all_greater_than_or_equal_to_zero()
 
         assert interpreted_results.fish.all_greater_than_or_equal_to_zero()
-        assert (
-            interpreted_results.culled_meat_plus_grazing_cattle_maintained.all_greater_than_or_equal_to_zero()
-        )
+        assert interpreted_results.culled_meat_plus_grazing_cattle_maintained.get_rounded_to_decimal(
+            6
+        ).all_greater_than_or_equal_to_zero()
 
         assert interpreted_results.grazing_milk.all_greater_than_or_equal_to_zero()
 
@@ -271,9 +271,9 @@ class Validator:
 
         assert interpreted_results.grain_fed_milk.all_greater_than_or_equal_to_zero()
 
-        assert (
-            interpreted_results.immediate_outdoor_crops.all_greater_than_or_equal_to_zero()
-        )
+        assert interpreted_results.immediate_outdoor_crops.get_rounded_to_decimal(
+            6
+        ).all_greater_than_or_equal_to_zero()
 
         assert (
             interpreted_results.new_stored_outdoor_crops.all_greater_than_or_equal_to_zero()
@@ -300,12 +300,13 @@ class Validator:
         assert interpreted_results.stored_food_to_humans.get_rounded_to_decimal(
             6
         ).all_greater_than_or_equal_to_zero()
-        assert (
-            interpreted_results.outdoor_crops_to_humans.all_greater_than_or_equal_to_zero()
-        )
-        assert (
-            interpreted_results.immediate_outdoor_crops_to_humans.all_greater_than_or_equal_to_zero()
-        )
+        assert interpreted_results.outdoor_crops_to_humans.get_rounded_to_decimal(
+            6
+        ).all_greater_than_or_equal_to_zero()
+
+        assert interpreted_results.immediate_outdoor_crops_to_humans.get_rounded_to_decimal(
+            6
+        ).all_greater_than_or_equal_to_zero()
         assert (
             interpreted_results.new_stored_outdoor_crops_to_humans.all_greater_than_or_equal_to_zero()
         )

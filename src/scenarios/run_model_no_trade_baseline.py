@@ -140,4 +140,6 @@ if __name__ == "__main__":
 
     CREATE_PPTX_EACH_COUNTRY = True
     if CREATE_PPTX_EACH_COUNTRY:
-        run_baseline_by_country_no_trade(show_figures=False)
+        run_baseline_by_country_no_trade(
+            show_figures=False, create_pptx_with_all_countries=False
+        )

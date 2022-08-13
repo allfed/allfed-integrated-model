@@ -282,6 +282,16 @@ class ScenarioRunner:
                 constants_for_params
             )
 
+        scenario_correct = scenario_option["scenario"] in [
+            "baseline_climate",
+            "resilient_food_nuclear_winter",
+            "no_resilient_food_nuclear_winter",
+        ]
+
+        assert (
+            scenario_correct
+        ), "You must specify 'scenario' key as either baseline_climate, resilient_food_nuclear_winter, or no_resilient_food_nuclear_winter"
+
         if scenario_option["scenario"] == "baseline_climate":
             constants_for_params = scenario_loader.get_baseline_climate_scenario(
                 constants_for_params

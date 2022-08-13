@@ -654,7 +654,8 @@ class Extractor:
             culled_meat_eaten,
             1 / self.constants["KCALS_MONTHLY"],
         )
-
+        print(billions_fed_culled_meat_kcals)
+        print(billions_fed_cattle_grazing_maintained)
         billions_fed_culled_meat_grazing_kcals = (
             billions_fed_culled_meat_kcals + billions_fed_cattle_grazing_maintained
         )
