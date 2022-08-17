@@ -26,6 +26,7 @@ class Extractor:
     def extract_results(
         self, model, variables, single_valued_constants, multi_valued_constants
     ):
+
         # extract the results from the model
 
         self.get_objective_optimization_results(model)
@@ -73,17 +74,17 @@ class Extractor:
 
         # if no outdoor food, plot shows zero
         self.extract_outdoor_crops_results(
-            variables["crops_food_eaten_no_rotation"],
-            variables["crops_food_eaten_with_rotation"],
+            variables["crops_food_eaten_no_relocation"],
+            variables["crops_food_eaten_relocated"],
             multi_valued_constants["outdoor_crops"],
         )
         # TODO: MOVE THESE BACK IF NEEDED
-        # variables["crops_food_storage_no_rotation"],
-        # variables["crops_food_storage_rotation"],
+        # variables["crops_food_storage_no_relocation"],
+        # variables["crops_food_storage_relocated"],
 
         # if nonegg nonmilk meat isn't included, these results plot shows zero
         self.extract_meat_milk_results(
-            multi_valued_constants["meat_culled"],
+            variables["culled_meat_eaten"],
             multi_valued_constants["grazing_milk_kcals"],
             multi_valued_constants["grazing_milk_fat"],
             multi_valued_constants["grazing_milk_protein"],
@@ -127,8 +128,8 @@ class Extractor:
 
     def to_monthly_list_outdoor_crops_kcals(
         self,
-        crops_food_eaten_no_rotation,
-        crops_food_eaten_with_rotation,
+        crops_food_eaten_no_relocation,
+        crops_food_eaten_relocated,
         crops_kcals_produced,
         conversion,
     ):
@@ -161,27 +162,27 @@ class Extractor:
         cf_produced_output = []
 
         # if the variable was not modeled
-        if type(crops_food_eaten_no_rotation[0]) == type(0):
+        if type(crops_food_eaten_no_relocation[0]) == type(0):
             return [
-                [0] * len(crops_food_eaten_no_rotation),
-                [0] * len(crops_food_eaten_no_rotation),
+                [0] * len(crops_food_eaten_no_relocation),
+                [0] * len(crops_food_eaten_no_relocation),
             ]  # return initial value
 
         SHOW_OUTPUT = False
         if SHOW_OUTPUT:
-            print("Monthly Output for " + str(crops_food_eaten_no_rotation[0]))
+            print("Monthly Output for " + str(crops_food_eaten_no_relocation[0]))
 
         for month in range(0, self.constants["NMONTHS"]):
             cf_produced = crops_kcals_produced[month]
             cf_produced_output.append(cf_produced)
 
-            # if the improved rotation was not used
-            if type(crops_food_eaten_with_rotation[0]) == type(0):
-                cf_eaten = crops_food_eaten_no_rotation[month].varValue
+            # if the improved relocation was not used
+            if type(crops_food_eaten_relocated[0]) == type(0):
+                cf_eaten = crops_food_eaten_no_relocation[month].varValue
             else:
                 cf_eaten = (
-                    crops_food_eaten_no_rotation[month].varValue
-                    + crops_food_eaten_with_rotation[month].varValue
+                    crops_food_eaten_no_relocation[month].varValue
+                    + crops_food_eaten_relocated[month].varValue
                     * self.constants["OG_ROTATION_FRACTION_KCALS"]
                 )
             cf_eaten_output.append(cf_eaten)
@@ -281,55 +282,37 @@ class Extractor:
     # if outdoor growing isn't included, these results will be zero
     def extract_outdoor_crops_results(
         self,
-        crops_food_eaten_no_rotation,
-        crops_food_eaten_with_rotation,
+        crops_food_eaten_no_relocation,
+        crops_food_eaten_relocated,
         outdoor_crops,
     ):
-        # crops_food_storage_no_rotation, TODO: DELETE IF NOT USED (these were args)
-        # crops_food_storage_rotation,
 
         self.set_crop_produced_monthly(outdoor_crops)
 
-        no_rotation = self.to_monthly_list(crops_food_eaten_no_rotation, 1)
-        rotation = self.to_monthly_list(
-            crops_food_eaten_with_rotation,
+        no_relocation = self.to_monthly_list(crops_food_eaten_no_relocation, 1)
+        relocation = self.to_monthly_list(
+            crops_food_eaten_relocated,
             self.constants["OG_ROTATION_FRACTION_KCALS"],
         )
-
-        # TODO: DELETE IF NOT USED
-        # billions_fed_outdoor_crops_storage_no_rotation = self.to_monthly_list(
-        #     crops_food_storage_no_rotation,
-        #     1 / self.constants["KCALS_MONTHLY"],
-        # )
-
-        # immediate from produced and storage changes account for all eaten
-        # but storage can come from produced!
-        # we know storage_change + all_eaten = produced
-        # if(storage_change>=0):
-        #   assert(all_eaten >= storage_change)
-        #   eaten_from_stored = storage_change
-        #   immediately_eaten = all_eaten - eaten_from_stored
-        # else:
-        #   eaten_from_stored = 0
 
         [
             billions_fed_immediate_outdoor_crops_kcals,
             billions_fed_new_stored_outdoor_crops_kcals,
         ] = self.to_monthly_list_outdoor_crops_kcals(
-            crops_food_eaten_no_rotation,
-            crops_food_eaten_with_rotation,
+            crops_food_eaten_no_relocation,
+            crops_food_eaten_relocated,
             self.combined_produced_kcals,
             1 / self.constants["KCALS_MONTHLY"],
         )
 
-        billions_fed_no_rotation = no_rotation / self.constants["KCALS_MONTHLY"]
-        billions_fed_rotation = rotation / self.constants["KCALS_MONTHLY"]
+        billions_fed_no_relocation = no_relocation / self.constants["KCALS_MONTHLY"]
+        billions_fed_relocated = relocation / self.constants["KCALS_MONTHLY"]
 
         difference = (
             np.array(billions_fed_immediate_outdoor_crops_kcals)
             + np.array(billions_fed_new_stored_outdoor_crops_kcals)
-            - np.array(billions_fed_no_rotation)
-            - np.array(billions_fed_rotation)
+            - np.array(billions_fed_no_relocation)
+            - np.array(billions_fed_relocated)
         )
 
         decimals = 3
@@ -341,12 +324,12 @@ class Extractor:
             and stored food"""
         billions_fed_outdoor_crops_kcals = np.array(
             self.to_monthly_list(
-                crops_food_eaten_no_rotation,
+                crops_food_eaten_no_relocation,
                 1 / self.constants["KCALS_MONTHLY"],
             )
         ) + np.array(
             self.to_monthly_list(
-                crops_food_eaten_with_rotation,
+                crops_food_eaten_relocated,
                 self.constants["OG_ROTATION_FRACTION_KCALS"]
                 / self.constants["KCALS_MONTHLY"],
             )
@@ -354,12 +337,12 @@ class Extractor:
 
         billions_fed_outdoor_crops_fat = np.array(
             self.to_monthly_list(
-                crops_food_eaten_no_rotation,
+                crops_food_eaten_no_relocation,
                 self.constants["OG_FRACTION_FAT"] / self.constants["FAT_MONTHLY"] / 1e9,
             )
         ) + np.array(
             self.to_monthly_list(
-                crops_food_eaten_with_rotation,
+                crops_food_eaten_relocated,
                 self.constants["OG_ROTATION_FRACTION_FAT"]
                 / self.constants["FAT_MONTHLY"]
                 / 1e9,
@@ -376,20 +359,20 @@ class Extractor:
         # OG_FRACTION_PROTEIN: 1000tons/billion kcals
         # PROTEIN_MONTHLY: 1000 tons protein per month per person
 
-        # crops_food_eaten_no_rotation:
-        #   crops_food_eaten_no_rotation * OG_FRACTION_PROTEIN
+        # crops_food_eaten_no_relocation:
+        #   crops_food_eaten_no_relocation * OG_FRACTION_PROTEIN
         #   / self.single_valued_constants["THOU_TONS_PROTEIN_NEEDED"]
 
         #   gives a fraction, So.
 
-        #   [crops_food_eaten_no_rotation] == [?]
+        #   [crops_food_eaten_no_relocation] == [?]
         #   [OG_FRACTION_PROTEIN] = 1000 tons protein per billion kcals
         #   [THOU_TONS_PROTEIN_NEEDED] = thousands of tons per month for population
         #   so, [?] = [thousands of tons per month for population]/[1000 tons protein per billion kcals]
         #   [?] = [billion kcals per month for population]
-        #   [crops_food_eaten_no_rotation] = [billion kcals per month for population]
+        #   [crops_food_eaten_no_relocation] = [billion kcals per month for population]
         #   therefore,
-        #   [crops_food_eaten_no_rotation]
+        #   [crops_food_eaten_no_relocation]
         #    * [OG_FRACTION_PROTEIN]
         #    / [PROTEIN_MONTHLY]
         #   gives us
@@ -403,14 +386,14 @@ class Extractor:
 
         billions_fed_outdoor_crops_protein = np.array(
             self.to_monthly_list(
-                crops_food_eaten_no_rotation,
+                crops_food_eaten_no_relocation,
                 self.constants["OG_FRACTION_PROTEIN"]
                 / self.constants["PROTEIN_MONTHLY"]
                 / 1e9,
             )
         ) + np.array(
             self.to_monthly_list(
-                crops_food_eaten_with_rotation,
+                crops_food_eaten_relocated,
                 self.constants["OG_ROTATION_FRACTION_PROTEIN"]
                 / self.constants["PROTEIN_MONTHLY"]
                 / 1e9,
@@ -424,7 +407,7 @@ class Extractor:
             kcals_units="billion people fed each month",
             fat_units="billion people fed each month",
             protein_units="billion people fed each month",
-        ).get_rounded_to_decimal(6)
+        )
 
         self.new_stored_outdoor_crops = Food(
             kcals=np.array(billions_fed_new_stored_outdoor_crops_kcals),
@@ -460,7 +443,7 @@ class Extractor:
             kcals_units="billion people fed each month",
             fat_units="billion people fed each month",
             protein_units="billion people fed each month",
-        ).get_rounded_to_decimal(6)
+        )
 
         to_immediate_ratio = self.immediate_outdoor_crops / self.outdoor_crops
 
@@ -475,9 +458,7 @@ class Extractor:
         to_immediate_ratio.fat = to_immediate_ratio.kcals
         to_immediate_ratio.protein = to_immediate_ratio.kcals
 
-        self.immediate_outdoor_crops = (
-            self.outdoor_crops * to_immediate_ratio
-        ).get_rounded_to_decimal(6)
+        self.immediate_outdoor_crops = self.outdoor_crops * to_immediate_ratio
 
         # make sure we haven't messed up and changed total outdoor growing production
         # each month
@@ -492,7 +473,7 @@ class Extractor:
     def set_crop_produced_monthly(self, outdoor_crops):
         """
         get the crop produced monthly, rather than the amount eaten
-        incorporates rotations
+        incorporates relocations
         """
         self.combined_produced_kcals = np.concatenate(
             [
@@ -626,7 +607,7 @@ class Extractor:
     # if stored food isn't included, these results will be zero
     def extract_meat_milk_results(
         self,
-        meat_culled,
+        culled_meat_eaten,
         grazing_milk_kcals,
         grazing_milk_fat,
         grazing_milk_protein,
@@ -657,56 +638,58 @@ class Extractor:
         #
         #
         #   (this is plotted as
-        #   meat_culled_plus_grazing_cattle_maintained
-        #   === billions_fed_meat_culled_grazing_kcals)
+        #   culled_meat_plus_grazing_cattle_maintained
+        #   === billions_fed_culled_meat_grazing_kcals)
         #
         #   AND
         #
         #   grain_fed_meat_kcals = cattle_feedlot_maintained + chicken_pork
         #   (plotted as billions_fed_grain_fed_meat_kcals)
 
-        billions_fed_meat_culled_kcals = np.divide(
-            meat_culled, self.constants["KCALS_MONTHLY"]
+        billions_fed_cattle_grazing_maintained = (
+            np.array(cattle_grazing_maintained_kcals) / self.constants["KCALS_MONTHLY"]
         )
 
-        billions_fed_meat_culled_grazing_kcals = (
-            billions_fed_meat_culled_kcals
-            + np.array(cattle_grazing_maintained_kcals)
-            / self.constants["KCALS_MONTHLY"]
+        billions_fed_culled_meat_kcals = self.to_monthly_list(
+            culled_meat_eaten,
+            1 / self.constants["KCALS_MONTHLY"],
+        )
+        billions_fed_culled_meat_grazing_kcals = (
+            billions_fed_culled_meat_kcals + billions_fed_cattle_grazing_maintained
         )
 
-        billions_fed_meat_culled_fat = np.multiply(
-            meat_culled,
-            self.constants["MEAT_CULLED_FRACTION_FAT"]
+        billions_fed_culled_meat_fat = self.to_monthly_list(
+            culled_meat_eaten,
+            self.constants["CULLED_MEAT_FRACTION_FAT"]
             / self.constants["FAT_MONTHLY"]
             / 1e9,
         )
 
-        billions_fed_meat_culled_grazing_fat = (
-            billions_fed_meat_culled_fat
+        billions_fed_culled_meat_protein = self.to_monthly_list(
+            culled_meat_eaten,
+            self.constants["CULLED_MEAT_FRACTION_PROTEIN"]
+            / self.constants["PROTEIN_MONTHLY"]
+            / 1e9,
+        )
+
+        billions_fed_culled_meat_grazing_fat = (
+            billions_fed_culled_meat_fat
             + np.array(cattle_grazing_maintained_fat)
             / self.constants["FAT_MONTHLY"]
             / 1e9
         )
 
-        billions_fed_meat_culled_protein = np.multiply(
-            meat_culled,
-            self.constants["MEAT_CULLED_FRACTION_PROTEIN"]
-            / self.constants["PROTEIN_MONTHLY"]
-            / 1e9,
-        )
-
-        billions_fed_meat_culled_grazing_protein = (
-            billions_fed_meat_culled_protein
+        billions_fed_culled_meat_grazing_protein = (
+            billions_fed_culled_meat_protein
             + np.array(cattle_grazing_maintained_protein)
             / self.constants["PROTEIN_MONTHLY"]
             / 1e9
         )
 
-        self.meat_culled_plus_grazing_cattle_maintained = Food(
-            kcals=billions_fed_meat_culled_grazing_kcals,
-            fat=billions_fed_meat_culled_grazing_fat,
-            protein=billions_fed_meat_culled_grazing_protein,
+        self.culled_meat_plus_grazing_cattle_maintained = Food(
+            kcals=billions_fed_culled_meat_grazing_kcals,
+            fat=billions_fed_culled_meat_grazing_fat,
+            protein=billions_fed_culled_meat_grazing_protein,
             kcals_units="billion people fed each month",
             fat_units="billion people fed each month",
             protein_units="billion people fed each month",
@@ -785,9 +768,6 @@ class Extractor:
             stored_food_eaten,
             1 / self.constants["KCALS_MONTHLY"],
         )
-
-        # TODO: DELETE THIS IF NOT USEFUL
-        # self.sf = self.to_monthly_list(stored_food_eaten, 1)
 
         billions_fed_stored_food_fat = self.to_monthly_list(
             stored_food_eaten,

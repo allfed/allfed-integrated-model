@@ -295,8 +295,8 @@ class PrintParameters:
 
             CPM = np.array(meat_and_dairy.chicken_pork_kcals)[0]
             LARGE_ANIMAL_KCALS_PER_KG = constants["LARGE_ANIMAL_KCALS_PER_KG"]
-            LARGE_ANIMAL_FAT_PER_KG = constants["LARGE_ANIMAL_FAT_PER_KG"]
-            LARGE_ANIMAL_PROTEIN_PER_KG = constants["LARGE_ANIMAL_PROTEIN_PER_KG"]
+            LARGE_ANIMAL_FAT_RATIO = constants["LARGE_ANIMAL_FAT_RATIO"]
+            LARGE_ANIMAL_PROTEIN_RATIO = constants["LARGE_ANIMAL_PROTEIN_RATIO"]
             grazing_maintained = meat_and_dairy.get_cattle_grazing_maintained()[0]
             if CPM > 0:
                 print("INITIAL_CH_PK_KCALS million tons dry caloric monthly")
@@ -362,15 +362,10 @@ class PrintParameters:
                 print("no grain fed cattle")
                 print("")
             print("")
-            if (time_consts["meat_culled"] > 0).any():
+            if (constants["culled_meat"] > 0).any():
                 print("culled chicken, pork, and cattle per month.")
-                print(
-                    "reaches minimum after "
-                    + str(constants["CULL_DURATION_MONTHS"])
-                    + " months"
-                )
-                print("meat_culled")
-                print(time_consts["meat_culled"] / (1 - MEAT_WASTE / 100))
+                print("culled_meat")
+                print(constants["culled_meat"] / (1 - MEAT_WASTE / 100))
             else:
                 print("no culled meat")
                 print("")

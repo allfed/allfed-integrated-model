@@ -32,9 +32,6 @@ class Validator:
             extracted_results.constants["inputs"]["INCLUDE_PROTEIN"],
         )
 
-        # TODO: DELETE THIS if not useful
-        # self.YES_THIS_ONE_PROBABLY_DOES_SOMETHING_USEFUL_question_mark()
-
         (
             kcals_total_from_optimizer,
             fat_total_from_optimizer,
@@ -174,7 +171,7 @@ class Validator:
 
         interpreted_results.fish.make_sure_fat_protein_zero_if_kcals_is_zero()
 
-        interpreted_results.meat_culled_plus_grazing_cattle_maintained.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.culled_meat_plus_grazing_cattle_maintained.make_sure_fat_protein_zero_if_kcals_is_zero()
 
         interpreted_results.grazing_milk.make_sure_fat_protein_zero_if_kcals_is_zero()
 
@@ -226,7 +223,7 @@ class Validator:
 
         interpreted_results.fish.make_sure_not_nan()
 
-        interpreted_results.meat_culled_plus_grazing_cattle_maintained.make_sure_not_nan()
+        interpreted_results.culled_meat_plus_grazing_cattle_maintained.make_sure_not_nan()
 
         interpreted_results.grazing_milk.make_sure_not_nan()
 
@@ -264,10 +261,9 @@ class Validator:
         assert interpreted_results.greenhouse.all_greater_than_or_equal_to_zero()
 
         assert interpreted_results.fish.all_greater_than_or_equal_to_zero()
-
-        assert (
-            interpreted_results.meat_culled_plus_grazing_cattle_maintained.all_greater_than_or_equal_to_zero()
-        )
+        assert interpreted_results.culled_meat_plus_grazing_cattle_maintained.get_rounded_to_decimal(
+            6
+        ).all_greater_than_or_equal_to_zero()
 
         assert interpreted_results.grazing_milk.all_greater_than_or_equal_to_zero()
 
@@ -275,9 +271,9 @@ class Validator:
 
         assert interpreted_results.grain_fed_milk.all_greater_than_or_equal_to_zero()
 
-        assert (
-            interpreted_results.immediate_outdoor_crops.all_greater_than_or_equal_to_zero()
-        )
+        assert interpreted_results.immediate_outdoor_crops.get_rounded_to_decimal(
+            6
+        ).all_greater_than_or_equal_to_zero()
 
         assert (
             interpreted_results.new_stored_outdoor_crops.all_greater_than_or_equal_to_zero()
@@ -304,12 +300,13 @@ class Validator:
         assert interpreted_results.stored_food_to_humans.get_rounded_to_decimal(
             6
         ).all_greater_than_or_equal_to_zero()
-        assert (
-            interpreted_results.outdoor_crops_to_humans.all_greater_than_or_equal_to_zero()
-        )
-        assert (
-            interpreted_results.immediate_outdoor_crops_to_humans.all_greater_than_or_equal_to_zero()
-        )
+        assert interpreted_results.outdoor_crops_to_humans.get_rounded_to_decimal(
+            6
+        ).all_greater_than_or_equal_to_zero()
+
+        assert interpreted_results.immediate_outdoor_crops_to_humans.get_rounded_to_decimal(
+            6
+        ).all_greater_than_or_equal_to_zero()
         assert (
             interpreted_results.new_stored_outdoor_crops_to_humans.all_greater_than_or_equal_to_zero()
         )

@@ -125,6 +125,8 @@ class UnitConversions:
             self.protein_units,
         ] = self.get_units_from_list_to_total()
 
+        self.units = [self.kcals_units, self.fat_units, self.protein_units]
+
     def get_units_from_list_to_element(self):
         """
         gets the units so that they reflect that of a single month
@@ -261,7 +263,7 @@ class UnitConversions:
         values and units to billions of people fed.
         """
         # @Morgan: Is there a reason this is done as if,if,if and not as if,elif,else?
-        
+
         # getting this instance of the UnitConversions from the child class
         conversions = self.get_conversions()
 
@@ -372,15 +374,9 @@ class UnitConversions:
                 protein_units="percent people fed per month",
             )
 
-        billion_kcal_conversion = (
-            100 / conversions.kcals_monthly / conversions.population * 1e9
-        )
-        thou_tons_fat_conversion = (
-            100 / conversions.fat_monthly / conversions.population
-        )
-        thou_tons_protein_conversion = (
-            100 / conversions.protein_monthly / conversions.population
-        )
+        billion_kcal_conversion = 100 / conversions.billion_kcals_needed
+        thou_tons_fat_conversion = 100 / conversions.thou_tons_fat_needed
+        thou_tons_protein_conversion = 100 / conversions.thou_tons_protein_needed
 
         if (
             self.kcals_units == "billion kcals each month"

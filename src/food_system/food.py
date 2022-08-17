@@ -451,7 +451,12 @@ class Food(UnitConversions):
             protein = self.protein / other
 
             return Food(
-                kcals, fat, protein, self.kcals_units, self.fat_units, self.protein_units
+                kcals,
+                fat,
+                protein,
+                self.kcals_units,
+                self.fat_units,
+                self.protein_units,
             )
 
     def __getitem__(self, key):
@@ -694,7 +699,6 @@ class Food(UnitConversions):
                 and self.fat != other.fat
                 and self.protein != other.protein
             )
-
 
     def plot(self, title="generic food object over time"):
         """
@@ -1375,6 +1379,84 @@ class Food(UnitConversions):
             self.protein_units,
         )
 
+    def get_amount_used_other_food(self, other_fat_ratio, other_protein_ratio):
+        """
+        Running sum of the amount used of the other food each month.
+
+        Function used to determine the amount of stored food or outdoor growing that is
+        used by biofuels and feed
+
+        this is determined by taking the max amount used of the three nutrients,
+        which is satisfied by a certain number of units of the other food. Surplus
+        of the nutrients used is not used at all in the calculation.
+
+        """
+
+        self.make_sure_is_a_list()
+        self.validate_if_list()
+
+        used_nutrient_ratio = Food(
+            kcals=1,
+            fat=other_fat_ratio,
+            protein=other_protein_ratio,
+            kcals_units="ratio",
+            fat_units="ratio",
+            protein_units="ratio",
+        )
+
+        running_sum = Food(
+            kcals=0,
+            fat=0,
+            protein=0,
+            kcals_units=self.get_first_month().kcals_units,
+            fat_units=self.get_first_month().fat_units,
+            protein_units=self.get_first_month().protein_units,
+        )
+
+        amount_consumed_list = Food(
+            kcals=np.zeros(self.NMONTHS),
+            fat=np.zeros(self.NMONTHS),
+            protein=np.zeros(self.NMONTHS),
+            kcals_units=self.kcals_units,
+            fat_units=self.fat_units,
+            protein_units=self.protein_units,
+        )
+
+        for i in range(self.NMONTHS):
+            demand_this_month = self.get_month(i)
+            amount_consumed = self.get_consumed_amount(
+                demand_this_month, used_nutrient_ratio
+            )
+            amount_consumed_list.kcals[i] = amount_consumed.kcals
+            amount_consumed_list.fat[i] = amount_consumed.fat
+            amount_consumed_list.protein[i] = amount_consumed.protein
+
+        return amount_consumed_list
+
+    def get_consumed_amount(self, demand_to_be_met, used_nutrient_ratio):
+        # returns the amount used of the demand_to_be_met a food with a given used_nutrient_ratio.
+        # The maximum nutrient used is used to determine the amount of the consumed
+        # food will be used.
+        assert not demand_to_be_met.is_list_monthly()
+
+        assert used_nutrient_ratio.fat > 0
+        assert used_nutrient_ratio.protein > 0
+
+        kcals_units_used = demand_to_be_met.kcals
+        fat_units_used = demand_to_be_met.fat / used_nutrient_ratio.fat
+        protein_units_used = demand_to_be_met.protein / used_nutrient_ratio.protein
+
+        max_units_used = max([kcals_units_used, fat_units_used, protein_units_used])
+
+        return Food(
+            kcals=max_units_used * used_nutrient_ratio.kcals,
+            fat=max_units_used * used_nutrient_ratio.fat,
+            protein=max_units_used * used_nutrient_ratio.protein,
+            kcals_units=demand_to_be_met.kcals_units,
+            fat_units=demand_to_be_met.fat_units,
+            protein_units=demand_to_be_met.protein_units,
+        )
+
     def get_first_month(self):
         """
         Just get the first month's nutrient values and convert the units from "each" to
@@ -1421,6 +1503,24 @@ class Food(UnitConversions):
         min_all_months.set_units_from_list_to_total()
 
         return min_all_months
+
+    def get_max_all_months(self):
+        """
+        create a food with the maximum of every month as a total nutrient
+        """
+        self.make_sure_is_a_list()
+        max_all_months = Food(
+            kcals=max(self.kcals),
+            fat=max(self.fat),
+            protein=max(self.protein),
+            kcals_units=self.kcals_units,
+            fat_units=self.fat_units,
+            protein_units=self.protein_units,
+        )
+
+        max_all_months.set_units_from_list_to_total()
+
+        return max_all_months
 
     def negative_values_to_zero(self):
         """
@@ -1477,7 +1577,6 @@ class Food(UnitConversions):
         )
 
         return rounded
-
 
     def replace_if_list_with_zeros_is_zero(self, list_with_zeros, replacement):
         """
