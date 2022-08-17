@@ -403,7 +403,8 @@ class Parameters:
 
         feed_and_biofuels = FeedAndBiofuels(constants_for_params)
 
-        # make sure nonhuman consumption is always less than or equal to outdoor crops+stored food for all nutrients, pre-waste
+        # make sure nonhuman consumption is always less than or equal
+        # to outdoor crops+stored food for all nutrients, pre-waste
         feed_and_biofuels.set_nonhuman_consumption_with_cap(
             constants_for_params, outdoor_crops, stored_food
         )
@@ -487,7 +488,8 @@ class Parameters:
         # any reasonable cap of production should reflect a cap on the actual amount available
         # to humans.
 
-        # "grain" in all cases just means the stored food + outdoor crop production that is human edible and used for feed
+        # "grain" in all cases just means the stored food + outdoor crop production
+        # that is human edible and used for feed
         # this calculation is pre-waste for meat and feed
         # Chicken and pork only ever use "grain" as defined above in this model, not grasses
         meat_and_dairy.calculate_meat_and_dairy_from_grain(
