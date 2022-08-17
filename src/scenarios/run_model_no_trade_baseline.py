@@ -74,19 +74,24 @@ def create_several_maps_with_different_assumptions():
 
     this_simulation_combinations = {}
 
-    this_simulation_combinations["nutrition"] = ["baseline", "catastrophe"]
+    this_simulation_combinations["waste"] = [
+        "baseline_in_country",
+        "doubled_prices_in_country",
+    ]
+
     this_simulation_combinations["buffer"] = ["baseline", "zero"]
-    this_simulation_combinations["shutoff"] = ["continued", "short_delayed_shutoff"]
-    this_simulation_combinations["cull"] = ["dont_eat_culled", "do_eat_culled"]
-    # this_simulation_combinations["waste"] = ["zero", "baseline_in_country"]
+    this_simulation_combinations["shutoff"] = [
+        "continued",
+        "long_delayed_shutoff",
+    ]
     this_simulation_combinations["fat"] = ["required", "not_required"]
+    this_simulation_combinations["protein"] = ["required", "not_required"]
 
     # # one example set of assumptions
     # this_simulation_combinations["nutrition"] = ["baseline"]
     # this_simulation_combinations["buffer"] = ["baseline"]
     # this_simulation_combinations["shutoff"] = ["continued"]
     # this_simulation_combinations["cull"] = ["dont_eat_culled"]
-    this_simulation_combinations["waste"] = ["baseline_in_country"]
 
     # I don't really know why this works, but it certainly does.
     # I'm just combining things a lot like this example:
@@ -117,11 +122,13 @@ def create_several_maps_with_different_assumptions():
 
     # now we have a list of all the options we want to test
     defaults = {}
+    defaults["nutrition"] = "catastrophe"
     defaults["scale"] = "country"
     defaults["seasonality"] = "baseline_in_country"
-    defaults["scenario"] = "baseline_climate"
     defaults["crop_disruption"] = "zero"
     defaults["fish"] = "baseline"
+    defaults["scenario"] = "baseline_climate"
+    defaults["cull"] = "do_eat_culled"
 
     options_including_defaults = []
     for option in options:
@@ -134,12 +141,48 @@ def create_several_maps_with_different_assumptions():
 
 
 if __name__ == "__main__":
-    CREATE_SEVERAL_MAPS_PPTX = False
+
+    print("arguments, all optional:")
+    print("first: [single|multi] (single set of assumptions or multiple)")
+    print("second: [pptx|no_pptx] (save a pptx report or not)")
+    print("third: [no_plot|plot] (plots figures)")
+    print("fourth: country_code (which country to run, if desired)")
+
+    args = sys.argv[1:]
+    if len(args) == 1:
+        single_or_various = args[0]
+        plot_figs = "no_plot"
+        create_pptx = "pptx"
+        country = "world"
+    elif len(args) == 2:
+        single_or_various = args[0]
+        create_pptx = args[1]
+        plot_figs = "no_plot"
+        country = "world"
+    elif len(args) == 3:
+        single_or_various = args[0]
+        create_pptx = args[1]
+        plot_figs = args[2]
+        country = "world"
+    elif len(args) == 4:
+        single_or_various = args[0]
+        create_pptx = args[1]
+        plot_figs = args[2]
+        country = args[3]
+    else:
+        single_or_various = "single"
+        create_pptx = "pptx"
+        plot_figs = "no_plot"
+        country = "world"
+
+    CREATE_SEVERAL_MAPS_PPTX = single_or_various == "multi"
     if CREATE_SEVERAL_MAPS_PPTX:
         create_several_maps_with_different_assumptions()
 
-    CREATE_PPTX_EACH_COUNTRY = True
+    CREATE_PPTX_EACH_COUNTRY = single_or_various == "single"
     if CREATE_PPTX_EACH_COUNTRY:
         run_baseline_by_country_no_trade(
-            show_figures=False, create_pptx_with_all_countries=False
+            plot_map=(create_pptx == "pptx"),
+            show_figures=(plot_figs == "plot"),
+            create_pptx_with_all_countries=(create_pptx == "pptx"),
         )

@@ -43,7 +43,24 @@ class MeatAndDairy:
         self.MILK_PROTEIN = 0.033  # kg per kg
 
         # Human Inedible Produced Primary Dairy and Cattle Meat #########
-        self.human_inedible_feed = constants_for_params["HUMAN_INEDIBLE_FEED"]
+        self.human_inedible_feed = np.array([])
+        for i in range(1, 8):
+
+            ratio_human_inedible_feed = constants_for_params[
+                "RATIO_GRASSES_YEAR" + str(i)
+            ]
+            assert (
+                0 <= ratio_human_inedible_feed <= 10000
+            ), "Error: Unreasonable ratio of grass production"
+
+            self.human_inedible_feed = np.append(
+                self.human_inedible_feed,
+                [
+                    ratio_human_inedible_feed
+                    * constants_for_params["HUMAN_INEDIBLE_FEED_BASELINE_MONTHLY"]
+                ]
+                * 12,  # this repeats it 12 times (one for each month in the year)
+            )
 
         # dry caloric ton inedible feed/ton milk
         self.INEDIBLE_TO_MILK_CONVERSION = 1.44
@@ -58,7 +75,6 @@ class MeatAndDairy:
         self.EDIBLE_TO_CATTLE_CONVERSION = 9.8
 
         # dry caloric ton inedible feed/ton cattle
-        # INEDIBLE_TO_CATTLE_CONVERSION = 103.0 # this is an old number
         self.INEDIBLE_TO_CATTLE_CONVERSION = 92.6
 
         # monthly in tons milk (present day value)
@@ -161,11 +177,6 @@ class MeatAndDairy:
             cumulative_meat_limit[m] = min(meat_limit, culled_meat_initial)
 
         return cumulative_meat_limit
-        # import matplotlib.pyplot as plt
-
-        # plt.plot(cumulative_meat_limit)
-        # plt.show()
-        # quit()
 
     def calculated_culled_meat(self):
         KG_TO_1000_TONS = self.KG_TO_1000_TONS

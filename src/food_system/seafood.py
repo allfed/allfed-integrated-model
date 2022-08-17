@@ -6,6 +6,7 @@
 
 import numpy as np
 
+
 class Seafood:
     def __init__(self, constants_for_params):
         self.NMONTHS = constants_for_params["NMONTHS"]

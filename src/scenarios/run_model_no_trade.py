@@ -13,6 +13,10 @@ import os
 import sys
 import matplotlib.pyplot as plt
 import geopandas as gpd
+
+import datetime
+from datetime import date
+
 from itertools import product
 
 module_path = os.path.abspath(os.path.join("../.."))
@@ -149,7 +153,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
 
             if not os.path.exists("../../results/large_reports"):
                 os.mkdir("../../results/large_reports")
-            Plotter.start_pptx("Baseline no trade")
+            Plotter.start_pptx("No trade by country")
         """
         Runs the baseline model by country and without trade
 
@@ -211,7 +215,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         for index, country_data in no_trade_table.iterrows():
 
             country_code = country_data["iso3"]
+            # if country_code != "USA":
             #     continue
+
             if country_code in countries_to_skip:
                 continue
 
@@ -270,16 +276,34 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 show_figures,
                 add_map_slide_to_pptx,
             )
+        year = str(date.today().year)
+        month = str(date.today().month)
+        day = str(date.today().day)
+        hour = str(datetime.datetime.now().hour)
+        minute = str(datetime.datetime.now().minute)
         if create_pptx_with_all_countries:
-            Plotter.end_pptx(saveloc="../../results/large_reports/no_food_trade.pptx")
+            Plotter.end_pptx(
+                saveloc="../../results/large_reports/no_food_trade."
+                + year
+                + "."
+                + month
+                + "."
+                + day
+                + "."
+                + hour
+                + "."
+                + minute
+                + ".pptx"
+            )
 
-    def run_many_options(self, scenario_options, title, countries_to_skip=[]):
+    def run_many_options(
+        self, scenario_options, title, add_map_slide_to_pptx=True, countries_to_skip=[]
+    ):
         print("Number of scenarios:")
         print(len(scenario_options))
         print("")
         print("")
         print("")
-        add_map_slide_to_pptx = False
         if add_map_slide_to_pptx:
             Plotter.start_pptx("Various Scenario Options " + title)
 

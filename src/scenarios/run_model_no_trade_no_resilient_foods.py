@@ -53,13 +53,13 @@ def run_nuclear_winter_by_country_no_trade(
     this_simulation["crop_disruption"] = "country_nuclear_winter"
     this_simulation["fish"] = "nuclear_winter"
 
-    this_simulation["fat"] = "required"
-    this_simulation["protein"] = "required"
+    this_simulation["fat"] = "not_required"
+    this_simulation["protein"] = "not_required"
     this_simulation["waste"] = "baseline_in_country"
-    this_simulation["nutrition"] = "baseline"
-    this_simulation["buffer"] = "baseline"
+    this_simulation["nutrition"] = "catastrophe"
+    this_simulation["buffer"] = "zero"
     this_simulation["shutoff"] = "short_delayed_shutoff"
-    this_simulation["cull"] = "do_eat_culled"
+    this_simulation["cull"] = "dont_eat_culled"
 
     scenario_runner = ScenarioRunnerNoTrade()
 
@@ -82,11 +82,13 @@ def create_several_maps_with_different_assumptions():
         "doubled_prices_in_country",
     ]
 
-    this_simulation_combinations["nutrition"] = ["baseline", "catastrophe"]
     this_simulation_combinations["buffer"] = ["baseline", "zero"]
-    this_simulation_combinations["shutoff"] = ["continued", "short_delayed_shutoff"]
-    this_simulation_combinations["cull"] = ["dont_eat_culled", "do_eat_culled"]
+    this_simulation_combinations["shutoff"] = [
+        "continued",
+        "long_delayed_shutoff",
+    ]
     this_simulation_combinations["fat"] = ["required", "not_required"]
+    this_simulation_combinations["protein"] = ["required", "not_required"]
 
     # this_simulation_combinations["waste"] = ["tripled_prices_in_country"]
     # this_simulation_combinations["nutrition"] = ["baseline"]
@@ -123,12 +125,13 @@ def create_several_maps_with_different_assumptions():
 
     # now we have a list of all the options we want to test
     defaults = {}
+    defaults["nutrition"] = "catastrophe"
     defaults["scale"] = "country"
     defaults["seasonality"] = "nuclear_winter_in_country"
-    defaults["protein"] = "required"
     defaults["crop_disruption"] = "country_nuclear_winter"
     defaults["fish"] = "baseline"
     defaults["scenario"] = "no_resilient_food_nuclear_winter"
+    defaults["cull"] = "do_eat_culled"
 
     options_including_defaults = []
     for option in options:
@@ -143,12 +146,48 @@ def create_several_maps_with_different_assumptions():
 
 
 if __name__ == "__main__":
-    CREATE_SEVERAL_MAPS_PPTX = False
+
+    print("arguments, all optional:")
+    print("first: [single|multi] (single set of assumptions or multiple)")
+    print("second: [pptx|no_pptx] (save a pptx report or not)")
+    print("third: [no_plot|plot] (plots figures)")
+    print("fourth: country_code (which country to run, if desired)")
+
+    args = sys.argv[1:]
+    if len(args) == 1:
+        single_or_various = args[0]
+        plot_figs = "no_plot"
+        create_pptx = "pptx"
+        country = "world"
+    elif len(args) == 2:
+        single_or_various = args[0]
+        create_pptx = args[1]
+        plot_figs = "no_plot"
+        country = "world"
+    elif len(args) == 3:
+        single_or_various = args[0]
+        create_pptx = args[1]
+        plot_figs = args[2]
+        country = "world"
+    elif len(args) == 4:
+        single_or_various = args[0]
+        create_pptx = args[1]
+        plot_figs = args[2]
+        country = args[3]
+    else:
+        single_or_various = "single"
+        create_pptx = "pptx"
+        plot_figs = "no_plot"
+        country = "world"
+
+    CREATE_SEVERAL_MAPS_PPTX = single_or_various == "multi"
     if CREATE_SEVERAL_MAPS_PPTX:
         create_several_maps_with_different_assumptions()
 
-    CREATE_PPTX_EACH_COUNTRY = True
+    CREATE_PPTX_EACH_COUNTRY = single_or_various == "single"
     if CREATE_PPTX_EACH_COUNTRY:
         run_nuclear_winter_by_country_no_trade(
-            show_figures=False, create_pptx_with_all_countries=False, plot_map=False
+            plot_map=(create_pptx == "pptx"),
+            show_figures=(plot_figs == "plot"),
+            create_pptx_with_all_countries=(create_pptx == "pptx"),
         )

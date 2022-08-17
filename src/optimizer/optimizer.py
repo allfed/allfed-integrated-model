@@ -6,6 +6,7 @@
 ###############################################################################
 
 
+from multiprocessing.pool import IMapIterator
 import os
 import sys
 import numpy as np
@@ -121,7 +122,7 @@ class Optimizer:
 
         variables["used_area"][month] = LpVariable(
             "Used_Area_" + str(month) + "_Variable",
-            self.single_valued_constants["INITIAL_AREA"],
+            self.single_valued_constants["INITIAL_BUILT_SEAWEED_AREA"],
             self.multi_valued_constants["built_area"][month],
         )
 
@@ -133,7 +134,7 @@ class Optimizer:
             )
             model += (
                 variables["used_area"][0]
-                == self.single_valued_constants["INITIAL_AREA"],
+                == self.single_valued_constants["INITIAL_BUILT_SEAWEED_AREA"],
                 "Used_Area_Month_0_Constraint",
             )
             model += (
@@ -166,7 +167,76 @@ class Optimizer:
         return (model, variables)
 
     # incorporate linear constraints for stored food consumption each month
+    def add_stored_food_to_model_only_first_year(self, model, variables, month):
+
+        variables["stored_food_start"][month] = LpVariable(
+            "Stored_Food_Start_Month_" + str(month) + "_Variable",
+            0,
+            self.single_valued_constants["stored_food"].kcals,
+        )
+        variables["stored_food_end"][month] = LpVariable(
+            "Stored_Food_End_Month_" + str(month) + "_Variable",
+            0,
+            self.single_valued_constants["stored_food"].kcals,
+        )
+        variables["stored_food_eaten"][month] = LpVariable(
+            "Stored_Food_Eaten_During_Month_" + str(month) + "_Variable",
+            0,
+            self.single_valued_constants["stored_food"].kcals,
+        )
+
+        if month == 0:  # first Month
+            model += (
+                variables["stored_food_start"][0]
+                == self.single_valued_constants["stored_food"].kcals,
+                "Stored_Food_Start_Month_0_Constraint",
+            )
+
+        elif month > 12:  # within first year:
+            model += (
+                variables["stored_food_eaten"][month] == 0,
+                "Stored_Food_Eaten_Month_" + str(month) + "_Constraint",
+            )
+
+            model += (
+                variables["stored_food_start"][month] == 0,
+                "Stored_Food_Start_Month_" + str(month) + "_Constraint",
+            )
+
+            model += (
+                variables["stored_food_end"][month] == 0,
+                "Stored_Food_End_Month_" + str(month) + "_Constraint",
+            )
+
+        else:
+            model += (
+                variables["stored_food_start"][month]
+                == variables["stored_food_end"][month - 1],
+                "Stored_Food_Start_Month_" + str(month) + "_Constraint",
+            )
+
+            model += (
+                variables["stored_food_end"][month] == 0,
+                "Stored_Food_End_Month_" + str(month) + "_Constraint",
+            )
+
+        if month <= 12:
+            model += (
+                variables["stored_food_end"][month]
+                == variables["stored_food_start"][month]
+                - variables["stored_food_eaten"][month],
+                "Stored_Food_Eaten_During_Month_" + str(month) + "_Constraint",
+            )
+
+        return (model, variables)
+
     def add_stored_food_to_model(self, model, variables, month):
+        IMITATE_XIA_ET_AL = False
+        if IMITATE_XIA_ET_AL:
+            return self.add_stored_food_to_model_only_first_year(
+                model, variables, month
+            )
+
         variables["stored_food_start"][month] = LpVariable(
             "Stored_Food_Start_Month_" + str(month) + "_Variable",
             0,
@@ -210,29 +280,6 @@ class Optimizer:
                 "Stored_Food_Start_Month_" + str(month) + "_Constraint",
             )
 
-            ##### helps reduce wild fluctutions in stored food #######
-            if (
-                month > 0
-                and self.single_valued_constants["inputs"]["STORED_FOOD_SMOOTHING"]
-            ):
-                model += (
-                    variables["stored_food_eaten"][month]
-                    <= variables["stored_food_eaten"][month - 1]
-                    * self.single_valued_constants["inputs"]["FLUCTUATION_LIMIT"],
-                    "Small_Change_Plus_stored_food_Eaten_Month_"
-                    + str(month)
-                    + "_Constraint",
-                )
-
-                model += (
-                    variables["stored_food_eaten"][month]
-                    >= variables["stored_food_eaten"][month - 1]
-                    * (1 / self.single_valued_constants["inputs"]["FLUCTUATION_LIMIT"]),
-                    "Small_Change_Minus_stored_food_Eaten_Month_"
-                    + str(month)
-                    + "_Constraint",
-                )
-
         model += (
             variables["stored_food_end"][month]
             == variables["stored_food_start"][month]
@@ -259,8 +306,7 @@ class Optimizer:
         variables["culled_meat_eaten"][month] = LpVariable(
             "Culled_Meat_Eaten_During_Month_" + str(month) + "_Variable",
             0,
-            # self.multi_valued_constants["max_culled_kcals"][month],
-            self.single_valued_constants["culled_meat"],
+            self.multi_valued_constants["max_culled_kcals"][month],
         )
 
         if month == 0:  # first Month
@@ -299,6 +345,9 @@ class Optimizer:
         return (model, variables)
 
     def add_outdoor_crops_to_model_no_relocation(self, model, variables, month):
+        IMITATE_XIA_ET_AL = False  # they don't consider storage at all
+        if IMITATE_XIA_ET_AL:
+            return self.add_outdoor_crops_to_model_no_storage(model, variables, month)
 
         variables["crops_food_storage_no_relocation"][month] = LpVariable(
             "Crops_Food_Storage_No_Relocation_Month_" + str(month) + "_Variable",
@@ -345,12 +394,55 @@ class Optimizer:
 
         return (model, variables)
 
+    def add_outdoor_crops_to_model_no_storage(self, model, variables, month):
+        variables["crops_food_storage_no_relocation"][month] = LpVariable(
+            "Crops_Food_Storage_No_Relocation_Month_" + str(month) + "_Variable",
+            lowBound=0,
+        )
+        variables["crops_food_eaten_no_relocation"][month] = LpVariable(
+            "Crops_Food_Eaten_No_Relocation_During_Month_" + str(month) + "_Variable",
+            lowBound=0,
+        )
+
+        if month == 0:
+
+            model += (
+                0
+                == self.multi_valued_constants["outdoor_crops"].kcals[month]
+                - variables["crops_food_eaten_no_relocation"][month],
+                "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
+            )
+
+        elif month == self.single_valued_constants["NMONTHS"] - 1:  # last month
+
+            model += (
+                0
+                == self.multi_valued_constants["outdoor_crops"].kcals[month]
+                - variables["crops_food_eaten_no_relocation"][month],
+                "Crops_Food_No_Relocation_Storage_" + str(month) + "_Constraint",
+            )
+
+        else:
+            # any month other than the first or last month
+
+            model += (
+                0
+                == self.multi_valued_constants["outdoor_crops"].kcals[month]
+                - variables["crops_food_eaten_no_relocation"][month],
+                "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
+            )
+        model += (
+            variables["crops_food_storage_no_relocation"][month] == 0,
+            "Crops_Food_No_Relocation_None_Left_" + str(month) + "_Constraint",
+        )
+
+        return (model, variables)
+
     # incorporate linear constraints for stored food consumption each month
     def add_outdoor_crops_to_model(self, model, variables, month):
         if not self.single_valued_constants["inputs"]["OG_USE_BETTER_ROTATION"]:
             self.add_outdoor_crops_to_model_no_relocation(model, variables, month)
             return (model, variables)
-
         # in the more complicated case where relocation occurs, the crops do better
         # than they would otherwise, and they have a different nutritional profile
 
@@ -488,7 +580,10 @@ class Optimizer:
             name="Humans_Fed_Protein_" + str(month) + "_Variable", lowBound=0
         )
 
-        if self.single_valued_constants["ADD_SEAWEED"]:
+        if (
+            self.single_valued_constants["ADD_SEAWEED"]
+            and self.single_valued_constants["inputs"]["INITIAL_SEAWEED"] > 0
+        ):
 
             # maximum seaweed percent of calories
             # constraint units: billion kcals per person
@@ -508,7 +603,6 @@ class Optimizer:
                 ),
                 "Seaweed_Limit_Kcals_" + str(month) + "_Constraint",
             )
-
         model += (
             variables["humans_fed_kcals"][month]
             == (
@@ -666,17 +760,17 @@ class Optimizer:
 
         ##### helps reduce wild fluctutions in people fed #######
         # if(m > 0 and self.single_valued_constants['inputs']['KCAL_SMOOTHING']):
-        if month > 0 and self.single_valued_constants["inputs"]["KCAL_SMOOTHING"]:
-            model += (
-                variables["humans_fed_kcals"][month - 1]
-                >= variables["humans_fed_kcals"][month] * (1 / 1.05),
-                "Small_Change_Minus_Humans_Fed_Month_" + str(month) + "_Constraint",
-            )
-            model += (
-                variables["humans_fed_kcals"][month - 1]
-                <= variables["humans_fed_kcals"][month] * (1.05),
-                "Small_Change_Plus_Humans_Fed_Month_" + str(month) + "_Constraint",
-            )
+        # if month > 0 and self.single_valued_constants["inputs"]["KCAL_SMOOTHING"]:
+        #     model += (
+        #         variables["humans_fed_kcals"][month - 1]
+        #         >= variables["humans_fed_kcals"][month] * (1 / 1.05),
+        #         "Small_Change_Minus_Humans_Fed_Month_" + str(month) + "_Constraint",
+        #     )
+        #     model += (
+        #         variables["humans_fed_kcals"][month - 1]
+        #         <= variables["humans_fed_kcals"][month] * (1.05),
+        #         "Small_Change_Plus_Humans_Fed_Month_" + str(month) + "_Constraint",
+        #     )
 
         # maximizes the minimum objective_function value
         # We maximize the minimum humans fed from any month

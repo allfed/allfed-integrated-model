@@ -12,7 +12,7 @@ class Seaweed:
         self.NMONTHS = constants_for_params["NMONTHS"]
         self.MINIMUM_DENSITY = 400  # tons/km^2 (seaweed)
         self.MAXIMUM_DENSITY = 800  # tons/km^2 (seaweed)
-        self.MAXIMUM_AREA = 1000  # 1000 km^2 (seaweed)
+        self.MAXIMUM_SEAWEED_AREA = 1000  # 1000 km^2 (seaweed)
 
         # use "laver" variety for now from nutrition calculator
         # @Morgan: Link broken
@@ -36,7 +36,9 @@ class Seaweed:
         self.INITIAL_SEAWEED = constants_for_params["INITIAL_SEAWEED"]
         # @li multiply by fraction
         # 1000 tons (seaweed)
-        self.INITIAL_AREA = constants_for_params["INITIAL_AREA"]
+        self.INITIAL_BUILT_SEAWEED_AREA = constants_for_params[
+            "INITIAL_BUILT_SEAWEED_AREA"
+        ]
         # @li multiply by fraction
 
         self.SEAWEED_WASTE = constants_for_params["WASTE"]["SEAWEED"]
@@ -70,23 +72,31 @@ class Seaweed:
 
     def get_built_area(self, constants_for_params):
 
-        SEAWEED_NEW_AREA_PER_MONTH = constants_for_params["SEAWEED_NEW_AREA_PER_MONTH"]
+        SEAWEED_NEW_AREA_PER_MONTH = (
+            constants_for_params["SEAWEED_NEW_AREA_PER_MONTH"]
+            * constants_for_params["SEAWEED_NEW_AREA_FRACTION"]
+        )
 
         if constants_for_params["ADD_SEAWEED"]:
-            sd = [self.INITIAL_AREA] * constants_for_params["DELAY"]["SEAWEED_MONTHS"]
+            sd = [self.INITIAL_BUILT_SEAWEED_AREA] * constants_for_params["DELAY"][
+                "SEAWEED_MONTHS"
+            ]
         else:
             # arbitrarily long list of months all at constant area
-            sd = [self.INITIAL_AREA] * 1000
+            sd = [self.INITIAL_BUILT_SEAWEED_AREA] * 1000
 
         built_area_long = np.append(
             np.array(sd),
             np.linspace(
-                self.INITIAL_AREA,
-                (self.NMONTHS - 1) * SEAWEED_NEW_AREA_PER_MONTH + self.INITIAL_AREA,
+                self.INITIAL_BUILT_SEAWEED_AREA,
+                (self.NMONTHS - 1) * SEAWEED_NEW_AREA_PER_MONTH
+                + self.INITIAL_BUILT_SEAWEED_AREA,
                 self.NMONTHS,
             ),
         )
-        built_area_long[built_area_long > self.MAXIMUM_AREA] = self.MAXIMUM_AREA
+        built_area_long[
+            built_area_long > self.MAXIMUM_SEAWEED_AREA
+        ] = self.MAXIMUM_SEAWEED_AREA
 
         # reduce list to length of months of simulation
         built_area = built_area_long[0 : self.NMONTHS]

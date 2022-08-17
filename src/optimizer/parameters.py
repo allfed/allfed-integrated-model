@@ -11,6 +11,7 @@ import os
 import sys
 import numpy as np
 from pandas.core import window
+from pulp import const
 
 module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
@@ -257,8 +258,8 @@ class Parameters:
 
         constants["MINIMUM_DENSITY"] = seaweed.MINIMUM_DENSITY
         constants["MAXIMUM_DENSITY"] = seaweed.MAXIMUM_DENSITY
-        constants["MAXIMUM_AREA"] = seaweed.MAXIMUM_AREA
-        constants["INITIAL_AREA"] = seaweed.INITIAL_AREA
+        constants["MAXIMUM_SEAWEED_AREA"] = seaweed.MAXIMUM_SEAWEED_AREA
+        constants["INITIAL_BUILT_SEAWEED_AREA"] = seaweed.INITIAL_BUILT_SEAWEED_AREA
 
         return constants, built_area
 
@@ -334,14 +335,22 @@ class Parameters:
         )
         time_consts["greenhouse_area"] = greenhouse_area
 
-        (
-            greenhouse_kcals_per_ha,
-            greenhouse_fat_per_ha,
-            greenhouse_protein_per_ha,
-        ) = greenhouses.get_greenhouse_yield_per_ha(constants_for_params, outdoor_crops)
+        if constants_for_params["INITIAL_CROP_AREA_FRACTION"] == 0:
+            greenhouse_kcals_per_ha = np.zeros(constants_for_params["NMONTHS"])
+            greenhouse_fat_per_ha = np.zeros(constants_for_params["NMONTHS"])
+            greenhouse_protein_per_ha = np.zeros(constants_for_params["NMONTHS"])
+        else:
+
+            (
+                greenhouse_kcals_per_ha,
+                greenhouse_fat_per_ha,
+                greenhouse_protein_per_ha,
+            ) = greenhouses.get_greenhouse_yield_per_ha(
+                constants_for_params, outdoor_crops
+            )
 
         # post-waste crops food produced
-        outdoor_crops.get_crop_production_minus_greenhouse_area(
+        outdoor_crops.set_crop_production_minus_greenhouse_area(
             constants_for_params, greenhouses.greenhouse_fraction_area
         )
         time_consts["outdoor_crops"] = outdoor_crops
@@ -436,8 +445,8 @@ class Parameters:
             time_consts, meat_and_dairy, feed_and_biofuels, constants_for_params
         )
 
-        (constants, culled_meat, meat_and_dairy) = self.init_culled_meat_params(
-            constants_for_params, constants, meat_and_dairy
+        (constants, time_consts, meat_and_dairy) = self.init_culled_meat_params(
+            constants_for_params, constants, time_consts, meat_and_dairy
         )
 
         return meat_and_dairy, constants, time_consts
@@ -524,7 +533,9 @@ class Parameters:
 
         return time_consts, meat_and_dairy
 
-    def init_culled_meat_params(self, constants_for_params, constants, meat_and_dairy):
+    def init_culled_meat_params(
+        self, constants_for_params, constants, time_consts, meat_and_dairy
+    ):
 
         # culled meat is based on the amount that wouldn't be maintained (excluding
         # maintained cattle as well as maintained chicken and pork)
@@ -543,7 +554,7 @@ class Parameters:
         ]
         culled_meat = meat_and_dairy.get_culled_meat_post_waste(constants_for_params)
 
-        constants["max_culled_kcals"] = meat_and_dairy.calculate_meat_limits(
+        time_consts["max_culled_kcals"] = meat_and_dairy.calculate_meat_limits(
             MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE, culled_meat
         )
         constants["culled_meat"] = culled_meat
@@ -572,4 +583,4 @@ class Parameters:
         constants[
             "SMALL_ANIMAL_KCALS_PER_KG"
         ] = meat_and_dairy.SMALL_ANIMAL_KCALS_PER_KG
-        return (constants, culled_meat, meat_and_dairy)
+        return (constants, time_consts, meat_and_dairy)

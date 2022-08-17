@@ -127,7 +127,6 @@ def run_model_with_resilient_foods(plot_figures=True):
             constants_for_params, excess_per_month
         )
 
-
         percent_fed = results.percent_people_fed
 
         n = n + 1

@@ -86,6 +86,7 @@ def run_model_no_resilient_foods(plot_figures=True):
             scenarios_loader.scenario_description,
         )
 
+
 def set_common_no_resilient_properties():
     scenarios_loader = Scenarios()
 

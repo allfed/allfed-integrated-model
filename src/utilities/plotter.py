@@ -1255,8 +1255,6 @@ class Plotter:
     def plot_monthly_reductions_seasonally(ratios):
 
         month_nums = np.linspace(0, len(ratios), len(ratios))
-        print("ratios")
-        print(ratios)
         plt.scatter(month_nums, ratios)
         plt.plot(month_nums, ratios)
 

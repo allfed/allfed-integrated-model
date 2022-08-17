@@ -30,9 +30,6 @@ def run_nuclear_winter_by_country_no_trade(
     scenario_option=[],
 ):
 
-    # @li alter these to be appropriate to with resilient food scenario
-    #  get_resilient_food_scenario
-
     # now we have a list of all the options we want to test
     this_simulation = {}
     this_simulation["scale"] = "country"
@@ -70,11 +67,10 @@ def create_several_maps_with_different_assumptions():
         "doubled_prices_in_country",
     ]
 
-    this_simulation_combinations["nutrition"] = ["baseline", "catastrophe"]
     this_simulation_combinations["buffer"] = ["baseline", "zero"]
     this_simulation_combinations["shutoff"] = ["continued", "short_delayed_shutoff"]
-    this_simulation_combinations["cull"] = ["dont_eat_culled", "do_eat_culled"]
     this_simulation_combinations["fat"] = ["required", "not_required"]
+    this_simulation_combinations["protein"] = ["required", "not_required"]
 
     # this_simulation_combinations["waste"] = ["tripled_prices_in_country"]
     # this_simulation_combinations["nutrition"] = ["baseline"]
@@ -111,13 +107,13 @@ def create_several_maps_with_different_assumptions():
 
     # now we have a list of all the options we want to test
     defaults = {}
+    defaults["nutrition"] = "catastrophe"
     defaults["scale"] = "country"
     defaults["seasonality"] = "nuclear_winter_in_country"
-    defaults["fat"] = "required"
-    defaults["protein"] = "required"
     defaults["crop_disruption"] = "country_nuclear_winter"
     defaults["fish"] = "baseline"
     defaults["scenario"] = "no_resilient_food_nuclear_winter"
+    defaults["cull"] = "do_eat_culled"
 
     options_including_defaults = []
     for option in options:
@@ -132,12 +128,38 @@ def create_several_maps_with_different_assumptions():
 
 
 if __name__ == "__main__":
-    CREATE_SEVERAL_MAPS_PPTX = False
+
+    print("arguments:")
+    print("first: [single|multi] (single set of assumptions or multiple)")
+    print("second: [pptx|no_pptx] (save a pptx report or not)")
+    print("third: [no_plot|plot] (plots figures)")
+
+    args = sys.argv[1:]
+    if len(args) == 1:
+        single_or_various = args[0]
+        plot_figs = "no_plot"
+        create_pptx = "pptx"
+    elif len(args) == 2:
+        single_or_various = args[0]
+        create_pptx = args[1]
+        plot_figs = "no_plot"
+    elif len(args) == 3:
+        single_or_various = args[0]
+        create_pptx = args[1]
+        plot_figs = args[2]
+    else:
+        single_or_various = "single"
+        create_pptx = "pptx"
+        plot_figs = "no_plot"
+
+    CREATE_SEVERAL_MAPS_PPTX = single_or_various == "multi"
     if CREATE_SEVERAL_MAPS_PPTX:
         create_several_maps_with_different_assumptions()
 
     CREATE_PPTX_EACH_COUNTRY = True
     if CREATE_PPTX_EACH_COUNTRY:
         run_nuclear_winter_by_country_no_trade(
-            show_figures=False, create_pptx_with_all_countries=False
+            plot_map=(create_pptx == "pptx"),
+            show_figures=(plot_figs == "plot"),
+            create_pptx_with_all_countries=(create_pptx == "pptx"),
         )
