@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-
 This function takes the raw output of the optimizer food categories and total people fed
 and breaks this down into what the amount of each expected food category would be in
 order to produce these results.
@@ -15,9 +12,6 @@ Created on Tue Jul 19
 """
 import os
 import sys
-
-from pandas import options
-from pandas.core.algorithms import extract_array
 
 module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
@@ -253,6 +247,7 @@ class Interpreter:
         # >>> c = np.array([100,100,0])
         # >>> np.min([a,b,c],axis=0)
         # array([2, 2, 0])
+        # TODO @ Morgan: this variable does not exist? What's the plan here?
         assert humans_fed_sum.is_units_percent()
         min_fed = np.min([self.kcals_fed, self.fat_fed, self.protein_fed], axis=0)
 

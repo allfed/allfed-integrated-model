@@ -44,9 +44,9 @@ class StoredFood(Food):
     def calculate_stored_food_to_use(self, starting_month):
         """
         Calculates and returns total stored food available to use at start of
-        simulation. While a baseline scenario will simply use the typical amount 
-        of stocks to keep the buffer at a typical usage, other more extreme 
-        scenarios should be expected to use a higher percentage of all stored food, 
+        simulation. While a baseline scenario will simply use the typical amount
+        of stocks to keep the buffer at a typical usage, other more extreme
+        scenarios should be expected to use a higher percentage of all stored food,
         eating into the typical buffer.
 
         Arguments:
@@ -59,7 +59,7 @@ class StoredFood(Food):
 
         Assumptions:
 
-        buffer_ratio (float): the percent of the typical buffered stored food 
+        buffer_ratio (float): the percent of the typical buffered stored food
         to keep at the end of the simulation.
 
         The stocks listed are tabulated at the end of the month.
