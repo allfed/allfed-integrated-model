@@ -229,8 +229,8 @@ class Food(UnitConversions):
             assert (
                 len(self.kcals) == len(self.fat) == len(self.protein)
             ), "ERROR: list type food must have same number of months for all nutrients"
-            assert (
-                isinstance(list, type(self.kcals), type(self.fat), type(self.protein))
+            assert isinstance(
+                list, type(self.kcals), type(self.fat), type(self.protein)
             ), "ERROR: list type food must have same type of list for all nutrients"
             assert (
                 len(self.kcals) > 0

@@ -58,7 +58,7 @@ class CellulosicSugar:
             production_kcals_CS_per_month_long = [0] * self.NMONTHS
 
         self.production_kcals_CS_per_month = production_kcals_CS_per_month_long[
-            0:self.NMONTHS
+            0 : self.NMONTHS
         ]
 
     def get_monthly_cs_production(self):
