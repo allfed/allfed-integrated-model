@@ -214,7 +214,7 @@ def test_failed_addition():
         kcals=1, fat=1, protein=1, kcals_units="g", fat_units="g", protein_units="g"
     )
     with pytest.raises(AssertionError):
-        food3 = food1 + food2
+        food1 + food2
 
 
 def test_subtraction_scalar_food():
@@ -255,7 +255,7 @@ def test_failed_subtraction():
         kcals=1, fat=1, protein=1, kcals_units="g", fat_units="g", protein_units="g"
     )
     with pytest.raises(AssertionError):
-        food3 = food1 - food2
+        food1 - food2
 
 
 def test_division_scalar_by_scalar():
@@ -281,7 +281,7 @@ def test_division_scalar_by_monthly():
     food1 = Food(kcals=1, fat=1, protein=1)
     food2 = create_food_monthly()
     with pytest.raises(AssertionError):
-        food3 = food1 / food2
+        food1 / food2
 
 
 def test_division_monthly_by_scalar():
@@ -292,7 +292,7 @@ def test_division_monthly_by_scalar():
     food1 = create_food_monthly()
     food2 = Food(kcals=1, fat=1, protein=1)
     with pytest.raises(AssertionError):
-        food3 = food1 / food2
+        food1 / food2
 
 
 def test_division_scalar_by_number():
@@ -362,7 +362,7 @@ def test_multiplication_by_scalar_food():
     food2 = Food(kcals=1, fat=1, protein=1)
     # list multiplication only works if one or both is a ratios right now
     with pytest.raises(AssertionError):
-        food3 = food1 * food2
+        food1 * food2
 
 
 def test_multiplication_monthly_food_by_scalar_food():
@@ -404,7 +404,7 @@ def test_failed_multiplication_by_food():
         kcals=1, fat=1, protein=1, kcals_units="g", fat_units="g", protein_units="g"
     )
     with pytest.raises(AssertionError):
-        food3 = food1 * food2
+        food1 * food2
 
 
 def test_multiplication_unit_by_ratio():
@@ -577,8 +577,8 @@ def test_is_list_monthly():
     Tests if the is_list_monthly method returns the expected result
     """
     food1 = Food(kcals=1, fat=1, protein=1)
-    assert food1.is_list_monthly() == False
-    assert create_food_monthly().is_list_monthly() == True
+    assert food1.is_list_monthly() is False
+    assert create_food_monthly().is_list_monthly() is True
 
 
 def test_is_never_negative_scalar_food():
@@ -586,7 +586,7 @@ def test_is_never_negative_scalar_food():
     Tests if the is_never_negative method returns the expected result
     """
     food1 = Food(kcals=1, fat=1, protein=1)
-    assert food1.is_never_negative() == True
+    assert food1.is_never_negative() is True
 
 
 def test_is_never_negative_monthly_food():
@@ -594,7 +594,7 @@ def test_is_never_negative_monthly_food():
     Tests if the is_never_negative method returns the expected result
     """
     food1 = create_food_monthly()
-    assert food1.is_never_negative() == True
+    assert food1.is_never_negative() is True
 
 
 def test_is_never_negative_false():
@@ -604,7 +604,7 @@ def test_is_never_negative_false():
     food1 = Food(
         kcals=-11, fat=1, protein=1, kcals_units="g", fat_units="g", protein_units="g"
     )
-    assert food1.is_never_negative() == False
+    assert food1.is_never_negative() is False
 
 
 def test_all_greater_than_scalar_food():
@@ -613,8 +613,8 @@ def test_all_greater_than_scalar_food():
     """
     food1 = Food(kcals=1, fat=1, protein=1)
     food2 = Food(kcals=2, fat=2, protein=2)
-    assert food1.all_greater_than(food2) == False
-    assert food2.all_greater_than(food1) == True
+    assert food1.all_greater_than(food2) is False
+    assert food2.all_greater_than(food1) is True
 
 
 def test_all_greater_than_monthly_food():
@@ -624,10 +624,10 @@ def test_all_greater_than_monthly_food():
     food1 = create_food_monthly()
     food2 = create_food_monthly()
     food3 = create_food_monthly(kcals=[5, 5, 5], fat=[5, 5, 5], protein=[5, 5, 5])
-    assert food1.all_greater_than(food2) == False
-    assert food2.all_greater_than(food1) == False
-    assert food1.all_greater_than(food3) == False
-    assert food3.all_greater_than(food1) == True
+    assert food1.all_greater_than(food2) is False
+    assert food2.all_greater_than(food1) is False
+    assert food1.all_greater_than(food3) is False
+    assert food3.all_greater_than(food1) is True
 
 
 def test_all_greater_than_different_unit():
@@ -639,8 +639,8 @@ def test_all_greater_than_different_unit():
     )
     food2 = Food(kcals=2, fat=2, protein=2)
     with pytest.raises(AssertionError):
-        assert food1.all_greater_than(food2) == False
-        assert food2.all_greater_than(food1) == True
+        assert food1.all_greater_than(food2) is False
+        assert food2.all_greater_than(food1) is True
 
 
 def test_all_less_than_scalar_food():
@@ -649,8 +649,8 @@ def test_all_less_than_scalar_food():
     """
     food1 = Food(kcals=1, fat=1, protein=1)
     food2 = Food(kcals=2, fat=2, protein=2)
-    assert food1.all_less_than(food2) == True
-    assert food2.all_less_than(food1) == False
+    assert food1.all_less_than(food2) is True
+    assert food2.all_less_than(food1) is False
 
 
 def test_all_less_than_monthly_food():
@@ -660,10 +660,10 @@ def test_all_less_than_monthly_food():
     food1 = create_food_monthly()
     food2 = create_food_monthly()
     food3 = create_food_monthly(kcals=[5, 5, 5], fat=[5, 5, 5], protein=[5, 5, 5])
-    assert food1.all_less_than(food2) == False
-    assert food2.all_less_than(food1) == False
-    assert food1.all_less_than(food3) == True
-    assert food3.all_less_than(food1) == False
+    assert food1.all_less_than(food2) is False
+    assert food2.all_less_than(food1) is False
+    assert food1.all_less_than(food3) is True
+    assert food3.all_less_than(food1) is False
 
 
 def test_all_less_than_different_unit():
@@ -675,8 +675,8 @@ def test_all_less_than_different_unit():
     )
     food2 = Food(kcals=2, fat=2, protein=2)
     with pytest.raises(AssertionError):
-        assert food1.all_less_than(food2) == True
-        assert food2.all_less_than(food1) == False
+        assert food1.all_less_than(food2) is True
+        assert food2.all_less_than(food1) is False
 
 
 def test_any_greater_than_scalar_food():
@@ -685,8 +685,8 @@ def test_any_greater_than_scalar_food():
     """
     food1 = Food(kcals=1, fat=1, protein=1)
     food2 = Food(kcals=2, fat=1, protein=1)
-    assert food1.any_greater_than(food2) == False
-    assert food2.any_greater_than(food1) == True
+    assert food1.any_greater_than(food2) is False
+    assert food2.any_greater_than(food1) is True
 
 
 def test_any_greater_than_monthly_food():
@@ -696,10 +696,10 @@ def test_any_greater_than_monthly_food():
     food1 = create_food_monthly()
     food2 = create_food_monthly()
     food3 = create_food_monthly(kcals=[5, 5, 5], fat=[5, 5, 5], protein=[5, 5, 5])
-    assert food1.any_greater_than(food2) == True
-    assert food2.any_greater_than(food1) == True
-    assert food1.any_greater_than(food3) == False
-    assert food3.any_greater_than(food1) == True
+    assert food1.any_greater_than(food2) is True
+    assert food2.any_greater_than(food1) is True
+    assert food1.any_greater_than(food3) is False
+    assert food3.any_greater_than(food1) is True
 
 
 def test_any_greater_than_different_unit():
@@ -711,8 +711,8 @@ def test_any_greater_than_different_unit():
     )
     food2 = Food(kcals=2, fat=1, protein=1)
     with pytest.raises(AssertionError):
-        assert food1.any_greater_than(food2) == False
-        assert food2.any_greater_than(food1) == True
+        assert food1.any_greater_than(food2) is False
+        assert food2.any_greater_than(food1) is True
 
 
 def test_any_less_than_scalar_food():
@@ -721,8 +721,8 @@ def test_any_less_than_scalar_food():
     """
     food1 = Food(kcals=1, fat=1, protein=1)
     food2 = Food(kcals=2, fat=1, protein=1)
-    assert food1.any_less_than(food2) == True
-    assert food2.any_less_than(food1) == False
+    assert food1.any_less_than(food2) is True
+    assert food2.any_less_than(food1) is False
 
 
 def test_any_less_than_monthly_food():
@@ -732,10 +732,10 @@ def test_any_less_than_monthly_food():
     food1 = create_food_monthly()
     food2 = create_food_monthly()
     food3 = create_food_monthly(kcals=[5, 5, 5], fat=[5, 5, 5], protein=[5, 5, 5])
-    assert food1.any_less_than(food2) == True
-    assert food2.any_less_than(food1) == True
-    assert food1.any_less_than(food3) == True
-    assert food3.any_less_than(food1) == False
+    assert food1.any_less_than(food2) is True
+    assert food2.any_less_than(food1) is True
+    assert food1.any_less_than(food3) is True
+    assert food3.any_less_than(food1) is False
 
 
 def test_any_less_than_different_unit():
@@ -747,8 +747,8 @@ def test_any_less_than_different_unit():
     )
     food2 = Food(kcals=2, fat=1, protein=1)
     with pytest.raises(AssertionError):
-        assert food1.any_less_than(food2) == True
-        assert food2.any_less_than(food1) == False
+        assert food1.any_less_than(food2) is True
+        assert food2.any_less_than(food1) is False
 
 
 def test_all_greater_than_or_equal_scalar_food():
@@ -757,8 +757,8 @@ def test_all_greater_than_or_equal_scalar_food():
     """
     food1 = Food(kcals=1, fat=1, protein=1)
     food2 = Food(kcals=1, fat=2, protein=2)
-    assert food1.all_greater_than_or_equal_to(food2) == False
-    assert food2.all_greater_than_or_equal_to(food1) == True
+    assert food1.all_greater_than_or_equal_to(food2) is False
+    assert food2.all_greater_than_or_equal_to(food1) is True
 
 
 def test_all_greater_than_or_equal_monthly_food():
@@ -768,10 +768,10 @@ def test_all_greater_than_or_equal_monthly_food():
     food1 = create_food_monthly()
     food2 = create_food_monthly()
     food3 = create_food_monthly(kcals=[5, 5, 5], fat=[5, 5, 5], protein=[5, 5, 5])
-    assert food1.all_greater_than_or_equal(food2) == False
-    assert food2.all_greater_than_or_equal(food1) == False
-    assert food1.all_greater_than_or_equal(food3) == False
-    assert food3.all_greater_than_or_equal(food1) == True
+    assert food1.all_greater_than_or_equal(food2) is False
+    assert food2.all_greater_than_or_equal(food1) is False
+    assert food1.all_greater_than_or_equal(food3) is False
+    assert food3.all_greater_than_or_equal(food1) is True
 
 
 def test_all_greater_than_or_equal_different_unit():
@@ -783,8 +783,8 @@ def test_all_greater_than_or_equal_different_unit():
     )
     food2 = Food(kcals=1, fat=2, protein=2)
     with pytest.raises(AssertionError):
-        assert food1.all_greater_than_or_equal_to(food2) == False
-        assert food2.all_greater_than_or_equal_to(food1) == True
+        assert food1.all_greater_than_or_equal_to(food2) is False
+        assert food2.all_greater_than_or_equal_to(food1) is True
 
 
 def test_all_less_than_or_equal_scalar_food():
@@ -793,8 +793,8 @@ def test_all_less_than_or_equal_scalar_food():
     """
     food1 = Food(kcals=1, fat=1, protein=1)
     food2 = Food(kcals=1, fat=2, protein=2)
-    assert food1.all_less_than_or_equal_to(food2) == True
-    assert food2.all_less_than_or_equal_to(food1) == False
+    assert food1.all_less_than_or_equal_to(food2) is True
+    assert food2.all_less_than_or_equal_to(food1) is False
 
 
 def test_all_less_than_or_equal_monthly_food():
@@ -804,10 +804,10 @@ def test_all_less_than_or_equal_monthly_food():
     food1 = create_food_monthly()
     food2 = create_food_monthly()
     food3 = create_food_monthly(kcals=[2, 2, 2], fat=[2, 2, 2], protein=[2, 2, 2])
-    assert food1.all_less_than_or_equal(food2) == False
-    assert food2.all_less_than_or_equal(food1) == False
-    assert food1.all_less_than_or_equal(food3) == True
-    assert food3.all_less_than_or_equal(food1) == False
+    assert food1.all_less_than_or_equal(food2) is False
+    assert food2.all_less_than_or_equal(food1) is False
+    assert food1.all_less_than_or_equal(food3) is True
+    assert food3.all_less_than_or_equal(food1) is False
 
 
 def test_all_less_than_or_equal_different_unit():
@@ -819,8 +819,8 @@ def test_all_less_than_or_equal_different_unit():
     )
     food2 = Food(kcals=1, fat=2, protein=2)
     with pytest.raises(AssertionError):
-        assert food1.all_less_than_or_equal_to(food2) == True
-        assert food2.all_less_than_or_equal_to(food1) == False
+        assert food1.all_less_than_or_equal_to(food2) is True
+        assert food2.all_less_than_or_equal_to(food1) is False
 
 
 def test_any_greater_than_or_equal_scalar_food():
@@ -829,8 +829,8 @@ def test_any_greater_than_or_equal_scalar_food():
     """
     food1 = Food(kcals=1, fat=1, protein=1)
     food2 = Food(kcals=1, fat=2, protein=1)
-    assert food1.any_greater_than_or_equal_to(food2) == True
-    assert food2.any_greater_than_or_equal_to(food1) == True
+    assert food1.any_greater_than_or_equal_to(food2) is True
+    assert food2.any_greater_than_or_equal_to(food1) is True
 
 
 def test_any_greater_than_or_equal_monthly_food():
@@ -840,10 +840,10 @@ def test_any_greater_than_or_equal_monthly_food():
     food1 = create_food_monthly()
     food2 = create_food_monthly()
     food3 = create_food_monthly(kcals=[5, 5, 5], fat=[5, 5, 5], protein=[5, 5, 5])
-    assert food1.any_greater_than_or_equal(food2) == True
-    assert food2.any_greater_than_or_equal(food1) == True
-    assert food1.any_greater_than_or_equal(food3) == False
-    assert food3.any_greater_than_or_equal(food1) == True
+    assert food1.any_greater_than_or_equal(food2) is True
+    assert food2.any_greater_than_or_equal(food1) is True
+    assert food1.any_greater_than_or_equal(food3) is False
+    assert food3.any_greater_than_or_equal(food1) is True
 
 
 def test_any_greater_than_or_equal_different_unit():
@@ -855,8 +855,8 @@ def test_any_greater_than_or_equal_different_unit():
     )
     food2 = Food(kcals=1, fat=2, protein=2)
     with pytest.raises(AssertionError):
-        assert food1.any_greater_than_or_equal_to(food2) == True
-        assert food2.any_greater_than_or_equal_to(food1) == False
+        assert food1.any_greater_than_or_equal_to(food2) is True
+        assert food2.any_greater_than_or_equal_to(food1) is False
 
 
 def test_any_less_than_or_equal_scalar_food():
@@ -866,9 +866,9 @@ def test_any_less_than_or_equal_scalar_food():
     food1 = Food(kcals=1, fat=1, protein=1)
     food2 = Food(kcals=1, fat=2, protein=1)
     food3 = Food(kcals=5, fat=5, protein=5)
-    assert food1.any_less_than_or_equal_to(food2) == True
-    assert food2.any_less_than_or_equal_to(food1) == True
-    assert food3.any_less_than_or_equal_to(food1) == False
+    assert food1.any_less_than_or_equal_to(food2) is True
+    assert food2.any_less_than_or_equal_to(food1) is True
+    assert food3.any_less_than_or_equal_to(food1) is False
 
 
 def test_any_less_than_or_equal_monthly_food():
@@ -878,10 +878,10 @@ def test_any_less_than_or_equal_monthly_food():
     food1 = create_food_monthly()
     food2 = create_food_monthly()
     food3 = create_food_monthly(kcals=[5, 5, 5], fat=[5, 5, 5], protein=[5, 5, 5])
-    assert food1.any_less_than_or_equal(food2) == True
-    assert food2.any_less_than_or_equal(food1) == True
-    assert food1.any_less_than_or_equal(food3) == True
-    assert food3.any_less_than_or_equal(food1) == False
+    assert food1.any_less_than_or_equal(food2) is True
+    assert food2.any_less_than_or_equal(food1) is True
+    assert food1.any_less_than_or_equal(food3) is True
+    assert food3.any_less_than_or_equal(food1) is False
 
 
 def test_any_less_than_or_equal_different_unit():
@@ -893,8 +893,8 @@ def test_any_less_than_or_equal_different_unit():
     )
     food2 = Food(kcals=1, fat=2, protein=2)
     with pytest.raises(AssertionError):
-        assert food1.any_less_than_or_equal_to(food2) == False
-        assert food2.any_less_than_or_equal_to(food1) == True
+        assert food1.any_less_than_or_equal_to(food2) is False
+        assert food2.any_less_than_or_equal_to(food1) is True
 
 
 def test_any_equals_zero_scalar_food():
@@ -903,8 +903,8 @@ def test_any_equals_zero_scalar_food():
     """
     food1 = Food(kcals=1, fat=1, protein=1)
     food2 = Food(kcals=0, fat=0, protein=1)
-    assert food1.any_equals_zero() == False
-    assert food2.any_equals_zero() == True
+    assert food1.any_equals_zero() is False
+    assert food2.any_equals_zero() is True
 
 
 def test_any_equals_zero_monthly_food():
@@ -913,8 +913,8 @@ def test_any_equals_zero_monthly_food():
     """
     food1 = create_food_monthly()
     food2 = create_food_monthly(kcals=[0, 0, 0], fat=[0, 0, 0], protein=[0, 0, 1])
-    assert food1.any_equals_zero() == False
-    assert food2.any_equals_zero() == True
+    assert food1.any_equals_zero() is False
+    assert food2.any_equals_zero() is True
 
 
 def test_all_equals_zero_scalar_food():
@@ -923,8 +923,8 @@ def test_all_equals_zero_scalar_food():
     """
     food1 = Food(kcals=1, fat=1, protein=0)
     food2 = Food(kcals=0, fat=0, protein=0)
-    assert food1.all_equals_zero() == False
-    assert food2.all_equals_zero() == True
+    assert food1.all_equals_zero() is False
+    assert food2.all_equals_zero() is True
 
 
 def test_all_equals_zero_monthly_food():
@@ -933,8 +933,8 @@ def test_all_equals_zero_monthly_food():
     """
     food1 = create_food_monthly()
     food2 = create_food_monthly(kcals=[0, 0, 0], fat=[0, 0, 0], protein=[0, 0, 0])
-    assert food1.equals_zero() == False
-    assert food2.equals_zero() == True
+    assert food1.equals_zero() is False
+    assert food2.equals_zero() is True
 
 
 def test_all_greater_than_zero_scalar_food():
@@ -943,8 +943,8 @@ def test_all_greater_than_zero_scalar_food():
     """
     food1 = Food(kcals=1, fat=1, protein=1)
     food2 = Food(kcals=0, fat=0, protein=0)
-    assert food1.all_greater_than_zero() == True
-    assert food2.all_greater_than_zero() == False
+    assert food1.all_greater_than_zero() is True
+    assert food2.all_greater_than_zero() is False
 
 
 def test_all_greater_than_zero_monthly_food():
@@ -953,8 +953,8 @@ def test_all_greater_than_zero_monthly_food():
     """
     food1 = create_food_monthly()
     food2 = create_food_monthly(kcals=[0, 0, 0], fat=[0, 0, 0], protein=[0, 0, 0])
-    assert food1.all_greater_than_zero() == True
-    assert food2.all_greater_than_zero() == False
+    assert food1.all_greater_than_zero() is True
+    assert food2.all_greater_than_zero() is False
 
 
 def test_any_greater_than_zero_scalar_food():
@@ -963,8 +963,8 @@ def test_any_greater_than_zero_scalar_food():
     """
     food1 = Food(kcals=1, fat=0, protein=0)
     food2 = Food(kcals=0, fat=0, protein=0)
-    assert food1.any_greater_than_zero() == True
-    assert food2.any_greater_than_zero() == False
+    assert food1.any_greater_than_zero() is True
+    assert food2.any_greater_than_zero() is False
 
 
 def test_any_greater_than_zero_monthly_food():
@@ -974,9 +974,9 @@ def test_any_greater_than_zero_monthly_food():
     food1 = create_food_monthly()
     food2 = create_food_monthly(kcals=[0, 0, 0], fat=[0, 0, 0], protein=[0, 0, 0])
     food3 = create_food_monthly(kcals=[0, 1, 0], fat=[0, 0, 0], protein=[0, 0, 0])
-    assert food1.any_greater_than_zero() == True
-    assert food2.any_greater_than_zero() == False
-    assert food3.any_greater_than_zero() == True
+    assert food1.any_greater_than_zero() is True
+    assert food2.any_greater_than_zero() is False
+    assert food3.any_greater_than_zero() is True
 
 
 def test_all_greater_or_equal_zero_scalar_food():
@@ -985,8 +985,8 @@ def test_all_greater_or_equal_zero_scalar_food():
     """
     food1 = Food(kcals=1, fat=0, protein=0)
     food2 = Food(kcals=0, fat=0, protein=0)
-    assert food1.all_greater_than_or_equal_to_zero() == True
-    assert food2.all_greater_than_or_equal_to_zero() == True
+    assert food1.all_greater_than_or_equal_to_zero() is True
+    assert food2.all_greater_than_or_equal_to_zero() is True
 
 
 def test_all_greater_or_equal_zero_monthly_food():
@@ -995,8 +995,8 @@ def test_all_greater_or_equal_zero_monthly_food():
     """
     food1 = create_food_monthly()
     food2 = create_food_monthly(kcals=[0, 0, 0], fat=[0, 0, 0], protein=[0, 0, 0])
-    assert food1.all_greater_than_or_equal_zero() == True
-    assert food2.all_greater_than_or_equal_zero() == True
+    assert food1.all_greater_than_or_equal_zero() is True
+    assert food2.all_greater_than_or_equal_zero() is True
 
 
 def test_as_list():
