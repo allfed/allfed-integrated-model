@@ -365,9 +365,6 @@ class FeedAndBiofuels:
 
         assume animals need and use human levels of fat and protein per kcal
         """
-
-        CROP_WASTE = constants_for_params["WASTE"]["CROPS"]
-
         nonhuman_consumption = biofuels + feed
 
         return nonhuman_consumption

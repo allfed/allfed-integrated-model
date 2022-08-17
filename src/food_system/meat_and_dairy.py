@@ -372,7 +372,8 @@ class MeatAndDairy:
                 )
                 print(np.where(ratio_maintained_cattle[0:47] >= 1))
                 print(
-                    "Consider whether the predicted amount of human edible feed fed to animals is reasonable."
+                    """Consider whether the predicted amount of
+                     human edible feed fed to animals is reasonable."""
                 )
                 print("")
 

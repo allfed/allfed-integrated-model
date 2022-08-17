@@ -65,7 +65,7 @@ class MethaneSCP:
             production_kcals_scp_per_month_long = [0] * self.NMONTHS
 
         self.production_kcals_scp_per_month = production_kcals_scp_per_month_long[
-            0 : self.NMONTHS
+            0:self.NMONTHS
         ]
 
     def get_scp_production(self):
