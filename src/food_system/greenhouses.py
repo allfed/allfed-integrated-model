@@ -10,7 +10,9 @@ import numpy as np
 class Greenhouses:
     def __init__(self, constants_for_params):
         # 500 million hectares in tropics (for outdoor crops 2020)
-        self.TOTAL_CROP_AREA = 500e6
+        self.TOTAL_CROP_AREA = (
+            500e6 * constants_for_params["INITIAL_CROP_AREA_FRACTION"]
+        )
 
         self.STARTING_MONTH_NUM = constants_for_params["STARTING_MONTH_NUM"]
 
@@ -38,6 +40,10 @@ class Greenhouses:
         # Takes 5+36=41 months to reach full output
         # NOTE: the 5 months represents the delay from plant to harvest.
 
+        if self.TOTAL_CROP_AREA == 0:
+            self.greenhouse_fraction_area = np.zeros(self.NMONTHS)
+            return np.zeros(self.NMONTHS)
+
         if self.ADD_GREENHOUSES:
             GREENHOUSE_LIMIT_AREA = (
                 self.TOTAL_CROP_AREA * self.GREENHOUSE_AREA_MULTIPLIER
@@ -60,6 +66,7 @@ class Greenhouses:
                 )
             )
             greenhouse_area = np.array(greenhouse_area_long[0 : self.NMONTHS])
+            # @li just multiply greenhouse_area by the fraction
             PRINT_BY_COUNTRY_WARNING = False
             if PRINT_BY_COUNTRY_WARNING:
                 print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
@@ -83,15 +90,16 @@ class Greenhouses:
 
             MONTHLY_KCALS = np.mean(outdoor_crops.months_cycle) / self.TOTAL_CROP_AREA
 
+            print("outdoor_crops.all_months_reductions")
+            print(outdoor_crops.all_months_reductions)
+            print("outdoor_crops.OG_KCAL_REDUCED")
+            print(outdoor_crops.OG_KCAL_REDUCED)
+            print("MONTHLY_KCALS")
+            print(MONTHLY_KCALS)
             KCALS_GROWN_PER_HECTARE_BEFORE_WASTE = MONTHLY_KCALS * (
                 1
                 - (
-                    (
-                        1
-                        - outdoor_crops.all_months_reductions[
-                            self.STARTING_MONTH_NUM - 1 :
-                        ]
-                    )
+                    (1 - outdoor_crops.all_months_reductions)
                     * outdoor_crops.OG_KCAL_REDUCED
                 )
             )
@@ -130,24 +138,28 @@ class Greenhouses:
                 greenhouse_protein_per_ha,
             )
 
-        rotation_fat_per_ha_long = []
-        rotation_protein_per_ha_long = []
-        rotation_kcals_per_ha_long = []
+        relocation_kcals_per_ha_long = []
+        relocated_fat_per_ha_long = []
+        relocation_protein_per_ha_long = []
         for kcals_per_month in self.GH_KCALS_GROWN_PER_HECTARE:
+            constants_for_params["GREENHOUSE_GAIN_PCT"]
             gh_kcals = (
                 kcals_per_month
                 * KCAL_RATIO
                 * (1 + constants_for_params["GREENHOUSE_GAIN_PCT"] / 100)
             )
+            relocation_kcals_per_ha_long.append(gh_kcals)
 
-            rotation_kcals_per_ha_long.append(gh_kcals)
+            relocated_fat_per_ha_long.append(FAT_RATIO * gh_kcals)
 
-            rotation_fat_per_ha_long.append(FAT_RATIO * gh_kcals)
+            relocation_protein_per_ha_long.append(PROTEIN_RATIO * gh_kcals)
 
-            rotation_protein_per_ha_long.append(PROTEIN_RATIO * gh_kcals)
+        relocation_kcals_per_ha = relocation_kcals_per_ha_long[0 : self.NMONTHS]
+        relocation_fat_per_ha = relocated_fat_per_ha_long[0 : self.NMONTHS]
+        relocation_protein_per_ha = relocation_protein_per_ha_long[0 : self.NMONTHS]
 
-        rotation_kcals_per_ha = rotation_kcals_per_ha_long[0 : self.NMONTHS]
-        rotation_fat_per_ha = rotation_fat_per_ha_long[0 : self.NMONTHS]
-        rotation_protein_per_ha = rotation_protein_per_ha_long[0 : self.NMONTHS]
-
-        return (rotation_kcals_per_ha, rotation_fat_per_ha, rotation_protein_per_ha)
+        return (
+            relocation_kcals_per_ha,
+            relocation_fat_per_ha,
+            relocation_protein_per_ha,
+        )

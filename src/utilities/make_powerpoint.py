@@ -7,6 +7,9 @@ import pptx
 from datetime import date
 import matplotlib.pyplot as plt
 
+from pptx.util import Cm, Inches, Pt
+from pptx.enum.text import PP_ALIGN
+
 # Functions go here
 class MakePowerpoint:
     def __init__(self):
@@ -26,14 +29,28 @@ class MakePowerpoint:
         title.text = the_title
 
     def insert_slide(self, title_below, description, figure_save_loc):
-        graph_slide_layout = self.prs.slide_layouts[8]
-        slide = self.prs.slides.add_slide(graph_slide_layout)
+        slide_layout = self.prs.slide_layouts[5]
+        slide = self.prs.slides.add_slide(slide_layout)
         title = slide.shapes.title
         title.text = title_below
-        placeholder = slide.placeholders[1]
-        pic = placeholder.insert_picture(figure_save_loc)
-        subtitle = slide.placeholders[2]
-        subtitle.text = description
+        slide.shapes.add_picture(
+            image_file=figure_save_loc,
+            left=Inches(0.5),
+            top=Inches(2),
+            width=Inches(6),
+            height=Inches(5),
+        )
+
+        textbox = slide.shapes.add_textbox(
+            left=Inches(7), top=Inches(2), width=Inches(3), height=Inches(5)
+        )
+
+        tf = textbox.text_frame
+
+        para = tf.add_paragraph()
+        para.text = description
+        para.alignment = PP_ALIGN.LEFT
+        para.font.size = Pt(12)
 
     def save_ppt(self, pres_name):
         self.prs.save(pres_name)

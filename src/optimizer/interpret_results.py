@@ -91,8 +91,8 @@ class Interpreter:
 
         self.fish = extracted_results.fish.in_units_percent_fed()
 
-        self.meat_culled_plus_grazing_cattle_maintained = (
-            extracted_results.meat_culled_plus_grazing_cattle_maintained.in_units_percent_fed()
+        self.culled_meat_plus_grazing_cattle_maintained = (
+            extracted_results.culled_meat_plus_grazing_cattle_maintained.in_units_percent_fed()
         )
 
         self.grazing_milk = extracted_results.grazing_milk.in_units_percent_fed()
@@ -135,8 +135,8 @@ class Interpreter:
 
         self.fish_kcals_equivalent = extracted_results.fish.in_units_kcals_equivalent()
 
-        self.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent = (
-            extracted_results.meat_culled_plus_grazing_cattle_maintained.in_units_kcals_equivalent()
+        self.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent = (
+            extracted_results.culled_meat_plus_grazing_cattle_maintained.in_units_kcals_equivalent()
         )
 
         self.grazing_milk_kcals_equivalent = (
@@ -304,7 +304,7 @@ class Interpreter:
             + self.scp
             + self.greenhouse
             + self.fish
-            + self.meat_culled_plus_grazing_cattle_maintained
+            + self.culled_meat_plus_grazing_cattle_maintained
             + self.grazing_milk
             + self.grain_fed_meat
             + self.grain_fed_milk
@@ -329,7 +329,7 @@ class Interpreter:
             + self.scp
             + self.greenhouse
             + self.fish
-            + self.meat_culled_plus_grazing_cattle_maintained
+            + self.culled_meat_plus_grazing_cattle_maintained
             + self.grazing_milk
             + self.grain_fed_meat
             + self.grain_fed_milk
@@ -432,11 +432,15 @@ class Interpreter:
         assert humans_fed_sum.is_units_percent()
         (min_nutrient, percent_people_fed) = humans_fed_sum.get_min_nutrient()
 
-        PRINT_FED = False
+        PRINT_FED = True
         if PRINT_FED:
 
             print("Nutrients with constraining values are: " + str(min_nutrient))
-            print("Estimated percent people fed is " + str(percent_people_fed) + "%")
+            print(
+                "Estimated percent people fed is "
+                + str(round(percent_people_fed, 1))
+                + "%"
+            )
         return [percent_people_fed, min_nutrient]
 
     def correct_and_validate_rounding_errors(self, nonhuman_consumption):
@@ -497,8 +501,6 @@ class Interpreter:
         difference_consumption_supply_rounded = (
             difference_consumption_supply.get_rounded_to_decimal(1)
         )
-        # print("difference_consumption_supply_rounded")
-        # print(difference_consumption_supply_rounded)
         assert difference_consumption_supply_rounded.all_greater_than_or_equal_to_zero()
 
         # wherever the difference in consumption is zero, that means humand and nonhuman

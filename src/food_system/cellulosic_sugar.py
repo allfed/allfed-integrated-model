@@ -39,6 +39,8 @@ class CellulosicSugar:
                 * self.INDUSTRIAL_FOODS_SLOPE_MULTIPLIER
             )
 
+            # @li we need to be able to import by-country data here
+
             production_kcals_CS_per_month_long = []
             for x in CELL_SUGAR_PERCENT_KCALS:
                 production_kcals_CS_per_month_long.append(
@@ -48,6 +50,8 @@ class CellulosicSugar:
                     * constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"]
                     * (1 - self.SUGAR_WASTE / 100)
                 )
+            # @li nothing should need to be done here, but good to check that it works
+
         else:
             production_kcals_CS_per_month_long = [0] * self.NMONTHS
 

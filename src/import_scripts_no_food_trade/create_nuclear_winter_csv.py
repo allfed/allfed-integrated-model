@@ -14,6 +14,10 @@ import os
 
 # COUNTRY SPECIFIC DATA
 
+NO_TRADE_XLS = "../../data/no_food_trade/Integrated Model With No Food Trade.xlsx"
+
+xls = pd.ExcelFile(NO_TRADE_XLS)
+
 eu_27_p_uk_codes = [
     "AUT",
     "BEL",
@@ -218,7 +222,7 @@ country_names = eu_27_p_uk_codes + [
     "Congo",
     "Democratic Republic of the Congo",
     "Costa Rica",
-    "C?te d'Ivoire",
+    "Cote d'Ivoire",
     "Cuba",
     "Djibouti",
     "Dominican Republic",
@@ -327,7 +331,7 @@ def import_csv(csv_loc):
     """
     import the csv and load into a dictionary
     """
-    iso3_col_name = "iso3"
+    iso3_col_name = "ISO3 Country Code"
     df_nw = pd.read_csv(csv_loc)[
         [
             iso3_col_name,
@@ -351,6 +355,11 @@ def import_csv(csv_loc):
             "spring_wheat_year3",
             "spring_wheat_year4",
             "spring_wheat_year5",
+            "grasses_year1",
+            "grasses_year2",
+            "grasses_year3",
+            "grasses_year4",
+            "grasses_year5",
         ]
     ]
 
@@ -444,7 +453,7 @@ def average_percentages(percentages):
     array_length = len(percentages)
 
     even_weightings = [1 / array_length] * array_length
-    assert sum(even_weightings) == 1
+    assert round(sum(even_weightings), 8) == 1
     return weighted_average_percentages(percentages, even_weightings)
 
 
@@ -501,6 +510,8 @@ def get_overall_reduction(country_data):
     """
     determine the total reduction in production using the relative reduction
     in corn, rice, soy, and spring wheat
+
+    also separately assigns the grass reduction appropriately
     """
 
     # see supplementary information xlsx "summary" tab
@@ -513,14 +524,14 @@ def get_overall_reduction(country_data):
     }
 
     years = [1, 2, 3, 4, 5]  # 5 years of data exist
-    yearly_avg_reductions = {}  # average yearly reduction for crop production
+    yearly_reductions = {}  # average yearly reduction for crop production
 
     for year in years:
         crops_to_use = []
 
         reductions = []
         for crop, ratio in crops.items():
-            col_name = crop + "_" + "year" + str(year)
+            col_name = crop + "_year" + str(year)
 
             reduction = country_data[col_name]
             # the overall ratio is the sum of the reduction of each crop,
@@ -530,9 +541,12 @@ def get_overall_reduction(country_data):
 
         weightings = list(crops.values())
         year_avg = weighted_average_percentages(reductions, weightings)
-        yearly_avg_reductions["reduction_year" + str(year)] = year_avg
+        yearly_reductions["crop_reduction_year" + str(year)] = year_avg
 
-    return yearly_avg_reductions
+        col_name = "grasses_year" + str(year)
+        yearly_reductions["grasses_reduction_year" + str(year)] = country_data[col_name]
+
+    return yearly_reductions
 
 
 def calculate_reductions(country_data):
@@ -540,13 +554,17 @@ def calculate_reductions(country_data):
     calculate the crop reduction percentage for each year and aggregate as array
     """
     yearly_reductions = get_overall_reduction(country_data)
-
     reductions = [
-        float(yearly_reductions["reduction_year1"]),
-        float(yearly_reductions["reduction_year2"]),
-        float(yearly_reductions["reduction_year3"]),
-        float(yearly_reductions["reduction_year4"]),
-        float(yearly_reductions["reduction_year5"]),
+        float(yearly_reductions["crop_reduction_year1"]),
+        float(yearly_reductions["crop_reduction_year2"]),
+        float(yearly_reductions["crop_reduction_year3"]),
+        float(yearly_reductions["crop_reduction_year4"]),
+        float(yearly_reductions["crop_reduction_year5"]),
+        float(yearly_reductions["grasses_reduction_year1"]),
+        float(yearly_reductions["grasses_reduction_year2"]),
+        float(yearly_reductions["grasses_reduction_year3"]),
+        float(yearly_reductions["grasses_reduction_year4"]),
+        float(yearly_reductions["grasses_reduction_year5"]),
     ]
 
     return reductions
@@ -555,11 +573,13 @@ def calculate_reductions(country_data):
 def get_all_crops_correct_countries(input_table):
     """
     get the columns with all the reductions for every crop, with the
-    countries properly aggregated (eu27+uk combined)
+    countries properly aggregated (eu27+uk combined) and Taiwan reductions
+    equal to China's (Rutgers dataset doesn't include Taiwan as a distinct entity)
     """
 
     non_eu_reductions = []
     eu_27_p_uk_to_average = []
+    taiwan_reductions = []
     country_ids = []
     for i in range(0, len(countries)):
         country = countries[i]
@@ -585,17 +605,21 @@ def get_all_crops_correct_countries(input_table):
             eu_27_p_uk_to_average = stack_on_list(eu_27_p_uk_to_average, reductions)
 
         else:
+            if country == "CHN":
+                # Taiwan reductions set equal to China's
+                taiwan_reductions = stack_on_list(taiwan_reductions, reductions)
 
             non_eu_reductions = stack_on_list(non_eu_reductions, reductions)
 
             country_ids = stack_on_list(country_ids, (country, country_name))
-
     eu_27_p_uk_reductions = average_columns(eu_27_p_uk_to_average)
 
-    all_reductions_processed = stack_on_list(non_eu_reductions, eu_27_p_uk_reductions)
+    all_except_taiwan = stack_on_list(non_eu_reductions, eu_27_p_uk_reductions)
+    all_reductions_processed = stack_on_list(all_except_taiwan, taiwan_reductions)
 
     # average all the eu27 and uk together by averaging each column
     country_ids = stack_on_list(country_ids, ("F5707+GBR", "European Union (27) + UK"))
+    country_ids = stack_on_list(country_ids, ("TWN", "Taiwan"))
 
     return country_ids, all_reductions_processed
 
@@ -605,7 +629,7 @@ def main():
     saves a csv with all the countries' crop reductions in nuclear winter
     averaged
     """
-    NW_CSV = "../../data/no_food_trade/rutgers_nw_crops_raw.csv"
+    NW_CSV = "../../data/no_food_trade/rutgers_nw_production_raw.csv"
 
     input_table = import_csv(NW_CSV)
 
@@ -616,11 +640,16 @@ def main():
         [
             "ISO3 Country Code",
             "Country",
-            "reduction_year1",
-            "reduction_year2",
-            "reduction_year3",
-            "reduction_year4",
-            "reduction_year5",
+            "crop_reduction_year1",
+            "crop_reduction_year2",
+            "crop_reduction_year3",
+            "crop_reduction_year4",
+            "crop_reduction_year5",
+            "grasses_reduction_year1",
+            "grasses_reduction_year2",
+            "grasses_reduction_year3",
+            "grasses_reduction_year4",
+            "grasses_reduction_year5",
         ]
     )
 
@@ -636,7 +665,7 @@ def main():
     nw_csv = clean_up_eswatini(nw_csv)
 
     np.savetxt(
-        "../../data/no_food_trade/nuclear_winter_csv.csv",
+        "../../data/no_food_trade/nuclear_winter_processed.csv",
         nw_csv,
         delimiter=",",
         fmt="%s",

@@ -58,6 +58,8 @@ class MethaneSCP:
                     * constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"]
                     * (1 - self.SCP_WASTE / 100)
                 )
+
+                # @li nothing should need to be done here, but good to check that it works
         else:
             production_kcals_scp_per_month_long = [0] * self.NMONTHS
 

@@ -42,19 +42,9 @@ col_names["aquaculture"] = {
     "Seafood protein - million tonnes, 2020": "aq_protein",
 }
 
-col_names["grasses"] = {
+col_names["grasses_baseline"] = {
     "ISO3 Country Code": "iso3",
     "Inedible food for ruminants - Baseline 2020 - '000 tonnes": "grasses_baseline",
-    "Inedible food for ruminants - Year 1 - '000 tonnes": "grasses_y1",
-    "Inedible food for ruminants - Year 2 - '000 tonnes": "grasses_y2",
-    "Inedible food for ruminants - Year 3 - '000 tonnes": "grasses_y3",
-    "Inedible food for ruminants - Year 4 - '000 tonnes": "grasses_y4",
-    "Inedible food for ruminants - Year 5 - '000 tonnes": "grasses_y5",
-    "Inedible food for ruminants - Year 6 - '000 tonnes": "grasses_y6",
-    "Inedible food for ruminants - Year 7 - '000 tonnes": "grasses_y7",
-    "Inedible food for ruminants - Year 8 - '000 tonnes": "grasses_y8",
-    "Inedible food for ruminants - Year 9 - '000 tonnes": "grasses_y9",
-    "Inedible food for ruminants - Year 10 - '000 tonnes": "grasses_y10",
 }
 
 col_names["dairy"] = {
@@ -102,13 +92,18 @@ col_names["crop_baseline"] = {
     "Outdoor crop protein production in 2020 (tonnes)": "crop_protein",
 }
 
-col_names["crop_nuclear_winter"] = {
+col_names["production_nuclear_winter"] = {
     "ISO3 Country Code": "iso3",
-    "reduction_year1": "reduction_year1",
-    "reduction_year2": "reduction_year2",
-    "reduction_year3": "reduction_year3",
-    "reduction_year4": "reduction_year4",
-    "reduction_year5": "reduction_year5",
+    "crop_reduction_year1": "crop_reduction_year1",
+    "crop_reduction_year2": "crop_reduction_year2",
+    "crop_reduction_year3": "crop_reduction_year3",
+    "crop_reduction_year4": "crop_reduction_year4",
+    "crop_reduction_year5": "crop_reduction_year5",
+    "grasses_reduction_year1": "grasses_reduction_year1",
+    "grasses_reduction_year2": "grasses_reduction_year2",
+    "grasses_reduction_year3": "grasses_reduction_year3",
+    "grasses_reduction_year4": "grasses_reduction_year4",
+    "grasses_reduction_year5": "grasses_reduction_year5",
 }
 
 col_names["crop_seasonality"] = {
@@ -179,31 +174,10 @@ col_names["methane_scp"] = {
     "% of global chemical and related CAPEX": "percent_of_global_capex",
 }
 
-
-col_names["example_easier_format"] = {
+col_names["seaweed"] = {
     "ISO3 Country Code": "iso3",
-    "reduction_year1_may": "reduction_year1_may",
-    "reduction_year1_june": "reduction_year1_june",
-    "reduction_year1_july": "reduction_year1_july",
-    "reduction_year1_august": "reduction_year1_august",
-    "reduction_year1_september": "reduction_year1_september",
-    "reduction_year1_october": "reduction_year1_october",
-    "reduction_year1_november": "reduction_year1_november",
-    "reduction_year1_december": "reduction_year1_december",
-    "reduction_year2_january": "reduction_year2_january",
-    "reduction_year2_february": "reduction_year2_february",
-    "reduction_year2_march": "reduction_year2_march",
-    "reduction_year2_april": "reduction_year2_april",
-    "reduction_year2_may": "reduction_year2_may",
-    "reduction_year2_june": "reduction_year2_june",
-    "reduction_year2_july": "reduction_year2_july",
-    "reduction_year2_august": "reduction_year2_august",
-    "reduction_year2_september": "reduction_year2_september",
-    "reduction_year2_october": "reduction_year2_october",
-    "reduction_year2_november": "reduction_year2_november",
-    "reduction_year2_december": "reduction_year2_december",
+    "Fraction of total seaweed grown today -2019": "percent_of_seaweed",
 }
-
 
 col_names["Seasonality Post War"] = {
     "ISO3 Country Code": "iso3",
@@ -228,22 +202,23 @@ dataframe_dict = {}
 food_names = {
     "population": "Population",
     "aquaculture": "Seafood - excluding seaweeds",
-    "grasses": "Grazing",
-    "dairy": "Grazing",
+    "grasses_baseline": "Grazing Baseline",
+    "dairy": "Grazing Baseline",
     "meat": "Meat Production",
     "head_counts": "Head Counts",
     "biofuel": "Biofuel",
     "feed": "Feed",
     "crop_baseline": "Outdoor Crop Baseline",
-    "crop_nuclear_winter": "Outdoor Crop Production NW",
+    "production_nuclear_winter": "Outdoor Production NW",
     "crop_seasonality": "Outdoor Crop Seasonality",
     "food_stocks": "Food Stocks",
     "food_waste": "Food waste",
     "cellulosic_sugar": "Cellulosic Sugar",
     "methane_scp": "Methane SCP",
     "greenhouses": "Greenhouses",
-    # "crop_nuclear_winter": "example_easier_format",
+    "seaweed": "Seaweed",
 }
+
 
 for pandas_name, excel_name in food_names.items():
     # Only take the first 138 rows, as this includes all countries, but excludes
@@ -261,7 +236,6 @@ for pandas_name, excel_name in food_names.items():
     del temp_df["iso3"]
 
     dataframe_dict[pandas_name] = temp_df
-
 
 # make the units compatible with the units used in the constants.py model
 
@@ -286,13 +260,9 @@ dataframe_dict["aquaculture"]["aq_protein"] = (
 
 
 # convert to tons dry caloric equivalent annually
-dataframe_dict["grasses"]["grasses_baseline"] = (
-    dataframe_dict["grasses"]["grasses_baseline"] * 1000
+dataframe_dict["grasses_baseline"]["grasses_baseline"] = (
+    dataframe_dict["grasses_baseline"]["grasses_baseline"] * 1000
 )
-for i in range(1, 11):
-    dataframe_dict["grasses"]["grasses_y" + str(i)] = (
-        dataframe_dict["grasses"]["grasses_y" + str(i)] * 1000
-    )
 
 # convert to tons wet annually
 dataframe_dict["dairy"]["dairy"] = dataframe_dict["dairy"]["dairy"] * 1000
@@ -361,29 +331,25 @@ dataframe_dict["feed"]["feed_fat"] = dataframe_dict["feed"]["feed_fat"] * 1e6
 # feed
 dataframe_dict["feed"]["feed_protein"] = dataframe_dict["feed"]["feed_protein"] * 1e6
 
-# nuclear winter convert from percent to fraction
-dataframe_dict["crop_nuclear_winter"]["reduction_year1"] = (
-    dataframe_dict["crop_nuclear_winter"]["reduction_year1"] / 100
-)
-dataframe_dict["crop_nuclear_winter"]["reduction_year2"] = (
-    dataframe_dict["crop_nuclear_winter"]["reduction_year2"] / 100
-)
-dataframe_dict["crop_nuclear_winter"]["reduction_year3"] = (
-    dataframe_dict["crop_nuclear_winter"]["reduction_year3"] / 100
-)
-dataframe_dict["crop_nuclear_winter"]["reduction_year4"] = (
-    dataframe_dict["crop_nuclear_winter"]["reduction_year4"] / 100
-)
-dataframe_dict["crop_nuclear_winter"]["reduction_year5"] = (
-    dataframe_dict["crop_nuclear_winter"]["reduction_year5"] / 100
-)
-# print("crop_nuclear_winter")
-# print(crop_nuclear_winter)
+
+# nuclear winter crops convert from percent to fraction
+for i in range(1, 6):
+    dataframe_dict["production_nuclear_winter"]["crop_reduction_year" + str(i)] = (
+        dataframe_dict["production_nuclear_winter"]["crop_reduction_year" + str(i)]
+        / 100
+    )
+
+# nuclear winter grasses convert from percent to fraction
+for i in range(1, 6):
+    dataframe_dict["production_nuclear_winter"]["grasses_reduction_year" + str(i)] = (
+        dataframe_dict["production_nuclear_winter"]["grasses_reduction_year" + str(i)]
+        / 100
+    )
 
 # nuclear winter remove nan values by assuming zero yield
 # (-1 => change from baseline to -100% of baseline, meaning zero crop growth)
-dataframe_dict["crop_nuclear_winter"][
-    dataframe_dict["crop_nuclear_winter"] > 9.36e34
+dataframe_dict["production_nuclear_winter"][
+    dataframe_dict["production_nuclear_winter"] > 9.36e34
 ] = -1
 
 # combine the data frames from all the tabs into a giant dataframe

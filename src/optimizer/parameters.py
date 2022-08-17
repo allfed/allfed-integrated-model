@@ -11,6 +11,7 @@ import os
 import sys
 import numpy as np
 from pandas.core import window
+from pulp import const
 
 module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
@@ -59,13 +60,13 @@ class Parameters:
             or constants["inputs"]["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] > 0
         ):
             assert (
-                constants["inputs"]["ADD_MEAT"] == True
-            ), "Meat needs to be added for continued feed usage to make sense"
+                constants["inputs"]["ADD_MAINTAINED_MEAT"] == True
+            ), "Maintained meat needs to be added for continued feed usage to make sense"
 
         assert self.FIRST_TIME_RUN
         self.FIRST_TIME_RUN = False
 
-        PRINT_SCENARIO_PROPERTIES = False
+        PRINT_SCENARIO_PROPERTIES = True
         if PRINT_SCENARIO_PROPERTIES:
             print(scenarios_loader.scenario_description)
 
@@ -185,7 +186,8 @@ class Parameters:
         constants["NMONTHS"] = constants_for_params["NMONTHS"]
         constants["ADD_FISH"] = constants_for_params["ADD_FISH"]
         constants["ADD_SEAWEED"] = constants_for_params["ADD_SEAWEED"]
-        constants["ADD_MEAT"] = constants_for_params["ADD_MEAT"]
+        constants["ADD_MAINTAINED_MEAT"] = constants_for_params["ADD_MAINTAINED_MEAT"]
+        constants["ADD_CULLED_MEAT"] = constants_for_params["ADD_CULLED_MEAT"]
         constants["ADD_MILK"] = constants_for_params["ADD_MILK"]
         constants["ADD_STORED_FOOD"] = constants_for_params["ADD_STORED_FOOD"]
         constants["ADD_METHANE_SCP"] = constants_for_params["ADD_METHANE_SCP"]
@@ -256,8 +258,8 @@ class Parameters:
 
         constants["MINIMUM_DENSITY"] = seaweed.MINIMUM_DENSITY
         constants["MAXIMUM_DENSITY"] = seaweed.MAXIMUM_DENSITY
-        constants["MAXIMUM_AREA"] = seaweed.MAXIMUM_AREA
-        constants["INITIAL_AREA"] = seaweed.INITIAL_AREA
+        constants["MAXIMUM_SEAWEED_AREA"] = seaweed.MAXIMUM_SEAWEED_AREA
+        constants["INITIAL_BUILT_SEAWEED_AREA"] = seaweed.INITIAL_BUILT_SEAWEED_AREA
 
         return constants, built_area
 
@@ -333,14 +335,22 @@ class Parameters:
         )
         time_consts["greenhouse_area"] = greenhouse_area
 
-        (
-            greenhouse_kcals_per_ha,
-            greenhouse_fat_per_ha,
-            greenhouse_protein_per_ha,
-        ) = greenhouses.get_greenhouse_yield_per_ha(constants_for_params, outdoor_crops)
+        if constants_for_params["INITIAL_CROP_AREA_FRACTION"] == 0:
+            greenhouse_kcals_per_ha = np.zeros(constants_for_params["NMONTHS"])
+            greenhouse_fat_per_ha = np.zeros(constants_for_params["NMONTHS"])
+            greenhouse_protein_per_ha = np.zeros(constants_for_params["NMONTHS"])
+        else:
+
+            (
+                greenhouse_kcals_per_ha,
+                greenhouse_fat_per_ha,
+                greenhouse_protein_per_ha,
+            ) = greenhouses.get_greenhouse_yield_per_ha(
+                constants_for_params, outdoor_crops
+            )
 
         # post-waste crops food produced
-        outdoor_crops.get_crop_production_minus_greenhouse_area(
+        outdoor_crops.set_crop_production_minus_greenhouse_area(
             constants_for_params, greenhouses.greenhouse_fraction_area
         )
         time_consts["outdoor_crops"] = outdoor_crops
@@ -425,6 +435,7 @@ class Parameters:
         """
 
         meat_and_dairy = MeatAndDairy(constants_for_params)
+        meat_and_dairy.calculate_meat_nutrition()
 
         time_consts, meat_and_dairy = self.init_grazing_params(
             constants_for_params, time_consts, meat_and_dairy
@@ -434,11 +445,9 @@ class Parameters:
             time_consts, meat_and_dairy, feed_and_biofuels, constants_for_params
         )
 
-        (constants, meat_culled, meat_and_dairy) = self.init_culled_meat_params(
-            constants_for_params, constants, meat_and_dairy
+        (constants, time_consts, meat_and_dairy) = self.init_culled_meat_params(
+            constants_for_params, constants, time_consts, meat_and_dairy
         )
-
-        time_consts["meat_culled"] = meat_culled
 
         return meat_and_dairy, constants, time_consts
 
@@ -504,82 +513,29 @@ class Parameters:
             grain_fed_meat_protein,
         ) = meat_and_dairy.get_meat_from_human_edible_feed()
 
-        # Cap the max fat or protein created by the amount used,
-        # as I used to believe the conversion couldn't be > 1, but this isn't true
-        # so I have not reinstated. Still, it might be useful to prevent odd things
-        # where countries increase meat production and human edible fed livestock even
-        # if they don't have enough calories... .
-
-        # this is post waste
-
-        # (
-        #     grain_fed_meat_fat_capped,
-        #     grain_fed_meat_protein_capped,
-        #     grain_fed_milk_fat_capped,
-        #     grain_fed_milk_protein_capped,
-        # ) = meat_and_dairy.cap_fat_protein_to_amount_used(
-        #     feed_and_biofuels.feed,
-        #     grain_fed_meat_fat,
-        #     grain_fed_meat_protein,
-        #     grain_fed_milk_fat,
-        #     grain_fed_milk_protein,
-        # )
-
-        # this code is just circumventing the cap I've removed
-        grain_fed_meat_fat_capped = grain_fed_meat_fat
-        grain_fed_meat_protein_capped = grain_fed_meat_protein
-        grain_fed_milk_fat_capped = grain_fed_milk_fat
-        grain_fed_milk_protein_capped = grain_fed_milk_protein
-
         time_consts["grain_fed_meat_kcals"] = grain_fed_meat_kcals
-        time_consts["grain_fed_meat_fat"] = grain_fed_meat_fat_capped
-        time_consts["grain_fed_meat_protein"] = grain_fed_meat_protein_capped
+        time_consts["grain_fed_meat_fat"] = grain_fed_meat_fat
+        time_consts["grain_fed_meat_protein"] = grain_fed_meat_protein
         time_consts["grain_fed_milk_kcals"] = grain_fed_milk_kcals
-        time_consts["grain_fed_milk_fat"] = grain_fed_milk_fat_capped
-        time_consts["grain_fed_milk_protein"] = grain_fed_milk_protein_capped
+        time_consts["grain_fed_milk_fat"] = grain_fed_milk_fat
+        time_consts["grain_fed_milk_protein"] = grain_fed_milk_protein
 
         grain_fed_created_kcals = grain_fed_meat_kcals + grain_fed_milk_kcals
-        grain_fed_created_fat = grain_fed_meat_fat_capped + grain_fed_milk_fat_capped
-        grain_fed_created_protein = (
-            grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
-        )
+        grain_fed_created_fat = grain_fed_meat_fat + grain_fed_milk_fat
+        grain_fed_created_protein = grain_fed_meat_protein + grain_fed_milk_protein
         time_consts["grain_fed_created_kcals"] = grain_fed_created_kcals
         time_consts["grain_fed_created_fat"] = grain_fed_created_fat
         time_consts["grain_fed_created_protein"] = grain_fed_created_protein
 
         feed = feed_and_biofuels.feed
 
-        # post waste
-
-        # TODO: reinstate if reinstate cap on fat or protein produced
-        # difference = feed.fat - grain_fed_meat_fat_capped + grain_fed_milk_fat_capped
-        # assert (np.round(difference, 3) >= 0).all()
-
-        # not really possible for animals to synthesize more protein than they eat,
-        # I believe
-        # assert (
-        #     feed.protein
-        #     >= grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
-        # ).all()
-
-        # PRINT_BOUND_WARNING = True
-        # if PRINT_BOUND_WARNING:
-        #     if (
-        #         feed.protein
-        #         == grain_fed_meat_protein_capped + grain_fed_milk_protein_capped
-        #     ).any():
-        #         print("WARNING: BOUNDING GRAIN FED PROTEIN PRODUCED BY FEED USAGE!")
-
-        #     if (
-        #         feed.fat == grain_fed_meat_fat_capped + grain_fed_milk_fat_capped
-        #     ).any():
-        #         print("WARNING: BOUNDING GRAIN FED FAT PRODUCED BY FEED USAGE!")
-
         assert (feed.kcals >= grain_fed_created_kcals).all()
 
         return time_consts, meat_and_dairy
 
-    def init_culled_meat_params(self, constants_for_params, constants, meat_and_dairy):
+    def init_culled_meat_params(
+        self, constants_for_params, constants, time_consts, meat_and_dairy
+    ):
 
         # culled meat is based on the amount that wouldn't be maintained (excluding
         # maintained cattle as well as maintained chicken and pork)
@@ -593,17 +549,20 @@ class Parameters:
         meat_and_dairy.calculate_animals_culled(constants_for_params)
         meat_and_dairy.calculated_culled_meat()
 
-        feed_shutoff_delay_months = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
-        meat_culled = meat_and_dairy.get_culled_meat_post_waste(
-            constants_for_params, feed_shutoff_delay_months
+        MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE = constants_for_params[
+            "MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE"
+        ]
+        culled_meat = meat_and_dairy.get_culled_meat_post_waste(constants_for_params)
+
+        time_consts["max_culled_kcals"] = meat_and_dairy.calculate_meat_limits(
+            MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE, culled_meat
         )
+        constants["culled_meat"] = culled_meat
 
-        constants["MEAT_CULLED_FRACTION_FAT"] = meat_and_dairy.meat_culled_fraction_fat
+        constants["CULLED_MEAT_FRACTION_FAT"] = meat_and_dairy.culled_meat_fraction_fat
         constants[
-            "MEAT_CULLED_FRACTION_PROTEIN"
-        ] = meat_and_dairy.meat_culled_fraction_protein
-
-        constants["CULL_DURATION_MONTHS"] = meat_and_dairy.CULL_DURATION_MONTHS
+            "CULLED_MEAT_FRACTION_PROTEIN"
+        ] = meat_and_dairy.culled_meat_fraction_protein
 
         constants["KG_PER_SMALL_ANIMAL"] = meat_and_dairy.KG_PER_SMALL_ANIMAL
         constants["KG_PER_MEDIUM_ANIMAL"] = meat_and_dairy.KG_PER_MEDIUM_ANIMAL
@@ -612,24 +571,16 @@ class Parameters:
         constants[
             "LARGE_ANIMAL_KCALS_PER_KG"
         ] = meat_and_dairy.LARGE_ANIMAL_KCALS_PER_KG
-        constants["LARGE_ANIMAL_FAT_PER_KG"] = meat_and_dairy.LARGE_ANIMAL_FAT_PER_KG
+        constants["LARGE_ANIMAL_FAT_RATIO"] = meat_and_dairy.LARGE_ANIMAL_FAT_RATIO
         constants[
-            "LARGE_ANIMAL_PROTEIN_PER_KG"
-        ] = meat_and_dairy.LARGE_ANIMAL_PROTEIN_PER_KG
+            "LARGE_ANIMAL_PROTEIN_RATIO"
+        ] = meat_and_dairy.LARGE_ANIMAL_PROTEIN_RATIO
 
         constants[
             "MEDIUM_ANIMAL_KCALS_PER_KG"
         ] = meat_and_dairy.MEDIUM_ANIMAL_KCALS_PER_KG
-        constants["MEDIUM_ANIMAL_FAT_PER_KG"] = meat_and_dairy.MEDIUM_ANIMAL_FAT_PER_KG
-        constants[
-            "MEDIUM_ANIMAL_PROTEIN_PER_KG"
-        ] = meat_and_dairy.MEDIUM_ANIMAL_PROTEIN_PER_KG
 
         constants[
             "SMALL_ANIMAL_KCALS_PER_KG"
         ] = meat_and_dairy.SMALL_ANIMAL_KCALS_PER_KG
-        constants["SMALL_ANIMAL_FAT_PER_KG"] = meat_and_dairy.SMALL_ANIMAL_FAT_PER_KG
-        constants[
-            "SMALL_ANIMAL_PROTEIN_PER_KG"
-        ] = meat_and_dairy.SMALL_ANIMAL_PROTEIN_PER_KG
-        return (constants, meat_culled, meat_and_dairy)
+        return (constants, time_consts, meat_and_dairy)

@@ -39,8 +39,15 @@ class Plotter:
 
     @classmethod
     def plot_fig_1ab(
-        crs, interpreter, xlim, newtitle="", plot_figure=True, description=""
+        crs,
+        interpreter,
+        xlim,
+        newtitle="",
+        plot_figure=True,
+        add_slide_with_fig=True,
+        description="",
     ):
+        xlim = min(xlim, len(interpreter.time_months_middle))
         legend = Plotter.get_people_fed_legend(interpreter, True)
         fig = plt.figure()
         pal = [
@@ -80,7 +87,7 @@ class Plotter:
             )
             ykcals.append(
                 (
-                    interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                    interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
                     + interpreter.grain_fed_meat_kcals_equivalent.kcals
                 )
             )
@@ -111,7 +118,14 @@ class Plotter:
                 )
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
-                maxy = max(sum([x[0:xlim] for x in ykcals]))
+                # maxy = max(sum([x[0:xlim] for x in ykcals]))
+                # maxy = max([sum(x[0:xlim]) for x in ykcals])
+                maxy = 0
+                for i in range(xlim):
+                    maxy = max(maxy, sum([x[i] for x in ykcals]))
+
+                maxy += maxy / 20
+                ax.set_ylim([0, maxy])
                 # ax.set_ylim([0, maxy])
 
                 plt.ylabel("Calories / capita / day")
@@ -194,8 +208,7 @@ class Plotter:
             saveloc,
             dpi=300,
         )
-
-        if not plot_figure:
+        if add_slide_with_fig:
             crs.mp.insert_slide(
                 title_below=newtitle
                 + ": Percent fed:"
@@ -205,8 +218,6 @@ class Plotter:
                 figure_save_loc=saveloc,
             )
 
-        # plt.savefig("../../results/fig_1ab" + newtitle + ".png")
-        # print("saved figure 1ab")
         if plot_figure:
             plt.show()
 
@@ -264,7 +275,7 @@ class Plotter:
                 )
                 ykcals.append(
                     (
-                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                        interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
                         + interpreter.grain_fed_meat_kcals_equivalent.kcals
                     )
                 )
@@ -607,7 +618,7 @@ class Plotter:
                 )
                 ykcals.append(
                     (
-                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                        interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
                         + interpreter.grain_fed_meat_kcals_equivalent.kcals
                     )
                 )
@@ -767,9 +778,9 @@ class Plotter:
         )
 
         save_title_string = (
-            "meat_culled_plus_grazing_cattle_maintained_kcals_equivalent primary"
+            "culled_meat_plus_grazing_cattle_maintained_kcals_equivalent primary"
         )
-        saveloc = interpreter1.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.plot(
+        saveloc = interpreter1.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.plot(
             save_title_string
         )
         crs.mp.insert_slide(
@@ -873,9 +884,9 @@ class Plotter:
         )
 
         save_title_string = (
-            "meat_culled_plus_grazing_cattle_maintained_kcals_equivalent with feed"
+            "culled_meat_plus_grazing_cattle_maintained_kcals_equivalent with feed"
         )
-        saveloc = interpreter2.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.plot(
+        saveloc = interpreter2.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.plot(
             save_title_string
         )
         crs.mp.insert_slide(
@@ -996,7 +1007,7 @@ class Plotter:
                 )
                 ykcals.append(
                     (
-                        interpreter.meat_culled_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                        interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
                         + interpreter.grain_fed_meat_kcals_equivalent.kcals
                     )
                 )
@@ -1216,7 +1227,10 @@ class Plotter:
         else:
             legend = legend + [""]
 
-        if interpreter.constants["ADD_MEAT"]:
+        if (
+            interpreter.constants["ADD_CULLED_MEAT"]
+            or interpreter.constants["ADD_MAINTAINED_MEAT"]
+        ):
             legend = legend + ["Meat"]
         else:
             legend = legend + [""]
@@ -1241,7 +1255,6 @@ class Plotter:
     def plot_monthly_reductions_seasonally(ratios):
 
         month_nums = np.linspace(0, len(ratios), len(ratios))
-
         plt.scatter(month_nums, ratios)
         plt.plot(month_nums, ratios)
 
@@ -1311,7 +1324,6 @@ class Plotter:
         # Packing all the plots and displaying them
         plt.tight_layout()
         fig.suptitle(title)
-        # plt.show()
 
         saveloc = "../../results/large_reports/" + title + ".png"
 
@@ -1319,7 +1331,7 @@ class Plotter:
             saveloc,
             dpi=300,
         )
-        SHOWPLOT = False
+        SHOWPLOT = True
         if SHOWPLOT:
             plt.show()
         else:
@@ -1378,7 +1390,7 @@ class Plotter:
             dpi=300,
         )
 
-        SHOWPLOT = False
+        SHOWPLOT = True
         if SHOWPLOT:
             plt.show()
         else:
