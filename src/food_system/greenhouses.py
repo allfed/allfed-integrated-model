@@ -67,7 +67,7 @@ class Greenhouses:
                     ),
                 )
             )
-            greenhouse_area = np.array(greenhouse_area_long[0:self.NMONTHS])
+            greenhouse_area = np.array(greenhouse_area_long[0 : self.NMONTHS])
             # @li just multiply greenhouse_area by the fraction
             PRINT_BY_COUNTRY_WARNING = False
             if PRINT_BY_COUNTRY_WARNING:
@@ -156,9 +156,9 @@ class Greenhouses:
 
             relocation_protein_per_ha_long.append(PROTEIN_RATIO * gh_kcals)
 
-        relocation_kcals_per_ha = relocation_kcals_per_ha_long[0:self.NMONTHS]
-        relocation_fat_per_ha = relocated_fat_per_ha_long[0:self.NMONTHS]
-        relocation_protein_per_ha = relocation_protein_per_ha_long[0:self.NMONTHS]
+        relocation_kcals_per_ha = relocation_kcals_per_ha_long[0 : self.NMONTHS]
+        relocation_fat_per_ha = relocated_fat_per_ha_long[0 : self.NMONTHS]
+        relocation_protein_per_ha = relocation_protein_per_ha_long[0 : self.NMONTHS]
 
         return (
             relocation_kcals_per_ha,
