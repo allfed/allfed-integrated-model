@@ -101,6 +101,6 @@ class Seaweed:
         ] = self.MAXIMUM_SEAWEED_AREA
 
         # reduce list to length of months of simulation
-        built_area = built_area_long[0:self.NMONTHS]
+        built_area = built_area_long[0 : self.NMONTHS]
 
         return built_area
