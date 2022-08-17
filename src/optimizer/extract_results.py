@@ -364,8 +364,8 @@ class Extractor:
 
         #   [crops_food_eaten_no_relocation] == [?]
         #   [OG_FRACTION_PROTEIN] = 1000 tons protein per billion kcals
-        #   [THOU_TONS_PROTEIN_NEEDED] = thousands of tons per month for 
-        #   population so, [?] = [thousands of tons per month for 
+        #   [THOU_TONS_PROTEIN_NEEDED] = thousands of tons per month for
+        #   population so, [?] = [thousands of tons per month for
         #   population]/[1000 tons protein per billion kcals]
         #   [?] = [billion kcals per month for population]
         #   [crops_food_eaten_no_relocation] = [billion kcals per month for population]
@@ -477,14 +477,14 @@ class Extractor:
             [
                 np.array(
                     outdoor_crops.kcals[
-                        0:self.constants["inputs"][
+                        0 : self.constants["inputs"][
                             "INITIAL_HARVEST_DURATION_IN_MONTHS"
                         ]
                     ]
                 ),
                 np.array(
                     outdoor_crops.kcals[
-                        self.constants["inputs"]["INITIAL_HARVEST_DURATION_IN_MONTHS"]:
+                        self.constants["inputs"]["INITIAL_HARVEST_DURATION_IN_MONTHS"] :
                     ]
                 )
                 * self.constants["OG_ROTATION_FRACTION_KCALS"],
@@ -496,7 +496,7 @@ class Extractor:
                 [
                     np.array(
                         outdoor_crops.fat[
-                            0:self.constants["inputs"][
+                            0 : self.constants["inputs"][
                                 "INITIAL_HARVEST_DURATION_IN_MONTHS"
                             ]
                         ]
