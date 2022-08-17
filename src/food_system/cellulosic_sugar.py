@@ -1,8 +1,10 @@
+"""
 ############################## Cellulosic Sugar ################################
 ##                                                                             #
 ##      Functions and constants relating to cellulosic sugar production        #
 ##                                                                             #
 ################################################################################
+"""
 
 import numpy as np
 

@@ -25,7 +25,6 @@ from src.scenarios import run_model_no_trade_baseline
 from src.scenarios import run_model_no_trade_no_resilient_foods
 from src.scenarios import run_model_no_resilient_foods
 from src.scenarios import run_model_with_resilient_foods
-from src.scenarios import monte_carlo
 
 
 def test_run_model_baseline():

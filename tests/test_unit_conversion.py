@@ -1,7 +1,6 @@
 """
 Tests if the unit conversion is working as expected.
 """
-from pytest import approx
 from pytest import raises
 import numpy as np
 
@@ -63,7 +62,7 @@ def test_set_nutrition_requirement_scalar():
     assert food1.thou_tons_fat_needed == food1.fat_monthly * 1
     assert food1.thou_tons_protein_needed == food1.protein_monthly * 1
     assert food1.population == 1
-    assert food1.NUTRITION_PROPERTIES_ASSIGNED == True
+    assert food1.NUTRITION_PROPERTIES_ASSIGNED is True
 
 
 def test_get_units_from_list_to_total():
@@ -215,9 +214,9 @@ def test_is_a_ratio_scalar_food():
     Tests if the right units are set
     """
     food1 = Food()
-    assert food1.is_a_ratio() == False
+    assert food1.is_a_ratio() is False
     food2 = Food(kcals_units="ratio", fat_units="ratio", protein_units="ratio")
-    assert food2.is_a_ratio() == True
+    assert food2.is_a_ratio() is True
 
 
 def test_is_a_ratio_monthly_food():
@@ -225,14 +224,14 @@ def test_is_a_ratio_monthly_food():
     Tests if the right units are set
     """
     food1 = create_food_monthly()
-    assert food1.is_a_ratio() == False
+    assert food1.is_a_ratio() is False
 
     food2 = create_food_monthly(
         kcals_units="ratio each month",
         fat_units="ratio each month",
         protein_units="ratio each month",
     )
-    assert food2.is_a_ratio() == True
+    assert food2.is_a_ratio() is True
 
 
 def test_is_unit_percent_scalar_food():
@@ -240,9 +239,9 @@ def test_is_unit_percent_scalar_food():
     Tests if the right units are set
     """
     food1 = Food()
-    assert food1.is_units_percent() == False
+    assert food1.is_units_percent() is False
     food2 = Food(kcals_units="percent", fat_units="percent", protein_units="percent")
-    assert food2.is_units_percent() == True
+    assert food2.is_units_percent() is True
 
 
 def test_is_unit_percent_monthly_food():
@@ -254,13 +253,13 @@ def test_is_unit_percent_monthly_food():
         fat_units="percent each month",
         protein_units="percent each month",
     )
-    assert food1.is_units_percent() == True
+    assert food1.is_units_percent() is True
     food2 = create_food_monthly(
         kcals_units="kcals each month",
         fat_units="kcals each month",
         protein_units="kcals each month",
     )
-    assert food2.is_units_percent() == False
+    assert food2.is_units_percent() is False
 
 
 def test_in_units_billions_fed():

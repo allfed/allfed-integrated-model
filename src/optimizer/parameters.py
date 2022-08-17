@@ -1,17 +1,16 @@
+"""
 ############################### Parameters ####################################
 ##                                                                            #
 ##           Calculates all the parameters that feed into the optimizer       #
 ##                                                                            #
 ###############################################################################
-
+"""
 # TODO: make a couple sub functions that deal with the different parts, where
 #      it assigns the returned values to the constants.
 
 import os
 import sys
 import numpy as np
-from pandas.core import window
-from pulp import const
 
 module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
@@ -28,7 +27,6 @@ from src.food_system.seaweed import Seaweed
 from src.food_system.feed_and_biofuels import FeedAndBiofuels
 
 from src.food_system.food import Food
-from src.food_system.unit_conversions import UnitConversions
 from src.utilities.print_parameters import PrintParameters
 
 
@@ -60,7 +58,7 @@ class Parameters:
             or constants["inputs"]["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] > 0
         ):
             assert (
-                constants["inputs"]["ADD_MAINTAINED_MEAT"] == True
+                constants["inputs"]["ADD_MAINTAINED_MEAT"] is True
             ), "Maintained meat needs to be added for continued feed usage to make sense"
 
         assert self.FIRST_TIME_RUN
@@ -81,63 +79,61 @@ class Parameters:
 
         constants = self.init_scenario(constants, constants_for_params)
 
-        #### NUTRITION PER MONTH ####
-
-        # https://docs.google.com/spreadsheets/d / 1RZqSrHNiIEuPQLtx1ebCd_kUcFvEF6Ea46xyzA5wU0s/edit#gid=1516287804
+        # NUTRITION PER MONTH #
 
         constants = self.set_nutrition_per_month(constants, constants_for_params)
 
-        ####SEAWEED INITIAL VARIABLES####
+        # SEAWEED INITIAL VARIABLES #
 
         constants, built_area = self.set_seaweed_params(constants, constants_for_params)
         time_consts["built_area"] = built_area
 
-        #### FISH ####
+        # FISH #
         time_consts, constants = self.init_fish_params(
             constants, time_consts, constants_for_params
         )
 
-        #### CROP PRODUCTION VARIABLES ####
+        # CROP PRODUCTION VARIABLES #
 
         constants, outdoor_crops = self.init_outdoor_crops(
             constants, constants_for_params
         )
 
-        #### CONSTANTS FOR GREENHOUSES ####
+        # CONSTANTS FOR GREENHOUSES #
 
         time_consts = self.init_greenhouse_params(
             time_consts, constants_for_params, outdoor_crops
         )
 
-        #### STORED FOOD VARIABLES ####
+        # STORED FOOD VARIABLES #
 
         constants, stored_food = self.init_stored_food(
             constants, constants_for_params, outdoor_crops
         )
 
-        #### FEED AND BIOFUEL VARIABLES ####
+        # FEED AND BIOFUEL VARIABLES #
 
         time_consts, feed_and_biofuels = self.init_feed_and_biofuels(
             time_consts, constants_for_params, outdoor_crops, stored_food
         )
 
-        ####LIVESTOCK, MILK INITIAL VARIABLES####
+        # LIVESTOCK, MILK INITIAL VARIABLES #
 
         meat_and_dairy, constants, time_consts = self.init_meat_and_dairy_params(
             constants, time_consts, constants_for_params, feed_and_biofuels
         )
 
-        #### CONSTANTS FOR METHANE SINGLE CELL PROTEIN ####
+        # CONSTANTS FOR METHANE SINGLE CELL PROTEIN #
 
         time_consts, methane_scp = self.init_scp_params(
             time_consts, constants_for_params
         )
 
-        #### CONSTANTS FOR CELLULOSIC SUGAR ####
+        # CONSTANTS FOR CELLULOSIC SUGAR #
 
         time_consts = self.init_cs_params(time_consts, constants_for_params)
 
-        #### OTHER VARIABLES ####
+        # OTHER VARIABLES #
 
         constants["inputs"] = constants_for_params
 
@@ -407,7 +403,8 @@ class Parameters:
 
         feed_and_biofuels = FeedAndBiofuels(constants_for_params)
 
-        # make sure nonhuman consumption is always less than or equal to outdoor crops+stored food for all nutrients, pre-waste
+        # make sure nonhuman consumption is always less than or equal
+        # to outdoor crops+stored food for all nutrients, pre-waste
         feed_and_biofuels.set_nonhuman_consumption_with_cap(
             constants_for_params, outdoor_crops, stored_food
         )
@@ -491,7 +488,8 @@ class Parameters:
         # any reasonable cap of production should reflect a cap on the actual amount available
         # to humans.
 
-        # "grain" in all cases just means the stored food + outdoor crop production that is human edible and used for feed
+        # "grain" in all cases just means the stored food + outdoor crop production
+        # that is human edible and used for feed
         # this calculation is pre-waste for meat and feed
         # Chicken and pork only ever use "grain" as defined above in this model, not grasses
         meat_and_dairy.calculate_meat_and_dairy_from_grain(
