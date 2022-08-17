@@ -573,7 +573,7 @@ class UnitConversions:
     ):
         """
         If the existing units are understood by this function, it tries to convert the
-        values and units to kcals per person per day, grams per pseron per day, kcals 
+        values and units to kcals per person per day, grams per pseron per day, kcals
         per person per day.
         arguments:
             kcal ratio (float): kcal  per kg of the food being converted

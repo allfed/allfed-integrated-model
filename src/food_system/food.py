@@ -229,8 +229,8 @@ class Food(UnitConversions):
             assert (
                 len(self.kcals) == len(self.fat) == len(self.protein)
             ), "ERROR: list type food must have same number of months for all nutrients"
-            assert (
-                isinstance(list, type(self.kcals), type(self.fat), type(self.protein))
+            assert isinstance(
+                list, type(self.kcals), type(self.fat), type(self.protein)
             ), "ERROR: list type food must have same type of list for all nutrients"
             assert (
                 len(self.kcals) > 0
@@ -406,9 +406,9 @@ class Food(UnitConversions):
         cases:
             this is a food list, other is a food list
             this is a food, other is a food
-            this is a food, other is a numberFAILED 
-                tests/test_food.py::test_addition_monthly_food - ValueError: 
-                The truth value of an array with more than one element is ambiguous. 
+            this is a food, other is a numberFAILED
+                tests/test_food.py::test_addition_monthly_food - ValueError:
+                The truth value of an array with more than one element is ambiguous.
                 Use a.any() or a.all()
 
         """
