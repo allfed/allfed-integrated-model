@@ -16,7 +16,6 @@ Created on Tue Jul 19
 """
 import os
 import sys
-import numpy as np
 
 module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
@@ -574,7 +573,8 @@ class UnitConversions:
     ):
         """
         If the existing units are understood by this function, it tries to convert the
-        values and units to kcals per person per day, grams per pseron per day, kcals per person per day.
+        values and units to kcals per person per day, grams per pseron per day, kcals 
+        per person per day.
         arguments:
             kcal ratio (float): kcal  per kg of the food being converted
             fat ratio (float): grams per kcal of the food being converted
@@ -641,8 +641,8 @@ class UnitConversions:
     def in_units_kcals_grams_grams_per_capita(self):
         """
         If the existing units are understood by this function, it tries to convert the
-        values and units to kcals per person per day, grams per pseron per day, kcals per person per day.
-
+        values and units to kcals per person per day, grams per pseron per day, kcals
+        per person per day.
         """
 
         # getting this instance of the UnitConversions from the child class

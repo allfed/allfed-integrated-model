@@ -1,9 +1,10 @@
+"""
 ################################# Seafood #####################################
 ##                                                                            #
 ##       Functions and constants relating to seafood, excluding seaweed       #
 ##                                                                            #
 ###############################################################################
-
+"""
 import numpy as np
 
 
@@ -47,7 +48,7 @@ class Seafood:
 
         FISH_PERCENT_EACH_MONTH_LONG = constants_for_params["FISH_PERCENT_MONTHLY"]
 
-        FISH_PERCENT_EACH_MONTH = FISH_PERCENT_EACH_MONTH_LONG[0 : self.NMONTHS]
+        FISH_PERCENT_EACH_MONTH = FISH_PERCENT_EACH_MONTH_LONG[0:self.NMONTHS]
 
         if self.ADD_FISH:
             production_kcals_fish_per_month = []

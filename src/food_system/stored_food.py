@@ -1,8 +1,10 @@
+"""
 ############################### Stored Food ###################################
 ##                                                                            #
 ##       Functions and constants relating to stocks and stored food           #
 ##                                                                            #
 ###############################################################################
+"""
 from src.food_system.food import Food
 
 
@@ -32,7 +34,6 @@ class StoredFood(Food):
         ]
 
         # (nuclear event in mid-may)
-        # Mike's spreadsheet: https://docs.google.com/spreadsheets/d / 19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=806987252
 
         self.buffer_ratio = constants_for_params["BUFFER_RATIO"]
         self.CROP_WASTE = constants_for_params["WASTE"]["CROPS"]
@@ -43,7 +44,10 @@ class StoredFood(Food):
     def calculate_stored_food_to_use(self, starting_month):
         """
         Calculates and returns total stored food available to use at start of
-        simulation. While a baseline scenario will simply use the typical amount of stocks to keep the buffer at a typical usage, other more extreme scenarios should be expected to use a higher percentage of all stored food, eating into the typical buffer.
+        simulation. While a baseline scenario will simply use the typical amount 
+        of stocks to keep the buffer at a typical usage, other more extreme 
+        scenarios should be expected to use a higher percentage of all stored food, 
+        eating into the typical buffer.
 
         Arguments:
             starting_month (int): the month the simulation starts on.
@@ -55,7 +59,8 @@ class StoredFood(Food):
 
         Assumptions:
 
-        buffer_ratio (float): the percent of the typical buffered stored food to keep at the end of the simulation.
+        buffer_ratio (float): the percent of the typical buffered stored food 
+        to keep at the end of the simulation.
 
         The stocks listed are tabulated at the end of the month.
 

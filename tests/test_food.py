@@ -313,7 +313,7 @@ def test_division_monthly_by_number():
     """
     food1 = create_food_monthly()
     with pytest.raises(AssertionError):
-        food2 = food1 / 2
+        food1 / 2
 
 
 def test_divison_monthly_by_monthly():

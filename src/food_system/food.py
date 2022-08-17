@@ -126,7 +126,7 @@ class Food(UnitConversions):
         """
         conversions = cls.conversions
 
-        assert conversions.NUTRITION_PROPERTIES_ASSIGNED, """ERROR: you must 
+        assert conversions.NUTRITION_PROPERTIES_ASSIGNED, """ERROR: you must
             assign the conversions property before attempting to convert between
             food units"""
 
@@ -230,7 +230,7 @@ class Food(UnitConversions):
                 len(self.kcals) == len(self.fat) == len(self.protein)
             ), "ERROR: list type food must have same number of months for all nutrients"
             assert (
-                type(self.kcals) == type(self.fat) == type(self.protein)
+                isinstance(list, type(self.kcals), type(self.fat), type(self.protein))
             ), "ERROR: list type food must have same type of list for all nutrients"
             assert (
                 len(self.kcals) > 0
@@ -406,7 +406,10 @@ class Food(UnitConversions):
         cases:
             this is a food list, other is a food list
             this is a food, other is a food
-            this is a food, other is a numberFAILED tests/test_food.py::test_addition_monthly_food - ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+            this is a food, other is a numberFAILED 
+                tests/test_food.py::test_addition_monthly_food - ValueError: 
+                The truth value of an array with more than one element is ambiguous. 
+                Use a.any() or a.all()
 
         """
         if type(other) == Food:
@@ -433,7 +436,7 @@ class Food(UnitConversions):
                         "ratio each month",
                     )
 
-            assert not other.is_list_monthly(), """Error: for foods, can only divide 
+            assert not other.is_list_monthly(), """Error: for foods, can only divide
                 by foods or numbers at the moment, not food lists. Consider
                 implementing additional cases."""
 
