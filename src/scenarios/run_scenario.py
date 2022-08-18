@@ -3,7 +3,7 @@
 """
 
 This function runs a single optimization by computing the parameters,
-running the parameters onto the optimizer, extracting the results, and interpreting the 
+running the parameters onto the optimizer, extracting the results, and interpreting the
 results into more useful values for plotting and scenario evaluation
 
 Created on Tue Jul 19

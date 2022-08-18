@@ -1,11 +1,12 @@
+"""
 ################################# Meat and Dairy ##############################
 ##                                                                            #
 ##       Functions and constants relating to meat and milk production        #
 ##                                                                            #
 ###############################################################################
+"""
 
 import numpy as np
-from src.food_system.food import Food
 
 
 class MeatAndDairy:
@@ -255,7 +256,12 @@ class MeatAndDairy:
             print("excess_dry_cal_tons per month")
             print(excess_dry_cal_tons)
             print(
-                "It appears assigning excess calories to feed or biofuels was attempted, but there were not enough calories to use for the feed and biofuel (because of this, excess was calculated as being negative). \nTry to rerun where the population fed after waste incorporating delayed shutoff to feed in biofuels is above the assigned global population. \nQuitting."
+                """It appears assigning excess calories to feed or biofuels was attempted,
+                but there were not enough calories to use for the feed and biofuel
+                (because of this, excess was calculated as being negative).
+                \nTry to rerun where the population fed after waste incorporating
+                delayed shutoff to feed in biofuels is above the assigned global population.
+                \nQuitting."""
             )
             quit()
         assert np.array(excess_dry_cal_tons >= 0).all()
@@ -296,6 +302,9 @@ class MeatAndDairy:
                 excess_dry_cal_tons[m] - limit_milk_prewaste
             )
 
+            print(grain_fed_milk_limit_food_usage_prewaste)
+            print(excess_dry_cal_tons)
+            print(for_chicken_pork_cattle_prewaste)
             assert for_chicken_pork_cattle_prewaste >= 0
 
             max_chicken_pork_prewaste = (
@@ -366,7 +375,8 @@ class MeatAndDairy:
                 )
                 print(np.where(ratio_maintained_cattle[0:47] >= 1))
                 print(
-                    "Consider whether the predicted amount of human edible feed fed to animals is reasonable."
+                    """Consider whether the predicted amount of
+                     human edible feed fed to animals is reasonable."""
                 )
                 print("")
 
@@ -531,6 +541,9 @@ class MeatAndDairy:
         self.grain_fed_milk_limit_prewaste = self.MILK_LIMIT_PREWASTE - np.array(
             self.grazing_milk_produced_prewaste
         )
+
+        print("MILK_LIMIT_PREWASTE")
+        print(self.MILK_LIMIT_PREWASTE)
 
     def get_grazing_milk_produced_postwaste(self):
         # billions kcals

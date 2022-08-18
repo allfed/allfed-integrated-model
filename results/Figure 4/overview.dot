@@ -1,11 +1,11 @@
 digraph ModelOverview{
     // Food Consumption during normal times
     norm_consumption [label="Food Consumption", style="filled",color="#55AA55"];
-    Waste[style="filled", color="#88CC88"] 
+    Waste[style="filled", color="#88CC88"]
     Waste -> norm_consumption;
-    Feed[style="filled", color="#88CC88"] 
+    Feed[style="filled", color="#88CC88"]
     Feed -> norm_consumption;
-    Biofuel[style="filled", color="#88CC88"] 
+    Biofuel[style="filled", color="#88CC88"]
     Biofuel -> norm_consumption;
 
     // Food Ressources during Standard Times
@@ -62,7 +62,7 @@ digraph ModelOverview{
     Baseline -> Baseline_trade;
     Baseline -> Baseline_no_trade;
 
-    
+
     // Link to optomization and analysis
     opt [label="Optimization", shape=box, style="filled", fillcolor="#669999"];
     Baseline_trade -> opt;
@@ -75,32 +75,10 @@ digraph ModelOverview{
     // Link to analysis
     analysis [label="Analysis", shape=box, style="filled", fillcolor="#669999"];
     opt -> analysis;
-    
 
 
-    
-    
+
+
+
 
 }
-
-    Baseline-->no_trade_base(Baseline, No Trade, By Country)
-    Baseline-->trade_base(Baseline, Trade, Global)
-    150Tg-->no_trade_150(150Tg, No Trade, By Country)
-    150Tg-->trade_150(150Tg, Trade, Global)    
-
-    no_trade_150-->no_trade_150_res_food(150Tg, No Trade, by Country, Resilient Food Resources)
-    no_trade_150-->no_trade_150_no_res_food(150Tg, No Trade, by Country, No Resilient Food Resources)
-    trade_150-->trade_150_res_food(150Tg, Trade, Global, Resilient Food Resources)
-    trade_150-->trade_150_no_res_food(150Tg, Trade, Global, No Resilient Food Resources)
-
-    Resilient_Food_Resources-->trade_150_res_food
-    Resilient_Food_Resources-->no_trade_150_res_food
-
-    no_trade_base-->Optimization
-    trade_base-->Optimization
-    no_trade_150_res_food-->Optimization
-    no_trade_150_no_res_food-->Optimization
-    trade_150_res_food-->Optimization
-    trade_150_no_res_food-->Optimization
-
-    Optimization-->FoodAvailability(Food Availability)

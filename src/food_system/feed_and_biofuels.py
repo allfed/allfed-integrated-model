@@ -1,9 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-
 This class is used for calculating feed and biofuel usage. They are combined into
-a monthly total "excess usage" for the purposes of the optimizer, and are treated 
+a monthly total "excess usage" for the purposes of the optimizer, and are treated
 similarly in the model.
 
 NOTE: Anything that could have waste applied, and is not being wasted, has the pre-waste
@@ -14,10 +11,7 @@ Created on Wed Jul 17
 @author: morgan
 """
 
-from operator import mod
-from pydoc import safeimport
 import numpy as np
-import collections
 
 from src.food_system.food import Food
 
@@ -105,14 +99,6 @@ class FeedAndBiofuels:
             feed_duration, excess_feed_prewaste
         )
 
-        # includes assigned excess feed in nonhuman consumption
-        nonhuman_consumption_before_cap_prewaste = (
-            self.get_nonhuman_consumption_before_cap_prewaste(
-                biofuels_before_cap_prewaste,
-                feed_before_cap_prewaste,
-            )
-        )
-
         waste_adjustment = 1 - outdoor_crops.CROP_WASTE / 100
         biofuels_before_cap = biofuels_before_cap_prewaste * waste_adjustment
         feed_before_cap = feed_before_cap_prewaste * waste_adjustment
@@ -161,7 +147,7 @@ class FeedAndBiofuels:
         # to get back to the original
         assert (
             outdoor_crops.CROP_WASTE < 100
-        ), """100\% crop waste will cause divide by zero errors"""
+        ), """100 percent crop waste will cause divide by zero errors"""
 
         waste_adjustment = 1 - outdoor_crops.CROP_WASTE / 100
         # the negative amount can be made up for by stored food, so there's no need
@@ -379,11 +365,6 @@ class FeedAndBiofuels:
 
         assume animals need and use human levels of fat and protein per kcal
         """
-
-        CROP_WASTE = constants_for_params["WASTE"]["CROPS"]
-
-        waste_adjustment = 1 - CROP_WASTE / 100
-
         nonhuman_consumption = biofuels + feed
 
         return nonhuman_consumption
@@ -396,7 +377,8 @@ class FeedAndBiofuels:
         production on a monthly basis for each nutrient.
 
         NOTE: UPDATE:
-            I realized that the max amount of stored food or OG used each month by kcals, fat or protein needs to be summed, rather than the max of each individual nutrient
+            I realized that the max amount of stored food or OG used each month by kcals,
+            fat or protein needs to be summed, rather than the max of each individual nutrient
 
         Example:
 

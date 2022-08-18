@@ -1,9 +1,10 @@
+"""
 ######################## Methane Single Cell Protein ###########################
 ##                                                                             #
 ##            Functions and constants relating to methane SCP                  #
 ##                                                                             #
 ################################################################################
-
+"""
 
 import numpy as np
 

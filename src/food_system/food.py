@@ -126,7 +126,7 @@ class Food(UnitConversions):
         """
         conversions = cls.conversions
 
-        assert conversions.NUTRITION_PROPERTIES_ASSIGNED, """ERROR: you must 
+        assert conversions.NUTRITION_PROPERTIES_ASSIGNED, """ERROR: you must
             assign the conversions property before attempting to convert between
             food units"""
 
@@ -198,8 +198,6 @@ class Food(UnitConversions):
             protein_units,
         )
 
-        self.validate_if_list()
-
         if self.is_list_monthly():
             self.NMONTHS = len(self.kcals)
 
@@ -212,6 +210,8 @@ class Food(UnitConversions):
             self.protein = np.array(self.protein)
         else:
             self.NMONTHS = np.nan  # number of months is not a number
+
+        self.validate_if_list()
 
     # validation functions
 
@@ -229,8 +229,14 @@ class Food(UnitConversions):
             assert (
                 len(self.kcals) == len(self.fat) == len(self.protein)
             ), "ERROR: list type food must have same number of months for all nutrients"
-            assert (
-                type(self.kcals) == type(self.fat) == type(self.protein)
+            assert isinstance(
+                self.kcals, np.ndarray
+            ), "ERROR: list type food must have same type of list for all nutrients"
+            assert isinstance(
+                self.fat, np.ndarray
+            ), "ERROR: list type food must have same type of list for all nutrients"
+            assert isinstance(
+                self.protein, np.ndarray
             ), "ERROR: list type food must have same type of list for all nutrients"
             assert (
                 len(self.kcals) > 0
@@ -406,7 +412,10 @@ class Food(UnitConversions):
         cases:
             this is a food list, other is a food list
             this is a food, other is a food
-            this is a food, other is a numberFAILED tests/test_food.py::test_addition_monthly_food - ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+            this is a food, other is a numberFAILED
+                tests/test_food.py::test_addition_monthly_food - ValueError:
+                The truth value of an array with more than one element is ambiguous.
+                Use a.any() or a.all()
 
         """
         if type(other) == Food:
@@ -433,7 +442,7 @@ class Food(UnitConversions):
                         "ratio each month",
                     )
 
-            assert not other.is_list_monthly(), """Error: for foods, can only divide 
+            assert not other.is_list_monthly(), """Error: for foods, can only divide
                 by foods or numbers at the moment, not food lists. Consider
                 implementing additional cases."""
 
@@ -527,7 +536,7 @@ class Food(UnitConversions):
                     this_is_the_ratio = self.is_a_ratio()
 
                     assert this_is_the_ratio, """unable to multiply a food by a food list
-                     where the non-list food is not a ratio, consider implementing 
+                     where the non-list food is not a ratio, consider implementing
                      this feature"""
 
                     kcals_units = other.kcals_units
@@ -626,7 +635,7 @@ class Food(UnitConversions):
             other_is_the_ratio = other.is_a_ratio()
 
             assert other_is_the_ratio, """unable to multiply a food list by a food
-                where the non-list food is not a ratio, consider implementing 
+                where the non-list food is not a ratio, consider implementing
                 this feature"""
 
             kcals_units = self.kcals_units
@@ -771,8 +780,10 @@ class Food(UnitConversions):
     #         self.validate_if_list()
 
     #         kcals_greater_than_zero = (np.array(self.kcals) >= 0).all()
-    #         fat_greater_than_zero = (np.array(self.fat) >= 0).all() or self.conversions.exclude_fat
-    #         protein_greater_than_zero = (np.array(self.protein) >= 0).all() or self.conversions.exclude_protein
+    #         fat_greater_than_zero = (np.array(self.fat)
+    #               >= 0).all() or self.conversions.exclude_fat
+    #         protein_greater_than_zero = (np.array(self.protein)
+    #               >= 0).all() or self.conversions.exclude_protein
 
     #         return (
     #             kcals_greater_than_zero
@@ -1404,15 +1415,6 @@ class Food(UnitConversions):
             kcals_units="ratio",
             fat_units="ratio",
             protein_units="ratio",
-        )
-
-        running_sum = Food(
-            kcals=0,
-            fat=0,
-            protein=0,
-            kcals_units=self.get_first_month().kcals_units,
-            fat_units=self.get_first_month().fat_units,
-            protein_units=self.get_first_month().protein_units,
         )
 
         amount_consumed_list = Food(

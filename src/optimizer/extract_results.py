@@ -1,8 +1,5 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-
-Convert optimizer output to numpy arrays in order to later interpret and validate them 
+Convert optimizer output to numpy arrays in order to later interpret and validate them
 
 Created on Tue Jul 22
 
@@ -107,7 +104,7 @@ class Extractor:
     def to_monthly_list(self, variables, conversion):
         variable_output = []
         # if the variable was not modeled
-        if type(variables[0]) == type(0):
+        if isinstance((variables[0]), int):
             return np.array([0] * len(variables))  # return initial value
 
         SHOW_OUTPUT = False
@@ -118,7 +115,7 @@ class Extractor:
             val = variables[month]
 
             # if something went wrong and the variable was not added for a certain month
-            assert type(val) != type(0)
+            assert not isinstance(type(val), int)
             variable_output.append(val.varValue * conversion)
             if SHOW_OUTPUT:
                 print("    Month " + str(month) + ": " + str(variable_output[month]))
@@ -162,7 +159,7 @@ class Extractor:
         cf_produced_output = []
 
         # if the variable was not modeled
-        if type(crops_food_eaten_no_relocation[0]) == type(0):
+        if isinstance(crops_food_eaten_no_relocation[0], int):
             return [
                 [0] * len(crops_food_eaten_no_relocation),
                 [0] * len(crops_food_eaten_no_relocation),
@@ -177,7 +174,7 @@ class Extractor:
             cf_produced_output.append(cf_produced)
 
             # if the improved relocation was not used
-            if type(crops_food_eaten_relocated[0]) == type(0):
+            if isinstance(crops_food_eaten_relocated[0], int):
                 cf_eaten = crops_food_eaten_no_relocation[month].varValue
             else:
                 cf_eaten = (
@@ -319,9 +316,10 @@ class Extractor:
 
         assert (
             np.round(difference, decimals) == 0
-        ).all(), """ERROR: Immediate 
-            and new stored sources do not add up to the sources of outdoor crops 
-            and stored food"""
+        ).all(), """ERROR: Immediate
+             and new stored sources do not add up to the sources of outdoor crops
+             and stored food"""
+
         billions_fed_outdoor_crops_kcals = np.array(
             self.to_monthly_list(
                 crops_food_eaten_no_relocation,
@@ -367,8 +365,9 @@ class Extractor:
 
         #   [crops_food_eaten_no_relocation] == [?]
         #   [OG_FRACTION_PROTEIN] = 1000 tons protein per billion kcals
-        #   [THOU_TONS_PROTEIN_NEEDED] = thousands of tons per month for population
-        #   so, [?] = [thousands of tons per month for population]/[1000 tons protein per billion kcals]
+        #   [THOU_TONS_PROTEIN_NEEDED] = thousands of tons per month for
+        #   population so, [?] = [thousands of tons per month for
+        #   population]/[1000 tons protein per billion kcals]
         #   [?] = [billion kcals per month for population]
         #   [crops_food_eaten_no_relocation] = [billion kcals per month for population]
         #   therefore,
