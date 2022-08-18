@@ -215,8 +215,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         for index, country_data in no_trade_table.iterrows():
 
             country_code = country_data["iso3"]
-            # if country_code != "USA":
-            #     continue
+            if country_code != "USA":
+                continue
 
             if country_code in countries_to_skip:
                 continue

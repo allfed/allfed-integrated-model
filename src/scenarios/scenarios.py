@@ -79,7 +79,7 @@ class Scenarios:
         # global human population (2020)
         constants_for_params["POP"] = 7.8e9
 
-        # annual tons dry carb equivalent
+        # annual tons dry caloric equivalent
         constants_for_params["BASELINE_CROP_KCALS"] = 3898e6
 
         # annual tons fat
@@ -88,7 +88,7 @@ class Scenarios:
         # annual tons protein
         constants_for_params["BASELINE_CROP_PROTEIN"] = 350e6
 
-        # annual tons dry carb equivalent
+        # annual tons dry caloric equivalent
         constants_for_params["BIOFUEL_KCALS"] = 623e6
 
         # annual tons fat
@@ -97,7 +97,7 @@ class Scenarios:
         # annual tons protein
         constants_for_params["BIOFUEL_PROTEIN"] = 32e6
 
-        # annual tons dry carb equivalent
+        # annual tons dry caloric equivalent
         constants_for_params["FEED_KCALS"] = 1447.96e6
 
         # annual tons fat
@@ -185,7 +185,7 @@ class Scenarios:
         # global human population (2020)
         constants_for_params["POP"] = country_data["population"]
 
-        # annual tons dry carb equivalent
+        # annual tons dry caloric equivalent
         constants_for_params["BASELINE_CROP_KCALS"] = country_data["crop_kcals"]
 
         # annual tons fat
@@ -194,7 +194,7 @@ class Scenarios:
         # annual tons protein
         constants_for_params["BASELINE_CROP_PROTEIN"] = country_data["crop_protein"]
 
-        # annual tons dry carb equivalent
+        # annual tons dry caloric equivalent
         constants_for_params["BIOFUEL_KCALS"] = country_data["biofuel_kcals"]
 
         # annual tons fat
@@ -203,7 +203,7 @@ class Scenarios:
         # annual tons protein
         constants_for_params["BIOFUEL_PROTEIN"] = country_data["biofuel_protein"]
 
-        # annual tons dry carb equivalent
+        # annual tons dry caloric equivalent
         constants_for_params["FEED_KCALS"] = country_data["feed_kcals"]
 
         # annual tons fat

@@ -689,15 +689,15 @@ class Food(UnitConversions):
         assert self.units == other.units
         if self.is_list_monthly():
             return (
-                (self.kcals != other.kcals).all()
-                and (self.fat != other.fat).all()
-                and (self.protein != other.protein).all()
+                (self.kcals != other.kcals).any()
+                or (self.fat != other.fat).any()
+                or (self.protein != other.protein).any()
             )
         else:
             return (
                 self.kcals != other.kcals
-                and self.fat != other.fat
-                and self.protein != other.protein
+                or self.fat != other.fat
+                or self.protein != other.protein
             )
 
     def plot(self, title="generic food object over time"):
@@ -1233,9 +1233,9 @@ class Food(UnitConversions):
 
     # Helper functions to get properties of the three nutrient values
 
-    def as_list(self):
+    def as_numpy_array(self):
         """
-        Returns the nutrients as an ordered list.
+        Returns the nutrients as an ordered numpy_array.
         """
         return np.array([self.kcals, self.fat, self.protein])
 
@@ -1245,6 +1245,8 @@ class Food(UnitConversions):
 
         Can return the minimum of any month of any nutrient if a food list, or just
         `the minimum of any nutrient if a food
+
+        Only works when the units is identical for the different nutrients
 
         Returns:
         (minimum nutrient name, minimum nutrient value)
@@ -1581,6 +1583,7 @@ class Food(UnitConversions):
     def replace_if_list_with_zeros_is_zero(self, list_with_zeros, replacement):
         """
         replace with the replacement if list_with_zeros is zero
+
 
         arguments: list with zeros ( food list ): a list that has zeros in it
                    replacement ( food list, food, or number ): thing used to replace
