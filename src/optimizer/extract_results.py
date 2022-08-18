@@ -319,6 +319,7 @@ class Extractor:
         ).all(), """ERROR: Immediate
              and new stored sources do not add up to the sources of outdoor crops
              and stored food"""
+
         billions_fed_outdoor_crops_kcals = np.array(
             self.to_monthly_list(
                 crops_food_eaten_no_relocation,

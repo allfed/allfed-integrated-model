@@ -1,11 +1,11 @@
 digraph ModelOverview{
     // Food Consumption during normal times
     norm_consumption [label="Food Consumption", style="filled",color="#55AA55"];
-    Waste[style="filled", color="#88CC88"] 
+    Waste[style="filled", color="#88CC88"]
     Waste -> norm_consumption;
-    Feed[style="filled", color="#88CC88"] 
+    Feed[style="filled", color="#88CC88"]
     Feed -> norm_consumption;
-    Biofuel[style="filled", color="#88CC88"] 
+    Biofuel[style="filled", color="#88CC88"]
     Biofuel -> norm_consumption;
 
     // Food Ressources during Standard Times
@@ -62,7 +62,7 @@ digraph ModelOverview{
     Baseline -> Baseline_trade;
     Baseline -> Baseline_no_trade;
 
-    
+
     // Link to optomization and analysis
     opt [label="Optimization", shape=box, style="filled", fillcolor="#669999"];
     Baseline_trade -> opt;
@@ -75,11 +75,10 @@ digraph ModelOverview{
     // Link to analysis
     analysis [label="Analysis", shape=box, style="filled", fillcolor="#669999"];
     opt -> analysis;
-    
 
 
-    
-    
+
+
+
 
 }
-

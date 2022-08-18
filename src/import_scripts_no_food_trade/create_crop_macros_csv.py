@@ -3,7 +3,8 @@ import numpy as np
 import os
 
 
-PULP_CSV = "../../data/no_food_trade/FAOSTAT_wood_pulp_2020.csv"
+NUTRITION_XLS = "../../data/Supplemental_Data.xlsx"
+PRODUCTION_CSV = "../../data/no_food_trade/raw_data/FAOSTAT_food_production_2020.csv"
 
 TONS_TO_KG = 1e3
 KCALS_TO_DRY_CALORIC_TONS = 1 / (4000 * 1000)
@@ -12,7 +13,7 @@ KCALS_PER_PERSON = 2100
 FAT_PER_PERSON = 47
 PROTEIN_PER_PERSON = 53
 
-pulp_countries = [
+prod_iso3 = [
     "AFG",
     "ALB",
     "DZA",
@@ -293,53 +294,126 @@ country_names = [
     "Zambia",
     "Zimbabwe",
 ]
+# Data Inspection
 
-df_pulp_countries = pd.read_csv(PULP_CSV)[
-    ["Area Code (ISO3)", "Area", "Element", "Unit", "Value"]
+xls = pd.ExcelFile(NUTRITION_XLS)
+nutrition = pd.read_excel(xls, "Nutrition")[["Item", "Calories", "Protein", "Fat"]]
+
+df_prod = pd.read_csv(PRODUCTION_CSV)[
+    ["Area Code (ISO3)", "Area", "Element", "Item Code (FAO)", "Item", "Unit", "Value"]
 ]
 
+countries = list(df_prod["Area Code (ISO3)"].unique())
+# create dictionary containing each table, remove Area column
+df_dict = {
+    k: df_prod[df_prod["Area Code (ISO3)"] == k].drop(columns="Area Code (ISO3)")
+    for k in countries
+}
+
 # for each country create a list of macronutrient values
-pulp_csv = np.array(
-    ["ISO3 Country Code", "Country", "Country chemical wood pulp 2020 (tonnes)"]
+macros_csv = np.array(
+    [
+        "iso3",
+        "country",
+        "crop_kcals",
+        "crop_fat",
+        "crop_protein",
+    ]
 )
 
-for i in range(0, len(pulp_countries)):
-    pulp_country = pulp_countries[i]
+for i in range(0, len(prod_iso3)):
+    prod_country = prod_iso3[i]
     country_name = country_names[i]
-    if pulp_country not in list(df_pulp_countries["Area Code (ISO3)"]):
-        print("missing " + country_name)
-        pulp = 0
-    else:
-        pulp = float(
-            df_pulp_countries[df_pulp_countries["Area Code (ISO3)"] == pulp_country][
-                "Value"
-            ]
-        )
-    pulp_csv = np.vstack([pulp_csv, [pulp_country, country_name, pulp]])
+    if prod_country not in df_dict.keys():
+        print("missing" + prod_country)
+        continue
 
+    products = df_dict[prod_country]
+    kcals_sum = 0
+    fat_sum = 0
+    protein_sum = 0
+
+    # for each food product, add to each macronutrient total
+    for index, product in products.iterrows():
+        # find the particular icountry_names = [tem.
+        n = nutrition[nutrition["Item"] == product["Item"]]
+
+        # if the match could not be found, continue
+        if len(n) == 0:
+            continue
+
+        # there should never be any duplicate nutrition items
+        assert len(n) == 1
+
+        kcals_per_kg = float(n["Calories"])  # kcals / kg
+        fat_frac = float(n["Fat"])  # fraction by weight
+        protein_frac = float(n["Protein"])  # fraction by weight
+
+        # production Calories is units tons per year
+        if np.isnan(product["Value"]):
+            tons = 0
+        else:
+            tons = product["Value"]
+
+        # dry caloric tons per year
+        kcals = tons * TONS_TO_KG * kcals_per_kg * KCALS_TO_DRY_CALORIC_TONS
+
+        # nutrition Fat and protein are percent by weight, converting to grams
+        fat = tons * fat_frac  # tons per year
+        protein = tons * protein_frac  # tons per year
+
+        kcals_sum += kcals
+        fat_sum += fat
+        protein_sum += protein
+
+    macros_csv = np.vstack(
+        [
+            macros_csv,
+            [
+                prod_country,
+                country_name,
+                str(kcals_sum),
+                str(fat_sum),
+                str(protein_sum),
+            ],
+        ]
+    )
 
 # add up GBR and F5707 (EU+27) to incorporate GBR (which is the UK),
 # and delete GBR
 
-F5707_index = np.where(pulp_csv[:, 0] == "F5707")
-GBR_index = np.where(pulp_csv[:, 0] == "GBR")
-F5707_name = pulp_csv[F5707_index][0][1]
-F5707_tons = float(pulp_csv[F5707_index][0][2])
+F5707_index = np.where(macros_csv[:, 0] == "F5707")
+GBR_index = np.where(macros_csv[:, 0] == "GBR")
 
-GBR_name = pulp_csv[GBR_index][0][1]
-GBR_tons = float(pulp_csv[GBR_index][0][2])
+F5707_name = macros_csv[F5707_index][0][1]
+F5707_kcals = float(macros_csv[F5707_index][0][2])
+F5707_fat = float(macros_csv[F5707_index][0][3])
+F5707_protein = float(macros_csv[F5707_index][0][4])
+
+GBR_name = macros_csv[GBR_index][0][1]
+GBR_kcals = float(macros_csv[GBR_index][0][2])
+GBR_fat = float(macros_csv[GBR_index][0][3])
+GBR_protein = float(macros_csv[GBR_index][0][4])
 
 
-pulp_csv[F5707_index, 0] = "F5707+GBR"
-pulp_csv[F5707_index, 2] = str(F5707_tons + GBR_tons)
+macros_csv[F5707_index, 0] = "F5707+GBR"
+macros_csv[F5707_index, 2] = str(F5707_kcals + GBR_kcals)
+macros_csv[F5707_index, 3] = str(F5707_fat + GBR_fat)
+macros_csv[F5707_index, 4] = str(F5707_protein + GBR_protein)
 
 
-swaziland_index = np.where(pulp_csv[:, 0] == "SWZ")
+swaziland_index = np.where(macros_csv[:, 0] == "SWZ")
 # eswatini recently changed from swaziland
-pulp_csv[swaziland_index, 0] = "SWT"
-pulp_csv = np.delete(pulp_csv, (GBR_index), axis=0)
+macros_csv[swaziland_index, 0] = "SWT"
+macros_csv = np.delete(macros_csv, (GBR_index), axis=0)
 
 
-print("pulp_csv")
-print(pulp_csv)
-np.savetxt("../../data/no_food_trade/pulp_csv.csv", pulp_csv, delimiter=",", fmt="%s")
+print("macros_csv")
+print(macros_csv)
+
+np.savetxt(
+    "../../data/no_food_trade/processed_data/macros_csv.csv",
+    macros_csv,
+    delimiter=",",
+    fmt="%s",
+)

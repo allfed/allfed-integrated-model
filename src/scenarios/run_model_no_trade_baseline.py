@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""     
-This file contains the code for the baseline model by country for with and 
+"""
+This file contains the code for the baseline model by country for with and
 without trade scenarios.
 
 Created on Wed Jul 15

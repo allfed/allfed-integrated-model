@@ -34,14 +34,14 @@ class PrintParameters:
             calories per day / 7.8e9 = calories per person per day globally
             therefore:
             calories per person per day globally = million tons dry caloric monthly * 12 * 1e6 * 4e6 / 365 / 7.8e9
-            
+
             conversion to months worth of food:
             million tons dry caloric * 1e6 = tons dry caloric
             tons dry caloric * 1e3 = kg dry caloric
             kg dry caloric * 4e3 = calories
             calories / 2100 = people fed per day
             people fed per day / 30 = people fed per month
-            people fed per month / 7.8e9 = fraction of global population fed for a month 
+            people fed per month / 7.8e9 = fraction of global population fed for a month
             fraction of global population fed for a month = months global population is fed from this food source
             therefore:
             months global population fed = million tons dry caloric *1e6*4e6 /2100/30/7.8e9
@@ -88,14 +88,14 @@ class PrintParameters:
             calories per day / 7.8e9 = calories per person per day globally
             therefore:
             calories per person per day globally = million tons dry caloric monthly * 12 * 1e6 * 4e6 / 365 / 7.8e9
-            
+
             conversion to months worth of food:
             million tons dry caloric * 1e6 = tons dry caloric
             tons dry caloric * 1e3 = kg dry caloric
             kg dry caloric * 4e3 = calories
             calories / 2100 = people fed per day
             people fed per day / 30 = people fed per month
-            people fed per month / 7.8e9 = fraction of global population fed for a month 
+            people fed per month / 7.8e9 = fraction of global population fed for a month
             fraction of global population fed for a month = months global population is fed from this food source
             therefore:
             months global population fed = million tons dry caloric *1e6*4e6 /2100/30/7.8e9
