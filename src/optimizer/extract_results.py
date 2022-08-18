@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 
-Convert optimizer output to numpy arrays in order to later interpret and validate them 
+Convert optimizer output to numpy arrays in order to later interpret and validate them
 
 Created on Tue Jul 22
 
@@ -319,8 +319,8 @@ class Extractor:
 
         assert (
             np.round(difference, decimals) == 0
-        ).all(), """ERROR: Immediate 
-            and new stored sources do not add up to the sources of outdoor crops 
+        ).all(), """ERROR: Immediate
+            and new stored sources do not add up to the sources of outdoor crops
             and stored food"""
         billions_fed_outdoor_crops_kcals = np.array(
             self.to_monthly_list(

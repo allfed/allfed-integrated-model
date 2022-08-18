@@ -309,7 +309,7 @@ class OutdoorCrops(Food):
 
         assert not np.isnan(
             self.kcals
-        ).any(), """Error: the outdoor crop production expected is 
+        ).any(), """Error: the outdoor crop production expected is
             unknown, cannot compute optimization"""
         self.set_units(
             kcals_units="billion kcals each month",

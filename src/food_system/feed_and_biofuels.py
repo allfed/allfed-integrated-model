@@ -3,7 +3,7 @@
 """
 
 This class is used for calculating feed and biofuel usage. They are combined into
-a monthly total "excess usage" for the purposes of the optimizer, and are treated 
+a monthly total "excess usage" for the purposes of the optimizer, and are treated
 similarly in the model.
 
 NOTE: Anything that could have waste applied, and is not being wasted, has the pre-waste

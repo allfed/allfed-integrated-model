@@ -1,6 +1,6 @@
 """
- this program runs the worst case and best case plausibly likely outcomes for 
- the monte carlo model, and prints the outcomes for 1000 runs in a row, then 
+ this program runs the worst case and best case plausibly likely outcomes for
+ the monte carlo model, and prints the outcomes for 1000 runs in a row, then
  plots a histogram of the results
 """
 import copy

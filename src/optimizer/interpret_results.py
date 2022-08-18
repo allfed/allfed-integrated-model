@@ -412,7 +412,7 @@ class Interpreter:
         decimals = 1
         assert difference.get_rounded_to_decimal(
             decimals
-        ).all_equals_zero(), """feed plus human consumption of stored food 
+        ).all_equals_zero(), """feed plus human consumption of stored food
             and outdoor crops must add up to the total outdoor crops"""
 
         # cannot have negative stored food and outdoor crops fed to humans

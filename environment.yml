@@ -181,6 +181,7 @@ dependencies:
   - zstd=1.5.2=h8a70e8d_1
   - pip:
     - black==22.6.0
+    - pre-commit==2.20.0
     - gdal==3.5.0
     - lxml==4.9.1
     - mypy-extensions==0.4.3

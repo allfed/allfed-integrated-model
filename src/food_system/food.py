@@ -126,7 +126,7 @@ class Food(UnitConversions):
         """
         conversions = cls.conversions
 
-        assert conversions.NUTRITION_PROPERTIES_ASSIGNED, """ERROR: you must 
+        assert conversions.NUTRITION_PROPERTIES_ASSIGNED, """ERROR: you must
             assign the conversions property before attempting to convert between
             food units"""
 
@@ -433,7 +433,7 @@ class Food(UnitConversions):
                         "ratio each month",
                     )
 
-            assert not other.is_list_monthly(), """Error: for foods, can only divide 
+            assert not other.is_list_monthly(), """Error: for foods, can only divide
                 by foods or numbers at the moment, not food lists. Consider
                 implementing additional cases."""
 
@@ -527,7 +527,7 @@ class Food(UnitConversions):
                     this_is_the_ratio = self.is_a_ratio()
 
                     assert this_is_the_ratio, """unable to multiply a food by a food list
-                     where the non-list food is not a ratio, consider implementing 
+                     where the non-list food is not a ratio, consider implementing
                      this feature"""
 
                     kcals_units = other.kcals_units
@@ -626,7 +626,7 @@ class Food(UnitConversions):
             other_is_the_ratio = other.is_a_ratio()
 
             assert other_is_the_ratio, """unable to multiply a food list by a food
-                where the non-list food is not a ratio, consider implementing 
+                where the non-list food is not a ratio, consider implementing
                 this feature"""
 
             kcals_units = self.kcals_units
