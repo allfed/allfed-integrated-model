@@ -229,8 +229,8 @@ class Food(UnitConversions):
             assert (
                 len(self.kcals) == len(self.fat) == len(self.protein)
             ), "ERROR: list type food must have same number of months for all nutrients"
-            assert (
-                type(self.kcals) == type(self.fat) == type(self.protein)
+            assert isinstance(
+                list, type(self.kcals), type(self.fat), type(self.protein)
             ), "ERROR: list type food must have same type of list for all nutrients"
             assert (
                 len(self.kcals) > 0
@@ -406,7 +406,10 @@ class Food(UnitConversions):
         cases:
             this is a food list, other is a food list
             this is a food, other is a food
-            this is a food, other is a numberFAILED tests/test_food.py::test_addition_monthly_food - ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+            this is a food, other is a numberFAILED
+                tests/test_food.py::test_addition_monthly_food - ValueError:
+                The truth value of an array with more than one element is ambiguous.
+                Use a.any() or a.all()
 
         """
         if type(other) == Food:
@@ -771,8 +774,10 @@ class Food(UnitConversions):
     #         self.validate_if_list()
 
     #         kcals_greater_than_zero = (np.array(self.kcals) >= 0).all()
-    #         fat_greater_than_zero = (np.array(self.fat) >= 0).all() or self.conversions.exclude_fat
-    #         protein_greater_than_zero = (np.array(self.protein) >= 0).all() or self.conversions.exclude_protein
+    #         fat_greater_than_zero = (np.array(self.fat)
+    #               >= 0).all() or self.conversions.exclude_fat
+    #         protein_greater_than_zero = (np.array(self.protein)
+    #               >= 0).all() or self.conversions.exclude_protein
 
     #         return (
     #             kcals_greater_than_zero
@@ -1402,15 +1407,6 @@ class Food(UnitConversions):
             kcals_units="ratio",
             fat_units="ratio",
             protein_units="ratio",
-        )
-
-        running_sum = Food(
-            kcals=0,
-            fat=0,
-            protein=0,
-            kcals_units=self.get_first_month().kcals_units,
-            fat_units=self.get_first_month().fat_units,
-            protein_units=self.get_first_month().protein_units,
         )
 
         amount_consumed_list = Food(

@@ -82,25 +82,3 @@ digraph ModelOverview{
 
 
 }
-
-    Baseline-->no_trade_base(Baseline, No Trade, By Country)
-    Baseline-->trade_base(Baseline, Trade, Global)
-    150Tg-->no_trade_150(150Tg, No Trade, By Country)
-    150Tg-->trade_150(150Tg, Trade, Global)
-
-    no_trade_150-->no_trade_150_res_food(150Tg, No Trade, by Country, Resilient Food Resources)
-    no_trade_150-->no_trade_150_no_res_food(150Tg, No Trade, by Country, No Resilient Food Resources)
-    trade_150-->trade_150_res_food(150Tg, Trade, Global, Resilient Food Resources)
-    trade_150-->trade_150_no_res_food(150Tg, Trade, Global, No Resilient Food Resources)
-
-    Resilient_Food_Resources-->trade_150_res_food
-    Resilient_Food_Resources-->no_trade_150_res_food
-
-    no_trade_base-->Optimization
-    trade_base-->Optimization
-    no_trade_150_res_food-->Optimization
-    no_trade_150_no_res_food-->Optimization
-    trade_150_res_food-->Optimization
-    trade_150_no_res_food-->Optimization
-
-    Optimization-->FoodAvailability(Food Availability)

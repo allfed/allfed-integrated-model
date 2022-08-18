@@ -1,15 +1,14 @@
+"""
 ################################Optimizer Model################################
 ##                                                                            #
 ## In this model, we estimate the macronutrient production allocated optimally#
 ##  over time including models for traditional and resilient foods.           #
 ##                                                                            #
 ###############################################################################
+"""
 
-
-from multiprocessing.pool import IMapIterator
 import os
 import sys
-import numpy as np
 import pulp
 from pulp import LpMaximize, LpProblem, LpVariable
 
@@ -37,7 +36,7 @@ class Optimizer:
         self.single_valued_constants = single_valued_constants
         self.multi_valued_constants = multi_valued_constants
 
-        #### MODEL GENERATION LOOP ####
+        # MODEL GENERATION LOOP #
         self.time_months = []
 
         NMONTHS = single_valued_constants["NMONTHS"]

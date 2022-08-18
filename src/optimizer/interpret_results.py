@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-
 This function takes the raw output of the optimizer food categories and total people fed
 and breaks this down into what the amount of each expected food category would be in
 order to produce these results.
@@ -15,9 +12,6 @@ Created on Tue Jul 19
 """
 import os
 import sys
-
-from pandas import options
-from pandas.core.algorithms import extract_array
 
 module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
@@ -253,6 +247,7 @@ class Interpreter:
         # >>> c = np.array([100,100,0])
         # >>> np.min([a,b,c],axis=0)
         # array([2, 2, 0])
+        # TODO @ Morgan: this variable does not exist? What's the plan here?
         assert humans_fed_sum.is_units_percent()
         min_fed = np.min([self.kcals_fed, self.fat_fed, self.protein_fed], axis=0)
 
@@ -413,7 +408,7 @@ class Interpreter:
         assert difference.get_rounded_to_decimal(
             decimals
         ).all_equals_zero(), """feed plus human consumption of stored food
-            and outdoor crops must add up to the total outdoor crops"""
+             and outdoor crops must add up to the total outdoor crops"""
 
         # cannot have negative stored food and outdoor crops fed to humans
         # also ensures that there are no np.nan's left in the ratio.
@@ -427,7 +422,8 @@ class Interpreter:
 
     def get_percent_people_fed(self, humans_fed_sum):
         """
-        get the minimum nutrients required to meet the needs of the population in any month, for kcals, fat, and protein
+        get the minimum nutrients required to meet the needs of the population
+         in any month, for kcals, fat, and protein
         """
         assert humans_fed_sum.is_units_percent()
         (min_nutrient, percent_people_fed) = humans_fed_sum.get_min_nutrient()
@@ -538,7 +534,8 @@ class Interpreter:
         in the months of interest (months to calculate diet)
         """
 
-        # these months are used to estimate the diet before the full scale-up of resilient foods makes there be way too much food to make sense economically
+        # these months are used to estimate the diet before the full scale-up of
+        # resilient foods makes there be way too much food to make sense economically
         N_MONTHS_TO_CALCULATE_DIET = 49
 
         # rapidly feed more to people until it's close to 2100 kcals, then

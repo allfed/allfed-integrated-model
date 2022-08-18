@@ -1,8 +1,10 @@
+"""
 ################################# Outdoor Crops ###############################
 ##                                                                            #
 ##       Functions and constants relating to outdoor crop production          #
 ##                                                                            #
 ###############################################################################
+"""
 
 import numpy as np
 from src.utilities.plotter import Plotter
@@ -96,9 +98,7 @@ class OutdoorCrops(Food):
         # assumption: outdoor crop production is very similar in nutritional
         # profile to stored food
         # reference: row 11, 'outputs' tab
-        # @ Morgan: Link here was dead, please add again
-        # @ Florian: https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673
-        #            does that link work for you?
+        # https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673
         month_index = self.STARTING_MONTH_NUM - 1
         JAN_FRACTION = constants_for_params["SEASONALITY"][0]
         FEB_FRACTION = constants_for_params["SEASONALITY"][1]

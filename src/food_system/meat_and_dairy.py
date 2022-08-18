@@ -1,11 +1,12 @@
+"""
 ################################# Meat and Dairy ##############################
 ##                                                                            #
 ##       Functions and constants relating to meat and milk production        #
 ##                                                                            #
 ###############################################################################
+"""
 
 import numpy as np
-from src.food_system.food import Food
 
 
 class MeatAndDairy:
@@ -255,7 +256,12 @@ class MeatAndDairy:
             print("excess_dry_cal_tons per month")
             print(excess_dry_cal_tons)
             print(
-                "It appears assigning excess calories to feed or biofuels was attempted, but there were not enough calories to use for the feed and biofuel (because of this, excess was calculated as being negative). \nTry to rerun where the population fed after waste incorporating delayed shutoff to feed in biofuels is above the assigned global population. \nQuitting."
+                """It appears assigning excess calories to feed or biofuels was attempted,
+                but there were not enough calories to use for the feed and biofuel
+                (because of this, excess was calculated as being negative).
+                \nTry to rerun where the population fed after waste incorporating
+                delayed shutoff to feed in biofuels is above the assigned global population.
+                \nQuitting."""
             )
             quit()
         assert np.array(excess_dry_cal_tons >= 0).all()
@@ -366,7 +372,8 @@ class MeatAndDairy:
                 )
                 print(np.where(ratio_maintained_cattle[0:47] >= 1))
                 print(
-                    "Consider whether the predicted amount of human edible feed fed to animals is reasonable."
+                    """Consider whether the predicted amount of
+                     human edible feed fed to animals is reasonable."""
                 )
                 print("")
 
