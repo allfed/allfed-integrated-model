@@ -14,7 +14,9 @@ import os
 
 # COUNTRY SPECIFIC DATA
 
-NO_TRADE_XLS = "../../data/no_food_trade/Integrated Model With No Food Trade.xlsx"
+NO_TRADE_XLS = (
+    "../../data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+)
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
 
@@ -629,7 +631,7 @@ def main():
     saves a csv with all the countries' crop reductions in nuclear winter
     averaged
     """
-    NW_CSV = "../../data/no_food_trade/rutgers_nw_production_raw.csv"
+    NW_CSV = "../../data/no_food_trade/raw_data/rutgers_nw_production_raw.csv"
 
     input_table = import_csv(NW_CSV)
 
@@ -638,8 +640,8 @@ def main():
     # this is the list of headers in the output csv
     nw_csv = np.array(
         [
-            "ISO3 Country Code",
-            "Country",
+            "iso3",
+            "country",
             "crop_reduction_year1",
             "crop_reduction_year2",
             "crop_reduction_year3",
@@ -664,13 +666,66 @@ def main():
 
     nw_csv = clean_up_eswatini(nw_csv)
 
-    np.savetxt(
-        "../../data/no_food_trade/nuclear_winter_processed.csv",
+    nw_csv = pd.DataFrame(
         nw_csv,
-        delimiter=",",
-        fmt="%s",
+        columns=[
+            "iso3",
+            "country",
+            "crop_reduction_year1",
+            "crop_reduction_year2",
+            "crop_reduction_year3",
+            "crop_reduction_year4",
+            "crop_reduction_year5",
+            "grasses_reduction_year1",
+            "grasses_reduction_year2",
+            "grasses_reduction_year3",
+            "grasses_reduction_year4",
+            "grasses_reduction_year5",
+        ],
     )
 
+    nw_csv = nw_csv.iloc[
+        1:,
+    ]
+
+    for i in range(1, 6):
+        nw_csv["crop_reduction_year" + str(i)] = nw_csv[
+            "crop_reduction_year" + str(i)
+        ].astype(float)
+        nw_csv["grasses_reduction_year" + str(i)] = nw_csv[
+            "grasses_reduction_year" + str(i)
+        ].astype(float)
+        nw_csv["crop_reduction_year" + str(i)] = (
+            nw_csv["crop_reduction_year" + str(i)].div(100).round(2)
+        )
+        nw_csv["grasses_reduction_year" + str(i)] = (
+            nw_csv["grasses_reduction_year" + str(i)].div(100).round(2)
+        )
+        nw_csv["crop_reduction_year" + str(i)] = np.where(
+            nw_csv["crop_reduction_year" + str(i)] > 9.36e34,
+            -1,
+            nw_csv["crop_reduction_year" + str(i)],
+        )
+        nw_csv["grasses_reduction_year" + str(i)] = np.where(
+            nw_csv["grasses_reduction_year" + str(i)] > 9.36e34,
+            -1,
+            nw_csv["grasses_reduction_year" + str(i)],
+        )
+
+    print(nw_csv.head())
+    nw_csv.to_csv(
+        "../../data/no_food_trade/processed_data/nuclear_winter_csv.csv",
+        sep=",",
+        index=False,
+    )
+
+
+#   np.savetxt(
+#       "../../data/no_food_trade/processed_data/nuclear_winter_csv.csv",
+#       nw_csv,
+#       delimiter=",",
+#       fmt="%s",
+#   )
 
 if __name__ == "__main__":
     main()
