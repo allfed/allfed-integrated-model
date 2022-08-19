@@ -2,7 +2,12 @@ allfed-integrated-model
 ==============================
 ---
 ![Testing](https://github.com/allfed/allfed-integrated-model/actions/workflows/testing.yml/badge.svg)
-![DOI](https://zenodo.org/badge/380878388.svg)](https://zenodo.org/badge/latestdoi/380878388)
+
+
+
+
+[![DOI](https://zenodo.org/badge/380878388.svg)](https://zenodo.org/badge/latestdoi/380878388)
+
 ---
 An integrated economic+food supply model for resilient foods in nuclear winter
 
