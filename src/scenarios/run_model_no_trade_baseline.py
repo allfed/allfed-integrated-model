@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 This file contains the code for the baseline model by country for with and
 without trade scenarios.
@@ -7,19 +5,8 @@ without trade scenarios.
 Created on Wed Jul 15
 @author: morgan
 """
-import pandas as pd
-import numpy as np
-import os
 import sys
-import matplotlib.pyplot as plt
-import itertools
 from itertools import product
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-# import some python files from this integrated model repository
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 
 

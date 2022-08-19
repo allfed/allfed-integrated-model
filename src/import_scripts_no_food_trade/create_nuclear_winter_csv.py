@@ -524,7 +524,6 @@ def get_overall_reduction(country_data):
     yearly_reductions = {}  # average yearly reduction for crop production
 
     for year in years:
-        crops_to_use = []
 
         reductions = []
         for crop, ratio in crops.items():

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 
 This function runs a single optimization by computing the parameters,
@@ -10,16 +8,6 @@ Created on Tue Jul 19
 
 @author: morgan
 """
-import os
-import sys
-
-from pulp import constants
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-# import some python files from this integrated model repository
 from src.optimizer.optimizer import Optimizer
 from src.optimizer.parameters import Parameters
 from src.optimizer.interpret_results import Interpreter

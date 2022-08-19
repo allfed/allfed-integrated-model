@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 This file contains the code for the baseline model by country for with and
 without trade scenarios.
@@ -9,28 +7,15 @@ Created on Wed Jul 15
 """
 import pandas as pd
 import numpy as np
-import os
-import sys
-import matplotlib.pyplot as plt
 import geopandas as gpd
-
+import warnings
+import logging
 import datetime
 from datetime import date
-
-from itertools import product
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-# import some python files from this integrated model repository
 from src.utilities.plotter import Plotter
-from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
 from src.food_system.food import Food
 
-import warnings
-import logging
 
 logging.basicConfig(level=logging.ERROR)
 warnings.filterwarnings("ignore")
