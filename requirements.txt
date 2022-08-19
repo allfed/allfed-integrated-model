@@ -6,6 +6,7 @@ numpy>=1.23.1
 matplotlib>=3.5.1
 scipy>=1.8.1
 seaborn>=0.11.2
+geos
 geoplot>=0.5.1
 shapely>=1.8.2
 cartopy>=0.20.3
