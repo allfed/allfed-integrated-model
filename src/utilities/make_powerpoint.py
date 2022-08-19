@@ -1,13 +1,11 @@
 # from __future__ import print_function
-import collections
-import collections.abc
 from pptx import Presentation
-import pptx
 
 from datetime import date
 
 from pptx.util import Inches, Pt
 from pptx.enum.text import PP_ALIGN
+
 
 # Functions go here
 class MakePowerpoint:

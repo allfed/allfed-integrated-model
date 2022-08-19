@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import os
 
 MEAT_CSV = "data/no_food_trade/raw_data/FAOSTAT_meat_2020.csv"
 

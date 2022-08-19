@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import os
 
 
 NUTRITION_XLS = "data/Supplemental_Data.xlsx"

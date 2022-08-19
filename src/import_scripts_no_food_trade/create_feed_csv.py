@@ -1,6 +1,4 @@
 import pandas as pd
-import numpy as np
-import os
 
 NO_TRADE_XLS = "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
 

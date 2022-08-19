@@ -1,13 +1,13 @@
+"""
 ################################Optimizer Model################################
 ##                                                                            #
 ##                merge all the csv files together to a computer readable     #
 ##                                                                            #
 ###############################################################################
+"""
 
 
 import pandas as pd
-import numpy as np
-import os
 from functools import reduce
 
 df1 = pd.read_csv("data/no_food_trade/processed_data/population_csv.csv")

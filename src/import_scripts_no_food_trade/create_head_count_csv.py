@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import os
 
 
 HEAD_COUNT_CSV = "data/no_food_trade/raw_data/FAOSTAT_animal_stocks_2020.csv"
