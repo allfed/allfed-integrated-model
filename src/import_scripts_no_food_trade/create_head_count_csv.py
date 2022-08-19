@@ -189,7 +189,7 @@ country_names = [
     "Congo",
     "Democratic Republic of the Congo",
     "Costa Rica",
-    "C?te d'Ivoire",
+    "Cote d'Ivoire",
     "Cuba",
     "Djibouti",
     "Dominican Republic",

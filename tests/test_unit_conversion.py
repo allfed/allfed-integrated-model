@@ -49,7 +49,12 @@ def test_set_nutrition_requirement_scalar():
     """
     food1 = Food()
     food1.set_nutrition_requirements(
-        kcals_daily=1, fat_daily=1, protein_daily=1, population=1
+        kcals_daily=1,
+        fat_daily=1,
+        protein_daily=1,
+        include_fat=True,
+        include_protein=True,
+        population=1,
     )
     assert food1.days_in_month == 30
     assert food1.kcals_daily == 1
@@ -269,15 +274,24 @@ def test_in_units_billions_fed():
     # Test conversion from
     food = Food(
         kcals=1,
-        protein=1,
-        fat=1,
-        kcals_units="billion kcals each month",
-        fat_units="thousand tons each month",
-        protein_units="thousand tons each month",
+        protein=10,
+        fat=10,
+        kcals_units="billion kcals per month",
+        fat_units="thousand tons per month",
+        protein_units="thousand tons per month",
     )
-    food.set_nutrition_requirements(1 / 30, 1, 1, 1e9)
+    food.set_nutrition_requirements(
+        kcals_daily=2100,
+        fat_daily=1,
+        protein_daily=1,
+        include_fat=True,
+        include_protein=True,
+        population=1e9,
+    )
+
     food_converted = food.in_units_billions_fed()
-    assert food_converted.kcals_units == "billion people fed each month"
-    assert food_converted.fat_units == "billion people fed each month"
-    assert food_converted.protein_units == "billion people fed each month"
-    assert (food_converted.kcals == np.array([1, 1]) / (1 / food.kcals_monthly)).all()
+
+    assert food_converted.kcals_units == "billion people fed per month"
+    assert food_converted.fat_units == "billion people fed per month"
+    assert food_converted.protein_units == "billion people fed per month"
+    assert food_converted.kcals == 1 * 1e9 / 30 / 2100 / 1e9

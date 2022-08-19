@@ -302,9 +302,6 @@ class MeatAndDairy:
                 excess_dry_cal_tons[m] - limit_milk_prewaste
             )
 
-            print(grain_fed_milk_limit_food_usage_prewaste)
-            print(excess_dry_cal_tons)
-            print(for_chicken_pork_cattle_prewaste)
             assert for_chicken_pork_cattle_prewaste >= 0
 
             max_chicken_pork_prewaste = (
@@ -541,9 +538,6 @@ class MeatAndDairy:
         self.grain_fed_milk_limit_prewaste = self.MILK_LIMIT_PREWASTE - np.array(
             self.grazing_milk_produced_prewaste
         )
-
-        print("MILK_LIMIT_PREWASTE")
-        print(self.MILK_LIMIT_PREWASTE)
 
     def get_grazing_milk_produced_postwaste(self):
         # billions kcals
