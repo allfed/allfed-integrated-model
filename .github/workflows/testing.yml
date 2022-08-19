@@ -23,13 +23,19 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: test
+          environment-file: environment.yml
+          python-version: 3.8
+          auto-activate-base: false
       - name: Install dependencies
         run: |
           sudo apt update
+          conda install -c conda-forge proj
           sudo apt-get install libproj-dev proj-data proj-bin
           sudo apt-get install libgeos-dev
-          sudo pip install cython
-          sudo pip install cartopy  
+          conda install cartopy
           python -m pip install --upgrade pip
           pip install pytest
           pip install -e .
