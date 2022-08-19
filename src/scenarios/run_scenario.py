@@ -161,9 +161,7 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert (
-                scenario_is_correct
-            ), """You must specify 'shutoff' key as zero,tripled_prices_in_country,
+            assert scenario_is_correct, """You must specify 'shutoff' key as zero,tripled_prices_in_country,
             doubled_prices_in_country,baseline_in_country,tripled_prices_globally,
             doubled_prices_globally,or baseline_globally"""
 
@@ -198,9 +196,7 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert (
-                scenario_is_correct
-            ), """You must specify 'waste' key as zero,tripled_prices_in_country,
+            assert scenario_is_correct, """You must specify 'waste' key as zero,tripled_prices_in_country,
             doubled_prices_in_country,baseline_in_country,tripled_prices_globally,
             doubled_prices_globally,or baseline_globally"""
 
@@ -261,9 +257,7 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert (
-                scenario_is_correct
-            ), """You must specify 'seasonality' key as baseline_in_country zero,
+            assert scenario_is_correct, """You must specify 'seasonality' key as baseline_in_country zero,
              nuclear_winter_in_country,baseline_globally,or nuclear_winter_globally"""
 
         if scenario_option["fish"] == "nuclear_winter":
@@ -300,9 +294,7 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert (
-                scenario_is_correct
-            ), """You must specify 'crop_disruption' key as either zero,
+            assert scenario_is_correct, """You must specify 'crop_disruption' key as either zero,
             global_nuclear_winter,or country_nuclear_winter"""
 
         if scenario_option["protein"] == "required":
