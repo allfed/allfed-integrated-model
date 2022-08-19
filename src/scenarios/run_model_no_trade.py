@@ -258,6 +258,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             ratio_fed = str(round(float(net_pop_fed) / float(net_pop), 4))
         else:
             ratio_fed = str(np.nan)
+        # @li total people fed for world with no trade
+        # net_pop
         print("Net population considered: " + str(net_pop / 1e9) + " Billion people")
         print("Fraction of this population fed: " + ratio_fed)
         print(scenario_description)
@@ -295,6 +297,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 + minute
                 + ".pptx"
             )
+        # @li return a dataframe with each country and the world needs ratio
+        return [world, net_pop, net_pop_fed]
 
     def run_many_options(
         self, scenario_options, title, add_map_slide_to_pptx=True, countries_to_skip=[]

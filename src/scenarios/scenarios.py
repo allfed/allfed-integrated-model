@@ -594,7 +594,7 @@ class Scenarios:
 
     # STORED FOOD
 
-    def set_stored_food_buffer_zero(self, constants_for_params):
+    def set_no_stored_food(self, constants_for_params):
         self.scenario_description += "\nstored_food_buffer_zero"
         assert self.STORED_FOOD_BUFFER_SET == False
         """
@@ -606,6 +606,25 @@ class Scenarios:
         the end as a buffer.
 
         """
+        constants_for_params["ADD_STORED_FOOD"] = False
+        constants_for_params["BUFFER_RATIO"] = 0
+
+        self.STORED_FOOD_BUFFER_SET = True
+        return constants_for_params
+
+    def set_stored_food_buffer_zero(self, constants_for_params):
+        self.scenario_description += "\nno stored food from before simulation"
+        assert self.STORED_FOOD_BUFFER_SET == False
+        """
+        Sets the stored food buffer as zero -- no stored food left at
+        the end of the simulation.
+
+        However, in reality food in transit and food in grocery stores and
+        warehouses means there would still likely be some food available at
+        the end as a buffer.
+
+        """
+        constants_for_params["ADD_STORED_FOOD"] = True
         constants_for_params["BUFFER_RATIO"] = 0
 
         self.STORED_FOOD_BUFFER_SET = True
@@ -619,6 +638,7 @@ class Scenarios:
         in ~2020 left at the end of the simulation.
 
         """
+        constants_for_params["ADD_STORED_FOOD"] = True
         constants_for_params["BUFFER_RATIO"] = 1
 
         self.STORED_FOOD_BUFFER_SET = True
@@ -938,7 +958,6 @@ class Scenarios:
         constants_for_params["STORED_FOOD_SMOOTHING"] = False
 
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
-        constants_for_params["ADD_STORED_FOOD"] = True
 
         constants_for_params["ADD_MAINTAINED_MEAT"] = True
         constants_for_params["ADD_MILK"] = True
@@ -1041,7 +1060,6 @@ class Scenarios:
         constants_for_params["ADD_MAINTAINED_MEAT"] = True
         constants_for_params["ADD_METHANE_SCP"] = True
         constants_for_params["ADD_SEAWEED"] = True
-        constants_for_params["ADD_STORED_FOOD"] = True
 
         ##### ERROR CHECKING, TO BE REMOVED WHEN SUFFICIENT BY-COUNTRY
         ##### RESILIENT FOOD DATA ARE AVAILABLE
@@ -1087,8 +1105,6 @@ class Scenarios:
         constants_for_params["ADD_MAINTAINED_MEAT"] = True
         constants_for_params["ADD_METHANE_SCP"] = False
         constants_for_params["ADD_SEAWEED"] = False
-        # DELETE CHANGE ME TO TRUE
-        constants_for_params["ADD_STORED_FOOD"] = True
 
         self.SCENARIO_SET = True
         return constants_for_params

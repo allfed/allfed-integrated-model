@@ -226,10 +226,14 @@ class ScenarioRunner:
 
             assert (
                 scenario_is_correct
-            ), "You must specify 'nutrition' key as baeline,or catastrophe"
+            ), "You must specify 'nutrition' key as baseline, or catastrophe"
 
         if scenario_option["buffer"] == "zero":
             constants_for_params = scenario_loader.set_stored_food_buffer_zero(
+                constants_for_params
+            )
+        elif scenario_option["buffer"] == "no_stored_food":
+            constants_for_params = scenario_loader.set_no_stored_food(
                 constants_for_params
             )
         elif scenario_option["buffer"] == "baseline":
@@ -241,7 +245,7 @@ class ScenarioRunner:
 
             assert (
                 scenario_is_correct
-            ), "You must specify 'buffer' key as zero,or baseline"
+            ), "You must specify 'buffer' key as zero, no_stored_food, or baseline"
 
         if scenario_option["seasonality"] == "baseline_in_country":
             constants_for_params = scenario_loader.set_country_seasonality_baseline(
