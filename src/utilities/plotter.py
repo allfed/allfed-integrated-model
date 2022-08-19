@@ -1409,7 +1409,12 @@ class Plotter:
             cmap="viridis",
             legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"},
         )
-        pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
+        # pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
+        # save_title_string = (
+        #     "Fraction of minimum macronutritional needs with no trade, ratio fed: "
+        #     + str(ratio_fed)
+        # )
+        pp = world.plot(ax=ax, zorder=1, linewidth=0.1)
         save_title_string = (
             "Fraction of minimum macronutritional needs with no trade, ratio fed: "
             + str(ratio_fed)
