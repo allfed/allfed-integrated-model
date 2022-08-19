@@ -1,36 +1,33 @@
+"""
 ################################ plotter.py ###################################
 ##                                                                            #
 ##            A set of utility functions useful for plotting                  #
 ##                                                                            #
 ###############################################################################
+"""
 
-
-from scipy.stats import t
 import seaborn as sns
-from cycler import cycler
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-from matplotlib.ticker import MaxNLocator
-
-font = {"family": "normal", "weight": "bold", "size": 7}
-
-matplotlib.rc("font", **font)
 import matplotlib.gridspec as gridspec
 import os
-import sys
 import pandas as pd
-import geoplot as gplt
+from src.utilities.make_powerpoint import MakePowerpoint
 
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
+
+# out commented this, because geoplot has really annyoing dependencies and
+# I cannot get it to run on Github Actions (Florian)
+# import geoplot as gplt
 
 # in some linux win manager setups matplotlib plotting doesn't seem to play nice
 # matplotlib.use('Svg')
 # matplotlib.use('QtAgg')
 
-from src.utilities.make_powerpoint import MakePowerpoint
+
+font = {"family": "normal", "weight": "bold", "size": 7}
+
+matplotlib.rc("font", **font)
 
 
 class Plotter:
@@ -203,7 +200,7 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         fig.suptitle(newtitle)
-        saveloc = "../../results/large_reports/no_trade" + newtitle + ".png"
+        saveloc = "results/large_reports/no_trade" + newtitle + ".png"
         plt.savefig(
             saveloc,
             dpi=300,
@@ -377,7 +374,7 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig("../../results/fig_2abcd.png")
+        plt.savefig("results/fig_2abcd.png")
         print("saved figure 2abcd")
         plt.show()
 
@@ -469,15 +466,13 @@ class Plotter:
                 ax4.legend(handles, labels, frameon=False, bbox_to_anchor=(0.8, 0.8))
                 ax4.axis("off")
             if label == "b":
-                # sns.boxplot(monte_carlo_data, ax=ax_box, showfliers=False)
                 sns.histplot(data=monte_carlo_data, ax=ax_hist)
                 ax_hist.set(xlabel="mean caloric availability (Kcals / person / day)")
                 ax_hist.set(title="Monte Carlo outcomes")
 
         plt.tight_layout()
-        plt.savefig("../../results/fig_3ab.png")
+        plt.savefig("results/fig_3ab.png")
         print("saved figure 3ab")
-        # os.system('firefox-esr plot.svg')
         plt.show()
 
     def plot_fig_s1(variables, N):
@@ -554,7 +549,7 @@ class Plotter:
         plt.tight_layout()
 
         plt.rcParams["figure.figsize"] = [12, 9]
-        plt.savefig("../../results/fig_s1.png")
+        plt.savefig("results/fig_s1.png")
         print("saved figure s1")
         plt.show()
 
@@ -721,7 +716,7 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig("../../results/fig_s2abcd.png")
+        plt.savefig("results/fig_s2abcd.png")
         print("saved figure s2abcd")
         plt.show()
 
@@ -953,7 +948,7 @@ class Plotter:
     def plot_fig_s1abcd(crs, interpreter1, interpreter2, xlim, showplot=False):
 
         # Plotter.add_to_slides_showing_each_food(interpreter1,interpreter2)
-
+        save_title_string = "Morgan you did not define this varialbe in this function"
         legend = Plotter.get_people_fed_legend(interpreter1, False)
         fig = plt.figure()
         pal = [
@@ -1110,7 +1105,7 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         if not showplot:
-            saveloc = "../../results/fig_s1abcd.png"
+            saveloc = "results/fig_s1abcd.png"
             crs.mp.insert_slide(
                 title_below=save_title_string,
                 description="plot of all foods added up",
@@ -1325,7 +1320,7 @@ class Plotter:
         plt.tight_layout()
         fig.suptitle(title)
 
-        saveloc = "../../results/large_reports/" + title + ".png"
+        saveloc = "results/large_reports/" + title + ".png"
 
         plt.savefig(
             saveloc,
@@ -1383,7 +1378,7 @@ class Plotter:
         plt.tight_layout()
         fig.suptitle(title)
 
-        saveloc = "../../results/large_reports/" + title + ".png"
+        saveloc = "results/large_reports/" + title + ".png"
 
         plt.savefig(
             saveloc,
@@ -1397,41 +1392,41 @@ class Plotter:
             plt.close()
         return saveloc
 
-    @classmethod
-    def plot_map_of_countries_fed(
-        crs, world, ratio_fed, description, plot_map, create_slide
-    ):
-        mn = 0
-        mx = 1
-        ax = world.plot(
-            column="needs_ratio",
-            legend=True,
-            cmap="viridis",
-            legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"},
-        )
-        pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
-        save_title_string = (
-            "Fraction of minimum macronutritional needs with no trade, ratio fed: "
-            + str(ratio_fed)
-        )
-        # pp.title(save_title_string)
-        # plt.close()
-        saveloc = "../../results/large_reports/baseline_ratio_fed_" + ratio_fed + ".png"
-        fig = pp.figure
-        fig.savefig(
-            saveloc,
-            dpi=300,
-        )
-        if plot_map:
-            plt.show()
-        else:
-            plt.close()
-        if create_slide:
-            crs.mp.insert_slide(
-                title_below=save_title_string,
-                description=description,
-                figure_save_loc=saveloc,
-            )
+    # @classmethod
+    # def plot_map_of_countries_fed(
+    #     crs, world, ratio_fed, description, plot_map, create_slide
+    # ):
+    #     mn = 0
+    #     mx = 1
+    #     ax = world.plot(
+    #         column="needs_ratio",
+    #         legend=True,
+    #         cmap="viridis",
+    #         legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"},
+    #     )
+    #     pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
+    #     save_title_string = (
+    #         "Fraction of minimum macronutritional needs with no trade, ratio fed: "
+    #         + str(ratio_fed)
+    #     )
+    #     # pp.title(save_title_string)
+    #     # plt.close()
+    #     saveloc = "../../results/large_reports/baseline_ratio_fed_" + ratio_fed + ".png"
+    #     fig = pp.figure
+    #     fig.savefig(
+    #         saveloc,
+    #         dpi=300,
+    #     )
+    #     if plot_map:
+    #         plt.show()
+    #     else:
+    #         plt.close()
+    #     if create_slide:
+    #         crs.mp.insert_slide(
+    #             title_below=save_title_string,
+    #             description=description,
+    #             figure_save_loc=saveloc,
+    #         )
 
     @classmethod
     def start_pptx(crs, title):
@@ -1442,6 +1437,6 @@ class Plotter:
 
     @classmethod
     def end_pptx(crs, saveloc):
-        if not os.path.exists("../../results/large_reports"):
-            os.mkdir("../../results/large_reports")
+        if not os.path.exists("results/large_reports"):
+            os.mkdir("results/large_reports")
         crs.mp.save_ppt(saveloc)

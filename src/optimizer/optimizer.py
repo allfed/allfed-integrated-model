@@ -6,15 +6,8 @@
 ##                                                                            #
 ###############################################################################
 """
-
-import os
-import sys
 import pulp
 from pulp import LpMaximize, LpProblem, LpVariable
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
 
 
 class Optimizer:
@@ -565,7 +558,7 @@ class Optimizer:
 
         return (model, variables)
 
-    #### OBJECTIVE FUNCTIONS  ####
+    # OBJECTIVE FUNCTIONS  #
 
     def add_objectives_to_model(self, model, variables, month, maximize_constraints):
 
@@ -756,20 +749,6 @@ class Optimizer:
                 + str(month)
                 + "_Constraint",
             )
-
-        ##### helps reduce wild fluctutions in people fed #######
-        # if(m > 0 and self.single_valued_constants['inputs']['KCAL_SMOOTHING']):
-        # if month > 0 and self.single_valued_constants["inputs"]["KCAL_SMOOTHING"]:
-        #     model += (
-        #         variables["humans_fed_kcals"][month - 1]
-        #         >= variables["humans_fed_kcals"][month] * (1 / 1.05),
-        #         "Small_Change_Minus_Humans_Fed_Month_" + str(month) + "_Constraint",
-        #     )
-        #     model += (
-        #         variables["humans_fed_kcals"][month - 1]
-        #         <= variables["humans_fed_kcals"][month] * (1.05),
-        #         "Small_Change_Plus_Humans_Fed_Month_" + str(month) + "_Constraint",
-        #     )
 
         # maximizes the minimum objective_function value
         # We maximize the minimum humans fed from any month

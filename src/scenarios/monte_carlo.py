@@ -3,25 +3,13 @@
  the monte carlo model, and prints the outcomes for 1000 runs in a row, then
  plots a histogram of the results
 """
-import copy
 import numpy as np
-import os
-import sys
 from scipy.stats import norm
 from scipy.stats import truncnorm
 import multiprocessing as mp
-
-# matplotlib.use('Svg')
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-# import some python files from this integrated model repository
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
-from src.food_system.food import Food
 
 
 class MonteCarlo:
@@ -71,16 +59,6 @@ class MonteCarlo:
             constants_for_params
         )
 
-        # No excess calories
-        excess_per_month = Food(
-            kcals=[0] * constants_for_params["NMONTHS"],
-            fat=[0] * constants_for_params["NMONTHS"],
-            protein=[0] * constants_for_params["NMONTHS"],
-            kcals_units="billion kcals each month",
-            fat_units="thousand tons each month",
-            protein_units="thousand tons each month",
-        )
-
         # resilient foods used for simulation
         res_foods = (
             "greenhouses",
@@ -92,14 +70,14 @@ class MonteCarlo:
 
         if load_saved_mc:
             mc_variables = np.load(
-                "../../data/mc_variables_" + str(N_monte_carlo) + ".npy",
+                "data/mc_variables_" + str(N_monte_carlo) + ".npy",
                 allow_pickle=True,
             ).item()
             print("Computing input variables")
         else:
             mc_variables = MonteCarlo.get_variables(N_monte_carlo, constants_for_params)
             np.save(
-                "../../data/mc_variables_" + str(N_monte_carlo) + ".npy",
+                "data/mc_variables_" + str(N_monte_carlo) + ".npy",
                 mc_variables,
                 allow_pickle=True,
             )
@@ -107,7 +85,7 @@ class MonteCarlo:
             Plotter.plot_fig_s1(mc_variables, N_monte_carlo)
         if load_saved_comp:
             comp_variables = np.load(
-                "../../data/comp_variables_" + str(N_comparison) + ".npy",
+                "data/comp_variables_" + str(N_comparison) + ".npy",
                 allow_pickle=True,
             ).item()
         else:
@@ -116,7 +94,7 @@ class MonteCarlo:
                 N_comparison, constants_for_params
             )
             np.save(
-                "../../data/comp_variables_" + str(N_comparison) + ".npy",
+                "data/comp_variables_" + str(N_comparison) + ".npy",
                 comp_variables,
                 allow_pickle=True,
             )
@@ -130,7 +108,7 @@ class MonteCarlo:
 
         if load_saved_mc:
             all_fed = np.load(
-                "../../data/all_fed_" + str(N_monte_carlo) + ".npy", allow_pickle=True
+                "data/all_fed_" + str(N_monte_carlo) + ".npy", allow_pickle=True
             )
         else:
             print("Running Monte Carlo")
@@ -138,17 +116,17 @@ class MonteCarlo:
                 mc_variables, N_monte_carlo, constants_for_params
             )
             np.save(
-                "../../data/all_fed_" + str(N_monte_carlo) + ".npy",
+                "data/all_fed_" + str(N_monte_carlo) + ".npy",
                 all_fed,
                 allow_pickle=True,
             )
 
         if load_saved_comp:
             removed = np.load(
-                "../../data/removed_" + str(N_comparison) + ".npy", allow_pickle=True
+                "data/removed_" + str(N_comparison) + ".npy", allow_pickle=True
             ).item()
             added = np.load(
-                "../../data/added_" + str(N_comparison) + ".npy", allow_pickle=True
+                "data/added_" + str(N_comparison) + ".npy", allow_pickle=True
             ).item()
         else:
             print("Running Comparison")
@@ -157,12 +135,12 @@ class MonteCarlo:
             )
 
             np.save(
-                "../../data/removed_" + str(N_comparison) + ".npy",
+                "data/removed_" + str(N_comparison) + ".npy",
                 removed,
                 allow_pickle=True,
             )
             np.save(
-                "../../data/added_" + str(N_comparison) + ".npy",
+                "data/added_" + str(N_comparison) + ".npy",
                 added,
                 allow_pickle=True,
             )
@@ -348,7 +326,7 @@ class MonteCarlo:
 
         scenario_runner = ScenarioRunner()
         results = scenario_runner.run_and_analyze_scenario(
-            constants_for_params, scenarios_loader
+            constants_for_params, scenario_runner
         )
 
         PLOT_EACH_SCENARIO = False
@@ -415,7 +393,8 @@ class MonteCarlo:
                     [(variables, constants_for_params, i, N) for i in list(ilist)],
                 )
 
-                # multi_result = [pool.apply_async(MonteCarlo.run_scenario, ( variables, constants_for_params, inp, N)) for inp in inp_lists]
+                # multi_result = [pool.apply_async(MonteCarlo.run_scenario,
+                # ( variables, constants_for_params, inp, N)) for inp in inp_lists]
                 # result = [x for p in multi_result for x in p.get()]
 
                 fed_list = []

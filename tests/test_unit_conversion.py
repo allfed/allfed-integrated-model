@@ -2,7 +2,6 @@
 Tests if the unit conversion is working as expected.
 """
 from pytest import raises
-import numpy as np
 
 from src.food_system import unit_conversions as uc
 from src.food_system.food import Food

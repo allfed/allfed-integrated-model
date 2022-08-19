@@ -14,15 +14,8 @@ Created on Tue Jul 19
 
 @author: morgan
 """
-import os
-import sys
 import numpy as np
 import copy
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
 from src.food_system.unit_conversions import UnitConversions
 from src.utilities.plotter import Plotter
 

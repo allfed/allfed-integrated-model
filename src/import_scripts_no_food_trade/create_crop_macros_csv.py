@@ -1,10 +1,9 @@
 import pandas as pd
 import numpy as np
-import os
 
 
-NUTRITION_XLS = "../../data/Supplemental_Data.xlsx"
-PRODUCTION_CSV = "../../data/no_food_trade/raw_data/FAOSTAT_food_production_2020.csv"
+NUTRITION_XLS = "data/Supplemental_Data.xlsx"
+PRODUCTION_CSV = "data/no_food_trade/raw_data/FAOSTAT_food_production_2020.csv"
 
 TONS_TO_KG = 1e3
 KCALS_TO_DRY_CALORIC_TONS = 1 / (4000 * 1000)
@@ -412,7 +411,7 @@ print("macros_csv")
 print(macros_csv)
 
 np.savetxt(
-    "../../data/no_food_trade/processed_data/macros_csv.csv",
+    "data/no_food_trade/processed_data/macros_csv.csv",
     macros_csv,
     delimiter=",",
     fmt="%s",

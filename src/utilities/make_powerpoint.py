@@ -1,14 +1,11 @@
 # from __future__ import print_function
-import collections
-import collections.abc
 from pptx import Presentation
-import pptx
 
 from datetime import date
-import matplotlib.pyplot as plt
 
-from pptx.util import Cm, Inches, Pt
+from pptx.util import Inches, Pt
 from pptx.enum.text import PP_ALIGN
+
 
 # Functions go here
 class MakePowerpoint:
@@ -64,6 +61,6 @@ if __name__ == "__main__":
     mp.insert_slide(
         "title_below",
         "description",
-        "../../results/large_reports/" + the_title + ".png",
+        "results/large_reports/" + the_title + ".png",
     )
     mp.save_ppt("baseline.pptx")
