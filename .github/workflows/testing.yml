@@ -26,8 +26,10 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install libgeos++-dev libgeos-3.8.0 libgeos-c1v5 libgeos-dev libgeos-doc
-          sudo apt-get install proj-bin=8.0.0
+          sudo apt-get install libproj-dev proj-data proj-bin
+          sudo apt-get install libgeos-dev
+          sudo pip install cython
+          sudo pip install cartopy  
           python -m pip install --upgrade pip
           pip install pytest
           pip install -e .
