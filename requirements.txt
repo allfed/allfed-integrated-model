@@ -8,5 +8,4 @@ scipy>=1.8.1
 seaborn>=0.11.2
 geoplot>=0.5.1
 shapely>=1.8.2
-cartopy>=0.20.3
 geopandas>=0.11.0
