@@ -3,14 +3,6 @@ Test Suite for the food module.
 """
 import pytest
 import numpy as np
-
-import os
-import sys
-
-module_path = os.path.abspath(os.path.join(".."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
 from src.food_system.food import Food
 
 Food.conversions.set_nutrition_requirements(
@@ -312,7 +304,7 @@ def test_division_monthly_by_number():
     This should fail.
     """
     food1 = create_food_monthly()
-    food2 = food1 / 2
+    food1 / 2
 
 
 def test_divison_monthly_by_monthly():

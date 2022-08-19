@@ -7,15 +7,7 @@
 """
 # TODO: make a couple sub functions that deal with the different parts, where
 #      it assigns the returned values to the constants.
-
-import os
-import sys
 import numpy as np
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
 from src.food_system.meat_and_dairy import MeatAndDairy
 from src.food_system.outdoor_crops import OutdoorCrops
 from src.food_system.seafood import Seafood
@@ -25,7 +17,6 @@ from src.food_system.greenhouses import Greenhouses
 from src.food_system.methane_scp import MethaneSCP
 from src.food_system.seaweed import Seaweed
 from src.food_system.feed_and_biofuels import FeedAndBiofuels
-
 from src.food_system.food import Food
 from src.utilities.print_parameters import PrintParameters
 

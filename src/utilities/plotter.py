@@ -12,22 +12,18 @@ import matplotlib.pyplot as plt
 import matplotlib
 import matplotlib.gridspec as gridspec
 import os
-import sys
 import pandas as pd
+from src.utilities.make_powerpoint import MakePowerpoint
+
 
 # out commented this, because geoplot has really annyoing dependencies and
-# I cannot get it to run on Github Actions
+# I cannot get it to run on Github Actions (Florian)
 # import geoplot as gplt
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
 
 # in some linux win manager setups matplotlib plotting doesn't seem to play nice
 # matplotlib.use('Svg')
 # matplotlib.use('QtAgg')
 
-from src.utilities.make_powerpoint import MakePowerpoint
 
 font = {"family": "normal", "weight": "bold", "size": 7}
 
@@ -952,7 +948,7 @@ class Plotter:
     def plot_fig_s1abcd(crs, interpreter1, interpreter2, xlim, showplot=False):
 
         # Plotter.add_to_slides_showing_each_food(interpreter1,interpreter2)
-
+        save_title_string = "Morgan you did not define this varialbe in this function"
         legend = Plotter.get_people_fed_legend(interpreter1, False)
         fig = plt.figure()
         pal = [

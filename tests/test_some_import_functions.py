@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 This file runs a few tests on some import script functions to make sure they work
 
@@ -7,16 +5,7 @@ Created on Wed Jul 15
 
 @author: morgan
 """
-import os
-import sys
 import numpy as np
-
-# os.chdir("../src/scenarios")
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
 from src.import_scripts_no_food_trade import create_nuclear_winter_csv
 
 

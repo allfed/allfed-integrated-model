@@ -5,14 +5,7 @@ Created on Tue Jul 22
 
 @author: morgan
 """
-import os
-import sys
 import numpy as np
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
 from src.food_system.food import Food
 
 
@@ -828,8 +821,15 @@ class Extractor:
             protein_units="billion people fed each month",
         )
 
-    # The optimizer will maximize minimum fat, calories, and protein over any month, but it does not care which sources these come from. The point of this function is to determine the probable contributions to excess calories used for feed and biofuel from appropriate sources (unless this has been updated, it takes it exclusively from outdoor growing and stored food).
-    # there is also a constraint to make sure the sources which can be used for feed are not exhausted, and the model will not be able to solve if the usage from biofuels and feed are more than the available stored food and outdoor crop production.
+    # The optimizer will maximize minimum fat, calories, and protein over any month,
+    # but it does not care which sources these come from. The point of this function
+    # is to determine the probable contributions to excess calories used for feed and
+    # biofuel from appropriate sources (unless this has been updated, it takes it
+    # exclusively from outdoor growing and stored food).
+
+    # there is also a constraint to make sure the sources which can be used for feed
+    # are not exhausted, and the model will not be able to solve if the usage from
+    # biofuels and feed are more than the available stored food and outdoor crop production.
 
     def get_objective_optimization_results(self, model):
 
