@@ -353,6 +353,7 @@ class ScenarioRunner:
 
             assert (
                 scenario_is_correct
-            ), "You must specify 'scenario' key as either baseline_climate, resilient_food_nuclear_winter, or no_resilient_food_nuclear_winter"
+            ), """You must specify 'scenario' key as either baseline_climate,
+             resilient_food_nuclear_winter, or no_resilient_food_nuclear_winter"""
 
         return constants_for_params, scenario_loader
