@@ -6,3 +6,5 @@ numpy>=1.23.1
 matplotlib>=3.5.1
 scipy>=1.8.1
 seaborn>=0.11.2
+geoplot>=0.5.1
+geopandas>=0.11.0
