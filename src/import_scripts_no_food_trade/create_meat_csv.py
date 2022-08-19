@@ -1,8 +1,7 @@
 import pandas as pd
 import numpy as np
-import os
 
-MEAT_CSV = "../../data/no_food_trade/raw_data/FAOSTAT_meat_2020.csv"
+MEAT_CSV = "data/no_food_trade/raw_data/FAOSTAT_meat_2020.csv"
 
 
 TONS_TO_KG = 1e3
@@ -391,7 +390,7 @@ meat_csv = np.delete(meat_csv, (GBR_index), axis=0)
 print("meat_csv")
 print(meat_csv)
 np.savetxt(
-    "../../data/no_food_trade/processed_data/meat_csv.csv",
+    "data/no_food_trade/processed_data/meat_csv.csv",
     meat_csv,
     delimiter=",",
     fmt="%s",

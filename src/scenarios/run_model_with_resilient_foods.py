@@ -1,20 +1,7 @@
 import numpy as np
-import os
-import sys
-import copy
-
-from pulp import const
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-# import some python files from this integrated model repository
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
-from src.optimizer.optimizer import Optimizer
-from src.food_system.food import Food
 
 
 def run_model_with_resilient_foods(plot_figures=True):
@@ -49,7 +36,7 @@ def run_model_with_resilient_foods(plot_figures=True):
     print(results.percent_people_fed)
     print("")
 
-    np.save("../../data/resilient_food_primary_results.npy", results, allow_pickle=True)
+    np.save("data/resilient_food_primary_results.npy", results, allow_pickle=True)
 
     scenarios_loader, constants_for_params = set_common_resilient_properties()
 

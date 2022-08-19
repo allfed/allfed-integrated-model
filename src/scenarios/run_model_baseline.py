@@ -1,16 +1,6 @@
-import os
-import sys
-import numpy as np
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-# import some python files from this integrated model repository
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
-from src.food_system.food import Food
 
 
 def run_model_baseline(plot_figures=True):
@@ -74,7 +64,7 @@ def run_model_baseline(plot_figures=True):
 
         Plotter.plot_fig_s1abcd(results1, results2, 72, True)
 
-        Plotter.end_pptx("../../results/large_reports/baseline_with_trade.pptx")
+        Plotter.end_pptx("results/large_reports/baseline_with_trade.pptx")
 
 
 def set_common_baseline_properties():

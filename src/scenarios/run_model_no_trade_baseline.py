@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 This file contains the code for the baseline model by country for with and
 without trade scenarios.
@@ -7,19 +5,8 @@ without trade scenarios.
 Created on Wed Jul 15
 @author: morgan
 """
-import pandas as pd
-import numpy as np
-import os
 import sys
-import matplotlib.pyplot as plt
-import itertools
 from itertools import product
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-# import some python files from this integrated model repository
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 
 
@@ -58,16 +45,6 @@ def run_baseline_by_country_no_trade(
     this_simulation["buffer"] = "no_stored_food"
     this_simulation["shutoff"] = "short_delayed_shutoff"
     this_simulation["cull"] = "do_eat_culled"
-
-    scenario_runner = ScenarioRunnerNoTrade()
-
-    # @li alter called function to return people fed
-    people_fed_1 = scenario_runner.run_model_no_trade(
-        create_pptx_with_all_countries=create_pptx_with_all_countries,
-        show_figures=show_figures,
-        add_map_slide_to_pptx=plot_map,
-        scenario_option=this_simulation,
-    )
 
 
 def create_several_maps_with_different_assumptions():

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 This file contains the code for the baseline model by country for with and
 without trade scenarios.
@@ -9,28 +7,15 @@ Created on Wed Jul 15
 """
 import pandas as pd
 import numpy as np
-import os
-import sys
-import matplotlib.pyplot as plt
 import geopandas as gpd
-
+import warnings
+import logging
 import datetime
 from datetime import date
-
-from itertools import product
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-# import some python files from this integrated model repository
 from src.utilities.plotter import Plotter
-from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
 from src.food_system.food import Food
 
-import warnings
-import logging
 
 logging.basicConfig(level=logging.ERROR)
 warnings.filterwarnings("ignore")
@@ -92,8 +77,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 )
                 percent_people_fed = interpreted_results.percent_people_fed
             except Exception as e:
-                # print("exception:")
-                # print(e)
+                print("exception:")
+                print(e)
                 percent_people_fed = np.nan
         else:
             scenario_runner = ScenarioRunner()
@@ -151,8 +136,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         if create_pptx_with_all_countries:
             import os
 
-            if not os.path.exists("../../results/large_reports"):
-                os.mkdir("../../results/large_reports")
+            if not os.path.exists("results/large_reports"):
+                os.mkdir("results/large_reports")
             Plotter.start_pptx("No trade by country")
         """
         Runs the baseline model by country and without trade
@@ -194,7 +179,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             "SWE",
         ]
 
-        NO_TRADE_CSV = "../../data/no_food_trade/computer_readable_combined.csv"
+        NO_TRADE_CSV = "data/no_food_trade/computer_readable_combined.csv"
 
         no_trade_table = pd.read_csv(NO_TRADE_CSV)
 
@@ -285,7 +270,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         minute = str(datetime.datetime.now().minute)
         if create_pptx_with_all_countries:
             Plotter.end_pptx(
-                saveloc="../../results/large_reports/no_food_trade."
+                saveloc="results/large_reports/no_food_trade."
                 + year
                 + "."
                 + month
@@ -325,7 +310,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
 
         if add_map_slide_to_pptx:
             Plotter.end_pptx(
-                saveloc="../../results/large_reports/various_scenario_options_"
+                saveloc="results/large_reports/various_scenario_options_"
                 + title
                 + ".pptx"
             )

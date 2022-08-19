@@ -10,15 +10,8 @@ Created on Tue Jul 19
 
 @author: morgan
 """
-import os
-import sys
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-from src.food_system.food import Food
 import numpy as np
+from src.food_system.food import Food
 
 
 class Interpreter:
@@ -247,8 +240,6 @@ class Interpreter:
         # >>> c = np.array([100,100,0])
         # >>> np.min([a,b,c],axis=0)
         # array([2, 2, 0])
-        # TODO @ Morgan: this variable does not exist? What's the plan here?
-        assert humans_fed_sum.is_units_percent()
         min_fed = np.min([self.kcals_fed, self.fat_fed, self.protein_fed], axis=0)
 
         mean_fed = np.mean(min_fed)

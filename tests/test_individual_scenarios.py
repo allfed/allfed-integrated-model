@@ -9,16 +9,7 @@ Created on Wed Jul 13 11:54:39 2022
 
 @author: florian
 """
-import os
 import sys
-
-# Change to the same location as the original source code, so the relative
-# file paths still work
-os.chdir("../src/scenarios")
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
 
 from src.scenarios import run_model_baseline
 from src.scenarios import run_model_no_trade_baseline

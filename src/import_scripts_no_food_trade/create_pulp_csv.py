@@ -1,9 +1,8 @@
 import pandas as pd
 import numpy as np
-import os
 
 
-PULP_CSV = "../../data/no_food_trade/raw_data/FAOSTAT_wood_pulp_2020.csv"
+PULP_CSV = "data/no_food_trade/raw_data/FAOSTAT_wood_pulp_2020.csv"
 
 pulp_countries = [
     "AFG",
@@ -342,6 +341,4 @@ pulp_csv["percent_of_global_production"] = pulp_csv["wood_pulp_tonnes"] / (
 print("pulp_csv")
 print(pulp_csv.head())
 
-pulp_csv.to_csv(
-    "../../data/no_food_trade/processed_data/pulp_csv.csv", sep=",", index=False
-)
+pulp_csv.to_csv("data/no_food_trade/processed_data/pulp_csv.csv", sep=",", index=False)

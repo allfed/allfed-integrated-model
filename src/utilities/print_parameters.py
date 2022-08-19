@@ -1,12 +1,4 @@
-import os
-import sys
 import numpy as np
-from pandas.core import window
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
 from src.food_system.food import Food
 
 
@@ -29,11 +21,13 @@ class PrintParameters:
             million dry caloric tons monthly * 12 = millon dry caloric tons annually
             million dry caloric tons annually * 1e6 = dry caloric tons annually
             dry caloric tons annually * 1e3 = dry caloric kg annually
-            dry caloric kg annually * 4e3 = calories annually (1 kg dry caloric just means the equivalent of 1 kg of sugar)
+            dry caloric kg annually * 4e3 = calories annually (1 kg dry caloric just
+            means the equivalent of 1 kg of sugar)
             calories annually  / 365 = calories per day
             calories per day / 7.8e9 = calories per person per day globally
             therefore:
-            calories per person per day globally = million tons dry caloric monthly * 12 * 1e6 * 4e6 / 365 / 7.8e9
+            calories per person per day globally =
+            million tons dry caloric monthly * 12 * 1e6 * 4e6 / 365 / 7.8e9
 
             conversion to months worth of food:
             million tons dry caloric * 1e6 = tons dry caloric
@@ -42,7 +36,8 @@ class PrintParameters:
             calories / 2100 = people fed per day
             people fed per day / 30 = people fed per month
             people fed per month / 7.8e9 = fraction of global population fed for a month
-            fraction of global population fed for a month = months global population is fed from this food source
+            fraction of global population fed for a month = months global population
+            is fed from this food source
             therefore:
             months global population fed = million tons dry caloric *1e6*4e6 /2100/30/7.8e9
 
@@ -83,11 +78,13 @@ class PrintParameters:
             million dry caloric tons monthly * 12 = millon dry caloric tons annually
             million dry caloric tons annually * 1e6 = dry caloric tons annually
             dry caloric tons annually * 1e3 = dry caloric kg annually
-            dry caloric kg annually * 4e3 = calories annually (1 kg dry caloric just means the equivalent of 1 kg of sugar)
+            dry caloric kg annually * 4e3 = calories annually (1 kg dry caloric just
+             means the equivalent of 1 kg of sugar)
             calories annually  / 365 = calories per day
             calories per day / 7.8e9 = calories per person per day globally
             therefore:
-            calories per person per day globally = million tons dry caloric monthly * 12 * 1e6 * 4e6 / 365 / 7.8e9
+            calories per person per day globally =
+            million tons dry caloric monthly * 12 * 1e6 * 4e6 / 365 / 7.8e9
 
             conversion to months worth of food:
             million tons dry caloric * 1e6 = tons dry caloric
@@ -96,7 +93,8 @@ class PrintParameters:
             calories / 2100 = people fed per day
             people fed per day / 30 = people fed per month
             people fed per month / 7.8e9 = fraction of global population fed for a month
-            fraction of global population fed for a month = months global population is fed from this food source
+            fraction of global population fed for a month = months global population
+            is fed from this food source
             therefore:
             months global population fed = million tons dry caloric *1e6*4e6 /2100/30/7.8e9
 
@@ -294,10 +292,6 @@ class PrintParameters:
             print("")
 
             CPM = np.array(meat_and_dairy.chicken_pork_kcals)[0]
-            LARGE_ANIMAL_KCALS_PER_KG = constants["LARGE_ANIMAL_KCALS_PER_KG"]
-            LARGE_ANIMAL_FAT_RATIO = constants["LARGE_ANIMAL_FAT_RATIO"]
-            LARGE_ANIMAL_PROTEIN_RATIO = constants["LARGE_ANIMAL_PROTEIN_RATIO"]
-            grazing_maintained = meat_and_dairy.get_cattle_grazing_maintained()[0]
             if CPM > 0:
                 print("INITIAL_CH_PK_KCALS million tons dry caloric monthly")
                 print(CPM * 1e9 / 4e6 / 1e6 / (1 - MEAT_WASTE / 100))
@@ -382,7 +376,8 @@ class PrintParameters:
 
             if GRAZING_CATTLE_KCALS > 0:
                 print(
-                    "INITIAL_GRAZING_CATTLE_KCALS million tons dry caloric monthly (cattle meat produced in 2020 monthly)"
+                    """INITIAL_GRAZING_CATTLE_KCALS million tons dry caloric monthly
+                     (cattle meat produced in 2020 monthly)"""
                 )
                 print(GRAZING_CATTLE_KCALS * 1e9 / 4e6 / 1e6)
 

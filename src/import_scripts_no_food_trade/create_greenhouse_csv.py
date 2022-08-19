@@ -1,10 +1,6 @@
 import pandas as pd
-import numpy as np
-import os
 
-NO_TRADE_XLS = (
-    "../../data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
-)
+NO_TRADE_XLS = "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
 
@@ -32,5 +28,5 @@ df_greenhouse.columns = [
 print("Greenhouse")
 print(df_greenhouse.head())
 df_greenhouse.to_csv(
-    "../../data/no_food_trade/processed_Data/greenhouse_csv.csv", sep=",", index=False
+    "data/no_food_trade/processed_Data/greenhouse_csv.csv", sep=",", index=False
 )

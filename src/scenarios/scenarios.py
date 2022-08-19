@@ -1,10 +1,11 @@
+"""
 ################################ Scenarios ####################################
 ##                                                                            #
 ##                  Provides numbers and methods to set the                   #
 ##                    specific scenario to be optimized                       #
 ##                                                                            #
 ###############################################################################
-
+"""
 import numpy as np
 
 
@@ -1060,13 +1061,6 @@ class Scenarios:
         constants_for_params["ADD_MAINTAINED_MEAT"] = True
         constants_for_params["ADD_METHANE_SCP"] = True
         constants_for_params["ADD_SEAWEED"] = True
-
-        ##### ERROR CHECKING, TO BE REMOVED WHEN SUFFICIENT BY-COUNTRY
-        ##### RESILIENT FOOD DATA ARE AVAILABLE
-        # if constants_for_params["POP"] < 7e9:
-        #     raise RuntimeError(
-        #         "ERROR: CANNOT RUN RESILIENT FOOD SCENARIO WITH BY-COUNTRY"
-        #     )
 
         self.SCENARIO_SET = True
         return constants_for_params

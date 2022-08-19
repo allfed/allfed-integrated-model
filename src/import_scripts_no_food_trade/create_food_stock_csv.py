@@ -1,10 +1,6 @@
 import pandas as pd
-import numpy as np
-import os
 
-NO_TRADE_XLS = (
-    "../../data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
-)
+NO_TRADE_XLS = "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
 
@@ -66,5 +62,5 @@ df_stock = df_stock.iloc[
 print("Food stocks")
 print(df_stock.head())
 df_stock.to_csv(
-    "../../data/no_food_trade/processed_data/food_stock_csv.csv", sep=",", index=False
+    "data/no_food_trade/processed_data/food_stock_csv.csv", sep=",", index=False
 )

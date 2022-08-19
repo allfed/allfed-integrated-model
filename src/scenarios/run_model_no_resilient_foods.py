@@ -1,17 +1,7 @@
-import os
-import sys
 import numpy as np
-
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-# import some python files from this integrated model repository
 from src.utilities.plotter import Plotter
 from src.scenarios.run_scenario import ScenarioRunner
 from src.scenarios.scenarios import Scenarios
-from src.food_system.food import Food
 
 
 def run_model_no_resilient_foods(plot_figures=True):
@@ -49,7 +39,7 @@ def run_model_no_resilient_foods(plot_figures=True):
     print("")
 
     np.save(
-        "../../data/no_resilient_food_primary_results.npy",
+        "data/no_resilient_food_primary_results.npy",
         results,
         allow_pickle=True,
     )

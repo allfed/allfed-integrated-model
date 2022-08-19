@@ -1,3 +1,4 @@
+"""
 ################################# Validator ###################################
 ##                                                                            #
 ##            Checks that the optimizer successfully optimized.               #
@@ -5,18 +6,8 @@
 ##            all satisfied within an acceptable margin of error              #
 ##                                                                            #
 ###############################################################################
-
-
-import os
-import sys
+"""
 import numpy as np
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-
-from src.food_system.food import Food
 
 
 class Validator:
@@ -30,14 +21,6 @@ class Validator:
             interpreted_results,
             extracted_results.constants["inputs"]["INCLUDE_FAT"],
             extracted_results.constants["inputs"]["INCLUDE_PROTEIN"],
-        )
-
-        (
-            kcals_total_from_optimizer,
-            fat_total_from_optimizer,
-            protein_total_from_optimizer,
-        ) = extracted_results.get_objective_optimization_results(
-            model,
         )
 
         self.ensure_zero_kcals_have_zero_fat_and_protein(interpreted_results)
@@ -57,7 +40,7 @@ class Validator:
         for c in variables:
             if SHOW_CONSTRAINT_CHECK:
                 print(c)
-            if type(c) == type([]):
+            if isinstance(c, list):
                 print("list")
                 continue
             if c.name in maximize_constraints:

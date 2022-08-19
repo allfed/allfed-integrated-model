@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 
 This function runs a single optimization by computing the parameters,
@@ -10,18 +8,7 @@ Created on Tue Jul 19
 
 @author: morgan
 """
-import os
-import sys
-
-from pulp import constants
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-# import some python files from this integrated model repository
 from src.optimizer.optimizer import Optimizer
-from src.optimizer.parameters import Parameters
 from src.optimizer.interpret_results import Interpreter
 from src.optimizer.extract_results import Extractor
 from src.scenarios.scenarios import Scenarios
@@ -174,9 +161,9 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert (
-                scenario_is_correct
-            ), "You must specify 'shutoff' key as zero,tripled_prices_in_country,doubled_prices_in_country,baseline_in_country,tripled_prices_globally,doubled_prices_globally,or baseline_globally"
+            assert scenario_is_correct, """You must specify 'shutoff' key as zero,tripled_prices_in_country,
+            doubled_prices_in_country,baseline_in_country,tripled_prices_globally,
+            doubled_prices_globally,or baseline_globally"""
 
         if scenario_option["waste"] == "zero":
             constants_for_params = scenario_loader.set_waste_to_zero(
@@ -209,9 +196,9 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert (
-                scenario_is_correct
-            ), "You must specify 'waste' key as zero,tripled_prices_in_country,doubled_prices_in_country,baseline_in_country,tripled_prices_globally,doubled_prices_globally,or baseline_globally"
+            assert scenario_is_correct, """You must specify 'waste' key as zero,tripled_prices_in_country,
+            doubled_prices_in_country,baseline_in_country,tripled_prices_globally,
+            doubled_prices_globally,or baseline_globally"""
 
         if scenario_option["nutrition"] == "baseline":
             constants_for_params = scenario_loader.set_baseline_nutrition_profile(
@@ -270,9 +257,8 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert (
-                scenario_is_correct
-            ), "You must specify 'seasonality' key as baseline_in_country zero, nuclear_winter_in_country,baseline_globally,or nuclear_winter_globally"
+            assert scenario_is_correct, """You must specify 'seasonality' key as baseline_in_country zero,
+             nuclear_winter_in_country,baseline_globally,or nuclear_winter_globally"""
 
         if scenario_option["fish"] == "nuclear_winter":
             constants_for_params = scenario_loader.set_fish_nuclear_winter_reduction(
@@ -308,9 +294,8 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert (
-                scenario_is_correct
-            ), "You must specify 'crop_disruption' key as either zero, global_nuclear_winter,or country_nuclear_winter"
+            assert scenario_is_correct, """You must specify 'crop_disruption' key as either zero,
+            global_nuclear_winter,or country_nuclear_winter"""
 
         if scenario_option["protein"] == "required":
             constants_for_params = scenario_loader.include_protein(constants_for_params)
@@ -366,8 +351,7 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert (
-                scenario_is_correct
-            ), "You must specify 'scenario' key as either baseline_climate, resilient_food_nuclear_winter, or no_resilient_food_nuclear_winter"
+            assert scenario_is_correct, """You must specify 'scenario' key as either baseline_climate,
+             resilient_food_nuclear_winter, or no_resilient_food_nuclear_winter"""
 
         return constants_for_params, scenario_loader
