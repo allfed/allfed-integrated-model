@@ -3,21 +3,12 @@
  the monte carlo model, and prints the outcomes for 1000 runs in a row, then
  plots a histogram of the results
 """
-import copy
 import numpy as np
 import os
 import sys
 from scipy.stats import norm
 from scipy.stats import truncnorm
 import multiprocessing as mp
-
-# matplotlib.use('Svg')
-
-module_path = os.path.abspath(os.path.join("../.."))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-# import some python files from this integrated model repository
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
@@ -69,16 +60,6 @@ class MonteCarlo:
 
         constants_for_params = scenarios_loader.set_short_delayed_shutoff(
             constants_for_params
-        )
-
-        # No excess calories
-        excess_per_month = Food(
-            kcals=[0] * constants_for_params["NMONTHS"],
-            fat=[0] * constants_for_params["NMONTHS"],
-            protein=[0] * constants_for_params["NMONTHS"],
-            kcals_units="billion kcals each month",
-            fat_units="thousand tons each month",
-            protein_units="thousand tons each month",
         )
 
         # resilient foods used for simulation
@@ -348,7 +329,7 @@ class MonteCarlo:
 
         scenario_runner = ScenarioRunner()
         results = scenario_runner.run_and_analyze_scenario(
-            constants_for_params, scenarios_loader
+            constants_for_params, scenario_runner
         )
 
         PLOT_EACH_SCENARIO = False
@@ -415,7 +396,8 @@ class MonteCarlo:
                     [(variables, constants_for_params, i, N) for i in list(ilist)],
                 )
 
-                # multi_result = [pool.apply_async(MonteCarlo.run_scenario, ( variables, constants_for_params, inp, N)) for inp in inp_lists]
+                # multi_result = [pool.apply_async(MonteCarlo.run_scenario, 
+                # ( variables, constants_for_params, inp, N)) for inp in inp_lists]
                 # result = [x for p in multi_result for x in p.get()]
 
                 fed_list = []

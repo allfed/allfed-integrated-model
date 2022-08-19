@@ -45,17 +45,7 @@ def run_baseline_by_country_no_trade(
     this_simulation["buffer"] = "no_stored_food"
     this_simulation["shutoff"] = "short_delayed_shutoff"
     this_simulation["cull"] = "do_eat_culled"
-
-    scenario_runner = ScenarioRunnerNoTrade()
-
-    # @li alter called function to return people fed
-    people_fed_1 = scenario_runner.run_model_no_trade(
-        create_pptx_with_all_countries=create_pptx_with_all_countries,
-        show_figures=show_figures,
-        add_map_slide_to_pptx=plot_map,
-        scenario_option=this_simulation,
-    )
-
+    
 
 def create_several_maps_with_different_assumptions():
     # initializing lists

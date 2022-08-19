@@ -1,7 +1,6 @@
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
-from src.food_system.food import Food
 
 
 def run_model_baseline(plot_figures=True):

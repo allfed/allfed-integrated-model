@@ -77,8 +77,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 )
                 percent_people_fed = interpreted_results.percent_people_fed
             except Exception as e:
-                # print("exception:")
-                # print(e)
+                print("exception:")
+                print(e)
                 percent_people_fed = np.nan
         else:
             scenario_runner = ScenarioRunner()

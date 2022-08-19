@@ -9,7 +9,6 @@ Created on Tue Jul 19
 @author: morgan
 """
 from src.optimizer.optimizer import Optimizer
-from src.optimizer.parameters import Parameters
 from src.optimizer.interpret_results import Interpreter
 from src.optimizer.extract_results import Extractor
 from src.scenarios.scenarios import Scenarios
@@ -164,7 +163,9 @@ class ScenarioRunner:
 
             assert (
                 scenario_is_correct
-            ), "You must specify 'shutoff' key as zero,tripled_prices_in_country,doubled_prices_in_country,baseline_in_country,tripled_prices_globally,doubled_prices_globally,or baseline_globally"
+            ), """You must specify 'shutoff' key as zero,tripled_prices_in_country,
+            doubled_prices_in_country,baseline_in_country,tripled_prices_globally,
+            doubled_prices_globally,or baseline_globally"""
 
         if scenario_option["waste"] == "zero":
             constants_for_params = scenario_loader.set_waste_to_zero(
@@ -199,7 +200,9 @@ class ScenarioRunner:
 
             assert (
                 scenario_is_correct
-            ), "You must specify 'waste' key as zero,tripled_prices_in_country,doubled_prices_in_country,baseline_in_country,tripled_prices_globally,doubled_prices_globally,or baseline_globally"
+            ), """You must specify 'waste' key as zero,tripled_prices_in_country,
+            doubled_prices_in_country,baseline_in_country,tripled_prices_globally,
+            doubled_prices_globally,or baseline_globally"""
 
         if scenario_option["nutrition"] == "baseline":
             constants_for_params = scenario_loader.set_baseline_nutrition_profile(
@@ -260,7 +263,8 @@ class ScenarioRunner:
 
             assert (
                 scenario_is_correct
-            ), "You must specify 'seasonality' key as baseline_in_country zero, nuclear_winter_in_country,baseline_globally,or nuclear_winter_globally"
+            ), """You must specify 'seasonality' key as baseline_in_country zero,
+             nuclear_winter_in_country,baseline_globally,or nuclear_winter_globally"""
 
         if scenario_option["fish"] == "nuclear_winter":
             constants_for_params = scenario_loader.set_fish_nuclear_winter_reduction(
@@ -298,7 +302,8 @@ class ScenarioRunner:
 
             assert (
                 scenario_is_correct
-            ), "You must specify 'crop_disruption' key as either zero, global_nuclear_winter,or country_nuclear_winter"
+            ), """You must specify 'crop_disruption' key as either zero,
+            global_nuclear_winter,or country_nuclear_winter"""
 
         if scenario_option["protein"] == "required":
             constants_for_params = scenario_loader.include_protein(constants_for_params)

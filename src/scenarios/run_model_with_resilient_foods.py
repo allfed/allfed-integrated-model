@@ -2,8 +2,6 @@ import numpy as np
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
-from src.optimizer.optimizer import Optimizer
-from src.food_system.food import Food
 
 
 def run_model_with_resilient_foods(plot_figures=True):
