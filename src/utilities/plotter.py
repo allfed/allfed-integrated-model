@@ -1,9 +1,10 @@
+"""
 ################################ plotter.py ###################################
 ##                                                                            #
 ##            A set of utility functions useful for plotting                  #
 ##                                                                            #
 ###############################################################################
-
+"""
 
 from scipy.stats import t
 import seaborn as sns
@@ -20,7 +21,9 @@ import matplotlib.gridspec as gridspec
 import os
 import sys
 import pandas as pd
-import geoplot as gplt
+# out commented this, because geoplot has really annyoing dependencies and
+# I cannot get it to run on Github Actions
+# import geoplot as gplt
 
 module_path = os.path.abspath(os.path.join("../.."))
 if module_path not in sys.path:
@@ -1396,7 +1399,19 @@ class Plotter:
         else:
             plt.close()
         return saveloc
-
+""" 
+    @classmethod
+    def plot_map_of_countries_fed(
+        crs, world, ratio_fed, description, plot_map, create_slide
+    ):
+        mn = 0
+        mx = 1
+        ax = world.plot(
+            column="needs_ratio",
+            legend=True,
+            cmap="viridis",
+            legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"},
+        )
     @classmethod
     def plot_map_of_countries_fed(
         crs, world, ratio_fed, description, plot_map, create_slide
@@ -1432,6 +1447,26 @@ class Plotter:
                 description=description,
                 figure_save_loc=saveloc,
             )
+            + str(ratio_fed)
+        )
+        # pp.title(save_title_string)
+        # plt.close()
+        saveloc = "../../results/large_reports/baseline_ratio_fed_" + ratio_fed + ".png"
+        fig = pp.figure
+        fig.savefig(
+            saveloc,
+            dpi=300,
+        )
+        if plot_map:
+            plt.show()
+        else:
+            plt.close()
+        if create_slide:
+            crs.mp.insert_slide(
+                title_below=save_title_string,
+                description=description,
+                figure_save_loc=saveloc,
+            ) """
 
     @classmethod
     def start_pptx(crs, title):
