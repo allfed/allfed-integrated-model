@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 NO_TRADE_XLS = (
-    "../../data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+    "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
 )
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
@@ -26,7 +26,7 @@ df_grasses = df_grasses.iloc[
 print("Grasses baseline")
 print(df_grasses.head())
 df_grasses.to_csv(
-    "../../data/no_food_trade/processed_data/grasses_baseline_csv.csv",
+    "data/no_food_trade/processed_data/grasses_baseline_csv.csv",
     sep=",",
     index=False,
 )

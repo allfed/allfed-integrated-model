@@ -49,7 +49,7 @@ def run_model_no_resilient_foods(plot_figures=True):
     print("")
 
     np.save(
-        "../../data/no_resilient_food_primary_results.npy",
+        "data/no_resilient_food_primary_results.npy",
         results,
         allow_pickle=True,
     )

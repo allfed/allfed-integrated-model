@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 NO_TRADE_XLS = (
-    "../../data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+    "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
 )
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
@@ -22,5 +22,5 @@ df_dairy = df_dairy.iloc[
 print("dairy")
 print(df_dairy.head())
 df_dairy.to_csv(
-    "../../data/no_food_trade/processed_data/dairy_csv.csv", sep=",", index=False
+    "data/no_food_trade/processed_data/dairy_csv.csv", sep=",", index=False
 )

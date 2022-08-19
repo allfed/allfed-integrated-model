@@ -204,7 +204,7 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         fig.suptitle(newtitle)
-        saveloc = "../../results/large_reports/no_trade" + newtitle + ".png"
+        saveloc = "results/large_reports/no_trade" + newtitle + ".png"
         plt.savefig(
             saveloc,
             dpi=300,
@@ -378,7 +378,7 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig("../../results/fig_2abcd.png")
+        plt.savefig("results/fig_2abcd.png")
         print("saved figure 2abcd")
         plt.show()
 
@@ -470,15 +470,13 @@ class Plotter:
                 ax4.legend(handles, labels, frameon=False, bbox_to_anchor=(0.8, 0.8))
                 ax4.axis("off")
             if label == "b":
-                # sns.boxplot(monte_carlo_data, ax=ax_box, showfliers=False)
                 sns.histplot(data=monte_carlo_data, ax=ax_hist)
                 ax_hist.set(xlabel="mean caloric availability (Kcals / person / day)")
                 ax_hist.set(title="Monte Carlo outcomes")
 
         plt.tight_layout()
-        plt.savefig("../../results/fig_3ab.png")
+        plt.savefig("results/fig_3ab.png")
         print("saved figure 3ab")
-        # os.system('firefox-esr plot.svg')
         plt.show()
 
     def plot_fig_s1(variables, N):
@@ -555,7 +553,7 @@ class Plotter:
         plt.tight_layout()
 
         plt.rcParams["figure.figsize"] = [12, 9]
-        plt.savefig("../../results/fig_s1.png")
+        plt.savefig("results/fig_s1.png")
         print("saved figure s1")
         plt.show()
 
@@ -722,7 +720,7 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig("../../results/fig_s2abcd.png")
+        plt.savefig("results/fig_s2abcd.png")
         print("saved figure s2abcd")
         plt.show()
 
@@ -1111,7 +1109,7 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         if not showplot:
-            saveloc = "../../results/fig_s1abcd.png"
+            saveloc = "results/fig_s1abcd.png"
             crs.mp.insert_slide(
                 title_below=save_title_string,
                 description="plot of all foods added up",
@@ -1326,7 +1324,7 @@ class Plotter:
         plt.tight_layout()
         fig.suptitle(title)
 
-        saveloc = "../../results/large_reports/" + title + ".png"
+        saveloc = "results/large_reports/" + title + ".png"
 
         plt.savefig(
             saveloc,
@@ -1384,7 +1382,7 @@ class Plotter:
         plt.tight_layout()
         fig.suptitle(title)
 
-        saveloc = "../../results/large_reports/" + title + ".png"
+        saveloc = "results/large_reports/" + title + ".png"
 
         plt.savefig(
             saveloc,
@@ -1443,6 +1441,6 @@ class Plotter:
 
     @classmethod
     def end_pptx(crs, saveloc):
-        if not os.path.exists("../../results/large_reports"):
-            os.mkdir("../../results/large_reports")
+        if not os.path.exists("results/large_reports"):
+            os.mkdir("results/large_reports")
         crs.mp.save_ppt(saveloc)

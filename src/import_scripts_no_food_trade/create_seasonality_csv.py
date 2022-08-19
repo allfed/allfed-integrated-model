@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 NO_TRADE_XLS = (
-    "../../data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+    "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
 )
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
@@ -48,5 +48,5 @@ df_seasonality.columns = [
 print("Crop seasonality")
 print(df_seasonality.head())
 df_seasonality.to_csv(
-    "../../data/no_food_trade/processed_data/seasonality_csv.csv", sep=",", index=False
+    "data/no_food_trade/processed_data/seasonality_csv.csv", sep=",", index=False
 )

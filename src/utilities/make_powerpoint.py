@@ -63,6 +63,6 @@ if __name__ == "__main__":
     mp.insert_slide(
         "title_below",
         "description",
-        "../../results/large_reports/" + the_title + ".png",
+        "results/large_reports/" + the_title + ".png",
     )
     mp.save_ppt("baseline.pptx")

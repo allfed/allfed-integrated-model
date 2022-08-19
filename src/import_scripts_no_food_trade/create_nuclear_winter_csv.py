@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 This file contains the code for creating the nuclear winter crop production csv
 originally imported from data from the Rutgers team (xia et al).
@@ -10,7 +8,6 @@ Created on Wed Jul 15
 
 import pandas as pd
 import numpy as np
-import os
 
 # COUNTRY SPECIFIC DATA
 
@@ -629,7 +626,7 @@ def main():
     saves a csv with all the countries' crop reductions in nuclear winter
     averaged
     """
-    NW_CSV = "../../data/no_food_trade/raw_data/rutgers_nw_production_raw.csv"
+    NW_CSV = "data/no_food_trade/raw_data/rutgers_nw_production_raw.csv"
 
     input_table = import_csv(NW_CSV)
 
@@ -712,18 +709,12 @@ def main():
 
     print(nw_csv.head())
     nw_csv.to_csv(
-        "../../data/no_food_trade/processed_data/nuclear_winter_csv.csv",
+        "data/no_food_trade/processed_data/nuclear_winter_csv.csv",
         sep=",",
         index=False,
     )
 
 
-#   np.savetxt(
-#       "../../data/no_food_trade/processed_data/nuclear_winter_csv.csv",
-#       nw_csv,
-#       delimiter=",",
-#       fmt="%s",
-#   )
 
 if __name__ == "__main__":
     main()

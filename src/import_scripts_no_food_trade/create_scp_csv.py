@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 NO_TRADE_XLS = (
-    "../../data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+    "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
 )
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
@@ -26,5 +26,5 @@ df_scp = df_scp.iloc[
 print("scp")
 print(df_scp.head())
 df_scp.to_csv(
-    "../../data/no_food_trade/processed_data/scp_csv.csv", sep=",", index=False
+    "data/no_food_trade/processed_data/scp_csv.csv", sep=",", index=False
 )

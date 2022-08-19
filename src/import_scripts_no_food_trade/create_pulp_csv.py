@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 
-PULP_CSV = "../../data/no_food_trade/raw_data/FAOSTAT_wood_pulp_2020.csv"
+PULP_CSV = "data/no_food_trade/raw_data/FAOSTAT_wood_pulp_2020.csv"
 
 pulp_countries = [
     "AFG",
@@ -343,5 +343,5 @@ print("pulp_csv")
 print(pulp_csv.head())
 
 pulp_csv.to_csv(
-    "../../data/no_food_trade/processed_data/pulp_csv.csv", sep=",", index=False
+    "data/no_food_trade/processed_data/pulp_csv.csv", sep=",", index=False
 )

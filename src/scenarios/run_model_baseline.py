@@ -74,7 +74,7 @@ def run_model_baseline(plot_figures=True):
 
         Plotter.plot_fig_s1abcd(results1, results2, 72, True)
 
-        Plotter.end_pptx("../../results/large_reports/baseline_with_trade.pptx")
+        Plotter.end_pptx("results/large_reports/baseline_with_trade.pptx")
 
 
 def set_common_baseline_properties():

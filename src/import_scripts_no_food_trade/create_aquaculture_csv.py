@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 NO_TRADE_XLS = (
-    "../../data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+    "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
 )
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
@@ -31,5 +31,5 @@ df_aquaculture = df_aquaculture.iloc[
 print("aquaculture")
 print(df_aquaculture.head())
 df_aquaculture.to_csv(
-    "../../data/no_food_trade/processed_data/aquaculture_csv.csv", sep=",", index=False
+    "data/no_food_trade/processed_data/aquaculture_csv.csv", sep=",", index=False
 )

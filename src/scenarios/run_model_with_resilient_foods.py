@@ -49,7 +49,7 @@ def run_model_with_resilient_foods(plot_figures=True):
     print(results.percent_people_fed)
     print("")
 
-    np.save("../../data/resilient_food_primary_results.npy", results, allow_pickle=True)
+    np.save("data/resilient_food_primary_results.npy", results, allow_pickle=True)
 
     scenarios_loader, constants_for_params = set_common_resilient_properties()
 
