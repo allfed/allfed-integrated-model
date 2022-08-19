@@ -4,15 +4,12 @@
  plots a histogram of the results
 """
 import numpy as np
-import os
-import sys
 from scipy.stats import norm
 from scipy.stats import truncnorm
 import multiprocessing as mp
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
-from src.food_system.food import Food
 
 
 class MonteCarlo:
@@ -396,7 +393,7 @@ class MonteCarlo:
                     [(variables, constants_for_params, i, N) for i in list(ilist)],
                 )
 
-                # multi_result = [pool.apply_async(MonteCarlo.run_scenario, 
+                # multi_result = [pool.apply_async(MonteCarlo.run_scenario,
                 # ( variables, constants_for_params, inp, N)) for inp in inp_lists]
                 # result = [x for p in multi_result for x in p.get()]
 

@@ -45,7 +45,7 @@ def run_baseline_by_country_no_trade(
     this_simulation["buffer"] = "no_stored_food"
     this_simulation["shutoff"] = "short_delayed_shutoff"
     this_simulation["cull"] = "do_eat_culled"
-    
+
 
 def create_several_maps_with_different_assumptions():
     # initializing lists
