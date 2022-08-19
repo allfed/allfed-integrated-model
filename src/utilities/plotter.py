@@ -6,17 +6,10 @@
 ###############################################################################
 """
 
-from scipy.stats import t
 import seaborn as sns
-from cycler import cycler
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-from matplotlib.ticker import MaxNLocator
-
-font = {"family": "normal", "weight": "bold", "size": 7}
-
-matplotlib.rc("font", **font)
 import matplotlib.gridspec as gridspec
 import os
 import sys
@@ -35,6 +28,9 @@ if module_path not in sys.path:
 
 from src.utilities.make_powerpoint import MakePowerpoint
 
+font = {"family": "normal", "weight": "bold", "size": 7}
+
+matplotlib.rc("font", **font)
 
 class Plotter:
     def __init__(self):
@@ -1399,74 +1395,42 @@ class Plotter:
         else:
             plt.close()
         return saveloc
-""" 
-    @classmethod
-    def plot_map_of_countries_fed(
-        crs, world, ratio_fed, description, plot_map, create_slide
-    ):
-        mn = 0
-        mx = 1
-        ax = world.plot(
-            column="needs_ratio",
-            legend=True,
-            cmap="viridis",
-            legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"},
-        )
-    @classmethod
-    def plot_map_of_countries_fed(
-        crs, world, ratio_fed, description, plot_map, create_slide
-    ):
-        mn = 0
-        mx = 1
-        ax = world.plot(
-            column="needs_ratio",
-            legend=True,
-            cmap="viridis",
-            legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"},
-        )
-        pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
-        save_title_string = (
-            "Fraction of minimum macronutritional needs with no trade, ratio fed: "
-            + str(ratio_fed)
-        )
-        # pp.title(save_title_string)
-        # plt.close()
-        saveloc = "../../results/large_reports/baseline_ratio_fed_" + ratio_fed + ".png"
-        fig = pp.figure
-        fig.savefig(
-            saveloc,
-            dpi=300,
-        )
-        if plot_map:
-            plt.show()
-        else:
-            plt.close()
-        if create_slide:
-            crs.mp.insert_slide(
-                title_below=save_title_string,
-                description=description,
-                figure_save_loc=saveloc,
-            )
-            + str(ratio_fed)
-        )
-        # pp.title(save_title_string)
-        # plt.close()
-        saveloc = "../../results/large_reports/baseline_ratio_fed_" + ratio_fed + ".png"
-        fig = pp.figure
-        fig.savefig(
-            saveloc,
-            dpi=300,
-        )
-        if plot_map:
-            plt.show()
-        else:
-            plt.close()
-        if create_slide:
-            crs.mp.insert_slide(
-                title_below=save_title_string,
-                description=description,
-                figure_save_loc=saveloc,
-            ) """
+
+    # @classmethod
+    # def plot_map_of_countries_fed(
+    #     crs, world, ratio_fed, description, plot_map, create_slide
+    # ):
+    #     mn = 0
+    #     mx = 1
+    #     ax = world.plot(
+    #         column="needs_ratio",
+    #         legend=True,
+    #         cmap="viridis",
+    #         legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"},
+    #     )
+    #     pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
+    #     save_title_string = (
+    #         "Fraction of minimum macronutritional needs with no trade, ratio fed: "
+    #         + str(ratio_fed)
+    #     )
+    #     # pp.title(save_title_string)
+    #     # plt.close()
+    #     saveloc = "../../results/large_reports/baseline_ratio_fed_" + ratio_fed + ".png"
+    #     fig = pp.figure
+    #     fig.savefig(
+    #         saveloc,
+    #         dpi=300,
+    #     )
+    #     if plot_map:
+    #         plt.show()
+    #     else:
+    #         plt.close()
+    #     if create_slide:
+    #         crs.mp.insert_slide(
+    #             title_below=save_title_string,
+    #             description=description,
+    #             figure_save_loc=saveloc,
+    #         )
 
     @classmethod
     def start_pptx(crs, title):

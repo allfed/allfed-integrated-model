@@ -5,9 +5,8 @@ from pptx import Presentation
 import pptx
 
 from datetime import date
-import matplotlib.pyplot as plt
 
-from pptx.util import Cm, Inches, Pt
+from pptx.util import Inches, Pt
 from pptx.enum.text import PP_ALIGN
 
 # Functions go here
