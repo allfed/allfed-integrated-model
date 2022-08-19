@@ -7,4 +7,6 @@ matplotlib>=3.5.1
 scipy>=1.8.1
 seaborn>=0.11.2
 geoplot>=0.5.1
+GEOS>=3.7.2
+cartopy>=0.20.3
 geopandas>=0.11.0
