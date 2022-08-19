@@ -14,9 +14,7 @@ import os
 
 # COUNTRY SPECIFIC DATA
 
-NO_TRADE_XLS = (
-    "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
-)
+NO_TRADE_XLS = "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
 
