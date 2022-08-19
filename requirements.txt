@@ -10,4 +10,4 @@ shapely>=1.8.2
 geopandas>=0.11.0
 openpyxl>=3.0.10
 python-pptx>=0.6.21
-
+pulp>=2.6.0
