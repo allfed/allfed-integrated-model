@@ -14,6 +14,7 @@ import matplotlib.gridspec as gridspec
 import os
 import sys
 import pandas as pd
+
 # out commented this, because geoplot has really annyoing dependencies and
 # I cannot get it to run on Github Actions
 # import geoplot as gplt
@@ -31,6 +32,7 @@ from src.utilities.make_powerpoint import MakePowerpoint
 font = {"family": "normal", "weight": "bold", "size": 7}
 
 matplotlib.rc("font", **font)
+
 
 class Plotter:
     def __init__(self):
