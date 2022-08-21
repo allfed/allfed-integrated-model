@@ -356,8 +356,8 @@ class PrintParameters:
                 print("no grain fed cattle")
                 print("")
             print("")
-            if (constants["culled_meat"] > 0).any():
-                print("culled chicken, pork, and cattle per month.")
+            if constants["culled_meat"] > 0:
+                print("culled chicken, pork, and cattle total.")
                 print("culled_meat")
                 print(constants["culled_meat"] / (1 - MEAT_WASTE / 100))
             else:

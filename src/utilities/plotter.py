@@ -44,6 +44,11 @@ class Plotter:
         add_slide_with_fig=True,
         description="",
     ):
+        print("plot_figure")
+        print(plot_figure)
+        if (not plot_figure) and (not add_slide_with_fig):
+            return
+
         xlim = min(xlim, len(interpreter.time_months_middle))
         legend = Plotter.get_people_fed_legend(interpreter, True)
         fig = plt.figure()
@@ -52,7 +57,7 @@ class Plotter:
             "#71797E",
             "#76d7ea",
             "#056608",
-            "#fdfff5",
+            "#e8eae1",
             "#ff0606",
             "#a5d610",
             "#ffeb7a",
@@ -200,7 +205,7 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         fig.suptitle(newtitle)
-        saveloc = "results/large_reports/no_trade" + newtitle + ".png"
+        saveloc = "../../results/large_reports/no_trade" + newtitle + ".png"
         plt.savefig(
             saveloc,
             dpi=300,
@@ -217,6 +222,8 @@ class Plotter:
 
         if plot_figure:
             plt.show()
+        else:
+            plt.close()
 
     def plot_fig_2abcd(interpreter1, interpreter2, xlim):
         legend = Plotter.get_people_fed_legend(interpreter1, True)
@@ -226,7 +233,7 @@ class Plotter:
             "#71797E",
             "#76d7ea",
             "#056608",
-            "#fdfff5",
+            "#e8eae1",
             "#ff0606",
             "#a5d610",
             "#ffeb7a",
@@ -374,7 +381,7 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig("results/fig_2abcd.png")
+        plt.savefig("../../results/fig_2abcd.png")
         print("saved figure 2abcd")
         plt.show()
 
@@ -471,7 +478,7 @@ class Plotter:
                 ax_hist.set(title="Monte Carlo outcomes")
 
         plt.tight_layout()
-        plt.savefig("results/fig_3ab.png")
+        plt.savefig("../../results/fig_3ab.png")
         print("saved figure 3ab")
         plt.show()
 
@@ -549,7 +556,7 @@ class Plotter:
         plt.tight_layout()
 
         plt.rcParams["figure.figsize"] = [12, 9]
-        plt.savefig("results/fig_s1.png")
+        plt.savefig("../../results/fig_s1.png")
         print("saved figure s1")
         plt.show()
 
@@ -561,7 +568,7 @@ class Plotter:
             "#71797E",
             "#76d7ea",
             "#056608",
-            "#fdfff5",
+            "#e8eae1",
             "#ff0606",
             "#a5d610",
             "#ffeb7a",
@@ -716,7 +723,7 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig("results/fig_s2abcd.png")
+        plt.savefig("../../results/fig_s2abcd.png")
         print("saved figure s2abcd")
         plt.show()
 
@@ -956,7 +963,7 @@ class Plotter:
             "#71797E",
             "#76d7ea",
             "#056608",
-            "#fdfff5",
+            "#e8eae1",
             "#ff0606",
             "#a5d610",
             "#ffeb7a",
@@ -1105,7 +1112,7 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         if not showplot:
-            saveloc = "results/fig_s1abcd.png"
+            saveloc = "../../results/fig_s1abcd.png"
             crs.mp.insert_slide(
                 title_below=save_title_string,
                 description="plot of all foods added up",
@@ -1320,7 +1327,7 @@ class Plotter:
         plt.tight_layout()
         fig.suptitle(title)
 
-        saveloc = "results/large_reports/" + title + ".png"
+        saveloc = "../../results/large_reports/" + title + ".png"
 
         plt.savefig(
             saveloc,
@@ -1378,7 +1385,7 @@ class Plotter:
         plt.tight_layout()
         fig.suptitle(title)
 
-        saveloc = "results/large_reports/" + title + ".png"
+        saveloc = "../../results/large_reports/" + title + ".png"
 
         plt.savefig(
             saveloc,
@@ -1396,28 +1403,28 @@ class Plotter:
     def plot_map_of_countries_fed(
         crs, world, ratio_fed, description, plot_map, create_slide
     ):
+        if (not plot_map) and (not create_slide):
+            # no point in doing anything
+            return
         mn = 0
         mx = 1
-        ax = world.plot(
+        fig, ax = plt.subplots()
+        world.boundary.plot(ax=ax, color="Black", linewidth=0.1)
+        world.plot(
+            ax=ax,
             column="needs_ratio",
             legend=True,
             cmap="viridis",
             legend_kwds={"label": "Fraction Fed", "orientation": "horizontal"},
         )
-        # pp = gplt.polyplot(world, ax=ax, zorder=1, linewidth=0.1)
-        # save_title_string = (
-        #     "Fraction of minimum macronutritional needs with no trade, ratio fed: "
-        #     + str(ratio_fed)
-        # )
-        pp = world.plot(ax=ax, zorder=1, linewidth=0.1)
         save_title_string = (
             "Fraction of minimum macronutritional needs with no trade, ratio fed: "
             + str(ratio_fed)
         )
+
         # pp.title(save_title_string)
         # plt.close()
-        saveloc = "../../results/large_reports/baseline_ratio_fed_" + ratio_fed + ".png"
-        fig = pp.figure
+        saveloc = "../../results/large_reports/map_ratio_fed_" + ratio_fed + ".png"
         fig.savefig(
             saveloc,
             dpi=300,
@@ -1442,6 +1449,6 @@ class Plotter:
 
     @classmethod
     def end_pptx(crs, saveloc):
-        if not os.path.exists("results/large_reports"):
-            os.mkdir("results/large_reports")
+        if not os.path.exists("../../results/large_reports"):
+            os.mkdir("../../results/large_reports")
         crs.mp.save_ppt(saveloc)

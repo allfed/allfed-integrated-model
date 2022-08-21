@@ -9,6 +9,9 @@ __pycache__/
 # C extensions
 *.so
 
+# not really sure what this is
+*.egg-info
+
 # Distribution / packaging
 .Python
 env/

@@ -39,7 +39,7 @@ def run_model_no_resilient_foods(plot_figures=True):
     print("")
 
     np.save(
-        "data/no_resilient_food_primary_results.npy",
+        "../../data/no_resilient_food_primary_results.npy",
         results,
         allow_pickle=True,
     )
@@ -96,6 +96,9 @@ def set_common_no_resilient_properties():
         constants_for_params
     )
     constants_for_params = scenarios_loader.set_stored_food_buffer_zero(
+        constants_for_params
+    )
+    constants_for_params = scenarios_loader.set_efficient_feed_grazing_strategy(
         constants_for_params
     )
 

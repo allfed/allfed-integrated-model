@@ -6,6 +6,7 @@ Created on Wed Jul 15
 @author: morgan
 """
 import pandas as pd
+import os
 import numpy as np
 import geopandas as gpd
 import warnings
@@ -13,8 +14,10 @@ import logging
 import datetime
 from datetime import date
 from src.utilities.plotter import Plotter
+from src.utilities.import_utilities import ImportUtilities
 from src.scenarios.run_scenario import ScenarioRunner
 from src.food_system.food import Food
+from itertools import product
 
 
 logging.basicConfig(level=logging.ERROR)
@@ -29,13 +32,42 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
     def __init__(self):
         super().__init__()
 
+    def run_model_defaults_no_trade(
+        self,
+        this_simulation,
+        show_map_figures=False,
+        show_country_figures=False,
+        create_pptx_with_all_countries=False,
+        scenario_option=[],
+    ):
+        """
+        Set a few options to set on top of the specific options for the given simulation
+        These could easily change if another scenario was of more interest.
+        """
+        this_simulation["waste"] = "baseline_in_country"
+        this_simulation["fat"] = "not_required"
+        this_simulation["protein"] = "not_required"
+        this_simulation["nutrition"] = "catastrophe"
+        this_simulation["buffer"] = "zero"
+        this_simulation["shutoff"] = "short_delayed_shutoff"
+        this_simulation["cull"] = "do_eat_culled"
+        this_simulation["meat_strategy"] = "efficient_meat_strategy"
+        self.run_model_no_trade(
+            title=this_simulation["scenario"],
+            create_pptx_with_all_countries=create_pptx_with_all_countries,
+            show_country_figures=show_country_figures,
+            show_map_figures=show_map_figures,
+            add_map_slide_to_pptx=show_map_figures,
+            scenario_option=this_simulation,
+        )
+
     def run_optimizer_for_country(
         self,
         country_code,
         country_data,
         scenario_option,
         create_pptx_with_all_countries,
-        show_figures,
+        show_country_figures,
     ):
         country_name = country_data["country"]
 
@@ -88,15 +120,14 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             percent_people_fed = interpreted_results.percent_people_fed
 
         if not np.isnan(percent_people_fed):
-            if show_figures or create_pptx_with_all_countries:
-                Plotter.plot_fig_1ab(
-                    interpreted_results,
-                    84,
-                    country_data["country"],
-                    show_figures,
-                    create_pptx_with_all_countries,
-                    scenario_loader.scenario_description,
-                )
+            Plotter.plot_fig_1ab(
+                interpreted_results,
+                constants_for_params["NMONTHS"],
+                country_data["country"],
+                show_country_figures,
+                create_pptx_with_all_countries,
+                scenario_loader.scenario_description,
+            )
         return (
             percent_people_fed / 100,
             scenario_loader.scenario_description,
@@ -124,20 +155,28 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
 
     def run_model_no_trade(
         self,
+        title="untitled",
         create_pptx_with_all_countries=True,
-        show_figures=True,
+        show_country_figures=False,
+        show_map_figures=False,
         add_map_slide_to_pptx=True,
         scenario_option=[],
-        countries_to_skip=[],
+        countries_list=[],  # runs all the countries if empty
     ):
-        if len(scenario_option) == 0:
-            print("ERROR: a scenario must be specified")
-            quit()
-        if create_pptx_with_all_countries:
-            import os
+        """
+        This function runs the model for all countries in the world, no trade.
+        countries_list is a list of country codes to run the model for, but if
+        there's an "!" in the list, you skip that one.
+        If you leave it blank, it runs all the countries
 
-            if not os.path.exists("results/large_reports"):
-                os.mkdir("results/large_reports")
+        You can generate a powerpoint as an option here too
+
+        """
+        assert len(scenario_option) > 0, "ERROR: a scenario must be specified"
+
+        if create_pptx_with_all_countries:
+            if not os.path.exists("../../results/large_reports"):
+                os.mkdir("../../results/large_reports")
             Plotter.start_pptx("No trade by country")
         """
         Runs the baseline model by country and without trade
@@ -148,38 +187,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             None
         """
         # country codes for UK + EU 27 countries (used for plotting map)
-        UK_27_Plus_GBR_countries = [
-            "GBR",
-            "AUT",
-            "BEL",
-            "BGR",
-            "HRV",
-            "CYP",
-            "CZE",
-            "DNK",
-            "EST",
-            "FIN",
-            "FRA",
-            "DEU",
-            "GRC",
-            "HUN",
-            "IRL",
-            "ITA",
-            "LVA",
-            "LTU",
-            "LUX",
-            "MLT",
-            "NLD",
-            "POL",
-            "PRT",
-            "ROU",
-            "SVK",
-            "SVN",
-            "ESP",
-            "SWE",
-        ]
 
-        NO_TRADE_CSV = "data/no_food_trade/computer_readable_combined.csv"
+        NO_TRADE_CSV = "../../data/no_food_trade/computer_readable_combined.csv"
 
         no_trade_table = pd.read_csv(NO_TRADE_CSV)
 
@@ -197,11 +206,18 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         scenario_description = ""
         n_errors = 0
         failed_countries = "Failed Countries: \n"
-        for index, country_data in no_trade_table.iterrows():
 
+        (
+            exclusive_countries_to_run,
+            countries_to_skip,
+        ) = self.get_countries_to_run_and_skip(countries_list)
+
+        for index, country_data in no_trade_table.iterrows():
             country_code = country_data["iso3"]
-            # if country_code != "USA":
-            #     continue
+
+            if len(exclusive_countries_to_run) > 0:
+                if country_code not in exclusive_countries_to_run:
+                    continue
 
             if country_code in countries_to_skip:
                 continue
@@ -217,7 +233,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 country_data,
                 scenario_option,
                 create_pptx_with_all_countries,
-                show_figures,
+                show_country_figures,
             )
 
             if np.isnan(needs_ratio):
@@ -228,7 +244,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 continue
 
             if country_code == "F5707+GBR":
-                for c in UK_27_Plus_GBR_countries:
+                for c in ImportUtilities.eu_27_p_uk_codes:
                     self.fill_data_for_map(world, c, needs_ratio)
             else:
                 self.fill_data_for_map(world, country_code, needs_ratio)
@@ -255,12 +271,12 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         print("")
         print("")
         print("")
-        if add_map_slide_to_pptx:
+        if show_map_figures or add_map_slide_to_pptx:
             Plotter.plot_map_of_countries_fed(
                 world,
                 ratio_fed,
                 scenario_description,
-                show_figures,
+                show_map_figures,
                 add_map_slide_to_pptx,
             )
         year = str(date.today().year)
@@ -270,7 +286,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         minute = str(datetime.datetime.now().minute)
         if create_pptx_with_all_countries:
             Plotter.end_pptx(
-                saveloc="results/large_reports/no_food_trade."
+                saveloc="../../results/large_reports/no_food_trade_"
+                + title
+                + "."
                 + year
                 + "."
                 + month
@@ -285,8 +303,42 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         # @li return a dataframe with each country and the world needs ratio
         return [world, net_pop, net_pop_fed]
 
+    def get_countries_to_run_and_skip(self, countries_list):
+        """
+        if there's any country code with a "!", skip that one
+        For example, if !USA is one of the country codes, that one will be skipped
+        If !USA and !CHN are country codes, then both will skip
+        if there's no ! in any of the codes, then only the ones listed will be
+        run.
+        """
+
+        countries_to_skip = []
+        exclusive_countries_to_run = []
+
+        if countries_list == []:
+            return [[], []]
+
+        if np.array([("!" in c) for c in countries_list]).all():
+            # all the countries listed are ones to skip, all the others should be run
+            for c in countries_list:
+                if "!" in c:
+                    countries_to_skip.append(c.replace("!", ""))
+        else:
+            # there's at least one country that is supposed to in the exclusive list
+            # to run
+            for c in countries_list:
+                if "!" not in c:
+                    exclusive_countries_to_run.append(c)
+
+                return exclusive_countries_to_run, countries_to_skip
+
     def run_many_options(
-        self, scenario_options, title, add_map_slide_to_pptx=True, countries_to_skip=[]
+        self,
+        scenario_options,
+        title,
+        add_map_slide_to_pptx=True,
+        show_map_figures=False,
+        countries_list=[],
     ):
         print("Number of scenarios:")
         print(len(scenario_options))
@@ -301,16 +353,153 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             print("Scenario Number: " + str(scenario_number))
             scenario_number += 1
             self.run_model_no_trade(
+                title=title,
                 create_pptx_with_all_countries=False,
-                show_figures=False,
+                show_country_figures=False,
+                show_map_figures=show_map_figures,
                 add_map_slide_to_pptx=add_map_slide_to_pptx,
                 scenario_option=scenario_option,
-                countries_to_skip=countries_to_skip,
+                countries_list=countries_list,
             )
 
         if add_map_slide_to_pptx:
+            year = str(date.today().year)
+            month = str(date.today().month)
+            day = str(date.today().day)
+            hour = str(datetime.datetime.now().hour)
+            minute = str(datetime.datetime.now().minute)
             Plotter.end_pptx(
-                saveloc="results/large_reports/various_scenario_options_"
+                saveloc="../../results/large_reports/various_scenario_options_"
                 + title
+                + "."
+                + year
+                + "."
+                + month
+                + "."
+                + day
+                + "."
+                + hour
+                + "."
+                + minute
                 + ".pptx"
+            )
+
+    def create_several_maps_with_different_assumptions(
+        self, this_simulation, show_map_figures=False
+    ):
+        # initializing lists
+        this_simulation_combinations = {}
+
+        this_simulation_combinations["waste"] = [
+            "baseline_in_country",
+            "doubled_prices_in_country",
+        ]
+
+        this_simulation_combinations["buffer"] = ["baseline", "zero"]
+        this_simulation_combinations["shutoff"] = [
+            "continued",
+            "long_delayed_shutoff",
+        ]
+        this_simulation_combinations["fat"] = ["required", "not_required"]
+        this_simulation_combinations["protein"] = ["required", "not_required"]
+
+        # # one example set of assumptions
+        # this_simulation_combinations["nutrition"] = ["baseline"]
+        # this_simulation_combinations["buffer"] = ["baseline"]
+        # this_simulation_combinations["shutoff"] = ["continued"]
+        # this_simulation_combinations["cull"] = ["dont_eat_culled"]
+
+        # I don't really know why this works, but it certainly does.
+        # I'm just combining things a lot like this example:
+        #
+        # >>> kwargs = {'a': [1, 2, 3], 'b': [1, 2, 3]}
+        # >>> flat = [[(k, v) for v in vs] for k, vs in kwargs.items()]
+        # >>> flat
+        # [[('b', 1), ('b', 2), ('b', 3)], [('a', 1), ('a', 2), ('a', 3)]]
+        #
+        # >>> from itertools import product
+        # >>> [dict(items) for items in product(*flat)]
+        # [{'a': 1, 'b': 1},
+        #  {'a': 2, 'b': 1},
+        #  {'a': 3, 'b': 1},
+        #  {'a': 1, 'b': 2},
+        #  {'a': 2, 'b': 2},
+        #  {'a': 3, 'b': 2},
+        #  {'a': 1, 'b': 3},
+        #  {'a': 2, 'b': 3},
+        #  {'a': 3, 'b': 3}]
+
+        # thanks to thefourtheye on stackoverflow
+        # https://stackoverflow.com/questions/41254205/explode-a-dict-get-all-combinations-of-the-values-in-a-dictionary
+
+        flat = [[(k, v) for v in vs] for k, vs in this_simulation_combinations.items()]
+
+        options = [dict(items) for items in product(*flat)]
+
+        # now we have a list of all the options we want to test
+        defaults = this_simulation
+        defaults["nutrition"] = "catastrophe"
+        defaults["cull"] = "do_eat_culled"
+
+        options_including_defaults = []
+        for option in options:
+            options_including_defaults.append(defaults | option)
+
+        self.run_many_options(
+            scenario_options=options_including_defaults,
+            title=this_simulation["scenario"],
+            show_map_figures=show_map_figures,
+            add_map_slide_to_pptx=True,
+        )
+
+    def run_desired_simulation(self, this_simulation, args):
+
+        print("arguments, all optional:")
+        print("first: [single|multi] (single set of assumptions or multiple)")
+        print("second: [pptx|no_pptx] (save a pptx report or not)")
+        print("third: [no_plot|plot] (plots figures)")
+        print("fourth: country_code (which country to run, if desired)")
+        print("")
+        print("")
+        print("")
+
+        if len(args) == 1:
+            single_or_various = args[0]
+            create_pptx = "pptx"
+            plot_figs = "no_plot"
+            country = "world"
+        elif len(args) == 2:
+            single_or_various = args[0]
+            create_pptx = args[1]
+            plot_figs = "no_plot"
+            country = "world"
+        elif len(args) == 3:
+            single_or_various = args[0]
+            create_pptx = args[1]
+            plot_figs = args[2]
+            country = "world"
+        elif len(args) == 4:
+            single_or_various = args[0]
+            create_pptx = args[1]
+            plot_figs = args[2]
+            country = args[3]
+        else:
+            single_or_various = "single"
+            create_pptx = "pptx"
+            plot_figs = "no_plot"
+            country = "world"
+
+        CREATE_SEVERAL_MAPS_PPTX = single_or_various == "multi"
+        if CREATE_SEVERAL_MAPS_PPTX:
+            self.create_several_maps_with_different_assumptions(
+                this_simulation, show_map_figures=(plot_figs == "plot")
+            )
+
+        CREATE_PPTX_EACH_COUNTRY = single_or_various == "single"
+        if CREATE_PPTX_EACH_COUNTRY:
+            self.run_model_defaults_no_trade(
+                this_simulation=this_simulation,
+                show_map_figures=(plot_figs == "plot"),
+                show_country_figures=(plot_figs == "plot"),
+                create_pptx_with_all_countries=(create_pptx == "pptx"),
             )

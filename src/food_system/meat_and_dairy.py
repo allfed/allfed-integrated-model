@@ -179,72 +179,74 @@ class MeatAndDairy:
 
         return cumulative_meat_limit
 
-    def calculated_culled_meat(self):
-        KG_TO_1000_TONS = self.KG_TO_1000_TONS
+    # CALCULATIONS FOR MEAT AND DAIRY PRODUCTION USING GRAIN AND GRAZING
 
-        KCALS_PER_SMALL_ANIMAL = (
-            self.SMALL_ANIMAL_KCALS_PER_KG * self.KG_PER_SMALL_ANIMAL / 1e9
-        )
-        FAT_PER_SMALL_ANIMAL = (
-            self.SMALL_ANIMAL_FAT_RATIO * self.KG_PER_SMALL_ANIMAL * KG_TO_1000_TONS
-        )
-        PROTEIN_PER_SMALL_ANIMAL = (
-            self.SMALL_ANIMAL_PROTEIN_RATIO * self.KG_PER_SMALL_ANIMAL * KG_TO_1000_TONS
-        )
+    # the following two functions are less efficient alternatives for bad adaptation
 
-        KCALS_PER_MEDIUM_ANIMAL = (
-            self.MEDIUM_ANIMAL_KCALS_PER_KG * self.KG_PER_MEDIUM_ANIMAL / 1e9
-        )
-        FAT_PER_MEDIUM_ANIMAL = (
-            self.MEDIUM_ANIMAL_FAT_RATIO * self.KG_PER_MEDIUM_ANIMAL * KG_TO_1000_TONS
-        )
-        PROTEIN_MEDIUM_ANIMAL = (
-            self.MEDIUM_ANIMAL_PROTEIN_RATIO
-            * self.KG_PER_MEDIUM_ANIMAL
-            * KG_TO_1000_TONS
-        )
+    def calculate_continued_ratios_meat_dairy_grazing(self, constants_for_params):
+        # similar assumption as Xia et al paper.
+        # Portion of grass goes proportional to the ratio of meat cattle to milk cattle
+        # total heads precatastrophe.
+        heads_dairy_cows = constants_for_params["INITIAL_MILK_CATTLE"]
+        # total head count of large sized animals minus milk cows
+        total_heads_cattle = constants_for_params["INIT_LARGE_ANIMALS_WITH_MILK_COWS"]
 
-        KCALS_PER_LARGE_ANIMAL = (
-            self.LARGE_ANIMAL_KCALS_PER_KG * self.KG_PER_LARGE_ANIMAL / 1e9
-        )
-        FAT_PER_LARGE_ANIMAL = (
-            self.LARGE_ANIMAL_FAT_RATIO * self.KG_PER_LARGE_ANIMAL * KG_TO_1000_TONS
-        )
-        PROTEIN_PER_LARGE_ANIMAL = (
-            self.LARGE_ANIMAL_PROTEIN_RATIO * self.KG_PER_LARGE_ANIMAL * KG_TO_1000_TONS
+        ratio_grazing_meat = (
+            total_heads_cattle - heads_dairy_cows
+        ) / total_heads_cattle
+        ratio_grazing_milk = 1 - ratio_grazing_meat
+
+        assert 0 <= ratio_grazing_milk <= 1
+        assert 0 <= ratio_grazing_meat <= 1
+
+        self.grazing_milk_produced_prewaste = (
+            ratio_grazing_milk
+            * self.human_inedible_feed
+            / self.INEDIBLE_TO_MILK_CONVERSION
         )
 
-        # billion kcals
-        init_culled_meat_prewaste_kcals = (
-            self.init_small_animals_culled * KCALS_PER_SMALL_ANIMAL
-            + self.init_medium_animals_culled * KCALS_PER_MEDIUM_ANIMAL
-            + self.init_large_animals_culled * KCALS_PER_LARGE_ANIMAL
-        )
-        # thousand tons
-        init_culled_meat_prewaste_fat = (
-            self.init_small_animals_culled * FAT_PER_SMALL_ANIMAL
-            + self.init_medium_animals_culled * FAT_PER_MEDIUM_ANIMAL
-            + self.init_large_animals_culled * FAT_PER_LARGE_ANIMAL
-        )
-        # thousand tons
-        init_culled_meat_prewaste_protein = (
-            self.init_small_animals_culled * PROTEIN_PER_SMALL_ANIMAL
-            + self.init_medium_animals_culled * PROTEIN_MEDIUM_ANIMAL
-            + self.init_large_animals_culled * PROTEIN_PER_LARGE_ANIMAL
+        self.cattle_grazing_maintained_prewaste = (
+            ratio_grazing_meat
+            * self.human_inedible_feed
+            / self.INEDIBLE_TO_CATTLE_CONVERSION
         )
 
-        self.initial_culled_meat_prewaste = init_culled_meat_prewaste_kcals
+    def calculate_continued_ratios_meat_dairy_grain(self, fed_to_animals_prewaste):
+        # similar assumption as Xia et al paper.
+        # Portion of grain goes proportional to usage of feed from meat cattle to
+        # usage of feed for chicken/pork precatastrophe.
+        # Usage of human edible feed for dairy is ignored as it is small.
+        # Usage of human inedible feed for meat is ignored as it is small.
 
-        if self.initial_culled_meat_prewaste > 0:
-            self.culled_meat_fraction_fat = (
-                init_culled_meat_prewaste_fat / init_culled_meat_prewaste_kcals
-            )
-            self.culled_meat_fraction_protein = (
-                init_culled_meat_prewaste_protein / init_culled_meat_prewaste_kcals
-            )
-        else:
-            self.culled_meat_fraction_fat = 0
-            self.culled_meat_fraction_protein = 0
+        feed_for_chicken_pork_precatastrophe = (
+            self.CHICKEN_AND_PORK_LIMIT_PREWASTE
+            * self.EDIBLE_TO_CHICKEN_PORK_CONVERSION
+        )
+        feed_for_beef_precatastrophe = (
+            self.TONS_BEEF_MONTHLY_BASELINE_PREWASTE * self.EDIBLE_TO_CATTLE_CONVERSION
+        )
+
+        ratio_beef_feed = feed_for_beef_precatastrophe / (
+            feed_for_chicken_pork_precatastrophe + feed_for_beef_precatastrophe
+        )
+
+        ratio_chicken_pork_feed = 1 - ratio_beef_feed
+
+        assert 0 <= ratio_beef_feed <= 1
+        assert 0 <= ratio_chicken_pork_feed <= 1
+
+        excess_dry_cal_tons = fed_to_animals_prewaste.kcals * 1e9 / 4e6
+
+        self.cattle_grain_fed_maintained_prewaste = (
+            excess_dry_cal_tons * ratio_beef_feed / self.EDIBLE_TO_CATTLE_CONVERSION
+        )
+
+        self.chicken_pork_maintained_prewaste = (
+            excess_dry_cal_tons
+            * ratio_chicken_pork_feed
+            / self.EDIBLE_TO_CHICKEN_PORK_CONVERSION
+        )
+        self.grain_fed_milk_produced_prewaste = np.array([0] * self.NMONTHS)
 
     def calculate_meat_and_dairy_from_grain(self, fed_to_animals_prewaste):
 
@@ -338,6 +340,72 @@ class MeatAndDairy:
         self.grain_fed_milk_produced_prewaste = grain_fed_milk_produced_prewaste
         self.cattle_grain_fed_maintained_prewaste = cattle_grain_fed_maintained_prewaste
         self.chicken_pork_maintained_prewaste = chicken_pork_maintained_prewaste
+
+    def calculate_meat_milk_from_human_inedible_feed(self, constants_for_params):
+
+        self.grazing_milk_produced_prewaste = []  # tons
+        self.cattle_grazing_maintained_prewaste = []  # tons
+        for m in range(self.NMONTHS):
+            if self.ADD_MILK:
+                max_milk = (
+                    self.human_inedible_feed[m] / self.INEDIBLE_TO_MILK_CONVERSION
+                )
+                if max_milk <= self.MILK_LIMIT_PREWASTE:
+                    self.grazing_milk_produced_prewaste.append(max_milk)
+                    self.cattle_grazing_maintained_prewaste.append(0)
+                    continue
+                self.grazing_milk_produced_prewaste.append(self.MILK_LIMIT_PREWASTE)
+                inedible_for_cattle = (
+                    self.human_inedible_feed[m] - self.MILK_LIMIT_FEED_USAGE
+                )
+            else:
+                self.grazing_milk_produced_prewaste.append(0)
+                inedible_for_cattle = self.human_inedible_feed[m]
+
+            if self.ADD_MAINTAINED_MEAT:
+                self.cattle_grazing_maintained_prewaste.append(
+                    inedible_for_cattle / self.INEDIBLE_TO_CATTLE_CONVERSION
+                )
+            else:
+                self.cattle_grazing_maintained_prewaste.append(0)
+        # assign the resulting remaining limit to milk past inedible sources
+        self.grain_fed_milk_limit_prewaste = self.MILK_LIMIT_PREWASTE - np.array(
+            self.grazing_milk_produced_prewaste
+        )
+
+    def get_milk_from_human_edible_feed(self, constants_for_params):
+
+        if self.ADD_MILK:
+
+            grain_fed_milk_kcals = (
+                np.array(self.grain_fed_milk_produced_prewaste)
+                * 1e3
+                * self.MILK_KCALS
+                / 1e9
+                * (1 - self.MILK_WASTE / 100)
+            )
+
+            grain_fed_milk_fat = (
+                np.array(self.grain_fed_milk_produced_prewaste)
+                / 1e3
+                * self.MILK_FAT
+                * (1 - self.MILK_WASTE / 100)
+            )
+
+            grain_fed_milk_protein = (
+                np.array(self.grain_fed_milk_produced_prewaste)
+                / 1e3
+                * self.MILK_PROTEIN
+                * (1 - self.MILK_WASTE / 100)
+            )
+
+        else:
+
+            grain_fed_milk_kcals = np.array([0] * self.NMONTHS)
+            grain_fed_milk_fat = np.array([0] * self.NMONTHS)
+            grain_fed_milk_protein = np.array([0] * self.NMONTHS)
+
+        return (grain_fed_milk_kcals, grain_fed_milk_fat, grain_fed_milk_protein)
 
     def get_meat_from_human_edible_feed(self):
 
@@ -507,38 +575,6 @@ class MeatAndDairy:
             grain_fed_meat_protein,
         )
 
-    def calculate_meat_milk_from_human_inedible_feed(self, constants_for_params):
-
-        self.grazing_milk_produced_prewaste = []  # tons
-        self.cattle_grazing_maintained_prewaste = []  # tons
-        for m in range(self.NMONTHS):
-            if self.ADD_MILK:
-                max_milk = (
-                    self.human_inedible_feed[m] / self.INEDIBLE_TO_MILK_CONVERSION
-                )
-                if max_milk <= self.MILK_LIMIT_PREWASTE:
-                    self.grazing_milk_produced_prewaste.append(max_milk)
-                    self.cattle_grazing_maintained_prewaste.append(0)
-                    continue
-                self.grazing_milk_produced_prewaste.append(self.MILK_LIMIT_PREWASTE)
-                inedible_for_cattle = (
-                    self.human_inedible_feed[m] - self.MILK_LIMIT_FEED_USAGE
-                )
-            else:
-                self.grazing_milk_produced_prewaste.append(0)
-                inedible_for_cattle = self.human_inedible_feed[m]
-
-            if self.ADD_MAINTAINED_MEAT:
-                self.cattle_grazing_maintained_prewaste.append(
-                    inedible_for_cattle / self.INEDIBLE_TO_CATTLE_CONVERSION
-                )
-            else:
-                self.cattle_grazing_maintained_prewaste.append(0)
-        # assign the resulting remaining limit to milk past inedible sources
-        self.grain_fed_milk_limit_prewaste = self.MILK_LIMIT_PREWASTE - np.array(
-            self.grazing_milk_produced_prewaste
-        )
-
     def get_grazing_milk_produced_postwaste(self):
         # billions kcals
         grazing_milk_kcals = (
@@ -615,6 +651,75 @@ class MeatAndDairy:
             cattle_grazing_maintained_protein,
         )
 
+    # CULLED MEAT
+
+    def calculated_culled_meat(self):
+        KG_TO_1000_TONS = self.KG_TO_1000_TONS
+
+        KCALS_PER_SMALL_ANIMAL = (
+            self.SMALL_ANIMAL_KCALS_PER_KG * self.KG_PER_SMALL_ANIMAL / 1e9
+        )
+        FAT_PER_SMALL_ANIMAL = (
+            self.SMALL_ANIMAL_FAT_RATIO * self.KG_PER_SMALL_ANIMAL * KG_TO_1000_TONS
+        )
+        PROTEIN_PER_SMALL_ANIMAL = (
+            self.SMALL_ANIMAL_PROTEIN_RATIO * self.KG_PER_SMALL_ANIMAL * KG_TO_1000_TONS
+        )
+
+        KCALS_PER_MEDIUM_ANIMAL = (
+            self.MEDIUM_ANIMAL_KCALS_PER_KG * self.KG_PER_MEDIUM_ANIMAL / 1e9
+        )
+        FAT_PER_MEDIUM_ANIMAL = (
+            self.MEDIUM_ANIMAL_FAT_RATIO * self.KG_PER_MEDIUM_ANIMAL * KG_TO_1000_TONS
+        )
+        PROTEIN_MEDIUM_ANIMAL = (
+            self.MEDIUM_ANIMAL_PROTEIN_RATIO
+            * self.KG_PER_MEDIUM_ANIMAL
+            * KG_TO_1000_TONS
+        )
+
+        KCALS_PER_LARGE_ANIMAL = (
+            self.LARGE_ANIMAL_KCALS_PER_KG * self.KG_PER_LARGE_ANIMAL / 1e9
+        )
+        FAT_PER_LARGE_ANIMAL = (
+            self.LARGE_ANIMAL_FAT_RATIO * self.KG_PER_LARGE_ANIMAL * KG_TO_1000_TONS
+        )
+        PROTEIN_PER_LARGE_ANIMAL = (
+            self.LARGE_ANIMAL_PROTEIN_RATIO * self.KG_PER_LARGE_ANIMAL * KG_TO_1000_TONS
+        )
+
+        # billion kcals
+        init_culled_meat_prewaste_kcals = (
+            self.init_small_animals_culled * KCALS_PER_SMALL_ANIMAL
+            + self.init_medium_animals_culled * KCALS_PER_MEDIUM_ANIMAL
+            + self.init_large_animals_culled * KCALS_PER_LARGE_ANIMAL
+        )
+        # thousand tons
+        init_culled_meat_prewaste_fat = (
+            self.init_small_animals_culled * FAT_PER_SMALL_ANIMAL
+            + self.init_medium_animals_culled * FAT_PER_MEDIUM_ANIMAL
+            + self.init_large_animals_culled * FAT_PER_LARGE_ANIMAL
+        )
+        # thousand tons
+        init_culled_meat_prewaste_protein = (
+            self.init_small_animals_culled * PROTEIN_PER_SMALL_ANIMAL
+            + self.init_medium_animals_culled * PROTEIN_MEDIUM_ANIMAL
+            + self.init_large_animals_culled * PROTEIN_PER_LARGE_ANIMAL
+        )
+
+        self.initial_culled_meat_prewaste = init_culled_meat_prewaste_kcals
+
+        if self.initial_culled_meat_prewaste > 0:
+            self.culled_meat_fraction_fat = (
+                init_culled_meat_prewaste_fat / init_culled_meat_prewaste_kcals
+            )
+            self.culled_meat_fraction_protein = (
+                init_culled_meat_prewaste_protein / init_culled_meat_prewaste_kcals
+            )
+        else:
+            self.culled_meat_fraction_fat = 0
+            self.culled_meat_fraction_protein = 0
+
     def get_culled_meat_post_waste(self, constants_for_params):
 
         if self.ADD_CULLED_MEAT:
@@ -639,37 +744,3 @@ class MeatAndDairy:
             self.init_small_animals_culled = 0
             self.init_medium_animals_culled = 0
             self.init_large_animals_culled = 0
-
-    def get_milk_from_human_edible_feed(self, constants_for_params):
-
-        if self.ADD_MILK:
-
-            grain_fed_milk_kcals = (
-                np.array(self.grain_fed_milk_produced_prewaste)
-                * 1e3
-                * self.MILK_KCALS
-                / 1e9
-                * (1 - self.MILK_WASTE / 100)
-            )
-
-            grain_fed_milk_fat = (
-                np.array(self.grain_fed_milk_produced_prewaste)
-                / 1e3
-                * self.MILK_FAT
-                * (1 - self.MILK_WASTE / 100)
-            )
-
-            grain_fed_milk_protein = (
-                np.array(self.grain_fed_milk_produced_prewaste)
-                / 1e3
-                * self.MILK_PROTEIN
-                * (1 - self.MILK_WASTE / 100)
-            )
-
-        else:
-
-            grain_fed_milk_kcals = np.array([0] * self.NMONTHS)
-            grain_fed_milk_fat = np.array([0] * self.NMONTHS)
-            grain_fed_milk_protein = np.array([0] * self.NMONTHS)
-
-        return (grain_fed_milk_kcals, grain_fed_milk_fat, grain_fed_milk_protein)

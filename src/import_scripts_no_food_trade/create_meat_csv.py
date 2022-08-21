@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
 
-MEAT_CSV = "data/no_food_trade/raw_data/FAOSTAT_meat_2020.csv"
+MEAT_CSV = "../../data/no_food_trade/raw_data/FAOSTAT_meat_2020.csv"
+
+print("importing meat data...")
 
 
 TONS_TO_KG = 1e3
@@ -351,13 +353,14 @@ for i in range(0, len(countries)):
     meat_csv = np.vstack([meat_csv, [country, country_name, chicken, pork, beef]])
 
 # TODO: these don't add up...
-
-print("chicken")
-print(chicken_sum_global / 1e9)
-print("pork")
-print(pork_sum_global / 1e9)
-print("beef")
-print(beef_sum_global / 1e9)
+PRINT_MEAT_DATA = False
+if PRINT_MEAT_DATA:
+    print("chicken")
+    print(chicken_sum_global / 1e9)
+    print("pork")
+    print(pork_sum_global / 1e9)
+    print("beef")
+    print(beef_sum_global / 1e9)
 
 # add up GBR and F5707 (EU+27) to incorporate GBR (which is the UK),
 # and delete GBR
@@ -387,10 +390,8 @@ meat_csv[swaziland_index, 0] = "SWT"
 meat_csv = np.delete(meat_csv, (GBR_index), axis=0)
 
 
-print("meat_csv")
-print(meat_csv)
 np.savetxt(
-    "data/no_food_trade/processed_data/meat_csv.csv",
+    "../../data/no_food_trade/processed_data/meat_csv.csv",
     meat_csv,
     delimiter=",",
     fmt="%s",

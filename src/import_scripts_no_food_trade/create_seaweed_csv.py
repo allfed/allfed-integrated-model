@@ -1,6 +1,10 @@
 import pandas as pd
 
-NO_TRADE_XLS = "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+print("importing seaweed...")
+
+NO_TRADE_XLS = (
+    "../../data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+)
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
 
@@ -14,8 +18,6 @@ df_seaweed = df_seaweed.iloc[
     0:138,
 ]
 
-print("Seaweed")
-print(df_seaweed.head())
 df_seaweed.to_csv(
-    "data/no_food_trade/processed_data/seaweed_csv.csv", sep=",", index=False
+    "../../data/no_food_trade/processed_data/seaweed_csv.csv", sep=",", index=False
 )

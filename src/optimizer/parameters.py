@@ -55,7 +55,7 @@ class Parameters:
         assert self.FIRST_TIME_RUN
         self.FIRST_TIME_RUN = False
 
-        PRINT_SCENARIO_PROPERTIES = True
+        PRINT_SCENARIO_PROPERTIES = False
         if PRINT_SCENARIO_PROPERTIES:
             print(scenarios_loader.scenario_description)
 
@@ -181,6 +181,9 @@ class Parameters:
         constants["ADD_CELLULOSIC_SUGAR"] = constants_for_params["ADD_CELLULOSIC_SUGAR"]
         constants["ADD_GREENHOUSES"] = constants_for_params["ADD_GREENHOUSES"]
         constants["ADD_OUTDOOR_GROWING"] = constants_for_params["ADD_OUTDOOR_GROWING"]
+        constants["STORE_FOOD_BETWEEN_YEARS"] = constants_for_params[
+            "STORE_FOOD_BETWEEN_YEARS"
+        ]
 
         return constants
 
@@ -441,9 +444,15 @@ class Parameters:
 
     def init_grazing_params(self, constants_for_params, time_consts, meat_and_dairy):
 
-        meat_and_dairy.calculate_meat_milk_from_human_inedible_feed(
-            constants_for_params
-        )
+        if constants_for_params["USE_EFFICIENT_FEED_STRATEGY"]:
+            meat_and_dairy.calculate_meat_milk_from_human_inedible_feed(
+                constants_for_params
+            )
+        else:
+            meat_and_dairy.calculate_continued_ratios_meat_dairy_grazing(
+                constants_for_params
+            )
+
         (
             grazing_milk_kcals,
             grazing_milk_fat,
@@ -483,9 +492,15 @@ class Parameters:
         # that is human edible and used for feed
         # this calculation is pre-waste for meat and feed
         # Chicken and pork only ever use "grain" as defined above in this model, not grasses
-        meat_and_dairy.calculate_meat_and_dairy_from_grain(
-            feed_and_biofuels.fed_to_animals_prewaste
-        )
+
+        if constants_for_params["USE_EFFICIENT_FEED_STRATEGY"]:
+            meat_and_dairy.calculate_meat_and_dairy_from_grain(
+                feed_and_biofuels.fed_to_animals_prewaste
+            )
+        else:
+            meat_and_dairy.calculate_continued_ratios_meat_dairy_grain(
+                feed_and_biofuels.fed_to_animals_prewaste
+            )
         # this calculation is pre-waste for the feed
         # no waste is applied for the grasses either.
         # the milk has had waste applied

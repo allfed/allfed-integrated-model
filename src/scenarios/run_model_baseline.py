@@ -60,11 +60,7 @@ def run_model_baseline(plot_figures=True):
     results2 = results
 
     if plot_figures:
-        Plotter.start_pptx("Each food plotted individually")
-
         Plotter.plot_fig_s1abcd(results1, results2, 72, True)
-
-        Plotter.end_pptx("results/large_reports/baseline_with_trade.pptx")
 
 
 def set_common_baseline_properties():
@@ -81,6 +77,10 @@ def set_common_baseline_properties():
     constants_for_params = scenarios_loader.set_excess_to_zero(constants_for_params)
 
     constants_for_params = scenarios_loader.set_baseline_nutrition_profile(
+        constants_for_params
+    )
+
+    constants_for_params = scenarios_loader.set_efficient_feed_grazing_strategy(
         constants_for_params
     )
 

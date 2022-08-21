@@ -234,7 +234,13 @@ class ScenarioRunner:
                 scenario_is_correct
             ), "You must specify 'buffer' key as zero, no_stored_food, or baseline"
 
-        if scenario_option["seasonality"] == "baseline_in_country":
+        if scenario_option["seasonality"] == "no_seasonality":
+            constants_for_params = (
+                scenario_loader.set_country_no_seasonality_nuclear_winter(
+                    constants_for_params, country_data
+                )
+            )
+        elif scenario_option["seasonality"] == "baseline_in_country":
             constants_for_params = scenario_loader.set_country_seasonality_baseline(
                 constants_for_params, country_data
             )
@@ -257,7 +263,7 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert scenario_is_correct, """You must specify 'seasonality' key as baseline_in_country zero,
+            assert scenario_is_correct, """You must specify 'seasonality' key as no_seasonality, baseline_in_country,
              nuclear_winter_in_country,baseline_globally,or nuclear_winter_globally"""
 
         if scenario_option["fish"] == "nuclear_winter":
@@ -353,5 +359,22 @@ class ScenarioRunner:
 
             assert scenario_is_correct, """You must specify 'scenario' key as either baseline_climate,
              resilient_food_nuclear_winter, or no_resilient_food_nuclear_winter"""
+
+        if scenario_option["meat_strategy"] == "efficient_meat_strategy":
+            constants_for_params = scenario_loader.set_efficient_feed_grazing_strategy(
+                constants_for_params
+            )
+        elif scenario_option["meat_strategy"] == "inefficient_meat_strategy":
+            constants_for_params = (
+                scenario_loader.set_unchanged_proportions_feed_grazing(
+                    constants_for_params
+                )
+            )
+        else:
+            scenario_is_correct = False
+
+            assert (
+                scenario_is_correct
+            ), """You must specify 'meat_strategy' key as either efficient_meat_strategy,or inefficient_meat_strategy"""
 
         return constants_for_params, scenario_loader

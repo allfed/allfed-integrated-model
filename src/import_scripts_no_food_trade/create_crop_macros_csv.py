@@ -1,418 +1,199 @@
+"""
+This file contains the code for importing crop production macronutrients
+using the production of each crop combined with the nutrition of the crops.
+
+@author: morgan
+"""
+
 import pandas as pd
 import numpy as np
+from src.utilities.import_utilities import ImportUtilities
 
 
-NUTRITION_XLS = "data/Supplemental_Data.xlsx"
-PRODUCTION_CSV = "data/no_food_trade/raw_data/FAOSTAT_food_production_2020.csv"
+class CropMacros:
+    def __init__(self):
+        self.NUTRITION_XLS = "../../data/Supplemental_Data.xlsx"
+        self.PRODUCTION_CSV = (
+            "../../data/no_food_trade/raw_data/FAOSTAT_food_production_2020.csv"
+        )
 
-TONS_TO_KG = 1e3
-KCALS_TO_DRY_CALORIC_TONS = 1 / (4000 * 1000)
+        self.TONS_TO_KG = 1e3
+        self.KCALS_TO_DRY_CALORIC_TONS = 1 / (4000 * 1000)
 
-KCALS_PER_PERSON = 2100
-FAT_PER_PERSON = 47
-PROTEIN_PER_PERSON = 53
+        self.KCALS_PER_PERSON = 2100
+        self.FAT_PER_PERSON = 47
+        self.PROTEIN_PER_PERSON = 53
 
-prod_iso3 = [
-    "AFG",
-    "ALB",
-    "DZA",
-    "AGO",
-    "ARG",
-    "ARM",
-    "AUS",
-    "AZE",
-    "BHR",
-    "BGD",
-    "BRB",
-    "BLR",
-    "BEN",
-    "BTN",
-    "BOL",
-    "BIH",
-    "BWA",
-    "BRA",
-    "BRN",
-    "BFA",
-    "MMR",
-    "BDI",
-    "CPV",
-    "KHM",
-    "CMR",
-    "CAN",
-    "CAF",
-    "TCD",
-    "CHL",
-    "CHN",
-    "COL",
-    "COD",
-    "COG",
-    "CRI",
-    "CIV",
-    "CUB",
-    "DJI",
-    "DOM",
-    "ECU",
-    "EGY",
-    "SLV",
-    "ERI",
-    "SWZ",
-    "ETH",
-    "F5707",
-    "GBR",
-    "FJI",
-    "GAB",
-    "GMB",
-    "GEO",
-    "GHA",
-    "GTM",
-    "GIN",
-    "GNB",
-    "GUY",
-    "HTI",
-    "HND",
-    "IND",
-    "IDN",
-    "IRN",
-    "IRQ",
-    "ISR",
-    "JAM",
-    "JPN",
-    "JOR",
-    "KAZ",
-    "KEN",
-    "KOR",
-    "PRK",
-    "KWT",
-    "KGZ",
-    "LAO",
-    "LBN",
-    "LSO",
-    "LBR",
-    "LBY",
-    "MDG",
-    "MWI",
-    "MYS",
-    "MLI",
-    "MRT",
-    "MUS",
-    "MEX",
-    "MDA",
-    "MNG",
-    "MAR",
-    "MOZ",
-    "NAM",
-    "NPL",
-    "NZL",
-    "NIC",
-    "NER",
-    "NGA",
-    "MKD",
-    "NOR",
-    "OMN",
-    "PAK",
-    "PAN",
-    "PNG",
-    "PRY",
-    "PER",
-    "PHL",
-    "QAT",
-    "RUS",
-    "RWA",
-    "SAU",
-    "SEN",
-    "SRB",
-    "SLE",
-    "SGP",
-    "SOM",
-    "ZAF",
-    "SSD",
-    "LKA",
-    "SDN",
-    "SUR",
-    "CHE",
-    "SYR",
-    "TWN",
-    "TJK",
-    "TZA",
-    "THA",
-    "TGO",
-    "TTO",
-    "TUN",
-    "TUR",
-    "TKM",
-    "UGA",
-    "UKR",
-    "ARE",
-    "USA",
-    "URY",
-    "UZB",
-    "VEN",
-    "VNM",
-    "YEM",
-    "ZMB",
-    "ZWE",
-]
+        self.products, self.nutrition = self.import_nutrients_and_products()
 
-country_names = [
-    "Afghanistan",
-    "Albania",
-    "Algeria",
-    "Angola",
-    "Argentina",
-    "Armenia",
-    "Australia",
-    "Azerbaijan",
-    "Bahrain",
-    "Bangladesh",
-    "Barbados",
-    "Belarus",
-    "Benin",
-    "Bhutan",
-    "Bolivia (Plurinational State of)",
-    "Bosnia and Herzegovina",
-    "Botswana",
-    "Brazil",
-    "Brunei Darussalam",
-    "Burkina Faso",
-    "Myanmar",
-    "Burundi",
-    "Cabo Verde",
-    "Cambodia",
-    "Cameroon",
-    "Canada",
-    "Central African Republic",
-    "Chad",
-    "Chile",
-    "China",
-    "Colombia",
-    "Congo",
-    "Democratic Republic of the Congo",
-    "Costa Rica",
-    "Cote d'Ivoire",
-    "Cuba",
-    "Djibouti",
-    "Dominican Republic",
-    "Ecuador",
-    "Egypt",
-    "El Salvador",
-    "Eritrea",
-    "Eswatini",
-    "Ethiopia",
-    "European Union (27) + UK",
-    "UK",
-    "Fiji",
-    "Gabon",
-    "Gambia",
-    "Georgia",
-    "Ghana",
-    "Guatemala",
-    "Guinea",
-    "Guinea-Bissau",
-    "Guyana",
-    "Haiti",
-    "Honduras",
-    "India",
-    "Indonesia",
-    "Iran (Islamic Republic of)",
-    "Iraq",
-    "Israel",
-    "Jamaica",
-    "Japan",
-    "Jordan",
-    "Kazakhstan",
-    "Kenya",
-    "Democratic People's Republic of Korea",
-    "Republic of Korea",
-    "Kuwait",
-    "Kyrgyzstan",
-    "Lao People's Democratic Republic",
-    "Lebanon",
-    "Lesotho",
-    "Liberia",
-    "Libya",
-    "Madagascar",
-    "Malawi",
-    "Malaysia",
-    "Mali",
-    "Mauritania",
-    "Mauritius",
-    "Mexico",
-    "Republic of Moldova",
-    "Mongolia",
-    "Morocco",
-    "Mozambique",
-    "Namibia",
-    "Nepal",
-    "New Zealand",
-    "Nicaragua",
-    "Niger",
-    "Nigeria",
-    "North Macedonia",
-    "Norway",
-    "Oman",
-    "Pakistan",
-    "Panama",
-    "Papua New Guinea",
-    "Paraguay",
-    "Peru",
-    "Philippines",
-    "Qatar",
-    "Russian Federation",
-    "Rwanda",
-    "Saudi Arabia",
-    "Senegal",
-    "Serbia",
-    "Sierra Leone",
-    "Singapore",
-    "Somalia",
-    "South Africa",
-    "South Sudan",
-    "Sri Lanka",
-    "Sudan",
-    "Suriname",
-    "Switzerland",
-    "Syrian Arab Republic",
-    "Taiwan",
-    "Tajikistan",
-    "United Republic of Tanzania",
-    "Thailand",
-    "Togo",
-    "Trinidad and Tobago",
-    "Tunisia",
-    "Turkiye",
-    "Turkmenistan",
-    "Uganda",
-    "Ukraine",
-    "United Arab Emirates",
-    "United States of America",
-    "Uruguay",
-    "Uzbekistan",
-    "Venezuela (Bolivarian Republic of)",
-    "Viet Nam",
-    "Yemen",
-    "Zambia",
-    "Zimbabwe",
-]
-# Data Inspection
+    def import_nutrients_and_products(self):
+        # Data Inspection
 
-xls = pd.ExcelFile(NUTRITION_XLS)
-nutrition = pd.read_excel(xls, "Nutrition")[["Item", "Calories", "Protein", "Fat"]]
+        xls = pd.ExcelFile(self.NUTRITION_XLS)
+        nutrition = pd.read_excel(xls, "Nutrition")[
+            ["Item", "Calories", "Protein", "Fat"]
+        ]
 
-df_prod = pd.read_csv(PRODUCTION_CSV)[
-    ["Area Code (ISO3)", "Area", "Element", "Item Code (FAO)", "Item", "Unit", "Value"]
-]
+        iso3_code = "Area Code (ISO3)"
+        production_col_names = [
+            iso3_code,
+            "Area",
+            "Element",
+            "Item Code (FAO)",
+            "Item",
+            "Unit",
+            "Value",
+        ]
 
-countries = list(df_prod["Area Code (ISO3)"].unique())
-# create dictionary containing each table, remove Area column
-df_dict = {
-    k: df_prod[df_prod["Area Code (ISO3)"] == k].drop(columns="Area Code (ISO3)")
-    for k in countries
-}
+        products = ImportUtilities.import_csv(
+            self.PRODUCTION_CSV, production_col_names, iso3_code
+        )
 
-# for each country create a list of macronutrient values
-macros_csv = np.array(
-    [
-        "iso3",
-        "country",
-        "crop_kcals",
-        "crop_fat",
-        "crop_protein",
-    ]
-)
+        return products, nutrition
 
-for i in range(0, len(prod_iso3)):
-    prod_country = prod_iso3[i]
-    country_name = country_names[i]
-    if prod_country not in df_dict.keys():
-        print("missing" + prod_country)
-        continue
+    def get_kcals_matching(self, match_strings, products):
+        kcals_sum = 0
+        all_matching_products = pd.DataFrame([])
+        for string in match_strings:
+            string_lower = string.lower()
 
-    products = df_dict[prod_country]
-    kcals_sum = 0
-    fat_sum = 0
-    protein_sum = 0
+            matching_products = products.loc[
+                products["Item"].str.contains(string_lower, case=False)
+            ]
 
-    # for each food product, add to each macronutrient total
-    for index, product in products.iterrows():
-        # find the particular icountry_names = [tem.
-        n = nutrition[nutrition["Item"] == product["Item"]]
+            all_matching_products = pd.concat(
+                [all_matching_products, matching_products]
+            )
+        all_matching_products.drop_duplicates(subset=["Item"], inplace=True)
 
-        # if the match could not be found, continue
-        if len(n) == 0:
-            continue
+        kcals, fat, protein = self.get_nutrients(all_matching_products)
+        return kcals
 
-        # there should never be any duplicate nutrition items
-        assert len(n) == 1
+    def get_nutrients(self, products):
+        """
+        Returns the sum of kcals, fat, and protein for the products passed in.
+        """
+        kcals_sum = 0
+        fat_sum = 0
+        protein_sum = 0
+        # for each food product, add to each macronutrient total
+        for index, product in products.iterrows():
+            # find the particular item.
+            n = self.nutrition[self.nutrition["Item"] == product["Item"]]
 
-        kcals_per_kg = float(n["Calories"])  # kcals / kg
-        fat_frac = float(n["Fat"])  # fraction by weight
-        protein_frac = float(n["Protein"])  # fraction by weight
+            # if the match could not be found, continue
+            if len(n) == 0:
+                continue
 
-        # production Calories is units tons per year
-        if np.isnan(product["Value"]):
-            tons = 0
-        else:
-            tons = product["Value"]
+            # there should never be any duplicate nutrition items
+            assert len(n) == 1
 
-        # dry caloric tons per year
-        kcals = tons * TONS_TO_KG * kcals_per_kg * KCALS_TO_DRY_CALORIC_TONS
+            kcals_per_kg = float(n["Calories"])  # kcals / kg
+            fat_frac = float(n["Fat"])  # fraction by weight
+            protein_frac = float(n["Protein"])  # fraction by weight
 
-        # nutrition Fat and protein are percent by weight, converting to grams
-        fat = tons * fat_frac  # tons per year
-        protein = tons * protein_frac  # tons per year
+            # production Calories is units tons per year
+            if np.isnan(product["Value"]):
+                tons = 0
+            else:
+                tons = product["Value"]
 
-        kcals_sum += kcals
-        fat_sum += fat
-        protein_sum += protein
+            # dry caloric tons per year
+            kcals = (
+                tons * self.TONS_TO_KG * kcals_per_kg * self.KCALS_TO_DRY_CALORIC_TONS
+            )
 
-    macros_csv = np.vstack(
-        [
-            macros_csv,
+            # nutrition Fat and protein are percent by weight, converting to grams
+            fat = tons * fat_frac  # tons per year
+            protein = tons * protein_frac  # tons per year
+
+            kcals_sum += kcals
+            fat_sum += fat
+            protein_sum += protein
+
+        return [kcals_sum, fat_sum, protein_sum]
+
+    def get_macros_csv(self):
+
+        iso3_codes = ImportUtilities.countries_with_TWN_F5707_GBR_separate
+        country_names = ImportUtilities.country_names_with_TWN_F5707_GBR_separate
+
+        country_names_dict = dict(zip(iso3_codes, country_names))
+
+        macros_csv = np.array(
             [
-                prod_country,
+                "iso3",
+                "country",
+                "crop_kcals",
+                "crop_fat",
+                "crop_protein",
+            ]
+        )
+
+        for i in range(0, len(iso3_codes)):
+            iso3_code = iso3_codes[i]
+            country_name = country_names[i]
+            if iso3_code not in self.products.keys():
+                print("missing" + iso3_code)
+                continue
+
+            products = self.products[iso3_code]
+
+            [kcals_sum, fat_sum, protein_sum] = self.get_nutrients(products)
+
+            new_layer = [
+                iso3_code,
                 country_name,
                 str(kcals_sum),
                 str(fat_sum),
                 str(protein_sum),
-            ],
-        ]
+            ]
+
+            macros_csv = ImportUtilities.stack_on_list(macros_csv, new_layer)
+
+        return macros_csv
+
+    def clean_up_macros_csv(self, macros_csv):
+        # add up GBR and F5707 (EU+27) to incorporate GBR (which is the UK),
+        # and delete GBR
+
+        F5707_index = np.where(macros_csv[:, 0] == "F5707")
+        GBR_index = np.where(macros_csv[:, 0] == "GBR")
+
+        F5707_name = macros_csv[F5707_index][0][1]
+        F5707_kcals = float(macros_csv[F5707_index][0][2])
+        F5707_fat = float(macros_csv[F5707_index][0][3])
+        F5707_protein = float(macros_csv[F5707_index][0][4])
+
+        GBR_name = macros_csv[GBR_index][0][1]
+        GBR_kcals = float(macros_csv[GBR_index][0][2])
+        GBR_fat = float(macros_csv[GBR_index][0][3])
+        GBR_protein = float(macros_csv[GBR_index][0][4])
+
+        macros_csv[F5707_index, 0] = "F5707+GBR"
+        macros_csv[F5707_index, 1] = "European Union (27) + UK"
+        macros_csv[F5707_index, 2] = str(F5707_kcals + GBR_kcals)
+        macros_csv[F5707_index, 3] = str(F5707_fat + GBR_fat)
+        macros_csv[F5707_index, 4] = str(F5707_protein + GBR_protein)
+
+        macros_csv = ImportUtilities.clean_up_eswatini(macros_csv)
+        macros_csv = np.delete(macros_csv, (GBR_index), axis=0)
+
+        return macros_csv
+
+
+if __name__ == "__main__":
+    print("importing baseline crop kcals, fat, protein production data...")
+
+    cm = CropMacros()
+
+    macros_csv = cm.get_macros_csv()
+
+    macros_csv = cm.clean_up_macros_csv(macros_csv)
+
+    np.savetxt(
+        "../../data/no_food_trade/processed_data/macros_csv.csv",
+        macros_csv,
+        delimiter=",",
+        fmt="%s",
     )
-
-# add up GBR and F5707 (EU+27) to incorporate GBR (which is the UK),
-# and delete GBR
-
-F5707_index = np.where(macros_csv[:, 0] == "F5707")
-GBR_index = np.where(macros_csv[:, 0] == "GBR")
-
-F5707_name = macros_csv[F5707_index][0][1]
-F5707_kcals = float(macros_csv[F5707_index][0][2])
-F5707_fat = float(macros_csv[F5707_index][0][3])
-F5707_protein = float(macros_csv[F5707_index][0][4])
-
-GBR_name = macros_csv[GBR_index][0][1]
-GBR_kcals = float(macros_csv[GBR_index][0][2])
-GBR_fat = float(macros_csv[GBR_index][0][3])
-GBR_protein = float(macros_csv[GBR_index][0][4])
-
-
-macros_csv[F5707_index, 0] = "F5707+GBR"
-macros_csv[F5707_index, 2] = str(F5707_kcals + GBR_kcals)
-macros_csv[F5707_index, 3] = str(F5707_fat + GBR_fat)
-macros_csv[F5707_index, 4] = str(F5707_protein + GBR_protein)
-
-
-swaziland_index = np.where(macros_csv[:, 0] == "SWZ")
-# eswatini recently changed from swaziland
-macros_csv[swaziland_index, 0] = "SWT"
-macros_csv = np.delete(macros_csv, (GBR_index), axis=0)
-
-
-print("macros_csv")
-print(macros_csv)
-
-np.savetxt(
-    "data/no_food_trade/processed_data/macros_csv.csv",
-    macros_csv,
-    delimiter=",",
-    fmt="%s",
-)

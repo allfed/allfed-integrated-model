@@ -1,6 +1,10 @@
 import pandas as pd
 
-NO_TRADE_XLS = "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+print("importing single cell protein...")
+
+NO_TRADE_XLS = (
+    "../../data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+)
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
 
@@ -19,6 +23,6 @@ df_scp = df_scp.iloc[
     0:138,
 ]
 
-print("scp")
-print(df_scp.head())
-df_scp.to_csv("data/no_food_trade/processed_data/scp_csv.csv", sep=",", index=False)
+df_scp.to_csv(
+    "../../data/no_food_trade/processed_data/scp_csv.csv", sep=",", index=False
+)

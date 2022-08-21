@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
 
+print("importing animal stocks data...")
 
-HEAD_COUNT_CSV = "data/no_food_trade/raw_data/FAOSTAT_animal_stocks_2020.csv"
-DAIRY_HEAD_COUNT_CSV = "data/no_food_trade/raw_data/FAOSTAT_cow_heads_2020.csv"
+HEAD_COUNT_CSV = "../../data/no_food_trade/raw_data/FAOSTAT_animal_stocks_2020.csv"
+DAIRY_HEAD_COUNT_CSV = "../../data/no_food_trade/raw_data/FAOSTAT_cow_heads_2020.csv"
 
 TONS_TO_KG = 1e3
 KCALS_TO_DRY_CALORIC_TONS = 1 / (4000 * 1000)
@@ -315,8 +316,6 @@ df_dict = {
     k: df_merge[df_merge["Area Code (ISO3)"] == k].drop(columns="Area Code (ISO3)")
     for k in countries_unique
 }
-print("countries_unique")
-print(countries_unique)
 
 # for each country create a list of macronutrient values
 head_count_csv = np.array(
@@ -398,15 +397,16 @@ for i in range(0, len(countries)):
         ]
     )
 
-
-print("small_animal_sum_global")
-print(small_animal_sum_global / 1e9)
-print("medium_animal_sum_global")
-print(medium_animal_sum_global / 1e9)
-print("large_animal_sum_global")
-print(large_animal_sum_global / 1e9)
-print("dairy_cow_count_global")
-print(dairy_cow_count_global / 1e9)
+PRINT_ALL_THE_GLOBAL_ANIMALS = False
+if PRINT_ALL_THE_GLOBAL_ANIMALS:
+    print("small_animal_sum_global")
+    print(small_animal_sum_global / 1e9)
+    print("medium_animal_sum_global")
+    print(medium_animal_sum_global / 1e9)
+    print("large_animal_sum_global")
+    print(large_animal_sum_global / 1e9)
+    print("dairy_cow_count_global")
+    print(dairy_cow_count_global / 1e9)
 
 
 # add up GBR and F5707 (EU+27) to incorporate GBR (which is the UK),
@@ -440,10 +440,8 @@ head_count_csv[swaziland_index, 0] = "SWT"
 head_count_csv = np.delete(head_count_csv, (GBR_index), axis=0)
 
 
-print("head_count_csv")
-print(head_count_csv)
 np.savetxt(
-    "data/no_food_trade/processed_data/head_count_csv.csv",
+    "../../data/no_food_trade/processed_data/head_count_csv.csv",
     head_count_csv,
     delimiter=",",
     fmt="%s",

@@ -26,6 +26,7 @@ class Scenarios:
         self.PROTEIN_SET = False
         self.FAT_SET = False
         self.CULLING_PARAM_SET = False
+        self.MEAT_STRATEGY_SET = False
 
         # convenient to understand what scenario is being run exactly
         self.scenario_description = "Scenario properties:\n"
@@ -48,6 +49,7 @@ class Scenarios:
         assert self.PROTEIN_SET
         assert self.FAT_SET
         assert self.CULLING_PARAM_SET
+        assert self.MEAT_STRATEGY_SET
 
     # INITIALIZATION
 
@@ -72,7 +74,7 @@ class Scenarios:
         return constants_for_params
 
     def init_global_food_system_properties(self):
-        self.scenario_description += "\nglobal_food_system"
+        self.scenario_description += "\ncontinued trade"
         assert self.SCALE_SET == False
 
         constants_for_params = self.init_generic_scenario()
@@ -178,7 +180,7 @@ class Scenarios:
         return constants_for_params
 
     def init_country_food_system_properties(self, country_data):
-        self.scenario_description += "\ncountry_food_system"
+        self.scenario_description += "\nno food trade"
         assert self.SCALE_SET == False
 
         constants_for_params = self.init_generic_scenario()
@@ -331,7 +333,7 @@ class Scenarios:
     # FEED AND BIOFUELS
 
     def set_immediate_shutoff(self, constants_for_params):
-        self.scenario_description += "\nimmediate_shutoff"
+        self.scenario_description += "\nno feed/biofuel"
         assert self.NONHUMAN_CONSUMPTION_SET == False
         constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 0
         constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 0
@@ -340,7 +342,7 @@ class Scenarios:
         return constants_for_params
 
     def set_short_delayed_shutoff(self, constants_for_params):
-        self.scenario_description += "\nshort_delayed_shutoff"
+        self.scenario_description += "\n2month feed, 1month biofuel"
         assert self.NONHUMAN_CONSUMPTION_SET == False
         constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 2
         constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 1
@@ -349,7 +351,7 @@ class Scenarios:
         return constants_for_params
 
     def set_long_delayed_shutoff(self, constants_for_params):
-        self.scenario_description += "\nlong_delayed_shutoff"
+        self.scenario_description += "\n2month feed, 1month biofuel"
         assert self.NONHUMAN_CONSUMPTION_SET == False
         constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 3
         constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 2
@@ -358,7 +360,7 @@ class Scenarios:
         return constants_for_params
 
     def set_continued_feed_biofuels(self, constants_for_params):
-        self.scenario_description += "\ncontinued_feed_biofuels"
+        self.scenario_description += "\ncontinued feed/biofuel"
         assert self.NONHUMAN_CONSUMPTION_SET == False
         constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = constants_for_params[
             "NMONTHS"
@@ -370,10 +372,29 @@ class Scenarios:
         self.NONHUMAN_CONSUMPTION_SET = True
         return constants_for_params
 
+    # MEAT PRODUCTION STRATEGIES
+
+    def set_unchanged_proportions_feed_grazing(self, constants_for_params):
+        self.scenario_description += "\nunchanged feed to dairy"
+        assert self.MEAT_STRATEGY_SET == False
+
+        constants_for_params["USE_EFFICIENT_FEED_STRATEGY"] = False
+
+        self.MEAT_STRATEGY_SET = True
+        return constants_for_params
+
+    def set_efficient_feed_grazing_strategy(self, constants_for_params):
+        self.scenario_description += "\ndairy cow feed prioritized"
+        assert self.MEAT_STRATEGY_SET == False
+
+        constants_for_params["USE_EFFICIENT_FEED_STRATEGY"] = True
+
+        self.MEAT_STRATEGY_SET = True
+        return constants_for_params
+
     # EXCESS FEED
 
     def set_excess_to_zero(self, constants_for_params):
-        self.scenario_description += "\nexcess zero"
         assert self.EXCESS_SET == False
         constants_for_params["EXCESS_FEED_PERCENT"] = np.zeros(
             constants_for_params["NMONTHS"]
@@ -383,7 +404,6 @@ class Scenarios:
         return constants_for_params
 
     def set_excess(self, constants_for_params, excess):
-        self.scenario_description += "\n nonzero excess"
         assert self.EXCESS_SET == False
         constants_for_params["EXCESS_FEED_PERCENT"] = excess
 
@@ -393,7 +413,7 @@ class Scenarios:
     # WASTE
 
     def set_waste_to_zero(self, constants_for_params):
-        self.scenario_description += "\nwaste_to_zero"
+        self.scenario_description += "\nno waste"
         assert self.WASTE_SET == False
         constants_for_params["WASTE"] = {}
         constants_for_params["WASTE"]["SUGAR"] = 0  # %
@@ -433,13 +453,13 @@ class Scenarios:
         return total_waste
 
     def set_global_waste_to_tripled_prices(self, constants_for_params):
-        self.scenario_description += "\nglobal_waste_to_tripled_prices"
+        self.scenario_description += "\nwaste at 3x price"
         assert self.WASTE_SET == False
         """
         overall waste, on farm + distribution + retail
         3x prices (note, currently set to 2019, not 2020)
         """
-        RETAIL_WASTE = 5.75
+        RETAIL_WASTE = 5.44
 
         total_waste = self.get_total_global_waste(RETAIL_WASTE)
 
@@ -449,14 +469,14 @@ class Scenarios:
         return constants_for_params
 
     def set_global_waste_to_doubled_prices(self, constants_for_params):
-        self.scenario_description += "\nglobal_waste_to_doubled_prices"
+        self.scenario_description += "\nwaste at 2x price"
         assert self.WASTE_SET == False
         """
         overall waste, on farm + distribution + retail
         2x prices (note, currently set to 2019, not 2020)
         """
 
-        RETAIL_WASTE = 10.04
+        RETAIL_WASTE = 9.12
 
         total_waste = self.get_total_global_waste(RETAIL_WASTE)
 
@@ -466,13 +486,13 @@ class Scenarios:
         return constants_for_params
 
     def set_global_waste_to_baseline_prices(self, constants_for_params):
-        self.scenario_description += "\nglobal_waste_to_baseline_prices"
+        self.scenario_description += "\nnormal waste"
         assert self.WASTE_SET == False
         """
         overall waste, on farm+distribution+retail
         1x prices (note, currently set to 2019, not 2020)
         """
-        RETAIL_WASTE = 23.87
+        RETAIL_WASTE = 19.27
 
         total_waste = self.get_total_global_waste(RETAIL_WASTE)
 
@@ -507,7 +527,7 @@ class Scenarios:
         return total_waste
 
     def set_country_waste_to_tripled_prices(self, constants_for_params, country_data):
-        self.scenario_description += "\ncountry_waste_to_tripled_prices"
+        self.scenario_description += "\nwaste at 2x price"
         assert self.WASTE_SET == False
         """
         overall waste, on farm + distribution + retail
@@ -524,7 +544,7 @@ class Scenarios:
         return constants_for_params
 
     def set_country_waste_to_doubled_prices(self, constants_for_params, country_data):
-        self.scenario_description += "\ncountry_waste_to_doubled_prices"
+        self.scenario_description += "\nwaste at 2x price"
         assert self.WASTE_SET == False
         """
         overall waste, on farm + distribution + retail
@@ -540,7 +560,7 @@ class Scenarios:
         return constants_for_params
 
     def set_country_waste_to_baseline_prices(self, constants_for_params, country_data):
-        self.scenario_description += "\ncountry_waste_to_baseline_prices"
+        self.scenario_description += "\nbaseline waste"
         assert self.WASTE_SET == False
         """
         overall waste, on farm+distribution+retail
@@ -558,7 +578,7 @@ class Scenarios:
     # NUTRITION
 
     def set_baseline_nutrition_profile(self, constants_for_params):
-        self.scenario_description += "\nbaseline_nutrition_profile"
+        self.scenario_description += "\nbaseline nutrition"
         assert self.NUTRITION_PROFILE_SET == False
 
         constants_for_params["NUTRITION"] = {}
@@ -576,7 +596,7 @@ class Scenarios:
         return constants_for_params
 
     def set_catastrophe_nutrition_profile(self, constants_for_params):
-        self.scenario_description += "\ncatastrophe_nutrition_profile"
+        self.scenario_description += "\nminimum sufficient nutrition"
         assert self.NUTRITION_PROFILE_SET == False
 
         constants_for_params["NUTRITION"] = {}
@@ -596,25 +616,25 @@ class Scenarios:
     # STORED FOOD
 
     def set_no_stored_food(self, constants_for_params):
-        self.scenario_description += "\nstored_food_buffer_zero"
+        self.scenario_description += "\nfood stored <= 12 months"
         assert self.STORED_FOOD_BUFFER_SET == False
         """
-        Sets the stored food buffer as zero -- no stored food left at
-        the end of the simulation.
+        Sets the stored food between years as zero. No food is traded between the
+        12 month intervals seasons. Makes more sense if seasonality is assumed zero.
 
         However, in reality food in transit and food in grocery stores and
         warehouses means there would still likely be some food available at
         the end as a buffer.
 
         """
-        constants_for_params["ADD_STORED_FOOD"] = False
+        constants_for_params["STORE_FOOD_BETWEEN_YEARS"] = False
         constants_for_params["BUFFER_RATIO"] = 0
 
         self.STORED_FOOD_BUFFER_SET = True
         return constants_for_params
 
     def set_stored_food_buffer_zero(self, constants_for_params):
-        self.scenario_description += "\nno stored food from before simulation"
+        self.scenario_description += "\nfew stocks used"
         assert self.STORED_FOOD_BUFFER_SET == False
         """
         Sets the stored food buffer as zero -- no stored food left at
@@ -625,21 +645,21 @@ class Scenarios:
         the end as a buffer.
 
         """
-        constants_for_params["ADD_STORED_FOOD"] = True
+        constants_for_params["STORE_FOOD_BETWEEN_YEARS"] = True
         constants_for_params["BUFFER_RATIO"] = 0
 
         self.STORED_FOOD_BUFFER_SET = True
         return constants_for_params
 
     def set_stored_food_buffer_as_baseline(self, constants_for_params):
-        self.scenario_description += "\nstored_food_buffer_as_baseline"
+        self.scenario_description += "\nall stocks used"
         assert self.STORED_FOOD_BUFFER_SET == False
         """
         Sets the stored food buffer as 100% -- the typical stored food buffer
         in ~2020 left at the end of the simulation.
 
         """
-        constants_for_params["ADD_STORED_FOOD"] = True
+        constants_for_params["STORE_FOOD_BETWEEN_YEARS"] = True
         constants_for_params["BUFFER_RATIO"] = 1
 
         self.STORED_FOOD_BUFFER_SET = True
@@ -647,8 +667,33 @@ class Scenarios:
 
     # SEASONALITY
 
+    def set_country_no_seasonality_nuclear_winter(
+        self, constants_for_params, country_data
+    ):
+        self.scenario_description += "\nno crop seasonality"
+        assert self.SEASONALITY_SET == False
+        # fractional production per month
+        constants_for_params["SEASONALITY"] = [1 / 12 for i in range(1, 13)]
+
+        for i in range(1, 8):
+
+            last_year = 5
+
+            # TODO: remove this condition when we get year 6 and 7 of the data
+            if i >= last_year:
+                y = last_year
+            else:
+                y = i
+
+            constants_for_params["RATIO_GRASSES_YEAR" + str(i)] = (
+                1 + country_data["grasses_reduction_year" + str(y)]
+            )
+
+        self.SEASONALITY_SET = True
+        return constants_for_params
+
     def set_country_seasonality_baseline(self, constants_for_params, country_data):
-        self.scenario_description += "\ncountry_seasonality_baseline"
+        self.scenario_description += "\nnormal crop seasons"
         assert self.SEASONALITY_SET == False
         # fractional production per month
         constants_for_params["SEASONALITY"] = [
@@ -664,7 +709,7 @@ class Scenarios:
     def set_country_seasonality_nuclear_winter(
         self, constants_for_params, country_data
     ):
-        self.scenario_description += "\nset_country_seasonality_nuclear_winter"
+        self.scenario_description += "\nnormal crop seasons"
         assert self.SEASONALITY_SET == False
 
         # fractional production per month
@@ -690,7 +735,7 @@ class Scenarios:
         return constants_for_params
 
     def set_global_seasonality_baseline(self, constants_for_params):
-        self.scenario_description += "\nglobal_seasonality_baseline"
+        self.scenario_description += "\nnnormal crop seasons"
         assert self.SEASONALITY_SET == False
 
         # fractional production per month
@@ -716,7 +761,7 @@ class Scenarios:
         return constants_for_params
 
     def set_global_seasonality_nuclear_winter(self, constants_for_params):
-        self.scenario_description += "\nglobal_seasonality_nuclear_winter"
+        self.scenario_description += "\nnormal crop seasons"
         assert self.SEASONALITY_SET == False
 
         # most food grown in tropics, so set seasonality to typical in tropics
@@ -752,7 +797,7 @@ class Scenarios:
     # FISH
 
     def set_fish_nuclear_winter_reduction(self, constants_for_params):
-        self.scenario_description += "\nfish_nuclear_winter_reduction"
+        self.scenario_description += "\nreduced fish"
         assert self.FISH_SET == False
         constants_for_params["FISH_PERCENT_MONTHLY"] = list(
             np.array(
@@ -850,7 +895,7 @@ class Scenarios:
         return constants_for_params
 
     def set_fish_baseline(self, constants_for_params):
-        self.scenario_description += "\nfish_baseline"
+        self.scenario_description += "\nbaseline fish"
         assert self.FISH_SET == False
         # 100% of fishing remains in baseline
         constants_for_params["FISH_PERCENT_MONTHLY"] = np.array(
@@ -863,7 +908,7 @@ class Scenarios:
     # CROP DISRUPTION
 
     def set_disruption_to_crops_to_zero(self, constants_for_params):
-        self.scenario_description += "\ndisruption_to_crops_to_zero"
+        self.scenario_description += "\nno crop disruption"
         assert self.DISRUPTION_SET == False
 
         for i in range(1, 8):
@@ -873,7 +918,7 @@ class Scenarios:
         return constants_for_params
 
     def set_nuclear_winter_global_disruption_to_crops(self, constants_for_params):
-        self.scenario_description += "\nnuclear_winter_global_disruption_to_crops"
+        self.scenario_description += "\nnuclear winter crops"
         assert self.DISRUPTION_SET == False
 
         constants_for_params["RATIO_CROPS_YEAR1"] = 1 - 0.53
@@ -894,7 +939,7 @@ class Scenarios:
     def set_nuclear_winter_country_disruption_to_crops(
         self, constants_for_params, country_data
     ):
-        self.scenario_description += "\nnuclear_winter_country_disruption_to_crops"
+        self.scenario_description += "\nnuclear winter crops"
         assert self.DISRUPTION_SET == False
 
         constants_for_params["RATIO_CROPS_YEAR1"] = (
@@ -959,6 +1004,7 @@ class Scenarios:
         constants_for_params["STORED_FOOD_SMOOTHING"] = False
 
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
+        constants_for_params["ADD_STORED_FOOD"] = True
 
         constants_for_params["ADD_MAINTAINED_MEAT"] = True
         constants_for_params["ADD_MILK"] = True
@@ -1003,23 +1049,11 @@ class Scenarios:
         self.FAT_SET = True
         return constants_for_params
 
+    # SCENARIOS
+
     def get_resilient_food_scenario(self, constants_for_params):
-        self.scenario_description += "\nget_resilient_food_scenario"
+        self.scenario_description += "\nuse resilient foods"
         assert self.SCENARIO_SET == False
-
-        # maximize minimum of fat or protein or kcals
-        constants_for_params["INCLUDE_PROTEIN"] = True
-        constants_for_params["INCLUDE_FAT"] = True
-
-        if constants_for_params["INCLUDE_PROTEIN"]:
-            self.scenario_description += "\ninclude protein"
-        else:
-            self.scenario_description += "\ndon't include protein"
-
-        if constants_for_params["INCLUDE_FAT"]:
-            self.scenario_description += "\ninclude fat"
-        else:
-            self.scenario_description += "\ndon't include fat"
 
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 10
 
@@ -1058,6 +1092,7 @@ class Scenarios:
         constants_for_params["ADD_FISH"] = True
         constants_for_params["ADD_GREENHOUSES"] = True
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
+        constants_for_params["ADD_STORED_FOOD"] = True
         constants_for_params["ADD_MAINTAINED_MEAT"] = True
         constants_for_params["ADD_METHANE_SCP"] = True
         constants_for_params["ADD_SEAWEED"] = True
@@ -1066,7 +1101,7 @@ class Scenarios:
         return constants_for_params
 
     def get_no_resilient_food_scenario(self, constants_for_params):
-        self.scenario_description += "\nget_no_resilient_food_scenario"
+        self.scenario_description += "\nno resilient foods"
         assert self.SCENARIO_SET == False
 
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 0
@@ -1096,6 +1131,7 @@ class Scenarios:
         constants_for_params["ADD_FISH"] = True
         constants_for_params["ADD_GREENHOUSES"] = False
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
+        constants_for_params["ADD_STORED_FOOD"] = True
         constants_for_params["ADD_MAINTAINED_MEAT"] = True
         constants_for_params["ADD_METHANE_SCP"] = False
         constants_for_params["ADD_SEAWEED"] = False
@@ -1105,7 +1141,7 @@ class Scenarios:
 
     def cull_animals(self, constants_for_params):
         assert self.CULLING_PARAM_SET == False
-        self.scenario_description += "\ninclude culled animals"
+        self.scenario_description += "\ncull animals"
         constants_for_params["ADD_CULLED_MEAT"] = True
         self.CULLING_PARAM_SET = True
 
@@ -1113,7 +1149,7 @@ class Scenarios:
 
     def dont_cull_animals(self, constants_for_params):
         assert self.CULLING_PARAM_SET == False
-        self.scenario_description += "\ndon't include culled animals"
+        self.scenario_description += "\nno culled animals"
         constants_for_params["ADD_CULLED_MEAT"] = False
         self.CULLING_PARAM_SET = True
         return constants_for_params

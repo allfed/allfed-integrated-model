@@ -1,6 +1,10 @@
 import pandas as pd
 
-NO_TRADE_XLS = "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+print("importing food waste data...")
+
+NO_TRADE_XLS = (
+    "../../data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+)
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
 
@@ -38,8 +42,6 @@ df_waste = df_waste.iloc[
     0:138,
 ]
 
-print("Food waste")
-print(df_waste.head())
 df_waste.to_csv(
-    "data/no_food_trade/processed_data/food_waste_csv.csv", sep=",", index=False
+    "../../data/no_food_trade/processed_data/food_waste_csv.csv", sep=",", index=False
 )

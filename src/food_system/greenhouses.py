@@ -92,12 +92,6 @@ class Greenhouses:
 
             MONTHLY_KCALS = np.mean(outdoor_crops.months_cycle) / self.TOTAL_CROP_AREA
 
-            print("outdoor_crops.all_months_reductions")
-            print(outdoor_crops.all_months_reductions)
-            print("outdoor_crops.OG_KCAL_REDUCED")
-            print(outdoor_crops.OG_KCAL_REDUCED)
-            print("MONTHLY_KCALS")
-            print(MONTHLY_KCALS)
             KCALS_GROWN_PER_HECTARE_BEFORE_WASTE = MONTHLY_KCALS * (
                 1
                 - (

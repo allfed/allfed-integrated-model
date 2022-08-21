@@ -36,7 +36,7 @@ def run_model_with_resilient_foods(plot_figures=True):
     print(results.percent_people_fed)
     print("")
 
-    np.save("data/resilient_food_primary_results.npy", results, allow_pickle=True)
+    np.save("../../data/resilient_food_primary_results.npy", results, allow_pickle=True)
 
     scenarios_loader, constants_for_params = set_common_resilient_properties()
 
@@ -154,6 +154,10 @@ def set_common_resilient_properties():
         scenarios_loader.set_nuclear_winter_global_disruption_to_crops(
             constants_for_params
         )
+    )
+
+    constants_for_params = scenarios_loader.set_efficient_feed_grazing_strategy(
+        constants_for_params
     )
 
     constants_for_params = scenarios_loader.include_protein(constants_for_params)

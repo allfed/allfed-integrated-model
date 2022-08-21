@@ -27,6 +27,10 @@ class MonteCarlo:
             constants_for_params
         )
 
+        constants_for_params = scenarios_loader.set_efficient_feed_grazing_strategy(
+            constants_for_params
+        )
+
         constants_for_params = scenarios_loader.get_resilient_food_scenario(
             constants_for_params
         )
@@ -70,14 +74,14 @@ class MonteCarlo:
 
         if load_saved_mc:
             mc_variables = np.load(
-                "data/mc_variables_" + str(N_monte_carlo) + ".npy",
+                "../../data/mc_variables_" + str(N_monte_carlo) + ".npy",
                 allow_pickle=True,
             ).item()
             print("Computing input variables")
         else:
             mc_variables = MonteCarlo.get_variables(N_monte_carlo, constants_for_params)
             np.save(
-                "data/mc_variables_" + str(N_monte_carlo) + ".npy",
+                "../../data/mc_variables_" + str(N_monte_carlo) + ".npy",
                 mc_variables,
                 allow_pickle=True,
             )
@@ -85,7 +89,7 @@ class MonteCarlo:
             Plotter.plot_fig_s1(mc_variables, N_monte_carlo)
         if load_saved_comp:
             comp_variables = np.load(
-                "data/comp_variables_" + str(N_comparison) + ".npy",
+                "../../data/comp_variables_" + str(N_comparison) + ".npy",
                 allow_pickle=True,
             ).item()
         else:
@@ -94,7 +98,7 @@ class MonteCarlo:
                 N_comparison, constants_for_params
             )
             np.save(
-                "data/comp_variables_" + str(N_comparison) + ".npy",
+                "../../data/comp_variables_" + str(N_comparison) + ".npy",
                 comp_variables,
                 allow_pickle=True,
             )
@@ -108,7 +112,7 @@ class MonteCarlo:
 
         if load_saved_mc:
             all_fed = np.load(
-                "data/all_fed_" + str(N_monte_carlo) + ".npy", allow_pickle=True
+                "../../data/all_fed_" + str(N_monte_carlo) + ".npy", allow_pickle=True
             )
         else:
             print("Running Monte Carlo")
@@ -116,17 +120,17 @@ class MonteCarlo:
                 mc_variables, N_monte_carlo, constants_for_params
             )
             np.save(
-                "data/all_fed_" + str(N_monte_carlo) + ".npy",
+                "../../data/all_fed_" + str(N_monte_carlo) + ".npy",
                 all_fed,
                 allow_pickle=True,
             )
 
         if load_saved_comp:
             removed = np.load(
-                "data/removed_" + str(N_comparison) + ".npy", allow_pickle=True
+                "../../data/removed_" + str(N_comparison) + ".npy", allow_pickle=True
             ).item()
             added = np.load(
-                "data/added_" + str(N_comparison) + ".npy", allow_pickle=True
+                "../../data/added_" + str(N_comparison) + ".npy", allow_pickle=True
             ).item()
         else:
             print("Running Comparison")
@@ -135,12 +139,12 @@ class MonteCarlo:
             )
 
             np.save(
-                "data/removed_" + str(N_comparison) + ".npy",
+                "../../data/removed_" + str(N_comparison) + ".npy",
                 removed,
                 allow_pickle=True,
             )
             np.save(
-                "data/added_" + str(N_comparison) + ".npy",
+                "../../data/added_" + str(N_comparison) + ".npy",
                 added,
                 allow_pickle=True,
             )

@@ -1,6 +1,10 @@
 import pandas as pd
 
-NO_TRADE_XLS = "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+print("importing feed data...")
+
+NO_TRADE_XLS = (
+    "../../data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+)
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
 
@@ -25,6 +29,6 @@ df_feed = df_feed.iloc[
     0:138,
 ]
 
-print("Feed")
-print(df_feed.head())
-df_feed.to_csv("data/no_food_trade/processed_data/feed_csv.csv", sep=",", index=False)
+df_feed.to_csv(
+    "../../data/no_food_trade/processed_data/feed_csv.csv", sep=",", index=False
+)

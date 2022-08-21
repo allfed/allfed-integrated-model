@@ -161,7 +161,6 @@ class OutdoorCrops(Food):
         OCT_KCALS_OG = OCT_YIELD * 4e6 / 1e9
         NOV_KCALS_OG = NOV_YIELD * 4e6 / 1e9
         DEC_KCALS_OG = DEC_YIELD * 4e6 / 1e9
-
         RATIO_KCALS_POSTDISASTER_1Y = constants_for_params["RATIO_CROPS_YEAR1"]
         RATIO_KCALS_POSTDISASTER_2Y = constants_for_params["RATIO_CROPS_YEAR2"]
         RATIO_KCALS_POSTDISASTER_3Y = constants_for_params["RATIO_CROPS_YEAR3"]
@@ -258,13 +257,6 @@ class OutdoorCrops(Food):
 
             self.NO_ROT_KCALS_GROWN.append(month_kcals * (1 - baseline_reduction))
 
-        print("")
-        print("")
-        print("self.ANNUAL_YIELD * 4e6 /POP")
-        print(self.ANNUAL_YIELD * 4e6 / 365 / self.conversions.population)
-        print("")
-        print("")
-        print("")
         PLOT_WITH_SEASONALITY = False
         if PLOT_WITH_SEASONALITY:
             print("Plotting with seasonality")
@@ -272,7 +264,8 @@ class OutdoorCrops(Food):
             ratios = np.divide(
                 self.NO_ROT_KCALS_GROWN, self.ANNUAL_YIELD * 4e6 / 1e9 / 12
             )
-
+            print("ratios")
+            print(ratios)
             # Plotter.plot_monthly_reductions_seasonally(ratios)
             Plotter.plot_monthly_reductions_seasonally(ratios)
 

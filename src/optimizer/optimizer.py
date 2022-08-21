@@ -1,10 +1,7 @@
 """
-################################Optimizer Model################################
-##                                                                            #
-## In this model, we estimate the macronutrient production allocated optimally#
-##  over time including models for traditional and resilient foods.           #
-##                                                                            #
-###############################################################################
+Optimizer Model
+In this model, we estimate the macronutrient production allocated optimally
+over time including models for traditional and resilient foods.
 """
 import pulp
 from pulp import LpMaximize, LpProblem, LpVariable
@@ -29,7 +26,6 @@ class Optimizer:
         self.single_valued_constants = single_valued_constants
         self.multi_valued_constants = multi_valued_constants
 
-        # MODEL GENERATION LOOP #
         self.time_months = []
 
         NMONTHS = single_valued_constants["NMONTHS"]
@@ -54,6 +50,8 @@ class Optimizer:
         variables["humans_fed_kcals"] = [0] * NMONTHS
         variables["humans_fed_fat"] = [0] * NMONTHS
         variables["humans_fed_protein"] = [0] * NMONTHS
+
+        # MODEL GENERATION LOOP #
 
         for month in range(0, self.single_valued_constants["NMONTHS"]):
             if single_valued_constants["ADD_SEAWEED"]:
@@ -177,14 +175,7 @@ class Optimizer:
             self.single_valued_constants["stored_food"].kcals,
         )
 
-        if month == 0:  # first Month
-            model += (
-                variables["stored_food_start"][0]
-                == self.single_valued_constants["stored_food"].kcals,
-                "Stored_Food_Start_Month_0_Constraint",
-            )
-
-        elif month > 12:  # within first year:
+        if month > 12:  # within first year:
             model += (
                 variables["stored_food_eaten"][month] == 0,
                 "Stored_Food_Eaten_Month_" + str(month) + "_Constraint",
@@ -201,18 +192,7 @@ class Optimizer:
             )
 
         else:
-            model += (
-                variables["stored_food_start"][month]
-                == variables["stored_food_end"][month - 1],
-                "Stored_Food_Start_Month_" + str(month) + "_Constraint",
-            )
 
-            model += (
-                variables["stored_food_end"][month] == 0,
-                "Stored_Food_End_Month_" + str(month) + "_Constraint",
-            )
-
-        if month <= 12:
             model += (
                 variables["stored_food_end"][month]
                 == variables["stored_food_start"][month]
@@ -223,8 +203,7 @@ class Optimizer:
         return (model, variables)
 
     def add_stored_food_to_model(self, model, variables, month):
-        IMITATE_XIA_ET_AL = False
-        if IMITATE_XIA_ET_AL:
+        if not self.single_valued_constants["STORE_FOOD_BETWEEN_YEARS"]:
             return self.add_stored_food_to_model_only_first_year(
                 model, variables, month
             )
@@ -337,8 +316,8 @@ class Optimizer:
         return (model, variables)
 
     def add_outdoor_crops_to_model_no_relocation(self, model, variables, month):
-        IMITATE_XIA_ET_AL = False  # they don't consider storage at all
-        if IMITATE_XIA_ET_AL:
+        # useful to imitate xia et al results (assume all the food eaten in first year)
+        if not self.single_valued_constants["STORE_FOOD_BETWEEN_YEARS"]:
             return self.add_outdoor_crops_to_model_no_storage(model, variables, month)
 
         variables["crops_food_storage_no_relocation"][month] = LpVariable(

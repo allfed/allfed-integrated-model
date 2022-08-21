@@ -1,6 +1,10 @@
 import pandas as pd
 
-NO_TRADE_XLS = "data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+print("importing seafood data...")
+
+NO_TRADE_XLS = (
+    "../../data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+)
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
 
@@ -24,8 +28,6 @@ df_aquaculture = df_aquaculture.iloc[
     0:138,
 ]
 
-print("aquaculture")
-print(df_aquaculture.head())
 df_aquaculture.to_csv(
-    "data/no_food_trade/processed_data/aquaculture_csv.csv", sep=",", index=False
+    "../../data/no_food_trade/processed_data/aquaculture_csv.csv", sep=",", index=False
 )

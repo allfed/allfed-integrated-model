@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
 
+print("importing wood pulp production...")
 
-PULP_CSV = "data/no_food_trade/raw_data/FAOSTAT_wood_pulp_2020.csv"
+PULP_CSV = "../../data/no_food_trade/raw_data/FAOSTAT_wood_pulp_2020.csv"
 
 pulp_countries = [
     "AFG",
@@ -297,7 +298,9 @@ for i in range(0, len(pulp_countries)):
     pulp_country = pulp_countries[i]
     country_name = country_names[i]
     if pulp_country not in list(df_pulp_countries["Area Code (ISO3)"]):
-        print("missing " + country_name)
+        PRINT_ALL_THE_MISSING_WOOD_PULP_COUNTRIES = False
+        if PRINT_ALL_THE_MISSING_WOOD_PULP_COUNTRIES:
+            print("missing " + country_name)
         pulp = 0
     else:
         pulp = float(
@@ -338,7 +341,7 @@ pulp_csv["wood_pulp_tonnes"] = pulp_csv["wood_pulp_tonnes"].astype(float)
 pulp_csv["percent_of_global_production"] = pulp_csv["wood_pulp_tonnes"] / (
     pulp_csv["wood_pulp_tonnes"].sum()
 )
-print("pulp_csv")
-print(pulp_csv.head())
 
-pulp_csv.to_csv("data/no_food_trade/processed_data/pulp_csv.csv", sep=",", index=False)
+pulp_csv.to_csv(
+    "../../data/no_food_trade/processed_data/pulp_csv.csv", sep=",", index=False
+)

@@ -14,8 +14,14 @@ import sys
 from src.scenarios import run_model_baseline
 from src.scenarios import run_model_no_trade_baseline
 from src.scenarios import run_model_no_trade_no_resilient_foods
+from src.scenarios import run_model_no_trade_with_resilient_foods
 from src.scenarios import run_model_no_resilient_foods
 from src.scenarios import run_model_with_resilient_foods
+
+
+import os
+
+os.chdir("../src/scenarios")
 
 
 def test_run_model_baseline():
@@ -39,29 +45,31 @@ def test_run_baseline_by_country_no_trade():
     Returns:
         None
     """
-    run_model_no_trade_baseline.run_baseline_by_country_no_trade(
-        plot_map=False,
-        show_figures=False,
-        create_pptx_with_all_countries=False,
-        scenario_option=[],
-    )
+    run_model_no_trade_baseline.main(["single", "no_pptx", "no_plot"])
 
 
 def test_run_nuclear_winter_by_country_no_trade_no_resilient_foods():
     """
-    Runs the baseline by country and without trade model for testing
+    Runs the nuclear winter by country and without trade model for testing
 
     Arguments:
 
     Returns:
         None
     """
-    run_model_no_trade_no_resilient_foods.run_nuclear_winter_by_country_no_trade(
-        plot_map=False,
-        show_figures=False,
-        create_pptx_with_all_countries=False,
-        scenario_option=[],
-    )
+    run_model_no_trade_no_resilient_foods.main(["single", "no_pptx", "no_plot"])
+
+
+def test_run_nuclear_winter_by_country_no_trade_with_resilient_foods():
+    """
+    Runs the nuclear winter with res food by country and without trade model for testing
+
+    Arguments:
+
+    Returns:
+        None
+    """
+    run_model_no_trade_with_resilient_foods.main(["single", "no_pptx", "no_plot"])
 
 
 def test_run_model_no_resilient_foods():
@@ -105,6 +113,7 @@ if __name__ == "__main__":
     test_run_model_baseline()
     test_run_baseline_by_country_no_trade()
     test_run_nuclear_winter_by_country_no_trade_no_resilient_foods()
+    test_run_nuclear_winter_by_country_no_trade_with_resilient_foods()
     test_run_model_no_resilient_foods()
     test_run_model_with_resilient_foods()
     test_run_monte_carlo()
