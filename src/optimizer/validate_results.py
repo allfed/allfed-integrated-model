@@ -241,7 +241,9 @@ class Validator:
 
         assert interpreted_results.scp.all_greater_than_or_equal_to_zero()
 
-        assert interpreted_results.greenhouse.all_greater_than_or_equal_to_zero()
+        assert interpreted_results.greenhouse.get_rounded_to_decimal(
+            6
+        ).all_greater_than_or_equal_to_zero()
 
         assert interpreted_results.fish.all_greater_than_or_equal_to_zero()
         assert interpreted_results.culled_meat_plus_grazing_cattle_maintained.get_rounded_to_decimal(

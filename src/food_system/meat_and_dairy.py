@@ -45,11 +45,15 @@ class MeatAndDairy:
 
         # Human Inedible Produced Primary Dairy and Cattle Meat #########
         self.human_inedible_feed = np.array([])
+        self.ratio_human_inedible_feed = np.array([])
         for i in range(1, 8):
 
             ratio_human_inedible_feed = constants_for_params[
                 "RATIO_GRASSES_YEAR" + str(i)
             ]
+            self.ratio_human_inedible_feed = np.append(
+                self.ratio_human_inedible_feed, [ratio_human_inedible_feed] * 12
+            )
             assert (
                 0 <= ratio_human_inedible_feed <= 10000
             ), "Error: Unreasonable ratio of grass production"
@@ -184,69 +188,123 @@ class MeatAndDairy:
     # the following two functions are less efficient alternatives for bad adaptation
 
     def calculate_continued_ratios_meat_dairy_grazing(self, constants_for_params):
-        # similar assumption as Xia et al paper.
-        # Portion of grass goes proportional to the ratio of meat cattle to milk cattle
-        # total heads precatastrophe.
-        heads_dairy_cows = constants_for_params["INITIAL_MILK_CATTLE"]
-        # total head count of large sized animals minus milk cows
-        total_heads_cattle = constants_for_params["INIT_LARGE_ANIMALS_WITH_MILK_COWS"]
 
-        ratio_grazing_meat = (
-            total_heads_cattle - heads_dairy_cows
-        ) / total_heads_cattle
-        ratio_grazing_milk = 1 - ratio_grazing_meat
+        # This condition is set in the scenarios file as well. They should both be set
+        # to the same value.
+        # Setting it to true mimics the Xia et al result, but is less accurate.
+        # (if subtracting feed directly from outdoor crops)
+        SUBTRACT_FEED_DIRECTLY = False
 
-        assert 0 <= ratio_grazing_milk <= 1
-        assert 0 <= ratio_grazing_meat <= 1
+        if SUBTRACT_FEED_DIRECTLY:
+            ratio_grazing_meat = 0.46
+            ratio_grazing_milk = 0.46
 
-        self.grazing_milk_produced_prewaste = (
-            ratio_grazing_milk
-            * self.human_inedible_feed
-            / self.INEDIBLE_TO_MILK_CONVERSION
-        )
+            self.grazing_milk_produced_prewaste = (
+                self.MILK_LIMIT_PREWASTE
+                * self.ratio_human_inedible_feed
+                * ratio_grazing_milk
+            )
+            self.cattle_grazing_maintained_prewaste = (
+                self.TONS_BEEF_MONTHLY_BASELINE_PREWASTE
+                * self.ratio_human_inedible_feed
+                * ratio_grazing_meat
+            )
+        else:
+            # Portion of grass goes proportional to the ratio of meat cattle to milk cattle
+            # total heads precatastrophe.
 
-        self.cattle_grazing_maintained_prewaste = (
-            ratio_grazing_meat
-            * self.human_inedible_feed
-            / self.INEDIBLE_TO_CATTLE_CONVERSION
-        )
+            heads_dairy_cows = constants_for_params["INITIAL_MILK_CATTLE"]
+            # total head count of large sized animals minus milk cows
+            total_heads_cattle = constants_for_params[
+                "INIT_LARGE_ANIMALS_WITH_MILK_COWS"
+            ]
 
-    def calculate_continued_ratios_meat_dairy_grain(self, fed_to_animals_prewaste):
-        # similar assumption as Xia et al paper.
-        # Portion of grain goes proportional to usage of feed from meat cattle to
-        # usage of feed for chicken/pork precatastrophe.
-        # Usage of human edible feed for dairy is ignored as it is small.
-        # Usage of human inedible feed for meat is ignored as it is small.
+            ratio_grazing_meat = (
+                total_heads_cattle - heads_dairy_cows
+            ) / total_heads_cattle
+            ratio_grazing_milk = 1 - ratio_grazing_meat
 
-        feed_for_chicken_pork_precatastrophe = (
-            self.CHICKEN_AND_PORK_LIMIT_PREWASTE
-            * self.EDIBLE_TO_CHICKEN_PORK_CONVERSION
-        )
-        feed_for_beef_precatastrophe = (
-            self.TONS_BEEF_MONTHLY_BASELINE_PREWASTE * self.EDIBLE_TO_CATTLE_CONVERSION
-        )
+            assert 0 <= ratio_grazing_milk <= 1
+            assert 0 <= ratio_grazing_meat <= 1
 
-        ratio_beef_feed = feed_for_beef_precatastrophe / (
-            feed_for_chicken_pork_precatastrophe + feed_for_beef_precatastrophe
-        )
+            self.grazing_milk_produced_prewaste = (
+                ratio_grazing_milk
+                * self.human_inedible_feed
+                / self.INEDIBLE_TO_MILK_CONVERSION
+            )
 
-        ratio_chicken_pork_feed = 1 - ratio_beef_feed
+            self.cattle_grazing_maintained_prewaste = (
+                ratio_grazing_meat
+                * self.human_inedible_feed
+                / self.INEDIBLE_TO_CATTLE_CONVERSION
+            )
 
-        assert 0 <= ratio_beef_feed <= 1
-        assert 0 <= ratio_chicken_pork_feed <= 1
+    def calculate_continued_ratios_meat_dairy_grain(
+        self, fed_to_animals_prewaste, outdoor_crops
+    ):
 
-        excess_dry_cal_tons = fed_to_animals_prewaste.kcals * 1e9 / 4e6
+        # This condition is set in the scenarios file as well. They should both be set
+        # to the same value.
+        # Setting it to true mimics the Xia et al result, but is less accurate.
+        # (if subtracting feed directly from outdoor crops)
+        SUBTRACT_FEED_DIRECTLY = False
 
-        self.cattle_grain_fed_maintained_prewaste = (
-            excess_dry_cal_tons * ratio_beef_feed / self.EDIBLE_TO_CATTLE_CONVERSION
-        )
+        if SUBTRACT_FEED_DIRECTLY:
+            # similar assumption as Xia et al paper.
 
-        self.chicken_pork_maintained_prewaste = (
-            excess_dry_cal_tons
-            * ratio_chicken_pork_feed
-            / self.EDIBLE_TO_CHICKEN_PORK_CONVERSION
-        )
-        self.grain_fed_milk_produced_prewaste = np.array([0] * self.NMONTHS)
+            ratio_grainfed_meat = 0.54
+            ratio_grainfed_milk = 0.54
+
+            self.grain_fed_milk_produced_prewaste = (
+                self.MILK_LIMIT_PREWASTE
+                * outdoor_crops.all_months_reductions
+                * ratio_grainfed_milk
+            )
+            self.cattle_grain_fed_maintained_prewaste = (
+                self.TONS_BEEF_MONTHLY_BASELINE_PREWASTE
+                * outdoor_crops.all_months_reductions
+                * ratio_grainfed_meat
+            )
+            self.chicken_pork_maintained_prewaste = (
+                self.TONS_BEEF_MONTHLY_BASELINE_PREWASTE
+                * outdoor_crops.all_months_reductions
+                * ratio_grainfed_meat
+            )
+        else:
+            # Portion of grain goes proportional to usage of feed from meat cattle to
+            # usage of feed for chicken/pork precatastrophe.
+            # Usage of human edible feed for dairy is ignored as it is small.
+            # Usage of human inedible feed for meat is ignored as it is small.
+            feed_for_chicken_pork_precatastrophe = (
+                self.CHICKEN_AND_PORK_LIMIT_PREWASTE
+                * self.EDIBLE_TO_CHICKEN_PORK_CONVERSION
+            )
+            feed_for_beef_precatastrophe = (
+                self.TONS_BEEF_MONTHLY_BASELINE_PREWASTE
+                * self.EDIBLE_TO_CATTLE_CONVERSION
+            )
+
+            ratio_beef_feed = feed_for_beef_precatastrophe / (
+                feed_for_chicken_pork_precatastrophe + feed_for_beef_precatastrophe
+            )
+
+            ratio_chicken_pork_feed = 1 - ratio_beef_feed
+
+            assert 0 <= ratio_beef_feed <= 1
+            assert 0 <= ratio_chicken_pork_feed <= 1
+
+            excess_dry_cal_tons = fed_to_animals_prewaste.kcals * 1e9 / 4e6
+
+            self.cattle_grain_fed_maintained_prewaste = (
+                excess_dry_cal_tons * ratio_beef_feed / self.EDIBLE_TO_CATTLE_CONVERSION
+            )
+
+            self.chicken_pork_maintained_prewaste = (
+                excess_dry_cal_tons
+                * ratio_chicken_pork_feed
+                / self.EDIBLE_TO_CHICKEN_PORK_CONVERSION
+            )
+            self.grain_fed_milk_produced_prewaste = np.array([0] * self.NMONTHS)
 
     def calculate_meat_and_dairy_from_grain(self, fed_to_animals_prewaste):
 
@@ -428,22 +486,11 @@ class MeatAndDairy:
         all_non_negative = np.array(ratio_maintained_cattle >= 0).all()
         assert all_non_negative
 
-        # make sure for the months we really care about we're not
-        # exceeding present-day cattle meat maintained production
-        # assert((ratio_maintained_cattle <= 1)[0:47].all())
-        if (ratio_maintained_cattle[0:47] >= 1).any():
+        if (ratio_maintained_cattle >= 1).any():
             PRINT_CATTLE_WARNING = False
             if PRINT_CATTLE_WARNING:
                 print("")
-                print(
-                    "WARNING: cattle maintained is exceeding 2020 baseline levels in months:"
-                )
-                print(np.where(ratio_maintained_cattle[0:47] >= 1))
-                print(
-                    """Consider whether the predicted amount of
-                     human edible feed fed to animals is reasonable."""
-                )
-                print("")
+                print("WARNING: cattle maintained is exceeding 2020 baseline levels")
 
         # does not consider waste
         if present_day_tons_per_month_chicken_pork_prewaste > 0:
@@ -456,11 +503,20 @@ class MeatAndDairy:
                 len(self.chicken_pork_maintained_prewaste)
             )
 
+        assert (self.ratio_maintained_chicken_pork.round(8) >= 0).all()
+
+        # if there's some very small negative value here, just round it off to zero
+        if (self.ratio_maintained_chicken_pork <= 0).any():
+            self.ratio_maintained_chicken_pork = (
+                self.ratio_maintained_chicken_pork.round(8)
+            )
         assert (self.ratio_maintained_chicken_pork >= 0).all()
 
         all_one_or_lower = (self.ratio_maintained_chicken_pork <= 1).all()
 
-        if not all_one_or_lower:
+        PRINT_CHICKEN_PORK_WARNING = False
+
+        if not all_one_or_lower and PRINT_CHICKEN_PORK_WARNING:
             print("At least one month has higher chicken and pork above")
             print("baseline levels. This may be surprising if we are running a global")
             print("model, but is to be expected in at least some countries.")

@@ -15,10 +15,9 @@ import os
 import pandas as pd
 from src.utilities.make_powerpoint import MakePowerpoint
 
+import git
 
-# out commented this, because geoplot has really annyoing dependencies and
-# I cannot get it to run on Github Actions (Florian)
-# import geoplot as gplt
+repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 # in some linux win manager setups matplotlib plotting doesn't seem to play nice
 # matplotlib.use('Svg')
@@ -44,8 +43,6 @@ class Plotter:
         add_slide_with_fig=True,
         description="",
     ):
-        print("plot_figure")
-        print(plot_figure)
         if (not plot_figure) and (not add_slide_with_fig):
             return
 
@@ -57,7 +54,7 @@ class Plotter:
             "#71797E",
             "#76d7ea",
             "#056608",
-            "#e8eae1",
+            "#f3f4e3",
             "#ff0606",
             "#a5d610",
             "#ffeb7a",
@@ -205,7 +202,7 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         fig.suptitle(newtitle)
-        saveloc = "../../results/large_reports/no_trade" + newtitle + ".png"
+        saveloc = repo_root + "/results/large_reports/no_trade" + newtitle + ".png"
         plt.savefig(
             saveloc,
             dpi=300,
@@ -233,7 +230,7 @@ class Plotter:
             "#71797E",
             "#76d7ea",
             "#056608",
-            "#e8eae1",
+            "#f3f4e3",
             "#ff0606",
             "#a5d610",
             "#ffeb7a",
@@ -381,7 +378,7 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig("../../results/fig_2abcd.png")
+        plt.savefig(repo_root + "/results/fig_2abcd.png")
         print("saved figure 2abcd")
         plt.show()
 
@@ -478,7 +475,7 @@ class Plotter:
                 ax_hist.set(title="Monte Carlo outcomes")
 
         plt.tight_layout()
-        plt.savefig("../../results/fig_3ab.png")
+        plt.savefig(repo_root + "/results/fig_3ab.png")
         print("saved figure 3ab")
         plt.show()
 
@@ -556,7 +553,7 @@ class Plotter:
         plt.tight_layout()
 
         plt.rcParams["figure.figsize"] = [12, 9]
-        plt.savefig("../../results/fig_s1.png")
+        plt.savefig(repo_root + "/results/fig_s1.png")
         print("saved figure s1")
         plt.show()
 
@@ -568,7 +565,7 @@ class Plotter:
             "#71797E",
             "#76d7ea",
             "#056608",
-            "#e8eae1",
+            "#f3f4e3",
             "#ff0606",
             "#a5d610",
             "#ffeb7a",
@@ -723,7 +720,7 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig("../../results/fig_s2abcd.png")
+        plt.savefig(repo_root + "/results/fig_s2abcd.png")
         print("saved figure s2abcd")
         plt.show()
 
@@ -955,7 +952,7 @@ class Plotter:
     def plot_fig_s1abcd(crs, interpreter1, interpreter2, xlim, showplot=False):
 
         # Plotter.add_to_slides_showing_each_food(interpreter1,interpreter2)
-        save_title_string = "Morgan you did not define this varialbe in this function"
+        save_title_string = "Baseline 2020"
         legend = Plotter.get_people_fed_legend(interpreter1, False)
         fig = plt.figure()
         pal = [
@@ -963,7 +960,7 @@ class Plotter:
             "#71797E",
             "#76d7ea",
             "#056608",
-            "#e8eae1",
+            "#f3f4e3",
             "#ff0606",
             "#a5d610",
             "#ffeb7a",
@@ -1055,7 +1052,6 @@ class Plotter:
                     ha="right",
                 )
                 plt.xlabel("Months since May ASRS onset")
-
                 ax.plot(
                     interpreter.time_months_middle,
                     interpreter.kcals_fed,
@@ -1112,7 +1108,7 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         if not showplot:
-            saveloc = "../../results/fig_s1abcd.png"
+            saveloc = repo_root + "/results/fig_s1abcd.png"
             crs.mp.insert_slide(
                 title_below=save_title_string,
                 description="plot of all foods added up",
@@ -1327,7 +1323,7 @@ class Plotter:
         plt.tight_layout()
         fig.suptitle(title)
 
-        saveloc = "../../results/large_reports/" + title + ".png"
+        saveloc = repo_root + "/results/large_reports/" + title + ".png"
 
         plt.savefig(
             saveloc,
@@ -1385,7 +1381,7 @@ class Plotter:
         plt.tight_layout()
         fig.suptitle(title)
 
-        saveloc = "../../results/large_reports/" + title + ".png"
+        saveloc = repo_root + "/results/large_reports/" + title + ".png"
 
         plt.savefig(
             saveloc,
@@ -1424,7 +1420,9 @@ class Plotter:
 
         # pp.title(save_title_string)
         # plt.close()
-        saveloc = "../../results/large_reports/map_ratio_fed_" + ratio_fed + ".png"
+        saveloc = (
+            repo_root + "/results/large_reports/map_ratio_fed_" + ratio_fed + ".png"
+        )
         fig.savefig(
             saveloc,
             dpi=300,
@@ -1449,6 +1447,6 @@ class Plotter:
 
     @classmethod
     def end_pptx(crs, saveloc):
-        if not os.path.exists("../../results/large_reports"):
-            os.mkdir("../../results/large_reports")
+        if not os.path.exists(repo_root + "/results/large_reports"):
+            os.mkdir(repo_root + "/results/large_reports")
         crs.mp.save_ppt(saveloc)

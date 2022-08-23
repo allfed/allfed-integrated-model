@@ -1,0 +1,515 @@
+[1mdiff --git a/scripts/create_all_no_trade_scenario_pptx.sh b/scripts/create_all_no_trade_scenario_pptx.sh[m
+[1mindex f3f2ef4..7e77913 100755[m
+[1m--- a/scripts/create_all_no_trade_scenario_pptx.sh[m
+[1m+++ b/scripts/create_all_no_trade_scenario_pptx.sh[m
+[36m@@ -1,28 +1,28 @@[m
+ #!/bin/bash[m
+ cd ../src/scenarios[m
+ [m
+[31m-# create a plot for each country with a single set of assumptions[m
+[31m-echo ""[m
+[31m-echo ""[m
+[31m-echo ""[m
+[31m-echo "BASELINE"[m
+[31m-echo ""[m
+[31m-echo ""[m
+[31m-python run_model_no_trade_baseline.py single pptx no_plot[m
+[31m-echo "================================================="[m
+[31m-echo ""[m
+[31m-echo ""[m
+[31m-echo "NO_RESILIENT_FOODS"[m
+[31m-echo ""[m
+[31m-echo ""[m
+[31m-python run_model_no_trade_no_resilient_foods.py single pptx no_plot[m
+[31m-echo "================================================="[m
+[31m-echo ""[m
+[31m-echo ""[m
+[31m-echo "WITH_RESILIENT_FOODS"[m
+[31m-echo ""[m
+[31m-echo ""[m
+[31m-python run_model_no_trade_with_resilient_foods.py single pptx no_plot[m
+[32m+[m[32m# # create a plot for each country with a single set of assumptions[m
+[32m+[m[32m# echo ""[m
+[32m+[m[32m# echo ""[m
+[32m+[m[32m# echo ""[m
+[32m+[m[32m# echo "BASELINE"[m
+[32m+[m[32m# echo ""[m
+[32m+[m[32m# echo ""[m
+[32m+[m[32m# python run_model_no_trade_baseline.py single pptx no_plot[m
+[32m+[m[32m# echo "================================================="[m
+[32m+[m[32m# echo ""[m
+[32m+[m[32m# echo ""[m
+[32m+[m[32m# echo "NO_RESILIENT_FOODS"[m
+[32m+[m[32m# echo ""[m
+[32m+[m[32m# echo ""[m
+[32m+[m[32m# python run_model_no_trade_no_resilient_foods.py single pptx no_plot[m
+[32m+[m[32m# echo "================================================="[m
+[32m+[m[32m# echo ""[m
+[32m+[m[32m# echo ""[m
+[32m+[m[32m# echo "WITH_RESILIENT_FOODS"[m
+[32m+[m[32m# echo ""[m
+[32m+[m[32m# echo ""[m
+[32m+[m[32m# python run_model_no_trade_with_resilient_foods.py single pptx no_plot[m
+ [m
+ # create a map plot for the world with various sets of assumptions[m
+ echo ""[m
+[1mdiff --git a/src/food_system/meat_and_dairy.py b/src/food_system/meat_and_dairy.py[m
+[1mindex d60665e..566c168 100644[m
+[1m--- a/src/food_system/meat_and_dairy.py[m
+[1m+++ b/src/food_system/meat_and_dairy.py[m
+[36m@@ -45,11 +45,15 @@[m [mclass MeatAndDairy:[m
+ [m
+         # Human Inedible Produced Primary Dairy and Cattle Meat #########[m
+         self.human_inedible_feed = np.array([])[m
+[32m+[m[32m        self.ratio_human_inedible_feed = np.array([])[m
+         for i in range(1, 8):[m
+ [m
+             ratio_human_inedible_feed = constants_for_params[[m
+                 "RATIO_GRASSES_YEAR" + str(i)[m
+             ][m
+[32m+[m[32m            self.ratio_human_inedible_feed = np.append([m
+[32m+[m[32m                self.ratio_human_inedible_feed, [ratio_human_inedible_feed] * 12[m
+[32m+[m[32m            )[m
+             assert ([m
+                 0 <= ratio_human_inedible_feed <= 10000[m
+             ), "Error: Unreasonable ratio of grass production"[m
+[36m@@ -187,66 +191,101 @@[m [mclass MeatAndDairy:[m
+         # similar assumption as Xia et al paper.[m
+         # Portion of grass goes proportional to the ratio of meat cattle to milk cattle[m
+         # total heads precatastrophe.[m
+[31m-        heads_dairy_cows = constants_for_params["INITIAL_MILK_CATTLE"][m
+[31m-        # total head count of large sized animals minus milk cows[m
+[31m-        total_heads_cattle = constants_for_params["INIT_LARGE_ANIMALS_WITH_MILK_COWS"][m
+ [m
+[31m-        ratio_grazing_meat = ([m
+[31m-            total_heads_cattle - heads_dairy_cows[m
+[31m-        ) / total_heads_cattle[m
+[31m-        ratio_grazing_milk = 1 - ratio_grazing_meat[m
+[32m+[m[32m        # heads_dairy_cows = constants_for_params["INITIAL_MILK_CATTLE"][m
+[32m+[m[32m        # # total head count of large sized animals minus milk cows[m
+[32m+[m[32m        # total_heads_cattle = constants_for_params["INIT_LARGE_ANIMALS_WITH_MILK_COWS"][m
+[32m+[m
+[32m+[m[32m        # ratio_grazing_meat = ([m
+[32m+[m[32m        # total_heads_cattle - heads_dairy_cows[m
+[32m+[m[32m        # ) / total_heads_cattle[m
+[32m+[m[32m        # ratio_grazing_milk = 1 - ratio_grazing_meat[m
+[32m+[m
+[32m+[m[32m        # assert 0 <= ratio_grazing_milk <= 1[m
+[32m+[m[32m        # assert 0 <= ratio_grazing_meat <= 1[m
+ [m
+[31m-        assert 0 <= ratio_grazing_milk <= 1[m
+[31m-        assert 0 <= ratio_grazing_meat <= 1[m
+[32m+[m[32m        # self.grazing_milk_produced_prewaste = ([m
+[32m+[m[32m        #     ratio_grazing_milk[m
+[32m+[m[32m        #     * self.human_inedible_feed[m
+[32m+[m[32m        #     / self.INEDIBLE_TO_MILK_CONVERSION[m
+[32m+[m[32m        # )[m
+[32m+[m
+[32m+[m[32m        # self.cattle_grazing_maintained_prewaste = ([m
+[32m+[m[32m        #     ratio_grazing_meat[m
+[32m+[m[32m        #     * self.human_inedible_feed[m
+[32m+[m[32m        #     / self.INEDIBLE_TO_CATTLE_CONVERSION[m
+[32m+[m[32m        # )[m
+[32m+[m
+[32m+[m[32m        ratio_grazing_meat = 0.46[m
+[32m+[m[32m        ratio_grazing_milk = 0.46[m
+ [m
+         self.grazing_milk_produced_prewaste = ([m
+[31m-            ratio_grazing_milk[m
+[31m-            * self.human_inedible_feed[m
+[31m-            / self.INEDIBLE_TO_MILK_CONVERSION[m
+[32m+[m[32m            self.MILK_LIMIT_PREWASTE[m
+[32m+[m[32m            * self.ratio_human_inedible_feed[m
+[32m+[m[32m            * ratio_grazing_milk[m
+         )[m
+[31m-[m
+         self.cattle_grazing_maintained_prewaste = ([m
+[31m-            ratio_grazing_meat[m
+[31m-            * self.human_inedible_feed[m
+[31m-            / self.INEDIBLE_TO_CATTLE_CONVERSION[m
+[32m+[m[32m            self.TONS_BEEF_MONTHLY_BASELINE_PREWASTE[m
+[32m+[m[32m            * self.ratio_human_inedible_feed[m
+[32m+[m[32m            * ratio_grazing_meat[m
+         )[m
+ [m
+[31m-    def calculate_continued_ratios_meat_dairy_grain(self, fed_to_animals_prewaste):[m
+[32m+[m[32m    # def calculate_continued_ratios_meat_dairy_grain(self, fed_to_animals_prewaste):[m
+[32m+[m[32m    def calculate_continued_ratios_meat_dairy_grain(self, outdoor_crops):[m
+         # similar assumption as Xia et al paper.[m
+         # Portion of grain goes proportional to usage of feed from meat cattle to[m
+         # usage of feed for chicken/pork precatastrophe.[m
+         # Usage of human edible feed for dairy is ignored as it is small.[m
+         # Usage of human inedible feed for meat is ignored as it is small.[m
+ [m
+[31m-        feed_for_chicken_pork_precatastrophe = ([m
+[31m-            self.CHICKEN_AND_PORK_LIMIT_PREWASTE[m
+[31m-            * self.EDIBLE_TO_CHICKEN_PORK_CONVERSION[m
+[31m-        )[m
+[31m-        feed_for_beef_precatastrophe = ([m
+[31m-            self.TONS_BEEF_MONTHLY_BASELINE_PREWASTE * self.EDIBLE_TO_CATTLE_CONVERSION[m
+[31m-        )[m
+[32m+[m[32m        # feed_for_chicken_pork_precatastrophe = ([m
+[32m+[m[32m        #     self.CHICKEN_AND_PORK_LIMIT_PREWASTE[m
+[32m+[m[32m        #     * self.EDIBLE_TO_CHICKEN_PORK_CONVERSION[m
+[32m+[m[32m        # )[m
+[32m+[m[32m        # feed_for_beef_precatastrophe = ([m
+[32m+[m[32m        #     self.TONS_BEEF_MONTHLY_BASELINE_PREWASTE * self.EDIBLE_TO_CATTLE_CONVERSION[m
+[32m+[m[32m        # )[m
+ [m
+[31m-        ratio_beef_feed = feed_for_beef_precatastrophe / ([m
+[31m-            feed_for_chicken_pork_precatastrophe + feed_for_beef_precatastrophe[m
+[31m-        )[m
+[32m+[m[32m        # ratio_beef_feed = feed_for_beef_precatastrophe / ([m
+[32m+[m[32m        #     feed_for_chicken_pork_precatastrophe + feed_for_beef_precatastrophe[m
+[32m+[m[32m        # )[m
+ [m
+[31m-        ratio_chicken_pork_feed = 1 - ratio_beef_feed[m
+[32m+[m[32m        # ratio_chicken_pork_feed = 1 - ratio_beef_feed[m
+ [m
+[31m-        assert 0 <= ratio_beef_feed <= 1[m
+[31m-        assert 0 <= ratio_chicken_pork_feed <= 1[m
+[32m+[m[32m        # assert 0 <= ratio_beef_feed <= 1[m
+[32m+[m[32m        # assert 0 <= ratio_chicken_pork_feed <= 1[m
+ [m
+[31m-        excess_dry_cal_tons = fed_to_animals_prewaste.kcals * 1e9 / 4e6[m
+[32m+[m[32m        # excess_dry_cal_tons = fed_to_animals_prewaste.kcals * 1e9 / 4e6[m
+[32m+[m
+[32m+[m[32m        # self.cattle_grain_fed_maintained_prewaste = ([m
+[32m+[m[32m        #     excess_dry_cal_tons * ratio_beef_feed / self.EDIBLE_TO_CATTLE_CONVERSION[m
+[32m+[m[32m        # )[m
+[32m+[m
+[32m+[m[32m        # self.chicken_pork_maintained_prewaste = ([m
+[32m+[m[32m        #     excess_dry_cal_tons[m
+[32m+[m[32m        #     * ratio_chicken_pork_feed[m
+[32m+[m[32m        #     / self.EDIBLE_TO_CHICKEN_PORK_CONVERSION[m
+[32m+[m[32m        # )[m
+[32m+[m[32m        # self.grain_fed_milk_produced_prewaste = np.array([0] * self.NMONTHS)[m
+ [m
+[32m+[m[32m        ratio_grainfed_meat = 0.54[m
+[32m+[m[32m        ratio_grainfed_milk = 0.54[m
+[32m+[m
+[32m+[m[32m        self.grain_fed_milk_produced_prewaste = ([m
+[32m+[m[32m            self.MILK_LIMIT_PREWASTE[m
+[32m+[m[32m            * outdoor_crops.all_months_reductions[m
+[32m+[m[32m            * ratio_grainfed_milk[m
+[32m+[m[32m        )[m
+         self.cattle_grain_fed_maintained_prewaste = ([m
+[31m-            excess_dry_cal_tons * ratio_beef_feed / self.EDIBLE_TO_CATTLE_CONVERSION[m
+[32m+[m[32m            self.TONS_BEEF_MONTHLY_BASELINE_PREWASTE[m
+[32m+[m[32m            * outdoor_crops.all_months_reductions[m
+[32m+[m[32m            * ratio_grainfed_meat[m
+         )[m
+[31m-[m
+         self.chicken_pork_maintained_prewaste = ([m
+[31m-            excess_dry_cal_tons[m
+[31m-            * ratio_chicken_pork_feed[m
+[31m-            / self.EDIBLE_TO_CHICKEN_PORK_CONVERSION[m
+[32m+[m[32m            self.TONS_BEEF_MONTHLY_BASELINE_PREWASTE[m
+[32m+[m[32m            * outdoor_crops.all_months_reductions[m
+[32m+[m[32m            * ratio_grainfed_meat[m
+         )[m
+[31m-        self.grain_fed_milk_produced_prewaste = np.array([0] * self.NMONTHS)[m
+ [m
+     def calculate_meat_and_dairy_from_grain(self, fed_to_animals_prewaste):[m
+ [m
+[36m@@ -445,6 +484,8 @@[m [mclass MeatAndDairy:[m
+                 )[m
+                 print("")[m
+ [m
+[32m+[m[32m        print("chicken_pork_maintained_prewaste")[m
+[32m+[m[32m        print(self.chicken_pork_maintained_prewaste)[m
+         # does not consider waste[m
+         if present_day_tons_per_month_chicken_pork_prewaste > 0:[m
+             self.ratio_maintained_chicken_pork = ([m
+[36m@@ -456,8 +497,11 @@[m [mclass MeatAndDairy:[m
+                 len(self.chicken_pork_maintained_prewaste)[m
+             )[m
+ [m
+[31m-        assert (self.ratio_maintained_chicken_pork >= 0).all()[m
+[31m-[m
+[32m+[m[32m        assert (self.ratio_maintained_chicken_pork.round(8) >= 0).all()[m
+[32m+[m[32m        if (self.ratio_maintained_chicken_pork <= 0).any():[m
+[32m+[m[32m            self.ratio_maintained_chicken_pork = ([m
+[32m+[m[32m                self.ratio_maintained_chicken_pork.round(8)[m
+[32m+[m[32m            )[m
+         all_one_or_lower = (self.ratio_maintained_chicken_pork <= 1).all()[m
+ [m
+         if not all_one_or_lower:[m
+[1mdiff --git a/src/optimizer/interpret_results.py b/src/optimizer/interpret_results.py[m
+[1mindex 3b0b3d6..9812c2f 100644[m
+[1m--- a/src/optimizer/interpret_results.py[m
+[1m+++ b/src/optimizer/interpret_results.py[m
+[36m@@ -381,13 +381,10 @@[m [mclass Interpreter:[m
+         # check that any time outdoor_crops_plus_stored_food_rounded is zero,[m
+         # outdoor_crops_plus_stored_food_rounded - nonhuman_consumption is also zero[m
+ [m
+[31m-        # if stored food is greater than zero, and there is some usage by animals which[m
+[31m-        # generates fat and protein, it would make sense that ... DELETE ME[m
+[31m-[m
+         # TODO: Reinstate?[m
+[31m-        # remainder_to_humans.ensure_other_list_zero_if_this_is_zero([m
+[31m-        #     other_list=nonhuman_consumption[m
+[31m-        # )[m
+[32m+[m[32m        remainder_to_humans.ensure_other_list_zero_if_this_is_zero([m
+[32m+[m[32m            other_list=nonhuman_consumption[m
+[32m+[m[32m        )[m
+ [m
+         difference = ([m
+             to_humans_ratio * outdoor_crops_plus_stored_food_rounded[m
+[1mdiff --git a/src/optimizer/parameters.py b/src/optimizer/parameters.py[m
+[1mindex 53ab881..0d5ac37 100644[m
+[1m--- a/src/optimizer/parameters.py[m
+[1m+++ b/src/optimizer/parameters.py[m
+[36m@@ -111,7 +111,11 @@[m [mclass Parameters:[m
+         # LIVESTOCK, MILK INITIAL VARIABLES #[m
+ [m
+         meat_and_dairy, constants, time_consts = self.init_meat_and_dairy_params([m
+[31m-            constants, time_consts, constants_for_params, feed_and_biofuels[m
+[32m+[m[32m            constants,[m
+[32m+[m[32m            time_consts,[m
+[32m+[m[32m            constants_for_params,[m
+[32m+[m[32m            feed_and_biofuels,[m
+[32m+[m[32m            outdoor_crops,[m
+         )[m
+ [m
+         # CONSTANTS FOR METHANE SINGLE CELL PROTEIN #[m
+[36m@@ -416,7 +420,12 @@[m [mclass Parameters:[m
+         return time_consts, feed_and_biofuels[m
+ [m
+     def init_meat_and_dairy_params([m
+[31m-        self, constants, time_consts, constants_for_params, feed_and_biofuels[m
+[32m+[m[32m        self,[m
+[32m+[m[32m        constants,[m
+[32m+[m[32m        time_consts,[m
+[32m+[m[32m        constants_for_params,[m
+[32m+[m[32m        feed_and_biofuels,[m
+[32m+[m[32m        outdoor_crops,[m
+     ):[m
+         """[m
+         Meat and dairy are initialized here.[m
+[36m@@ -433,7 +442,11 @@[m [mclass Parameters:[m
+         )[m
+ [m
+         time_consts, meat_and_dairy = self.init_grain_fed_meat_params([m
+[31m-            time_consts, meat_and_dairy, feed_and_biofuels, constants_for_params[m
+[32m+[m[32m            time_consts,[m
+[32m+[m[32m            meat_and_dairy,[m
+[32m+[m[32m            feed_and_biofuels,[m
+[32m+[m[32m            constants_for_params,[m
+[32m+[m[32m            outdoor_crops,[m
+         )[m
+ [m
+         (constants, time_consts, meat_and_dairy) = self.init_culled_meat_params([m
+[36m@@ -478,7 +491,12 @@[m [mclass Parameters:[m
+         return time_consts, meat_and_dairy[m
+ [m
+     def init_grain_fed_meat_params([m
+[31m-        self, time_consts, meat_and_dairy, feed_and_biofuels, constants_for_params[m
+[32m+[m[32m        self,[m
+[32m+[m[32m        time_consts,[m
+[32m+[m[32m        meat_and_dairy,[m
+[32m+[m[32m        feed_and_biofuels,[m
+[32m+[m[32m        constants_for_params,[m
+[32m+[m[32m        outdoor_crops,[m
+     ):[m
+ [m
+         # APPLY FEED+BIOFUEL WASTE here[m
+[36m@@ -499,7 +517,8 @@[m [mclass Parameters:[m
+             )[m
+         else:[m
+             meat_and_dairy.calculate_continued_ratios_meat_dairy_grain([m
+[31m-                feed_and_biofuels.fed_to_animals_prewaste[m
+[32m+[m[32m                # feed_and_biofuels.fed_to_animals_prewaste[m
+[32m+[m[32m                outdoor_crops[m
+             )[m
+         # this calculation is pre-waste for the feed[m
+         # no waste is applied for the grasses either.[m
+[36m@@ -533,7 +552,11 @@[m [mclass Parameters:[m
+ [m
+         feed = feed_and_biofuels.feed[m
+ [m
+[31m-        assert (feed.kcals >= grain_fed_created_kcals).all()[m
+[32m+[m[32m        # True if reproducing xia et al results when directly subtracting feed from[m
+[32m+[m[32m        # produced crops[m
+[32m+[m[32m        SUBTRACTING_FEED_DIRECTLY_FROM_PRODUCTION = False[m
+[32m+[m[32m        if not SUBTRACTING_FEED_DIRECTLY_FROM_PRODUCTION:[m
+[32m+[m[32m            assert (feed.kcals >= grain_fed_created_kcals).all()[m
+ [m
+         return time_consts, meat_and_dairy[m
+ [m
+[1mdiff --git a/src/scenarios/reproduce_xia_et_al_USA.py b/src/scenarios/reproduce_xia_et_al_USA.py[m
+[1mindex 1e59fcd..0bd477c 100644[m
+[1m--- a/src/scenarios/reproduce_xia_et_al_USA.py[m
+[1m+++ b/src/scenarios/reproduce_xia_et_al_USA.py[m
+[36m@@ -23,7 +23,7 @@[m [mdef main(args):[m
+     this_simulation["protein"] = "not_required"[m
+     this_simulation["nutrition"] = "catastrophe"[m
+     this_simulation["buffer"] = "no_stored_food"[m
+[31m-    this_simulation["shutoff"] = "short_delayed_shutoff"[m
+[32m+[m[32m    this_simulation["shutoff"] = "immediate"[m
+     this_simulation["cull"] = "dont_eat_culled"[m
+     this_simulation["meat_strategy"] = "inefficient_meat_strategy"[m
+ [m
+[36m@@ -34,10 +34,20 @@[m [mdef main(args):[m
+         title="Reproduce Xia et al Results",[m
+         create_pptx_with_all_countries=True,[m
+         show_country_figures=False,[m
+[31m-        show_map_figures=False,[m
+[32m+[m[32m        show_map_figures=True,[m
+         add_map_slide_to_pptx=True,[m
+         scenario_option=this_simulation,[m
+[31m-        countries_list=[],[m
+[32m+[m[32m        countries_list=[][m
+[32m+[m[32m        #     "CHN",[m
+[32m+[m[32m        #     "FRA",[m
+[32m+[m[32m        #     "IND",[m
+[32m+[m[32m        #     "ISR",[m
+[32m+[m[32m        #     "PRK",[m
+[32m+[m[32m        #     "PAK",[m
+[32m+[m[32m        #     "RUS",[m
+[32m+[m[32m        #     "F5707+GBR",[m
+[32m+[m[32m        #     "USA",[m
+[32m+[m[32m        # ],[m
+     )[m
+ [m
+ [m
+[1mdiff --git a/src/scenarios/run_model_no_trade.py b/src/scenarios/run_model_no_trade.py[m
+[1mindex 9b6632f..00e0d83 100644[m
+[1m--- a/src/scenarios/run_model_no_trade.py[m
+[1m+++ b/src/scenarios/run_model_no_trade.py[m
+[36m@@ -215,6 +215,9 @@[m [mclass ScenarioRunnerNoTrade(ScenarioRunner):[m
+         for index, country_data in no_trade_table.iterrows():[m
+             country_code = country_data["iso3"][m
+ [m
+[32m+[m[32m            print("exclusive_countries_to_run")[m
+[32m+[m[32m            print(exclusive_countries_to_run)[m
+[32m+[m
+             if len(exclusive_countries_to_run) > 0:[m
+                 if country_code not in exclusive_countries_to_run:[m
+                     continue[m
+[36m@@ -314,7 +317,8 @@[m [mclass ScenarioRunnerNoTrade(ScenarioRunner):[m
+ [m
+         countries_to_skip = [][m
+         exclusive_countries_to_run = [][m
+[31m-[m
+[32m+[m[32m        print("countries_list")[m
+[32m+[m[32m        print(countries_list)[m
+         if countries_list == []:[m
+             return [[], []][m
+ [m
+[36m@@ -330,7 +334,7 @@[m [mclass ScenarioRunnerNoTrade(ScenarioRunner):[m
+                 if "!" not in c:[m
+                     exclusive_countries_to_run.append(c)[m
+ [m
+[31m-                return exclusive_countries_to_run, countries_to_skip[m
+[32m+[m[32m            return exclusive_countries_to_run, countries_to_skip[m
+ [m
+     def run_many_options([m
+         self,[m
+[36m@@ -440,6 +444,7 @@[m [mclass ScenarioRunnerNoTrade(ScenarioRunner):[m
+         defaults = this_simulation[m
+         defaults["nutrition"] = "catastrophe"[m
+         defaults["cull"] = "do_eat_culled"[m
+[32m+[m[32m        defaults["meat_strategy"] = "efficient_meat_strategy"[m
+ [m
+         options_including_defaults = [][m
+         for option in options:[m
+[1mdiff --git a/src/scenarios/run_scenario.py b/src/scenarios/run_scenario.py[m
+[1mindex 1857ea1..c033314 100644[m
+[1m--- a/src/scenarios/run_scenario.py[m
+[1m+++ b/src/scenarios/run_scenario.py[m
+[36m@@ -161,9 +161,9 @@[m [mclass ScenarioRunner:[m
+         else:[m
+             scenario_is_correct = False[m
+ [m
+[31m-            assert scenario_is_correct, """You must specify 'shutoff' key as zero,tripled_prices_in_country,[m
+[31m-            doubled_prices_in_country,baseline_in_country,tripled_prices_globally,[m
+[31m-            doubled_prices_globally,or baseline_globally"""[m
+[32m+[m[32m            assert ([m
+[32m+[m[32m                scenario_is_correct[m
+[32m+[m[32m            ), """You must specify 'shutoff' key as immediate,short_delayed_shutoff,long_delayed_shutoff,or continued"""[m
+ [m
+         if scenario_option["waste"] == "zero":[m
+             constants_for_params = scenario_loader.set_waste_to_zero([m
+[1mdiff --git a/src/scenarios/scenarios.py b/src/scenarios/scenarios.py[m
+[1mindex b91cd5d..991ec45 100644[m
+[1m--- a/src/scenarios/scenarios.py[m
+[1m+++ b/src/scenarios/scenarios.py[m
+[36m@@ -188,8 +188,26 @@[m [mclass Scenarios:[m
+         # global human population (2020)[m
+         constants_for_params["POP"] = country_data["population"][m
+ [m
+[31m-        # annual tons dry caloric equivalent[m
+[31m-        constants_for_params["BASELINE_CROP_KCALS"] = country_data["crop_kcals"][m
+[32m+[m[32m        # This should only be enabled if we're trying to reproduce the method of Xia[m
+[32m+[m[32m        # et al. (2020), they subtract feed directly from production and ignore stored[m
+[32m+[m[32m        # food usage of crops[m
+[32m+[m[32m        # It also only makes sense to enable this if we're not including fat and protein[m
+[32m+[m[32m        SUBTRACT_FEED_DIRECTLY = False[m
+[32m+[m
+[32m+[m[32m        if SUBTRACT_FEED_DIRECTLY:[m
+[32m+[m
+[32m+[m[32m            # annual tons dry caloric equivalent[m
+[32m+[m[32m            constants_for_params["BASELINE_CROP_KCALS"] = ([m
+[32m+[m[32m                country_data["crop_kcals"] - country_data["feed_kcals"][m
+[32m+[m[32m            )[m
+[32m+[m
+[32m+[m[32m            if constants_for_params["BASELINE_CROP_KCALS"] < 0:[m
+[32m+[m[32m                constants_for_params["BASELINE_CROP_KCALS"] = 0.01[m
+[32m+[m[32m                print("WARNING: Crop production - Feed is set to close to zero!")[m
+[32m+[m
+[32m+[m[32m        else:[m
+[32m+[m[32m            # annual tons dry caloric equivalent[m
+[32m+[m[32m            constants_for_params["BASELINE_CROP_KCALS"] = country_data["crop_kcals"][m
+ [m
+         # annual tons fat[m
+         constants_for_params["BASELINE_CROP_FAT"] = country_data["crop_fat"][m
+[1mdiff --git a/src/utilities/plotter.py b/src/utilities/plotter.py[m
+[1mindex 33d2ec2..fb39ce0 100644[m
+[1m--- a/src/utilities/plotter.py[m
+[1m+++ b/src/utilities/plotter.py[m
+[36m@@ -44,8 +44,6 @@[m [mclass Plotter:[m
+         add_slide_with_fig=True,[m
+         description="",[m
+     ):[m
+[31m-        print("plot_figure")[m
+[31m-        print(plot_figure)[m
+         if (not plot_figure) and (not add_slide_with_fig):[m
+             return[m
+ [m
+[36m@@ -57,7 +55,7 @@[m [mclass Plotter:[m
+             "#71797E",[m
+             "#76d7ea",[m
+             "#056608",[m
+[31m-            "#e8eae1",[m
+[32m+[m[32m            "#f3f4e3",[m
+             "#ff0606",[m
+             "#a5d610",[m
+             "#ffeb7a",[m
+[36m@@ -233,7 +231,7 @@[m [mclass Plotter:[m
+             "#71797E",[m
+             "#76d7ea",[m
+             "#056608",[m
+[31m-            "#e8eae1",[m
+[32m+[m[32m            "#f3f4e3",[m
+             "#ff0606",[m
+             "#a5d610",[m
+             "#ffeb7a",[m
+[36m@@ -568,7 +566,7 @@[m [mclass Plotter:[m
+             "#71797E",[m
+             "#76d7ea",[m
+             "#056608",[m
+[31m-            "#e8eae1",[m
+[32m+[m[32m            "#f3f4e3",[m
+             "#ff0606",[m
+             "#a5d610",[m
+             "#ffeb7a",[m
+[36m@@ -963,7 +961,7 @@[m [mclass Plotter:[m
+             "#71797E",[m
+             "#76d7ea",[m
+             "#056608",[m
+[31m-            "#e8eae1",[m
+[32m+[m[32m            "#f3f4e3",[m
+             "#ff0606",[m
+             "#a5d610",[m
+             "#ffeb7a",[m

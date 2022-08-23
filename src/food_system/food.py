@@ -1670,3 +1670,15 @@ class Food(UnitConversions):
         )
 
         return processed_list
+
+    def set_to_zero_after_month(self, month):
+        """
+        set all values after the month to zero
+        """
+
+        self.make_sure_is_a_list()
+        self.validate_if_list()
+
+        self.kcals[month:] = 0
+        self.fat[month:] = 0
+        self.protein[month:] = 0

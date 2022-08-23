@@ -13,8 +13,9 @@ def main(args):
     this_simulation = {}
 
     this_simulation["scale"] = "country"
-    this_simulation["scenario"] = "resilient_food_nuclear_winter"
-    this_simulation["seasonality"] = "nuclear_winter_in_country"
+    this_simulation["scenario"] = "all_resilient_foods"
+    this_simulation["seasonality"] = "country"
+    this_simulation["grasses"] = "country_nuclear_winter"
     this_simulation["crop_disruption"] = "country_nuclear_winter"
     this_simulation["fish"] = "nuclear_winter"
 

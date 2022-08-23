@@ -416,6 +416,8 @@ class Optimizer:
             return (model, variables)
         # in the more complicated case where relocation occurs, the crops do better
         # than they would otherwise, and they have a different nutritional profile
+        if not self.single_valued_constants["STORE_FOOD_BETWEEN_YEARS"]:
+            return self.add_outdoor_crops_to_model_no_storage(model, variables, month)
 
         variables["crops_food_storage_no_relocation"][month] = LpVariable(
             "Crops_Food_Storage_No_Relocation_Month_" + str(month) + "_Variable",
@@ -536,6 +538,88 @@ class Optimizer:
             )
 
         return (model, variables)
+
+    # # incorporate linear constraints for stored food consumption each month
+    # def add_outdoor_crops_to_model_relocation_no_storage(self, model, variables, month):
+    #     # in the more complicated case where relocation occurs, the crops do better
+    #     # than they would otherwise, and they have a different nutritional profile
+
+    #     variables["crops_food_storage_no_relocation"][month] = LpVariable(
+    #         "Crops_Food_Storage_No_Relocation_Month_" + str(month) + "_Variable",
+    #         lowBound=0,
+    #     )
+    #     variables["crops_food_eaten_no_relocation"][month] = LpVariable(
+    #         "Crops_Food_Eaten_No_Relocation_During_Month_" + str(month) + "_Variable",
+    #         lowBound=0,
+    #     )
+
+    #     variables["crops_food_storage_relocated"][month] = LpVariable(
+    #         "Crops_Food_Storage_Relocated_Month_" + str(month) + "_Variable", lowBound=0
+    #     )
+    #     variables["crops_food_eaten_relocated"][month] = LpVariable(
+    #         "Crops_Food_Eaten_Relocated_During_Month_" + str(month) + "_Variable",
+    #         lowBound=0,
+    #     )
+    #     model += (
+    #         variables["crops_food_storage_relocated"][month] == 0,
+    #         "Crops_Food_Storage_Relocated_" + str(month) + "_Constraint",
+    #     )
+
+    #     if month == 0:  # first month
+
+    #         model += (
+    #             0
+    #             == self.multi_valued_constants["outdoor_crops"].kcals[month]
+    #             - variables["crops_food_eaten_no_relocation"][month],
+    #             "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
+    #         )
+
+    #     elif month == self.single_valued_constants["NMONTHS"] - 1:  # last month
+    #         # haven't dealt with the case of nmonths being less than initial harvest
+    #         assert (
+    #             month
+    #             > self.single_valued_constants["inputs"][
+    #                 "INITIAL_HARVEST_DURATION_IN_MONTHS"
+    #             ]
+    #         )
+
+    #         # note to self: is it a problem that the crops_food_storage_relocated is
+    #         # part of the following equation, and not excluded, as it is set to zero
+    #         # in the assignment above?
+
+    #         model += (
+    #             0
+    #             == self.multi_valued_constants["outdoor_crops"].kcals[month]
+    #             - variables["crops_food_eaten_relocated"][month],
+    #             "Crops_Food_Relocated_Storage_" + str(month) + "_Constraint",
+    #         )
+
+    #     elif (
+    #         month
+    #         < self.single_valued_constants["inputs"][
+    #             "INITIAL_HARVEST_DURATION_IN_MONTHS"
+    #         ]
+    #     ):
+    #         # any month up to and including the harvest duration
+
+    #         model += (
+    #             0
+    #             == self.multi_valued_constants["outdoor_crops"].kcals[month]
+    #             - variables["crops_food_eaten_no_relocation"][month],
+    #             "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
+    #         )
+
+    #     else:  # now producing rotation, but can still eat "no rotation" storage
+    #         # not the first month, not the last month, and is a month after the rotation
+    #         # switch
+    #         model += (
+    #             0
+    #             == self.multi_valued_constants["outdoor_crops"].kcals[month]
+    #             - variables["crops_food_eaten_relocated"][month],
+    #             "Crops_Food_Eaten_Relocated_" + str(month) + "_Constraint",
+    #         )
+
+    #     return (model, variables)
 
     # OBJECTIVE FUNCTIONS  #
 

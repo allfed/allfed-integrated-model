@@ -1,9 +1,12 @@
 import pandas as pd
+import git
+
+repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 print("importing single cell protein...")
 
 NO_TRADE_XLS = (
-    "../../data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+    repo_root + "/data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
 )
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
@@ -24,5 +27,5 @@ df_scp = df_scp.iloc[
 ]
 
 df_scp.to_csv(
-    "../../data/no_food_trade/processed_data/scp_csv.csv", sep=",", index=False
+    repo_root + "/data/no_food_trade/processed_data/scp_csv.csv", sep=",", index=False
 )

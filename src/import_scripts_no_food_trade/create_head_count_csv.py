@@ -1,10 +1,17 @@
 import pandas as pd
 import numpy as np
+import git
+
+repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 print("importing animal stocks data...")
 
-HEAD_COUNT_CSV = "../../data/no_food_trade/raw_data/FAOSTAT_animal_stocks_2020.csv"
-DAIRY_HEAD_COUNT_CSV = "../../data/no_food_trade/raw_data/FAOSTAT_cow_heads_2020.csv"
+HEAD_COUNT_CSV = (
+    repo_root + "/data/no_food_trade/raw_data/FAOSTAT_animal_stocks_2020.csv"
+)
+DAIRY_HEAD_COUNT_CSV = (
+    repo_root + "/data/no_food_trade/raw_data/FAOSTAT_cow_heads_2020.csv"
+)
 
 TONS_TO_KG = 1e3
 KCALS_TO_DRY_CALORIC_TONS = 1 / (4000 * 1000)
@@ -441,7 +448,7 @@ head_count_csv = np.delete(head_count_csv, (GBR_index), axis=0)
 
 
 np.savetxt(
-    "../../data/no_food_trade/processed_data/head_count_csv.csv",
+    repo_root + "/data/no_food_trade/processed_data/head_count_csv.csv",
     head_count_csv,
     delimiter=",",
     fmt="%s",

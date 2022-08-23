@@ -111,7 +111,11 @@ class Parameters:
         # LIVESTOCK, MILK INITIAL VARIABLES #
 
         meat_and_dairy, constants, time_consts = self.init_meat_and_dairy_params(
-            constants, time_consts, constants_for_params, feed_and_biofuels
+            constants,
+            time_consts,
+            constants_for_params,
+            feed_and_biofuels,
+            outdoor_crops,
         )
 
         # CONSTANTS FOR METHANE SINGLE CELL PROTEIN #
@@ -416,7 +420,12 @@ class Parameters:
         return time_consts, feed_and_biofuels
 
     def init_meat_and_dairy_params(
-        self, constants, time_consts, constants_for_params, feed_and_biofuels
+        self,
+        constants,
+        time_consts,
+        constants_for_params,
+        feed_and_biofuels,
+        outdoor_crops,
     ):
         """
         Meat and dairy are initialized here.
@@ -433,7 +442,11 @@ class Parameters:
         )
 
         time_consts, meat_and_dairy = self.init_grain_fed_meat_params(
-            time_consts, meat_and_dairy, feed_and_biofuels, constants_for_params
+            time_consts,
+            meat_and_dairy,
+            feed_and_biofuels,
+            constants_for_params,
+            outdoor_crops,
         )
 
         (constants, time_consts, meat_and_dairy) = self.init_culled_meat_params(
@@ -478,7 +491,12 @@ class Parameters:
         return time_consts, meat_and_dairy
 
     def init_grain_fed_meat_params(
-        self, time_consts, meat_and_dairy, feed_and_biofuels, constants_for_params
+        self,
+        time_consts,
+        meat_and_dairy,
+        feed_and_biofuels,
+        constants_for_params,
+        outdoor_crops,
     ):
 
         # APPLY FEED+BIOFUEL WASTE here
@@ -499,7 +517,7 @@ class Parameters:
             )
         else:
             meat_and_dairy.calculate_continued_ratios_meat_dairy_grain(
-                feed_and_biofuels.fed_to_animals_prewaste
+                feed_and_biofuels.fed_to_animals_prewaste, outdoor_crops
             )
         # this calculation is pre-waste for the feed
         # no waste is applied for the grasses either.
@@ -533,7 +551,23 @@ class Parameters:
 
         feed = feed_and_biofuels.feed
 
-        assert (feed.kcals >= grain_fed_created_kcals).all()
+        if (grain_fed_created_kcals <= 0).any():
+            grain_fed_created_kcals = grain_fed_created_kcals.round(8)
+        assert (grain_fed_created_kcals >= 0).all()
+
+        if (grain_fed_created_fat <= 0).any():
+            grain_fed_created_fat = grain_fed_created_fat.round(8)
+        assert (grain_fed_created_fat >= 0).all()
+
+        if (grain_fed_created_protein <= 0).any():
+            grain_fed_created_protein = grain_fed_created_protein.round(8)
+        assert (grain_fed_created_protein >= 0).all()
+
+        # True if reproducing xia et al results when directly subtracting feed from
+        # produced crops
+        SUBTRACTING_FEED_DIRECTLY_FROM_PRODUCTION = False
+        if not SUBTRACTING_FEED_DIRECTLY_FROM_PRODUCTION:
+            assert (feed.kcals >= grain_fed_created_kcals).all()
 
         return time_consts, meat_and_dairy
 

@@ -18,6 +18,9 @@ from src.utilities.import_utilities import ImportUtilities
 from src.scenarios.run_scenario import ScenarioRunner
 from src.food_system.food import Food
 from itertools import product
+import git
+
+repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 
 logging.basicConfig(level=logging.ERROR)
@@ -86,7 +89,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             protein_units="thousand tons each month",
         )
 
-        PRINT_COUNTRY = True
+        PRINT_COUNTRY = False
         if PRINT_COUNTRY:
 
             print("")
@@ -175,8 +178,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         assert len(scenario_option) > 0, "ERROR: a scenario must be specified"
 
         if create_pptx_with_all_countries:
-            if not os.path.exists("../../results/large_reports"):
-                os.mkdir("../../results/large_reports")
+            if not os.path.exists(repo_root + "/results/large_reports"):
+                os.mkdir(repo_root + "/results/large_reports")
             Plotter.start_pptx("No trade by country")
         """
         Runs the baseline model by country and without trade
@@ -188,7 +191,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         """
         # country codes for UK + EU 27 countries (used for plotting map)
 
-        NO_TRADE_CSV = "../../data/no_food_trade/computer_readable_combined.csv"
+        NO_TRADE_CSV = repo_root + "/data/no_food_trade/computer_readable_combined.csv"
 
         no_trade_table = pd.read_csv(NO_TRADE_CSV)
 
@@ -252,15 +255,13 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 capped_ratio = 1
             else:
                 capped_ratio = needs_ratio
-
             net_pop_fed += capped_ratio * population
             net_pop += population
         if net_pop > 0:
             ratio_fed = str(round(float(net_pop_fed) / float(net_pop), 4))
         else:
             ratio_fed = str(np.nan)
-        # @li total people fed for world with no trade
-        # net_pop
+
         print("Net population considered: " + str(net_pop / 1e9) + " Billion people")
         print("Fraction of this population fed: " + ratio_fed)
         print(scenario_description)
@@ -286,7 +287,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         minute = str(datetime.datetime.now().minute)
         if create_pptx_with_all_countries:
             Plotter.end_pptx(
-                saveloc="../../results/large_reports/no_food_trade_"
+                saveloc=repo_root
+                + "/results/large_reports/no_food_trade_"
                 + title
                 + "."
                 + year
@@ -314,7 +316,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
 
         countries_to_skip = []
         exclusive_countries_to_run = []
-
         if countries_list == []:
             return [[], []]
 
@@ -330,7 +331,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 if "!" not in c:
                     exclusive_countries_to_run.append(c)
 
-                return exclusive_countries_to_run, countries_to_skip
+            return exclusive_countries_to_run, countries_to_skip
 
     def run_many_options(
         self,
@@ -369,7 +370,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             hour = str(datetime.datetime.now().hour)
             minute = str(datetime.datetime.now().minute)
             Plotter.end_pptx(
-                saveloc="../../results/large_reports/various_scenario_options_"
+                saveloc=repo_root
+                + "/results/large_reports/various_scenario_options_"
                 + title
                 + "."
                 + year
@@ -440,6 +442,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         defaults = this_simulation
         defaults["nutrition"] = "catastrophe"
         defaults["cull"] = "do_eat_culled"
+        defaults["meat_strategy"] = "efficient_meat_strategy"
 
         options_including_defaults = []
         for option in options:

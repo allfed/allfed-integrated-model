@@ -124,6 +124,8 @@ class FeedAndBiofuels:
             constants_for_params, self.biofuels, self.feed
         )
 
+        # self.nonhuman_consumption.set_to_zero_after_month(12)
+
     def set_biofuels_and_feed_usage_postwaste(
         self,
         max_net_demand,

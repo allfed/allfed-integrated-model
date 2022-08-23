@@ -1,6 +1,9 @@
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
+import git
+
+repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 
 def run_model_baseline(plot_figures=True):
@@ -56,7 +59,6 @@ def run_model_baseline(plot_figures=True):
 
     print("Maximum usable kcals/capita/day 2020, after waste and feed")
     print(results.percent_people_fed / 100 * 2100)
-
     results2 = results
 
     if plot_figures:
@@ -70,7 +72,7 @@ def set_common_baseline_properties():
 
     # set params that are true for baseline regardless of whether country or global
 
-    constants_for_params = scenarios_loader.get_baseline_climate_scenario(
+    constants_for_params = scenarios_loader.get_no_resilient_food_scenario(
         constants_for_params
     )
 
@@ -80,7 +82,7 @@ def set_common_baseline_properties():
         constants_for_params
     )
 
-    constants_for_params = scenarios_loader.set_efficient_feed_grazing_strategy(
+    constants_for_params = scenarios_loader.set_unchanged_proportions_feed_grazing(
         constants_for_params
     )
 
@@ -91,6 +93,8 @@ def set_common_baseline_properties():
     constants_for_params = scenarios_loader.set_global_seasonality_baseline(
         constants_for_params
     )
+
+    constants_for_params = scenarios_loader.set_grasses_baseline(constants_for_params)
 
     constants_for_params = scenarios_loader.set_fish_baseline(constants_for_params)
 

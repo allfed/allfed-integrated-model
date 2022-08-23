@@ -30,6 +30,40 @@ class Greenhouses:
         else:
             self.GREENHOUSE_AREA_MULTIPLIER = 0
 
+    def assign_productivity_reduction_from_climate_impact(
+        self, months_cycle, all_months_reductions, exponent, CROP_WASTE
+    ):
+        MONTHLY_KCALS = np.mean(months_cycle) / self.TOTAL_CROP_AREA
+
+        KCALS_GROWN_PER_HECTARE_BEFORE_WASTE = []
+        for i in range(self.NMONTHS):
+            baseline_reduction = all_months_reductions[i]
+            assert round(baseline_reduction, 8) >= 0  # 8 decimal places rounding
+
+            # if there's some very small negative value here, just round it off to zero
+            if baseline_reduction <= 0:
+                baseline_reduction = round(baseline_reduction, 8)
+            assert baseline_reduction >= 0  # 8 decimal places rounding
+
+            assert (baseline_reduction >= 0).all()
+
+            if baseline_reduction > 1:
+                KCALS_GROWN_PER_HECTARE_BEFORE_WASTE.append(
+                    MONTHLY_KCALS * baseline_reduction
+                )
+            else:
+                KCALS_GROWN_PER_HECTARE_BEFORE_WASTE.append(
+                    MONTHLY_KCALS * baseline_reduction**exponent
+                )
+        assert (
+            KCALS_GROWN_PER_HECTARE_BEFORE_WASTE
+            >= MONTHLY_KCALS * all_months_reductions
+        ).all(), "ERROR: Relocation has somehow decreased crop production!"
+
+        self.GH_KCALS_GROWN_PER_HECTARE = (1 - CROP_WASTE / 100) * np.array(
+            KCALS_GROWN_PER_HECTARE_BEFORE_WASTE
+        )
+
     def get_greenhouse_area(self, constants_for_params, outdoor_crops):
 
         # greenhouses tab
@@ -90,19 +124,12 @@ class Greenhouses:
                 print("")
                 print("")
 
-            MONTHLY_KCALS = np.mean(outdoor_crops.months_cycle) / self.TOTAL_CROP_AREA
-
-            KCALS_GROWN_PER_HECTARE_BEFORE_WASTE = MONTHLY_KCALS * (
-                1
-                - (
-                    (1 - outdoor_crops.all_months_reductions)
-                    * outdoor_crops.OG_KCAL_REDUCED
-                )
+            self.assign_productivity_reduction_from_climate_impact(
+                outdoor_crops.months_cycle,
+                outdoor_crops.all_months_reductions,
+                outdoor_crops.OG_KCAL_EXPONENT,
+                constants_for_params["WASTE"]["CROPS"],
             )
-
-            self.GH_KCALS_GROWN_PER_HECTARE = (
-                1 - constants_for_params["WASTE"]["CROPS"] / 100
-            ) * np.array(KCALS_GROWN_PER_HECTARE_BEFORE_WASTE)
         else:
             self.GH_KCALS_GROWN_PER_HECTARE = [0] * self.NMONTHS
             greenhouse_area = np.array([0] * self.NMONTHS)

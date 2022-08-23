@@ -13,9 +13,10 @@ def main(args):
     this_simulation = {}
 
     this_simulation["scale"] = "country"
-    this_simulation["seasonality"] = "baseline_in_country"
+    this_simulation["seasonality"] = "country"
+    this_simulation["grasses"] = "baseline"
     this_simulation["crop_disruption"] = "zero"
-    this_simulation["scenario"] = "baseline_climate"
+    this_simulation["scenario"] = "no_resilient_foods"
     this_simulation["fish"] = "baseline"
 
     # command line argument inputs (optional)

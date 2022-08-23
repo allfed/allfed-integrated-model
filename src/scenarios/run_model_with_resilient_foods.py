@@ -2,6 +2,9 @@ import numpy as np
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
+import git
+
+repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 
 def run_model_with_resilient_foods(plot_figures=True):
@@ -36,7 +39,11 @@ def run_model_with_resilient_foods(plot_figures=True):
     print(results.percent_people_fed)
     print("")
 
-    np.save("../../data/resilient_food_primary_results.npy", results, allow_pickle=True)
+    np.save(
+        repo_root + "/data/resilient_food_primary_results.npy",
+        results,
+        allow_pickle=True,
+    )
 
     scenarios_loader, constants_for_params = set_common_resilient_properties()
 
@@ -131,7 +138,7 @@ def set_common_resilient_properties():
 
     constants_for_params = scenarios_loader.init_global_food_system_properties()
 
-    constants_for_params = scenarios_loader.get_resilient_food_scenario(
+    constants_for_params = scenarios_loader.get_all_resilient_foods_scenario(
         constants_for_params
     )
 
@@ -140,6 +147,9 @@ def set_common_resilient_properties():
     )
 
     constants_for_params = scenarios_loader.set_global_seasonality_nuclear_winter(
+        constants_for_params
+    )
+    constants_for_params = scenarios_loader.set_global_grasses_nuclear_winter(
         constants_for_params
     )
     constants_for_params = scenarios_loader.set_stored_food_buffer_zero(

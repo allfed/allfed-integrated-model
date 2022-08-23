@@ -381,14 +381,6 @@ class Interpreter:
         # check that any time outdoor_crops_plus_stored_food_rounded is zero,
         # outdoor_crops_plus_stored_food_rounded - nonhuman_consumption is also zero
 
-        # if stored food is greater than zero, and there is some usage by animals which
-        # generates fat and protein, it would make sense that ... DELETE ME
-
-        # TODO: Reinstate?
-        # remainder_to_humans.ensure_other_list_zero_if_this_is_zero(
-        #     other_list=nonhuman_consumption
-        # )
-
         difference = (
             to_humans_ratio * outdoor_crops_plus_stored_food_rounded
             + nonhuman_consumption
@@ -419,7 +411,7 @@ class Interpreter:
         assert humans_fed_sum.is_units_percent()
         (min_nutrient, percent_people_fed) = humans_fed_sum.get_min_nutrient()
 
-        PRINT_FED = True
+        PRINT_FED = False
         if PRINT_FED:
 
             print("Nutrients with constraining values are: " + str(min_nutrient))

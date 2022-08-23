@@ -61,8 +61,8 @@ class OutdoorCrops(Food):
             # deals with the issue of caloric improvement being more than
             # present-day production during the beginning months
             # of the simulation.
-            self.OG_KCAL_REDUCED = constants_for_params["ROTATION_IMPROVEMENTS"][
-                "KCALS_REDUCTION"
+            self.OG_KCAL_EXPONENT = constants_for_params["ROTATION_IMPROVEMENTS"][
+                "POWER_LAW_IMPROVEMENT"
             ]
 
             self.OG_ROTATION_FRACTION_KCALS = 1
@@ -85,7 +85,7 @@ class OutdoorCrops(Food):
             self.FAT_RATIO_ROTATION = self.OG_ROTATION_FRACTION_FAT
             self.PROTEIN_RATIO_ROTATION = self.OG_ROTATION_FRACTION_PROTEIN
         else:
-            self.OG_KCAL_REDUCED = 1
+            self.OG_KCAL_EXPONENT = 1
             self.OG_ROTATION_FRACTION_KCALS = 1
             self.OG_ROTATION_FRACTION_FAT = self.OG_FRACTION_FAT
             self.OG_ROTATION_FRACTION_PROTEIN = self.OG_FRACTION_PROTEIN
@@ -243,19 +243,7 @@ class OutdoorCrops(Food):
             + month_cycle_starting_january[0:month_index]
         )
 
-        self.KCALS_GROWN = []
-        self.NO_ROT_KCALS_GROWN = []
-
-        for i in range(self.NMONTHS):
-            cycle_index = i % 12
-            month_kcals = self.months_cycle[cycle_index]
-            baseline_reduction = 1 - self.all_months_reductions[i]
-
-            self.KCALS_GROWN.append(
-                month_kcals * (1 - self.OG_KCAL_REDUCED * baseline_reduction)
-            )
-
-            self.NO_ROT_KCALS_GROWN.append(month_kcals * (1 - baseline_reduction))
+        self.assign_reduction_from_climate_impact()
 
         PLOT_WITH_SEASONALITY = False
         if PLOT_WITH_SEASONALITY:
@@ -268,6 +256,36 @@ class OutdoorCrops(Food):
             print(ratios)
             # Plotter.plot_monthly_reductions_seasonally(ratios)
             Plotter.plot_monthly_reductions_seasonally(ratios)
+
+    def assign_reduction_from_climate_impact(self):
+        self.KCALS_GROWN = []
+        self.NO_ROT_KCALS_GROWN = []
+
+        for i in range(self.NMONTHS):
+            cycle_index = i % 12
+            month_kcals = self.months_cycle[cycle_index]
+            baseline_reduction = self.all_months_reductions[i]
+
+            assert round(baseline_reduction, 8) >= 0  # 8 decimal places rounding
+
+            # if there's some very small negative value here, just round it off to zero
+            if baseline_reduction <= 0:
+                baseline_reduction = round(baseline_reduction, 8)
+
+            assert baseline_reduction >= 0  # 8 decimal places rounding
+
+            if baseline_reduction > 1:
+                self.KCALS_GROWN.append(month_kcals * baseline_reduction)
+            else:
+                self.KCALS_GROWN.append(
+                    month_kcals * baseline_reduction**self.OG_KCAL_EXPONENT
+                )
+
+            self.NO_ROT_KCALS_GROWN.append(month_kcals * baseline_reduction)
+
+            assert (
+                self.KCALS_GROWN[-1] >= month_kcals * baseline_reduction
+            ), "ERROR: Relocation has somehow decreased crop production!"
 
     def set_crop_production_minus_greenhouse_area(
         self, constants_for_params, greenhouse_fraction_area
