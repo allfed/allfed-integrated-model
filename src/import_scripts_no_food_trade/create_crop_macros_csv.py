@@ -56,7 +56,8 @@ class CropMacros:
 
     def get_kcals_matching(self, match_strings, products):
         """
-        Returns the sum of kcals, fat, and protein for the products that the passed in  name as a substring of the product name string.
+        Returns the sum of kcals, fat, and protein for the products that the passed in
+        name as a substring of the product name string.
         """
         all_matching_products = pd.DataFrame([])
         for string in match_strings:

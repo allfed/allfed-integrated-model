@@ -7,9 +7,7 @@ Created on Wed Jul 15
 @author: morgan
 """
 import sys
-from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 from src.utilities.plotter import Plotter
-from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
 import git
 
