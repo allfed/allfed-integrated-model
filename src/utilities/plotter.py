@@ -1402,8 +1402,6 @@ class Plotter:
         if (not plot_map) and (not create_slide):
             # no point in doing anything
             return
-        mn = 0
-        mx = 1
         fig, ax = plt.subplots()
         world.boundary.plot(ax=ax, color="Black", linewidth=0.1)
         world.plot(

@@ -461,7 +461,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         print("first: [single|multi] (single set of assumptions or multiple)")
         print("second: [pptx|no_pptx] (save a pptx report or not)")
         print("third: [no_plot|plot] (plots figures)")
-        print("fourth: country_code (which country to run, if desired)")
         print("")
         print("")
         print("")
@@ -470,27 +469,22 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             single_or_various = args[0]
             create_pptx = "pptx"
             plot_figs = "no_plot"
-            country = "world"
         elif len(args) == 2:
             single_or_various = args[0]
             create_pptx = args[1]
             plot_figs = "no_plot"
-            country = "world"
         elif len(args) == 3:
             single_or_various = args[0]
             create_pptx = args[1]
             plot_figs = args[2]
-            country = "world"
         elif len(args) == 4:
             single_or_various = args[0]
             create_pptx = args[1]
             plot_figs = args[2]
-            country = args[3]
         else:
             single_or_various = "single"
             create_pptx = "pptx"
             plot_figs = "no_plot"
-            country = "world"
 
         CREATE_SEVERAL_MAPS_PPTX = single_or_various == "multi"
         if CREATE_SEVERAL_MAPS_PPTX:

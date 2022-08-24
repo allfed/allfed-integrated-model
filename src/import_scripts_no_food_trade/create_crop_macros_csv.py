@@ -55,7 +55,9 @@ class CropMacros:
         return products, nutrition
 
     def get_kcals_matching(self, match_strings, products):
-        kcals_sum = 0
+        """
+        Returns the sum of kcals, fat, and protein for the products that the passed in  name as a substring of the product name string.
+        """
         all_matching_products = pd.DataFrame([])
         for string in match_strings:
             string_lower = string.lower()
@@ -117,11 +119,11 @@ class CropMacros:
         return [kcals_sum, fat_sum, protein_sum]
 
     def get_macros_csv(self):
-
+        """
+        get the stack of macronutrients that correspond to each countryd
+        """
         iso3_codes = ImportUtilities.countries_with_TWN_F5707_GBR_separate
         country_names = ImportUtilities.country_names_with_TWN_F5707_GBR_separate
-
-        country_names_dict = dict(zip(iso3_codes, country_names))
 
         macros_csv = np.array(
             [
@@ -163,12 +165,10 @@ class CropMacros:
         F5707_index = np.where(macros_csv[:, 0] == "F5707")
         GBR_index = np.where(macros_csv[:, 0] == "GBR")
 
-        F5707_name = macros_csv[F5707_index][0][1]
         F5707_kcals = float(macros_csv[F5707_index][0][2])
         F5707_fat = float(macros_csv[F5707_index][0][3])
         F5707_protein = float(macros_csv[F5707_index][0][4])
 
-        GBR_name = macros_csv[GBR_index][0][1]
         GBR_kcals = float(macros_csv[GBR_index][0][2])
         GBR_fat = float(macros_csv[GBR_index][0][3])
         GBR_protein = float(macros_csv[GBR_index][0][4])

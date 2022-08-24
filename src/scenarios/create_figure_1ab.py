@@ -17,7 +17,7 @@ def call_scenario_runner(this_simulation, title):
         title=title,
         create_pptx_with_all_countries=False,
         show_country_figures=False,
-        show_map_figures=False,
+        show_map_figures=True,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=[],
@@ -65,9 +65,10 @@ def main(args):
 
     this_simulation["cull"] = "dont_eat_culled"
 
-    call_scenario_runner_with_and_without_fat_protein(this_simulation, "worst_case")
+    # call_scenario_runner_with_and_without_fat_protein(this_simulation, "worst_case")
 
     # WORST CASE + SIMPLE_ADAPTATIONS #
+
     this_simulation["waste"] = "tripled_prices_in_country"
     this_simulation["shutoff"] = "long_delayed_shutoff"
     this_simulation["meat_strategy"] = "efficient_meat_strategy"
@@ -83,6 +84,11 @@ def main(args):
     call_scenario_runner_with_and_without_fat_protein(
         this_simulation, "worst_case_+_simple_adaptations_+_culling"
     )
+    # WORST CASE + SIMPLE_ADAPTATIONS + STORAGE + CULLING + ALL RESILIENT FOODS
+    this_simulation["scenario"] = "all_resilient_foods"
+    call_scenario_runner_with_and_without_fat_protein(
+        this_simulation, "Example_Scenario_+_all_resilient_foods"
+    )
 
     # WORST CASE + SIMPLE_ADAPTATIONS + CULLING + STORAGE #
 
@@ -90,12 +96,6 @@ def main(args):
     this_simulation["seasonality"] = "country"
     call_scenario_runner_with_and_without_fat_protein(
         this_simulation, "Example_Scenario"
-    )
-
-    # WORST CASE + SIMPLE_ADAPTATIONS + STORAGE + CULLING + ALL RESILIENT FOODS
-    this_simulation["scenario"] = "all_resilient_foods"
-    call_scenario_runner_with_and_without_fat_protein(
-        this_simulation, "Example_Scenario_+_all_resilient_foods"
     )
 
     # WORST CASE + SIMPLE_ADAPTATIONS + STORAGE + CULLING + EACH RESILIENT FOOD

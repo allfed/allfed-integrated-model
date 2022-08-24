@@ -188,9 +188,8 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert (
-                scenario_is_correct
-            ), """You must specify 'shutoff' key as immediate,short_delayed_shutoff,long_delayed_shutoff,or continued"""
+            assert scenario_is_correct, """You must specify 'shutoff' key as immediate,short_delayed_shutoff,
+            long_delayed_shutoff,or continued"""
 
         # WASTE
 
@@ -411,9 +410,9 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert (
-                scenario_is_correct
-            ), """You must specify 'scenario' key as either baseline_climate,all_resilient_foods,no_resilient_foods,seaweed,methane_scp,cellulosic_sugar,relocated_crops or greenhouse"""
+            assert scenario_is_correct, """You must specify 'scenario' key as either baseline_climate,
+            all_resilient_foods,no_resilient_foods,seaweed,methane_scp,
+            cellulosic_sugar,relocated_crops or greenhouse"""
 
         if scenario_option["meat_strategy"] == "efficient_meat_strategy":
             constants_for_params = scenario_loader.set_efficient_feed_grazing_strategy(
@@ -428,8 +427,7 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert (
-                scenario_is_correct
-            ), """You must specify 'meat_strategy' key as either efficient_meat_strategy,or inefficient_meat_strategy"""
+            assert scenario_is_correct, """You must specify 'meat_strategy' key as either efficient_meat_strategy,
+            or inefficient_meat_strategy"""
 
         return constants_for_params, scenario_loader

@@ -203,6 +203,7 @@ class Optimizer:
         return (model, variables)
 
     def add_stored_food_to_model(self, model, variables, month):
+
         if not self.single_valued_constants["STORE_FOOD_BETWEEN_YEARS"]:
             return self.add_stored_food_to_model_only_first_year(
                 model, variables, month
