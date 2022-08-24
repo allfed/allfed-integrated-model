@@ -19,11 +19,6 @@ from src.scenarios import run_model_no_resilient_foods
 from src.scenarios import run_model_with_resilient_foods
 
 
-import os
-
-os.chdir("../src/scenarios")
-
-
 def test_run_model_baseline():
     """
     Runs the baseline model for testing
