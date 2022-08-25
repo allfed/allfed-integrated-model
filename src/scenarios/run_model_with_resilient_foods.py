@@ -15,7 +15,7 @@ def run_model_with_resilient_foods(plot_figures=True):
     basis.
 
     Arguments:
-
+        plot_figures (bool): whether to plot the figures or not.
     Returns:
         None
     """

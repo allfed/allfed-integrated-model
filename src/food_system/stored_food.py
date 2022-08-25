@@ -48,7 +48,6 @@ class StoredFood(Food):
         of stocks to keep the buffer at a typical usage, other more extreme
         scenarios should be expected to use a higher percentage of all stored food,
         eating into the typical buffer.
-
         Arguments:
             starting_month (int): the month the simulation starts on.
             1=JAN, 2=FEB, ...,  12=DEC.
@@ -66,13 +65,13 @@ class StoredFood(Food):
 
         The minimum of any beginning month is a reasonable proxy for the very
         lowest levels stocks reach.
-
-        Note: the optimizer will run through the stocks for the duration of
-        each month. So, even starting at August (the minimum month), you would
-        want to use the difference in stocks at the end of the previous month
-        until the end of August to determine the stocks.
-
+        Note:
+            the optimizer will run through the stocks for the duration of
+            each month. So, even starting at August (the minimum month), you would
+            want to use the difference in stocks at the end of the previous month
+            until the end of August to determine the stocks.
         """
+
         starting_month_index = starting_month - 1  # convert to zero indexed
         buffer_ratio = self.buffer_ratio
         end_of_month_stocks = self.end_of_month_stocks

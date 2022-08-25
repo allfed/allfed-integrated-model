@@ -1,0 +1,8 @@
+digraph ModelOverview{
+
+    norm_consumption [label="Model Inputs", style="filled",color="#55AA55"];
+    model [label="Model", shape=box, style="filled", fillcolor="#669999"];
+    nw [label="Results", shape=octagon, color="#D46A6A", style="filled"];
+    Baseline [label="Control/Supplementary Information", shape=octagon, color="#D49A6A", style="filled"];
+
+}
