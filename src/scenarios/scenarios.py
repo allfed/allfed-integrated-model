@@ -1066,7 +1066,7 @@ class Scenarios:
         return constants_for_params
 
     def greenhouse(self, constants_for_params):
-        constants_for_params["GREENHOUSE_GAIN_PCT"] = 50
+        constants_for_params["GREENHOUSE_GAIN_PCT"] = 44
 
         # half values from greenhouse paper due to higher cost
         constants_for_params["DELAY"]["GREENHOUSE_MONTHS"] = 2

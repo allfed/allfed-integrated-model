@@ -71,6 +71,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         scenario_option,
         create_pptx_with_all_countries,
         show_country_figures,
+        figure_save_postfix="",
     ):
         country_name = country_data["country"]
 
@@ -126,7 +127,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             Plotter.plot_fig_1ab(
                 interpreted_results,
                 constants_for_params["NMONTHS"],
-                country_data["country"],
+                country_data["country"] + figure_save_postfix,
                 show_country_figures,
                 create_pptx_with_all_countries,
                 scenario_loader.scenario_description,
@@ -165,6 +166,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         add_map_slide_to_pptx=True,
         scenario_option=[],
         countries_list=[],  # runs all the countries if empty
+        figure_save_postfix="",
     ):
         """
         This function runs the model for all countries in the world, no trade.
@@ -237,6 +239,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 scenario_option,
                 create_pptx_with_all_countries,
                 show_country_figures,
+                figure_save_postfix,
             )
 
             if np.isnan(needs_ratio):
