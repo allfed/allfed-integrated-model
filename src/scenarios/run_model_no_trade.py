@@ -132,9 +132,14 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 create_pptx_with_all_countries,
                 scenario_loader.scenario_description,
             )
+            print("interpreted_results")
+            print("interpreted_results.time_months_middle")
+            print(interpreted_results)
+            print(interpreted_results.time_months_middle)
         return (
             percent_people_fed / 100,
             scenario_loader.scenario_description,
+            interpreted_results,
         )
 
     def fill_data_for_map(self, world, country_code, needs_ratio):
@@ -167,6 +172,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         scenario_option=[],
         countries_list=[],  # runs all the countries if empty
         figure_save_postfix="",
+        return_results=False,
     ):
         """
         This function runs the model for all countries in the world, no trade.
@@ -217,6 +223,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             countries_to_skip,
         ) = self.get_countries_to_run_and_skip(countries_list)
 
+        results = {}
+
         for index, country_data in no_trade_table.iterrows():
             country_code = country_data["iso3"]
 
@@ -233,7 +241,11 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             if np.isnan(population):
                 continue
 
-            needs_ratio, scenario_description = self.run_optimizer_for_country(
+            (
+                needs_ratio,
+                scenario_description,
+                interpreted_results,
+            ) = self.run_optimizer_for_country(
                 country_code,
                 country_data,
                 scenario_option,
@@ -242,9 +254,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 figure_save_postfix,
             )
 
+            country_name = country_data["country"]
             if np.isnan(needs_ratio):
                 n_errors += 1
-                country_name = country_data["country"]
                 failed_countries += " " + country_name
 
                 continue
@@ -260,6 +272,10 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 capped_ratio = needs_ratio
             net_pop_fed += capped_ratio * population
             net_pop += population
+
+            if return_results:
+                results[country_name] = interpreted_results
+
         if net_pop > 0:
             ratio_fed = str(round(float(net_pop_fed) / float(net_pop), 4))
         else:
@@ -305,8 +321,10 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 + minute
                 + ".pptx"
             )
+        print("WOWreturn_results")
+        print(results)
         # @li return a dataframe with each country and the world needs ratio
-        return [world, net_pop, net_pop_fed]
+        return [world, net_pop, net_pop_fed, results]
 
     def get_countries_to_run_and_skip(self, countries_list):
         """
@@ -343,6 +361,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         add_map_slide_to_pptx=True,
         show_map_figures=False,
         countries_list=[],
+        return_results=False,
     ):
         print("Number of scenarios:")
         print(len(scenario_options))
@@ -364,6 +383,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 add_map_slide_to_pptx=add_map_slide_to_pptx,
                 scenario_option=scenario_option,
                 countries_list=countries_list,
+                return_results=False,
             )
 
         if add_map_slide_to_pptx:

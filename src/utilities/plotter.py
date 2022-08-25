@@ -222,6 +222,232 @@ class Plotter:
         else:
             plt.close()
 
+    @classmethod
+    def plot_fig_1ab_updated(
+        crs,
+        worlds,
+        ratios,
+        xlim,
+    ):
+        for scenario_label, world in worlds.items():
+            print("scenario label")
+            print(scenario_label)
+            fig, ax = plt.subplots()
+            world.boundary.plot(ax=ax, color="Black", linewidth=0.1)
+            world.plot(
+                ax=ax,
+                column="needs_ratio",
+                legend=False,
+                cmap="viridis",
+            )
+            plt.show()
+
+    def helper_for_plotting_fig_3abcde(interpreter, xlim):
+        fig, ax = plt.subplots()
+        xlim = min(xlim, len(interpreter.time_months_middle))
+        legend = Plotter.get_people_fed_legend(interpreter, True)
+        pal = [
+            "#1e7ecd",
+            "#71797E",
+            "#76d7ea",
+            "#056608",
+            "#f3f4e3",
+            "#ff0606",
+            "#a5d610",
+            "#ffeb7a",
+            "#e7d2ad",
+        ]
+        interpreter = interpreter
+        ykcals = []
+        ykcals.append(interpreter.fish_kcals_equivalent.kcals)
+        ykcals.append(
+            (
+                np.array(interpreter.cell_sugar_kcals_equivalent.kcals)
+                + np.array(interpreter.scp_kcals_equivalent.kcals)
+            )
+        )
+        ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
+        ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
+        ykcals.append(
+            (
+                interpreter.grazing_milk_kcals_equivalent.kcals
+                + interpreter.grain_fed_milk_kcals_equivalent.kcals
+            )
+        )
+        ykcals.append(
+            (
+                interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                + interpreter.grain_fed_meat_kcals_equivalent.kcals
+            )
+        )
+        ykcals.append(
+            interpreter.immediate_outdoor_crops_to_humans_kcals_equivalent.kcals
+        )
+        ykcals.append(
+            interpreter.new_stored_outdoor_crops_to_humans_kcals_equivalent.kcals
+        )
+        ykcals.append(interpreter.stored_food_to_humans_kcals_equivalent.kcals)
+
+        # ax.text(
+        #     -0.06,
+        #     1.1,
+        #     "some label goes here",
+        #     transform=ax.transAxes,
+        #     fontsize=11,
+        #     fontweight="bold",
+        #     va="top",
+        #     ha="right",
+        # )
+        ax.stackplot(
+            interpreter.time_months_middle,
+            np.array(ykcals),
+            labels=legend,
+            colors=pal,
+        )
+        # get the sum of all the ydata up to xlim month,
+        # then find max month
+        # maxy = max(sum([x[0:xlim] for x in ykcals]))
+        # maxy = max([sum(x[0:xlim]) for x in ykcals])
+        maxy = 0
+        for i in range(xlim):
+            maxy = max(maxy, sum([x[i] for x in ykcals]))
+
+        maxy += maxy / 20
+        ax.set_ylim([0, maxy])
+        # ax.set_ylim([0, maxy])
+
+        plt.ylabel("Calories / capita / day")
+        # get the handles
+        handles, labels = ax.get_legend_handles_labels()
+        plt.legend(
+            loc="center left",
+            frameon=False,
+            bbox_to_anchor=(-0.15, -0.4),
+            shadow=False,
+            handles=reversed(handles),
+            labels=reversed(labels),
+        )
+
+        plt.title("Food availability")
+
+        plt.xlabel("Months since May ASRS onset")
+
+        # plt.rcParams["figure.figsize"] = [12.50, 10]
+
+        fig.set_figheight(8)
+        fig.set_figwidth(8)
+        plt.tight_layout()
+        plt.show()
+
+    def helper_for_plotting_fig_2abcde(interpreter, xlim):
+        fig, ax = plt.subplots()
+        xlim = min(xlim, len(interpreter.time_months_middle))
+        legend = Plotter.get_people_fed_legend(interpreter, True)
+        pal = [
+            "#1e7ecd",
+            "#71797E",
+            "#76d7ea",
+            "#056608",
+            "#f3f4e3",
+            "#ff0606",
+            "#a5d610",
+            "#ffeb7a",
+            "#e7d2ad",
+        ]
+        interpreter = interpreter
+        ykcals = []
+        ykcals.append(interpreter.fish_kcals_equivalent.kcals)
+        ykcals.append(
+            (
+                np.array(interpreter.cell_sugar_kcals_equivalent.kcals)
+                + np.array(interpreter.scp_kcals_equivalent.kcals)
+            )
+        )
+        ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
+        ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
+        ykcals.append(
+            (
+                interpreter.grazing_milk_kcals_equivalent.kcals
+                + interpreter.grain_fed_milk_kcals_equivalent.kcals
+            )
+        )
+        ykcals.append(
+            (
+                interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                + interpreter.grain_fed_meat_kcals_equivalent.kcals
+            )
+        )
+        ykcals.append(
+            interpreter.immediate_outdoor_crops_to_humans_kcals_equivalent.kcals
+        )
+        ykcals.append(
+            interpreter.new_stored_outdoor_crops_to_humans_kcals_equivalent.kcals
+        )
+        ykcals.append(interpreter.stored_food_to_humans_kcals_equivalent.kcals)
+
+        # ax.text(
+        #     -0.06,
+        #     1.1,
+        #     "some label goes here",
+        #     transform=ax.transAxes,
+        #     fontsize=11,
+        #     fontweight="bold",
+        #     va="top",
+        #     ha="right",
+        # )
+        ax.stackplot(
+            interpreter.time_months_middle,
+            np.array(ykcals),
+            labels=legend,
+            colors=pal,
+        )
+        # get the sum of all the ydata up to xlim month,
+        # then find max month
+        # maxy = max(sum([x[0:xlim] for x in ykcals]))
+        # maxy = max([sum(x[0:xlim]) for x in ykcals])
+        maxy = 0
+        for i in range(xlim):
+            maxy = max(maxy, sum([x[i] for x in ykcals]))
+
+        maxy += maxy / 20
+        ax.set_ylim([0, maxy])
+        # ax.set_ylim([0, maxy])
+
+        plt.ylabel("Calories / capita / day")
+        # get the handles
+        handles, labels = ax.get_legend_handles_labels()
+        plt.legend(
+            loc="center left",
+            frameon=False,
+            bbox_to_anchor=(-0.15, -0.4),
+            shadow=False,
+            handles=reversed(handles),
+            labels=reversed(labels),
+        )
+
+        plt.title("Food availability")
+
+        plt.xlabel("Months since May ASRS onset")
+
+        # plt.rcParams["figure.figsize"] = [12.50, 10]
+
+        fig.set_figheight(8)
+        fig.set_figwidth(8)
+        plt.tight_layout()
+        plt.show()
+
+    @classmethod
+    def plot_fig_2abcde_updated(
+        crs,
+        results,
+        xlim,
+    ):
+        for scenario_label, interpreter_dictionary in results.items():
+            print("scenario label")
+            print(scenario_label)
+            for country_name, interpreter in interpreter_dictionary.items():
+                Plotter.helper_for_plotting_fig_2abcde(interpreter, xlim)
+
     def plot_fig_2abcd(interpreter1, interpreter2, xlim):
         legend = Plotter.get_people_fed_legend(interpreter1, True)
         fig = plt.figure()
@@ -381,6 +607,11 @@ class Plotter:
         plt.savefig(repo_root + "/results/fig_2abcd.png")
         print("saved figure 2abcd")
         plt.show()
+
+    def plot_fig_3abcde_updated(results, xlim):
+        for scenario_name, interpreter in results.items():
+            print(scenario_name)
+            Plotter.helper_for_plotting_fig_3abcde(interpreter, xlim)
 
     def plot_fig_3ab(monte_carlo_data, food_names, removed, added):
         # fig = plt.figure()

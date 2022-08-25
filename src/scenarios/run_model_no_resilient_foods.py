@@ -63,7 +63,8 @@ def run_model_no_resilient_foods(plot_figures=True):
     )
 
     print(
-        "Estimated percent people fed, no resilient foods, minus waste & delayed halt of nonhuman consumption "
+        """Estimated percent people fed, no resilient foods, minus waste & delayed halt
+         of nonhuman consumption """
     )
 
     print(results.percent_people_fed / 100 * 2100)
