@@ -1,4 +1,5 @@
-allfed-integrated-model
+[ALLFED](https://allfed.info/) Integrated Food System Model
+
 ==============================
 ---
 ![Testing](https://github.com/allfed/allfed-integrated-model/actions/workflows/testing.yml/badge.svg)
