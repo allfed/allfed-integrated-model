@@ -1,6 +1,5 @@
-[ALLFED](https://allfed.info/) Integrated Food System Model
+# [ALLFED](https://allfed.info/) Integrated Food System Model
 
-==============================
 ---
 ![Testing](https://github.com/allfed/allfed-integrated-model/actions/workflows/testing.yml/badge.svg)
 [![DOI](https://zenodo.org/badge/380878388.svg)](https://zenodo.org/badge/latestdoi/380878388)
