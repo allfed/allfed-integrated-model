@@ -378,7 +378,7 @@ class FeedAndBiofuels:
         Calculate the exceedance of the biofuel and feed usage past the outdoor outdoor_crops
         production on a monthly basis for each nutrient.
 
-        NOTE: 
+        NOTE:
             UPDATE
             I realized that the max amount of stored food or OG used each month by kcals,
             fat or protein needs to be summed, rather than the max of each individual nutrient
