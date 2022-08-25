@@ -12,7 +12,7 @@ def run_model_baseline(plot_figures=True):
     climate 2020
 
     Arguments:
-
+        plot_figures (bool): whether to plot the figures or not.
     Returns:
         None
     """

@@ -1,0 +1,28 @@
+site_name: ALLFED Integrated Model
+
+
+# Repository
+repo_name: ALLFED Integrated Model
+repo_url: https://github.com/allfed/allfed-integrated-model
+edit_uri: ""
+# Copyright
+copyright: Me
+
+docs_dir: "docs/sources"
+
+plugins:
+  - search
+
+theme:
+  name: 'readthedocs'
+  custom_dir: 'docs'
+  palette:
+    primary: 'white'
+  logo: 'assets/images/logo_full.svg'
+  favicon: 'assets/images/favicon.svg'
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - instant
+nav:
+
