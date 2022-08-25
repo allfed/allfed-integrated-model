@@ -16,6 +16,7 @@ def run_model_no_resilient_foods(plot_figures=True):
     2) check that stored food plus meat is always used at the
     highest rate during the largest food shortage.
     Arguments:
+        plot_figures (bool): whether to plot the figures or not.
     Returns:
         None
     """
