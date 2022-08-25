@@ -1253,7 +1253,7 @@ class Food(UnitConversions):
         Only works when the units is identical for the different nutrients
 
         Returns:
-        (minimum nutrient name, minimum nutrient value)
+            (minimum nutrient name, minimum nutrient value)
         """
         assert self.kcals_units == self.fat_units == self.protein_units
 
