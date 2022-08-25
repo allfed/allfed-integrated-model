@@ -16,11 +16,11 @@ def call_scenario_runner(this_simulation, title):
     [world, pop_total, pop_fed] = scenario_runner.run_model_no_trade(
         title=title,
         create_pptx_with_all_countries=True,
-        show_country_figures=False,
+        show_country_figures=True,
         show_map_figures=False,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
-        countries_list=[],
+        countries_list=["CHN", "IND", "USA", "IDN", "PAK"],
         figure_save_postfix="_" + title,
     )
 
@@ -61,10 +61,9 @@ def main(args):
     this_simulation["shutoff"] = "continued"
     this_simulation["meat_strategy"] = "inefficient_meat_strategy"
 
-    this_simulation["buffer"] = "no_stored_food"
-    this_simulation["seasonality"] = "no_seasonality"
-
-    this_simulation["cull"] = "dont_eat_culled"
+    this_simulation["buffer"] = "zero"
+    this_simulation["seasonality"] = "country"
+    this_simulation["cull"] = "do_eat_culled"
 
     # call_scenario_runner_with_and_without_fat_protein(this_simulation, "worst_case")
 
