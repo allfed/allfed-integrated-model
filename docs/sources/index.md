@@ -1,4 +1,4 @@
-# [ALLFED](https://allfed.info/) Integrated Food System Model
+# ALLFED Integrated Food System Model
 
 ---
 ![Testing](https://github.com/allfed/allfed-integrated-model/actions/workflows/testing.yml/badge.svg)
@@ -15,6 +15,9 @@ An integrated economic+food supply model for resilient foods in nuclear winter
 * Once you got all your parameter values ready you create an Instance of the Parameter class from `parameter.py`. This class allows you to initialize the model with the parameter values you defined.
 * Finally to create an instance of the Optimizer class from `optimizer.py` and provide it with your parameters. This will run the model itself and optimize it.
 
+# How the model works in general
+
+![Flow Chart](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/results/overview.png)
 
 ### Using Colab (most users use this):
 The interactive model runs off colab. It doesn't require any downloading or code, you just need to hit the right buttons as they show up. Here's a demo:
@@ -112,16 +115,3 @@ jupyter notebook example_optimize.ipynb
 ```
 
 Then skip the colab section and execute every other cell in order.
-
-# Project Tree
-
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data               <- Data from Monte Carlo runs.
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    ├── figures            <- Generated graphics and figures to be used in reporting
-    ├── src                <- Source code for use in this project.
-        └── __init__.py    <- Makes src a Python module
-
---------
