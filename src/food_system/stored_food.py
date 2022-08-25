@@ -65,10 +65,11 @@ class StoredFood(Food):
 
         The minimum of any beginning month is a reasonable proxy for the very
         lowest levels stocks reach.
-        Note: the optimizer will run through the stocks for the duration of
-        each month. So, even starting at August (the minimum month), you would
-        want to use the difference in stocks at the end of the previous month
-        until the end of August to determine the stocks.
+        Note:
+            the optimizer will run through the stocks for the duration of
+            each month. So, even starting at August (the minimum month), you would
+            want to use the difference in stocks at the end of the previous month
+            until the end of August to determine the stocks.
         """
 
         starting_month_index = starting_month - 1  # convert to zero indexed
