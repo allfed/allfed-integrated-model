@@ -1297,7 +1297,7 @@ class Food(UnitConversions):
         NOTE: only works on single valued instances of nutrients, not arrays.
 
         Returns:
-        (maximum nutrient name, maximum nutrient value)
+            (maximum nutrient name, maximum nutrient value)
         """
 
         assert self.kcals_units == self.fat_units == self.protein_units
