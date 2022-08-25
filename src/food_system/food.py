@@ -128,7 +128,8 @@ class Food(UnitConversions):
     @classmethod
     def get_nutrient_names(cls):
         """
-        Returns the macronutrients of the food.
+        Returns:
+            the macronutrients of the food.
         """
 
         return ["kcals", "fat", "protein"]
@@ -136,7 +137,8 @@ class Food(UnitConversions):
     @classmethod
     def ratio_one(cls):
         """
-        Returns a ratio of one.
+        Returns:
+            a ratio of one.
         """
 
         return Food(
@@ -152,7 +154,8 @@ class Food(UnitConversions):
     @classmethod
     def ratio_zero(cls):
         """
-        Returns a ratio of zero.
+        Returns:
+            a ratio of zero.
         """
 
         return Food(
@@ -463,11 +466,14 @@ class Food(UnitConversions):
 
     def __getitem__(self, key):
         """
-        Returns the value of the macronutrient at the given index or range of indices.
+        Returns:
+            the value of the macronutrient at the given index or range of indices.
 
-        NOTE: if key is a length 1 index, then this won't properly update units
-        to " per month" and may cause an error down the line!
-        TODO: Make sure this cannot happen
+        NOTE:
+            if key is a length 1 index, then this won't properly update units
+            to " per month" and may cause an error down the line!
+        TODO:
+            Make sure this cannot happen
         """
         self.make_sure_is_a_list()
 
@@ -664,9 +670,10 @@ class Food(UnitConversions):
 
     def __eq__(self, other):
         """
-        Returns True if the two foods are equal. This also works
-        for comparing monthly foods to each other, as their units
-        contain 'each month'.
+        Returns:
+            True if the two foods are equal. This also works
+            for comparing monthly foods to each other, as their units
+            contain 'each month'.
         """
         assert self.units == other.units
         if self.is_list_monthly():
@@ -684,9 +691,10 @@ class Food(UnitConversions):
 
     def __ne__(self, other):
         """
-        Returns False if the two foods are not equal. This also works
-        for comparing monthly foods to each other, as their units
-        contain 'each month'.
+        Returns:
+            False if the two foods are not equal. This also works
+            for comparing monthly foods to each other, as their units
+            contain 'each month'.
         """
         assert self.units == other.units
         if self.is_list_monthly():
@@ -716,7 +724,8 @@ class Food(UnitConversions):
 
     def __str__(self):
         """
-        Returns a string representation of the food.
+        Returns:
+            a string representation of the food.
         """
         return_string = ""
         kcal_string = "    kcals: % s % s\n" % (
@@ -759,62 +768,6 @@ class Food(UnitConversions):
         """
         return type(self.kcals) == list or type(self.kcals) == np.ndarray
 
-    # comparisons between the quantities of nutrients
-    # only compares kcals with kcals, fat with fat, and protein with protein, not
-    # between the units.
-
-    # def is_never_negative(self):
-    #     """
-    #     Checks wether the food's macronutrients are never negative.
-
-    #     However, only checks for the nutrients that are included.
-    #     """
-    #     if self.is_list_monthly():
-    #         self.validate_if_list()
-
-    #         kcals_greater_than_zero = (np.array(self.kcals) >= 0).all()
-    #         fat_greater_than_zero = (np.array(self.fat)
-    #               >= 0).all() or self.conversions.exclude_fat
-    #         protein_greater_than_zero = (np.array(self.protein)
-    #               >= 0).all() or self.conversions.exclude_protein
-
-    #         return (
-    #             kcals_greater_than_zero
-    #             and fat_greater_than_zero
-    #             and protein_greater_than_zero
-    #         )
-
-    #     return (
-    #         self.kcals >= 0
-    #         and (self.fat >= 0 or self.conversions.exclude_fat)
-    #         and (self.protein >= 0 or self.conversions.exclude_protein)
-    #     )
-
-    # def all_greater_than(self, other):
-    #     """
-    #     Returns True if the food's macronutrients are greater than the other food's.
-
-    #     if don't include fat or protein, does not check respective nutrients
-
-    #     """
-    #     assert self.units == other.units
-
-    #     if self.is_list_monthly():
-
-    #         self.validate_if_list()
-
-    #         return (
-    #             (np.array(self.kcals - other.kcals) > 0).all()
-    #             and (np.array(self.fat - other.fat) > 0).all()
-    #             and (np.array(self.protein - other.protein) > 0).all()
-    #         )
-
-    #     return (
-    #         self.kcals > other.kcals
-    #         and self.fat > other.fat or self.conversions.exclude_fat
-    #         and self.protein > other.protein or self.conversions.exclude_protein
-    #     )
-
     def is_never_negative(self):
         """
         Checks wether the food's macronutrients are never negative.
@@ -839,7 +792,8 @@ class Food(UnitConversions):
 
     def all_greater_than(self, other):
         """
-        Returns True if the food's macronutrients are greater than the other food's.
+        Returns:
+            True if the food's macronutrients are greater than the other food's.
         """
         assert self.units == other.units
 
@@ -867,7 +821,8 @@ class Food(UnitConversions):
 
     def all_less_than(self, other):
         """
-        Returns True if the food's macronutrients are greater than the other food's.
+        Returns:
+            True if the food's macronutrients are greater than the other food's.
         """
 
         assert self.units == other.units
@@ -896,7 +851,8 @@ class Food(UnitConversions):
 
     def any_greater_than(self, other):
         """
-        Returns True if the food's macronutrients are greater than the other food's.
+        Returns:
+            True if the food's macronutrients are greater than the other food's.
         """
 
         assert self.units == other.units
@@ -931,7 +887,8 @@ class Food(UnitConversions):
 
     def any_less_than(self, other):
         """
-        Returns True if the food's macronutrients are less than the other food's.
+        Returns:
+            True if the food's macronutrients are less than the other food's.
         """
 
         assert self.units == other.units
@@ -966,8 +923,9 @@ class Food(UnitConversions):
 
     def all_greater_than_or_equal_to(self, other):
         """
-        Returns True if the food's macronutrients are greater than or equal to
-        the other food's.
+        Returns:
+            True if the food's macronutrients are greater than or equal to
+            the other food's.
         """
         assert self.units == other.units
 
@@ -995,8 +953,9 @@ class Food(UnitConversions):
 
     def all_less_than_or_equal_to(self, other):
         """
-        Returns True if the food's macronutrients are less than or equal to
-        the other food's.
+        Returns
+            :True if the food's macronutrients are less than or equal to
+            the other food's.
 
         cases:
             this is food, other is food
@@ -1038,8 +997,9 @@ class Food(UnitConversions):
 
     def any_greater_than_or_equal_to(self, other):
         """
-        Returns True if the food's macronutrients are greater than or equal to
-        the other food's.
+        Returns:
+            True if the food's macronutrients are greater than or equal to
+            the other food's.
         """
         assert self.units == other.units
 
@@ -1067,8 +1027,9 @@ class Food(UnitConversions):
 
     def any_less_than_or_equal_to(self, other):
         """
-        Returns True if the food's macronutrients are less than or equal to
-        the other food's.
+        Returns:
+            True if the food's macronutrients are less than or equal to
+            the other food's.
         """
 
         if self.is_list_monthly():
@@ -1107,7 +1068,8 @@ class Food(UnitConversions):
 
     def all_equals_zero(self):
         """
-        Returns True if the food's macronutrients are equal to zero.
+        Returns:
+            True if the food's macronutrients are equal to zero.
         """
         if self.is_list_monthly():
 
@@ -1130,7 +1092,8 @@ class Food(UnitConversions):
 
     def any_equals_zero(self):
         """
-        Returns True if the food's macronutrients are equal to zero.
+        Returns:
+            True if the food's macronutrients are equal to zero.
         """
         if self.is_list_monthly():
 
@@ -1162,7 +1125,8 @@ class Food(UnitConversions):
 
     def all_greater_than_zero(self):
         """
-        Returns True if the food's macronutrients are greater than zero.
+        Returns:
+            True if the food's macronutrients are greater than zero.
         """
         if self.is_list_monthly():
 
@@ -1214,7 +1178,8 @@ class Food(UnitConversions):
 
     def all_greater_than_or_equal_to_zero(self):
         """
-        Returns True if the food's macronutrients are greater than or equal to zero.
+        Returns:
+            True if the food's macronutrients are greater than or equal to zero.
         """
         if self.is_list_monthly():
 
@@ -1239,7 +1204,8 @@ class Food(UnitConversions):
 
     def as_numpy_array(self):
         """
-        Returns the nutrients as an ordered numpy_array.
+        Returns:
+            the nutrients as an ordered numpy_array.
         """
         return np.array([self.kcals, self.fat, self.protein])
 
@@ -1294,7 +1260,8 @@ class Food(UnitConversions):
         """
         Returns the maximum nutrient of the food.
 
-        NOTE: only works on single valued instances of nutrients, not arrays.
+        NOTE:
+            only works on single valued instances of nutrients, not arrays.
 
         Returns:
             (maximum nutrient name, maximum nutrient value)
@@ -1431,9 +1398,11 @@ class Food(UnitConversions):
         return amount_consumed_list
 
     def get_consumed_amount(self, demand_to_be_met, used_nutrient_ratio):
-        # returns the amount used of the demand_to_be_met a food with a given used_nutrient_ratio.
-        # The maximum nutrient used is used to determine the amount of the consumed
-        # food will be used.
+        """
+        returns the amount used of the demand_to_be_met a food with a given used_nutrient_ratio.
+        The maximum nutrient used is used to determine the amount of the consumed
+        food will be used.
+        """
         assert not demand_to_be_met.is_list_monthly()
 
         assert used_nutrient_ratio.fat > 0
@@ -1524,7 +1493,8 @@ class Food(UnitConversions):
         Replace negative values with zero for each month for all nutrients.
         Also tests that the function worked.
 
-        Returns: the relevant food object with negative values replaced
+        Returns: 
+            the relevant food object with negative values replaced
         """
         if self.is_list_monthly():
             self.validate_if_list()
@@ -1584,7 +1554,8 @@ class Food(UnitConversions):
                    replacement ( food list, food, or number ): thing used to replace
                                                                the elements
 
-        returns: itself, but with places list_with_zeros zero replaced with replacement
+        returns:
+            itself, but with places list_with_zeros zero replaced with replacement
 
         """
         self.make_sure_is_a_list()
