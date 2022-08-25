@@ -17,7 +17,7 @@ An integrated economic+food supply model for resilient foods in nuclear winter
 
 # How the model works in general
 
-![Flow Chart](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/step2.png/overview.png)
+![Flow Chart](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/overview.png)
 
 ### Using Colab (most users use this):
 The interactive model runs off colab. It doesn't require any downloading or code, you just need to hit the right buttons as they show up. Here's a demo:
