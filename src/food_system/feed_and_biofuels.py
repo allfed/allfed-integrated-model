@@ -378,51 +378,51 @@ class FeedAndBiofuels:
         Calculate the exceedance of the biofuel and feed usage past the outdoor outdoor_crops
         production on a monthly basis for each nutrient.
 
-        NOTE: UPDATE:
+        NOTE: 
+            UPDATE
             I realized that the max amount of stored food or OG used each month by kcals,
             fat or protein needs to be summed, rather than the max of each individual nutrient
 
         Example:
+            outdoor crops:
+                kcals:   10, 20, 10, 10
+                fat:     10, 30, 20, 20
+                protein: 10, 30, 20, 20
+                month:    1   2   3   4
 
-        outdoor crops:
-            kcals:   10, 20, 10, 10
-            fat:     10, 30, 20, 20
-            protein: 10, 30, 20, 20
-            month:    1   2   3   4
+            nonhuman_consumption:
+                kcals:    5, 20, 10, 15
+                fat:      5, 15, 25, 20
+                protein: 25, 15, 20, 20
+                month:    1   2   3   4
 
-        nonhuman_consumption:
-            kcals:    5, 20, 10, 15
-            fat:      5, 15, 25, 20
-            protein: 25, 15, 20, 20
-            month:    1   2   3   4
+            supply_minus_demand:
+                kcals:    5,  0,  0, -5
+                fat:      5, 15, -5,  0
+                protein:-15, 15,  0,  0
+                month:    1   2   3   4
 
-        supply_minus_demand:
-            kcals:    5,  0,  0, -5
-            fat:      5, 15, -5,  0
-            protein:-15, 15,  0,  0
-            month:    1   2   3   4
+            running_net_supply:
+                kcals:    5,  5,  5,  0
+                fat:      5, 20, 15, 15
+                protein:-15,  0,  0,  0
+                month:    1   2   3   4
 
-        running_net_supply:
-            kcals:    5,  5,  5,  0
-            fat:      5, 20, 15, 15
-            protein:-15,  0,  0,  0
-            month:    1   2   3   4
+            min_running_net_supply:
+                kcals:    0
+                fat:      5
+                protein:-15
+                month: allmonths
 
-        min_running_net_supply:
-            kcals:    0
-            fat:      5
-            protein:-15
-            month: allmonths
-
-        max_running_net_demand:
-            kcals:    0
-            fat:      -5
-            protein: 15
-            month: allmonths
+            max_running_net_demand:
+                kcals:    0
+                fat:      -5
+                protein: 15
+                month: allmonths
 
 
-        For all month combined, how much original stored food is needed to make up for
-        each macronutrient?
+            For all month combined, how much original stored food is needed to make up for
+            each macronutrient?
 
         Answer:
             We sum up all the discrepancies between supply and demand.

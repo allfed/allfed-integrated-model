@@ -1493,7 +1493,7 @@ class Food(UnitConversions):
         Replace negative values with zero for each month for all nutrients.
         Also tests that the function worked.
 
-        Returns: 
+        Returns:
             the relevant food object with negative values replaced
         """
         if self.is_list_monthly():
