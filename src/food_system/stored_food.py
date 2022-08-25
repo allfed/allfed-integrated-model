@@ -71,7 +71,6 @@ class StoredFood(Food):
         each month. So, even starting at August (the minimum month), you would
         want to use the difference in stocks at the end of the previous month
         until the end of August to determine the stocks.
-
         """
         starting_month_index = starting_month - 1  # convert to zero indexed
         buffer_ratio = self.buffer_ratio
