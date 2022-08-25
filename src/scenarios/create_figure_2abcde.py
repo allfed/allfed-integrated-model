@@ -78,7 +78,7 @@ def main(args):
     this_simulation["cull"] = "do_eat_culled"
 
     call_scenario_runner_with_and_without_fat_protein(
-        this_simulation, "worst_case_+_simple_adaptations_+_culling"
+        this_simulation, "Example_Scenario_"
     )
     # WORST CASE + SIMPLE_ADAPTATIONS + STORAGE + CULLING + ALL RESILIENT FOODS
     this_simulation["scenario"] = "all_resilient_foods"
