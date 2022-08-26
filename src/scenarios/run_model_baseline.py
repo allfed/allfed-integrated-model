@@ -1,9 +1,6 @@
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
-import git
-
-repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 
 def run_model_baseline(plot_figures=True):
@@ -26,29 +23,27 @@ def run_model_baseline(plot_figures=True):
 
     constants_for_params = scenarios_loader.set_immediate_shutoff(constants_for_params)
 
-    # scenario_runner = ScenarioRunner()
-    # results = scenario_runner.run_and_analyze_scenario(
-    #     constants_for_params, scenarios_loader
-    # )
+    scenario_runner = ScenarioRunner()
+    results = scenario_runner.run_and_analyze_scenario(
+        constants_for_params, scenarios_loader
+    )
 
-    # print("")
-    # print("")
-    # print("")
+    print("")
+    print("")
+    print("")
 
-    # print("")
-    # print("Maximum usable kcals/capita/day 2020, no waste, primary production")
-    # print(results.percent_people_fed / 100 * 2100)
-    # print("")
+    print("")
+    print("Maximum usable kcals/capita/day 2020, no waste, primary production")
+    print(results.percent_people_fed / 100 * 2100)
+    print("")
 
-    # results1 = results
+    results1 = results
 
     scenarios_loader, constants_for_params = set_common_baseline_properties()
 
-    # constants_for_params = scenarios_loader.set_continued_feed_biofuels(
-    #     constants_for_params
-    # )
-    constants_for_params = scenarios_loader.set_immediate_shutoff(constants_for_params)
-
+    constants_for_params = scenarios_loader.set_continued_feed_biofuels(
+        constants_for_params
+    )
     constants_for_params = scenarios_loader.set_global_waste_to_baseline_prices(
         constants_for_params
     )
@@ -63,7 +58,7 @@ def run_model_baseline(plot_figures=True):
     results2 = results
 
     if plot_figures:
-        Plotter.plot_fig_s1abcd(results2, results2, 72, True)
+        Plotter.plot_fig_s1abcd(results1, results2, 72, True)
 
 
 def set_common_baseline_properties():

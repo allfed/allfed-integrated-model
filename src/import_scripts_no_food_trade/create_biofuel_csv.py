@@ -1,12 +1,17 @@
 import pandas as pd
 import git
+from pathlib import Path
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 print("importing biofuels data...")
 
 NO_TRADE_XLS = (
-    repo_root + "/data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "raw_data"
+    / "Integrated Model With No Food Trade.xlsx"
 )
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
@@ -39,7 +44,7 @@ df_biofuel = df_biofuel.iloc[
 ]
 
 df_biofuel.to_csv(
-    repo_root + "/data/no_food_trade/processed_data/biofuel_csv.csv",
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "biofuel_csv.csv",
     sep=",",
     index=False,
 )

@@ -19,6 +19,7 @@ from src.scenarios.run_scenario import ScenarioRunner
 from src.food_system.food import Food
 from itertools import product
 import git
+from pathlib import Path
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -132,10 +133,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 create_pptx_with_all_countries,
                 scenario_loader.scenario_description,
             )
-            print("interpreted_results")
-            print("interpreted_results.time_months_middle")
-            print(interpreted_results)
-            print(interpreted_results.time_months_middle)
         return (
             percent_people_fed / 100,
             scenario_loader.scenario_description,
@@ -186,8 +183,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         assert len(scenario_option) > 0, "ERROR: a scenario must be specified"
 
         if create_pptx_with_all_countries:
-            if not os.path.exists(repo_root + "/results/large_reports"):
-                os.mkdir(repo_root + "/results/large_reports")
+            if not os.path.exists(Path(repo_root) / "results" / "large_reports"):
+                os.mkdir(Path(repo_root) / "results" / "large_reports")
             Plotter.start_pptx("No trade by country")
         """
         Runs the baseline model by country and without trade
@@ -199,7 +196,12 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         """
         # country codes for UK + EU 27 countries (used for plotting map)
 
-        NO_TRADE_CSV = repo_root + "/data/no_food_trade/computer_readable_combined.csv"
+        NO_TRADE_CSV = (
+            Path(repo_root)
+            / "data"
+            / "no_food_trade"
+            / "computer_readable_combined.csv"
+        )
 
         no_trade_table = pd.read_csv(NO_TRADE_CSV)
 
@@ -305,9 +307,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         hour = str(datetime.datetime.now().hour)
         minute = str(datetime.datetime.now().minute)
         if create_pptx_with_all_countries:
+            file_root = Path(repo_root) / "results" / "large_reports" / "no_food_trade_"
             Plotter.end_pptx(
-                saveloc=repo_root
-                + "/results/large_reports/no_food_trade_"
+                saveloc=str(file_root)
                 + title
                 + "."
                 + year
@@ -321,8 +323,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 + minute
                 + ".pptx"
             )
-        print("WOWreturn_results")
-        print(results)
         # @li return a dataframe with each country and the world needs ratio
         return [world, net_pop, net_pop_fed, results]
 
@@ -392,9 +392,14 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             day = str(date.today().day)
             hour = str(datetime.datetime.now().hour)
             minute = str(datetime.datetime.now().minute)
+            path_string = str(
+                Path(repo_root)
+                / "results"
+                / "large_reports"
+                / "various_scenario_options_"
+            )
             Plotter.end_pptx(
-                saveloc=repo_root
-                + "/results/large_reports/various_scenario_options_"
+                saveloc=path_string
                 + title
                 + "."
                 + year

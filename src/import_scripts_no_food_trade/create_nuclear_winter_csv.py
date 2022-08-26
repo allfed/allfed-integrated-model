@@ -10,6 +10,7 @@ import numpy as np
 from src.utilities.import_utilities import ImportUtilities
 from src.import_scripts_no_food_trade.create_crop_macros_csv import CropMacros
 import git
+from pathlib import Path
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -232,7 +233,13 @@ def main():
     saves a csv with all the countries' crop reductions in nuclear winter
     averaged
     """
-    NW_CSV = repo_root + "/data/no_food_trade/raw_data/rutgers_nw_production_raw.csv"
+    NW_CSV = (
+        Path(repo_root)
+        / "data"
+        / "no_food_trade"
+        / "raw_data"
+        / "rutgers_nw_production_raw.csv"
+    )
 
     iso3_col_name = "ISO3 Country Code"
 
@@ -304,7 +311,11 @@ def main():
     cleaned_nw_csv = clean_up_nw_csv(nw_csv, nw_csv_cols)
 
     cleaned_nw_csv.to_csv(
-        repo_root + "/data/no_food_trade/processed_data/nuclear_winter_csv.csv",
+        Path(repo_root)
+        / "data"
+        / "no_food_trade"
+        / "processed_data"
+        / "nuclear_winter_csv.csv",
         sep=",",
         index=False,
     )

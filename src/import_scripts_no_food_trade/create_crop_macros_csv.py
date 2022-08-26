@@ -9,15 +9,20 @@ import pandas as pd
 import numpy as np
 from src.utilities.import_utilities import ImportUtilities
 import git
+from pathlib import Path
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 
 class CropMacros:
     def __init__(self):
-        self.NUTRITION_XLS = repo_root + "/data/Supplemental_Data.xlsx"
+        self.NUTRITION_XLS = Path(repo_root) / "data" / "Supplemental_Data.xlsx"
         self.PRODUCTION_CSV = (
-            repo_root + "/data/no_food_trade/raw_data/FAOSTAT_food_production_2020.csv"
+            Path(repo_root)
+            / "data"
+            / "no_food_trade"
+            / "raw_data"
+            / "FAOSTAT_food_production_2020.csv"
         )
 
         self.TONS_TO_KG = 1e3
@@ -196,7 +201,7 @@ if __name__ == "__main__":
     macros_csv = cm.clean_up_macros_csv(macros_csv)
 
     np.savetxt(
-        repo_root + "/data/no_food_trade/processed_data/macros_csv.csv",
+        Path(repo_root) / "data" / "no_food_trade" / "processed_data/macros_csv.csv",
         macros_csv,
         delimiter=",",
         fmt="%s",

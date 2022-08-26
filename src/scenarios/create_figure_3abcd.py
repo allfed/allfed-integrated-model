@@ -48,7 +48,7 @@ def main(args):
 
     this_simulation["scenario"] = "no_resilient_foods"
 
-    this_simulation["buffer"] = "no_stored_food"
+    this_simulation["buffer"] = "no_stored_between_years"
     this_simulation["seasonality"] = "no_seasonality"
 
     this_simulation["waste"] = "baseline_globally"
@@ -56,9 +56,6 @@ def main(args):
     this_simulation["meat_strategy"] = "efficient_meat_strategy"
 
     this_simulation["cull"] = "dont_eat_culled"
-
-    title_worst_case = "Worst Case"
-    results_worst_case = call_scenario_runner(this_simulation, title_worst_case)
 
     # WORST CASE + SIMPLE_ADAPTATIONS #
 
@@ -71,17 +68,9 @@ def main(args):
         this_simulation, title_simple_adaptations
     )
 
-    # WORST CASE + SIMPLE_ADAPTATIONS + CULLING #
-
-    this_simulation["cull"] = "do_eat_culled"
-
-    title_simple_adaptations_culling = "worst_case_+_simple_adaptations_+_culling"
-    results_simple_adaptations_culling = call_scenario_runner(
-        this_simulation, title_simple_adaptations_culling
-    )
-
     # WORST CASE + SIMPLE_ADAPTATIONS + CULLING + STORAGE #
 
+    this_simulation["cull"] = "do_eat_culled"
     this_simulation["buffer"] = "zero"
     this_simulation["seasonality"] = "nuclear_winter_globally"
     title_example_scenario = "Example_Scenario:\nsimple_adaptations,\nculling,\nstorage"
@@ -97,9 +86,7 @@ def main(args):
     )
 
     results = {}
-    results[title_worst_case] = results_worst_case
     results[title_simple_adaptations] = results_simple_adaptations
-    results[title_simple_adaptations_culling] = results_simple_adaptations_culling
     results[title_example_scenario] = results_example_scenario
     results[title_resilient_foods] = results_resilient_foods
 

@@ -23,7 +23,7 @@ def main(args):
     this_simulation["fat"] = "not_required"
     this_simulation["protein"] = "not_required"
     this_simulation["nutrition"] = "catastrophe"
-    this_simulation["buffer"] = "no_stored_food"
+    this_simulation["buffer"] = "no_stored_between_years"
     this_simulation["shutoff"] = "immediate"
     this_simulation["cull"] = "dont_eat_culled"
     this_simulation["meat_strategy"] = "inefficient_meat_strategy"
@@ -33,10 +33,10 @@ def main(args):
 
     scenario_runner.run_model_no_trade(
         title="Reproduce Xia et al Results",
-        create_pptx_with_all_countries=True,
+        create_pptx_with_all_countries=False,
         show_country_figures=False,
         show_map_figures=True,
-        add_map_slide_to_pptx=True,
+        add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=[]
         #     "CHN",

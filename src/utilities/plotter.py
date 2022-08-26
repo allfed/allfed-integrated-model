@@ -15,6 +15,7 @@ import os
 import pandas as pd
 from src.utilities.make_powerpoint import MakePowerpoint
 
+from pathlib import Path
 import git
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
@@ -202,7 +203,9 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         fig.suptitle(newtitle)
-        saveloc = repo_root + "/results/large_reports/no_trade" + newtitle + ".png"
+        path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
+
+        saveloc = path_string + newtitle + ".png"
         plt.savefig(
             saveloc,
             dpi=300,
@@ -606,7 +609,7 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig(repo_root + "/results/fig_2abcd.png")
+        plt.savefig(Path(repo_root) / "results" / "fig_2abcd.png")
         print("saved figure 2abcd")
         plt.show()
 
@@ -709,7 +712,7 @@ class Plotter:
                 ax_hist.set(title="Monte Carlo outcomes")
 
         plt.tight_layout()
-        plt.savefig(repo_root + "/results/fig_3ab.png")
+        plt.savefig(Path(repo_root) / "results" / "fig_3ab.png")
         print("saved figure 3ab")
         plt.show()
 
@@ -787,7 +790,7 @@ class Plotter:
         plt.tight_layout()
 
         plt.rcParams["figure.figsize"] = [12, 9]
-        plt.savefig(repo_root + "/results/fig_s1.png")
+        plt.savefig(Path(repo_root) / "results" / "fig_s1.png")
         print("saved figure s1")
         plt.show()
 
@@ -954,7 +957,7 @@ class Plotter:
         fig.set_figheight(12)
         fig.set_figwidth(8)
         plt.tight_layout()
-        plt.savefig(repo_root + "/results/fig_s2abcd.png")
+        plt.savefig(Path(repo_root) / "results" / "fig_s2abcd.png")
         print("saved figure s2abcd")
         plt.show()
 
@@ -1342,7 +1345,7 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         if not showplot:
-            saveloc = repo_root + "/results/fig_s1abcd.png"
+            saveloc = Path(repo_root) / "results" / "fig_s1abcd.png"
             crs.mp.insert_slide(
                 title_below=save_title_string,
                 description="plot of all foods added up",
@@ -1557,7 +1560,7 @@ class Plotter:
         plt.tight_layout()
         fig.suptitle(title)
 
-        saveloc = repo_root + "/results/large_reports/" + title + ".png"
+        saveloc = Path(repo_root) / "results" / "large_reports" / "" + title + ".png"
 
         plt.savefig(
             saveloc,
@@ -1615,7 +1618,7 @@ class Plotter:
         plt.tight_layout()
         fig.suptitle(title)
 
-        saveloc = repo_root + "/results/large_reports/" + title + ".png"
+        saveloc = Path(repo_root) / "results" / "large_reports" / "" + title + ".png"
 
         plt.savefig(
             saveloc,
@@ -1652,9 +1655,10 @@ class Plotter:
 
         # pp.title(save_title_string)
         # plt.close()
-        saveloc = (
-            repo_root + "/results/large_reports/map_ratio_fed_" + ratio_fed + ".png"
+        path_string = str(
+            Path(repo_root) / "results" / "large_reports" / "map_ratio_fed_"
         )
+        saveloc = path_string + ratio_fed + ".png"
         fig.savefig(
             saveloc,
             dpi=300,
@@ -1679,6 +1683,6 @@ class Plotter:
 
     @classmethod
     def end_pptx(crs, saveloc):
-        if not os.path.exists(repo_root + "/results/large_reports"):
-            os.mkdir(repo_root + "/results/large_reports")
+        if not os.path.exists(Path(repo_root) / "results" / "large_reports"):
+            os.mkdir(Path(repo_root) / "results" / "large_reports")
         crs.mp.save_ppt(saveloc)

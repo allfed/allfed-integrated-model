@@ -11,6 +11,7 @@ from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 from src.utilities.plotter import Plotter
 import git
 import numpy as np
+from pathlib import Path
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -43,22 +44,9 @@ def call_scenario_runner_with_and_without_fat_protein(this_simulation, title):
     this_simulation["fat"] = "not_required"
     this_simulation["protein"] = "not_required"
 
-    print("title")
-    print(title)
-    # print("percent fed")
-    # print(pop_fed / pop_total)
     [world, pop_total, pop_fed, results] = call_scenario_runner(this_simulation, title)
-    print("return_results")
-    print(results)
 
     return results
-    # this_simulation["fat"] = "not_required"
-    # this_simulation["protein"] = "not_required"
-
-    # [world, pop_total, pop_fed] = call_scenario_runner(
-    #     this_simulation, title + " require fat+protein"
-    # )
-    # print(pop_fed / pop_total)
 
 
 def recalculate_plots():
@@ -102,13 +90,14 @@ def recalculate_plots():
 
 def main(args):
 
-    RECALCULATE_PLOTS = True
+    RECALCULATE_PLOTS = False
     if RECALCULATE_PLOTS:
         results = recalculate_plots()
-        np.save(repo_root + "/results/large_reports/results2.npy", results)
+        np.save(Path(repo_root) / "results" / "large_reports" / "results2.npy", results)
     else:
         results = np.load(
-            repo_root + "/results/large_reports/results2.npy", allow_pickle=True
+            Path(repo_root) / "results" / "large_reports" / "results2.npy",
+            allow_pickle=True,
         ).item()
 
     Plotter.plot_fig_2abcde_updated(results=results, xlim=72)

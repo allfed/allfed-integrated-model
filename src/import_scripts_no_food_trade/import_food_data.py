@@ -7,6 +7,7 @@
 """
 
 
+from pathlib import Path
 import pandas as pd
 from functools import reduce
 import git
@@ -18,27 +19,73 @@ print("chunking all the cvs's into computer_readable_combined...")
 print("")
 
 
-df1 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/population_csv.csv")
-df2 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/aquaculture_csv.csv")
+df1 = pd.read_csv(
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "population_csv.csv"
+)
+df2 = pd.read_csv(
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "processed_data"
+    / "aquaculture_csv.csv"
+)
 df3 = pd.read_csv(
-    repo_root + "/data/no_food_trade/processed_data/grasses_baseline_csv.csv"
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "processed_data"
+    / "grasses_baseline_csv.csv"
 )
-df4 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/dairy_csv.csv")
-df5 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/meat_csv.csv")
-df6 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/head_count_csv.csv")
-df7 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/biofuel_csv.csv")
-df8 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/feed_csv.csv")
-df9 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/macros_csv.csv")
+df4 = pd.read_csv(
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "dairy_csv.csv"
+)
+df5 = pd.read_csv(
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "meat_csv.csv"
+)
+df6 = pd.read_csv(
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "head_count_csv.csv"
+)
+df7 = pd.read_csv(
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "biofuel_csv.csv"
+)
+df8 = pd.read_csv(
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "feed_csv.csv"
+)
+df9 = pd.read_csv(
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "macros_csv.csv"
+)
 df10 = pd.read_csv(
-    repo_root + "/data/no_food_trade/processed_data/nuclear_winter_csv.csv"
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "processed_data"
+    / "nuclear_winter_csv.csv"
 )
-df11 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/seasonality_csv.csv")
-df12 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/food_stock_csv.csv")
-df13 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/food_waste_csv.csv")
-df14 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/pulp_csv.csv")
-df15 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/scp_csv.csv")
-df16 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/greenhouse_csv.csv")
-df17 = pd.read_csv(repo_root + "/data/no_food_trade/processed_data/seaweed_csv.csv")
+df11 = pd.read_csv(
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "processed_data"
+    / "seasonality_csv.csv"
+)
+df12 = pd.read_csv(
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "food_stock_csv.csv"
+)
+df13 = pd.read_csv(
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "food_waste_csv.csv"
+)
+df14 = pd.read_csv(
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "pulp_csv.csv"
+)
+df15 = pd.read_csv(
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "scp_csv.csv"
+)
+df16 = pd.read_csv(
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "greenhouse_csv.csv"
+)
+df17 = pd.read_csv(
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "seaweed_csv.csv"
+)
 
 
 dataframes = [
@@ -72,7 +119,7 @@ df_merged = reduce(
 
 
 df_merged.to_csv(
-    repo_root + "/data/no_food_trade/computer_readable_combined.csv",
+    Path(repo_root) / "data" / "no_food_trade" / "computer_readable_combined.csv",
     sep=",",
     index=False,
 )

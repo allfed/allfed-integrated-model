@@ -1,12 +1,19 @@
 import pandas as pd
 import numpy as np
 import git
+from pathlib import Path
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 print("importing wood pulp production...")
 
-PULP_CSV = repo_root + "/data/no_food_trade/raw_data/FAOSTAT_wood_pulp_2020.csv"
+PULP_CSV = (
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "raw_data"
+    / "FAOSTAT_wood_pulp_2020.csv"
+)
 
 pulp_countries = [
     "AFG",
@@ -346,5 +353,7 @@ pulp_csv["percent_of_global_production"] = pulp_csv["wood_pulp_tonnes"] / (
 )
 
 pulp_csv.to_csv(
-    repo_root + "/data/no_food_trade/processed_data/pulp_csv.csv", sep=",", index=False
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "pulp_csv.csv",
+    sep=",",
+    index=False,
 )
