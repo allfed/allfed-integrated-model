@@ -230,6 +230,7 @@ class Plotter:
         xlim,
     ):
         for scenario_label, world in worlds.items():
+            print(ratios[scenario_label])
             print("scenario label")
             print(scenario_label)
             fig, ax = plt.subplots()
@@ -447,6 +448,7 @@ class Plotter:
             print(scenario_label)
             for country_name, interpreter in interpreter_dictionary.items():
                 Plotter.helper_for_plotting_fig_2abcde(interpreter, xlim)
+                print(interpreter.percent_people_fed)
 
     def plot_fig_2abcd(interpreter1, interpreter2, xlim):
         legend = Plotter.get_people_fed_legend(interpreter1, True)
@@ -612,6 +614,7 @@ class Plotter:
         for scenario_name, interpreter in results.items():
             print(scenario_name)
             Plotter.helper_for_plotting_fig_3abcde(interpreter, xlim)
+            print(interpreter.percent_people_fed)
 
     def plot_fig_3ab(monte_carlo_data, food_names, removed, added):
         # fig = plt.figure()
