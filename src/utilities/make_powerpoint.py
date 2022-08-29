@@ -6,6 +6,7 @@ from datetime import date
 from pptx.util import Inches, Pt
 from pptx.enum.text import PP_ALIGN
 import git
+from pathlib import Path
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -64,6 +65,6 @@ if __name__ == "__main__":
     mp.insert_slide(
         "title_below",
         "description",
-        repo_root + "/results/large_reports/" + the_title + ".png",
+        Path(repo_root) / "results" / "large_reports" / the_title / ".png",
     )
     mp.save_ppt("baseline.pptx")

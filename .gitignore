@@ -1,4 +1,12 @@
-results/large_reports/
+results/large_reports/*.png
+results/large_reports/*.npy
+results/large_reports/*.pptx
+results/large_reports/*.ods
+results/large_reports/*.jpg
+results/large_reports/*.jpeg
+results/large_reports/*.bmp
+results/large_reports/*.pkl
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

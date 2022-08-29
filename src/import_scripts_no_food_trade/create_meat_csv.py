@@ -1,10 +1,13 @@
+from pathlib import Path
 import pandas as pd
 import numpy as np
 import git
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
-MEAT_CSV = repo_root + "/data/no_food_trade/raw_data/FAOSTAT_meat_2020.csv"
+MEAT_CSV = (
+    Path(repo_root) / "data" / "no_food_trade" / "raw_data" / "FAOSTAT_meat_2020.csv"
+)
 
 print("importing meat data...")
 
@@ -394,7 +397,7 @@ meat_csv = np.delete(meat_csv, (GBR_index), axis=0)
 
 
 np.savetxt(
-    repo_root + "/data/no_food_trade/processed_data/meat_csv.csv",
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "meat_csv.csv",
     meat_csv,
     delimiter=",",
     fmt="%s",

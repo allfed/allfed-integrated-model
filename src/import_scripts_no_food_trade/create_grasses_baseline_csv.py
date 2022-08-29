@@ -1,12 +1,17 @@
 import pandas as pd
 import git
+from pathlib import Path
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 print("importing baseline grass production data...")
 
 NO_TRADE_XLS = (
-    repo_root + "/data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "raw_data"
+    / "Integrated Model With No Food Trade.xlsx"
 )
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
@@ -27,7 +32,11 @@ df_grasses = df_grasses.iloc[
 ]
 
 df_grasses.to_csv(
-    repo_root + "/data/no_food_trade/processed_data/grasses_baseline_csv.csv",
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "processed_data"
+    / "grasses_baseline_csv.csv",
     sep=",",
     index=False,
 )

@@ -171,12 +171,7 @@ class Extractor:
                     + crops_food_eaten_relocated[month].varValue
                     * self.constants["OG_ROTATION_FRACTION_KCALS"]
                 )
-            # print("crops_food_eaten_no_relocation")
-            # print(crops_food_eaten_no_relocation[month].varValue)
-            # print("crops_food_eaten_relocated")
-            # print(crops_food_eaten_relocated[month].varValue)
-            # print("crops_kcals_produced")
-            # print(crops_kcals_produced[month])
+
             cf_eaten_output.append(cf_eaten)
 
             if cf_produced <= cf_eaten:
@@ -296,12 +291,6 @@ class Extractor:
             self.combined_produced_kcals,
             1 / self.constants["KCALS_MONTHLY"],
         )
-        # print("self.combined_produced_kcals ")
-        # print("billions_fed_immediate_outdoor_crops_kcals")
-        # print("billions_fed_new_stored_outdoor_crops_kcals")
-        # print(self.combined_produced_kcals / self.constants["KCALS_MONTHLY"])
-        # print(billions_fed_immediate_outdoor_crops_kcals)
-        # print(billions_fed_new_stored_outdoor_crops_kcals)
 
         billions_fed_no_relocation = no_relocation / self.constants["KCALS_MONTHLY"]
         billions_fed_relocated = relocation / self.constants["KCALS_MONTHLY"]

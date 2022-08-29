@@ -1,3 +1,4 @@
+from pathlib import Path
 import pandas as pd
 import git
 
@@ -7,7 +8,11 @@ print("importing greenhouse relevant data...")
 
 
 NO_TRADE_XLS = (
-    repo_root + "/data/no_food_trade/raw_data/Integrated Model With No Food Trade.xlsx"
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "raw_data"
+    / "Integrated Model With No Food Trade.xlsx"
 )
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
@@ -34,7 +39,11 @@ df_greenhouse.columns = [
 
 
 df_greenhouse.to_csv(
-    repo_root + "/data/no_food_trade/processed_data/greenhouse_csv.csv",
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "processed_data"
+    / "greenhouse_csv.csv",
     sep=",",
     index=False,
 )

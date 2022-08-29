@@ -152,7 +152,6 @@ def automate_nav_structure(
     insert_string = yaml.safe_dump(json.loads(json.dumps(structure, indent=4))).replace(
         "'", ""
     )
-    # print(structure)
     with open(f"{repo_dir}/{mkdocs_f}", "r+") as mkgen_config:
         assert mkgen_config is not None
         contents = mkgen_config.readlines()

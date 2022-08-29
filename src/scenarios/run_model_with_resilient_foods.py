@@ -2,6 +2,7 @@ import numpy as np
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
+from pathlib import Path
 import git
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
@@ -40,7 +41,7 @@ def run_model_with_resilient_foods(plot_figures=True):
     print("")
 
     np.save(
-        repo_root + "/data/resilient_food_primary_results.npy",
+        Path(repo_root) / "data" / "resilient_food_primary_results.npy",
         results,
         allow_pickle=True,
     )
@@ -63,7 +64,8 @@ def run_model_with_resilient_foods(plot_figures=True):
 
     results1 = results
     print(
-        "Food available after waste, feed ramp down and biofuel ramp down, with resilient foods (percent)"
+        """Food available after waste, feed ramp down and biofuel ramp down,
+        with resilient foods (percent)"""
     )
     print(results.percent_people_fed / 100 * 2100)
     print("")

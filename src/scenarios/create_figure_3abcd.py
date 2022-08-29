@@ -48,7 +48,7 @@ def main(args):
 
     this_simulation["scenario"] = "no_resilient_foods"
 
-    this_simulation["buffer"] = "no_stored_food"
+    this_simulation["buffer"] = "no_stored_between_years"
     this_simulation["seasonality"] = "no_seasonality"
 
     this_simulation["waste"] = "baseline_globally"
@@ -57,43 +57,40 @@ def main(args):
 
     this_simulation["cull"] = "dont_eat_culled"
 
-    title = "Worst_Case_Considered_with_trade"
-    results = call_scenario_runner(this_simulation, title)
-
-    Plotter.plot_fig_1ab(results, 72, title, True, False)
-
     # WORST CASE + SIMPLE_ADAPTATIONS #
 
     this_simulation["waste"] = "tripled_prices_globally"
     this_simulation["shutoff"] = "long_delayed_shutoff"
     this_simulation["meat_strategy"] = "efficient_meat_strategy"
-    title = "worst case + simple_adaptations"
 
-    results = call_scenario_runner(this_simulation, title)
-
-    Plotter.plot_fig_1ab(results, 72, title, True, False)
-
-    # WORST CASE + SIMPLE_ADAPTATIONS + CULLING #
-
-    this_simulation["cull"] = "do_eat_culled"
-
-    title = "worst_case_+_simple_adaptations_+_culling"
-    results = call_scenario_runner(this_simulation, title)
-    Plotter.plot_fig_1ab(results, 72, title, True, False)
+    title_simple_adaptations = "simple_adaptations"
+    results_simple_adaptations = call_scenario_runner(
+        this_simulation, title_simple_adaptations
+    )
 
     # WORST CASE + SIMPLE_ADAPTATIONS + CULLING + STORAGE #
 
+    this_simulation["cull"] = "do_eat_culled"
     this_simulation["buffer"] = "zero"
     this_simulation["seasonality"] = "nuclear_winter_globally"
-    title = "Example_Scenario:simple_adaptations_+_culling_+_storage"
-    results = call_scenario_runner(this_simulation, title)
-    Plotter.plot_fig_1ab(results, 72, title, True, False)
+    title_example_scenario = "Example_Scenario:\nsimple_adaptations,\nculling,\nstorage"
+    results_example_scenario = call_scenario_runner(
+        this_simulation, title_example_scenario
+    )
 
     # WORST CASE + SIMPLE_ADAPTATIONS + STORAGE + CULLING + ALL RESILIENT FOODS
     this_simulation["scenario"] = "all_resilient_foods"
-    title = "Example_Scenario_+_all_resilient_foods"
-    results = call_scenario_runner(this_simulation, title)
-    Plotter.plot_fig_1ab(results, 72, title, True, False)
+    title_resilient_foods = "Example_Scenario,\nresilient foods"
+    results_resilient_foods = call_scenario_runner(
+        this_simulation, title_resilient_foods
+    )
+
+    results = {}
+    results[title_simple_adaptations] = results_simple_adaptations
+    results[title_example_scenario] = results_example_scenario
+    results[title_resilient_foods] = results_resilient_foods
+
+    Plotter.plot_fig_3abcde_updated(results, 72)
 
 
 if __name__ == "__main__":
