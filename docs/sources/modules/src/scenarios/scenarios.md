@@ -30,14 +30,14 @@ Ensure all properties of scenarios have been set
 
 
 ### .init_global_food_system_properties
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L84)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L81)
 ```python
 .init_global_food_system_properties()
 ```
 
 
 ### .init_country_food_system_properties
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L190)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L187)
 ```python
 .init_country_food_system_properties(
    country_data
@@ -46,7 +46,7 @@ Ensure all properties of scenarios have been set
 
 
 ### .set_immediate_shutoff
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L361)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L369)
 ```python
 .set_immediate_shutoff(
    constants_for_params
@@ -55,7 +55,7 @@ Ensure all properties of scenarios have been set
 
 
 ### .set_short_delayed_shutoff
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L370)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L379)
 ```python
 .set_short_delayed_shutoff(
    constants_for_params
@@ -64,7 +64,7 @@ Ensure all properties of scenarios have been set
 
 
 ### .set_long_delayed_shutoff
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L379)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L388)
 ```python
 .set_long_delayed_shutoff(
    constants_for_params
@@ -73,7 +73,7 @@ Ensure all properties of scenarios have been set
 
 
 ### .set_continued_feed_biofuels
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L388)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L397)
 ```python
 .set_continued_feed_biofuels(
    constants_for_params
@@ -82,7 +82,7 @@ Ensure all properties of scenarios have been set
 
 
 ### .set_unchanged_proportions_feed_grazing
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L413)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L422)
 ```python
 .set_unchanged_proportions_feed_grazing(
    constants_for_params
@@ -91,7 +91,7 @@ Ensure all properties of scenarios have been set
 
 
 ### .set_efficient_feed_grazing_strategy
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L422)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L431)
 ```python
 .set_efficient_feed_grazing_strategy(
    constants_for_params
@@ -100,7 +100,7 @@ Ensure all properties of scenarios have been set
 
 
 ### .set_excess_to_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L433)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L442)
 ```python
 .set_excess_to_zero(
    constants_for_params
@@ -109,7 +109,7 @@ Ensure all properties of scenarios have been set
 
 
 ### .set_excess
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L442)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L451)
 ```python
 .set_excess(
    constants_for_params, excess
@@ -118,7 +118,7 @@ Ensure all properties of scenarios have been set
 
 
 ### .set_waste_to_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L451)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L460)
 ```python
 .set_waste_to_zero(
    constants_for_params
@@ -127,7 +127,7 @@ Ensure all properties of scenarios have been set
 
 
 ### .get_total_global_waste
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L465)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L474)
 ```python
 .get_total_global_waste(
    retail_waste
@@ -139,7 +139,7 @@ Calculates the total waste of the global food system by adding retail waste
 to distribution loss.
 
 ### .set_global_waste_to_tripled_prices
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L491)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L501)
 ```python
 .set_global_waste_to_tripled_prices(
    constants_for_params
@@ -148,25 +148,31 @@ to distribution loss.
 
 
 ### .set_global_waste_to_doubled_prices
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L507)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L518)
 ```python
 .set_global_waste_to_doubled_prices(
    constants_for_params
 )
 ```
 
+---
+overall waste, on farm + distribution + retail
+2x prices (note, currently set to 2019, not 2020)
 
 ### .set_global_waste_to_baseline_prices
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L524)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L536)
 ```python
 .set_global_waste_to_baseline_prices(
    constants_for_params
 )
 ```
 
+---
+overall waste, on farm+distribution+retail
+1x prices (note, currently set to 2019, not 2020)
 
 ### .get_total_country_waste
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L540)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L553)
 ```python
 .get_total_country_waste(
    retail_waste, country_data
@@ -178,34 +184,43 @@ Calculates the total waste of the global food system by adding retail waste
 to distribution loss.
 
 ### .set_country_waste_to_tripled_prices
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L565)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L578)
 ```python
 .set_country_waste_to_tripled_prices(
    constants_for_params, country_data
 )
 ```
 
+---
+overall waste, on farm + distribution + retail
+3x prices (note, currently set to 2019, not 2020)
 
 ### .set_country_waste_to_doubled_prices
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L582)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L596)
 ```python
 .set_country_waste_to_doubled_prices(
    constants_for_params, country_data
 )
 ```
 
+---
+overall waste, on farm + distribution + retail
+2x prices (note, currently set to 2019, not 2020)
 
 ### .set_country_waste_to_baseline_prices
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L598)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L613)
 ```python
 .set_country_waste_to_baseline_prices(
    constants_for_params, country_data
 )
 ```
 
+---
+overall waste, on farm+distribution+retail
+1x prices (note, currently set to 2019, not 2020)
 
 ### .set_baseline_nutrition_profile
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L616)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L633)
 ```python
 .set_baseline_nutrition_profile(
    constants_for_params
@@ -214,7 +229,7 @@ to distribution loss.
 
 
 ### .set_catastrophe_nutrition_profile
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L634)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L651)
 ```python
 .set_catastrophe_nutrition_profile(
    constants_for_params
@@ -223,34 +238,51 @@ to distribution loss.
 
 
 ### .set_no_stored_food
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L654)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L671)
 ```python
 .set_no_stored_food(
    constants_for_params
 )
 ```
 
+---
+Sets the stored food between years as zero. No food is traded between the
+12 month intervals seasons. Makes more sense if seasonality is assumed zero.
+
+However, in reality food in transit and food in grocery stores and
+warehouses means there would still likely be some food available at
+the end as a buffer.
 
 ### .set_stored_food_buffer_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L672)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L688)
 ```python
 .set_stored_food_buffer_zero(
    constants_for_params
 )
 ```
 
+---
+Sets the stored food buffer as zero -- no stored food left at
+the end of the simulation.
+
+However, in reality food in transit and food in grocery stores and
+warehouses means there would still likely be some food available at
+the end as a buffer.
 
 ### .set_stored_food_buffer_as_baseline
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L690)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L706)
 ```python
 .set_stored_food_buffer_as_baseline(
    constants_for_params
 )
 ```
 
+---
+Sets the stored food buffer as 100% -- the typical stored food buffer
+in ~2020 left at the end of the simulation.
 
 ### .set_no_seasonality
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L706)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L722)
 ```python
 .set_no_seasonality(
    constants_for_params
@@ -259,7 +291,7 @@ to distribution loss.
 
 
 ### .set_global_seasonality_baseline
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L717)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L733)
 ```python
 .set_global_seasonality_baseline(
    constants_for_params
@@ -268,7 +300,7 @@ to distribution loss.
 
 
 ### .set_global_seasonality_nuclear_winter
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L739)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L756)
 ```python
 .set_global_seasonality_nuclear_winter(
    constants_for_params
@@ -277,7 +309,7 @@ to distribution loss.
 
 
 ### .set_country_seasonality
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L763)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L781)
 ```python
 .set_country_seasonality(
    constants_for_params, country_data
@@ -286,7 +318,7 @@ to distribution loss.
 
 
 ### .set_grasses_baseline
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L776)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L795)
 ```python
 .set_grasses_baseline(
    constants_for_params
@@ -295,7 +327,7 @@ to distribution loss.
 
 
 ### .set_global_grasses_nuclear_winter
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L785)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L804)
 ```python
 .set_global_grasses_nuclear_winter(
    constants_for_params
@@ -304,7 +336,7 @@ to distribution loss.
 
 
 ### .set_country_grasses_nuclear_winter
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L802)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L822)
 ```python
 .set_country_grasses_nuclear_winter(
    constants_for_params, country_data
@@ -313,16 +345,20 @@ to distribution loss.
 
 
 ### .set_fish_nuclear_winter_reduction
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L826)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L847)
 ```python
 .set_fish_nuclear_winter_reduction(
    constants_for_params
 )
 ```
 
+---
+Set the fish percentages in every country (or globally) from baseline
+although this is a global number, we don't have the regional number, so
+we use the global instead.
 
 ### .set_fish_baseline
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L924)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L950)
 ```python
 .set_fish_baseline(
    constants_for_params
@@ -331,7 +367,7 @@ to distribution loss.
 
 
 ### .set_disruption_to_crops_to_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L937)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L963)
 ```python
 .set_disruption_to_crops_to_zero(
    constants_for_params
@@ -340,7 +376,7 @@ to distribution loss.
 
 
 ### .set_nuclear_winter_global_disruption_to_crops
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L947)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L973)
 ```python
 .set_nuclear_winter_global_disruption_to_crops(
    constants_for_params
@@ -349,7 +385,7 @@ to distribution loss.
 
 
 ### .set_nuclear_winter_country_disruption_to_crops
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L966)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L993)
 ```python
 .set_nuclear_winter_country_disruption_to_crops(
    constants_for_params, country_data
@@ -358,7 +394,7 @@ to distribution loss.
 
 
 ### .include_protein
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1011)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1040)
 ```python
 .include_protein(
    constants_for_params
@@ -367,7 +403,7 @@ to distribution loss.
 
 
 ### .dont_include_protein
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1018)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1047)
 ```python
 .dont_include_protein(
    constants_for_params
@@ -376,7 +412,7 @@ to distribution loss.
 
 
 ### .include_fat
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1027)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1056)
 ```python
 .include_fat(
    constants_for_params
@@ -385,7 +421,7 @@ to distribution loss.
 
 
 ### .dont_include_fat
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1035)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1064)
 ```python
 .dont_include_fat(
    constants_for_params
@@ -394,7 +430,7 @@ to distribution loss.
 
 
 ### .no_resilient_foods
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1044)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1073)
 ```python
 .no_resilient_foods(
    constants_for_params
@@ -403,7 +439,7 @@ to distribution loss.
 
 
 ### .seaweed
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1057)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1086)
 ```python
 .seaweed(
    constants_for_params
@@ -412,7 +448,7 @@ to distribution loss.
 
 
 ### .greenhouse
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1068)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1097)
 ```python
 .greenhouse(
    constants_for_params
@@ -421,7 +457,7 @@ to distribution loss.
 
 
 ### .relocated_outdoor_crops
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1077)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1106)
 ```python
 .relocated_outdoor_crops(
    constants_for_params
@@ -430,7 +466,7 @@ to distribution loss.
 
 
 ### .methane_scp
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1092)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1121)
 ```python
 .methane_scp(
    constants_for_params
@@ -439,7 +475,7 @@ to distribution loss.
 
 
 ### .cellulosic_sugar
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1101)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1130)
 ```python
 .cellulosic_sugar(
    constants_for_params
@@ -448,7 +484,7 @@ to distribution loss.
 
 
 ### .get_all_resilient_foods_scenario
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1110)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1139)
 ```python
 .get_all_resilient_foods_scenario(
    constants_for_params
@@ -457,7 +493,7 @@ to distribution loss.
 
 
 ### .get_seaweed_scenario
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1123)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1152)
 ```python
 .get_seaweed_scenario(
    constants_for_params
@@ -466,7 +502,7 @@ to distribution loss.
 
 
 ### .get_methane_scp_scenario
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1141)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1170)
 ```python
 .get_methane_scp_scenario(
    constants_for_params
@@ -475,7 +511,7 @@ to distribution loss.
 
 
 ### .get_cellulosic_sugar_scenario
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1159)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1188)
 ```python
 .get_cellulosic_sugar_scenario(
    constants_for_params
@@ -484,7 +520,7 @@ to distribution loss.
 
 
 ### .get_relocated_crops_scenario
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1177)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1206)
 ```python
 .get_relocated_crops_scenario(
    constants_for_params
@@ -493,7 +529,7 @@ to distribution loss.
 
 
 ### .get_greenhouse_scenario
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1195)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1224)
 ```python
 .get_greenhouse_scenario(
    constants_for_params
@@ -502,7 +538,7 @@ to distribution loss.
 
 
 ### .get_no_resilient_food_scenario
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1215)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1244)
 ```python
 .get_no_resilient_food_scenario(
    constants_for_params
@@ -511,7 +547,7 @@ to distribution loss.
 
 
 ### .cull_animals
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1226)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1255)
 ```python
 .cull_animals(
    constants_for_params
@@ -520,7 +556,7 @@ to distribution loss.
 
 
 ### .dont_cull_animals
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1234)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1263)
 ```python
 .dont_cull_animals(
    constants_for_params
