@@ -8,16 +8,22 @@ Created on Wed Jul 15
 """
 import sys
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
+from src.utilities.plotter import Plotter
+import git
+from pathlib import Path
+import numpy as np
+
+repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 
 def call_scenario_runner(this_simulation, title):
     scenario_runner = ScenarioRunnerNoTrade()
 
-    [world, pop_total, pop_fed] = scenario_runner.run_model_no_trade(
+    [world, pop_total, pop_fed, return_results] = scenario_runner.run_model_no_trade(
         title=title,
         create_pptx_with_all_countries=False,
         show_country_figures=False,
-        show_map_figures=True,
+        show_map_figures=False,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=[],
@@ -36,22 +42,12 @@ def call_scenario_runner_with_and_without_fat_protein(this_simulation, title):
     this_simulation["fat"] = "not_required"
     this_simulation["protein"] = "not_required"
 
-    print("title")
-    print(title)
-    # print("percent fed")
-    # print(pop_fed / pop_total)
     [world, pop_total, pop_fed] = call_scenario_runner(this_simulation, title)
 
-    # this_simulation["fat"] = "not_required"
-    # this_simulation["protein"] = "not_required"
-
-    # [world, pop_total, pop_fed] = call_scenario_runner(
-    #     this_simulation, title + " require fat+protein"
-    # )
-    # print(pop_fed / pop_total)
+    return world, round(100 * pop_fed / pop_total, 0)
 
 
-def main(args):
+def recalculate_plots():
     # WORST CASE #
     this_simulation = {}
     this_simulation["scenario"] = "no_resilient_foods"
@@ -60,12 +56,17 @@ def main(args):
     this_simulation["shutoff"] = "continued"
     this_simulation["meat_strategy"] = "inefficient_meat_strategy"
 
-    this_simulation["buffer"] = "no_stored_food"
+    this_simulation["buffer"] = "no_stored_between_years"
     this_simulation["seasonality"] = "no_seasonality"
 
     this_simulation["cull"] = "dont_eat_culled"
-
-    # call_scenario_runner_with_and_without_fat_protein(this_simulation, "worst_case")
+    worst_case_title = "Worst Case"
+    [
+        world_worst_case,
+        fraction_needs_worst_case,
+    ] = call_scenario_runner_with_and_without_fat_protein(
+        this_simulation, worst_case_title
+    )
 
     # WORST CASE + SIMPLE_ADAPTATIONS #
 
@@ -73,54 +74,136 @@ def main(args):
     this_simulation["shutoff"] = "long_delayed_shutoff"
     this_simulation["meat_strategy"] = "efficient_meat_strategy"
 
-    call_scenario_runner_with_and_without_fat_protein(
-        this_simulation, "worst case + simple_adaptations"
+    simple_adaptations_title = "simple_adaptations"
+    [
+        world_simple_adaptations,
+        fraction_needs_simple_adaptations,
+    ] = call_scenario_runner_with_and_without_fat_protein(
+        this_simulation, simple_adaptations_title
     )
 
     # WORST CASE + SIMPLE_ADAPTATIONS + CULLING #
 
     this_simulation["cull"] = "do_eat_culled"
 
-    call_scenario_runner_with_and_without_fat_protein(
-        this_simulation, "worst_case_+_simple_adaptations_+_culling"
-    )
-    # WORST CASE + SIMPLE_ADAPTATIONS + STORAGE + CULLING + ALL RESILIENT FOODS
-    this_simulation["scenario"] = "all_resilient_foods"
-    call_scenario_runner_with_and_without_fat_protein(
-        this_simulation, "Example_Scenario_+_all_resilient_foods"
+    simple_adaptations_culling_title = "simple_adaptations,\nculling"
+    [
+        world_simple_adaptations_culling,
+        fraction_needs_simple_adaptations_culling,
+    ] = call_scenario_runner_with_and_without_fat_protein(
+        this_simulation, simple_adaptations_culling_title
     )
 
     # WORST CASE + SIMPLE_ADAPTATIONS + CULLING + STORAGE #
-
     this_simulation["buffer"] = "zero"
     this_simulation["seasonality"] = "country"
-    call_scenario_runner_with_and_without_fat_protein(
-        this_simulation, "Example_Scenario"
+    example_scenario_title = "Example Scenario:\nsimple_adaptations\nculling,\nstorage"
+    [
+        world_example_scenario,
+        fraction_needs_example_scenario,
+    ] = call_scenario_runner_with_and_without_fat_protein(
+        this_simulation, example_scenario_title
     )
 
-    # WORST CASE + SIMPLE_ADAPTATIONS + STORAGE + CULLING + EACH RESILIENT FOOD
+    this_simulation["scenario"] = "all_resilient_foods"
+    all_resilient_foods_title = "Example Scenario + all resilient foods"
+    [
+        world_example_scenario_resilient_foods,
+        fraction_needs_example_scenario_resilient_foods,
+    ] = call_scenario_runner_with_and_without_fat_protein(
+        this_simulation,
+        all_resilient_foods_title,
+    )
 
+    # WORST CASE + SIMPLE_ADAPTATIONS + STORAGE + CULLING + ALL RESILIENT FOODS
+    seaweed_title = "Example Scenario + seaweed"
     this_simulation["scenario"] = "seaweed"
-    call_scenario_runner_with_and_without_fat_protein(
-        this_simulation, "Example Scenario + seaweed"
+    [
+        world_seaweed,
+        fraction_needs_seaweed,
+    ] = call_scenario_runner_with_and_without_fat_protein(
+        this_simulation, seaweed_title
     )
 
     this_simulation["scenario"] = "methane_scp"
-    call_scenario_runner_with_and_without_fat_protein(
-        this_simulation, "Example Scenario + methane scp"
+    methane_scp_title = "Example Scenario + methane_scp"
+    [
+        world_methane_scp,
+        fraction_needs_methane_scp,
+    ] = call_scenario_runner_with_and_without_fat_protein(
+        this_simulation, methane_scp_title
     )
+
     this_simulation["scenario"] = "cellulosic_sugar"
-    call_scenario_runner_with_and_without_fat_protein(
-        this_simulation, "Example Scenario + cellulosic sugar"
-    )
+    cs_title = "Example Scenario + cellulosic_sugar"
+    [
+        world_cellulosic_sugar,
+        fraction_needs_cellulosic_sugar,
+    ] = call_scenario_runner_with_and_without_fat_protein(this_simulation, cs_title)
+
     this_simulation["scenario"] = "relocated_crops"
-    call_scenario_runner_with_and_without_fat_protein(
-        this_simulation, "Example Scenario + relocated crops"
+    cold_crops_title = "Example Scenario + cold_crops"
+    [
+        world_cold_crops,
+        fraction_needs_cold_crops,
+    ] = call_scenario_runner_with_and_without_fat_protein(
+        this_simulation, cold_crops_title
     )
+
     this_simulation["scenario"] = "greenhouse"
-    call_scenario_runner_with_and_without_fat_protein(
-        this_simulation, "Example Scenario + greenhouses"
+    greenhouse_title = "Example Scenario + greenhouses"
+    [
+        world_greenhouses,
+        fraction_needs_greenhouses,
+    ] = call_scenario_runner_with_and_without_fat_protein(
+        this_simulation, greenhouse_title
     )
+
+    worlds = {}
+    worlds[worst_case_title] = world_worst_case
+    worlds[simple_adaptations_title] = world_simple_adaptations
+    worlds[simple_adaptations_culling_title] = world_simple_adaptations_culling
+    worlds[example_scenario_title] = world_example_scenario
+    worlds[all_resilient_foods_title] = world_example_scenario_resilient_foods
+    worlds[seaweed_title] = world_seaweed
+    worlds[methane_scp_title] = world_methane_scp
+    worlds[cs_title] = world_cellulosic_sugar
+    worlds[cold_crops_title] = world_cold_crops
+    worlds[greenhouse_title] = world_greenhouses
+
+    ratios = {}
+    ratios[worst_case_title] = fraction_needs_worst_case
+    ratios[simple_adaptations_title] = fraction_needs_simple_adaptations
+    ratios[simple_adaptations_culling_title] = fraction_needs_simple_adaptations_culling
+    ratios[example_scenario_title] = fraction_needs_example_scenario
+    ratios[all_resilient_foods_title] = fraction_needs_example_scenario_resilient_foods
+    ratios[seaweed_title] = fraction_needs_seaweed
+    ratios[methane_scp_title] = fraction_needs_methane_scp
+    ratios[cs_title] = fraction_needs_cellulosic_sugar
+    ratios[cold_crops_title] = fraction_needs_cold_crops
+    ratios[greenhouse_title] = fraction_needs_greenhouses
+
+    return worlds, ratios
+
+
+def main(args):
+    RECALCULATE_PLOTS = True
+    if RECALCULATE_PLOTS:
+        the_path = Path(repo_root) / "results" / "large_reports" / "worlds1.npy"
+        worlds, ratios = recalculate_plots()
+        np.save(the_path, worlds)
+        np.save(Path(repo_root) / "results" / "large_reports" / "ratios1.npy", ratios)
+    else:
+        worlds = np.load(
+            Path(repo_root) / "results" / "large_reports" / "worlds1.npy",
+            allow_pickle=True,
+        ).item()
+        ratios = np.load(
+            Path(repo_root) / "results" / "large_reports" / "ratios1.npy",
+            allow_pickle=True,
+        ).item()
+
+    Plotter.plot_fig_1ab_updated(worlds=worlds, ratios=ratios, xlim=72)
 
 
 if __name__ == "__main__":

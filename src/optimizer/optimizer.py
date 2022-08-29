@@ -75,7 +75,6 @@ class Optimizer:
             [model, variables, maximize_constraints] = self.add_objectives_to_model(
                 model, variables, month, maximize_constraints
             )
-
         PRINT_PULP_MESSAGES = False
         model += variables["objective_function"]
 
@@ -158,7 +157,6 @@ class Optimizer:
 
     # incorporate linear constraints for stored food consumption each month
     def add_stored_food_to_model_only_first_year(self, model, variables, month):
-
         variables["stored_food_start"][month] = LpVariable(
             "Stored_Food_Start_Month_" + str(month) + "_Variable",
             0,
@@ -175,7 +173,20 @@ class Optimizer:
             self.single_valued_constants["stored_food"].kcals,
         )
 
-        if month > 12:  # within first year:
+        if month == 0:  # first month
+            model += (
+                variables["stored_food_start"][month]
+                == self.single_valued_constants["stored_food"].kcals,
+                "Stored_Food_Start_Month_" + str(month) + "_Constraint",
+            )
+            model += (
+                variables["stored_food_end"][month]
+                == variables["stored_food_start"][month]
+                - variables["stored_food_eaten"][month],
+                "Stored_Food_Eaten_During_Month_" + str(month) + "_Constraint",
+            )
+
+        elif month > 12:  # after first year:
             model += (
                 variables["stored_food_eaten"][month] == 0,
                 "Stored_Food_Eaten_Month_" + str(month) + "_Constraint",
@@ -638,7 +649,7 @@ class Optimizer:
 
         if (
             self.single_valued_constants["ADD_SEAWEED"]
-            and self.single_valued_constants["inputs"]["INITIAL_SEAWEED"] > 0
+            and self.single_valued_constants["inputs"]["INITIAL_SEAWEED_FRACTION"] > 0
         ):
 
             # maximum seaweed percent of calories

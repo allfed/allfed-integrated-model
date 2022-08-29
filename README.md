@@ -17,7 +17,7 @@ An integrated economic+food supply model for resilient foods in nuclear winter
 
 # How the model works in general
 
-![Flow Chart](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/results/overview.png)
+![Flow Chart](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/overview.png)
 
 ### Using Colab (most users use this):
 The interactive model runs off colab. It doesn't require any downloading or code, you just need to hit the right buttons as they show up. Here's a demo:
@@ -48,22 +48,10 @@ Now follow the instructions in the Jupyter notebook. Run each line of the Jupyte
 
 Please let me know if any of these steps go awry! (contact morgan [at] allfed [dot] info)
 
-### From the command line (requires cloned repo):
-The integrated model is written in python 3, ensure you have some version of python3, although it has only been tested with python 3.7 or later. Then, install the required packages using pip if not already installed:
-
-```bash
-pip install PuLP
-pip install numpy
-pip install matplotlib
-pip install seaborn
-pip install scipy
-pip install geopandas
-```
 #### Dependency management with Anaconda
+The integrated model is written in python 3, ensure you have some version of python3, although it has only been tested with python 3.7 or later. Then, install the required packages using conda or miniconda:
 
-If you would like to run the entire by-country model with no trade, you will need to install geopandas and geoplot.
-
-unfortunately geoplot also requires conda, so you'll need to install conda if you want to plot these.
+You'll also need to install conda or miniconda or similar.
 
 See https://docs.anaconda.com/anaconda/install/index.html for installation instructions.
 
@@ -76,7 +64,7 @@ For people new to coding the GUI is more intuitive.
 ##### GUI
 1. Open the Anaconda Navigator.
 2. Select the tap "Environments".
-3. Click "Import" and select the "tintmodel.yml" file from the repository and name the new
+3. Click "Import" and select the "environment.yml" file from the repository and name the new
     environment. All dependencies will be installed automatically.
 
 ##### Anaconda Prompt
@@ -87,6 +75,12 @@ conda env create -f intmodel.yml
 ```
 The dependencies will be installed automatically and the environment will be name intmodel.
 
+If you close out the terminal and open it later you will want to activate the environment again using
+
+```bash
+conda activate intmodel
+```
+
 For both versions: Code from this project will only run smoothly when opened in the new
 environment and when the working directory is set to the path location of the repository on
 your machine.
@@ -96,10 +90,10 @@ your machine.
 results from the paper can be rerun using the following commands in the src/scenarios folder
 
 ```bash
-python run_model_with_resilient_foods.py
-python run_model_no_resilient_foods.py
-python run_model_before_catastrophe.py
-python plot_available_food.py
+python create_fig_1ab.py
+python create_fig_2abcde.py
+python create_fig_3abcd.py
+python run_model_baseline.py
 ```
 
 for the country-by-country no food trade model, run

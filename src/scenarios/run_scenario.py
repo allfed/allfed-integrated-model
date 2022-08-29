@@ -26,13 +26,11 @@ class ScenarioRunner:
         the results, validates the results, and optionally prints an output with people
         fed.
 
-        arguments:
-            constants from the scenario, scenario loader (to print the aspects
+        arguments: constants from the scenario, scenario loader (to print the aspects
         of the scenario and check no scenario parameter has been set twice or left
         unset)
 
-        returns:
-            the interpreted results
+        returns: the interpreted results
         """
         interpreter = Interpreter()
         validator = Validator()
@@ -81,8 +79,7 @@ class ScenarioRunner:
     def compute_parameters(self, constants_for_params, scenarios_loader):
         """
         computes the parameters
-        returns:
-            the resulting constants
+        returns the resulting constants
         """
         constants = {}
         constants["inputs"] = constants_for_params
@@ -155,7 +152,7 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.set_stored_food_buffer_zero(
                 constants_for_params
             )
-        elif scenario_option["buffer"] == "no_stored_food":
+        elif scenario_option["buffer"] == "no_stored_between_years":
             constants_for_params = scenario_loader.set_no_stored_food(
                 constants_for_params
             )

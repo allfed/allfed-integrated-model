@@ -1,9 +1,6 @@
 from src.utilities.plotter import Plotter
 from src.scenarios.scenarios import Scenarios
 from src.scenarios.run_scenario import ScenarioRunner
-import git
-
-repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 
 def run_model_baseline(plot_figures=True):
@@ -47,7 +44,6 @@ def run_model_baseline(plot_figures=True):
     constants_for_params = scenarios_loader.set_continued_feed_biofuels(
         constants_for_params
     )
-
     constants_for_params = scenarios_loader.set_global_waste_to_baseline_prices(
         constants_for_params
     )

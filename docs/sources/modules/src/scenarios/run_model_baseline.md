@@ -2,7 +2,7 @@
 
 
 ### run_model_baseline
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_baseline.py/#L9)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_baseline.py/#L6)
 ```python
 .run_model_baseline(
    plot_figures = True
@@ -27,7 +27,7 @@ None
 
 
 ### set_common_baseline_properties
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_baseline.py/#L68)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_baseline.py/#L64)
 ```python
 .set_common_baseline_properties()
 ```
