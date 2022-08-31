@@ -6,11 +6,11 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 ---
-An integrated economic+food supply model for resilient foods in nuclear winter
+An integrated food supply model for resilient foods in nuclear winter
 
 # Run the model
 
-* You can create a varierety of different scenarios with this model. A collection of possible scenarios are already available in the scenarios folder (e.g. `run_model_with_resilient_foods.py`).
+* You can create a varierety of different scenarios with this model. A collection of possible scenarios are already available in the scenarios folder (e.g. `run_model_with_resilient_foods.py`). Examples of usage can be found in the scripts folder. The script folder also contains a notebook that can be used to create the figures for the Nature Foods paper. 
 * A scenario is created by creating a new instance of the Scenario class in `scenario.py`. This class contains a collection of methods that provide your model with the parameter value it needs to run. Here you can also change the parameter values if you want to change the model to your specifications.
 * Once you got all your parameter values ready you create an Instance of the Parameter class from `parameter.py`. This class allows you to initialize the model with the parameter values you defined.
 * Finally to create an instance of the Optimizer class from `optimizer.py` and provide it with your parameters. This will run the model itself and optimize it.
@@ -49,14 +49,14 @@ Now follow the instructions in the Jupyter notebook. Run each line of the Jupyte
 Please let me know if any of these steps go awry! (contact morgan [at] allfed [dot] info)
 
 #### Dependency management with Anaconda
-The integrated model is written in python 3, ensure you have some version of python3, although it has only been tested with python 3.7 or later. Then, install the required packages using conda or miniconda:
+The integrated model is written in python 3, ensure you have some version of python3, although it has only been tested with python 3.9 or later. Then, install the required packages using conda or miniconda:
 
 You'll also need to install conda or miniconda or similar.
 
 See https://docs.anaconda.com/anaconda/install/index.html for installation instructions.
 
 Once the program is installed on your device, set up a separate environment for the project
-(do not use the base environment). This step and the following can be done in two ways:
+(do not use your base environment). This step and the following can be done in two ways:
 - using the GUI or
 - using the Anaconda Prompt.
 For people new to coding the GUI is more intuitive.
@@ -71,7 +71,7 @@ For people new to coding the GUI is more intuitive.
 1. Open Anaconda Prompt.
 2. Type in the following line:
 ```bash
-conda env create -f intmodel.yml
+conda env create -f environment.yml
 ```
 The dependencies will be installed automatically and the environment will be name intmodel.
 
@@ -102,10 +102,13 @@ python run_baseline_by_country_no_trade.py
 ```
 
 ### Using Jupyter (requires cloned repo):
-In the notebooks/ folder run:
+In the notebooks/ folder run to learn how to create your own repository:
 
 ```bash
-jupyter notebook example_optimize.ipynb
+jupyter notebook creating_your_own_scenario.ipynb
 ```
-
-Then skip the colab section and execute every other cell in order.
+or 
+```bash
+jupyter notebook recreate_paper_figures.ipynb
+```
+if you want to recreate the figures from the Nature Foods paper. 
