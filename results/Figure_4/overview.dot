@@ -5,7 +5,7 @@ digraph ModelOverview{
     Waste -> norm_consumption;
     Feed[style="filled", color="#88CC88",fontsize=20]
     Feed -> norm_consumption;
-    Biofuel[style="filled", color="#88CC88"]
+    Biofuel[style="filled", color="#88CC88", fontsize=20]
     Biofuel -> norm_consumption;
 
     // Food Ressources during Standard Times
