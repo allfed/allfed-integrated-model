@@ -6,7 +6,6 @@ without trade scenarios.
 Created on Wed Jul 15
 @author: morgan
 """
-import sys
 from src.utilities.plotter import Plotter
 from src.scenarios.run_scenario import ScenarioRunner
 import git
@@ -34,7 +33,7 @@ def call_scenario_runner(this_simulation, title):
     return results
 
 
-def main(args):
+def main():
     # WORST CASE #
     this_simulation = {}
     this_simulation["scale"] = "global"
@@ -94,5 +93,4 @@ def main(args):
 
 
 if __name__ == "__main__":
-    args = sys.argv[1:]
-    main(args)
+    main()
