@@ -22,11 +22,11 @@ An integrated food supply model for resilient foods in nuclear winter
 ### Using Colab (most users use this):
 The interactive model runs off colab. It doesn't require any downloading or code, you just need to hit the right buttons as they show up. Here's a demo:
 
-First click on the "notebooks" folder in the allfed-integrated-model directory.
+First click on the "scripts" folder in the allfed-integrated-model directory.
 
 ![step2](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/step2.png)
 
-Open 'example_optimize.ipynb'
+Open either example.
 
 ![step3](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/step3.png)
 
