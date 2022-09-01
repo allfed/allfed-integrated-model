@@ -102,7 +102,6 @@ class Greenhouses:
                 )
             )
             greenhouse_area = np.array(greenhouse_area_long[0 : self.NMONTHS])
-            # @li just multiply greenhouse_area by the fraction
             PRINT_BY_COUNTRY_WARNING = False
             if PRINT_BY_COUNTRY_WARNING:
                 print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")

@@ -171,13 +171,19 @@ class MeatAndDairy:
         """
 
         meat_limit = 0
+
+        # billions of kcals per month
+        per_month_increase = (
+            self.CHICKEN_PORK_LIMIT_FOOD_USAGE_PREWASTE * 4e6 / 1e9
+            + self.BEEF_LIMIT_FOOD_USAGE_PREWASTE * 4e6 / 1e9
+        )
+
         cumulative_meat_limit = np.zeros(self.NMONTHS)
         for m in range(0, self.NMONTHS):
+            # converting to billions of kcals
             meat_limit = (
-                meat_limit
-                + self.CHICKEN_PORK_LIMIT_FOOD_USAGE_PREWASTE
-                + self.BEEF_LIMIT_FOOD_USAGE_PREWASTE
-            ) * MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE
+                meat_limit + per_month_increase * MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE
+            )
 
             cumulative_meat_limit[m] = min(meat_limit, culled_meat_initial)
 
@@ -210,8 +216,8 @@ class MeatAndDairy:
                 * ratio_grazing_meat
             )
         else:
-            # Portion of grass goes proportional to the ratio of meat cattle to milk cattle
-            # total heads precatastrophe.
+            # Portion of grass goes proportional to the ratio of meat cattle to milk
+            # cattle total heads precatastrophe.
 
             heads_dairy_cows = constants_for_params["INITIAL_MILK_CATTLE"]
             # total head count of large sized animals minus milk cows
@@ -320,7 +326,8 @@ class MeatAndDairy:
                 but there were not enough calories to use for the feed and biofuel
                 (because of this, excess was calculated as being negative).
                 \nTry to rerun where the population fed after waste incorporating
-                delayed shutoff to feed in biofuels is above the assigned global population.
+                delayed shutoff to feed in biofuels is above the assigned global
+                population.
                 \nQuitting."""
             )
             quit()

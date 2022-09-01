@@ -375,13 +375,15 @@ class FeedAndBiofuels:
         self, outdoor_crops, biofuels_before_cap, feed_before_cap
     ):
         """
-        Calculate the exceedance of the biofuel and feed usage past the outdoor outdoor_crops
+        Calculate the exceedance of the biofuel and feed usage past the outdoor
+        outdoor_crops
         production on a monthly basis for each nutrient.
 
         NOTE:
             UPDATE
-            I realized that the max amount of stored food or OG used each month by kcals,
-            fat or protein needs to be summed, rather than the max of each individual nutrient
+            I realized that the max amount of stored food or OG used each month by
+            kcals, fat or protein needs to be summed, rather than the max of each
+            individual nutrient
 
         Example:
             outdoor crops:
@@ -421,8 +423,8 @@ class FeedAndBiofuels:
                 month: allmonths
 
 
-            For all month combined, how much original stored food is needed to make up for
-            each macronutrient?
+            For all month combined, how much original stored food is needed to make up
+            for each macronutrient?
 
         Answer:
             We sum up all the discrepancies between supply and demand.
@@ -477,6 +479,9 @@ class FeedAndBiofuels:
 
         # TODO: ALTER BASED ON THE EXPECTED FEED FAT AND PROTEIN RATIOS
         # (CURRENTLY IS JUST USING HUMAN NEEDS)
+
+        # this only applies to diet calculations which we are no longer reporting in
+        # the paper
 
         # No excess calories
         return Food(

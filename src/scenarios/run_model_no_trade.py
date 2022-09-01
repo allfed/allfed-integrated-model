@@ -49,7 +49,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         These could easily change if another scenario was of more interest.
         """
         this_simulation["waste"] = "baseline_in_country"
-        this_simulation["fat"] = "not_required"
+        this_simulation["fat"] = "required"
         this_simulation["protein"] = "not_required"
         this_simulation["nutrition"] = "catastrophe"
         this_simulation["buffer"] = "zero"
@@ -57,9 +57,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         this_simulation["cull"] = "do_eat_culled"
         this_simulation["meat_strategy"] = "efficient_meat_strategy"
         self.run_model_no_trade(
-            title=this_simulation["scenario"],
+            title=this_simulation["scenario"] + "_" + this_simulation["fish"],
             create_pptx_with_all_countries=create_pptx_with_all_countries,
-            show_country_figures=show_country_figures,
+            show_country_figures=False,
             show_map_figures=show_map_figures,
             add_map_slide_to_pptx=show_map_figures,
             scenario_option=this_simulation,
@@ -91,7 +91,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             protein_units="thousand tons each month",
         )
 
-        PRINT_COUNTRY = False
+        PRINT_COUNTRY = True
         if PRINT_COUNTRY:
 
             print("")
@@ -220,6 +220,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         n_errors = 0
         failed_countries = "Failed Countries: \n"
 
+        print(countries_list)
+
         (
             exclusive_countries_to_run,
             countries_to_skip,
@@ -255,12 +257,10 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 show_country_figures,
                 figure_save_postfix,
             )
-
             country_name = country_data["country"]
             if np.isnan(needs_ratio):
                 n_errors += 1
                 failed_countries += " " + country_name
-
                 continue
 
             if country_code == "F5707+GBR":

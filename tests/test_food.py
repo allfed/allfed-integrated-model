@@ -121,7 +121,6 @@ def test_ensure_other_list_zero_if_this_is_zero():
     This test requires both foods to be list type.
 
     """
-    # TODO: @Morgan rewrite this test please, so it works
     food1 = Food(
         kcals=[0, 0, 0, 0],
         fat=[0, 0, 0, 0],

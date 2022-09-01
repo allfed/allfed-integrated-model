@@ -63,7 +63,7 @@ def main(args):
     this_simulation["shutoff"] = "long_delayed_shutoff"
     this_simulation["meat_strategy"] = "efficient_meat_strategy"
 
-    title_simple_adaptations = "simple_adaptations"
+    title_simple_adaptations = "trade\n+ simple_adaptations"
     results_simple_adaptations = call_scenario_runner(
         this_simulation, title_simple_adaptations
     )
@@ -73,23 +73,23 @@ def main(args):
     this_simulation["cull"] = "do_eat_culled"
     this_simulation["buffer"] = "zero"
     this_simulation["seasonality"] = "nuclear_winter_globally"
-    title_example_scenario = "Example_Scenario:\nsimple_adaptations,\nculling,\nstorage"
+    title_example_scenario = "trade\n+ simple_adaptations\n+ culling\n+ storage"
     results_example_scenario = call_scenario_runner(
         this_simulation, title_example_scenario
     )
 
     # WORST CASE + SIMPLE_ADAPTATIONS + STORAGE + CULLING + ALL RESILIENT FOODS
     this_simulation["scenario"] = "all_resilient_foods"
-    title_resilient_foods = "Example_Scenario,\nresilient foods"
+    title_resilient_foods = (
+        "trade\n+ simple_adaptations\n+ culling\n+ storage\n+ resilient foods"
+    )
     results_resilient_foods = call_scenario_runner(
         this_simulation, title_resilient_foods
     )
-
     results = {}
     results[title_simple_adaptations] = results_simple_adaptations
     results[title_example_scenario] = results_example_scenario
     results[title_resilient_foods] = results_resilient_foods
-
     Plotter.plot_fig_3abcde_updated(results, 72)
 
 

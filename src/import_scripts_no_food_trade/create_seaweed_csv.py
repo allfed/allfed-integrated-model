@@ -37,7 +37,7 @@ df_seaweed.columns = [
 df_seaweed = df_seaweed.iloc[
     0:137,
 ]
-total_coast = sum(df_seaweed.coastline.values)
+
 df_seaweed_new = df_seaweed.copy()
 df_seaweed_new.drop("fraction_of_seaweed", axis=1, inplace=True)
 df_seaweed_new.drop("within_latitude", axis=1, inplace=True)
@@ -46,6 +46,13 @@ df_seaweed_new["max_area_fraction"] = 0
 df_seaweed_new["new_area_fraction"] = 0
 df_seaweed_new["initial_built_fraction"] = 0
 df_seaweed_new["initial_seaweed_fraction"] = 0
+
+total_coast = 0
+for i in range(0, len(df_seaweed)):
+    in_latitude_range = df_seaweed.within_latitude.values[i]
+    coast = df_seaweed.coastline.values[i]
+    if in_latitude_range == 1:  # and coast_fraction > 0:
+        total_coast += coast
 
 for i in range(0, len(df_seaweed)):
     seaweed_fraction = df_seaweed.fraction_of_seaweed.values[i]

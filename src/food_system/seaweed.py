@@ -13,7 +13,7 @@ class Seaweed:
     def __init__(self, constants_for_params):
         self.NMONTHS = constants_for_params["NMONTHS"]
         self.MINIMUM_DENSITY = 400  # tons/km^2 (seaweed)
-        self.MAXIMUM_DENSITY = 800  # tons/km^2 (seaweed)
+        self.MAXIMUM_DENSITY = 4000  # tons/km^2 (seaweed)
 
         # units: 1000 km^2 global (trading blocs multiply this by some fraction)
         self.SEAWEED_NEW_AREA_PER_MONTH_GLOBAL = 2.0765 * 30

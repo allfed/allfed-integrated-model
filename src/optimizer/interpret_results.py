@@ -41,7 +41,6 @@ class Interpreter:
         # now the same, but in units effective kcals per day
         # all these are just used for plotting only
 
-        # TODO: only used for plotting, should remove eventually
         self.constants = extracted_results.constants
         self.assign_time_months_middle(self.constants["NMONTHS"])
 
@@ -303,8 +302,6 @@ class Interpreter:
         sum the resulting nutrients from the extracted_results, but do this by adding
         all the amounts determined to go to humans
 
-        also rounds result to 1 decimal place in terms of percent fed (within 0.1% of
-        it's value)
         """
 
         humans_fed_sum = (
@@ -565,3 +562,296 @@ class Interpreter:
 
         # kcals per month, units percent
         return excess_per_month
+
+    def sum_many_results_together(many_results, cap_at_100_percent):
+        """
+        sum together the results from many different runs of the model
+        create a new object summing the results
+
+        returns: the interpreter object with the summed results divided by the
+        population in question
+        """
+
+        i = 0
+        net_pop = 0
+        previous_interpreter = []
+        for country, interpreter in many_results.items():
+
+            # record some useful values for plotting from the interpreter
+            # will check later that these are consistent
+            include_fat = interpreter.include_fat
+            include_protein = interpreter.include_protein
+            time_months_middle = interpreter.time_months_middle
+
+            ADD_FISH = interpreter.constants["ADD_FISH"]
+            ADD_CELLULOSIC_SUGAR = interpreter.constants["ADD_CELLULOSIC_SUGAR"]
+            ADD_METHANE_SCP = interpreter.constants["ADD_METHANE_SCP"]
+            ADD_GREENHOUSES = interpreter.constants["ADD_GREENHOUSES"]
+            ADD_SEAWEED = interpreter.constants["ADD_SEAWEED"]
+            ADD_MILK = interpreter.constants["ADD_MILK"]
+            ADD_CULLED_MEAT = interpreter.constants["ADD_CULLED_MEAT"]
+            ADD_MAINTAINED_MEAT = interpreter.constants["ADD_MAINTAINED_MEAT"]
+            ADD_OUTDOOR_GROWING = interpreter.constants["ADD_OUTDOOR_GROWING"]
+            ADD_STORED_FOOD = interpreter.constants["ADD_STORED_FOOD"]
+
+            # print(interpreter.constants)
+            net_pop += interpreter.constants["POP"]
+            kcals_daily = interpreter.constants["inputs"]["NUTRITION"]["KCALS_DAILY"]
+            # needed to do unit conversions properly
+            Food.conversions.set_nutrition_requirements(
+                kcals_daily=kcals_daily,
+                fat_daily=interpreter.constants["inputs"]["NUTRITION"]["FAT_DAILY"],
+                protein_daily=interpreter.constants["inputs"]["NUTRITION"][
+                    "PROTEIN_DAILY"
+                ],
+                include_fat=include_fat,
+                include_protein=include_protein,
+                population=interpreter.constants["POP"],
+            )
+
+            fish = interpreter.fish.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            cell_sugar = (
+                interpreter.cell_sugar.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            )
+            scp = interpreter.scp.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            greenhouse = (
+                interpreter.greenhouse.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            )
+            seaweed = (
+                interpreter.seaweed.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            )
+            grazing_milk = (
+                interpreter.grazing_milk.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            )
+            grain_fed_milk = (
+                interpreter.grain_fed_milk.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            )
+            cmpgcm = interpreter.culled_meat_plus_grazing_cattle_maintained
+            culled_meat_plus_grazing_cattle_maintained = (
+                cmpgcm.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            )
+            grain_fed_meat = (
+                interpreter.grain_fed_meat.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            )
+
+            immediate_outdoor_crops = (
+                interpreter.immediate_outdoor_crops_to_humans.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            )
+            new_stored_outdoor_crops = (
+                interpreter.new_stored_outdoor_crops_to_humans.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            )
+            stored_food = (
+                interpreter.stored_food_to_humans.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            )
+
+            if interpreter.percent_people_fed <= 100:
+                ratio_so_adds_to_100_percent = 1
+            else:
+                # this is always less than 1. The value is the amount so percent people
+                # fed would be 100 if all the components are added up
+                ratio_so_adds_to_100_percent = 100 / interpreter.percent_people_fed
+                assert 0 < ratio_so_adds_to_100_percent < 1
+
+            if cap_at_100_percent:
+                fish = fish * ratio_so_adds_to_100_percent
+                cell_sugar = cell_sugar * ratio_so_adds_to_100_percent
+                scp = scp * ratio_so_adds_to_100_percent
+                greenhouse = greenhouse * ratio_so_adds_to_100_percent
+                seaweed = seaweed * ratio_so_adds_to_100_percent
+                grazing_milk = grazing_milk * ratio_so_adds_to_100_percent
+                grain_fed_milk = grain_fed_milk * ratio_so_adds_to_100_percent
+                culled_meat_plus_grazing_cattle_maintained = (
+                    culled_meat_plus_grazing_cattle_maintained
+                    * ratio_so_adds_to_100_percent
+                )
+                grain_fed_meat = grain_fed_meat * ratio_so_adds_to_100_percent
+                immediate_outdoor_crops = (
+                    immediate_outdoor_crops * ratio_so_adds_to_100_percent
+                )
+                new_stored_outdoor_crops = (
+                    new_stored_outdoor_crops * ratio_so_adds_to_100_percent
+                )
+                stored_food = stored_food * ratio_so_adds_to_100_percent
+
+            if i == 0:
+                fish_cumulative = fish
+                cell_sugar_cumulative = cell_sugar
+                scp_cumulative = scp
+                greenhouse_cumulative = greenhouse
+                seaweed_cumulative = seaweed
+                grazing_milk_cumulative = grazing_milk
+                grain_fed_milk_cumulative = grain_fed_milk
+                culled_meat_plus_grazing_cattle_maintained_cumulative = (
+                    culled_meat_plus_grazing_cattle_maintained
+                )
+                grain_fed_meat_cumulative = grain_fed_meat
+                immediate_outdoor_crops_cumulative = immediate_outdoor_crops
+                new_stored_outdoor_crops_cumulative = new_stored_outdoor_crops
+                stored_food_cumulative = stored_food
+            else:
+                # make sure all the interpreters have the same sets of constants
+                assert previous_interpreter.include_fat == include_fat
+                assert previous_interpreter.include_protein == include_protein
+                assert previous_interpreter.time_months_middle == time_months_middle
+
+                assert ADD_FISH == previous_interpreter.constants["ADD_FISH"]
+
+                assert (
+                    ADD_CELLULOSIC_SUGAR
+                    == previous_interpreter.constants["ADD_CELLULOSIC_SUGAR"]
+                )
+
+                assert (
+                    ADD_METHANE_SCP == previous_interpreter.constants["ADD_METHANE_SCP"]
+                )
+
+                assert (
+                    ADD_GREENHOUSES == previous_interpreter.constants["ADD_GREENHOUSES"]
+                )
+
+                assert ADD_SEAWEED == previous_interpreter.constants["ADD_SEAWEED"]
+
+                assert ADD_MILK == previous_interpreter.constants["ADD_MILK"]
+
+                assert (
+                    ADD_CULLED_MEAT == previous_interpreter.constants["ADD_CULLED_MEAT"]
+                )
+
+                assert (
+                    ADD_MAINTAINED_MEAT
+                    == previous_interpreter.constants["ADD_MAINTAINED_MEAT"]
+                )
+
+                assert (
+                    ADD_OUTDOOR_GROWING
+                    == previous_interpreter.constants["ADD_OUTDOOR_GROWING"]
+                )
+
+                assert (
+                    ADD_OUTDOOR_GROWING
+                    == previous_interpreter.constants["ADD_OUTDOOR_GROWING"]
+                )
+
+                assert (
+                    ADD_STORED_FOOD == previous_interpreter.constants["ADD_STORED_FOOD"]
+                )
+
+                fish_cumulative = fish_cumulative + fish
+                cell_sugar_cumulative = cell_sugar_cumulative + cell_sugar
+                scp_cumulative = scp_cumulative + scp
+                greenhouse_cumulative = greenhouse_cumulative + greenhouse
+                seaweed_cumulative = seaweed_cumulative + seaweed
+                grazing_milk_cumulative = grazing_milk_cumulative + grazing_milk
+                grain_fed_milk_cumulative = grain_fed_milk_cumulative + grain_fed_milk
+                culled_meat_plus_grazing_cattle_maintained_cumulative = (
+                    culled_meat_plus_grazing_cattle_maintained_cumulative
+                    + culled_meat_plus_grazing_cattle_maintained
+                )
+                grain_fed_meat_cumulative = grain_fed_meat_cumulative + grain_fed_meat
+                immediate_outdoor_crops_cumulative = (
+                    immediate_outdoor_crops_cumulative + immediate_outdoor_crops
+                )
+                new_stored_outdoor_crops_cumulative = (
+                    new_stored_outdoor_crops_cumulative + new_stored_outdoor_crops
+                )
+                stored_food_cumulative = stored_food_cumulative + stored_food
+
+            previous_interpreter = interpreter
+            i += 1
+
+        # kcals per person per day
+        KCALS_DAILY = 2100
+
+        # grams per person per day
+        FAT_DAILY = 47
+
+        # grams per person per day
+        PROTEIN_DAILY = 51
+
+        Food.conversions.set_nutrition_requirements(
+            kcals_daily=KCALS_DAILY,
+            fat_daily=FAT_DAILY,
+            protein_daily=PROTEIN_DAILY,
+            include_fat=include_fat,
+            include_protein=include_protein,
+            population=net_pop,
+        )
+
+        global_results = Interpreter()
+
+        humans_fed_sum = (
+            fish_cumulative.in_units_percent_fed()
+            + cell_sugar_cumulative.in_units_percent_fed()
+            + scp_cumulative.in_units_percent_fed()
+            + greenhouse_cumulative.in_units_percent_fed()
+            + seaweed_cumulative.in_units_percent_fed()
+            + grazing_milk_cumulative.in_units_percent_fed()
+            + grain_fed_milk_cumulative.in_units_percent_fed()
+            + culled_meat_plus_grazing_cattle_maintained_cumulative.in_units_percent_fed()
+            + grain_fed_meat_cumulative.in_units_percent_fed()
+            + immediate_outdoor_crops_cumulative.in_units_percent_fed()
+            + new_stored_outdoor_crops_cumulative.in_units_percent_fed()
+            + stored_food_cumulative.in_units_percent_fed()
+        )
+
+        global_results.time_months_middle = time_months_middle
+        global_results.include_fat = include_fat
+        global_results.include_protein = include_protein
+        global_results.kcals_fed = humans_fed_sum.kcals
+        global_results.fat_fed = humans_fed_sum.fat
+        global_results.protein_fed = humans_fed_sum.protein
+
+        global_results.constants = {}
+        global_results.constants["ADD_FISH"] = ADD_FISH
+        global_results.constants["ADD_CELLULOSIC_SUGAR"] = ADD_CELLULOSIC_SUGAR
+        global_results.constants["ADD_METHANE_SCP"] = ADD_METHANE_SCP
+        global_results.constants["ADD_GREENHOUSES"] = ADD_GREENHOUSES
+        global_results.constants["ADD_SEAWEED"] = ADD_SEAWEED
+        global_results.constants["ADD_MILK"] = ADD_MILK
+        global_results.constants["ADD_CULLED_MEAT"] = ADD_CULLED_MEAT
+        global_results.constants["ADD_MAINTAINED_MEAT"] = ADD_MAINTAINED_MEAT
+        global_results.constants["ADD_OUTDOOR_GROWING"] = ADD_OUTDOOR_GROWING
+        global_results.constants["ADD_OUTDOOR_GROWING"] = ADD_OUTDOOR_GROWING
+        global_results.constants["ADD_STORED_FOOD"] = ADD_STORED_FOOD
+
+        global_results.kcals_fed = humans_fed_sum.kcals
+        global_results.fat_fed = humans_fed_sum.fat
+        global_results.protein_fed = humans_fed_sum.protein
+
+        global_results.fish_kcals_equivalent = (
+            fish_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+        )
+        global_results.cell_sugar_kcals_equivalent = (
+            cell_sugar_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+        )
+        global_results.scp_kcals_equivalent = (
+            scp_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+        )
+        global_results.greenhouse_kcals_equivalent = (
+            greenhouse_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+        )
+        global_results.seaweed_kcals_equivalent = (
+            seaweed_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+        )
+        global_results.grazing_milk_kcals_equivalent = (
+            grazing_milk_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+        )
+        global_results.grain_fed_milk_kcals_equivalent = (
+            grain_fed_milk_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+        )
+        global_results.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent = (
+            culled_meat_plus_grazing_cattle_maintained_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+        )
+        global_results.grain_fed_meat_kcals_equivalent = (
+            grain_fed_meat_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+        )
+        global_results.immediate_outdoor_crops_to_humans_kcals_equivalent = (
+            immediate_outdoor_crops_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+        )
+        global_results.new_stored_outdoor_crops_to_humans_kcals_equivalent = (
+            new_stored_outdoor_crops_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+        )
+        global_results.stored_food_to_humans_kcals_equivalent = (
+            stored_food_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+        )
+        return global_results

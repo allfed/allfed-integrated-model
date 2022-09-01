@@ -358,7 +358,6 @@ for i in range(0, len(countries)):
 
     meat_csv = np.vstack([meat_csv, [country, country_name, chicken, pork, beef]])
 
-# TODO: these don't add up...
 PRINT_MEAT_DATA = False
 if PRINT_MEAT_DATA:
     print("chicken")

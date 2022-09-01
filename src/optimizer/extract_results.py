@@ -68,9 +68,6 @@ class Extractor:
             variables["crops_food_eaten_relocated"],
             multi_valued_constants["outdoor_crops"],
         )
-        # TODO: MOVE THESE BACK IF NEEDED
-        # variables["crops_food_storage_no_relocation"],
-        # variables["crops_food_storage_relocated"],
 
         # if nonegg nonmilk meat isn't included, these results plot shows zero
         self.extract_meat_milk_results(
@@ -528,7 +525,6 @@ class Extractor:
             / 1e9
         )
 
-        # TODO: check this is reasonable after running the program
         billions_fed_outdoor_crops_produced_kcals = (
             self.combined_produced_kcals / self.constants["KCALS_MONTHLY"]
         )

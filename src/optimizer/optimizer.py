@@ -4,7 +4,7 @@ In this model, we estimate the macronutrient production allocated optimally
 over time including models for traditional and resilient foods.
 """
 import pulp
-from pulp import LpMaximize, LpProblem, LpVariable
+from pulp import LpMaximize, LpMinimize, LpProblem, LpVariable
 
 
 class Optimizer:
@@ -85,6 +85,15 @@ class Optimizer:
         if ASSERT_SUCCESSFUL_OPTIMIZATION:
             assert status == 1, "ERROR: OPTIMIZATION FAILED!"
 
+        if status == 1 and self.single_valued_constants["STORE_FOOD_BETWEEN_YEARS"]:
+
+            model, variables = self.second_optimization_smoothing(
+                model,
+                variables,
+                NMONTHS,
+                ASSERT_SUCCESSFUL_OPTIMIZATION,
+                single_valued_constants,
+            )
         return (
             model,
             variables,
@@ -92,6 +101,118 @@ class Optimizer:
             single_valued_constants,
             multi_valued_constants,
         )
+
+    def second_optimization_smoothing(
+        self,
+        model,
+        variables,
+        NMONTHS,
+        ASSERT_SUCCESSFUL_OPTIMIZATION,
+        single_valued_constants,
+    ):
+        """
+        in this case we are trying to get the differences between all the variables
+        to be the
+        smallest, without causing the optimization to fail.
+        """
+
+        # Create the model to optimize
+        model_smoothing = model
+        model_smoothing.sense = LpMinimize
+
+        variables["objective_function_smoothing"] = LpVariable(
+            name="SMOOTHING_OBJECTIVE", lowBound=0
+        )
+        # overwrite objective
+        variables["objective_function"] = [0] * NMONTHS
+
+        variables["objective_function"] = LpVariable(
+            "Objective_Function_Variable",
+            lowBound=0,
+        )
+
+        model_smoothing += (
+            variables["objective_function"] == model.objective.value() * 0.999999,
+            "Objective_Function_Constraint",
+        )
+
+        for month in range(0, NMONTHS):
+            maximizer_string = (
+                "Old_Objective_Month_" + str(month) + "_Objective_Constraint"
+            )
+
+            model_smoothing += (
+                variables["objective_function"] <= variables["humans_fed_kcals"][month],
+                maximizer_string,
+            )
+
+            if self.single_valued_constants["inputs"]["INCLUDE_FAT"]:
+                maximizer_string = (
+                    "Old_Fat_Objective_Month_" + str(month) + "_Objective_Constraint"
+                )
+
+                model_smoothing += (
+                    variables["objective_function"]
+                    <= variables["humans_fed_fat"][month],
+                    maximizer_string,
+                )
+
+            if self.single_valued_constants["inputs"]["INCLUDE_PROTEIN"]:
+                maximizer_string = (
+                    "Old_Protein_Objective_Month_"
+                    + str(month)
+                    + "_Objective_Constraint"
+                )
+
+                model_smoothing += (
+                    variables["objective_function"]
+                    <= variables["humans_fed_protein"][month],
+                    maximizer_string,
+                )
+
+        for month in range(0, NMONTHS):
+
+            if single_valued_constants["ADD_CULLED_MEAT"]:
+                maximizer_string = (
+                    "Smoothing_Culled_Pos_Month" + str(month) + "_Objective_Constraint"
+                )
+
+                model_smoothing += (
+                    variables["objective_function_smoothing"]
+                    >= variables["culled_meat_eaten"][month],
+                    # - variables["culled_meat_eaten"][month - 1],
+                    maximizer_string,
+                )
+
+                maximizer_string = (
+                    "Smoothing_Culled_Neg_Month" + str(month) + "_Objective_Constraint"
+                )
+                model_smoothing += (
+                    variables["objective_function_smoothing"]
+                    >= -variables["culled_meat_eaten"][month],
+                    maximizer_string,
+                )
+
+        for month in range(3, NMONTHS):
+            if single_valued_constants["ADD_STORED_FOOD"]:
+                maximizer_string = (
+                    "Smoothing_Stored_Pos_Month" + str(month) + "_Objective_Constraint"
+                )
+
+                model_smoothing += (
+                    variables["objective_function_smoothing"]
+                    >= variables["stored_food_eaten"][month],
+                    maximizer_string,
+                )
+
+        model_smoothing.setObjective(variables["objective_function_smoothing"])
+
+        status = model_smoothing.solve(
+            pulp.PULP_CBC_CMD(gapRel=0.0001, msg=False, fracGap=0.001)
+        )
+
+        assert status == 1, "ERROR: OPTIMIZATION FAILED!"
+        return model_smoothing, variables
 
     def add_seaweed_to_model(self, model, variables, month):
         # assume that the only harvest opportunity is once a month
@@ -550,88 +671,6 @@ class Optimizer:
             )
 
         return (model, variables)
-
-    # # incorporate linear constraints for stored food consumption each month
-    # def add_outdoor_crops_to_model_relocation_no_storage(self, model, variables, month):
-    #     # in the more complicated case where relocation occurs, the crops do better
-    #     # than they would otherwise, and they have a different nutritional profile
-
-    #     variables["crops_food_storage_no_relocation"][month] = LpVariable(
-    #         "Crops_Food_Storage_No_Relocation_Month_" + str(month) + "_Variable",
-    #         lowBound=0,
-    #     )
-    #     variables["crops_food_eaten_no_relocation"][month] = LpVariable(
-    #         "Crops_Food_Eaten_No_Relocation_During_Month_" + str(month) + "_Variable",
-    #         lowBound=0,
-    #     )
-
-    #     variables["crops_food_storage_relocated"][month] = LpVariable(
-    #         "Crops_Food_Storage_Relocated_Month_" + str(month) + "_Variable", lowBound=0
-    #     )
-    #     variables["crops_food_eaten_relocated"][month] = LpVariable(
-    #         "Crops_Food_Eaten_Relocated_During_Month_" + str(month) + "_Variable",
-    #         lowBound=0,
-    #     )
-    #     model += (
-    #         variables["crops_food_storage_relocated"][month] == 0,
-    #         "Crops_Food_Storage_Relocated_" + str(month) + "_Constraint",
-    #     )
-
-    #     if month == 0:  # first month
-
-    #         model += (
-    #             0
-    #             == self.multi_valued_constants["outdoor_crops"].kcals[month]
-    #             - variables["crops_food_eaten_no_relocation"][month],
-    #             "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
-    #         )
-
-    #     elif month == self.single_valued_constants["NMONTHS"] - 1:  # last month
-    #         # haven't dealt with the case of nmonths being less than initial harvest
-    #         assert (
-    #             month
-    #             > self.single_valued_constants["inputs"][
-    #                 "INITIAL_HARVEST_DURATION_IN_MONTHS"
-    #             ]
-    #         )
-
-    #         # note to self: is it a problem that the crops_food_storage_relocated is
-    #         # part of the following equation, and not excluded, as it is set to zero
-    #         # in the assignment above?
-
-    #         model += (
-    #             0
-    #             == self.multi_valued_constants["outdoor_crops"].kcals[month]
-    #             - variables["crops_food_eaten_relocated"][month],
-    #             "Crops_Food_Relocated_Storage_" + str(month) + "_Constraint",
-    #         )
-
-    #     elif (
-    #         month
-    #         < self.single_valued_constants["inputs"][
-    #             "INITIAL_HARVEST_DURATION_IN_MONTHS"
-    #         ]
-    #     ):
-    #         # any month up to and including the harvest duration
-
-    #         model += (
-    #             0
-    #             == self.multi_valued_constants["outdoor_crops"].kcals[month]
-    #             - variables["crops_food_eaten_no_relocation"][month],
-    #             "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
-    #         )
-
-    #     else:  # now producing rotation, but can still eat "no rotation" storage
-    #         # not the first month, not the last month, and is a month after the rotation
-    #         # switch
-    #         model += (
-    #             0
-    #             == self.multi_valued_constants["outdoor_crops"].kcals[month]
-    #             - variables["crops_food_eaten_relocated"][month],
-    #             "Crops_Food_Eaten_Relocated_" + str(month) + "_Constraint",
-    #         )
-
-    #     return (model, variables)
 
     # OBJECTIVE FUNCTIONS  #
 

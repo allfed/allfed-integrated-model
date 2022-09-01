@@ -55,7 +55,7 @@ class Parameters:
         assert self.FIRST_TIME_RUN
         self.FIRST_TIME_RUN = False
 
-        PRINT_SCENARIO_PROPERTIES = False
+        PRINT_SCENARIO_PROPERTIES = True
         if PRINT_SCENARIO_PROPERTIES:
             print(scenarios_loader.scenario_description)
 
@@ -136,7 +136,7 @@ class Parameters:
 
         if PRINT_FIRST_MONTH_CONSTANTS:
             print_parameters = PrintParameters()
-            CONSIDER_WASTE_FOR_PRINTOUT = True
+            CONSIDER_WASTE_FOR_PRINTOUT = False
             if CONSIDER_WASTE_FOR_PRINTOUT:
                 print_parameters.print_constants_with_waste(
                     self.POP,

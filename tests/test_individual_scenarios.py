@@ -113,7 +113,5 @@ if __name__ == "__main__":
     test_run_model_with_resilient_foods()
     test_run_monte_carlo()
 
-    # TODO @li add the with resilient food, no food trade case
-
     print("All tests passed")
     sys.exit(0)

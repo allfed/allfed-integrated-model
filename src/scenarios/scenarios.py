@@ -64,8 +64,6 @@ class Scenarios:
 
         # not used unless smoothing true
         # useful for ensuring output variables don't fluctuate wildly
-        constants_for_params["FLUCTUATION_LIMIT"] = 1.5
-
         constants_for_params["DELAY"] = {}
         constants_for_params["MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE"] = 1
 
@@ -86,16 +84,16 @@ class Scenarios:
         constants_for_params = self.init_generic_scenario()
 
         # global human population (2020)
-        constants_for_params["POP"] = 7.8e9
+        constants_for_params["POP"] = 7723713182  # (about 7.8 billion)
 
         # annual tons dry caloric equivalent
-        constants_for_params["BASELINE_CROP_KCALS"] = 3898e6
+        constants_for_params["BASELINE_CROP_KCALS"] = 3898e6 * 1.015
 
         # annual tons fat
-        constants_for_params["BASELINE_CROP_FAT"] = 322e6
+        constants_for_params["BASELINE_CROP_FAT"] = 322e6 * 1.08
 
         # annual tons protein
-        constants_for_params["BASELINE_CROP_PROTEIN"] = 350e6
+        constants_for_params["BASELINE_CROP_PROTEIN"] = 350e6 * 0.94
 
         # annual tons dry caloric equivalent
         constants_for_params["BIOFUEL_KCALS"] = 623e6
@@ -125,18 +123,18 @@ class Scenarios:
         # month of stocks in people's homes, grocery stores, and food
         # warehouses
         constants_for_params["END_OF_MONTH_STOCKS"] = {}
-        constants_for_params["END_OF_MONTH_STOCKS"]["JAN"] = 1960.922e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["FEB"] = 1784.277e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["MAR"] = 1624.673e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["APR"] = 1492.822e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["MAY"] = 1359.236e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["JUN"] = 1245.351e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["JUL"] = 1246.485e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["AUG"] = 1140.824e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["SEP"] = 1196.499e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["OCT"] = 1487.030e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["NOV"] = 1642.406e6
-        constants_for_params["END_OF_MONTH_STOCKS"]["DEC"] = 1813.862e6
+        constants_for_params["END_OF_MONTH_STOCKS"]["JAN"] = 1960.922e6 * 1.015
+        constants_for_params["END_OF_MONTH_STOCKS"]["FEB"] = 1784.277e6 * 1.015
+        constants_for_params["END_OF_MONTH_STOCKS"]["MAR"] = 1624.673e6 * 1.015
+        constants_for_params["END_OF_MONTH_STOCKS"]["APR"] = 1492.822e6 * 1.015
+        constants_for_params["END_OF_MONTH_STOCKS"]["MAY"] = 1359.236e6 * 1.015
+        constants_for_params["END_OF_MONTH_STOCKS"]["JUN"] = 1245.351e6 * 1.015
+        constants_for_params["END_OF_MONTH_STOCKS"]["JUL"] = 1246.485e6 * 1.015
+        constants_for_params["END_OF_MONTH_STOCKS"]["AUG"] = 1140.824e6 * 1.015
+        constants_for_params["END_OF_MONTH_STOCKS"]["SEP"] = 1196.499e6 * 1.015
+        constants_for_params["END_OF_MONTH_STOCKS"]["OCT"] = 1487.030e6 * 1.015
+        constants_for_params["END_OF_MONTH_STOCKS"]["NOV"] = 1642.406e6 * 1.015
+        constants_for_params["END_OF_MONTH_STOCKS"]["DEC"] = 1813.862e6 * 1.015
 
         # total head count of milk cattle
         constants_for_params["INITIAL_MILK_CATTLE"] = 264e6
@@ -411,8 +409,8 @@ class Scenarios:
                 "BIOFUEL_SHUTOFF_MONTHS"
             ] = constants_for_params["NMONTHS"]
         else:
-            constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 12
-            constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 12
+            constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 11
+            constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 11
 
         self.NONHUMAN_CONSUMPTION_SET = True
         return constants_for_params
@@ -506,7 +504,7 @@ class Scenarios:
         overall waste, on farm + distribution + retail
         3x prices (note, currently set to 2019, not 2020)
         """
-        RETAIL_WASTE = 5.44
+        RETAIL_WASTE = 6.08
 
         total_waste = self.get_total_global_waste(RETAIL_WASTE)
 
@@ -524,7 +522,7 @@ class Scenarios:
         assert not self.WASTE_SET
         assert self.IS_GLOBAL_ANALYSIS
 
-        RETAIL_WASTE = 9.12
+        RETAIL_WASTE = 10.6
 
         total_waste = self.get_total_global_waste(RETAIL_WASTE)
 
@@ -541,7 +539,7 @@ class Scenarios:
         self.scenario_description += "\nnormal waste"
         assert self.IS_GLOBAL_ANALYSIS
         assert not self.WASTE_SET
-        RETAIL_WASTE = 19.27
+        RETAIL_WASTE = 24.98
 
         total_waste = self.get_total_global_waste(RETAIL_WASTE)
 
