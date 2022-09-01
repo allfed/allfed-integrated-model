@@ -3,6 +3,9 @@
 ---
 ![Testing](https://github.com/allfed/allfed-integrated-model/actions/workflows/testing.yml/badge.svg)
 [![DOI](https://zenodo.org/badge/380878388.svg)](https://zenodo.org/badge/latestdoi/380878388)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7039924.svg)](https://zenodo.org/badge/latestdoi/380878388)
+
+
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 ---
@@ -10,7 +13,7 @@ An integrated food supply model for resilient foods in nuclear winter
 
 # Run the model
 
-* You can create a variety of different scenarios with this model. A collection of possible scenarios are already available in the scenarios folder (e.g. `run_model_with_resilient_foods.py`). Examples of usage can be found in the scripts folder. Resulting pptx can be found in results/large_reports/. If you don't wish to run these results yourself, you can find more pregenerated results in the Zenodo repository.
+* You can create a variety of different scenarios with this model. A collection of possible scenarios are already available in the scenarios folder (e.g. `run_model_with_resilient_foods.py`). Examples of usage can be found in the scripts folder. Resulting pptx can be found in results/large_reports/. If you don't wish to run these results yourself, you can find more pregenerated results in the Zenodo repository (https://zenodo.org/record/7039924).
 ### Running on command line
 
 (See Dependencies section first)
@@ -31,6 +34,10 @@ python run_baseline_by_country_no_trade.py
 if you want to recreate the figures and results from the Nature Foods paper. 
 
 # More Details
+
+See the zenodo repository for more results and reports:
+https://zenodo.org/record/7039924
+
 * A scenario is created by creating a new instance of the Scenario class in `scenario.py`. This class contains a collection of methods that provide your model with the parameter value it needs to run. Here you can also change the parameter values if you want to change the model to your specifications.
 * Once you got all your parameter values ready you create an Instance of the Parameter class from `parameter.py`. This class allows you to initialize the model with the parameter values you defined.
 * Finally to create an instance of the Optimizer class from `optimizer.py` and provide it with your parameters. This will run the model itself and optimize it.
