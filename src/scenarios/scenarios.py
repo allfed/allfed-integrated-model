@@ -384,7 +384,7 @@ class Scenarios:
         return constants_for_params
 
     def set_long_delayed_shutoff(self, constants_for_params):
-        self.scenario_description += "\n2month feed, 1month biofuel"
+        self.scenario_description += "\n3month feed, 2month biofuel"
         assert not self.NONHUMAN_CONSUMPTION_SET
         constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 3
         constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 2
@@ -578,7 +578,7 @@ class Scenarios:
         overall waste, on farm + distribution + retail
         3x prices (note, currently set to 2019, not 2020)
         """
-        self.scenario_description += "\nwaste at 2x price"
+        self.scenario_description += "\nwaste at 3x price"
         assert not self.WASTE_SET
         assert not self.IS_GLOBAL_ANALYSIS
 
@@ -730,7 +730,7 @@ class Scenarios:
 
     def set_global_seasonality_baseline(self, constants_for_params):
         assert self.IS_GLOBAL_ANALYSIS
-        self.scenario_description += "\nnnormal crop seasons"
+        self.scenario_description += "\nnormal crop seasons"
         assert not self.SEASONALITY_SET
 
         # fractional production per month

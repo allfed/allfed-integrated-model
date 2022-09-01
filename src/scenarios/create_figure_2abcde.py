@@ -6,7 +6,6 @@ without trade scenarios.
 Created on Wed Jul 15
 @author: morgan
 """
-import sys
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 from src.utilities.plotter import Plotter
 from src.optimizer.interpret_results import Interpreter
@@ -145,9 +144,7 @@ def recalculate_plots():
     return list_by_country
 
 
-def main(args):
-
-    RECALCULATE_PLOTS = True
+def main(RECALCULATE_PLOTS=True):
     if RECALCULATE_PLOTS:
         results = recalculate_plots()
         np.save(Path(repo_root) / "results" / "large_reports" / "results2.npy", results)
@@ -160,5 +157,4 @@ def main(args):
 
 
 if __name__ == "__main__":
-    args = sys.argv[1:]
-    main(args)
+    main()

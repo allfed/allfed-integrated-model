@@ -2,7 +2,7 @@
 
 
 ### run_model_with_resilient_foods
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_with_resilient_foods.py/#L10)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_with_resilient_foods.py/#L11)
 ```python
 .run_model_with_resilient_foods(
    plot_figures = True
@@ -29,7 +29,7 @@ None
 
 
 ### set_common_resilient_properties
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_with_resilient_foods.py/#L136)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_with_resilient_foods.py/#L138)
 ```python
 .set_common_resilient_properties()
 ```
