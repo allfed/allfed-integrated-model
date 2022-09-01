@@ -10,7 +10,7 @@ An integrated food supply model for resilient foods in nuclear winter
 
 # Run the model
 
-* You can create a variety of different scenarios with this model. A collection of possible scenarios are already available in the scenarios folder (e.g. `run_model_with_resilient_foods.py`). Examples of usage can be found in the scripts folder. Resulting pptx can be found in results/large_reports/
+* You can create a variety of different scenarios with this model. A collection of possible scenarios are already available in the scenarios folder (e.g. `run_model_with_resilient_foods.py`). Examples of usage can be found in the scripts folder. Resulting pptx can be found in results/large_reports/. If you don't wish to run these results yourself, you can find more pregenerated results in the Zenodo repository.
 ### Running on command line
 
 (See Dependencies section first)
