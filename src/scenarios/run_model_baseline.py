@@ -19,7 +19,10 @@ def run_model_baseline(plot_figures=True):
 
     scenarios_loader, constants_for_params = set_common_baseline_properties()
 
-    constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
+    # constants_for_params = scenarios_loader.set_waste_to_zero(constants_for_params)
+    constants_for_params = scenarios_loader.set_global_waste_to_baseline_prices(
+        constants_for_params
+    )
 
     constants_for_params = scenarios_loader.set_immediate_shutoff(constants_for_params)
 

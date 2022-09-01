@@ -19,6 +19,9 @@ from pathlib import Path
 from matplotlib.lines import Line2D
 import git
 
+plt.rcParams["axes.facecolor"] = "white"
+plt.rcParams["savefig.facecolor"] = "white"
+
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 # in some linux win manager setups matplotlib plotting doesn't seem to play nice
@@ -226,7 +229,7 @@ class Plotter:
         ratios,
         xlim,
     ):
-        fig = plt.figure(figsize=(10, 10), frameon=False)
+        fig = plt.figure(figsize=(10, 10))
 
         scenario_labels = list(worlds.keys())
         gs = gridspec.GridSpec(
@@ -309,6 +312,13 @@ class Plotter:
                 world.boundary.plot(ax=ax, color="Black", linewidth=0.1)
                 ax.axes.get_xaxis().set_ticks([])
                 ax.axes.get_yaxis().set_ticks([])
+        plt.savefig(
+            Path(repo_root) / "results" / "fig_1ab.png",
+            dpi=300,
+            facecolor=fig.get_facecolor(),
+            transparent=False,
+            edgecolor="none",
+        )
 
         plt.tight_layout()
         plt.show()
@@ -582,8 +592,8 @@ class Plotter:
     ):
 
         # put maps and texts together: 5X4
-        fig = plt.figure(figsize=(10, 10), frameon=False)
-
+        fig = plt.figure(figsize=(10, 10))
+        fig.set_facecolor("white")
         gs = gridspec.GridSpec(
             7,
             3,
@@ -596,6 +606,7 @@ class Plotter:
             top=0.98,
             bottom=0.02,
         )
+
         # plt.show()
         # axes = axes.ravel()
         figure_a_indices = [0, 1, 2, 3, 4]
@@ -638,7 +649,7 @@ class Plotter:
         ax.axis("off")
 
         for i in range(10):
-            people_fed = round(lists_of_lists[i][0], 0)
+            people_fed = int(lists_of_lists[i][0])
             country_name = lists_of_lists[i][1]
             interpreter = lists_of_lists[i][2]
             scenario_label = lists_of_lists[i][3]
@@ -751,11 +762,18 @@ class Plotter:
         # ax.plot(-i * np.arange(1, 10), ls="--", color=line.get_color())
 
         # plt.show()
-
         ax.axis("off")
 
+        plt.savefig(
+            Path(repo_root) / "results" / "fig_2abcde.png",
+            dpi=300,
+            facecolor=fig.get_facecolor(),
+            transparent=False,
+            edgecolor="none",
+        )
+
         plt.tight_layout()
-        # fig.set_dpi(100.0)
+        # fig.set_dpi(300.0)
         plt.show()
 
     def plot_fig_2abcd(interpreter1, interpreter2, xlim):
@@ -925,7 +943,7 @@ class Plotter:
             )
 
         # put maps and texts together: 5X4
-        fig = plt.figure(figsize=(10, 10), frameon=False)
+        fig = plt.figure(figsize=(10, 8))
 
         gs = gridspec.GridSpec(
             5,
@@ -992,6 +1010,14 @@ class Plotter:
             )
 
             ax.axis("off")
+
+        plt.savefig(
+            Path(repo_root) / "results" / "fig_3abc.png",
+            dpi=300,
+            facecolor=fig.get_facecolor(),
+            transparent=False,
+            edgecolor="none",
+        )
 
         plt.show()
 
@@ -1090,84 +1116,6 @@ class Plotter:
         plt.tight_layout()
         plt.savefig(Path(repo_root) / "results" / "fig_3ab.png")
         print("saved figure 3ab")
-        plt.show()
-
-    def plot_fig_s1(variables, N):
-        # create histogram of variables
-        fig, axs = plt.subplots(2, 4, figsize=(10, 7))
-
-        Plotter.plot_histogram(
-            axs[0, 0],
-            variables["seaweed_production_rate"],
-            1000,
-            "seaweed growth per day\n (%)",
-            "number of scenarios",
-            "",
-        )
-        Plotter.plot_histogram(
-            axs[0, 1],
-            variables["seaweed_new"],
-            1000,
-            "seaweed area built \n(1000s km^2/month)",
-            "number of scenarios",
-            "seaweed new area built monthly",
-        )
-        Plotter.plot_histogram(
-            axs[0, 2],
-            variables["max_seaweed"],
-            1000,
-            "seaweed max calories\n (% of diet)",
-            "number of scenarios",
-            "Seaweed percent dietary calories",
-        )
-        # divide by the baseline from Xia et al
-        no_relocation_nuclear_winter = 0.89
-        Plotter.plot_histogram(
-            axs[0, 3],
-            (1 - variables["rotation_outcome_kcals"] * no_relocation_nuclear_winter)
-            / (1 - no_relocation_nuclear_winter),
-            1000,
-            "ratio to baseline calories\nrelocation outcome year 3",
-            "number of scenarios",
-            "",
-        )
-        Plotter.plot_histogram(
-            axs[1, 0],
-            variables["greenhouse_gain"],
-            1000,
-            "greenhouse yield gain \n(%)",
-            "number of scenarios",
-            "gain (%)",
-        )
-        Plotter.plot_histogram(
-            axs[1, 1],
-            variables["greenhouse_area"],
-            1000,
-            "greenhouse area scale factor",
-            "number of scenarios",
-            "seaweed new area built monthly",
-        )
-        Plotter.plot_histogram(
-            axs[1, 2],
-            variables["industrial_foods"],
-            1000,
-            "industrial foods scale factor",
-            "number of scenarios",
-            "",
-        )
-        Plotter.plot_histogram(
-            axs[1, 3],
-            variables["industrial_foods_delay"],
-            100,
-            "delay industrial construction\n (months)",
-            "number of scenarios",
-            "months delayed starting",
-        )
-        plt.tight_layout()
-
-        plt.rcParams["figure.figsize"] = [12, 9]
-        plt.savefig(Path(repo_root) / "results" / "fig_s1.png")
-        print("saved figure s1")
         plt.show()
 
     def plot_fig_s2abcd(interpreter1, interpreter2, xlim1, xlim2):
@@ -1469,7 +1417,7 @@ class Plotter:
                 plt.legend(
                     loc="center left",
                     frameon=False,
-                    bbox_to_anchor=(-0.15, -0.5),
+                    bbox_to_anchor=(-0.15, -0.4),
                     shadow=False,
                     handles=reversed(handles),
                     labels=reversed(labels),
