@@ -27,7 +27,7 @@ None
 
 
 ### set_common_baseline_properties
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_baseline.py/#L64)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_baseline.py/#L67)
 ```python
 .set_common_baseline_properties()
 ```

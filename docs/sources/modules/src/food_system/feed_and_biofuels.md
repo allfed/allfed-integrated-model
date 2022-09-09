@@ -142,13 +142,15 @@ assume animals need and use human levels of fat and protein per kcal
 ```
 
 ---
-Calculate the exceedance of the biofuel and feed usage past the outdoor outdoor_crops
+Calculate the exceedance of the biofuel and feed usage past the outdoor
+outdoor_crops
 production on a monthly basis for each nutrient.
 
 NOTE:
 UPDATE
-I realized that the max amount of stored food or OG used each month by kcals,
-fat or protein needs to be summed, rather than the max of each individual nutrient
+I realized that the max amount of stored food or OG used each month by
+kcals, fat or protein needs to be summed, rather than the max of each
+individual nutrient
 
 
 **Example**
@@ -190,8 +192,8 @@ min_running_net_supply:
 max_running_net_demand:
 
 
-For all month combined, how much original stored food is needed to make up for
-each macronutrient?
+For all month combined, how much original stored food is needed to make up
+for each macronutrient?
 
 ---
 Answer:
@@ -200,7 +202,7 @@ Answer:
     up.
 
 ### .get_excess_food_usage_from_percents
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L476)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L478)
 ```python
 .get_excess_food_usage_from_percents(
    excess_feed_percent
