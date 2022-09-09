@@ -25,7 +25,7 @@ Extractor(
 
 
 ### .to_monthly_list
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L97)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L94)
 ```python
 .to_monthly_list(
    variables, conversion
@@ -34,7 +34,7 @@ Extractor(
 
 
 ### .to_monthly_list_outdoor_crops_kcals
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L119)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L116)
 ```python
 .to_monthly_list_outdoor_crops_kcals(
    crops_food_eaten_no_relocation, crops_food_eaten_relocated,
@@ -64,7 +64,7 @@ NOTE: the validator will check that the sum of immediate and new stored is the
 same as the total amount eaten.
 
 ### .extract_greenhouse_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L201)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L198)
 ```python
 .extract_greenhouse_results(
    greenhouse_kcals_per_ha, greenhouse_fat_per_ha, greenhouse_protein_per_ha,
@@ -74,7 +74,7 @@ same as the total amount eaten.
 
 
 ### .extract_fish_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L238)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L235)
 ```python
 .extract_fish_results(
    production_kcals_fish_per_month, production_fat_fish_per_month,
@@ -84,7 +84,7 @@ same as the total amount eaten.
 
 
 ### .extract_outdoor_crops_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L270)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L267)
 ```python
 .extract_outdoor_crops_results(
    crops_food_eaten_no_relocation, crops_food_eaten_relocated, outdoor_crops
@@ -93,7 +93,7 @@ same as the total amount eaten.
 
 
 ### .set_crop_produced_monthly
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L462)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L459)
 ```python
 .set_crop_produced_monthly(
    outdoor_crops
@@ -105,7 +105,7 @@ get the crop produced monthly, rather than the amount eaten
 incorporates relocations
 
 ### .extract_cell_sugar_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L545)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L541)
 ```python
 .extract_cell_sugar_results(
    production_kcals_cell_sugar_per_month
@@ -114,7 +114,7 @@ incorporates relocations
 
 
 ### .extract_SCP_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L566)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L562)
 ```python
 .extract_SCP_results(
    production_kcals_scp_per_month, production_fat_scp_per_month,
@@ -124,7 +124,7 @@ incorporates relocations
 
 
 ### .extract_meat_milk_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L597)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L593)
 ```python
 .extract_meat_milk_results(
    culled_meat_eaten, grazing_milk_kcals, grazing_milk_fat,
@@ -137,7 +137,7 @@ incorporates relocations
 
 
 ### .extract_stored_food_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L751)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L747)
 ```python
 .extract_stored_food_results(
    stored_food_eaten
@@ -148,7 +148,7 @@ incorporates relocations
 Extracts results from stored food eaten.
 
 ### .extract_seaweed_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L782)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L778)
 ```python
 .extract_seaweed_results(
    seaweed_wet_on_farm, used_area, built_area, seaweed_food_produced
@@ -157,7 +157,7 @@ Extracts results from stored food eaten.
 
 
 ### .get_objective_optimization_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L831)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L827)
 ```python
 .get_objective_optimization_results(
    model

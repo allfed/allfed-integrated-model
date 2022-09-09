@@ -127,6 +127,7 @@ pages:
     source: "src/scenarios/create_figure_2abcde.py"
     functions:
       - call_scenario_runner
+      - call_scenario_runner_whole_world_combined
       - call_scenario_runner_with_and_without_fat_protein
       - recalculate_plots
 

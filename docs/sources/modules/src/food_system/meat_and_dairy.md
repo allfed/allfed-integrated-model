@@ -41,7 +41,7 @@ This just means that the limit each month on the amount that could be eaten is
 the sum of the max estimated slaughter capacity each month
 
 ### .calculate_continued_ratios_meat_dairy_grazing
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L190)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L196)
 ```python
 .calculate_continued_ratios_meat_dairy_grazing(
    constants_for_params
@@ -50,7 +50,7 @@ the sum of the max estimated slaughter capacity each month
 
 
 ### .calculate_continued_ratios_meat_dairy_grain
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L242)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L248)
 ```python
 .calculate_continued_ratios_meat_dairy_grain(
    fed_to_animals_prewaste, outdoor_crops
@@ -59,7 +59,7 @@ the sum of the max estimated slaughter capacity each month
 
 
 ### .calculate_meat_and_dairy_from_grain
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L309)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L315)
 ```python
 .calculate_meat_and_dairy_from_grain(
    fed_to_animals_prewaste
@@ -68,7 +68,7 @@ the sum of the max estimated slaughter capacity each month
 
 
 ### .calculate_meat_milk_from_human_inedible_feed
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L402)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L409)
 ```python
 .calculate_meat_milk_from_human_inedible_feed(
    constants_for_params
@@ -77,7 +77,7 @@ the sum of the max estimated slaughter capacity each month
 
 
 ### .get_milk_from_human_edible_feed
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L434)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L441)
 ```python
 .get_milk_from_human_edible_feed(
    constants_for_params
@@ -86,35 +86,35 @@ the sum of the max estimated slaughter capacity each month
 
 
 ### .get_meat_from_human_edible_feed
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L468)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L475)
 ```python
 .get_meat_from_human_edible_feed()
 ```
 
 
 ### .get_grazing_milk_produced_postwaste
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L634)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L641)
 ```python
 .get_grazing_milk_produced_postwaste()
 ```
 
 
 ### .get_cattle_grazing_maintained
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L662)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L669)
 ```python
 .get_cattle_grazing_maintained()
 ```
 
 
 ### .calculated_culled_meat
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L712)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L719)
 ```python
 .calculated_culled_meat()
 ```
 
 
 ### .get_culled_meat_post_waste
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L779)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L786)
 ```python
 .get_culled_meat_post_waste(
    constants_for_params
@@ -123,7 +123,7 @@ the sum of the max estimated slaughter capacity each month
 
 
 ### .calculate_animals_culled
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L788)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L795)
 ```python
 .calculate_animals_culled(
    constants_for_params

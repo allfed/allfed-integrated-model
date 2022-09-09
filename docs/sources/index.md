@@ -10,43 +10,38 @@ An integrated food supply model for resilient foods in nuclear winter
 
 # Run the model
 
-* You can create a varierety of different scenarios with this model. A collection of possible scenarios are already available in the scenarios folder (e.g. `run_model_with_resilient_foods.py`). Examples of usage can be found in the scripts folder. The script folder also contains a notebook that can be used to create the figures for the Nature Foods paper. 
+* You can create a variety of different scenarios with this model. A collection of possible scenarios are already available in the scenarios folder (e.g. `run_model_with_resilient_foods.py`). Examples of usage can be found in the scripts folder. Resulting pptx can be found in results/large_reports/. If you don't wish to run these results yourself, you can find more pregenerated results in the Zenodo repository (https://zenodo.org/record/7039924).
+### Running on command line
+
+(See Dependencies section first)
+
+Results from the paper can be rerun using the following commands in the src/scenarios folder
+
+```bash
+python create_fig_1ab.py
+python create_fig_2abcde.py
+python create_fig_3abcd.py
+python run_model_baseline.py
+```
+
+For the country-by-country no food trade model, run
+```bash
+python run_baseline_by_country_no_trade.py
+```
+if you want to recreate the figures and results from the Nature Foods paper. 
+
+# More Details
+
+See the zenodo repository for more results and reports:
+https://zenodo.org/record/7039924
+
 * A scenario is created by creating a new instance of the Scenario class in `scenario.py`. This class contains a collection of methods that provide your model with the parameter value it needs to run. Here you can also change the parameter values if you want to change the model to your specifications.
 * Once you got all your parameter values ready you create an Instance of the Parameter class from `parameter.py`. This class allows you to initialize the model with the parameter values you defined.
 * Finally to create an instance of the Optimizer class from `optimizer.py` and provide it with your parameters. This will run the model itself and optimize it.
-
+* to see which parameters and scenarios can be set, look at src/scenarios/run_scenarios.py "set_depending_on_option" method
 # How the model works in general
 
 ![Flow Chart](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/overview.png)
-
-### Using Colab (most users use this):
-The interactive model runs off colab. It doesn't require any downloading or code, you just need to hit the right buttons as they show up. Here's a demo:
-
-First click on the "scripts" folder in the allfed-integrated-model directory.
-
-![step2](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/step2.png)
-
-Open either example.
-
-![step3](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/step3.png)
-
-Click 'Open in Colab'.
-
-![step4](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/step4.png)
-
-Select 'Authorize with github'.
-
-![step5](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/step5.png)
-
-Select 'OK'.
-
-![step6](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/step6.png)
-
-For the repository, select 'allfed/allfed-integrated-model' branch 'main', then click on the item labelled under Path, 'notebooks/example_optimize.ipynb'.
-
-Now follow the instructions in the Jupyter notebook. Run each line of the Jupyter notebook in succession to view results of the paper.
-
-Please let me know if any of these steps go awry! (contact morgan [at] allfed [dot] info)
 
 #### Dependency management with Anaconda
 The integrated model is written in python 3, ensure you have some version of python3, although it has only been tested with python 3.9 or later. Then, install the required packages using conda or miniconda:
@@ -85,30 +80,3 @@ For both versions: Code from this project will only run smoothly when opened in 
 environment and when the working directory is set to the path location of the repository on
 your machine.
 
-### Running on command line
-
-results from the paper can be rerun using the following commands in the src/scenarios folder
-
-```bash
-python create_fig_1ab.py
-python create_fig_2abcde.py
-python create_fig_3abcd.py
-python run_model_baseline.py
-```
-
-for the country-by-country no food trade model, run
-```bash
-python run_baseline_by_country_no_trade.py
-```
-
-### Using Jupyter (requires cloned repo):
-In the notebooks/ folder run to learn how to create your own repository:
-
-```bash
-jupyter notebook creating_your_own_scenario.ipynb
-```
-or 
-```bash
-jupyter notebook recreate_paper_figures.ipynb
-```
-if you want to recreate the figures from the Nature Foods paper. 
