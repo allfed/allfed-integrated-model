@@ -89,7 +89,7 @@ def main():
     results[title_simple_adaptations] = results_simple_adaptations
     results[title_example_scenario] = results_example_scenario
     results[title_resilient_foods] = results_resilient_foods
-    Plotter.plot_fig_3abcde_updated(results, 72)
+    Plotter.plot_fig_3abcde_updated(results, 120)
 
 
 if __name__ == "__main__":

@@ -185,6 +185,10 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.set_continued_feed_biofuels(
                 constants_for_params
             )
+        elif scenario_option["shutoff"] == "reduce_breeding_USA":
+            constants_for_params = scenario_loader.reduce_breeding_USA(
+                constants_for_params
+            )
         else:
             scenario_is_correct = False
 

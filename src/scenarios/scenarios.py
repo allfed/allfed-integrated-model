@@ -60,7 +60,7 @@ class Scenarios:
         constants_for_params = {}
 
         # the following are used for all scenarios
-        constants_for_params["NMONTHS"] = 84
+        constants_for_params["NMONTHS"] = 120
 
         # not used unless smoothing true
         # useful for ensuring output variables don't fluctuate wildly
@@ -363,11 +363,12 @@ class Scenarios:
         return constants_for_params
 
     # FEED AND BIOFUELS
-
+`
     def set_immediate_shutoff(self, constants_for_params):
         self.scenario_description += "\nno feed/biofuel"
         assert not self.NONHUMAN_CONSUMPTION_SET
 
+        constants_for_params["REDUCED_BREEDING_STRATEGY"] = False
         constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 0
         constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 0
 
@@ -377,6 +378,7 @@ class Scenarios:
     def set_short_delayed_shutoff(self, constants_for_params):
         self.scenario_description += "\n2month feed, 1month biofuel"
         assert not self.NONHUMAN_CONSUMPTION_SET
+        constants_for_params["REDUCED_BREEDING_STRATEGY"] = False
         constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 2
         constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 1
 
@@ -386,8 +388,33 @@ class Scenarios:
     def set_long_delayed_shutoff(self, constants_for_params):
         self.scenario_description += "\n3month feed, 2month biofuel"
         assert not self.NONHUMAN_CONSUMPTION_SET
+        constants_for_params["REDUCED_BREEDING_STRATEGY"] = False
         constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 3
         constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 2
+
+        self.NONHUMAN_CONSUMPTION_SET = True
+        return constants_for_params
+
+    def reduce_breeding_USA(self, constants_for_params):
+        self.scenario_description += "\ncontinued feed/biofuel"
+        assert not self.NONHUMAN_CONSUMPTION_SET
+        # if there is no food storage, then feed and biofuels when no food is being
+        # stored would not make any sense, as the total food available could go negative
+        assert (
+            "STORE_FOOD_BETWEEN_YEARS" in constants_for_params.keys()
+        ), """ERROR : You must assign stored food before setting biofuels"""
+
+        constants_for_params["REDUCED_BREEDING_STRATEGY"] = True
+        if constants_for_params["STORE_FOOD_BETWEEN_YEARS"]:
+            constants_for_params["DELAY"][
+                "FEED_SHUTOFF_MONTHS"
+            ] = constants_for_params["NMONTHS"]
+            constants_for_params["DELAY"][
+                "BIOFUEL_SHUTOFF_MONTHS"
+            ] = 2
+        else:
+            constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 11
+            constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 11
 
         self.NONHUMAN_CONSUMPTION_SET = True
         return constants_for_params
@@ -402,9 +429,10 @@ class Scenarios:
         ), """ERROR : You must assign stored food before setting biofuels"""
 
         if constants_for_params["STORE_FOOD_BETWEEN_YEARS"]:
-            constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = constants_for_params[
-                "NMONTHS"
-            ]
+            constants_for_params["REDUCED_BREEDING_STRATEGY"] = False
+            constants_for_params["DELAY"][
+                "FEED_SHUTOFF_MONTHS"
+            ] = constants_for_params["NMONTHS"]
             constants_for_params["DELAY"][
                 "BIOFUEL_SHUTOFF_MONTHS"
             ] = constants_for_params["NMONTHS"]
@@ -793,7 +821,7 @@ class Scenarios:
     def set_grasses_baseline(self, constants_for_params):
         self.scenario_description += "\nbaseline grazing"
         assert not self.GRASSES_SET
-        for i in range(1, 8):
+        for i in range(1, int(constants_for_params["NMONTHS"] / 12 + 1)):
             constants_for_params["RATIO_GRASSES_YEAR" + str(i)] = 1
 
         self.GRASSES_SET = True
@@ -812,7 +840,9 @@ class Scenarios:
         constants_for_params["RATIO_GRASSES_YEAR5"] = 0.13
         constants_for_params["RATIO_GRASSES_YEAR6"] = 0.19
         constants_for_params["RATIO_GRASSES_YEAR7"] = 0.24
-        constants_for_params["RATIO_GRASSES_YEAR8"] = 0.33
+        constants_for_params["RATIO_GRASSES_YEAR8"] = 0.33  # TODO: UPDATE THESE
+        constants_for_params["RATIO_GRASSES_YEAR9"] = 0.33  # TODO: UPDATE THESE
+        constants_for_params["RATIO_GRASSES_YEAR10"] = 0.33  # TODO: UPDATE THESE
 
         self.GRASSES_SET = True
         return constants_for_params
@@ -823,18 +853,11 @@ class Scenarios:
         assert not self.GRASSES_SET
         # fractional production per month
 
-        for i in range(1, 8):
-
-            last_year = 5
-
-            # TODO: remove this condition when we get year 6 and 7 of the data
-            if i >= last_year:
-                y = last_year
-            else:
-                y = i
-
+        for i in range(1, int(constants_for_params["NMONTHS"] / 12 + 1)):
+            print("grasses_reduction_year" + str(i))
+            print(country_data["grasses_reduction_year" + str(i)])
             constants_for_params["RATIO_GRASSES_YEAR" + str(i)] = (
-                1 + country_data["grasses_reduction_year" + str(y)]
+                1 + country_data["grasses_reduction_year" + str(i)]
             )
 
         self.GRASSES_SET = True
@@ -936,7 +959,74 @@ class Scenarios:
                     -30.27272727,
                     -30.18181818,
                     -30.09090909,
-                    -30.0,
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
+                    -30.0,  # TODO: update to correct number for these months
                 ]
             )
             + 100
@@ -962,7 +1052,7 @@ class Scenarios:
         self.scenario_description += "\nno crop disruption"
         assert not self.DISRUPTION_SET
 
-        for i in range(1, 8):
+        for i in range(1, int(constants_for_params["NMONTHS"] / 12 + 1)):
             constants_for_params["RATIO_CROPS_YEAR" + str(i)] = 1
 
         self.DISRUPTION_SET = True
@@ -1012,22 +1102,22 @@ class Scenarios:
             1 + country_data["crop_reduction_year5"]
         )
         constants_for_params["RATIO_CROPS_YEAR6"] = (
-            1 + country_data["crop_reduction_year5"]
+            1 + country_data["crop_reduction_year6"]
         )
         constants_for_params["RATIO_CROPS_YEAR7"] = (
-            1 + country_data["crop_reduction_year5"]
+            1 + country_data["crop_reduction_year7"]
         )
         constants_for_params["RATIO_CROPS_YEAR8"] = (
-            1 + country_data["crop_reduction_year5"]
+            1 + country_data["crop_reduction_year8"]
         )
         constants_for_params["RATIO_CROPS_YEAR9"] = (
-            1 + country_data["crop_reduction_year5"]
+            1 + country_data["crop_reduction_year9"]
         )
         constants_for_params["RATIO_CROPS_YEAR10"] = (
-            1 + country_data["crop_reduction_year5"]
+            1 + country_data["crop_reduction_year10"]
         )
         constants_for_params["RATIO_CROPS_YEAR11"] = (
-            1 + country_data["crop_reduction_year5"]
+            1 + country_data["crop_reduction_year10"]
         )
 
         self.DISRUPTION_SET = True

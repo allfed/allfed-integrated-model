@@ -46,8 +46,7 @@ class MeatAndDairy:
         # Human Inedible Produced Primary Dairy and Cattle Meat #########
         self.human_inedible_feed = np.array([])
         self.ratio_human_inedible_feed = np.array([])
-        for i in range(1, 8):
-
+        for i in range(1, int(self.NMONTHS / 12) + 1):
             ratio_human_inedible_feed = constants_for_params[
                 "RATIO_GRASSES_YEAR" + str(i)
             ]
@@ -154,6 +153,11 @@ class MeatAndDairy:
             self.TONS_BEEF_MONTHLY_BASELINE_PREWASTE
             * self.dry_caloric_tons_per_ton_beef
         )
+
+    def get_culled_meat_from_breeding(
+        beef_slaughtered, pig_slaughtered, poultry_slaughtered
+    ):
+        pass
 
     def calculate_meat_limits(
         self, MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE, culled_meat_initial
@@ -353,6 +357,7 @@ class MeatAndDairy:
                     grain_fed_milk_produced_prewaste.append(max_milk)
                     # tons per month meat
                     chicken_pork_maintained_prewaste.append(0)
+
                     cattle_grain_fed_maintained_prewaste.append(0)
                     continue
 
@@ -381,6 +386,7 @@ class MeatAndDairy:
                 chicken_pork_maintained_prewaste.append(max_chicken_pork_prewaste)
                 # tons per month meat
                 cattle_grain_fed_maintained_prewaste.append(0)
+
                 continue
 
             # tons per month meat
@@ -391,7 +397,6 @@ class MeatAndDairy:
                 for_chicken_pork_cattle_prewaste
                 - self.CHICKEN_PORK_LIMIT_FOOD_USAGE_PREWASTE
             )
-
             # tons per month meat
             cattle_grain_fed_maintained_prewaste.append(
                 for_cattle_prewaste / self.EDIBLE_TO_CATTLE_CONVERSION
@@ -483,7 +488,6 @@ class MeatAndDairy:
             np.array(self.cattle_grazing_maintained_prewaste)
             + np.array(self.cattle_grain_fed_maintained_prewaste)
         ) / self.TONS_BEEF_MONTHLY_BASELINE_PREWASTE
-
         # cannot be negative
         self.ratio_not_maintained_cattle = np.max(
             [1 - ratio_maintained_cattle, np.zeros(len(ratio_maintained_cattle))],
@@ -638,10 +642,10 @@ class MeatAndDairy:
             grain_fed_meat_protein,
         )
 
-    def get_grazing_milk_produced_postwaste(self):
+    def get_grazing_milk_produced_postwaste(self, grazing_milk_produced_prewaste):
         # billions kcals
         grazing_milk_kcals = (
-            np.array(self.grazing_milk_produced_prewaste)
+            np.array(grazing_milk_produced_prewaste)
             * 1e3
             * self.MILK_KCALS
             / 1e9
@@ -650,7 +654,7 @@ class MeatAndDairy:
 
         # thousands tons
         grazing_milk_fat = (
-            np.array(self.grazing_milk_produced_prewaste)
+            np.array(grazing_milk_produced_prewaste)
             / 1e3
             * self.MILK_FAT
             * (1 - self.MILK_WASTE / 100)
@@ -658,7 +662,7 @@ class MeatAndDairy:
 
         # thousands tons
         grazing_milk_protein = (
-            np.array(self.grazing_milk_produced_prewaste)
+            np.array(grazing_milk_produced_prewaste)
             / 1e3
             * self.MILK_PROTEIN
             * (1 - self.MILK_WASTE / 100)
@@ -716,7 +720,29 @@ class MeatAndDairy:
 
     # CULLED MEAT
 
-    def calculated_culled_meat(self):
+    def get_max_slaughter_monthly(
+        self, small_animals_culled, medium_animals_culled, large_animals_culled
+    ):
+        """
+        Get the maximum number of animals that can be culled in a month and return the
+        resulting array for max total calories consumed that month.
+        """
+        calories_max_monthly = []
+        for m in range(0, len(small_animals_culled)):
+            (calories, fat, protein) = self.calculate_culled_meat(
+                small_animals_culled[m],
+                medium_animals_culled[m],
+                large_animals_culled[m],
+            )
+            calories_max_monthly.append(calories)
+        return calories_max_monthly
+
+    def calculate_culled_meat(
+        self,
+        init_small_animals_culled,
+        init_medium_animals_culled,
+        init_large_animals_culled,
+    ):
         KG_TO_1000_TONS = self.KG_TO_1000_TONS
 
         KCALS_PER_SMALL_ANIMAL = (
@@ -753,35 +779,41 @@ class MeatAndDairy:
 
         # billion kcals
         init_culled_meat_prewaste_kcals = (
-            self.init_small_animals_culled * KCALS_PER_SMALL_ANIMAL
-            + self.init_medium_animals_culled * KCALS_PER_MEDIUM_ANIMAL
-            + self.init_large_animals_culled * KCALS_PER_LARGE_ANIMAL
+            init_small_animals_culled * KCALS_PER_SMALL_ANIMAL
+            + init_medium_animals_culled * KCALS_PER_MEDIUM_ANIMAL
+            + init_large_animals_culled * KCALS_PER_LARGE_ANIMAL
         )
         # thousand tons
         init_culled_meat_prewaste_fat = (
-            self.init_small_animals_culled * FAT_PER_SMALL_ANIMAL
-            + self.init_medium_animals_culled * FAT_PER_MEDIUM_ANIMAL
-            + self.init_large_animals_culled * FAT_PER_LARGE_ANIMAL
+            init_small_animals_culled * FAT_PER_SMALL_ANIMAL
+            + init_medium_animals_culled * FAT_PER_MEDIUM_ANIMAL
+            + init_large_animals_culled * FAT_PER_LARGE_ANIMAL
         )
         # thousand tons
         init_culled_meat_prewaste_protein = (
-            self.init_small_animals_culled * PROTEIN_PER_SMALL_ANIMAL
-            + self.init_medium_animals_culled * PROTEIN_MEDIUM_ANIMAL
-            + self.init_large_animals_culled * PROTEIN_PER_LARGE_ANIMAL
+            init_small_animals_culled * PROTEIN_PER_SMALL_ANIMAL
+            + init_medium_animals_culled * PROTEIN_MEDIUM_ANIMAL
+            + init_large_animals_culled * PROTEIN_PER_LARGE_ANIMAL
         )
 
-        self.initial_culled_meat_prewaste = init_culled_meat_prewaste_kcals
+        initial_culled_meat_prewaste = init_culled_meat_prewaste_kcals
 
-        if self.initial_culled_meat_prewaste > 0:
-            self.culled_meat_fraction_fat = (
+        if initial_culled_meat_prewaste > 0:
+            culled_meat_fraction_fat = (
                 init_culled_meat_prewaste_fat / init_culled_meat_prewaste_kcals
             )
-            self.culled_meat_fraction_protein = (
+            culled_meat_fraction_protein = (
                 init_culled_meat_prewaste_protein / init_culled_meat_prewaste_kcals
             )
         else:
-            self.culled_meat_fraction_fat = 0
-            self.culled_meat_fraction_protein = 0
+            culled_meat_fraction_fat = 0
+            culled_meat_fraction_protein = 0
+
+        return (
+            initial_culled_meat_prewaste,
+            culled_meat_fraction_fat,
+            culled_meat_fraction_protein,
+        )
 
     def get_culled_meat_post_waste(self, constants_for_params):
 

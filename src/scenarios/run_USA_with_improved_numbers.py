@@ -13,20 +13,20 @@ def main(args):
     this_simulation = {}
 
     this_simulation["scale"] = "country"
-    this_simulation["scenario"] = "no_resilient_foods"
-    this_simulation["seasonality"] = "country"
+    this_simulation["scenario"] = "with_resilient_foods"
+    this_simulation["seasonality"] = "no_seasonality"
     this_simulation["grasses"] = "country_nuclear_winter"
     this_simulation["crop_disruption"] = "country_nuclear_winter"
     this_simulation["fish"] = "nuclear_winter"
 
-    this_simulation["waste"] = "tripled_prices_in_country"
-    this_simulation["fat"] = "required"
-    this_simulation["protein"] = "required"
+    this_simulation["waste"] = "baseline_in_country"
+    this_simulation["fat"] = "not_required"
+    this_simulation["protein"] = "not_required"
     this_simulation["nutrition"] = "catastrophe"
     this_simulation["buffer"] = "zero"
-    this_simulation["shutoff"] = "immediate"
-    this_simulation["cull"] = "dont_eat_culled"
-    this_simulation["meat_strategy"] = "inefficient_meat_strategy"
+    this_simulation["shutoff"] = "reduce_breeding_USA"
+    this_simulation["cull"] = "do_eat_culled"
+    this_simulation["meat_strategy"] = "reduce_breeding_USA"
 
     # command line argument inputs (optional)
     scenario_runner = ScenarioRunnerNoTrade()
@@ -38,7 +38,7 @@ def main(args):
         show_map_figures=True,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
-        countries_list=[]
+        countries_list=["USA"],
         #     "CHN",
         #     "FRA",
         #     "IND",

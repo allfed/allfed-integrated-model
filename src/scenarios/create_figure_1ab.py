@@ -189,7 +189,7 @@ def recalculate_plots():
 
 
 def main(args):
-    RECALCULATE_PLOTS = False
+    RECALCULATE_PLOTS = True
     if RECALCULATE_PLOTS:
         the_path = Path(repo_root) / "results" / "large_reports" / "worlds1.npy"
         worlds, ratios = recalculate_plots()
