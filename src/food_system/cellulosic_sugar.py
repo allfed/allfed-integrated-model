@@ -34,7 +34,7 @@ class CellulosicSugar:
             CELL_SUGAR_PERCENT_KCALS = list(
                 np.append(
                     industrial_delay_months,
-                    np.array([0.0] * 5 + [9.79] * 3 + [20] * 253),
+                    np.array([0.0] * 5 + [4.7] * 3 + [9.5] * 253),
                 )
                 * 1
                 / (1 - 0.12)

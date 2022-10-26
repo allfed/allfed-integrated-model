@@ -250,7 +250,7 @@ class OutdoorCrops(Food):
             + month_cycle_starting_january[0:month_index]
         )
 
-        self.assign_reduction_from_climate_impact()
+        self.assign_reduction_from_climate_impact(constants_for_params)
 
         PLOT_WITH_SEASONALITY = False
         if PLOT_WITH_SEASONALITY:
@@ -264,7 +264,7 @@ class OutdoorCrops(Food):
             # Plotter.plot_monthly_reductions_seasonally(ratios)
             Plotter.plot_monthly_reductions_seasonally(ratios)
 
-    def assign_reduction_from_climate_impact(self):
+    def assign_reduction_from_climate_impact(self, constants_for_params):
         self.KCALS_GROWN = []
         self.NO_ROT_KCALS_GROWN = []
 
@@ -281,12 +281,16 @@ class OutdoorCrops(Food):
 
             # assert baseline_reduction >= 0  # 8 decimal places rounding
 
-            if baseline_reduction > 1:
-                self.KCALS_GROWN.append(month_kcals * baseline_reduction)
+            if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
+                self.KCALS_GROWN.append(month_kcals * baseline_reduction * 10)
             else:
-                self.KCALS_GROWN.append(
-                    month_kcals * baseline_reduction**self.OG_KCAL_EXPONENT
-                )
+
+                if baseline_reduction > 1:
+                    self.KCALS_GROWN.append(month_kcals * baseline_reduction)
+                else:
+                    self.KCALS_GROWN.append(
+                        month_kcals * baseline_reduction**self.OG_KCAL_EXPONENT
+                    )
 
             self.NO_ROT_KCALS_GROWN.append(month_kcals * baseline_reduction)
 

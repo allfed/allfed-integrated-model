@@ -154,10 +154,17 @@ class MeatAndDairy:
             * self.dry_caloric_tons_per_ton_beef
         )
 
-    def get_culled_meat_from_breeding(
-        beef_slaughtered, pig_slaughtered, poultry_slaughtered
-    ):
-        pass
+    def get_meat_nutrition(self):
+        return (
+            self.KG_PER_SMALL_ANIMAL,
+            self.KG_PER_MEDIUM_ANIMAL,
+            self.KG_PER_LARGE_ANIMAL,
+            self.LARGE_ANIMAL_KCALS_PER_KG,
+            self.LARGE_ANIMAL_FAT_RATIO,
+            self.LARGE_ANIMAL_PROTEIN_RATIO,
+            self.MEDIUM_ANIMAL_KCALS_PER_KG,
+            self.SMALL_ANIMAL_KCALS_PER_KG,
+        )
 
     def calculate_meat_limits(
         self, MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE, culled_meat_initial
@@ -174,14 +181,13 @@ class MeatAndDairy:
 
         """
 
-        meat_limit = 0
-
         # billions of kcals per month
         per_month_increase = (
             self.CHICKEN_PORK_LIMIT_FOOD_USAGE_PREWASTE * 4e6 / 1e9
             + self.BEEF_LIMIT_FOOD_USAGE_PREWASTE * 4e6 / 1e9
         )
 
+        meat_limit = 0
         cumulative_meat_limit = np.zeros(self.NMONTHS)
         for m in range(0, self.NMONTHS):
             # converting to billions of kcals
@@ -190,7 +196,6 @@ class MeatAndDairy:
             )
 
             cumulative_meat_limit[m] = min(meat_limit, culled_meat_initial)
-
         return cumulative_meat_limit
 
     # CALCULATIONS FOR MEAT AND DAIRY PRODUCTION USING GRAIN AND GRAZING
@@ -734,7 +739,7 @@ class MeatAndDairy:
                 medium_animals_culled[m],
                 large_animals_culled[m],
             )
-            calories_max_monthly.append(calories)
+            calories_max_monthly.append(max(calories, 0))
         return calories_max_monthly
 
     def calculate_culled_meat(

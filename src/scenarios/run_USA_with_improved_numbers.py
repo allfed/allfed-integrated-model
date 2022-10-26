@@ -9,11 +9,11 @@ import sys
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 
 
-def main(args):
+def run_USA_with_resilient():
     this_simulation = {}
 
     this_simulation["scale"] = "country"
-    this_simulation["scenario"] = "with_resilient_foods"
+    this_simulation["scenario"] = "all_resilient_foods"
     this_simulation["seasonality"] = "no_seasonality"
     this_simulation["grasses"] = "country_nuclear_winter"
     this_simulation["crop_disruption"] = "country_nuclear_winter"
@@ -32,9 +32,9 @@ def main(args):
     scenario_runner = ScenarioRunnerNoTrade()
 
     scenario_runner.run_model_no_trade(
-        title="Reproduce Xia et al Results",
+        title="Resilient foods for US only",
         create_pptx_with_all_countries=False,
-        show_country_figures=False,
+        show_country_figures=True,
         show_map_figures=True,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
@@ -50,6 +50,11 @@ def main(args):
         #     "USA",
         # ],
     )
+
+
+def main(args):
+    run_USA_with_resilient()
+    # run_USA_no_resilient()
 
 
 if __name__ == "__main__":

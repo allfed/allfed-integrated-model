@@ -1,3 +1,11 @@
+"""
+This is a function used to quickly estimate the feed usage and resulting meat when 
+breeding is changed and slaughter is increased somewhat (or whatever reasonable result
+is to be expected in the scenario in question).
+
+
+"""
+
 import pathlib
 import pandas as pd
 from difflib import diff_bytes
@@ -10,44 +18,13 @@ import numpy as np
 Start main function
 """
 # Create dataframes
-PATH = pathlib.Path(__file__).parent
-DATA_PATH = PATH.joinpath("../../data").resolve()
-df = pd.read_csv(DATA_PATH.joinpath("NassCattle2022.csv"), index_col="Variable")
-df2 = pd.read_csv(DATA_PATH.joinpath("NassPigs2022.csv"), index_col="Variable")
-df["Qty"] = df["Qty"].astype("float")
 
 
 class CalculateAnimalOutputs:
     def init():
         pass
 
-    def get_example_data(self):
-        result = self.calculate_feed_and_animals(
-            reduction_in_beef_calves=0,
-            reduction_in_dairy_calves=0,
-            increase_in_slaughter=0,
-            reduction_in_pig_breeding=0,
-            reduction_in_poultry_breeding=0,
-            months=12,
-            discount_rate=0,
-            mother_slaughter=0,
-        )
-
-        important_results = result[
-            [
-                "Month",
-                "Combined Feed",
-                "Beef Slaughtered",
-                "Pig Slaughtered",
-                "Poultry Slaughtered",
-                "Dairy Pop",
-            ]
-        ]
-
-        return important_results
-
     def calculate_feed_and_animals(
-        self,
         reduction_in_beef_calves,
         reduction_in_dairy_calves,
         increase_in_slaughter,
@@ -56,38 +33,46 @@ class CalculateAnimalOutputs:
         months,
         discount_rate,
         mother_slaughter,
+        use_grass_and_residues_for_dairy,
+        animal_inputs,
     ):  # function arguments come from the component property of the Input (in this case, the sliders)
 
-        poultry_visual_optimiser = 1
-        magnitude_adjust = 1000
-        feed_unit_adjust = 0.0005  # convert pounds to tons
+        tons_to_kcals = (
+            (3560 + 3350) / 2 * 1000
+        )  # convert tons to kcals (ASSUME CALORIC DENSITY IS HALF MAIZE, HALF SOYBEAN)
+        kcals_to_billion_kcals = 1e-9
+        feed_unit_adjust = (
+            0.000453592 * tons_to_kcals * kcals_to_billion_kcals
+        )  # convert pounds to tonnes to billions of kcals
         ## unpack all the dataframe information for ease of use ##
         # pigs
-        total_pigs = df2.loc["TotalPigs", "Qty"]
-        piglets_pm = df2.loc["PigletsPerMonth", "Qty"]
-        pigs_slaughter_pm = df2.loc["SlaughterPerMonth", "Qty"]
-        pigGestation = df2.loc["pigGestation", "Qty"]
-        piglets_per_litter = 7.5
+        total_pigs = animal_inputs.dataframe.loc["TotalPigs", "Qty"]
+        piglets_pm = animal_inputs.dataframe.loc["PigletsPerMonth", "Qty"]
+        pigs_slaughter_pm = animal_inputs.dataframe.loc["SlaughterPerMonth", "Qty"]
+        pigGestation = animal_inputs.dataframe.loc["pigGestation", "Qty"]
+        piglets_per_litter = animal_inputs.dataframe.loc["PigsPerLitter", "Qty"]
 
         # poultry
-        total_poultry = (
-            2127170289 / 1000
-        )  # USDA everything is in 1000 head, so divide this number by 1000
-        poultry_slaughter_pm = 853670.0  # USDA
+        total_poultry = animal_inputs.dataframe.loc["Broiler Population", "Qty"]
+        poultry_slaughter_pm = animal_inputs.dataframe.loc[
+            "poultry_slaughter_pm", "Qty"
+        ]  # USDA
         chicks_pm = poultry_slaughter_pm  # assume the same, no data
-        poultryGestation = 1  # actaully 21 days, let's round to 1 month
+        poultryGestation = animal_inputs.dataframe.loc[
+            "Chicken Gestation", "Qty"
+        ]  # USDA  # actaully 21 days, let's round to 1 month
 
         # cows (more complex, as need to split dairy and beef)
-        total_calves = df.loc["Calves under 500 pounds", "Qty"]
-        dairy_cows = df.loc["Milk cows", "Qty"]
-        beef_cows = df.loc["Beef cows", "Qty"]
-        beef_steers = df.loc["Steers 500 pounds and over", "Qty"]
-        heifers = df.loc["Heifers 500 pounds and over", "Qty"]
-        bulls = df.loc["Bulls 500 pounds and over", "Qty"]
-        new_calves_per_year = df.loc["Calf crop", "Qty"]
-        cattle_on_feed = df.loc["Cattle on feed", "Qty"]
-        cow_slaughter_pm = df.loc["CowSlaughter", "Qty"]
-        cowGestation = df.loc["cowGestation", "Qty"]
+        total_calves = animal_inputs.dataframe.loc["Calves under 500 pounds", "Qty"]
+        dairy_cows = animal_inputs.dataframe.loc["Milk cows", "Qty"]
+        beef_cows = animal_inputs.dataframe.loc["Beef cows", "Qty"]
+        beef_steers = animal_inputs.dataframe.loc["Steers 500 pounds and over", "Qty"]
+        heifers = animal_inputs.dataframe.loc["Heifers 500 pounds and over", "Qty"]
+        bulls = animal_inputs.dataframe.loc["Bulls 500 pounds and over", "Qty"]
+        new_calves_per_year = animal_inputs.dataframe.loc["Calf crop", "Qty"]
+        cattle_on_feed = animal_inputs.dataframe.loc["Cattle on feed", "Qty"]
+        cow_slaughter_pm = animal_inputs.dataframe.loc["CowSlaughter", "Qty"]
+        cowGestation = animal_inputs.dataframe.loc["cowGestation", "Qty"]
         calves_per_mother = 1
 
         #### Calcultaion for cows ratios
@@ -191,7 +176,7 @@ class CalculateAnimalOutputs:
 
         # these feed numbers are top down, calculations in google sheet, working backwards from total feed used and dividing it evenly amongst the animal populations
         beef_cow_feed_pm_per_cow = 137.3117552  # lbs
-        if USE_GRASS_AND_RESIDUES_FOR_DAIRY:
+        if use_grass_and_residues_for_dairy:
             dairy_cow_feed_pm_per_cow = 0
         else:
             dairy_cow_feed_pm_per_cow = 448.3820431
@@ -201,26 +186,16 @@ class CalculateAnimalOutputs:
             current_total_poultry * poultry_feed_pm_per_bird
             + current_total_pigs * pig_feed_pm_per_pig
             + current_beef_cattle * beef_cow_feed_pm_per_cow
-            + dairy_cow_feed_pm_per_cow * current_dairy_cattle
+            + current_dairy_cattle * dairy_cow_feed_pm_per_cow
         )
-
-        print("baseline feed")
-        print(baseline_feed)
 
         d = []  # create empty list to place variables in to in loop
 
         # simulate x months
         for i in range(months):
 
-            print("month")
-            print(i)
-
             new_pigs_pm = current_pregnant_sows * piglets_per_litter
             new_beef_calfs_pm = current_pregnant_cows * calves_per_mother
-
-            print(
-                f"Current sows pregnant is, {current_pregnant_sows}. And cows is {current_pregnant_cows}."
-            )
 
             # determine birth rates
             if np.abs(i - cowGestation) <= 0.5:
@@ -283,88 +258,70 @@ class CalculateAnimalOutputs:
             current_dairy_feed = current_dairy_cattle * dairy_cow_feed_pm_per_cow
             current_pig_feed = current_total_pigs * pig_feed_pm_per_pig
             current_poultry_feed = current_total_poultry * poultry_feed_pm_per_bird
+
             current_feed_combined = (
                 current_beef_feed
                 + current_dairy_feed
                 + current_pig_feed
                 + current_poultry_feed
             )
-            current_feed_saved = baseline_feed - current_feed_combined
 
-            # print(baseline_feed * magnitude_adjust *feed_unit_adjust)
-            print(current_poultry_feed * magnitude_adjust * feed_unit_adjust)
-            print(current_feed_combined * magnitude_adjust * feed_unit_adjust)
+            print(current_poultry_feed * feed_unit_adjust)
+            print(current_feed_combined * feed_unit_adjust)
 
             ### Generate list (before new totals have been calculated)
             # magnitude adjust moves the numbers from per thousnad head to per head (or other)
             # feed adjust turns lbs in to tons
             d.append(
                 {
-                    "Beef Pop": current_beef_cattle * magnitude_adjust,
-                    "Beef Born": new_beef_calfs_pm * magnitude_adjust,
-                    "Beef Slaughtered": actual_beef_slaughter * magnitude_adjust,
+                    "Beef Pop": current_beef_cattle,
+                    "Beef Born": new_beef_calfs_pm,
+                    "Beef Slaughtered": actual_beef_slaughter,
                     "Beef Slaughtered Hours": actual_beef_slaughter
-                    * cow_slaughter_hours
-                    * magnitude_adjust,
+                    * cow_slaughter_hours,
                     "Beef Slaughtered Hours %": actual_beef_slaughter
                     * cow_slaughter_hours
                     / total_slaughter_cap_hours,
-                    "Beef Other Death": other_beef_death * magnitude_adjust,
+                    "Beef Other Death": other_beef_death,
                     "Beef Feed": current_beef_cattle
                     * beef_cow_feed_pm_per_cow
-                    * magnitude_adjust
                     * feed_unit_adjust,
-                    "Dairy Pop": current_dairy_cattle * magnitude_adjust,
-                    "Dairy Born": new_dairy_calfs_pm * magnitude_adjust,
-                    "Dairy Slaughtered": current_dairy_slaughter * magnitude_adjust,
+                    "Dairy Pop": current_dairy_cattle,
+                    "Dairy Born": new_dairy_calfs_pm,
+                    "Dairy Slaughtered": current_dairy_slaughter,
                     "Dairy Slaughtered Hours": current_dairy_slaughter
-                    * cow_slaughter_hours
-                    * magnitude_adjust,
+                    * cow_slaughter_hours,
                     "Dairy Slaughtered Hours %": current_dairy_slaughter
                     * cow_slaughter_hours
                     / total_slaughter_cap_hours,
-                    "Dairy Other Death": other_dairy_death * magnitude_adjust,
+                    "Dairy Other Death": other_dairy_death,
                     "Dairy Feed": current_dairy_cattle
                     * dairy_cow_feed_pm_per_cow
-                    * magnitude_adjust
                     * feed_unit_adjust,
-                    "Pigs Pop": current_total_pigs * magnitude_adjust,
-                    "Pig Born": new_pigs_pm * magnitude_adjust,
-                    "Pig Slaughtered": current_pig_slaughter * magnitude_adjust,
+                    "Pigs Pop": current_total_pigs,
+                    "Pig Born": new_pigs_pm,
+                    "Pig Slaughtered": current_pig_slaughter,
                     "Pig Slaughtered Hours": current_pig_slaughter
-                    * pig_slaughter_hours
-                    * magnitude_adjust,
+                    * pig_slaughter_hours,
                     "Pig Slaughtered Hours %": current_pig_slaughter
                     * pig_slaughter_hours
                     / total_slaughter_cap_hours,
                     "Pigs Feed": current_total_pigs
                     * pig_feed_pm_per_pig
-                    * magnitude_adjust
                     * feed_unit_adjust,
-                    "Poultry Pop": current_total_poultry
-                    / poultry_visual_optimiser
-                    * magnitude_adjust,
-                    "Poultry Born": new_poultry_pm
-                    / poultry_visual_optimiser
-                    * magnitude_adjust,
-                    "Poultry Slaughtered": current_poultry_slaughter
-                    / poultry_visual_optimiser
-                    * magnitude_adjust,
+                    "Poultry Pop": current_total_poultry,
+                    "Poultry Born": new_poultry_pm,
+                    "Poultry Slaughtered": current_poultry_slaughter,
                     "Poultry Slaughtered Hours": current_poultry_slaughter
-                    * poultry_slaughter_hours
-                    * magnitude_adjust,
+                    * poultry_slaughter_hours,
                     "Poultry Slaughtered Hours %": current_poultry_slaughter
                     * poultry_slaughter_hours
                     / total_slaughter_cap_hours,
                     "Poultry Feed": current_total_poultry
                     * poultry_feed_pm_per_bird
-                    * magnitude_adjust
                     * feed_unit_adjust,
-                    "Combined Feed": current_feed_combined
-                    * magnitude_adjust
-                    * feed_unit_adjust,
+                    "Combined Feed": current_feed_combined * feed_unit_adjust,
                     "Combined Saved Feed": (baseline_feed - current_feed_combined)
-                    * magnitude_adjust
                     * feed_unit_adjust,
                     "Month": i,
                 }
@@ -397,8 +354,26 @@ class CalculateAnimalOutputs:
         ### End of loop, start summary
 
         df_final = pd.DataFrame(d)
+
         return df_final
 
 
-cao = CalculateAnimalOutputs()
-results = cao.get_example_data()
+class ModelAnimalInputs:
+    def __init__(self, dataframe):
+        self.dataframe = dataframe
+
+
+"""
+Start main function
+"""
+# Import CSV to dataframes
+PATH = pathlib.Path(__file__).parent
+DATA_PATH = PATH.joinpath("../data").resolve()
+df_animals = pd.read_csv(
+    DATA_PATH.joinpath("InputDataAndSources.csv"), index_col="Variable"
+)
+
+## various scenarios can be used here
+df_baseline_vars = pd.read_csv(
+    DATA_PATH.joinpath("default_slider_values.csv"), index_col="Variable"
+)  # change this to saved model values (optimistic/pessimistic etc.)

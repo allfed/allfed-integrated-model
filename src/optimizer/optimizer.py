@@ -23,12 +23,147 @@ class Optimizer:
             name="Least_Humans_Fed_Any_Month", lowBound=0
         )
 
+        print("")
+        print("")
+        print("")
+        print("")
+        print("single_valued_constants")
+        print(single_valued_constants)
         self.single_valued_constants = single_valued_constants
+        print("multi_valued_constants")
+        print(multi_valued_constants)
         self.multi_valued_constants = multi_valued_constants
 
         self.time_months = []
 
         NMONTHS = single_valued_constants["NMONTHS"]
+        self.multi_valued_constants["greenhouse_area"] = [1] * NMONTHS
+        import numpy as np
+
+        self.multi_valued_constants["greenhouse_kcals_per_ha"] = np.array(
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                5827,
+                5827,
+                5827,
+                5827,
+                5827,
+                11654,
+                11654,
+                11654,
+                11654,
+                11654,
+                17481,
+                17481,
+                17481,
+                17481,
+                17481,
+                23308,
+                23308,
+                23308,
+                23308,
+                23308,
+                29135,
+                29135,
+                29135,
+                29135,
+                29135,
+                34962,
+                34962,
+                34962,
+                34962,
+                34962,
+                40789,
+                40789,
+                40789,
+                40789,
+                40789,
+                46616,
+                46616,
+                46616,
+                46616,
+                46616,
+                52444,
+                52444,
+                52444,
+                52444,
+                52444,
+                58271,
+                58271,
+                58271,
+                58271,
+                58271,
+                64098,
+                64098,
+                64098,
+                64098,
+                64098,
+                69925,
+                69925,
+                69925,
+                69925,
+                68159,
+                69925,
+                69925,
+                69925,
+                69925,
+                68159,
+                69925,
+                69925,
+                69925,
+                69925,
+                68159,
+                69925,
+                69925,
+                69925,
+                69925,
+                68159,
+                69925,
+                69925,
+                69925,
+                69925,
+                68159,
+                69925,
+                69925,
+                69925,
+                69925,
+                68159,
+                69925,
+                69925,
+                69925,
+                69925,
+                68159,
+                69925,
+                69925,
+                69925,
+                69925,
+                68159,
+                69925,
+                69925,
+                69925,
+                69925,
+                68159,
+                69925,
+                69925,
+                69925,
+                69925,
+                68159,
+                69925,
+                69925,
+                69925,
+                69925,
+                68159,
+                69925,
+                69925,
+                69925,
+                69925,
+            ]
+        )
 
         variables["stored_food_start"] = [0] * NMONTHS
         variables["stored_food_end"] = [0] * NMONTHS
@@ -50,7 +185,6 @@ class Optimizer:
         variables["humans_fed_kcals"] = [0] * NMONTHS
         variables["humans_fed_fat"] = [0] * NMONTHS
         variables["humans_fed_protein"] = [0] * NMONTHS
-
         # MODEL GENERATION LOOP #
 
         for month in range(0, self.single_valued_constants["NMONTHS"]):
@@ -217,12 +351,20 @@ class Optimizer:
     def add_seaweed_to_model(self, model, variables, month):
         # assume that the only harvest opportunity is once a month
         # format: name, lower bound, upper bound
-        variables["seaweed_wet_on_farm"][month] = LpVariable(
-            "Seaweed_Wet_On_Farm_" + str(month) + "_Variable",
-            self.single_valued_constants["INITIAL_SEAWEED"],
-            self.single_valued_constants["MAXIMUM_DENSITY"]
-            * self.multi_valued_constants["built_area"][month],
-        )
+        # variables["seaweed_wet_on_farm"][month] = LpVariable(
+        #     "Seaweed_Wet_On_Farm_" + str(month) + "_Variable",
+        #     self.single_valued_constants["INITIAL_SEAWEED"],
+        #     self.single_valued_constants["MAXIMUM_DENSITY"]
+        #     * self.multi_valued_constants["built_area"][month],
+        # )
+
+        # print("0AREA")
+        # print(self.single_valued_constants["INITIAL_BUILT_SEAWEED_AREA"])
+        # print("DENSAREA")
+        # print(
+        #     self.single_valued_constants["MAXIMUM_DENSITY"]
+        #     * self.multi_valued_constants["built_area"][month]
+        # )
 
         # food production (using resources)
         variables["seaweed_food_produced"][month] = LpVariable(
@@ -230,49 +372,59 @@ class Optimizer:
             lowBound=0,
         )
 
-        variables["used_area"][month] = LpVariable(
-            "Used_Area_" + str(month) + "_Variable",
-            self.single_valued_constants["INITIAL_BUILT_SEAWEED_AREA"],
-            self.multi_valued_constants["built_area"][month],
-        )
-
-        if month == 0:  # first Month
+        # variables["used_area"][month] = LpVariable(
+        #     "Used_Area_" + str(month) + "_Variable",
+        #     self.single_valued_constants["INITIAL_BUILT_SEAWEED_AREA"],
+        #     self.multi_valued_constants["built_area"][month],
+        # )
+        if month < 7:
             model += (
-                variables["seaweed_wet_on_farm"][0]
-                == self.single_valued_constants["INITIAL_SEAWEED"],
-                "Seaweed_Wet_On_Farm_0_Constraint",
-            )
-            model += (
-                variables["used_area"][0]
-                == self.single_valued_constants["INITIAL_BUILT_SEAWEED_AREA"],
-                "Used_Area_Month_0_Constraint",
-            )
-            model += (
-                variables["seaweed_food_produced"][0] == 0,
-                "Seaweed_Food_Produced_Month_0_Constraint",
-            )
-
-        else:  # later Months
-            model += (
-                variables["seaweed_wet_on_farm"][month]
-                <= variables["used_area"][month]
-                * self.single_valued_constants["MAXIMUM_DENSITY"]
-            )
-
-            model += (
-                variables["seaweed_wet_on_farm"][month]
-                == variables["seaweed_wet_on_farm"][month - 1]
-                * (
-                    1
-                    + self.single_valued_constants["inputs"]["SEAWEED_PRODUCTION_RATE"]
-                    / 100.0
-                )
-                - variables["seaweed_food_produced"][month]
-                - (variables["used_area"][month] - variables["used_area"][month - 1])
-                * self.single_valued_constants["MINIMUM_DENSITY"]
-                * (self.single_valued_constants["HARVEST_LOSS"] / 100),
+                variables["seaweed_food_produced"][month] == 0,
                 "Seaweed_Wet_On_Farm_" + str(month) + "_Constraint",
             )
+        else:
+            model += (
+                variables["seaweed_food_produced"][month] == 200000,
+                "Seaweed_Wet_On_Farm_" + str(month) + "_Constraint",
+            )
+
+        # if month == 0:  # first Month
+        #     model += (
+        #         variables["seaweed_wet_on_farm"][0]
+        #         == self.single_valued_constants["INITIAL_SEAWEED"],
+        #         "Seaweed_Wet_On_Farm_0_Constraint",
+        #     )
+        #     model += (
+        #         variables["used_area"][0]
+        #         == self.single_valued_constants["INITIAL_BUILT_SEAWEED_AREA"],
+        #         "Used_Area_Month_0_Constraint",
+        #     )
+        #     model += (
+        #         variables["seaweed_food_produced"][0] == 0,
+        #         "Seaweed_Food_Produced_Month_0_Constraint",
+        #     )
+
+        # else:  # later Months
+        #     model += (
+        #         variables["seaweed_wet_on_farm"][month]
+        #         <= variables["used_area"][month]
+        #         * self.single_valued_constants["MAXIMUM_DENSITY"]
+        #     )
+
+        #     model += (
+        #         variables["seaweed_wet_on_farm"][month]
+        #         == variables["seaweed_wet_on_farm"][month - 1]
+        #         * (
+        #             1
+        #             + self.single_valued_constants["inputs"]["SEAWEED_PRODUCTION_RATE"]
+        #             / 100.0
+        #         )
+        #         - variables["seaweed_food_produced"][month]
+        #         - (variables["used_area"][month] - variables["used_area"][month - 1])
+        #         * self.single_valued_constants["MINIMUM_DENSITY"]
+        #         * (self.single_valued_constants["HARVEST_LOSS"] / 100),
+        #         "Seaweed_Wet_On_Farm_" + str(month) + "_Constraint",
+        #     )
 
         return (model, variables)
 
@@ -685,6 +837,11 @@ class Optimizer:
         variables["humans_fed_protein"][month] = LpVariable(
             name="Humans_Fed_Protein_" + str(month) + "_Variable", lowBound=0
         )
+
+        print("INITIAL_SEAWEED_FRACTION")
+        print(self.single_valued_constants["inputs"]["INITIAL_SEAWEED_FRACTION"])
+        print("MAX_SEAWEED_AS_PERCENT_KCALS")
+        print(self.single_valued_constants["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"])
 
         if (
             self.single_valued_constants["ADD_SEAWEED"]

@@ -363,7 +363,7 @@ class Scenarios:
         return constants_for_params
 
     # FEED AND BIOFUELS
-`
+
     def set_immediate_shutoff(self, constants_for_params):
         self.scenario_description += "\nno feed/biofuel"
         assert not self.NONHUMAN_CONSUMPTION_SET
@@ -406,12 +406,10 @@ class Scenarios:
 
         constants_for_params["REDUCED_BREEDING_STRATEGY"] = True
         if constants_for_params["STORE_FOOD_BETWEEN_YEARS"]:
-            constants_for_params["DELAY"][
-                "FEED_SHUTOFF_MONTHS"
-            ] = constants_for_params["NMONTHS"]
-            constants_for_params["DELAY"][
-                "BIOFUEL_SHUTOFF_MONTHS"
-            ] = 2
+            constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = constants_for_params[
+                "NMONTHS"
+            ]
+            constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 2
         else:
             constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 11
             constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 11
@@ -430,9 +428,9 @@ class Scenarios:
 
         if constants_for_params["STORE_FOOD_BETWEEN_YEARS"]:
             constants_for_params["REDUCED_BREEDING_STRATEGY"] = False
-            constants_for_params["DELAY"][
-                "FEED_SHUTOFF_MONTHS"
-            ] = constants_for_params["NMONTHS"]
+            constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = constants_for_params[
+                "NMONTHS"
+            ]
             constants_for_params["DELAY"][
                 "BIOFUEL_SHUTOFF_MONTHS"
             ] = constants_for_params["NMONTHS"]
@@ -459,6 +457,16 @@ class Scenarios:
         assert not self.MEAT_STRATEGY_SET
 
         constants_for_params["USE_EFFICIENT_FEED_STRATEGY"] = True
+
+        self.MEAT_STRATEGY_SET = True
+        return constants_for_params
+
+    def set_feed_based_on_livestock_levels(self, constants_for_params):
+        # this function is not really necessary, but it keeps the pattern I guess
+        self.scenario_description += "\nfeed based on breeding patterns"
+        assert not self.MEAT_STRATEGY_SET
+
+        constants_for_params["USE_EFFICIENT_FEED_STRATEGY"] = np.nan  # undefined
 
         self.MEAT_STRATEGY_SET = True
         return constants_for_params
@@ -860,6 +868,9 @@ class Scenarios:
                 1 + country_data["grasses_reduction_year" + str(i)]
             )
 
+        print(constants_for_params["RATIO_GRASSES_YEAR1"])
+        print(constants_for_params["RATIO_GRASSES_YEAR10"])
+
         self.GRASSES_SET = True
         return constants_for_params
 
@@ -1174,11 +1185,18 @@ class Scenarios:
     def seaweed(self, constants_for_params):
         constants_for_params["ADD_SEAWEED"] = True
         constants_for_params["DELAY"]["SEAWEED_MONTHS"] = 1
-        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 10
+        if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
+            constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 30
+        else:
+            constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 10
 
         # percent (seaweed)
         # represents 10% daily growth, but is calculated on monthly basis
-        constants_for_params["SEAWEED_PRODUCTION_RATE"] = 100 * (1.1**30 - 1)
+
+        if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
+            constants_for_params["SEAWEED_PRODUCTION_RATE"] = 100 * (1.09**30 - 1)
+        else:
+            constants_for_params["SEAWEED_PRODUCTION_RATE"] = 100 * (1.1**30 - 1)
 
         return constants_for_params
 

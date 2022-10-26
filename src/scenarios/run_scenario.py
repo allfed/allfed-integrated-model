@@ -81,15 +81,13 @@ class ScenarioRunner:
         computes the parameters
         returns the resulting constants
         """
-        constants = {}
-        constants["inputs"] = constants_for_params
 
         constants_loader = Parameters()
 
         (
             single_valued_constants,
             multi_valued_constants,
-        ) = constants_loader.computeParameters(constants, scenarios_loader)
+        ) = constants_loader.computeParameters(constants_for_params, scenarios_loader)
 
         return (single_valued_constants, multi_valued_constants)
 
@@ -427,6 +425,10 @@ class ScenarioRunner:
                 scenario_loader.set_unchanged_proportions_feed_grazing(
                     constants_for_params
                 )
+            )
+        elif scenario_option["meat_strategy"] == "reduce_breeding_USA":
+            constants_for_params = scenario_loader.set_feed_based_on_livestock_levels(
+                constants_for_params
             )
         else:
             scenario_is_correct = False
