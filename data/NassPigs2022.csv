@@ -1,0 +1,10 @@
+﻿Variable,Qty
+TotalPigs,72619
+Under50,20045
+From50to119,15600.00
+From120to179,4150.00
+Over180,3750.00
+PigsPerLitter,11
+PigletsPerMonth,10624
+SlaughterPerMonth,10750
+pigGestation,4

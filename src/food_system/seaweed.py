@@ -29,8 +29,8 @@ class Seaweed:
         # 1000s of tons wet global (trading blocs multiply this by some fraction)
         INITIAL_SEAWEED_GLOBAL = 1
 
-        # 1000s of hectares global  (trading blocs multiply this by some fraction)
-        INITIAL_BUILT_SEAWEED_AREA_GLOBAL = 1
+        # 1000s of km^2 global  (trading blocs multiply this by some fraction)
+        INITIAL_BUILT_SEAWEED_AREA_GLOBAL = 0.1
 
         # Montgomery, W. L., & Gerking, S. D. (1980). Marine macroalgae as foods for
         # fishes: an evaluation of potential food quality. Environmental Biology of

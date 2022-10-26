@@ -43,7 +43,12 @@ class FeedAndBiofuels:
         self.SAFETY_MARGIN = 0.01
 
     def set_nonhuman_consumption_with_cap(
-        self, constants_for_params, outdoor_crops, stored_food
+        self,
+        constants_for_params,
+        outdoor_crops,
+        stored_food,
+        biofuels_before_cap_prewaste,
+        feed_before_cap_prewaste,
     ):
         """
         #NOTE: This function depends on get_excess being run first!
@@ -83,22 +88,6 @@ class FeedAndBiofuels:
         """
         # billion kcals per month
 
-        biofuel_duration = constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
-        biofuels_before_cap_prewaste = self.get_biofuel_usage_before_cap_prewaste(
-            biofuel_duration
-        )
-
-        # excess feed is just using human levels of fat and protein. May need to be
-        # altered to reflect more accurate usage.
-        excess_feed_prewaste = self.get_excess_food_usage_from_percents(
-            constants_for_params["EXCESS_FEED_PERCENT"]
-        )
-
-        feed_duration = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
-        feed_before_cap_prewaste = self.get_feed_usage_before_cap_prewaste(
-            feed_duration, excess_feed_prewaste
-        )
-
         waste_adjustment = 1 - outdoor_crops.CROP_WASTE / 100
         biofuels_before_cap = biofuels_before_cap_prewaste * waste_adjustment
         feed_before_cap = feed_before_cap_prewaste * waste_adjustment
@@ -120,11 +109,27 @@ class FeedAndBiofuels:
             excess_feed_prewaste,
         )
 
-        self.nonhuman_consumption = self.get_nonhuman_consumption_with_cap_postwaste(
-            constants_for_params, self.biofuels, self.feed
+        # self.nonhuman_consumption.set_to_zero_after_month(12)
+
+    def get_biofuels_and_feed_before_waste_from_delayed_shutoff(constants_for_params):
+
+        biofuel_duration = constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
+        biofuels_before_cap_prewaste = self.get_biofuel_usage_before_cap_prewaste(
+            biofuel_duration
         )
 
-        # self.nonhuman_consumption.set_to_zero_after_month(12)
+        # excess feed is just using human levels of fat and protein. May need to be
+        # altered to reflect more accurate usage.
+        excess_feed_prewaste = self.get_excess_food_usage_from_percents(
+            constants_for_params["EXCESS_FEED_PERCENT"]
+        )
+
+        feed_duration = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
+        feed_before_cap_prewaste = self.get_feed_usage_before_cap_prewaste(
+            feed_duration, excess_feed_prewaste
+        )
+
+        return (biofuels_before_cap_prewaste, feed_before_cap_prewaste)
 
     def set_biofuels_and_feed_usage_postwaste(
         self,
