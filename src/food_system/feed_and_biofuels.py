@@ -153,8 +153,8 @@ class FeedAndBiofuels:
             constants_for_params["EXCESS_FEED_PERCENT"]
         )
 
-        print("feed_over_time")
-        print(feed_over_time.values)
+        # print("feed_over_time")
+        # print(feed_over_time.values)
         # 4000 kcals per kg, 1000 kg per dry caloric tons, units currently billion kcals
         feed_over_time_dry_caloric_tons = feed_over_time.values * 1e9 / 4e6
 
@@ -173,10 +173,10 @@ class FeedAndBiofuels:
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
-        print("feed_before_cap_prewaste")
-        print(feed_before_cap_prewaste)
-        print("biofuels_before_cap_prewaste")
-        print(biofuels_before_cap_prewaste)
+        # print("feed_before_cap_prewaste")
+        # print(feed_before_cap_prewaste)
+        # print("biofuels_before_cap_prewaste")
+        # print(biofuels_before_cap_prewaste)
         return (
             biofuels_before_cap_prewaste,
             feed_before_cap_prewaste,

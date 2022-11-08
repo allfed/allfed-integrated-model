@@ -63,6 +63,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             show_map_figures=show_map_figures,
             add_map_slide_to_pptx=show_map_figures,
             scenario_option=this_simulation,
+            countries_list=["USA"],
         )
 
     def run_optimizer_for_country(

@@ -1185,18 +1185,12 @@ class Scenarios:
     def seaweed(self, constants_for_params):
         constants_for_params["ADD_SEAWEED"] = True
         constants_for_params["DELAY"]["SEAWEED_MONTHS"] = 1
-        if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
-            constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 30
-        else:
-            constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 10
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 30
 
         # percent (seaweed)
         # represents 10% daily growth, but is calculated on monthly basis
 
-        if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
-            constants_for_params["SEAWEED_PRODUCTION_RATE"] = 100 * (1.09**30 - 1)
-        else:
-            constants_for_params["SEAWEED_PRODUCTION_RATE"] = 100 * (1.1**30 - 1)
+        constants_for_params["SEAWEED_PRODUCTION_RATE"] = 100 * (1.09**30 - 1)
 
         return constants_for_params
 
@@ -1215,8 +1209,20 @@ class Scenarios:
         constants_for_params["ROTATION_IMPROVEMENTS"] = {}
         # this may seem confusing. KCALS_REDUCTION is the reduction that would otherwise
         # occur averaging in year 3 globally
+        if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
+            # it happens that in the US, the expected crop relocation improvement moves
+            # output from about 2% of baseline to about 44% of baseline.
+            # so, reduction_fraction^x=reduction_fraction*20
+            # given our reduction fraction of 0.004 (97.6%), we have
+            # x=0.46
 
-        constants_for_params["ROTATION_IMPROVEMENTS"]["POWER_LAW_IMPROVEMENT"] = 0.796
+            constants_for_params["ROTATION_IMPROVEMENTS"][
+                "POWER_LAW_IMPROVEMENT"
+            ] = 0.46
+        else:
+            constants_for_params["ROTATION_IMPROVEMENTS"][
+                "POWER_LAW_IMPROVEMENT"
+            ] = 0.796
         constants_for_params["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.647
         constants_for_params["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7 + 1

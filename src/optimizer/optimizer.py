@@ -23,147 +23,12 @@ class Optimizer:
             name="Least_Humans_Fed_Any_Month", lowBound=0
         )
 
-        print("")
-        print("")
-        print("")
-        print("")
-        print("single_valued_constants")
-        print(single_valued_constants)
         self.single_valued_constants = single_valued_constants
-        print("multi_valued_constants")
-        print(multi_valued_constants)
         self.multi_valued_constants = multi_valued_constants
 
         self.time_months = []
 
         NMONTHS = single_valued_constants["NMONTHS"]
-        self.multi_valued_constants["greenhouse_area"] = [1] * NMONTHS
-        import numpy as np
-
-        self.multi_valued_constants["greenhouse_kcals_per_ha"] = np.array(
-            [
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                5827,
-                5827,
-                5827,
-                5827,
-                5827,
-                11654,
-                11654,
-                11654,
-                11654,
-                11654,
-                17481,
-                17481,
-                17481,
-                17481,
-                17481,
-                23308,
-                23308,
-                23308,
-                23308,
-                23308,
-                29135,
-                29135,
-                29135,
-                29135,
-                29135,
-                34962,
-                34962,
-                34962,
-                34962,
-                34962,
-                40789,
-                40789,
-                40789,
-                40789,
-                40789,
-                46616,
-                46616,
-                46616,
-                46616,
-                46616,
-                52444,
-                52444,
-                52444,
-                52444,
-                52444,
-                58271,
-                58271,
-                58271,
-                58271,
-                58271,
-                64098,
-                64098,
-                64098,
-                64098,
-                64098,
-                69925,
-                69925,
-                69925,
-                69925,
-                68159,
-                69925,
-                69925,
-                69925,
-                69925,
-                68159,
-                69925,
-                69925,
-                69925,
-                69925,
-                68159,
-                69925,
-                69925,
-                69925,
-                69925,
-                68159,
-                69925,
-                69925,
-                69925,
-                69925,
-                68159,
-                69925,
-                69925,
-                69925,
-                69925,
-                68159,
-                69925,
-                69925,
-                69925,
-                69925,
-                68159,
-                69925,
-                69925,
-                69925,
-                69925,
-                68159,
-                69925,
-                69925,
-                69925,
-                69925,
-                68159,
-                69925,
-                69925,
-                69925,
-                69925,
-                68159,
-                69925,
-                69925,
-                69925,
-                69925,
-                68159,
-                69925,
-                69925,
-                69925,
-                69925,
-            ]
-        )
 
         variables["stored_food_start"] = [0] * NMONTHS
         variables["stored_food_end"] = [0] * NMONTHS
@@ -837,11 +702,6 @@ class Optimizer:
         variables["humans_fed_protein"][month] = LpVariable(
             name="Humans_Fed_Protein_" + str(month) + "_Variable", lowBound=0
         )
-
-        print("INITIAL_SEAWEED_FRACTION")
-        print(self.single_valued_constants["inputs"]["INITIAL_SEAWEED_FRACTION"])
-        print("MAX_SEAWEED_AS_PERCENT_KCALS")
-        print(self.single_valued_constants["inputs"]["MAX_SEAWEED_AS_PERCENT_KCALS"])
 
         if (
             self.single_valued_constants["ADD_SEAWEED"]

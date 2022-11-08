@@ -9,7 +9,7 @@ import sys
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 
 
-def run_USA_with_resilient():
+def run_USA_with_and_without_resilient():
     this_simulation = {}
 
     this_simulation["scale"] = "country"
@@ -19,7 +19,7 @@ def run_USA_with_resilient():
     this_simulation["crop_disruption"] = "country_nuclear_winter"
     this_simulation["fish"] = "nuclear_winter"
 
-    this_simulation["waste"] = "baseline_in_country"
+    this_simulation["waste"] = "zero"
     this_simulation["fat"] = "not_required"
     this_simulation["protein"] = "not_required"
     this_simulation["nutrition"] = "catastrophe"
@@ -51,10 +51,32 @@ def run_USA_with_resilient():
         # ],
     )
 
+    this_simulation["waste"] = "zero"
+    this_simulation["scenario"] = "no_resilient_foods"
+
+    scenario_runner.run_model_no_trade(
+        title="Resilient foods for US only",
+        create_pptx_with_all_countries=False,
+        show_country_figures=True,
+        show_map_figures=True,
+        add_map_slide_to_pptx=False,
+        scenario_option=this_simulation,
+        countries_list=["USA"],
+        #     "CHN",
+        #     "FRA",
+        #     "IND",
+        #     "ISR",
+        #     "PRK",
+        #     "PAK",
+        #     "RUS",
+        #     "F5707+GBR",
+        #     "USA",
+        # ],
+    )
+
 
 def main(args):
-    run_USA_with_resilient()
-    # run_USA_no_resilient()
+    run_USA_with_and_without_resilient()
 
 
 if __name__ == "__main__":

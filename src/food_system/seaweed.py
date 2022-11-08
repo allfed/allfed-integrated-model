@@ -138,6 +138,6 @@ class Seaweed:
 
         # reduce list to length of months of simulation
         built_area = built_area_long[: self.NMONTHS]
-        print("built_area")
-        print(built_area)
+        # print("built_area")
+        # print(built_area)
         return built_area

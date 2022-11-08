@@ -67,12 +67,12 @@ class Parameters:
         time_consts = {}
         constants_out = {}
 
-        print(constants_inputs)
+        # print(constants_inputs)
         print("")
         print("")
         print("")
         print("")
-        print(constants_inputs)
+        # print(constants_inputs)
         constants_out = self.init_scenario(constants_out, constants_inputs)
 
         # NUTRITION PER MONTH #
@@ -84,8 +84,8 @@ class Parameters:
         constants_out, built_area = self.set_seaweed_params(
             constants_out, constants_inputs
         )
-        print("constants_out[INITIAL_SEAWEED]")
-        print(constants_out["INITIAL_SEAWEED"])
+        # print("constants_out[INITIAL_SEAWEED]")
+        # print(constants_out["INITIAL_SEAWEED"])
         time_consts["built_area"] = built_area
 
         # FISH #
@@ -349,7 +349,6 @@ class Parameters:
         """
         Initialize the greenhouse parameters.
         """
-
         greenhouses = Greenhouses(constants_inputs)
 
         greenhouse_area = greenhouses.get_greenhouse_area(
@@ -357,7 +356,10 @@ class Parameters:
         )
         time_consts["greenhouse_area"] = greenhouse_area
 
-        if constants_inputs["INITIAL_CROP_AREA_FRACTION"] == 0:
+        if (
+            constants_inputs["INITIAL_CROP_AREA_FRACTION"] == 0
+            and not constants_inputs["REDUCED_BREEDING_STRATEGY"]
+        ):
             greenhouse_kcals_per_ha = np.zeros(constants_inputs["NMONTHS"])
             greenhouse_fat_per_ha = np.zeros(constants_inputs["NMONTHS"])
             greenhouse_protein_per_ha = np.zeros(constants_inputs["NMONTHS"])
@@ -368,7 +370,6 @@ class Parameters:
                 greenhouse_fat_per_ha,
                 greenhouse_protein_per_ha,
             ) = greenhouses.get_greenhouse_yield_per_ha(constants_inputs, outdoor_crops)
-
         # post-waste crops food produced
         outdoor_crops.set_crop_production_minus_greenhouse_area(
             constants_inputs, greenhouses.greenhouse_fraction_area
@@ -437,6 +438,14 @@ class Parameters:
             constants_inputs
         )
 
+        PLOT_FEED_BEFORE_WASTE = True
+
+        if PLOT_FEED_BEFORE_WASTE:
+
+            feed_before_cap_prewaste.in_units_percent_fed().plot(
+                "feed_before_cap_prewaste using baseline"
+            )
+
         feed_and_biofuels.set_nonhuman_consumption_with_cap(
             constants_inputs,
             outdoor_crops,
@@ -478,26 +487,37 @@ class Parameters:
         reduced and slaughter only increased slightly, then using that we calculate the
         feed they would use given the expected input animal populations over time.
         """
+        feed_and_biofuels = FeedAndBiofuels(constants_inputs)
+        coa = CalculateAnimalOutputs()
+        # TODO: parametrize these constants in the scenarios so they can be adjusted
+        # without messing with the code
+        # really what we need is an API...
         # important_results = result[["Month","Combined Feed","Beef
         # Slaughtered","Pig Slaughtered","Poultry Slaughtered","Dairy Pop"]]
-        coa = CalculateAnimalOutputs()
-
-        feed_dairy_meat_results = coa.calculate_feed_and_animals(
-            reduction_in_beef_calves=100,
-            reduction_in_dairy_calves=100,
-            reduction_in_pig_breeding=100,
-            reduction_in_poultry_breeding=100,
-            increase_in_slaughter=20,
-            months=constants_inputs["NMONTHS"],
-            discount_rate=0,
-            mother_slaughter=0,
-            use_grass_and_residues_for_dairy=True,
+        feed_per_month_baseline = (
+            feed_and_biofuels.feed_per_year_prewaste.kcals / 12 * 4e6 / 1e9
         )
-        # import matplotlib.pyplot as plt
+        if constants_inputs["OG_USE_BETTER_ROTATION"]:
+            reduction_in_dairy_calves = 0
+            use_grass_and_residues_for_dairy = True
+        else:
+            reduction_in_dairy_calves = 100
+            use_grass_and_residues_for_dairy = False
 
-        # plt.figure()
-        # plt.plot(feed_dairy_meat_results["Combined Feed"])
-        # plt.show()
+        feed_dairy_meat_results = (
+            coa.calculate_feed_and_animals_using_baseline_feed_usage(
+                reduction_in_beef_calves=90,
+                reduction_in_dairy_calves=reduction_in_dairy_calves,
+                reduction_in_pig_breeding=90,
+                reduction_in_poultry_breeding=90,
+                change_to_baseline_slaughter=110,
+                months=constants_inputs["NMONTHS"],
+                discount_rate=30,
+                mother_slaughter=0,
+                use_grass_and_residues_for_dairy=use_grass_and_residues_for_dairy,
+                baseline_kcals_per_month_feed=feed_per_month_baseline,
+            )
+        )
 
         # MEAT AND DAIRY from breeding reduction strategy
 
@@ -522,8 +542,22 @@ class Parameters:
 
         # https://www.nass.usda.gov/Charts_and_Maps/Milk_Production_and_Milk_Cows/cowrates.php
         monthly_milk_tons = (
-            feed_dairy_meat_results["Dairy Pop"] * 24265 / 2.2046 / 365 * 30.4 / 1000
+            feed_dairy_meat_results["Dairy Pop"]
+            * 24265
+            / 2.2046
+            / 365
+            * 30.4
+            / 1000
+            / 2
         )
+        # cows * pounds per cow per day * punds_to_kg /days in year * days in month / kg_in_tons * ratio_milk_producing_cows
+        PRINT_ANNUAL_POUNDS_MILK = False
+        if PRINT_ANNUAL_POUNDS_MILK:
+            print("annual pounds milk")  # ton to kg, kg to pounds, monthly to annual
+            print(
+                monthly_milk_tons * 1000 * 2.2046 * 12
+            )  # ton to kg, kg to pounds, monthly to annual
+
         (
             grazing_milk_kcals,
             grazing_milk_fat,
@@ -568,8 +602,6 @@ class Parameters:
 
         # FEED AND BIOFUELS from breeding reduction strategy
 
-        feed_and_biofuels = FeedAndBiofuels(constants_inputs)
-
         (
             biofuels_before_cap_prewaste,
             feed_before_cap_prewaste,
@@ -578,6 +610,13 @@ class Parameters:
             constants_inputs,
             feed_dairy_meat_results["Combined Feed"],
         )
+
+        PLOT_FEED_BEFORE_WASTE = True
+
+        if PLOT_FEED_BEFORE_WASTE:
+            feed_before_cap_prewaste.in_units_percent_fed().plot(
+                "feed_before_cap_prewaste"
+            )
 
         # make sure nonhuman consumption is always less than or equal
         # to outdoor crops+stored food for all nutrients, pre-waste

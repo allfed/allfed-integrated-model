@@ -1649,7 +1649,7 @@ class Plotter:
         plt.tight_layout()
         fig.suptitle(title)
 
-        saveloc = Path(repo_root) / "results" / "large_reports" / "" + title + ".png"
+        saveloc = Path(repo_root) / "results" / "large_reports" / (title + ".png")
 
         plt.savefig(
             saveloc,

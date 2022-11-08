@@ -279,18 +279,21 @@ class OutdoorCrops(Food):
             if baseline_reduction <= 0:
                 baseline_reduction = round(baseline_reduction, 8)
 
-            # assert baseline_reduction >= 0  # 8 decimal places rounding
+            assert baseline_reduction >= 0  # 8 decimal places rounding
 
-            if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
-                self.KCALS_GROWN.append(month_kcals * baseline_reduction * 10)
+            # if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
+            #     # includes improvements from crop relocation
+            #     self.KCALS_GROWN.append(month_kcals * baseline_reduction)
+            #     # does not include improvements from crop relocation
+            #     self.NO_ROT_KCALS_GROWN.append(month_kcals * baseline_reduction)
+            # else:
+
+            if baseline_reduction > 1:
+                self.KCALS_GROWN.append(month_kcals * baseline_reduction)
             else:
-
-                if baseline_reduction > 1:
-                    self.KCALS_GROWN.append(month_kcals * baseline_reduction)
-                else:
-                    self.KCALS_GROWN.append(
-                        month_kcals * baseline_reduction**self.OG_KCAL_EXPONENT
-                    )
+                self.KCALS_GROWN.append(
+                    month_kcals * baseline_reduction**self.OG_KCAL_EXPONENT
+                )
 
             self.NO_ROT_KCALS_GROWN.append(month_kcals * baseline_reduction)
 
@@ -306,7 +309,7 @@ class OutdoorCrops(Food):
         if self.ADD_OUTDOOR_GROWING:
 
             if constants_for_params["OG_USE_BETTER_ROTATION"]:
-
+                print("Better!")
                 crops_produced = np.array([0] * self.NMONTHS)
 
                 hd = (
@@ -346,3 +349,24 @@ class OutdoorCrops(Food):
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
+
+        import matplotlib.pyplot as plt
+        import pandas as pd
+
+        outdoor_growing_dict = {
+            "outdoor_growing": np.array(
+                np.array(self.KCALS_GROWN) * 1e9 / (340e6 * 2100 * 365 / 12) * 2100
+            ),
+        }
+
+        df = pd.DataFrame(outdoor_growing_dict)
+
+        # saving the dataframe
+        # df.to_csv("ykcals" + self.constants["scenario_name"] + ".csv")
+        df.to_csv("ykcals.csv")
+        plt.figure()
+        plt.plot(self.kcals * 1e9 / (340e6 * 2100 * 365 / 12))
+        plt.title(
+            "CROP PRODUCTION MINUS GREENHOUSE AREA, people fed multiples of US population"
+        )
+        plt.show()
