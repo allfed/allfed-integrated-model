@@ -1,4 +1,17 @@
 #!/bin/bash
+# @Author Morgan Rivers
+# @Date 2022-10-25
+#
+# Runs a suite of scenarios involved with no food trade globally.
+#
+# "single" python runs under a single set of assumptions about adaptation (there is
+# a default set of assumptions used in the src/scenarios/run_model_defaults_no_trade.py 
+# run_model_defaults_no_trade function).
+#
+# "multi" runs over the complete combination of all scenario options defined in the 
+# src/scenarios/run_model_defaults_no_trade.py,
+# create_several_maps_with_different_assumptions function.
+
 cd ../src/scenarios
 
 # create a plot for each country with a single set of assumptions
