@@ -153,7 +153,7 @@ def main(RECALCULATE_PLOTS=True):
             Path(repo_root) / "results" / "large_reports" / "results2.npy",
             allow_pickle=True,
         ).item()
-    Plotter.plot_fig_2abcde_updated(results, xlim=72)
+    Plotter.plot_fig_2abcde_updated(results, xlim=120)
 
 
 if __name__ == "__main__":

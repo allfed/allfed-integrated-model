@@ -168,14 +168,9 @@ class OutdoorCrops(Food):
         RATIO_KCALS_POSTDISASTER_5Y = constants_for_params["RATIO_CROPS_YEAR5"]
         RATIO_KCALS_POSTDISASTER_6Y = constants_for_params["RATIO_CROPS_YEAR6"]
         RATIO_KCALS_POSTDISASTER_7Y = constants_for_params["RATIO_CROPS_YEAR7"]
-        # RATIO_KCALS_POSTDISASTER_8Y = 1 - constants_for_params["DISRUPTION_CROPS_YEAR8"]
-        # RATIO_KCALS_POSTDISASTER_9Y = 1 - constants_for_params["DISRUPTION_CROPS_YEAR9"]
-        # RATIO_KCALS_POSTDISASTER_10Y = (
-        #     1 - constants_for_params["DISRUPTION_CROPS_YEAR10"]
-        # )
-        # RATIO_KCALS_POSTDISASTER_11Y = (
-        #     1 - constants_for_params["DISRUPTION_CROPS_YEAR11"]
-        # )
+        RATIO_KCALS_POSTDISASTER_8Y = constants_for_params["RATIO_CROPS_YEAR8"]
+        RATIO_KCALS_POSTDISASTER_9Y = constants_for_params["RATIO_CROPS_YEAR9"]
+        RATIO_KCALS_POSTDISASTER_10Y = constants_for_params["RATIO_CROPS_YEAR10"]
 
         # we want to start at 1, then end up at the month reduction appropriate for
         # the month before the next 12 month cycle. That means there are 13 total
@@ -201,6 +196,15 @@ class OutdoorCrops(Food):
         y7_to_y8 = np.linspace(
             RATIO_KCALS_POSTDISASTER_6Y, RATIO_KCALS_POSTDISASTER_7Y, 13
         )[:-1]
+        y8_to_y9 = np.linspace(
+            RATIO_KCALS_POSTDISASTER_7Y, RATIO_KCALS_POSTDISASTER_8Y, 13
+        )[:-1]
+        y9_to_y10 = np.linspace(
+            RATIO_KCALS_POSTDISASTER_8Y, RATIO_KCALS_POSTDISASTER_9Y, 13
+        )[:-1]
+        y10_to_y11 = np.linspace(
+            RATIO_KCALS_POSTDISASTER_9Y, RATIO_KCALS_POSTDISASTER_10Y, 13
+        )[:-1]
 
         # this just appends all the reduction lists together
         # this starts on the month of interest (not necessarily january; probably may)
@@ -212,10 +216,13 @@ class OutdoorCrops(Food):
             + list(y5_to_y6)
             + list(y6_to_y7)
             + list(y7_to_y8)
+            + list(y8_to_y9)
+            + list(y9_to_y10)
+            + list(y10_to_y11)
         )
 
         # 7 years of reductions should be 12*7 months.
-        assert len(self.all_months_reductions) == 12 * 7
+        assert len(self.all_months_reductions) == self.NMONTHS
 
         PLOT_NO_SEASONALITY = False
         if PLOT_NO_SEASONALITY:
@@ -243,7 +250,7 @@ class OutdoorCrops(Food):
             + month_cycle_starting_january[0:month_index]
         )
 
-        self.assign_reduction_from_climate_impact()
+        self.assign_reduction_from_climate_impact(constants_for_params)
 
         PLOT_WITH_SEASONALITY = False
         if PLOT_WITH_SEASONALITY:
@@ -257,7 +264,7 @@ class OutdoorCrops(Food):
             # Plotter.plot_monthly_reductions_seasonally(ratios)
             Plotter.plot_monthly_reductions_seasonally(ratios)
 
-    def assign_reduction_from_climate_impact(self):
+    def assign_reduction_from_climate_impact(self, constants_for_params):
         self.KCALS_GROWN = []
         self.NO_ROT_KCALS_GROWN = []
 
@@ -265,14 +272,21 @@ class OutdoorCrops(Food):
             cycle_index = i % 12
             month_kcals = self.months_cycle[cycle_index]
             baseline_reduction = self.all_months_reductions[i]
-
-            assert round(baseline_reduction, 8) >= 0  # 8 decimal places rounding
+            # print(baseline_reduction)
+            # assert round(baseline_reduction, 8) >= 0  # 8 decimal places rounding
 
             # if there's some very small negative value here, just round it off to zero
             if baseline_reduction <= 0:
                 baseline_reduction = round(baseline_reduction, 8)
 
             assert baseline_reduction >= 0  # 8 decimal places rounding
+
+            # if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
+            #     # includes improvements from crop relocation
+            #     self.KCALS_GROWN.append(month_kcals * baseline_reduction)
+            #     # does not include improvements from crop relocation
+            #     self.NO_ROT_KCALS_GROWN.append(month_kcals * baseline_reduction)
+            # else:
 
             if baseline_reduction > 1:
                 self.KCALS_GROWN.append(month_kcals * baseline_reduction)
@@ -295,7 +309,7 @@ class OutdoorCrops(Food):
         if self.ADD_OUTDOOR_GROWING:
 
             if constants_for_params["OG_USE_BETTER_ROTATION"]:
-
+                print("Better!")
                 crops_produced = np.array([0] * self.NMONTHS)
 
                 hd = (
@@ -335,3 +349,24 @@ class OutdoorCrops(Food):
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
+
+        import matplotlib.pyplot as plt
+        import pandas as pd
+
+        outdoor_growing_dict = {
+            "outdoor_growing": np.array(
+                np.array(self.KCALS_GROWN) * 1e9 / (340e6 * 2100 * 365 / 12) * 2100
+            ),
+        }
+
+        df = pd.DataFrame(outdoor_growing_dict)
+
+        # saving the dataframe
+        # df.to_csv("ykcals" + self.constants["scenario_name"] + ".csv")
+        df.to_csv("ykcals.csv")
+        plt.figure()
+        plt.plot(self.kcals * 1e9 / (340e6 * 2100 * 365 / 12))
+        plt.title(
+            "CROP PRODUCTION MINUS GREENHOUSE AREA, people fed multiples of US population"
+        )
+        plt.show()

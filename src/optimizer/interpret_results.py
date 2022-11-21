@@ -12,6 +12,7 @@ Created on Tue Jul 19
 """
 import numpy as np
 from src.food_system.food import Food
+import pandas as pd
 
 
 class Interpreter:
@@ -58,6 +59,37 @@ class Interpreter:
 
         self.include_fat = Food.conversions.include_fat
         self.include_protein = Food.conversions.include_protein
+
+        CREATE_CSV_OUTPUT = True
+        if CREATE_CSV_OUTPUT:
+            dict = {
+                "fish": np.array(self.fish_kcals_equivalent.kcals),
+                "cell_sugar": np.array(self.cell_sugar_kcals_equivalent.kcals),
+                "scp": np.array(self.scp_kcals_equivalent.kcals),
+                "greenhouse": np.array(self.greenhouse_kcals_equivalent.kcals),
+                "seaweed": np.array(self.seaweed_kcals_equivalent.kcals),
+                "milk": np.array(self.grazing_milk_kcals_equivalent.kcals)
+                + np.array(self.grain_fed_milk_kcals_equivalent.kcals),
+                "meat": np.array(
+                    self.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
+                )
+                + np.array(self.grain_fed_meat_kcals_equivalent.kcals),
+                "immediate_outdoor_crops_to_humans": np.array(
+                    self.immediate_outdoor_crops_to_humans_kcals_equivalent.kcals
+                ),
+                "new_stored_outdoor_crops_to_humans": np.array(
+                    self.new_stored_outdoor_crops_to_humans_kcals_equivalent.kcals
+                ),
+                "stored_food": np.array(
+                    self.stored_food_to_humans_kcals_equivalent.kcals
+                ),
+            }
+
+            df = pd.DataFrame(dict)
+
+            # saving the dataframe
+            # df.to_csv("ykcals" + self.constants["scenario_name"] + ".csv")
+            df.to_csv("ykcals.csv")
 
         return self
 

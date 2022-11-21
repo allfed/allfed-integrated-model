@@ -76,7 +76,7 @@ def get_overall_reduction(country_data, country_id, crop_macros):
     also separately assigns the grass reduction appropriately
     """
 
-    years = [1, 2, 3, 4, 5]  # 5 years of data exist
+    years = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  # 10 years of data exist
     yearly_reductions = {}  # average yearly reduction for crop production
 
     crop_ratios = get_crop_ratios_this_country(country_id, crop_macros)
@@ -112,11 +112,21 @@ def calculate_reductions(country_data, country_id, crop_macros):
         float(yearly_reductions["crop_reduction_year3"]),
         float(yearly_reductions["crop_reduction_year4"]),
         float(yearly_reductions["crop_reduction_year5"]),
+        float(yearly_reductions["crop_reduction_year6"]),
+        float(yearly_reductions["crop_reduction_year7"]),
+        float(yearly_reductions["crop_reduction_year8"]),
+        float(yearly_reductions["crop_reduction_year9"]),
+        float(yearly_reductions["crop_reduction_year10"]),
         float(yearly_reductions["grasses_reduction_year1"]),
         float(yearly_reductions["grasses_reduction_year2"]),
         float(yearly_reductions["grasses_reduction_year3"]),
         float(yearly_reductions["grasses_reduction_year4"]),
         float(yearly_reductions["grasses_reduction_year5"]),
+        float(yearly_reductions["grasses_reduction_year6"]),
+        float(yearly_reductions["grasses_reduction_year7"]),
+        float(yearly_reductions["grasses_reduction_year8"]),
+        float(yearly_reductions["grasses_reduction_year9"]),
+        float(yearly_reductions["grasses_reduction_year10"]),
     ]
 
     return reductions
@@ -129,7 +139,7 @@ def clean_up_nw_csv(nw_csv, nw_csv_cols):
         columns=nw_csv_cols,
     )
 
-    for i in range(1, 6):
+    for i in range(1, 11):
         nw_csv["crop_reduction_year" + str(i)] = nw_csv[
             "crop_reduction_year" + str(i)
         ].astype(float)
@@ -250,26 +260,51 @@ def main():
         "corn_year3",
         "corn_year4",
         "corn_year5",
+        "corn_year6",
+        "corn_year7",
+        "corn_year8",
+        "corn_year9",
+        "corn_year10",
         "rice_year1",
         "rice_year2",
         "rice_year3",
         "rice_year4",
         "rice_year5",
+        "rice_year6",
+        "rice_year7",
+        "rice_year8",
+        "rice_year9",
+        "rice_year10",
         "soy_year1",
         "soy_year2",
         "soy_year3",
         "soy_year4",
         "soy_year5",
+        "soy_year6",
+        "soy_year7",
+        "soy_year8",
+        "soy_year9",
+        "soy_year10",
         "spring_wheat_year1",
         "spring_wheat_year2",
         "spring_wheat_year3",
         "spring_wheat_year4",
         "spring_wheat_year5",
+        "spring_wheat_year6",
+        "spring_wheat_year7",
+        "spring_wheat_year8",
+        "spring_wheat_year9",
+        "spring_wheat_year10",
         "grasses_year1",
         "grasses_year2",
         "grasses_year3",
         "grasses_year4",
         "grasses_year5",
+        "grasses_year6",
+        "grasses_year7",
+        "grasses_year8",
+        "grasses_year9",
+        "grasses_year10",
     ]
 
     nw_csv_cols = [
@@ -280,11 +315,21 @@ def main():
         "crop_reduction_year3",
         "crop_reduction_year4",
         "crop_reduction_year5",
+        "crop_reduction_year6",
+        "crop_reduction_year7",
+        "crop_reduction_year8",
+        "crop_reduction_year9",
+        "crop_reduction_year10",
         "grasses_reduction_year1",
         "grasses_reduction_year2",
         "grasses_reduction_year3",
         "grasses_reduction_year4",
         "grasses_reduction_year5",
+        "grasses_reduction_year6",
+        "grasses_reduction_year7",
+        "grasses_reduction_year8",
+        "grasses_reduction_year9",
+        "grasses_reduction_year10",
     ]
 
     input_table = ImportUtilities.import_csv(NW_CSV, col_names, iso3_col_name)

@@ -13,7 +13,7 @@ def main(args):
     this_simulation = {}
 
     this_simulation["scale"] = "country"
-    this_simulation["seasonality"] = "country"
+    this_simulation["seasonality"] = "no_seasonality"
     this_simulation["grasses"] = "baseline"
     this_simulation["crop_disruption"] = "zero"
     this_simulation["scenario"] = "no_resilient_foods"

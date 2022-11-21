@@ -714,7 +714,7 @@ class Plotter:
                 ax, legend, pal = Plotter.helper_for_plotting_fig_2abcde(
                     ax,
                     interpreter,
-                    72,
+                    xlim,
                     "Needs met: " + str(people_fed) + "%",
                     add_ylabel,
                     add_xlabel,
@@ -1435,24 +1435,19 @@ class Plotter:
 
             plt.xlabel("Months since May")
 
-        fig.set_figheight(12)
-        fig.set_figwidth(8)
-        plt.tight_layout()
-        if not showplot:
-            saveloc = Path(repo_root) / "results" / "fig_s1abcd.png"
-            crs.mp.insert_slide(
-                title_below=save_title_string,
-                description="plot of all foods added up",
-                figure_save_loc=saveloc,
-            )
-            plt.savefig(
-                saveloc,
-                dpi=300,
-            )
-            plt.close()
-        else:
-            print("saved figure s1abcd")
-            plt.show()
+        fig.set_figheight(8)
+        fig.set_figwidth(10)
+        plt.tight_layout(w_pad=1, h_pad=1)
+        # if not showplot:
+        saveloc = Path(repo_root) / "results" / "fig_s1abcd.png"
+        plt.savefig(
+            saveloc,
+            dpi=300,
+        )
+        plt.close()
+        print("saved figure s1abcd")
+        # else:
+        plt.show()
 
     def getylim_nutrients(interpreter, xlim):
         kcals = interpreter.kcals_fed
@@ -1654,7 +1649,7 @@ class Plotter:
         plt.tight_layout()
         fig.suptitle(title)
 
-        saveloc = Path(repo_root) / "results" / "large_reports" / "" + title + ".png"
+        saveloc = Path(repo_root) / "results" / "large_reports" / (title + ".png")
 
         plt.savefig(
             saveloc,

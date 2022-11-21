@@ -43,7 +43,13 @@ class FeedAndBiofuels:
         self.SAFETY_MARGIN = 0.01
 
     def set_nonhuman_consumption_with_cap(
-        self, constants_for_params, outdoor_crops, stored_food
+        self,
+        constants_for_params,
+        outdoor_crops,
+        stored_food,
+        biofuels_before_cap_prewaste,
+        feed_before_cap_prewaste,
+        excess_feed_prewaste,
     ):
         """
         #NOTE: This function depends on get_excess being run first!
@@ -83,22 +89,6 @@ class FeedAndBiofuels:
         """
         # billion kcals per month
 
-        biofuel_duration = constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
-        biofuels_before_cap_prewaste = self.get_biofuel_usage_before_cap_prewaste(
-            biofuel_duration
-        )
-
-        # excess feed is just using human levels of fat and protein. May need to be
-        # altered to reflect more accurate usage.
-        excess_feed_prewaste = self.get_excess_food_usage_from_percents(
-            constants_for_params["EXCESS_FEED_PERCENT"]
-        )
-
-        feed_duration = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
-        feed_before_cap_prewaste = self.get_feed_usage_before_cap_prewaste(
-            feed_duration, excess_feed_prewaste
-        )
-
         waste_adjustment = 1 - outdoor_crops.CROP_WASTE / 100
         biofuels_before_cap = biofuels_before_cap_prewaste * waste_adjustment
         feed_before_cap = feed_before_cap_prewaste * waste_adjustment
@@ -120,11 +110,78 @@ class FeedAndBiofuels:
             excess_feed_prewaste,
         )
 
-        self.nonhuman_consumption = self.get_nonhuman_consumption_with_cap_postwaste(
-            constants_for_params, self.biofuels, self.feed
+        # self.nonhuman_consumption.set_to_zero_after_month(12)
+
+    def get_biofuels_and_feed_before_waste_from_delayed_shutoff(
+        self, constants_for_params
+    ):
+
+        biofuel_duration = constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
+        biofuels_before_cap_prewaste = self.get_biofuel_usage_before_cap_prewaste(
+            biofuel_duration
         )
 
-        # self.nonhuman_consumption.set_to_zero_after_month(12)
+        # excess feed is just using human levels of fat and protein. May need to be
+        # altered to reflect more accurate usage.
+        excess_feed_prewaste = self.get_excess_food_usage_from_percents(
+            constants_for_params["EXCESS_FEED_PERCENT"]
+        )
+
+        feed_duration = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
+        feed_before_cap_prewaste = self.get_feed_usage_before_cap_prewaste(
+            feed_duration, excess_feed_prewaste
+        )
+
+        return (
+            biofuels_before_cap_prewaste,
+            feed_before_cap_prewaste,
+            excess_feed_prewaste,
+        )
+
+    def get_biofuels_and_feed_before_waste_from_animal_populations(
+        self, constants_for_params, feed_over_time
+    ):
+
+        biofuel_duration = constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
+        biofuels_before_cap_prewaste = self.get_biofuel_usage_before_cap_prewaste(
+            biofuel_duration
+        )
+
+        # excess feed is just using human levels of fat and protein. May need to be
+        # altered to reflect more accurate usage.
+        excess_feed_prewaste = self.get_excess_food_usage_from_percents(
+            constants_for_params["EXCESS_FEED_PERCENT"]
+        )
+
+        # print("feed_over_time")
+        # print(feed_over_time.values)
+        # 4000 kcals per kg, 1000 kg per dry caloric tons, units currently billion kcals
+        feed_over_time_dry_caloric_tons = feed_over_time.values * 1e9 / 4e6
+
+        feed_before_cap_prewaste = Food(
+            # billion kcals per month
+            kcals=feed_over_time.values,
+            # tons annually to thousand tons per month
+            fat=feed_over_time_dry_caloric_tons
+            * constants_for_params["FEED_FAT"]
+            / constants_for_params["FEED_KCALS"],
+            # tons annually to thousand tons per month
+            protein=feed_over_time_dry_caloric_tons
+            * constants_for_params["FEED_PROTEIN"]
+            / constants_for_params["FEED_KCALS"],
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
+        )
+        # print("feed_before_cap_prewaste")
+        # print(feed_before_cap_prewaste)
+        # print("biofuels_before_cap_prewaste")
+        # print(biofuels_before_cap_prewaste)
+        return (
+            biofuels_before_cap_prewaste,
+            feed_before_cap_prewaste,
+            excess_feed_prewaste,
+        )
 
     def set_biofuels_and_feed_usage_postwaste(
         self,
