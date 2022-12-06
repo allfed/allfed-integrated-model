@@ -1,9 +1,10 @@
 """
-################################Optimizer Model################################
-##                                                                            #
-##                merge all the csv files together to a computer readable     #
-##                                                                            #
-###############################################################################
+Created on Tues Oct 25 2022
+@author: Morgan Rivers
+
+Merge all the csv files together to a computer readable file.
+The output is saved in data/no_food_trade/computer_readable_file.py.
+
 """
 
 

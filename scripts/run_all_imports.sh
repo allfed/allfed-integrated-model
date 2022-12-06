@@ -1,3 +1,15 @@
+
+#!/bin/bash
+
+#@author Morgan Rivers
+#@date 10-25-22
+
+# This script creates all the imported .csv files in the 
+# data/no_food_trade/processed_data folder
+
+
+
+
 cd ../src/import_scripts_no_food_trade
 python create_aquaculture_csv.py
 python create_grasses_baseline_csv.py
