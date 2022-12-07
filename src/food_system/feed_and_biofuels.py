@@ -138,7 +138,7 @@ class FeedAndBiofuels:
             excess_feed_prewaste,
         )
 
-    def get_biofuels_and_feed_before_waste_from_animal_populations(
+    def get_biofuels_and_feed_before_waste_from_animal_pops(
         self, constants_for_params, feed_over_time
     ):
 

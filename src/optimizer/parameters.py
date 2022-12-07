@@ -51,7 +51,7 @@ class Parameters:
         ):
             assert (
                 constants_inputs["ADD_MAINTAINED_MEAT"] is True
-            ), "Maintained meat needs to be added for continued feed usage to make sense"
+            ), "Maintained meat needs to be added for continued feed usage"
 
         assert self.FIRST_TIME_RUN
         self.FIRST_TIME_RUN = False
@@ -550,7 +550,8 @@ class Parameters:
             / 1000
             / 2
         )
-        # cows * pounds per cow per day * punds_to_kg /days in year * days in month / kg_in_tons * ratio_milk_producing_cows
+        # cows * pounds per cow per day * punds_to_kg /days in year * days in month /
+        # kg_in_tons * ratio_milk_producing_cows
         PRINT_ANNUAL_POUNDS_MILK = False
         if PRINT_ANNUAL_POUNDS_MILK:
             print("annual pounds milk")  # ton to kg, kg to pounds, monthly to annual
@@ -606,7 +607,7 @@ class Parameters:
             biofuels_before_cap_prewaste,
             feed_before_cap_prewaste,
             excess_feed_prewaste,
-        ) = feed_and_biofuels.get_biofuels_and_feed_before_waste_from_animal_populations(
+        ) = feed_and_biofuels.get_biofuels_and_feed_before_waste_from_animal_pops(
             constants_inputs,
             feed_dairy_meat_results["Combined Feed"],
         )
@@ -737,16 +738,20 @@ class Parameters:
     ):
 
         # APPLY FEED+BIOFUEL WASTE here
-        # this is because the total contributed by feed and biofuels is actually applied to
-        # the crops and stored food before waste, which means the subtraction of waste happens
+        # this is because the total contributed by feed and biofuels is actually
+        # applied to
+        # the crops and stored food before waste, which means the subtraction of waste
+        # happens
         # to the feed and biofuels before subtracting from stored food and crops.
-        # any reasonable cap of production should reflect a cap on the actual amount available
+        # any reasonable cap of production should reflect a cap on the actual amount
+        # available
         # to humans.
 
         # "grain" in all cases just means the stored food + outdoor crop production
         # that is human edible and used for feed
         # this calculation is pre-waste for meat and feed
-        # Chicken and pork only ever use "grain" as defined above in this model, not grasses
+        # Chicken and pork only ever use "grain" as defined above in this model, not
+        # grasses
 
         if constants_inputs["USE_EFFICIENT_FEED_STRATEGY"]:
             meat_and_dairy.calculate_meat_and_dairy_from_grain(

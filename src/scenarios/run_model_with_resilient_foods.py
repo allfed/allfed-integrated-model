@@ -94,38 +94,38 @@ def run_model_with_resilient_foods(plot_figures=True):
 
     n = 0
     print("Calculating 2100 calorie diet, excess feed to animals")
-    # while True:
+    while True:
 
-    #     scenario_runner = ScenarioRunner()
-    #     results = scenario_runner.run_and_analyze_scenario(
-    #         constants_for_params, scenarios_loader
-    #     )
-    #     print("percent_fed")
-    #     print(percent_fed)
+        scenario_runner = ScenarioRunner()
+        results = scenario_runner.run_and_analyze_scenario(
+            constants_for_params, scenarios_loader
+        )
+        print("percent_fed")
+        print(percent_fed)
 
-    #     if percent_fed > 99.8 and percent_fed < 100.2:
-    #         break
+        if percent_fed > 99.8 and percent_fed < 100.2:
+            break
 
-    #     assert feed_delay >= constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
+        assert feed_delay >= constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
 
-    #     scenarios_loader, constants_for_params = set_common_resilient_properties()
+        scenarios_loader, constants_for_params = set_common_resilient_properties()
 
-    #     constants_for_params = scenarios_loader.set_global_waste_to_doubled_prices(
-    #         constants_for_params
-    #     )
-    #     constants_for_params = scenarios_loader.set_short_delayed_shutoff(
-    #         constants_for_params
-    #     )
+        constants_for_params = scenarios_loader.set_global_waste_to_doubled_prices(
+            constants_for_params
+        )
+        constants_for_params = scenarios_loader.set_short_delayed_shutoff(
+            constants_for_params
+        )
 
-    #     excess_per_month = results.get_increased_excess_to_feed(feed_delay, percent_fed)
+        excess_per_month = results.get_increased_excess_to_feed(feed_delay, percent_fed)
 
-    #     constants_for_params = scenarios_loader.set_excess(
-    #         constants_for_params, excess_per_month
-    #     )
+        constants_for_params = scenarios_loader.set_excess(
+            constants_for_params, excess_per_month
+        )
 
-    #     percent_fed = results.percent_people_fed
+        percent_fed = results.percent_people_fed
 
-    #     n = n + 1
+        n = n + 1
 
     results2 = results
 

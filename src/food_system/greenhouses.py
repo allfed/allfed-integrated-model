@@ -13,7 +13,9 @@ class Greenhouses:
     def __init__(self, constants_for_params):
         # 500 million hectares in tropics (for outdoor crops 2020)
         if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
-            # determined from https://downloads.usda.library.cornell.edu/usda-esmis/files/j098zb09z/0z70b374s/w9506686w/acrg0622.pdf and calculate_total_yields.py in github.com/allfed/minkowski
+            # determined from https://downloads.usda.library.cornell.edu/
+            # usda-esmis/files/j098zb09z/0z70b374s/w9506686w/acrg0622.pdf
+            # and calculate_total_yields.py in github.com/allfed/minkowski
             # (This is for the plantable southern US in 150 tg unclear winter)
             self.TOTAL_CROP_AREA = 35252202.9
         else:

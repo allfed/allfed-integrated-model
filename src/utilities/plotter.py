@@ -1285,8 +1285,6 @@ class Plotter:
 
     @classmethod
     def plot_fig_s1abcd(crs, interpreter1, interpreter2, xlim, showplot=False):
-
-        save_title_string = "Baseline 2020"
         legend = Plotter.get_people_fed_legend(interpreter1, False)
         fig = plt.figure()
         pal = [

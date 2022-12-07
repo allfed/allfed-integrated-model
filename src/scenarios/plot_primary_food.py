@@ -4,9 +4,10 @@
 
 mari was here >:p
 
-Loads in data from data/resilient_food_primary_results.npy and 
-data/no_resilient_food_primary_results.npy previously generated files, created by 
-running run_model_no_resilient_foods.py and run_model_with_resilient_foods.py. These are the resilient and non-resilient food "primary" production results. Finally, 
+Loads in data from data/resilient_food_primary_results.npy and
+data/no_resilient_food_primary_results.npy previously generated files, created by
+running run_model_no_resilient_foods.py and run_model_with_resilient_foods.py.
+These are the resilient and non-resilient food "primary" production results. Finally,
 it plots the results.
 
 Primary production results are considered total food production before waste or
