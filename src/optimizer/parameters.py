@@ -356,10 +356,7 @@ class Parameters:
         )
         time_consts["greenhouse_area"] = greenhouse_area
 
-        if (
-            constants_inputs["INITIAL_CROP_AREA_FRACTION"] == 0
-            and not constants_inputs["REDUCED_BREEDING_STRATEGY"]
-        ):
+        if constants_inputs["INITIAL_CROP_AREA_FRACTION"] == 0:
             greenhouse_kcals_per_ha = np.zeros(constants_inputs["NMONTHS"])
             greenhouse_fat_per_ha = np.zeros(constants_inputs["NMONTHS"])
             greenhouse_protein_per_ha = np.zeros(constants_inputs["NMONTHS"])
@@ -510,7 +507,7 @@ class Parameters:
                 reduction_in_dairy_calves=reduction_in_dairy_calves,
                 reduction_in_pig_breeding=90,
                 reduction_in_poultry_breeding=90,
-                change_to_baseline_slaughter=110,
+                increase_in_slaughter=110,
                 months=constants_inputs["NMONTHS"],
                 discount_rate=30,
                 mother_slaughter=0,

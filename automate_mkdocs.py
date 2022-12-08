@@ -10,6 +10,8 @@ from typing import Union
 
 
 def add_val(indices, value, data):
+    # print("value")
+    # print(value)
     if not len(indices):
         return
     element = data
@@ -152,6 +154,7 @@ def automate_nav_structure(
     insert_string = yaml.safe_dump(json.loads(json.dumps(structure, indent=4))).replace(
         "'", ""
     )
+    print(insert_string)
     with open(f"{repo_dir}/{mkdocs_f}", "r+") as mkgen_config:
         assert mkgen_config is not None
         contents = mkgen_config.readlines()
@@ -164,6 +167,7 @@ def automate_nav_structure(
 
                     contents = contents[: index + 1]
                     contents.append(insert_string)
+                    print(insert_string)
                     break
 
     with open(f"{repo_dir}/{mkdocs_f}", "w") as mkgen_config:
@@ -207,7 +211,6 @@ def main():
         repo_dir=python_tips_dir,
         match_string="pages:\n",
     )
-
     automate_nav_structure(
         mkdocs_dir="modules",
         mkdocs_f="mkdocs.yml",

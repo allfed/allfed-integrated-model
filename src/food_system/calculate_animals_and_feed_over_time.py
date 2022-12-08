@@ -108,6 +108,7 @@ class CalculateAnimalOutputs:
         tons_to_kcals: calories per ton of feed
 
         """
+
         keep_dairy = 0
         steady_state_births = 1
 
@@ -314,15 +315,14 @@ class CalculateAnimalOutputs:
             if new_beef_calfs_pm < 0:
                 new_beef_calfs_pm = 0
 
-            # Transfer excess slaughter capacity to next animal, current coding method
-            # only allows poultry -> pig -> cow, there are some small erros here due to
-            # rounding, and the method is not 100% water tight but errors are within the
-            # noise
+            # ### This is where the issue was!
+            # added the new_poultry_pm and new_pigs_pm to the current totals. These
+            # were left out and meant that the populations would grow but the slaughter
             if current_total_poultry < current_poultry_slaughter:
                 spare_slaughter_hours = (
-                    current_poultry_slaughter - current_total_poultry
+                    current_poultry_slaughter - current_total_poultry - new_poultry_pm
                 ) * poultry_slaughter_hours
-                current_poultry_slaughter = current_total_poultry
+                current_poultry_slaughter = current_total_poultry + new_poultry_pm
                 current_pig_slaughter += (
                     spare_slaughter_hours
                     * skill_transfer_discount_chickens_to_pigs
@@ -330,9 +330,9 @@ class CalculateAnimalOutputs:
                 )
             if current_total_pigs < current_pig_slaughter:
                 spare_slaughter_hours = (
-                    current_pig_slaughter - current_total_pigs
+                    current_pig_slaughter - current_total_pigs - new_pigs_pm
                 ) * pig_slaughter_hours
-                current_pig_slaughter = current_total_pigs
+                current_pig_slaughter = current_total_pigs + new_pigs_pm
                 current_cow_slaughter += (
                     spare_slaughter_hours
                     * skill_transfer_discount_pigs_to_cows
@@ -467,15 +467,24 @@ class CalculateAnimalOutputs:
                 current_beef_slaughter + other_beef_death
             )
 
+            # values might be very slightly negative due to overshoot, so set to zero
             if current_beef_cattle < 0:
                 current_beef_cattle = 0
             if current_dairy_cattle < 0:
                 current_dairy_cattle = 0
+            if current_total_poultry < 0:
+                current_total_poultry = 0
+            if current_total_pigs < 0:
+                current_total_pigs = 0
 
         # ## End of loop, start summary
 
         df_final = pd.DataFrame(d)
-
+        # print("Combined Feed")
+        # import matplotlib.pyplot as plt
+        # plt.figure()
+        # df_final["Combined Feed"].plot()
+        # plt.show()
         return df_final
 
 
@@ -493,8 +502,3 @@ DATA_PATH = PATH.joinpath("../../data").resolve()
 df_animals = pd.read_csv(
     DATA_PATH.joinpath("InputDataAndSources.csv"), index_col="Variable"
 )
-
-# # various scenarios can be used here
-df_baseline_vars = pd.read_csv(
-    DATA_PATH.joinpath("default_slider_values.csv"), index_col="Variable"
-)  # change this to saved model values (optimistic/pessimistic etc.)

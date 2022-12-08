@@ -172,6 +172,10 @@ class Scenarios:
         # seaweed params
         constants_for_params["SEAWEED_NEW_AREA_FRACTION"] = 1
         constants_for_params["SEAWEED_MAX_AREA_FRACTION"] = 1
+        constants_for_params["ROTATION_IMPROVEMENTS"] = {}
+        constants_for_params["ROTATION_IMPROVEMENTS"][
+            "POWER_LAW_IMPROVEMENT"
+        ] = 0.796  # default for global model
 
         constants_for_params["INITIAL_SEAWEED_FRACTION"] = 1
         constants_for_params["INITIAL_BUILT_SEAWEED_FRACTION"] = 1
@@ -283,6 +287,10 @@ class Scenarios:
             "max_area_fraction"
         ]
 
+        constants_for_params["POWER_LAW_IMPROVEMENT"] = country_data[
+            "power_law_improvement"
+        ]
+
         # 1000s of hectares
         constants_for_params["INITIAL_BUILT_SEAWEED_FRACTION"] = country_data[
             "initial_built_fraction"
@@ -317,6 +325,11 @@ class Scenarios:
         constants_for_params["TONS_CHICKEN_AND_PORK_ANNUAL"] = (
             country_data["chicken"] + country_data["pork"]
         )
+
+        constants_for_params["ROTATION_IMPROVEMENTS"] = {}
+        constants_for_params["ROTATION_IMPROVEMENTS"][
+            "POWER_LAW_IMPROVEMENT"
+        ] = country_data["power_law_improvement"]
 
         # annual tons cattle beef production
         constants_for_params["TONS_BEEF_ANNUAL"] = country_data["beef"]
@@ -1206,23 +1219,8 @@ class Scenarios:
     def relocated_outdoor_crops(self, constants_for_params):
         constants_for_params["OG_USE_BETTER_ROTATION"] = True
 
-        constants_for_params["ROTATION_IMPROVEMENTS"] = {}
         # this may seem confusing. KCALS_REDUCTION is the reduction that would otherwise
         # occur averaging in year 3 globally
-        if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
-            # it happens that in the US, the expected crop relocation improvement moves
-            # output from about 2% of baseline to about 44% of baseline.
-            # so, reduction_fraction^x=reduction_fraction*20
-            # given our reduction fraction of 0.004 (97.6%), we have
-            # x=0.46
-
-            constants_for_params["ROTATION_IMPROVEMENTS"][
-                "POWER_LAW_IMPROVEMENT"
-            ] = 0.46
-        else:
-            constants_for_params["ROTATION_IMPROVEMENTS"][
-                "POWER_LAW_IMPROVEMENT"
-            ] = 0.796
         constants_for_params["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.647
         constants_for_params["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7 + 1

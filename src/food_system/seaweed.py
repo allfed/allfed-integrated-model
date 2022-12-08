@@ -20,13 +20,10 @@ class Seaweed:
 
         # 1000 km^2 (seaweed) times the fraction
         MAXIMUM_SEAWEED_AREA_GLOBAL = 1000
-        if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
-            self.MAXIMUM_SEAWEED_AREA = 50000 * 0.386 / 1000  # .386 sq miles to km^2
-        else:
-            self.MAXIMUM_SEAWEED_AREA = (
-                MAXIMUM_SEAWEED_AREA_GLOBAL
-                * constants_for_params["SEAWEED_MAX_AREA_FRACTION"]
-            )
+        self.MAXIMUM_SEAWEED_AREA = (
+            MAXIMUM_SEAWEED_AREA_GLOBAL
+            * constants_for_params["SEAWEED_MAX_AREA_FRACTION"]
+        )
 
         # 1000s of tons wet global (trading blocs multiply this by some fraction)
         INITIAL_SEAWEED_GLOBAL = 1
@@ -57,19 +54,13 @@ class Seaweed:
         # 1000 tons (seaweed)
 
         # landlocked country
-        if (
-            constants_for_params["SEAWEED_MAX_AREA_FRACTION"] == 0
-            and not constants_for_params["REDUCED_BREEDING_STRATEGY"]
-        ):
+        if constants_for_params["SEAWEED_MAX_AREA_FRACTION"] == 0:
             self.INITIAL_SEAWEED = 0
-        elif not constants_for_params["REDUCED_BREEDING_STRATEGY"]:
+        else:
             self.INITIAL_SEAWEED = (
                 INITIAL_SEAWEED_GLOBAL
                 * constants_for_params["INITIAL_SEAWEED_FRACTION"]
             )
-        else:
-            self.INITIAL_SEAWEED = INITIAL_SEAWEED_GLOBAL * 0.01
-
         self.INITIAL_BUILT_SEAWEED_AREA = (
             INITIAL_BUILT_SEAWEED_AREA_GLOBAL
             * constants_for_params["SEAWEED_NEW_AREA_FRACTION"]
@@ -105,15 +96,16 @@ class Seaweed:
 
     def get_built_area(self, constants_for_params):
 
-        if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
-            SEAWEED_NEW_AREA_PER_MONTH = self.MAXIMUM_SEAWEED_AREA / (
-                200 / 30.4
-            )  # 200 days
-        else:
-            SEAWEED_NEW_AREA_PER_MONTH = (
-                self.SEAWEED_NEW_AREA_PER_MONTH_GLOBAL
-                * constants_for_params["SEAWEED_NEW_AREA_FRACTION"]
-            )
+        SEAWEED_NEW_AREA_PER_MONTH = (
+            self.SEAWEED_NEW_AREA_PER_MONTH_GLOBAL
+            * constants_for_params["SEAWEED_NEW_AREA_FRACTION"]
+        )
+        PRINT_DIFFERENCE_IN_SEAWEED_AREA = False
+        if PRINT_DIFFERENCE_IN_SEAWEED_AREA:
+            print("MAX SEAWEED AREA Was: ")
+            print(self.MAXIMUM_SEAWEED_AREA / (200 / 30.4))
+            print("now is")
+            print(SEAWEED_NEW_AREA_PER_MONTH)
 
         if constants_for_params["ADD_SEAWEED"]:
             sd = [self.INITIAL_BUILT_SEAWEED_AREA] * constants_for_params["DELAY"][

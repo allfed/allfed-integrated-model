@@ -53,7 +53,6 @@ for i in range(0, len(df_seaweed)):
     coast = df_seaweed.coastline.values[i]
     if in_latitude_range == 1:  # and coast_fraction > 0:
         total_coast += coast
-
 for i in range(0, len(df_seaweed)):
     seaweed_fraction = df_seaweed.fraction_of_seaweed.values[i]
     in_latitude_range = df_seaweed.within_latitude.values[i]

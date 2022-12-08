@@ -23,6 +23,5 @@ theme:
   features:
     - navigation.tabs
     - navigation.tabs.sticky
+    - navigation.instant
     - instant
-nav:
-

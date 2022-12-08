@@ -12,16 +12,11 @@ import numpy as np
 class Greenhouses:
     def __init__(self, constants_for_params):
         # 500 million hectares in tropics (for outdoor crops 2020)
-        if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
-            # determined from https://downloads.usda.library.cornell.edu/
-            # usda-esmis/files/j098zb09z/0z70b374s/w9506686w/acrg0622.pdf
-            # and calculate_total_yields.py in github.com/allfed/minkowski
-            # (This is for the plantable southern US in 150 tg unclear winter)
-            self.TOTAL_CROP_AREA = 35252202.9
-        else:
-            self.TOTAL_CROP_AREA = (
-                500e6 * constants_for_params["INITIAL_CROP_AREA_FRACTION"]
-            )
+        # GLOBAL CROP AREA INCLUDING US:
+        # (calculated from sum of crop area in between 23 latitude)
+        self.TOTAL_CROP_AREA = (
+            769176.2e3 * constants_for_params["INITIAL_CROP_AREA_FRACTION"]
+        )
 
         self.STARTING_MONTH_NUM = constants_for_params["STARTING_MONTH_NUM"]
 
@@ -77,7 +72,7 @@ class Greenhouses:
         # greenhouses tab
         # assumption: greenhouse crop production is very similar in nutritional
         # profile to stored food
-        # reference: @Morgan Link broken
+        # reference:
         # greenhouse paper (scaling of greenhouses in low sunlight scenarios)
         # At constant expansion for 36 months, the cumulative ground coverage
         # will equal 2.5 million km^2 (250 million hectares).
@@ -89,173 +84,27 @@ class Greenhouses:
             return np.zeros(self.NMONTHS)
 
         if self.ADD_GREENHOUSES:
-            if constants_for_params["REDUCED_BREEDING_STRATEGY"]:
-
-                self.greenhouse_area_long = [
-                    1,
-                    233312,
-                    466624,
-                    699935,
-                    933247,
-                    1166559,
-                    1399871,
-                    1633182,
-                    1866494,
-                    2099806,
-                    2333118,
-                    2566429,
-                    2799741,
-                    3033053,
-                    3266365,
-                    3499676,
-                    3732988,
-                    3966300,
-                    4199612,
-                    4432923,
-                    4666235,
-                    4899547,
-                    5132859,
-                    5366170,
-                    5599482,
-                    5832794,
-                    6066106,
-                    6299417,
-                    6532729,
-                    6766041,
-                    6999353,
-                    7232664,
-                    7465976,
-                    7699288,
-                    7932600,
-                    8165911,
-                    8399223,
-                    8632535,
-                    8865847,
-                    9099158,
-                    9332470,
-                    9565782,
-                    9799094,
-                    10032405,
-                    10265717,
-                    10499029,
-                    10732341,
-                    10965652,
-                    11198964,
-                    11432276,
-                    11665588,
-                    11898899,
-                    12132211,
-                    12365523,
-                    12598835,
-                    12832146,
-                    13065458,
-                    13298770,
-                    13532082,
-                    13765393,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                    13928000,
-                ]
-            else:
-                GREENHOUSE_LIMIT_AREA = (
-                    self.TOTAL_CROP_AREA * self.GREENHOUSE_AREA_MULTIPLIER
-                )
-                self.greenhouse_area_long = list(
+            GREENHOUSE_LIMIT_AREA = (
+                self.TOTAL_CROP_AREA * self.GREENHOUSE_AREA_MULTIPLIER
+            )
+            self.greenhouse_area_long = list(
+                np.append(
                     np.append(
                         np.append(
-                            np.append(
-                                np.linspace(0, 0, self.greenhouse_delay),
-                                np.linspace(0, 0, 5),
-                            ),
-                            np.linspace(0, GREENHOUSE_LIMIT_AREA, 37),
+                            np.linspace(0, 0, self.greenhouse_delay),
+                            np.linspace(0, 0, 5),
                         ),
-                        np.linspace(
-                            GREENHOUSE_LIMIT_AREA,
-                            GREENHOUSE_LIMIT_AREA,
-                            len(outdoor_crops.KCALS_GROWN) - 42,
-                        ),
-                    )
+                        np.linspace(0, GREENHOUSE_LIMIT_AREA, 37),
+                    ),
+                    np.linspace(
+                        GREENHOUSE_LIMIT_AREA,
+                        GREENHOUSE_LIMIT_AREA,
+                        len(outdoor_crops.KCALS_GROWN) - 42,
+                    ),
                 )
+            )
             greenhouse_area = np.array(self.greenhouse_area_long[0 : self.NMONTHS])
-            PRINT_BY_COUNTRY_WARNING = False
-            if PRINT_BY_COUNTRY_WARNING:
-                print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
-                print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
-                print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
-                print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
-                print("WARNING: MAKE SURE YOU ARE NOT RUNNING BY COUNTRY!!!!")
-                print("")
-                print("")
-                print("")
-                print("")
-                print("the reason no to, is that we're dividing by total crop ")
-                print("area, and that won't work on a by-country basis. ")
-                print("We need to use by-country fraction of total crop area")
-                print("if we're adding greenhouses. ")
-                print("")
-                print("")
-                print("")
-                print("")
-                print("")
 
-            # if not constants_for_params["REDUCED_BREEDING_STRATEGY"]:
             self.assign_productivity_reduction_from_climate_impact(
                 outdoor_crops.months_cycle,
                 outdoor_crops.all_months_reductions,

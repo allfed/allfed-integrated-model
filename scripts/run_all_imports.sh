@@ -20,6 +20,7 @@ python create_seasonality_csv.py
 python create_crop_macros_csv.py
 python create_head_count_csv.py
 python create_seaweed_csv.py
+python create_relocation_improvement_csv.py
 python create_dairy_csv.py
 python create_meat_csv.py
 python create_feed_csv.py

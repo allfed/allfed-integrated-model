@@ -87,6 +87,13 @@ df16 = pd.read_csv(
 df17 = pd.read_csv(
     Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "seaweed_csv.csv"
 )
+df18 = pd.read_csv(
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "processed_data"
+    / "improvement_csv.csv"
+)
 
 
 dataframes = [
@@ -107,6 +114,7 @@ dataframes = [
     df15,
     df16,
     df17,
+    df18,
 ]
 
 # everestial007 explains the merge quite neatly
