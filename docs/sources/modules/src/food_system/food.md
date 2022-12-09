@@ -93,68 +93,6 @@ protein)
 **Methods:**
 
 
-### .get_Food_class
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L108)
-```python
-.get_Food_class(
-   cls
-)
-```
-
----
-get this class
-
-### .get_conversions
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L115)
-```python
-.get_conversions(
-   cls
-)
-```
-
----
-return the class conversions object
-this is only used by the parent UnitConversions class
-
-### .get_nutrient_names
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L129)
-```python
-.get_nutrient_names(
-   cls
-)
-```
-
-
-**Returns**
-
-the macronutrients of the food.
-
-### .ratio_one
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L138)
-```python
-.ratio_one(
-   cls
-)
-```
-
-
-**Returns**
-
-a ratio of one.
-
-### .ratio_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L155)
-```python
-.ratio_zero(
-   cls
-)
-```
-
-
-**Returns**
-
-a ratio of zero.
-
 ### .validate_if_list
 [source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L214)
 ```python
