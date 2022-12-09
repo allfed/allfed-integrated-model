@@ -45,7 +45,7 @@ computes the parameters
 returns the resulting constants
 
 ### .run_optimizer
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L96)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L94)
 ```python
 .run_optimizer(
    single_valued_constants, multi_valued_constants
@@ -56,7 +56,7 @@ returns the resulting constants
 Runs the optimizer and returns the model, variables, and constants
 
 ### .set_depending_on_option
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L127)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L125)
 ```python
 .set_depending_on_option(
    country_data, scenario_option

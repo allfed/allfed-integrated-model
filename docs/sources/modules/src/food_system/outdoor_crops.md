@@ -34,14 +34,16 @@ OutdoorCrops(
 
 
 ### .assign_reduction_from_climate_impact
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L260)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L267)
 ```python
-.assign_reduction_from_climate_impact()
+.assign_reduction_from_climate_impact(
+   constants_for_params
+)
 ```
 
 
 ### .set_crop_production_minus_greenhouse_area
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L290)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L304)
 ```python
 .set_crop_production_minus_greenhouse_area(
    constants_for_params, greenhouse_fraction_area

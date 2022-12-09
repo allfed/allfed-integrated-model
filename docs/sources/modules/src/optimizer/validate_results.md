@@ -51,7 +51,7 @@ the sums reported to differ between adding up all the extracted variables and
 just look at the reported result of the objective of the optimizer
 
 ### .ensure_zero_kcals_have_zero_fat_and_protein
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/validate_results.py/#L141)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/validate_results.py/#L143)
 ```python
 .ensure_zero_kcals_have_zero_fat_and_protein(
    interpreted_results
@@ -65,7 +65,7 @@ then fat and protein must also be zero.
 True for every food source and also for feed and biofuels independently.
 
 ### .ensure_never_nan
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/validate_results.py/#L190)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/validate_results.py/#L192)
 ```python
 .ensure_never_nan(
    interpreted_results
@@ -76,7 +76,7 @@ True for every food source and also for feed and biofuels independently.
 checks that the interpreter results are always defined as a real number
 
 ### .ensure_all_greater_than_or_equal_to_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/validate_results.py/#L235)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/validate_results.py/#L237)
 ```python
 .ensure_all_greater_than_or_equal_to_zero(
    interpreted_results

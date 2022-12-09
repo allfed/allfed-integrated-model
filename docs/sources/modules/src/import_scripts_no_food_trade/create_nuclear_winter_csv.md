@@ -49,7 +49,7 @@ calculate the crop reduction percentage for each year and aggregate as array
 
 
 ### clean_up_nw_csv
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/import_scripts_no_food_trade/create_nuclear_winter_csv.py/#L125)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/import_scripts_no_food_trade/create_nuclear_winter_csv.py/#L135)
 ```python
 .clean_up_nw_csv(
    nw_csv, nw_csv_cols
@@ -61,7 +61,7 @@ calculate the crop reduction percentage for each year and aggregate as array
 
 
 ### get_all_crops_correct_countries
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/import_scripts_no_food_trade/create_nuclear_winter_csv.py/#L160)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/import_scripts_no_food_trade/create_nuclear_winter_csv.py/#L170)
 ```python
 .get_all_crops_correct_countries(
    input_table

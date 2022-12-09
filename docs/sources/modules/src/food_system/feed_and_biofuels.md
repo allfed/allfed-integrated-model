@@ -19,7 +19,8 @@ FeedAndBiofuels(
 [source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L45)
 ```python
 .set_nonhuman_consumption_with_cap(
-   constants_for_params, outdoor_crops, stored_food
+   constants_for_params, outdoor_crops, stored_food,
+   biofuels_before_cap_prewaste, feed_before_cap_prewaste, excess_feed_prewaste
 )
 ```
 
@@ -58,8 +59,26 @@ available.
 In the case that the stored food is zero, this means that biofuels plus feed
 will be capped to the outdoor production of any macronutrient in any month.
 
+### .get_biofuels_and_feed_before_waste_from_delayed_shutoff
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L115)
+```python
+.get_biofuels_and_feed_before_waste_from_delayed_shutoff(
+   constants_for_params
+)
+```
+
+
+### .get_biofuels_and_feed_before_waste_from_animal_pops
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L141)
+```python
+.get_biofuels_and_feed_before_waste_from_animal_pops(
+   constants_for_params, feed_over_time
+)
+```
+
+
 ### .set_biofuels_and_feed_usage_postwaste
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L129)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L186)
 ```python
 .set_biofuels_and_feed_usage_postwaste(
    max_net_demand, stored_food, outdoor_crops, biofuels_before_cap,
@@ -69,7 +88,7 @@ will be capped to the outdoor production of any macronutrient in any month.
 
 
 ### .iteratively_determine_reduction_in_nonhuman_consumption_postwaste
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L192)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L249)
 ```python
 .iteratively_determine_reduction_in_nonhuman_consumption_postwaste(
    stored_food, outdoor_crops, biofuels_before_cap, feed_before_cap
@@ -81,7 +100,7 @@ This function iteratively determines the amount of nonhuman consumption by
 reducing the amount of biofuels and feed used.
 
 ### .get_biofuel_usage_before_cap_prewaste
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L242)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L299)
 ```python
 .get_biofuel_usage_before_cap_prewaste(
    biofuel_duration
@@ -97,7 +116,7 @@ pre waste: this is the actual amount used of stored food and crops before waste
 is applied to crops and stored food
 
 ### .get_feed_usage_before_cap_prewaste
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L296)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L353)
 ```python
 .get_feed_usage_before_cap_prewaste(
    feed_duration, excess_feed_prewaste
@@ -110,7 +129,7 @@ The total number of months before shutoff is the duration, representing the
 number of nonzero feed months for feeds to be used.
 
 ### .get_nonhuman_consumption_before_cap_prewaste
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L344)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L401)
 ```python
 .get_nonhuman_consumption_before_cap_prewaste(
    biofuels_before_cap_prewaste, feed_before_cap_prewaste
@@ -121,7 +140,7 @@ number of nonzero feed months for feeds to be used.
 Calculate and set the total usage for consumption of biofuels and feed
 
 ### .get_nonhuman_consumption_with_cap_postwaste
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L362)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L419)
 ```python
 .get_nonhuman_consumption_with_cap_postwaste(
    constants_for_params, biofuels, feed
@@ -134,7 +153,7 @@ Calculate and set the total usage for consumption of biofuels and feed
 assume animals need and use human levels of fat and protein per kcal
 
 ### .calculate_max_running_net_demand_postwaste
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L374)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L431)
 ```python
 .calculate_max_running_net_demand_postwaste(
    outdoor_crops, biofuels_before_cap, feed_before_cap
@@ -142,13 +161,15 @@ assume animals need and use human levels of fat and protein per kcal
 ```
 
 ---
-Calculate the exceedance of the biofuel and feed usage past the outdoor outdoor_crops
+Calculate the exceedance of the biofuel and feed usage past the outdoor
+outdoor_crops
 production on a monthly basis for each nutrient.
 
 NOTE:
 UPDATE
-I realized that the max amount of stored food or OG used each month by kcals,
-fat or protein needs to be summed, rather than the max of each individual nutrient
+I realized that the max amount of stored food or OG used each month by
+kcals, fat or protein needs to be summed, rather than the max of each
+individual nutrient
 
 
 **Example**
@@ -190,8 +211,8 @@ min_running_net_supply:
 max_running_net_demand:
 
 
-For all month combined, how much original stored food is needed to make up for
-each macronutrient?
+For all month combined, how much original stored food is needed to make up
+for each macronutrient?
 
 ---
 Answer:
@@ -200,7 +221,7 @@ Answer:
     up.
 
 ### .get_excess_food_usage_from_percents
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L476)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L535)
 ```python
 .get_excess_food_usage_from_percents(
    excess_feed_percent

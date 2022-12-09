@@ -29,7 +29,7 @@ Set a few options to set on top of the specific options for the given simulation
 These could easily change if another scenario was of more interest.
 
 ### .run_optimizer_for_country
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_no_trade.py/#L68)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_no_trade.py/#L69)
 ```python
 .run_optimizer_for_country(
    country_code, country_data, scenario_option, create_pptx_with_all_countries,
@@ -39,7 +39,7 @@ These could easily change if another scenario was of more interest.
 
 
 ### .fill_data_for_map
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_no_trade.py/#L142)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_no_trade.py/#L143)
 ```python
 .fill_data_for_map(
    world, country_code, needs_ratio
@@ -48,7 +48,7 @@ These could easily change if another scenario was of more interest.
 
 
 ### .run_model_no_trade
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_no_trade.py/#L162)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_no_trade.py/#L163)
 ```python
 .run_model_no_trade(
    title = 'untitled', create_pptx_with_all_countries = True,
@@ -67,7 +67,7 @@ If you leave it blank, it runs all the countries
 You can generate a powerpoint as an option here too
 
 ### .get_countries_to_run_and_skip
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_no_trade.py/#L329)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_no_trade.py/#L330)
 ```python
 .get_countries_to_run_and_skip(
    countries_list
@@ -82,7 +82,7 @@ if there's no ! in any of the codes, then only the ones listed will be
 run.
 
 ### .run_many_options
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_no_trade.py/#L357)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_no_trade.py/#L358)
 ```python
 .run_many_options(
    scenario_options, title, add_map_slide_to_pptx = True, show_map_figures = False,
@@ -92,7 +92,7 @@ run.
 
 
 ### .create_several_maps_with_different_assumptions
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_no_trade.py/#L417)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_no_trade.py/#L418)
 ```python
 .create_several_maps_with_different_assumptions(
    this_simulation, show_map_figures = False
@@ -101,7 +101,7 @@ run.
 
 
 ### .run_desired_simulation
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_no_trade.py/#L486)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_model_no_trade.py/#L487)
 ```python
 .run_desired_simulation(
    this_simulation, args
