@@ -13,25 +13,6 @@
 **Methods:**
 
 
-### .plot_fig_1ab
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L42)
-```python
-.plot_fig_1ab(
-   crs, interpreter, xlim, newtitle = '', plot_figure = True,
-   add_slide_with_fig = True, description = ''
-)
-```
-
-
-### .plot_fig_1ab_updated
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L226)
-```python
-.plot_fig_1ab_updated(
-   crs, worlds, ratios, xlim
-)
-```
-
-
 ### .helper_for_plotting_fig_3abcde
 [source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L326)
 ```python
@@ -47,15 +28,6 @@
 .helper_for_plotting_fig_2abcde(
    ax, interpreter, xlim, title, add_ylabel = True, add_xlabel = True,
    ylim_constraint = 100000
-)
-```
-
-
-### .plot_fig_2abcde_updated
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L588)
-```python
-.plot_fig_2abcde_updated(
-   crs, lists_of_lists, xlim
 )
 ```
 
@@ -92,15 +64,6 @@
 ```python
 .plot_fig_s2abcd(
    interpreter1, interpreter2, xlim1, xlim2
-)
-```
-
-
-### .plot_fig_s1abcd
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L1287)
-```python
-.plot_fig_s1abcd(
-   crs, interpreter1, interpreter2, xlim, showplot = False
 )
 ```
 
@@ -182,30 +145,3 @@ Plot the food generically with the 3 macronutrients.
 
 ---
 Plot the food generically with the 3 macronutrients (alternative layout).
-
-### .plot_map_of_countries_fed
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L1723)
-```python
-.plot_map_of_countries_fed(
-   crs, world, ratio_fed, description, plot_map, create_slide
-)
-```
-
-
-### .start_pptx
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L1767)
-```python
-.start_pptx(
-   crs, title
-)
-```
-
-
-### .end_pptx
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L1774)
-```python
-.end_pptx(
-   crs, saveloc
-)
-```
-
