@@ -33,27 +33,22 @@ class Seaweed:
         # 1000s of km^2 global  (trading blocs multiply this by some fraction)
         INITIAL_BUILT_SEAWEED_AREA_GLOBAL = 0.1
 
-        # Montgomery, W. L., & Gerking, S. D. (1980). Marine macroalgae as foods for
-        # fishes: an evaluation of potential food quality. Environmental Biology of
-        # Fishes, 5(2), 143–153. doi:10.1007/bf02391621
-
-        # Use the mean red algae protein fraction (Gracilaria Tikvahiae is a red agae)
-        self.WET_TO_DRY_MASS_CONVERSION = 1 / 6
-
-        # in order, in equal parts by mass:
-        # Laver dry
+        # Gracilaria Tikvahiae wet to dry mass conversion
+        # https://www.degruyter.com/document/doi/10.1515/botm.1987.30.6.525/html
+        self.WET_TO_DRY_MASS_CONVERSION = 0.11
 
         # kcals per kg dry
-        self.KCALS_PER_KG = 2490
+        # http://pubs.sciepub.com/jfnr/8/8/7/index.html
+        self.KCALS_PER_KG = 2620
 
         # dry fraction mass fat
         self.MASS_FRACTION_FAT_DRY = 0.0205
         # dry fraction mass protein times average protein digestibility of seaweed
         self.MASS_FRACTION_PROTEIN_DRY = 0.077 * 0.79
 
-        self.HARVEST_LOSS = 15  # percent (seaweed)
-
-        # 1000 tons (seaweed)
+        # Percent loss of seaweed
+        # https://krishi.icar.gov.in/jspui/handle/123456789/51103
+        self.HARVEST_LOSS = 20  # percent (seaweed)
 
         # landlocked country
         if constants_for_params["SEAWEED_MAX_AREA_FRACTION"] == 0:
