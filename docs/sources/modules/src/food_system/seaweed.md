@@ -16,7 +16,7 @@ Seaweed(
 
 
 ### .get_built_area
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/seaweed.py/#L99)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/seaweed.py/#L94)
 ```python
 .get_built_area(
    constants_for_params
