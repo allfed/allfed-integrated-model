@@ -118,11 +118,6 @@ class Greenhouses:
         self.greenhouse_fraction_area = greenhouse_area / self.TOTAL_CROP_AREA
         return greenhouse_area
 
-    # for the conversions and numbers, go here
-    # @Morgan: Link broken
-    # and here
-    # @Morgan: Link broken
-
     # SUM_CALORIES is an overestimate by some factor, as it is in current
     # day conditions. We improve accuracy by applying the outdoor growing
     # estimate and decreasing the estimated fat and protein by the same
