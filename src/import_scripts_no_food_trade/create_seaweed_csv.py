@@ -16,63 +16,26 @@ NO_TRADE_XLS = (
 
 xls = pd.ExcelFile(NO_TRADE_XLS)
 
-df_seaweed = pd.read_excel(xls, "Seaweed")[
-    [
-        "ISO3 Country Code",
-        "Country",
-        "Fraction of total seaweed grown today -2019",
-        "Within latitude where seaweed could be grown (30)",
-        "Length of coastline",
-    ]
-]
+df_seaweed = pd.read_excel(xls, "Seaweed")
+# Remove unused columns
+del df_seaweed["Length of coastline"]
 
-# Rename columns
-df_seaweed.columns = [
-    "iso3",
-    "country",
-    "fraction_of_seaweed",
-    "within_latitude",
-    "coastline",
-]
-df_seaweed = df_seaweed.iloc[
-    0:137,
-]
+# Only use flag 0 and flag 1 countries
+# Flag 2 countries are overestimates
+df_seaweed = df_seaweed[df_seaweed["Flags"] < 2]
+del df_seaweed["Flags"]
 
-df_seaweed_new = df_seaweed.copy()
-df_seaweed_new.drop("fraction_of_seaweed", axis=1, inplace=True)
-df_seaweed_new.drop("within_latitude", axis=1, inplace=True)
-df_seaweed_new.drop("coastline", axis=1, inplace=True)
-df_seaweed_new["max_area_fraction"] = 0
-df_seaweed_new["new_area_fraction"] = 0
-df_seaweed_new["initial_built_fraction"] = 0
-df_seaweed_new["initial_seaweed_fraction"] = 0
+# drop all rows that have NaN values to remove
+# the countries that are not able to grow seaweed
+df_seaweed = df_seaweed.dropna()
 
-total_coast = 0
-for i in range(0, len(df_seaweed)):
-    in_latitude_range = df_seaweed.within_latitude.values[i]
-    coast = df_seaweed.coastline.values[i]
-    if in_latitude_range == 1:  # and coast_fraction > 0:
-        total_coast += coast
-for i in range(0, len(df_seaweed)):
-    seaweed_fraction = df_seaweed.fraction_of_seaweed.values[i]
-    in_latitude_range = df_seaweed.within_latitude.values[i]
-    coast_fraction = df_seaweed.coastline.values[i] / total_coast
+# Rename column ISO3 Country Code to iso3
+df_seaweed = df_seaweed.rename(columns={"ISO3 Country Code": "iso3"})
+# Change country column to all lower case
+df_seaweed = df_seaweed.rename(columns={"Country": "country"})
 
-    if in_latitude_range == 1:  # and coast_fraction > 0:
-        df_seaweed_new.loc[i, "new_area_fraction"] = coast_fraction
-        df_seaweed_new.loc[i, "max_area_fraction"] = coast_fraction
-        # make sure seaweed at start is at least 0.05% of global total in all countries
-        df_seaweed_new.loc[i, "initial_seaweed_fraction"] = max(
-            0.0005, seaweed_fraction
-        )
-        df_seaweed_new.loc[i, "initial_built_fraction"] = coast_fraction
-    else:
-        df_seaweed_new.loc[i, "max_area_fraction"] = 0
-        df_seaweed_new.loc[i, "new_area_fraction"] = 0
-        df_seaweed_new.loc[i, "initial_seaweed_fraction"] = 0
-        df_seaweed_new.loc[i, "initial_built_fraction"] = 0
-
-df_seaweed_new.to_csv(
+# Save to file
+df_seaweed.to_csv(
     Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "seaweed_csv.csv",
     sep=",",
     index=False,
