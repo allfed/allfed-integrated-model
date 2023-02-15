@@ -28,7 +28,6 @@ del df_seaweed["Flags"]
 # drop all rows that have NaN values to remove
 # the countries that are not able to grow seaweed
 df_seaweed = df_seaweed.dropna()
-
 # Rename column ISO3 Country Code to iso3
 df_seaweed = df_seaweed.rename(columns={"ISO3 Country Code": "iso3"})
 # Change country column to all lower case

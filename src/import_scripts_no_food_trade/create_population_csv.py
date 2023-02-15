@@ -25,9 +25,6 @@ df_pop.columns = ["iso3", "country", "population"]
 
 
 df_pop["population"] = df_pop["population"] * 1e6
-df_pop = df_pop.iloc[
-    0:138,
-]
 
 df_pop.to_csv(
     Path(repo_root)

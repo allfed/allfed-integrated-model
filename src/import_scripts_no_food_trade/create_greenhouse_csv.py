@@ -22,9 +22,8 @@ df_greenhouse = pd.read_excel(xls, "Greenhouses")[
         "ISO3 Country Code",
         "Country",
         "Country Crop Area ('000 Hectares)",
-        "Latitude",
-        "Whether above latitude threshold (23)",
-        "Fraction of total crop area - below 23 latitude",
+        "Whether to assess greenhouse improvement",
+        "Fraction of total crop area",
     ]
 ]
 # rename columns
@@ -32,9 +31,8 @@ df_greenhouse.columns = [
     "iso3",
     "country",
     "crop_area_1000ha",
-    "latitude",
-    "above_lat_23_boolean",
-    "fraction_crop_area_below_lat_23",
+    "include_greenhouse",
+    "fraction_crop_area",
 ]
 
 

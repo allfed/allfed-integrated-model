@@ -314,6 +314,37 @@ class ImportUtilities:
         "Zimbabwe",
     ]
 
+    eu_27_p_uk_country_names = [
+        "United Kingdom",
+        "Austria",
+        "Belgium",
+        "Bulgaria",
+        "Croatia",
+        "Cyprus",
+        "Czech Republic",
+        "Denmark",
+        "Estonia",
+        "Finland",
+        "France",
+        "Germany",
+        "Greece",
+        "Hungary",
+        "Ireland",
+        "Italy",
+        "Latvia",
+        "Lithuania",
+        "Luxembourg",
+        "Malta",
+        "Netherlands",
+        "Poland",
+        "Portugal",
+        "Romania",
+        "Slovakia",
+        "Slovenia",
+        "Spain",
+        "Sweden",
+    ]
+
     countries_with_TWN_F5707_GBR = iso3_no_EU_GBR_TWN + ["TWN", "F5707+GBR"]
     country_names_with_TWN_F5707_GBR = country_names_no_EU_GBR_TWN + [
         "Taiwan",
@@ -327,8 +358,13 @@ class ImportUtilities:
     ]
 
     countries_with_EU_no_TWN = eu_27_p_uk_codes + iso3_no_EU_GBR_TWN
+    country_names_with_EU_no_TWN = (
+        eu_27_p_uk_country_names + country_names_no_EU_GBR_TWN
+    )
 
-    country_names_with_EU_no_TWN = eu_27_p_uk_codes + country_names_no_EU_GBR_TWN
+    country_codes = countries_with_EU_no_TWN + ["TWN"]
+
+    country_names = country_names_with_EU_no_TWN + ["Taiwan"]
 
     def stack_on_list(list, layer):
         """
@@ -360,7 +396,6 @@ class ImportUtilities:
         return list
 
     def add_row_to_csv(nw_csv, country, country_name, reductions):
-
         # convert to list of strings for saving as csv
         reduction_strings = [str(item) for item in reductions]
 
@@ -389,7 +424,6 @@ class ImportUtilities:
         rejected_weighting_sum = 0
         non_rejected_weighting_sum = 0
         for i in range(0, len(percentages)):
-
             percentage = percentages[i]
             weight = weights[i]
 
@@ -461,11 +495,21 @@ class ImportUtilities:
 
     def import_csv(csv_loc, col_names, iso3_col_name):
         """
-        import the csv and load into a dictionary
+        import the csv into dataframe and call import_csv_from_df
         """
 
         df = pd.read_csv(csv_loc)[col_names]
+
+        return ImportUtilities.import_csv_from_df(df, iso3_col_name)
+
+    def import_csv_from_df(df, iso3_col_name):
+        """
+        load csv into a dictionary
+        """
+
+        # get list of countries uniquely
         country_codes = list(df[iso3_col_name].unique())
+
         # create dictionary containing each table, remove Area Code column
         input_table = {
             k: df[df[iso3_col_name] == k].drop(columns=iso3_col_name)

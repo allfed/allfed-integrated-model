@@ -67,10 +67,6 @@ df_stock["stocks_kcals_nov"] = df_stock["stocks_kcals_nov"] * 1e6
 df_stock["stocks_kcals_dec"] = df_stock["stocks_kcals_dec"] * 1e6
 
 
-df_stock = df_stock.iloc[
-    0:138,
-]
-
 df_stock.to_csv(
     Path(repo_root)
     / "data"

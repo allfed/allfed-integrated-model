@@ -39,9 +39,6 @@ df_biofuel.columns = [
 df_biofuel["biofuel_kcals"] = df_biofuel["biofuel_kcals"] * 1e6
 df_biofuel["biofuel_fat"] = df_biofuel["biofuel_fat"] * 1e6
 df_biofuel["biofuel_protein"] = df_biofuel["biofuel_protein"] * 1e6
-df_biofuel = df_biofuel.iloc[
-    0:138,
-]
 
 df_biofuel.to_csv(
     Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "biofuel_csv.csv",

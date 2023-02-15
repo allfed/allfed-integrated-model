@@ -24,12 +24,10 @@ df_grasses = pd.read_excel(xls, "Grazing Baseline")[
     ]
 ]
 
-# rename the columns and select the first 138 rows
+# rename the columns
 df_grasses.columns = ["iso3", "country", "grasses_baseline"]
+
 df_grasses["grasses_baseline"] = df_grasses["grasses_baseline"] * 1000
-df_grasses = df_grasses.iloc[
-    0:138,
-]
 
 df_grasses.to_csv(
     Path(repo_root)

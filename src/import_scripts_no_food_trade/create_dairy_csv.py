@@ -20,12 +20,9 @@ df_dairy = pd.read_excel(xls, "Grazing Baseline")[
     ["ISO3 Country Code", "Country", "Current milk output - '000 tonnes wet value"]
 ]
 
-# rename the columns and select the first 138 rows
+# rename the columns
 df_dairy.columns = ["iso3", "country", "dairy"]
 df_dairy["dairy"] = df_dairy["dairy"] * 1000
-df_dairy = df_dairy.iloc[
-    0:138,
-]
 
 df_dairy.to_csv(
     Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "dairy_csv.csv",

@@ -26,11 +26,6 @@ df_scp = pd.read_excel(xls, "Methane SCP")[
 ]
 df_scp.columns = ["iso3", "country", "capex_dollar", "percent_of_global_capex"]
 
-
-df_scp = df_scp.iloc[
-    0:138,
-]
-
 df_scp.to_csv(
     Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "scp_csv.csv",
     sep=",",

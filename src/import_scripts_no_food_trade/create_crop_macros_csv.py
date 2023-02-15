@@ -126,10 +126,10 @@ class CropMacros:
 
     def get_macros_csv(self):
         """
-        get the stack of macronutrients that correspond to each countryd
+        get the stack of macronutrients that correspond to each country
         """
-        iso3_codes = ImportUtilities.countries_with_TWN_F5707_GBR_separate
-        country_names = ImportUtilities.country_names_with_TWN_F5707_GBR_separate
+        iso3_codes = ImportUtilities.country_codes
+        country_names = ImportUtilities.country_names
 
         macros_csv = np.array(
             [
@@ -164,32 +164,6 @@ class CropMacros:
 
         return macros_csv
 
-    def clean_up_macros_csv(self, macros_csv):
-        # add up GBR and F5707 (EU+27) to incorporate GBR (which is the UK),
-        # and delete GBR
-
-        F5707_index = np.where(macros_csv[:, 0] == "F5707")
-        GBR_index = np.where(macros_csv[:, 0] == "GBR")
-
-        F5707_kcals = float(macros_csv[F5707_index][0][2])
-        F5707_fat = float(macros_csv[F5707_index][0][3])
-        F5707_protein = float(macros_csv[F5707_index][0][4])
-
-        GBR_kcals = float(macros_csv[GBR_index][0][2])
-        GBR_fat = float(macros_csv[GBR_index][0][3])
-        GBR_protein = float(macros_csv[GBR_index][0][4])
-
-        macros_csv[F5707_index, 0] = "F5707+GBR"
-        macros_csv[F5707_index, 1] = "European Union (27) + UK"
-        macros_csv[F5707_index, 2] = str(F5707_kcals + GBR_kcals)
-        macros_csv[F5707_index, 3] = str(F5707_fat + GBR_fat)
-        macros_csv[F5707_index, 4] = str(F5707_protein + GBR_protein)
-
-        macros_csv = ImportUtilities.clean_up_eswatini(macros_csv)
-        macros_csv = np.delete(macros_csv, (GBR_index), axis=0)
-
-        return macros_csv
-
 
 if __name__ == "__main__":
     print("importing baseline crop kcals, fat, protein production data...")
@@ -197,8 +171,7 @@ if __name__ == "__main__":
     cm = CropMacros()
 
     macros_csv = cm.get_macros_csv()
-
-    macros_csv = cm.clean_up_macros_csv(macros_csv)
+    macros_csv = ImportUtilities.clean_up_eswatini(macros_csv)
 
     np.savetxt(
         Path(repo_root) / "data" / "no_food_trade" / "processed_data/macros_csv.csv",

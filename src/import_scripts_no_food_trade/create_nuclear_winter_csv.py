@@ -81,7 +81,6 @@ def get_overall_reduction(country_data, country_id, crop_macros):
 
     crop_ratios = get_crop_ratios_this_country(country_id, crop_macros)
     for year in years:
-
         reductions = []
         for crop in crop_ratios:
             col_name = crop + "_year" + str(year)
@@ -133,7 +132,6 @@ def calculate_reductions(country_data, country_id, crop_macros):
 
 
 def clean_up_nw_csv(nw_csv, nw_csv_cols):
-
     nw_csv = pd.DataFrame(
         nw_csv,
         columns=nw_csv_cols,
@@ -175,19 +173,20 @@ def get_all_crops_correct_countries(input_table):
     """
     crop_macros = CropMacros()
 
-    non_eu_reductions = []
-    eu_27_p_uk_to_average = []
+    all_except_taiwan = []
     taiwan_reductions = []
     country_ids = []
-    countries_with_EU_no_TWN = ImportUtilities.countries_with_EU_no_TWN
-    country_names_with_EU_no_TWN = ImportUtilities.country_names_with_EU_no_TWN
-    for i in range(0, len(countries_with_EU_no_TWN)):
-        country = countries_with_EU_no_TWN[i]
-        country_name = country_names_with_EU_no_TWN[i]
+    country_codes = ImportUtilities.country_codes
+    country_names = ImportUtilities.country_names
+    for i in range(0, len(country_codes)):
+        country = country_codes[i]
+        country_name = country_names[i]
 
         # skip missing country
         if country not in input_table.keys():
-            print("missing" + country)
+            if country != "TWN":
+                print("ERROR: missing" + country)
+                quit()
             continue
 
         country_data = input_table[country]
@@ -199,40 +198,22 @@ def get_all_crops_correct_countries(input_table):
 
         reductions = calculate_reductions(country_data, country, crop_macros)
 
-        # if one of the EU 27 countries, will process after loop
-        if country in ImportUtilities.eu_27_p_uk_codes:
-
-            eu_27_p_uk_to_average = ImportUtilities.stack_on_list(
-                eu_27_p_uk_to_average, reductions
+        if country == "CHN":
+            # Taiwan reductions set equal to China's
+            taiwan_reductions = ImportUtilities.stack_on_list(
+                taiwan_reductions, reductions
             )
 
-        else:
-            if country == "CHN":
-                # Taiwan reductions set equal to China's
-                taiwan_reductions = ImportUtilities.stack_on_list(
-                    taiwan_reductions, reductions
-                )
+        all_except_taiwan = ImportUtilities.stack_on_list(all_except_taiwan, reductions)
 
-            non_eu_reductions = ImportUtilities.stack_on_list(
-                non_eu_reductions, reductions
-            )
+        country_ids = ImportUtilities.stack_on_list(
+            country_ids, (country, country_name)
+        )
 
-            country_ids = ImportUtilities.stack_on_list(
-                country_ids, (country, country_name)
-            )
-    eu_27_p_uk_reductions = ImportUtilities.average_columns(eu_27_p_uk_to_average)
-
-    all_except_taiwan = ImportUtilities.stack_on_list(
-        non_eu_reductions, eu_27_p_uk_reductions
-    )
     all_reductions_processed = ImportUtilities.stack_on_list(
         all_except_taiwan, taiwan_reductions
     )
 
-    # average all the eu27 and uk together by averaging each column
-    country_ids = ImportUtilities.stack_on_list(
-        country_ids, ("F5707+GBR", "European Union (27) + UK")
-    )
     country_ids = ImportUtilities.stack_on_list(country_ids, ("TWN", "Taiwan"))
 
     return country_ids, all_reductions_processed
@@ -343,7 +324,6 @@ def main():
     # this is the list of headers in the output csv
 
     for i in range(0, len(country_ids)):
-
         country_id = country_ids[i]
         country_reductions = all_reductions_processed[i]
 

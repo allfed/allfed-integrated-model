@@ -26,15 +26,13 @@ df_aquaculture = pd.read_excel(xls, "Seafood - excluding seaweeds")[
     ]
 ]
 
-# rename the columns and select the first 138 rows
+# rename the columns
 df_aquaculture.columns = ["iso3", "country", "aq_kcals", "aq_fat", "aq_protein"]
+
 df_aquaculture["aq_kcals"] = df_aquaculture["aq_kcals"] * 1e6
 df_aquaculture["aq_fat"] = df_aquaculture["aq_fat"] * 1e6
 df_aquaculture["aq_protein"] = df_aquaculture["aq_protein"] * 1e6
 
-df_aquaculture = df_aquaculture.iloc[
-    0:138,
-]
 
 df_aquaculture.to_csv(
     Path(repo_root)

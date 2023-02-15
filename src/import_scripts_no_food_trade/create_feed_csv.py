@@ -33,9 +33,6 @@ df_feed.columns = ["iso3", "country", "feed_kcals", "feed_fat", "feed_protein"]
 df_feed["feed_kcals"] = df_feed["feed_kcals"] * 1e6
 df_feed["feed_fat"] = df_feed["feed_fat"] * 1e6
 df_feed["feed_protein"] = df_feed["feed_protein"] * 1e6
-df_feed = df_feed.iloc[
-    0:138,
-]
 
 df_feed.to_csv(
     Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "feed_csv.csv",

@@ -203,7 +203,6 @@ class Scenarios:
         SUBTRACT_FEED_DIRECTLY = False
 
         if SUBTRACT_FEED_DIRECTLY:
-
             # annual tons dry caloric equivalent
             constants_for_params["BASELINE_CROP_KCALS"] = (
                 country_data["crop_kcals"] - country_data["feed_kcals"]
@@ -259,11 +258,6 @@ class Scenarios:
             "percent_of_global_capex"
         ]
 
-        assert 1 >= country_data["initial_seaweed_fraction"] >= 0
-        assert 1 >= country_data["new_area_fraction"] >= 0
-        assert 1 >= country_data["max_area_fraction"] >= 0
-        assert 1 >= country_data["max_area_fraction"] >= 0
-        assert 1 >= country_data["initial_built_fraction"] >= 0
         assert 1 >= constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"] >= 0
 
         # if country_data["percent_of_seaweed"] == 0:
@@ -276,27 +270,14 @@ class Scenarios:
         assert 1 >= constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"] >= 0
 
         # 1000s of tons wet
-        constants_for_params["INITIAL_SEAWEED_FRACTION"] = country_data[
-            "initial_seaweed_fraction"
-        ]
-
-        constants_for_params["SEAWEED_NEW_AREA_FRACTION"] = country_data[
-            "new_area_fraction"
-        ]
-        constants_for_params["SEAWEED_MAX_AREA_FRACTION"] = country_data[
-            "max_area_fraction"
-        ]
 
         constants_for_params["POWER_LAW_IMPROVEMENT"] = country_data[
             "power_law_improvement"
         ]
 
         # 1000s of hectares
-        constants_for_params["INITIAL_BUILT_SEAWEED_FRACTION"] = country_data[
-            "initial_built_fraction"
-        ]
         constants_for_params["INITIAL_CROP_AREA_FRACTION"] = country_data[
-            "fraction_crop_area_below_lat_23"
+            "fraction_crop_area"
         ]
 
         # total head count of medium sized animals
@@ -1183,7 +1164,6 @@ class Scenarios:
     # SCENARIOS
 
     def no_resilient_foods(self, constants_for_params):
-
         constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = 0
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 0
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8

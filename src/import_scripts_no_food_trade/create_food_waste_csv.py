@@ -46,10 +46,6 @@ df_waste.columns = [
 ]
 
 
-df_waste = df_waste.iloc[
-    0:138,
-]
-
 df_waste.to_csv(
     Path(repo_root)
     / "data"
