@@ -19,7 +19,7 @@ Extractor(
 [source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L16)
 ```python
 .extract_results(
-   model, variables, single_valued_constants, multi_valued_constants
+   model, variables, single_valued_constants, time_consts
 )
 ```
 

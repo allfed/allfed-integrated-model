@@ -24,7 +24,7 @@ class Interpreter:
     def __init__(self):
         pass
 
-    def interpret_results(self, extracted_results, multi_valued_constants):
+    def interpret_results(self, extracted_results, time_consts):
         """
         This function takes the raw output of the optimizer food categories and total
         people fed in list form, and converts the naive people fed which includes
@@ -47,9 +47,7 @@ class Interpreter:
 
         # nonhuman consumption in units percent people fed
 
-        nonhuman_consumption_billions_fed = multi_valued_constants[
-            "nonhuman_consumption"
-        ]
+        nonhuman_consumption_billions_fed = time_consts["nonhuman_consumption"]
 
         self.nonhuman_consumption_percent = (
             nonhuman_consumption_billions_fed.in_units_percent_fed()

@@ -112,7 +112,6 @@ class Parameters:
         )
 
         if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
-
             (
                 meat_and_dairy,
                 constants_out,
@@ -126,7 +125,6 @@ class Parameters:
             )
 
         else:
-
             # FEED AND BIOFUEL VARIABLES #
 
             time_consts, feed_and_biofuels = self.init_feed_and_biofuels(
@@ -361,7 +359,6 @@ class Parameters:
             greenhouse_fat_per_ha = np.zeros(constants_inputs["NMONTHS"])
             greenhouse_protein_per_ha = np.zeros(constants_inputs["NMONTHS"])
         else:
-
             (
                 greenhouse_kcals_per_ha,
                 greenhouse_fat_per_ha,
@@ -435,10 +432,9 @@ class Parameters:
             constants_inputs
         )
 
-        PLOT_FEED_BEFORE_WASTE = True
+        PLOT_FEED_BEFORE_WASTE = False
 
         if PLOT_FEED_BEFORE_WASTE:
-
             feed_before_cap_prewaste.in_units_percent_fed().plot(
                 "feed_before_cap_prewaste using baseline"
             )
@@ -500,6 +496,10 @@ class Parameters:
         else:
             reduction_in_dairy_calves = 100
             use_grass_and_residues_for_dairy = False
+
+        print("constants_inputs")
+        print(constants_inputs)
+        quit()
 
         feed_dairy_meat_results = (
             coa.calculate_feed_and_animals_using_baseline_feed_usage(
@@ -609,7 +609,7 @@ class Parameters:
             feed_dairy_meat_results["Combined Feed"],
         )
 
-        PLOT_FEED_BEFORE_WASTE = True
+        PLOT_FEED_BEFORE_WASTE = False
 
         if PLOT_FEED_BEFORE_WASTE:
             feed_before_cap_prewaste.in_units_percent_fed().plot(
@@ -681,14 +681,17 @@ class Parameters:
             outdoor_crops,
         )
 
-        (constants_out, time_consts, meat_and_dairy,) = self.init_culled_meat_params(
+        (
+            constants_out,
+            time_consts,
+            meat_and_dairy,
+        ) = self.init_culled_meat_params(
             constants_inputs, constants_out, time_consts, meat_and_dairy
         )
 
         return meat_and_dairy, constants_out, time_consts
 
     def init_grazing_params(self, constants_inputs, time_consts, meat_and_dairy):
-
         if constants_inputs["USE_EFFICIENT_FEED_STRATEGY"]:
             meat_and_dairy.calculate_meat_milk_from_human_inedible_feed(
                 constants_inputs
@@ -733,7 +736,6 @@ class Parameters:
         constants_inputs,
         outdoor_crops,
     ):
-
         # APPLY FEED+BIOFUEL WASTE here
         # this is because the total contributed by feed and biofuels is actually
         # applied to
@@ -813,7 +815,6 @@ class Parameters:
     def init_culled_meat_params(
         self, constants_inputs, constants_out, time_consts, meat_and_dairy
     ):
-
         # culled meat is based on the amount that wouldn't be maintained (excluding
         # maintained cattle as well as maintained chicken and pork)
         # this calculation is pre-waste for the meat maintained of course (no waste

@@ -48,7 +48,7 @@ returns the resulting constants
 [source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L94)
 ```python
 .run_optimizer(
-   single_valued_constants, multi_valued_constants
+   single_valued_constants, time_consts
 )
 ```
 

@@ -309,11 +309,11 @@ class CalculateAnimalOutputs:
             if np.abs(i - poultryGestation) <= 0.5:
                 new_poultry_pm *= 1 - reduction_in_poultry_breeding
 
-            if new_pigs_pm < 0:
-                new_pigs_pm = 0
+            # if new_pigs_pm < 0:
+            #     new_pigs_pm = 0
 
-            if new_beef_calfs_pm < 0:
-                new_beef_calfs_pm = 0
+            # if new_beef_calfs_pm < 0:
+            #     new_beef_calfs_pm = 0
 
             # ### This is where the issue was!
             # added the new_poultry_pm and new_pigs_pm to the current totals. These
@@ -468,14 +468,14 @@ class CalculateAnimalOutputs:
             )
 
             # values might be very slightly negative due to overshoot, so set to zero
-            if current_beef_cattle < 0:
-                current_beef_cattle = 0
-            if current_dairy_cattle < 0:
-                current_dairy_cattle = 0
-            if current_total_poultry < 0:
-                current_total_poultry = 0
-            if current_total_pigs < 0:
-                current_total_pigs = 0
+            # if current_beef_cattle < 0:
+            #     current_beef_cattle = 0
+            # if current_dairy_cattle < 0:
+            #     current_dairy_cattle = 0
+            # if current_total_poultry < 0:
+            #     current_total_poultry = 0
+            # if current_total_pigs < 0:
+            #     current_total_pigs = 0
 
         # ## End of loop, start summary
 

@@ -13,9 +13,7 @@ class Extractor:
     def __init__(self, constants):
         self.constants = constants
 
-    def extract_results(
-        self, model, variables, single_valued_constants, multi_valued_constants
-    ):
+    def extract_results(self, model, variables, single_valued_constants, time_consts):
 
         # extract the results from the model
 
@@ -31,62 +29,62 @@ class Extractor:
         self.extract_seaweed_results(
             variables["seaweed_wet_on_farm"],
             variables["used_area"],
-            multi_valued_constants["built_area"],
+            time_consts["built_area"],
             variables["seaweed_food_produced"],
         )
 
         # if no cellulosic sugar, plot shows zero
         self.extract_cell_sugar_results(
-            multi_valued_constants["production_kcals_cell_sugar_per_month"],
+            time_consts["production_kcals_cell_sugar_per_month"],
         )
 
         # if no scp, plot shows zero
         self.extract_SCP_results(
-            multi_valued_constants["production_kcals_scp_per_month"],
-            multi_valued_constants["production_fat_scp_per_month"],
-            multi_valued_constants["production_protein_scp_per_month"],
+            time_consts["production_kcals_scp_per_month"],
+            time_consts["production_fat_scp_per_month"],
+            time_consts["production_protein_scp_per_month"],
         )
 
         # if no fish, plot shows zero
         self.extract_fish_results(
-            multi_valued_constants["production_kcals_fish_per_month"],
-            multi_valued_constants["production_fat_fish_per_month"],
-            multi_valued_constants["production_protein_fish_per_month"],
+            time_consts["production_kcals_fish_per_month"],
+            time_consts["production_fat_fish_per_month"],
+            time_consts["production_protein_fish_per_month"],
         )
 
         # if no greenhouses, plot shows zero
         self.extract_greenhouse_results(
-            multi_valued_constants["greenhouse_kcals_per_ha"],
-            multi_valued_constants["greenhouse_fat_per_ha"],
-            multi_valued_constants["greenhouse_protein_per_ha"],
-            multi_valued_constants["greenhouse_area"],
+            time_consts["greenhouse_kcals_per_ha"],
+            time_consts["greenhouse_fat_per_ha"],
+            time_consts["greenhouse_protein_per_ha"],
+            time_consts["greenhouse_area"],
         )
 
         # if no outdoor food, plot shows zero
         self.extract_outdoor_crops_results(
             variables["crops_food_eaten_no_relocation"],
             variables["crops_food_eaten_relocated"],
-            multi_valued_constants["outdoor_crops"],
+            time_consts["outdoor_crops"],
         )
 
         # if nonegg nonmilk meat isn't included, these results plot shows zero
         self.extract_meat_milk_results(
             variables["culled_meat_eaten"],
-            multi_valued_constants["grazing_milk_kcals"],
-            multi_valued_constants["grazing_milk_fat"],
-            multi_valued_constants["grazing_milk_protein"],
-            multi_valued_constants["cattle_grazing_maintained_kcals"],
-            multi_valued_constants["cattle_grazing_maintained_fat"],
-            multi_valued_constants["cattle_grazing_maintained_protein"],
-            multi_valued_constants["grain_fed_meat_kcals"],
-            multi_valued_constants["grain_fed_meat_fat"],
-            multi_valued_constants["grain_fed_meat_protein"],
-            multi_valued_constants["grain_fed_milk_kcals"],
-            multi_valued_constants["grain_fed_milk_fat"],
-            multi_valued_constants["grain_fed_milk_protein"],
+            time_consts["grazing_milk_kcals"],
+            time_consts["grazing_milk_fat"],
+            time_consts["grazing_milk_protein"],
+            time_consts["cattle_grazing_maintained_kcals"],
+            time_consts["cattle_grazing_maintained_fat"],
+            time_consts["cattle_grazing_maintained_protein"],
+            time_consts["grain_fed_meat_kcals"],
+            time_consts["grain_fed_meat_fat"],
+            time_consts["grain_fed_meat_protein"],
+            time_consts["grain_fed_milk_kcals"],
+            time_consts["grain_fed_milk_fat"],
+            time_consts["grain_fed_milk_protein"],
         )
 
-        self.excess_feed = multi_valued_constants["excess_feed"]
+        self.excess_feed = time_consts["excess_feed"]
 
         return self
 

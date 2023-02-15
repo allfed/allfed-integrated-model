@@ -63,7 +63,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             show_map_figures=show_map_figures,
             add_map_slide_to_pptx=show_map_figures,
             scenario_option=this_simulation,
-            countries_list=["USA"],
+            countries_list=[],
         )
 
     def run_optimizer_for_country(
@@ -75,12 +75,14 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         show_country_figures,
         figure_save_postfix="",
     ):
+        print("running optimizer0")
         country_name = country_data["country"]
 
         constants_for_params, scenario_loader = self.set_depending_on_option(
             country_data, scenario_option
         )
-        # No excess calories
+
+        print("running optimizer1")
 
         # No excess calories
         constants_for_params["EXCESS_FEED"] = Food(
@@ -92,9 +94,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             protein_units="thousand tons each month",
         )
 
+        print("running optimizer2")
         PRINT_COUNTRY = True
         if PRINT_COUNTRY:
-
             print("")
             print("")
             print("")
@@ -109,6 +111,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         USE_TRY_CATCH = False
         if USE_TRY_CATCH:
             try:
+                print("running scenario")
                 scenario_runner = ScenarioRunner()
                 interpreted_results = scenario_runner.run_and_analyze_scenario(
                     constants_for_params, scenario_loader
@@ -154,7 +157,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 print("no match")
                 print(country_code_map)
         if len(country_map) == 1:
-
             # cap at 100% fed, surplus is not traded away in this scenario
             kcals_ratio_capped = 1 if needs_ratio >= 1 else needs_ratio
             world_index = country_map.index
@@ -245,6 +247,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             # skip countries with no population
             if np.isnan(population):
                 continue
+
+            print("about to run optimizer for country")
 
             (
                 needs_ratio,
@@ -485,7 +489,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         )
 
     def run_desired_simulation(self, this_simulation, args):
-
         print("arguments, all optional:")
         print("first: [single|multi] (single set of assumptions or multiple)")
         print("second: [pptx|no_pptx] (save a pptx report or not)")

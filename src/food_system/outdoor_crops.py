@@ -54,10 +54,8 @@ class OutdoorCrops(Food):
             self.OG_FRACTION_FAT = 0
 
     def calculate_rotation_ratios(self, constants_for_params):
-
         # need to use the multiplier on units of kcals to get fat and protein
         if constants_for_params["OG_USE_BETTER_ROTATION"]:
-
             # deals with the issue of caloric improvement being more than
             # present-day production during the beginning months
             # of the simulation.
@@ -307,9 +305,7 @@ class OutdoorCrops(Food):
         self.CROP_WASTE = constants_for_params["WASTE"]["CROPS"]
 
         if self.ADD_OUTDOOR_GROWING:
-
             if constants_for_params["OG_USE_BETTER_ROTATION"]:
-                print("Better!")
                 crops_produced = np.array([0] * self.NMONTHS)
 
                 hd = (
@@ -350,23 +346,23 @@ class OutdoorCrops(Food):
             protein_units="thousand tons each month",
         )
 
-        import matplotlib.pyplot as plt
-        import pandas as pd
+        # import matplotlib.pyplot as plt
+        # import pandas as pd
 
-        outdoor_growing_dict = {
-            "outdoor_growing": np.array(
-                np.array(self.KCALS_GROWN) * 1e9 / (340e6 * 2100 * 365 / 12) * 2100
-            ),
-        }
+        # outdoor_growing_dict = {
+        #     "outdoor_growing": np.array(
+        #         np.array(self.KCALS_GROWN) * 1e9 / (340e6 * 2100 * 365 / 12) * 2100
+        #     ),
+        # }
 
-        df = pd.DataFrame(outdoor_growing_dict)
+        # df = pd.DataFrame(outdoor_growing_dict)
 
         # saving the dataframe
         # df.to_csv("ykcals" + self.constants["scenario_name"] + ".csv")
-        df.to_csv("ykcals.csv")
-        plt.figure()
-        plt.plot(self.kcals * 1e9 / (340e6 * 2100 * 365 / 12))
-        plt.title(
-            "CROP PRODUCTION MINUS GREENHOUSE AREA, people fed multiples of US population"
-        )
-        plt.show()
+        # df.to_csv("ykcals.csv")
+        # plt.figure()
+        # plt.plot(self.kcals * 1e9 / (340e6 * 2100 * 365 / 12))
+        # plt.title(
+        #     "CROP PRODUCTION MINUS GREENHOUSE AREA, people fed multiples of US population"
+        # )
+        # plt.show()

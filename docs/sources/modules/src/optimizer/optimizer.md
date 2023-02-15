@@ -17,7 +17,7 @@
 [source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L14)
 ```python
 .optimize(
-   single_valued_constants, multi_valued_constants
+   single_valued_constants, time_consts
 )
 ```
 

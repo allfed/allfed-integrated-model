@@ -11,7 +11,7 @@ class Optimizer:
     def __init__(self):
         pass
 
-    def optimize(self, single_valued_constants, multi_valued_constants):
+    def optimize(self, single_valued_constants, time_consts):
         maximize_constraints = []  # used only for validation
 
         # Create the model to optimize
@@ -24,7 +24,7 @@ class Optimizer:
         )
 
         self.single_valued_constants = single_valued_constants
-        self.multi_valued_constants = multi_valued_constants
+        self.time_consts = time_consts
 
         self.time_months = []
 
@@ -99,7 +99,7 @@ class Optimizer:
             variables,
             maximize_constraints,
             single_valued_constants,
-            multi_valued_constants,
+            time_consts,
         )
 
     def second_optimization_smoothing(
@@ -221,7 +221,7 @@ class Optimizer:
             "Seaweed_Wet_On_Farm_" + str(month) + "_Variable",
             self.single_valued_constants["INITIAL_SEAWEED"],
             self.single_valued_constants["MAXIMUM_DENSITY"]
-            * self.multi_valued_constants["built_area"][month],
+            * self.time_consts["built_area"][month],
         )
 
         # food production (using resources)
@@ -233,7 +233,7 @@ class Optimizer:
         variables["used_area"][month] = LpVariable(
             "Used_Area_" + str(month) + "_Variable",
             self.single_valued_constants["INITIAL_BUILT_SEAWEED_AREA"],
-            self.multi_valued_constants["built_area"][month],
+            self.time_consts["built_area"][month],
         )
 
         if month == 0:  # first Month
@@ -410,7 +410,7 @@ class Optimizer:
         variables["culled_meat_eaten"][month] = LpVariable(
             "Culled_Meat_Eaten_During_Month_" + str(month) + "_Variable",
             0,
-            self.multi_valued_constants["max_culled_kcals"][month],
+            self.time_consts["max_culled_kcals"][month],
         )
 
         if month == 0:  # first Month
@@ -466,7 +466,7 @@ class Optimizer:
 
             model += (
                 variables["crops_food_storage_no_relocation"][month]
-                == self.multi_valued_constants["outdoor_crops"].kcals[month]
+                == self.time_consts["outdoor_crops"].kcals[month]
                 - variables["crops_food_eaten_no_relocation"][month],
                 "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
             )
@@ -479,7 +479,7 @@ class Optimizer:
 
             model += (
                 variables["crops_food_storage_no_relocation"][month]
-                == self.multi_valued_constants["outdoor_crops"].kcals[month]
+                == self.time_consts["outdoor_crops"].kcals[month]
                 + variables["crops_food_storage_no_relocation"][month - 1]
                 - variables["crops_food_eaten_no_relocation"][month],
                 "Crops_Food_No_Relocation_Storage_" + str(month) + "_Constraint",
@@ -490,7 +490,7 @@ class Optimizer:
 
             model += (
                 variables["crops_food_storage_no_relocation"][month]
-                == self.multi_valued_constants["outdoor_crops"].kcals[month]
+                == self.time_consts["outdoor_crops"].kcals[month]
                 - variables["crops_food_eaten_no_relocation"][month]
                 + variables["crops_food_storage_no_relocation"][month - 1],
                 "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
@@ -512,7 +512,7 @@ class Optimizer:
 
             model += (
                 0
-                == self.multi_valued_constants["outdoor_crops"].kcals[month]
+                == self.time_consts["outdoor_crops"].kcals[month]
                 - variables["crops_food_eaten_no_relocation"][month],
                 "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
             )
@@ -521,7 +521,7 @@ class Optimizer:
 
             model += (
                 0
-                == self.multi_valued_constants["outdoor_crops"].kcals[month]
+                == self.time_consts["outdoor_crops"].kcals[month]
                 - variables["crops_food_eaten_no_relocation"][month],
                 "Crops_Food_No_Relocation_Storage_" + str(month) + "_Constraint",
             )
@@ -531,7 +531,7 @@ class Optimizer:
 
             model += (
                 0
-                == self.multi_valued_constants["outdoor_crops"].kcals[month]
+                == self.time_consts["outdoor_crops"].kcals[month]
                 - variables["crops_food_eaten_no_relocation"][month],
                 "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
             )
@@ -573,7 +573,7 @@ class Optimizer:
 
             model += (
                 variables["crops_food_storage_no_relocation"][month]
-                == self.multi_valued_constants["outdoor_crops"].kcals[month]
+                == self.time_consts["outdoor_crops"].kcals[month]
                 - variables["crops_food_eaten_no_relocation"][month],
                 "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
             )
@@ -613,7 +613,7 @@ class Optimizer:
 
             model += (
                 variables["crops_food_storage_relocated"][month]
-                == self.multi_valued_constants["outdoor_crops"].kcals[month]
+                == self.time_consts["outdoor_crops"].kcals[month]
                 - variables["crops_food_eaten_relocated"][month]
                 + variables["crops_food_storage_relocated"][month - 1],
                 "Crops_Food_Relocated_Storage_" + str(month) + "_Constraint",
@@ -646,7 +646,7 @@ class Optimizer:
 
             model += (
                 variables["crops_food_storage_no_relocation"][month]
-                == self.multi_valued_constants["outdoor_crops"].kcals[month]
+                == self.time_consts["outdoor_crops"].kcals[month]
                 - variables["crops_food_eaten_no_relocation"][month]
                 + variables["crops_food_storage_no_relocation"][month - 1],
                 "Crops_Food_Storage_No_Relocation_" + str(month) + "_Constraint",
@@ -657,7 +657,7 @@ class Optimizer:
             # switch
             model += (
                 variables["crops_food_storage_relocated"][month]
-                == self.multi_valued_constants["outdoor_crops"].kcals[month]
+                == self.time_consts["outdoor_crops"].kcals[month]
                 - variables["crops_food_eaten_relocated"][month]
                 + variables["crops_food_storage_relocated"][month - 1],
                 "Crops_Food_Storage_Relocated_" + str(month) + "_Constraint",
@@ -716,20 +716,18 @@ class Optimizer:
                 + variables["crops_food_eaten_no_relocation"][month]
                 + variables["crops_food_eaten_relocated"][month]
                 * self.single_valued_constants["OG_ROTATION_FRACTION_KCALS"]
-                - self.multi_valued_constants["nonhuman_consumption"].kcals[month]
+                - self.time_consts["nonhuman_consumption"].kcals[month]
                 + variables["seaweed_food_produced"][month]
                 * self.single_valued_constants["SEAWEED_KCALS"]
-                + self.multi_valued_constants["grazing_milk_kcals"][month]
-                + self.multi_valued_constants["cattle_grazing_maintained_kcals"][month]
+                + self.time_consts["grazing_milk_kcals"][month]
+                + self.time_consts["cattle_grazing_maintained_kcals"][month]
                 + variables["culled_meat_eaten"][month]
-                + self.multi_valued_constants["production_kcals_cell_sugar_per_month"][
-                    month
-                ]
-                + self.multi_valued_constants["production_kcals_scp_per_month"][month]
-                + self.multi_valued_constants["greenhouse_area"][month]
-                * self.multi_valued_constants["greenhouse_kcals_per_ha"][month]
-                + self.multi_valued_constants["production_kcals_fish_per_month"][month]
-                + self.multi_valued_constants["grain_fed_created_kcals"][month]
+                + self.time_consts["production_kcals_cell_sugar_per_month"][month]
+                + self.time_consts["production_kcals_scp_per_month"][month]
+                + self.time_consts["greenhouse_area"][month]
+                * self.time_consts["greenhouse_kcals_per_ha"][month]
+                + self.time_consts["production_kcals_fish_per_month"][month]
+                + self.time_consts["grain_fed_created_kcals"][month]
             )
             / self.single_valued_constants["BILLION_KCALS_NEEDED"]
             * 100,
@@ -748,22 +746,18 @@ class Optimizer:
                     * self.single_valued_constants["OG_FRACTION_FAT"]
                     + variables["crops_food_eaten_relocated"][month]
                     * self.single_valued_constants["OG_ROTATION_FRACTION_FAT"]
-                    - self.multi_valued_constants["nonhuman_consumption"].fat[month]
+                    - self.time_consts["nonhuman_consumption"].fat[month]
                     + variables["seaweed_food_produced"][month]
                     * self.single_valued_constants["SEAWEED_FAT"]
-                    + self.multi_valued_constants["grazing_milk_fat"][month]
-                    + self.multi_valued_constants["cattle_grazing_maintained_fat"][
-                        month
-                    ]
+                    + self.time_consts["grazing_milk_fat"][month]
+                    + self.time_consts["cattle_grazing_maintained_fat"][month]
                     + variables["culled_meat_eaten"][month]
                     * self.single_valued_constants["CULLED_MEAT_FRACTION_FAT"]
-                    + self.multi_valued_constants["production_fat_scp_per_month"][month]
-                    + self.multi_valued_constants["greenhouse_area"][month]
-                    * self.multi_valued_constants["greenhouse_fat_per_ha"][month]
-                    + self.multi_valued_constants["production_fat_fish_per_month"][
-                        month
-                    ]
-                    + self.multi_valued_constants["grain_fed_created_fat"][month]
+                    + self.time_consts["production_fat_scp_per_month"][month]
+                    + self.time_consts["greenhouse_area"][month]
+                    * self.time_consts["greenhouse_fat_per_ha"][month]
+                    + self.time_consts["production_fat_fish_per_month"][month]
+                    + self.time_consts["grain_fed_created_fat"][month]
                 )
                 / self.single_valued_constants["THOU_TONS_FAT_NEEDED"]
                 * 100,
@@ -781,24 +775,18 @@ class Optimizer:
                     * self.single_valued_constants["OG_FRACTION_PROTEIN"]
                     + variables["crops_food_eaten_relocated"][month]
                     * self.single_valued_constants["OG_ROTATION_FRACTION_PROTEIN"]
-                    - self.multi_valued_constants["nonhuman_consumption"].protein[month]
+                    - self.time_consts["nonhuman_consumption"].protein[month]
                     + variables["seaweed_food_produced"][month]
                     * self.single_valued_constants["SEAWEED_PROTEIN"]
-                    + self.multi_valued_constants["grazing_milk_protein"][month]
-                    + self.multi_valued_constants["cattle_grazing_maintained_protein"][
-                        month
-                    ]
-                    + self.multi_valued_constants["production_protein_scp_per_month"][
-                        month
-                    ]
+                    + self.time_consts["grazing_milk_protein"][month]
+                    + self.time_consts["cattle_grazing_maintained_protein"][month]
+                    + self.time_consts["production_protein_scp_per_month"][month]
                     + variables["culled_meat_eaten"][month]
                     * self.single_valued_constants["CULLED_MEAT_FRACTION_PROTEIN"]
-                    + self.multi_valued_constants["greenhouse_area"][month]
-                    * self.multi_valued_constants["greenhouse_protein_per_ha"][month]
-                    + self.multi_valued_constants["production_protein_fish_per_month"][
-                        month
-                    ]
-                    + self.multi_valued_constants["grain_fed_created_protein"][month]
+                    + self.time_consts["greenhouse_area"][month]
+                    * self.time_consts["greenhouse_protein_per_ha"][month]
+                    + self.time_consts["production_protein_fish_per_month"][month]
+                    + self.time_consts["grain_fed_created_protein"][month]
                 )
                 / self.single_valued_constants["THOU_TONS_PROTEIN_NEEDED"]
                 * 100,
@@ -816,7 +804,7 @@ class Optimizer:
             )
             / self.single_valued_constants["BILLION_KCALS_NEEDED"]
             * 100
-            >= (self.multi_valued_constants["nonhuman_consumption"].kcals[month])
+            >= (self.time_consts["nonhuman_consumption"].kcals[month])
             / self.single_valued_constants["BILLION_KCALS_NEEDED"]
             * 100,
             "Excess_Kcals_Less_Than_stored_food_And_outdoor_crops_"
@@ -836,7 +824,7 @@ class Optimizer:
                 )
                 / self.single_valued_constants["THOU_TONS_FAT_NEEDED"]
                 * 100
-                >= self.multi_valued_constants["nonhuman_consumption"].fat[month]
+                >= self.time_consts["nonhuman_consumption"].fat[month]
                 / self.single_valued_constants["THOU_TONS_FAT_NEEDED"]
                 * 100,
                 "Excess_Fat_Less_Than_stored_food_And_outdoor_crops_"
@@ -856,7 +844,7 @@ class Optimizer:
                 )
                 / self.single_valued_constants["THOU_TONS_PROTEIN_NEEDED"]
                 * 100
-                >= self.multi_valued_constants["nonhuman_consumption"].protein[month]
+                >= self.time_consts["nonhuman_consumption"].protein[month]
                 / self.single_valued_constants["THOU_TONS_PROTEIN_NEEDED"]
                 * 100,
                 "Excess_Protein_Less_Than_stored_food_And_outdoor_crops_"

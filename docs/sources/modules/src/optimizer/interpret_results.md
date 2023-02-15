@@ -20,7 +20,7 @@ ways of interpreting the results, as a diet, or as a total food supply.
 [source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L27)
 ```python
 .interpret_results(
-   extracted_results, multi_valued_constants
+   extracted_results, time_consts
 )
 ```
 
