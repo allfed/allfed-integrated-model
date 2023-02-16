@@ -258,6 +258,14 @@ class Scenarios:
             "percent_of_global_capex"
         ]
 
+        print("initial_seaweed_fraction")
+        print(country_data)
+        print(country_data["initial_seaweed_fraction"])
+        assert 1 >= country_data["initial_seaweed_fraction"] >= 0
+        assert 1 >= country_data["new_area_fraction"] >= 0
+        assert 1 >= country_data["max_area_fraction"] >= 0
+        assert 1 >= country_data["max_area_fraction"] >= 0
+        assert 1 >= country_data["initial_built_fraction"] >= 0
         assert 1 >= constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"] >= 0
 
         # if country_data["percent_of_seaweed"] == 0:
@@ -270,12 +278,25 @@ class Scenarios:
         assert 1 >= constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"] >= 0
 
         # 1000s of tons wet
+        constants_for_params["INITIAL_SEAWEED_FRACTION"] = country_data[
+            "initial_seaweed_fraction"
+        ]
+
+        constants_for_params["SEAWEED_NEW_AREA_FRACTION"] = country_data[
+            "new_area_fraction"
+        ]
+        constants_for_params["SEAWEED_MAX_AREA_FRACTION"] = country_data[
+            "max_area_fraction"
+        ]
 
         constants_for_params["POWER_LAW_IMPROVEMENT"] = country_data[
             "power_law_improvement"
         ]
 
         # 1000s of hectares
+        constants_for_params["INITIAL_BUILT_SEAWEED_FRACTION"] = country_data[
+            "initial_built_fraction"
+        ]
         constants_for_params["INITIAL_CROP_AREA_FRACTION"] = country_data[
             "fraction_crop_area"
         ]

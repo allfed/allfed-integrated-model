@@ -26,9 +26,6 @@ df_improvement.columns = [
     "country",
     "power_law_improvement",
 ]
-df_improvement = df_improvement.iloc[
-    0:137,
-]
 
 df_improvement.to_csv(
     Path(repo_root)

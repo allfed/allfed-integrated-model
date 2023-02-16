@@ -52,7 +52,6 @@ df_stock.columns = [
     "stocks_kcals_nov",
     "stocks_kcals_dec",
 ]
-
 df_stock["stocks_kcals_jan"] = df_stock["stocks_kcals_jan"] * 1e6
 df_stock["stocks_kcals_feb"] = df_stock["stocks_kcals_feb"] * 1e6
 df_stock["stocks_kcals_mar"] = df_stock["stocks_kcals_mar"] * 1e6
