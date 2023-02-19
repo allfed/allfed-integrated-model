@@ -91,8 +91,26 @@ class Seaweed:
             * (1 - self.SEAWEED_WASTE / 100)
         )
 
-    def get_built_area(self, constants_for_params):
+    def get_growth_rates(self, constants_for_params):
+        # Convert keys to integers and sort them
+        sorted_columns = sorted(
+            [int(key) for key in constants_for_params["SEAWEED_GROWTH_PER_DAY"].keys()]
+        )
 
+        # Create a list of values in the proper order
+        sorted_daily_percents = np.array(
+            [
+                constants_for_params["SEAWEED_GROWTH_PER_DAY"][str(key)]
+                for key in sorted_columns
+            ]
+        )
+
+        # percentage gain per month
+        sorted_monthly_percents = 100 * ((sorted_daily_percents / 100) ** 30)
+
+        return sorted_monthly_percents
+
+    def get_built_area(self, constants_for_params):
         SEAWEED_NEW_AREA_PER_MONTH = (
             self.SEAWEED_NEW_AREA_PER_MONTH_GLOBAL
             * constants_for_params["SEAWEED_NEW_AREA_FRACTION"]

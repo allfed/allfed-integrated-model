@@ -86,7 +86,6 @@ class Optimizer:
             assert status == 1, "ERROR: OPTIMIZATION FAILED!"
 
         if status == 1 and self.single_valued_constants["STORE_FOOD_BETWEEN_YEARS"]:
-
             model, variables = self.second_optimization_smoothing(
                 model,
                 variables,
@@ -171,7 +170,6 @@ class Optimizer:
                 )
 
         for month in range(0, NMONTHS):
-
             if single_valued_constants["ADD_CULLED_MEAT"]:
                 maximizer_string = (
                     "Smoothing_Culled_Pos_Month" + str(month) + "_Objective_Constraint"
@@ -262,11 +260,7 @@ class Optimizer:
             model += (
                 variables["seaweed_wet_on_farm"][month]
                 == variables["seaweed_wet_on_farm"][month - 1]
-                * (
-                    1
-                    + self.single_valued_constants["inputs"]["SEAWEED_PRODUCTION_RATE"]
-                    / 100.0
-                )
+                * (1 + self.time_consts["growth_rates_monthly"][month] / 100.0)
                 - variables["seaweed_food_produced"][month]
                 - (variables["used_area"][month] - variables["used_area"][month - 1])
                 * self.single_valued_constants["MINIMUM_DENSITY"]
@@ -324,7 +318,6 @@ class Optimizer:
             )
 
         else:
-
             model += (
                 variables["stored_food_end"][month]
                 == variables["stored_food_start"][month]
@@ -335,7 +328,6 @@ class Optimizer:
         return (model, variables)
 
     def add_stored_food_to_model(self, model, variables, month):
-
         if not self.single_valued_constants["STORE_FOOD_BETWEEN_YEARS"]:
             return self.add_stored_food_to_model_only_first_year(
                 model, variables, month
@@ -365,7 +357,6 @@ class Optimizer:
             )
 
         elif month == self.single_valued_constants["NMONTHS"] - 1:  # last month
-
             model += (
                 variables["stored_food_end"][month] == 0,
                 "Stored_Food_End_Month_" + str(month) + "_Constraint",
@@ -421,7 +412,6 @@ class Optimizer:
             )
 
         elif month == self.single_valued_constants["NMONTHS"] - 1:  # last month
-
             model += (
                 variables["culled_meat_end"][month] == 0,
                 "Culled_Meat_End_Month_" + str(month) + "_Constraint",
@@ -463,7 +453,6 @@ class Optimizer:
         )
 
         if month == 0:
-
             model += (
                 variables["crops_food_storage_no_relocation"][month]
                 == self.time_consts["outdoor_crops"].kcals[month]
@@ -509,7 +498,6 @@ class Optimizer:
         )
 
         if month == 0:
-
             model += (
                 0
                 == self.time_consts["outdoor_crops"].kcals[month]
@@ -518,7 +506,6 @@ class Optimizer:
             )
 
         elif month == self.single_valued_constants["NMONTHS"] - 1:  # last month
-
             model += (
                 0
                 == self.time_consts["outdoor_crops"].kcals[month]
@@ -570,7 +557,6 @@ class Optimizer:
         )
 
         if month == 0:  # first month
-
             model += (
                 variables["crops_food_storage_no_relocation"][month]
                 == self.time_consts["outdoor_crops"].kcals[month]
@@ -675,7 +661,6 @@ class Optimizer:
     # OBJECTIVE FUNCTIONS  #
 
     def add_objectives_to_model(self, model, variables, month, maximize_constraints):
-
         variables["humans_fed_kcals"][month] = LpVariable(
             name="Humans_Fed_Kcals_" + str(month) + "_Variable", lowBound=0
         )
@@ -690,7 +675,6 @@ class Optimizer:
             self.single_valued_constants["ADD_SEAWEED"]
             and self.single_valued_constants["inputs"]["INITIAL_SEAWEED_FRACTION"] > 0
         ):
-
             # maximum seaweed percent of calories
             # constraint units: billion kcals per person
             model += (
@@ -735,7 +719,6 @@ class Optimizer:
         )
 
         if self.single_valued_constants["inputs"]["INCLUDE_FAT"]:
-
             # fat monthly is in units thousand tons
             model += (
                 variables["humans_fed_fat"][month]
@@ -765,7 +748,6 @@ class Optimizer:
             )
 
         if self.single_valued_constants["inputs"]["INCLUDE_PROTEIN"]:
-
             model += (
                 variables["humans_fed_protein"][month]
                 == (
@@ -866,7 +848,6 @@ class Optimizer:
         )
 
         if self.single_valued_constants["inputs"]["INCLUDE_FAT"]:
-
             maximizer_string = "Fat_Fed_Month_" + str(month) + "_Objective_Constraint"
             maximize_constraints.append(maximizer_string)
             model += (

@@ -34,8 +34,9 @@ df_seaweed = df_seaweed.rename(columns={"ISO3 Country Code": "iso3"})
 # Change country column to all lower case
 df_seaweed = df_seaweed.rename(columns={"Country": "country"})
 
-df_seaweed_new = df_seaweed.copy()
-
+df_seaweed_new = pd.DataFrame()
+df_seaweed_new["iso3"] = df_seaweed["iso3"]
+df_seaweed_new["country"] = df_seaweed["country"]
 df_seaweed_new["max_area_fraction"] = 0
 df_seaweed_new["new_area_fraction"] = 0
 df_seaweed_new["initial_built_fraction"] = 0
@@ -47,10 +48,21 @@ for i in range(0, len(df_seaweed)):
     coast = df_seaweed["Length of coastline"].values[i]
     total_coast += coast
 
+
+growth_cols = df_seaweed.loc[
+    :,
+    ~df_seaweed.columns.isin(
+        ["iso3", "country", "index", "Length of coastline", "Flags"]
+    ),
+].columns
+
+
+# initialize to zero
+for col in growth_cols:
+    df_seaweed_new["seaweed_growth_per_day_" + str(col)] = 0
+
 for i in range(0, len(df_seaweed)):
     coast_fraction = df_seaweed["Length of coastline"].values[i] / total_coast
-    seaweed_fraction = coast_fraction
-
     if (
         coast_fraction > 0
         and not df_seaweed.iloc[i].isnull().any()
@@ -63,12 +75,12 @@ for i in range(0, len(df_seaweed)):
             MIN_FRACTION_OF_GLOBAL_SEAWEED, coast_fraction
         )
         df_seaweed_new.loc[i, "initial_built_fraction"] = coast_fraction
-    else:
-        # Everything's zero! No Seaweed in this country!
-        df_seaweed_new.loc[
-            :, ~df_seaweed_new.columns.isin(["iso3", "country", "index"])
-        ] = 0
+        for col in growth_cols:
+            df_seaweed_new.loc[i, "seaweed_growth_per_day_" + str(col)] = df_seaweed[
+                col
+            ]
 
+print(df_seaweed_new)
 # Save to file
 df_seaweed_new.to_csv(
     Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "seaweed_csv.csv",

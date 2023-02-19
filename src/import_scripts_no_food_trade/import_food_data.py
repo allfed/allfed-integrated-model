@@ -179,7 +179,7 @@ assert (
 
 assert set(df_merged["iso3"].values) == set(
     expected_country_codes
-), """Error: number of countries imported disagrees from "ground truth" countries to 
+), """Error: number of countries imported disagrees from "ground truth" countries to
 import, specified in ImportUtilities file"""
 
 df_merged.to_csv(

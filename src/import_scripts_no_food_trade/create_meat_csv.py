@@ -1,5 +1,4 @@
 from pathlib import Path
-import pandas as pd
 import numpy as np
 import git
 from src.utilities.import_utilities import ImportUtilities

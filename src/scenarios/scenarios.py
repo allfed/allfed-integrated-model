@@ -136,6 +136,128 @@ class Scenarios:
         constants_for_params["END_OF_MONTH_STOCKS"]["NOV"] = 1642.406e6 * 1.015
         constants_for_params["END_OF_MONTH_STOCKS"]["DEC"] = 1813.862e6 * 1.015
 
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"] = {}
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["-3"] = 3.280243527
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["-2"] = 3.334115726
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["-1"] = 3.050423835
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["0"] = 2.835455997
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["1"] = 2.847631746
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["2"] = 3.938247088
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["3"] = 4.461998946
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["4"] = 4.407004285
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["5"] = 4.14288022
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["6"] = 4.019320807
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["7"] = 4.029817721
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["8"] = 3.811881724
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["9"] = 3.499376903
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["10"] = 3.698330595
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["11"] = 3.948105122
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["12"] = 4.1984675
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["13"] = 4.556431237
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["14"] = 4.483116708
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["15"] = 4.307000533
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["16"] = 4.293354108
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["17"] = 4.336405342
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["18"] = 4.124423307
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["19"] = 3.957399801
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["20"] = 3.574110614
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["21"] = 3.562394509
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["22"] = 3.454517899
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["23"] = 3.388982778
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["24"] = 3.450605774
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["25"] = 3.555228229
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["26"] = 3.658816146
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["27"] = 3.424530139
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["28"] = 3.253434988
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["29"] = 3.16820901
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["30"] = 3.144307864
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["31"] = 2.979931609
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["32"] = 3.029277798
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["33"] = 2.871550986
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["34"] = 2.874292984
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["35"] = 2.857490207
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["36"] = 2.855354313
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["37"] = 2.919643632
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["38"] = 3.000525927
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["39"] = 2.919633402
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["40"] = 2.776043444
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["41"] = 2.666282281
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["42"] = 2.583101843
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["43"] = 2.587772481
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["44"] = 2.674921678
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["45"] = 2.764051458
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["46"] = 2.787946778
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["47"] = 2.632984698
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["48"] = 2.358758332
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["49"] = 2.374585305
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["50"] = 2.390295172
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["51"] = 2.387672944
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["52"] = 2.375940434
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["53"] = 2.217004652
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["54"] = 2.145805788
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["55"] = 2.275670886
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["56"] = 2.586299912
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["57"] = 2.689122514
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["58"] = 2.721252781
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["59"] = 2.446378696
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["60"] = 2.153283049
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["61"] = 2.068362713
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["62"] = 2.227272558
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["63"] = 2.319325173
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["64"] = 2.277612993
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["65"] = 2.145133611
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["66"] = 2.05723362
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["67"] = 2.134569407
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["68"] = 2.296677102
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["69"] = 2.652624183
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["70"] = 2.620792141
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["71"] = 2.268458649
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["72"] = 1.862008627
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["73"] = 1.810996449
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["74"] = 2.003809275
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["75"] = 2.352443263
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["76"] = 2.393824763
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["77"] = 2.228708866
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["78"] = 2.117241208
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["79"] = 2.162013353
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["80"] = 2.449212699
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["81"] = 2.707294052
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["82"] = 2.554753816
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["83"] = 2.221274477
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["84"] = 1.929712462
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["85"] = 1.949992597
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["86"] = 2.328284543
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["87"] = 2.682473164
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["88"] = 2.692043127
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["89"] = 2.572977352
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["90"] = 2.524121111
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["91"] = 2.609014029
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["92"] = 2.858934229
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["93"] = 3.056473003
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["94"] = 2.886739232
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["95"] = 2.640633131
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["96"] = 2.596517279
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["97"] = 2.510737035
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["98"] = 2.818730288
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["99"] = 3.13238984
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["100"] = 3.128839607
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["101"] = 3.047094477
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["102"] = 2.965525323
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["103"] = 3.085088736
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["104"] = 3.347156394
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["105"] = 3.647367664
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["106"] = 3.613382371
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["107"] = 3.205683527
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["108"] = 2.914326235
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["109"] = 2.80454008
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["110"] = 3.077436259
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["111"] = 3.581070259
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["112"] = 3.844646941
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["113"] = 3.621240321
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["114"] = 3.34933192
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["115"] = 3.350107884
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"]["116"] = 3.65722728
+
         # total head count of milk cattle
         constants_for_params["INITIAL_MILK_CATTLE"] = 264e6
 
@@ -268,8 +390,23 @@ class Scenarios:
         assert 1 >= country_data["initial_built_fraction"] >= 0
         assert 1 >= constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"] >= 0
 
-        # if country_data["percent_of_seaweed"] == 0:
-        # constants_for_params["ADD_SEAWEED"] = False
+        # https://stackoverflow.com/questions/17106819/accessing-python-dict-values-with-the-key-start-characters
+        # all_seaweed_cols = [
+        #     v for k, v in country_data.items() if "seaweed_growth_" in k
+        # ]
+        all_seaweed_col_names = [
+            k for k, v in country_data.items() if "seaweed_growth_" in k
+        ]
+
+        constants_for_params["SEAWEED_GROWTH_PER_DAY"] = {}
+        for i in range(len(all_seaweed_col_names)):
+            # just have the number as a string as the keys for the dictionary
+            constants_for_params["SEAWEED_GROWTH_PER_DAY"][
+                all_seaweed_col_names[i].replace("seaweed_growth_", "")
+            ] = country_data[all_seaweed_col_names[i]]
+
+        if country_data["initial_seaweed_fraction"] == 0:
+            constants_for_params["ADD_SEAWEED"] = False
 
         # Cellulosic sugar fraction of global production
         constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"] = country_data[
@@ -1200,11 +1337,6 @@ class Scenarios:
         constants_for_params["ADD_SEAWEED"] = True
         constants_for_params["DELAY"]["SEAWEED_MONTHS"] = 1
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 30
-
-        # percent (seaweed)
-        # represents 10% daily growth, but is calculated on monthly basis
-
-        constants_for_params["SEAWEED_PRODUCTION_RATE"] = 100 * (1.09**30 - 1)
 
         return constants_for_params
 

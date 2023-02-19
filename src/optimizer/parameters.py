@@ -81,12 +81,12 @@ class Parameters:
 
         # SEAWEED INITIAL VARIABLES #
 
-        constants_out, built_area = self.set_seaweed_params(
+        constants_out, built_area, growth_rates = self.set_seaweed_params(
             constants_out, constants_inputs
         )
-        # print("constants_out[INITIAL_SEAWEED]")
-        # print(constants_out["INITIAL_SEAWEED"])
+
         time_consts["built_area"] = built_area
+        time_consts["growth_rates_monthly"] = growth_rates
 
         # FISH #
         time_consts, constants_out = self.init_fish_params(
@@ -268,6 +268,9 @@ class Parameters:
         # determine area built to enable seaweed to grow there
         built_area = seaweed.get_built_area(constants_inputs)
 
+        # determine growth rates
+        growth_rates = seaweed.get_growth_rates(constants_inputs)
+
         constants_out["INITIAL_SEAWEED"] = seaweed.INITIAL_SEAWEED
         constants_out["SEAWEED_KCALS"] = seaweed.SEAWEED_KCALS
         constants_out["HARVEST_LOSS"] = seaweed.HARVEST_LOSS
@@ -279,7 +282,7 @@ class Parameters:
         constants_out["MAXIMUM_SEAWEED_AREA"] = seaweed.MAXIMUM_SEAWEED_AREA
         constants_out["INITIAL_BUILT_SEAWEED_AREA"] = seaweed.INITIAL_BUILT_SEAWEED_AREA
 
-        return constants_out, built_area
+        return constants_out, built_area, growth_rates
 
     def init_outdoor_crops(self, constants_out, constants_inputs):
         """
