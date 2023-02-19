@@ -11,7 +11,6 @@ import numpy as np
 
 class CellulosicSugar:
     def __init__(self, constants_for_params):
-
         # billion kcals a month for 100% population (7.8 billion people).
         self.GLOBAL_MONTHLY_NEEDS = 6793977 / 12
 
@@ -24,9 +23,7 @@ class CellulosicSugar:
     # this all comes from one of Juan's recently published industrial foods
     # papers
     def calculate_monthly_cs_production(self, constants_for_params):
-
         if constants_for_params["ADD_CELLULOSIC_SUGAR"]:
-
             industrial_delay_months = [0] * constants_for_params["DELAY"][
                 "INDUSTRIAL_FOODS_MONTHS"
             ]

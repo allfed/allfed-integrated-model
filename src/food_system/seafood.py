@@ -43,7 +43,6 @@ class Seafood:
 
     # includes all seafood (except seaweed), not just fish
     def get_seafood_production(self, constants_for_params):
-
         # Based on Xia et al. (2021): Global Famine after Nuclear War
 
         FISH_PERCENT_EACH_MONTH_LONG = constants_for_params["FISH_PERCENT_MONTHLY"]

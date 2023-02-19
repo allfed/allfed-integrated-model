@@ -92,7 +92,6 @@ class Interpreter:
         return self
 
     def assign_percent_fed_from_extractor(self, extracted_results):
-
         self.stored_food = extracted_results.stored_food.in_units_percent_fed()
 
         self.outdoor_crops = extracted_results.outdoor_crops.in_units_percent_fed()
@@ -126,7 +125,6 @@ class Interpreter:
         )
 
     def assign_kcals_equivalent_from_extractor(self, extracted_results):
-
         self.stored_food_kcals_equivalent = (
             extracted_results.stored_food.in_units_kcals_equivalent()
         )
@@ -176,7 +174,6 @@ class Interpreter:
         )
 
     def set_to_humans_properties_kcals_equivalent(self, extracted_results):
-
         self.stored_food_to_humans_kcals_equivalent = (
             self.stored_food_to_humans.in_units_kcals_equivalent()
         )
@@ -199,7 +196,6 @@ class Interpreter:
             self.time_months_middle.append(month + 0.5)
 
     def assign_interpreted_properties(self, extracted_results):
-
         humans_fed_sum = self.get_sum_by_subtracting_nonhuman(
             self.nonhuman_consumption_percent
         )
@@ -282,7 +278,6 @@ class Interpreter:
         new_stored_outdoor_crops,
         to_humans_ratio,
     ):
-
         # apply the reduction to stored food and outdoor crops
         stored_food_to_humans = to_humans_ratio * stored_food
         outdoor_crops_to_humans = to_humans_ratio * outdoor_crops
@@ -440,7 +435,6 @@ class Interpreter:
 
         PRINT_FED = False
         if PRINT_FED:
-
             print("Nutrients with constraining values are: " + str(min_nutrient))
             print(
                 "Estimated percent people fed is "
@@ -566,7 +560,6 @@ class Interpreter:
         ]
 
         if percent_fed < 106 and percent_fed > 100:
-
             additional_excess_to_add_percent = np.linspace(
                 SMALL_INCREASE_IN_EXCESS,
                 SMALL_INCREASE_IN_EXCESS,
@@ -606,7 +599,6 @@ class Interpreter:
         net_pop = 0
         previous_interpreter = []
         for country, interpreter in many_results.items():
-
             # record some useful values for plotting from the interpreter
             # will check later that these are consistent
             include_fat = interpreter.include_fat

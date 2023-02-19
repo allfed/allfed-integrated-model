@@ -11,7 +11,6 @@ import numpy as np
 
 class MeatAndDairy:
     def __init__(self, constants_for_params):
-
         self.KG_TO_1000_TONS = 1 / (1e6)
         self.ADD_MILK = constants_for_params["ADD_MILK"]
 
@@ -203,7 +202,6 @@ class MeatAndDairy:
     # the following two functions are less efficient alternatives for bad adaptation
 
     def calculate_continued_ratios_meat_dairy_grazing(self, constants_for_params):
-
         # This condition is set in the scenarios file as well. They should both be set
         # to the same value.
         # Setting it to true mimics the Xia et al result, but is less accurate.
@@ -257,7 +255,6 @@ class MeatAndDairy:
     def calculate_continued_ratios_meat_dairy_grain(
         self, fed_to_animals_prewaste, outdoor_crops
     ):
-
         # This condition is set in the scenarios file as well. They should both be set
         # to the same value.
         # Setting it to true mimics the Xia et al result, but is less accurate.
@@ -322,7 +319,6 @@ class MeatAndDairy:
             self.grain_fed_milk_produced_prewaste = np.array([0] * self.NMONTHS)
 
     def calculate_meat_and_dairy_from_grain(self, fed_to_animals_prewaste):
-
         # each unit of excess kcals (with associated fat and protein)
         # are fed first to milk, then to pigs and chickens, then to cattle
 
@@ -352,11 +348,9 @@ class MeatAndDairy:
         chicken_pork_maintained_prewaste = []
         cattle_grain_fed_maintained_prewaste = []
         for m in range(self.NMONTHS):
-
             max_milk = excess_dry_cal_tons[m] / self.EDIBLE_TO_MILK_CONVERSION
 
             if self.ADD_MILK:
-
                 if max_milk <= self.grain_fed_milk_limit_prewaste[m]:
                     # tons per month milk
                     grain_fed_milk_produced_prewaste.append(max_milk)
@@ -417,7 +411,6 @@ class MeatAndDairy:
         self.chicken_pork_maintained_prewaste = chicken_pork_maintained_prewaste
 
     def calculate_meat_milk_from_human_inedible_feed(self, constants_for_params):
-
         self.grazing_milk_produced_prewaste = []  # tons
         self.cattle_grazing_maintained_prewaste = []  # tons
         for m in range(self.NMONTHS):
@@ -449,9 +442,7 @@ class MeatAndDairy:
         )
 
     def get_milk_from_human_edible_feed(self, constants_for_params):
-
         if self.ADD_MILK:
-
             grain_fed_milk_kcals = (
                 np.array(self.grain_fed_milk_produced_prewaste)
                 * 1e3
@@ -475,7 +466,6 @@ class MeatAndDairy:
             )
 
         else:
-
             grain_fed_milk_kcals = np.array([0] * self.NMONTHS)
             grain_fed_milk_fat = np.array([0] * self.NMONTHS)
             grain_fed_milk_protein = np.array([0] * self.NMONTHS)
@@ -483,7 +473,6 @@ class MeatAndDairy:
         return (grain_fed_milk_kcals, grain_fed_milk_fat, grain_fed_milk_protein)
 
     def get_meat_from_human_edible_feed(self):
-
         present_day_tons_per_month_chicken_pork_prewaste = (
             self.CHICKEN_AND_PORK_LIMIT_PREWASTE
         )  # tons a month
@@ -676,9 +665,7 @@ class MeatAndDairy:
         return (grazing_milk_kcals, grazing_milk_fat, grazing_milk_protein)
 
     def get_cattle_grazing_maintained(self):
-
         if self.ADD_MAINTAINED_MEAT:
-
             # billions kcals
             cattle_grazing_maintained_kcals = (
                 np.array(self.cattle_grazing_maintained_prewaste)
@@ -821,7 +808,6 @@ class MeatAndDairy:
         )
 
     def get_culled_meat_post_waste(self, constants_for_params):
-
         if self.ADD_CULLED_MEAT:
             culled_meat_prewaste = self.initial_culled_meat_prewaste
         else:

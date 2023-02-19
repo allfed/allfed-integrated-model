@@ -14,7 +14,6 @@ class Extractor:
         self.constants = constants
 
     def extract_results(self, model, variables, single_valued_constants, time_consts):
-
         # extract the results from the model
 
         self.get_objective_optimization_results(model)
@@ -200,7 +199,6 @@ class Extractor:
         greenhouse_protein_per_ha,
         greenhouse_area,
     ):
-
         billions_fed_greenhouse_kcals = np.multiply(
             np.array(greenhouse_area),
             np.array(greenhouse_kcals_per_ha) * 1 / self.constants["KCALS_MONTHLY"],
@@ -268,7 +266,6 @@ class Extractor:
         crops_food_eaten_relocated,
         outdoor_crops,
     ):
-
         self.set_crop_produced_monthly(outdoor_crops)
 
         no_relocation = self.to_monthly_list(crops_food_eaten_no_relocation, 1)
@@ -540,7 +537,6 @@ class Extractor:
         self,
         production_kcals_cell_sugar_per_month,
     ):
-
         billions_fed_cell_sugar_kcals = (
             np.array(production_kcals_cell_sugar_per_month)
             / self.constants["KCALS_MONTHLY"]
@@ -563,7 +559,6 @@ class Extractor:
         production_fat_scp_per_month,
         production_protein_scp_per_month,
     ):
-
         billions_fed_SCP_kcals = (
             np.array(production_kcals_scp_per_month) / self.constants["KCALS_MONTHLY"]
         )
@@ -780,7 +775,6 @@ class Extractor:
         built_area,
         seaweed_food_produced,
     ):
-
         self.seaweed_built_area = built_area
         self.seaweed_built_area_max_density = (
             np.array(built_area) * self.constants["MAXIMUM_DENSITY"]
@@ -823,7 +817,6 @@ class Extractor:
     # biofuels and feed are more than the available stored food and outdoor crop production.
 
     def get_objective_optimization_results(self, model):
-
         # I spent like five hours trying to figure out why the answer was wrong
         # until I finally found an issue with string ordering, fixed it below
 
@@ -834,7 +827,6 @@ class Extractor:
         order_fat = []
         order_protein = []
         for var in model.variables():
-
             if "Humans_Fed_Kcals_" in var.name:
                 humans_fed_kcals.append(var.value() / 100 * self.constants["POP"] / 1e9)
 
@@ -848,7 +840,6 @@ class Extractor:
                 humans_fed_fat.append(var.value() / 100 * self.constants["POP"] / 1e9)
 
             if "Humans_Fed_Protein_" in var.name:
-
                 order_protein.append(
                     int(var.name[len("Humans_Fed_Protein_") :].split("_")[0])
                 )
