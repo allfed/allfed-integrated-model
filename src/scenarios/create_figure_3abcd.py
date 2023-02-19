@@ -14,7 +14,6 @@ repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 
 def call_scenario_runner(this_simulation, title):
-
     scenario_runner = ScenarioRunner()
     constants_for_params, scenarios_loader = scenario_runner.set_depending_on_option(
         [], this_simulation

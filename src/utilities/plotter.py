@@ -324,7 +324,6 @@ class Plotter:
         plt.show()
 
     def helper_for_plotting_fig_3abcde(interpreter, xlim, gs, row, fig, max_y_percent):
-
         xlim = min(xlim, len(interpreter.time_months_middle))
         legend = Plotter.get_people_fed_legend(interpreter, True)
         pal = [
@@ -340,7 +339,6 @@ class Plotter:
             "#e7d2ad",
         ]
         for i, label in enumerate(("a", "b")):
-
             ykcals = []
             ykcals.append(interpreter.fish_kcals_equivalent.kcals)
             ykcals.append(interpreter.cell_sugar_kcals_equivalent.kcals)
@@ -368,10 +366,8 @@ class Plotter:
             ykcals.append(interpreter.stored_food_to_humans_kcals_equivalent.kcals)
 
             if label == "a":
-
                 ax = fig.add_subplot(gs[row, 1])
                 if row == 3:
-
                     ax.stackplot(
                         interpreter.time_months_middle,
                         np.array(ykcals),
@@ -590,7 +586,6 @@ class Plotter:
         lists_of_lists,
         xlim,
     ):
-
         # put maps and texts together: 5X4
         fig = plt.figure(figsize=(10, 10))
         fig.set_facecolor("white")
@@ -812,7 +807,6 @@ class Plotter:
             if label == "d":
                 plt.title("Diet macronutrition")
             if label == "a" or label == "c":
-
                 ykcals = []
                 ykcals.append(interpreter.fish_kcals_equivalent.kcals)
                 ykcals.append(interpreter.cell_sugar_kcals_equivalent.kcals)
@@ -965,7 +959,6 @@ class Plotter:
         ax.axis("off")
 
         for i in range(3):
-
             [
                 percent_people_fed,
                 interpreter,
@@ -1160,7 +1153,6 @@ class Plotter:
             ax.set_xlim([0.5, xlim])
 
             if label == "a" or label == "c":
-
                 ykcals = []
                 ykcals.append(interpreter.fish_kcals_equivalent.kcals)
                 ykcals.append(interpreter.cell_sugar_kcals_equivalent.kcals)
@@ -1320,7 +1312,6 @@ class Plotter:
             if label == "d":
                 plt.title("Diet macronutrition")
             if label == "a" or label == "c":
-
                 ykcals = []
                 ykcals.append(interpreter.fish_kcals_equivalent.kcals)
                 ykcals.append(interpreter.cell_sugar_kcals_equivalent.kcals)
@@ -1575,7 +1566,6 @@ class Plotter:
         return legend
 
     def plot_monthly_reductions_seasonally(ratios):
-
         month_nums = np.linspace(0, len(ratios), len(ratios))
         plt.scatter(month_nums, ratios)
         plt.plot(month_nums, ratios)

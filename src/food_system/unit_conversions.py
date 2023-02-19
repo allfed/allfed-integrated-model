@@ -419,7 +419,6 @@ class UnitConversions:
                 protein_units="percent people fed per month",
             )
         else:
-
             print("Error: conversion from these units not known")
             print("From units:")
             self.print_units()
@@ -479,7 +478,6 @@ class UnitConversions:
                 protein_units="thousand tons per month",
             )
         else:
-
             print("Error: conversion from these units not known")
             print("From units:")
             self.print_units()
@@ -571,7 +569,6 @@ class UnitConversions:
                 protein_units="effective kcals per capita per day per month",
             )
         else:
-
             print("Error: conversion from these units not known")
             print("From units:")
             self.print_units()
@@ -616,7 +613,6 @@ class UnitConversions:
             and self.fat_units == "thousand tons each month"
             and self.protein_units == "thousand tons each month"
         ):
-
             return Food(
                 kcals=self.kcals * billion_kcal_conversion,
                 fat=self.fat * thou_tons_fat_conversion,
@@ -641,7 +637,6 @@ class UnitConversions:
             )
 
         else:
-
             print("Error: conversion from these units not known")
             print("From units:")
             self.print_units()
@@ -677,7 +672,6 @@ class UnitConversions:
             and self.fat_units == "percent people fed each month"
             and self.protein_units == "percent people fed each month"
         ):
-
             return Food(
                 kcals=self.kcals * percent_kcal_conversion,
                 fat=self.fat * percent_fat_conversion,
@@ -702,7 +696,6 @@ class UnitConversions:
             )
 
         else:
-
             print("Error: conversion from these units not known")
             print("From units:")
             self.print_units()

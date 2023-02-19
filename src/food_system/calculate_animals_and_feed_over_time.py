@@ -270,7 +270,6 @@ class CalculateAnimalOutputs:
         )
 
         if steady_state_births == 1:
-
             other_beef_death_ss = other_cow_death_rate * current_beef_cattle
             other_dairy_death_ss = other_cow_death_rate * current_dairy_cattle
             other_pig_death_ss = current_total_pigs * other_pig_death_rate
@@ -290,9 +289,7 @@ class CalculateAnimalOutputs:
 
         # simulate x months
         for i in range(months):
-
             if steady_state_births == 0:
-
                 new_pigs_pm = current_pregnant_sows * piglets_per_litter
                 new_beef_calfs_pm = current_pregnant_cows * calves_per_mother
 

@@ -347,7 +347,6 @@ class Food(UnitConversions):
                 assert (protein_all_the_places_kcals_zero == 0).all()
 
         else:
-
             if self.kcals == 0:
                 if self.conversions.include_fat:
                     assert self.fat == 0 or self.conversions.exclude_fat
@@ -415,7 +414,6 @@ class Food(UnitConversions):
 
         """
         if type(other) == Food:
-
             assert self.units == other.units
 
             if self.is_list_monthly():
@@ -594,7 +592,6 @@ class Food(UnitConversions):
         self.validate_if_list()
 
         if type(other) == Food:
-
             if other.is_list_monthly():
                 # this is a food list and other is a food list
 
@@ -798,7 +795,6 @@ class Food(UnitConversions):
         assert self.units == other.units
 
         if self.is_list_monthly():
-
             self.validate_if_list()
 
             return (
@@ -828,7 +824,6 @@ class Food(UnitConversions):
         assert self.units == other.units
 
         if self.is_list_monthly():
-
             self.validate_if_list()
 
             return (
@@ -858,7 +853,6 @@ class Food(UnitConversions):
         assert self.units == other.units
 
         if self.is_list_monthly():
-
             self.validate_if_list()
 
             return (
@@ -894,7 +888,6 @@ class Food(UnitConversions):
         assert self.units == other.units
 
         if self.is_list_monthly():
-
             self.validate_if_list()
 
             return (
@@ -930,7 +923,6 @@ class Food(UnitConversions):
         assert self.units == other.units
 
         if self.is_list_monthly():
-
             self.validate_if_list()
 
             return (
@@ -1004,7 +996,6 @@ class Food(UnitConversions):
         assert self.units == other.units
 
         if self.is_list_monthly():
-
             self.validate_if_list()
 
             return (
@@ -1033,7 +1024,6 @@ class Food(UnitConversions):
         """
 
         if self.is_list_monthly():
-
             self.validate_if_list()
 
             if self.conversions.include_fat:
@@ -1072,7 +1062,6 @@ class Food(UnitConversions):
             True if the food's macronutrients are equal to zero.
         """
         if self.is_list_monthly():
-
             self.validate_if_list()
 
             return (
@@ -1096,7 +1085,6 @@ class Food(UnitConversions):
             True if the food's macronutrients are equal to zero.
         """
         if self.is_list_monthly():
-
             self.validate_if_list()
 
             if self.conversions.include_fat:
@@ -1129,7 +1117,6 @@ class Food(UnitConversions):
             True if the food's macronutrients are greater than zero.
         """
         if self.is_list_monthly():
-
             self.validate_if_list()
 
             return (
@@ -1149,7 +1136,6 @@ class Food(UnitConversions):
         Returns True if any of the food's macronutrients are greater than zero.
         """
         if self.is_list_monthly():
-
             self.validate_if_list()
 
             if self.conversions.include_fat:
@@ -1182,7 +1168,6 @@ class Food(UnitConversions):
             True if the food's macronutrients are greater than or equal to zero.
         """
         if self.is_list_monthly():
-
             self.validate_if_list()
 
             return (

@@ -15,7 +15,6 @@ class Validator:
         pass
 
     def validate_results(self, model, extracted_results, interpreted_results):
-
         self.ensure_optimizer_returns_same_as_sum_nutrients(
             model,
             interpreted_results,
@@ -49,7 +48,6 @@ class Validator:
         differences = []
         constraintlist = list(model.constraints.items())
         for constraint in constraintlist:
-
             if constraint[0] in maximize_constraints:
                 differences.append(0)
                 continue

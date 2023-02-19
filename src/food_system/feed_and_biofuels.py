@@ -18,7 +18,6 @@ from src.food_system.food import Food
 
 class FeedAndBiofuels:
     def __init__(self, constants_for_params):
-
         self.NMONTHS = constants_for_params["NMONTHS"]
 
         self.feed_per_year_prewaste = Food(
@@ -115,7 +114,6 @@ class FeedAndBiofuels:
     def get_biofuels_and_feed_before_waste_from_delayed_shutoff(
         self, constants_for_params
     ):
-
         biofuel_duration = constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
         biofuels_before_cap_prewaste = self.get_biofuel_usage_before_cap_prewaste(
             biofuel_duration
@@ -141,7 +139,6 @@ class FeedAndBiofuels:
     def get_biofuels_and_feed_before_waste_from_animal_pops(
         self, constants_for_params, feed_over_time
     ):
-
         biofuel_duration = constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
         biofuels_before_cap_prewaste = self.get_biofuel_usage_before_cap_prewaste(
             biofuel_duration
@@ -192,7 +189,6 @@ class FeedAndBiofuels:
         feed_before_cap,
         excess_feed_prewaste,
     ):
-
         # whether all macronutrients are zero (none exceed)
         all_zero = max_net_demand.all_equals_zero()
 
@@ -212,7 +208,6 @@ class FeedAndBiofuels:
         # the negative amount can be made up for by stored food, so there's no need
         # to change the biofuel or feed usage
         if all_zero or exceeds_less_than_stored_food:
-
             self.biofuels = biofuels_before_cap
             self.feed = feed_before_cap
             # feed to animals does not have additional waste applied (waste is applied
@@ -533,7 +528,6 @@ class FeedAndBiofuels:
         return max_running_net_demand, running_demand_minus_supply
 
     def get_excess_food_usage_from_percents(self, excess_feed_percent):
-
         # TODO: ALTER BASED ON THE EXPECTED FEED FAT AND PROTEIN RATIOS
         # (CURRENTLY IS JUST USING HUMAN NEEDS)
 

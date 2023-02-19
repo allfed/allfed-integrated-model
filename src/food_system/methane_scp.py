@@ -29,7 +29,6 @@ class MethaneSCP:
 
     def calculate_monthly_scp_production(self, constants_for_params):
         if constants_for_params["ADD_METHANE_SCP"]:
-
             industrial_delay_months = [0] * constants_for_params["DELAY"][
                 "INDUSTRIAL_FOODS_MONTHS"
             ]
@@ -69,7 +68,6 @@ class MethaneSCP:
         ]
 
     def get_scp_production(self):
-
         # billions of kcals converted to 1000s of tons protein
         production_protein_scp_per_month = list(
             np.array(self.production_kcals_scp_per_month)

@@ -95,7 +95,6 @@ def run_model_with_resilient_foods(plot_figures=True):
     n = 0
     print("Calculating 2100 calorie diet, excess feed to animals")
     while True:
-
         scenario_runner = ScenarioRunner()
         results = scenario_runner.run_and_analyze_scenario(
             constants_for_params, scenarios_loader

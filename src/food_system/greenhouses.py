@@ -35,7 +35,6 @@ class Greenhouses:
     def assign_productivity_reduction_from_climate_impact(
         self, months_cycle, all_months_reductions, exponent, CROP_WASTE
     ):
-
         MONTHLY_KCALS = np.mean(months_cycle) / self.TOTAL_CROP_AREA
 
         KCALS_GROWN_PER_HECTARE_BEFORE_WASTE = []
@@ -68,7 +67,6 @@ class Greenhouses:
         )
 
     def get_greenhouse_area(self, constants_for_params, outdoor_crops):
-
         # greenhouses tab
         # assumption: greenhouse crop production is very similar in nutritional
         # profile to stored food
