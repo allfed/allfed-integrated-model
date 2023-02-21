@@ -156,7 +156,7 @@ class Parameters:
 
         if PRINT_FIRST_MONTH_CONSTANTS:
             print_parameters = PrintParameters()
-            CONSIDER_WASTE_FOR_PRINTOUT = True
+            CONSIDER_WASTE_FOR_PRINTOUT = False
             if CONSIDER_WASTE_FOR_PRINTOUT:
                 print_parameters.print_constants_with_waste(
                     self.POP,
@@ -190,9 +190,9 @@ class Parameters:
         for k, v in single_valued_constants.items():
             self.assert_dictionary_value_not_nan(k, v)
 
-        for key, month_dict in time_consts.items():
-            for v in month_dict:
-                self.assert_dictionary_value_not_nan(k, v)
+        for month_key, month_value in time_consts.items():
+            for v in month_value:
+                self.assert_dictionary_value_not_nan(month_key, v)
 
     def assert_dictionary_value_not_nan(self, key, value):
         """
@@ -493,7 +493,6 @@ class Parameters:
         nonhuman_consumption = feed_and_biofuels.nonhuman_consumption
 
         # post waste
-        nonhuman_consumption.plot("nonhuman consumption")
         time_consts["nonhuman_consumption"] = nonhuman_consumption
         time_consts[
             "excess_feed"

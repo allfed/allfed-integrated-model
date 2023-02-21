@@ -416,18 +416,6 @@ class Optimizer:
                 "Culled_Meat_Start_Month_0_Constraint",
             )
 
-        # elif month == self.single_valued_constants["NMONTHS"] - 1:  # last month
-        #     model += (t_End_Month_" + str(month) + "_Constraint",
-        #     )
-        #         variables["culled_meat_end"][month] == 0,
-        #         "Culled_Mea
-
-        #     model += (
-        #         variables["culled_meat_start"][month]
-        #         == variables["culled_meat_end"][month - 1],
-        #         "Culled_Meat_Start_Month_" + str(month) + "_Constraint",
-        #     )
-
         else:
             model += (
                 variables["culled_meat_start"][month]

@@ -65,7 +65,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             scenario_option=this_simulation,
             countries_list=[
                 "!SWT",
-                # "!GBR",
+                "!GBR",
                 "!AUT",
                 "!BEL",
                 "!BGR",
