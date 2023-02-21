@@ -93,6 +93,7 @@ class FeedAndBiofuels:
         feed_before_cap = feed_before_cap_prewaste * waste_adjustment
         # this is the total exceedance beyond outdoor growing max of any month
         # cumulative
+
         (
             max_net_demand,
             running_supply_minus_demand,
@@ -155,25 +156,34 @@ class FeedAndBiofuels:
         # 4000 kcals per kg, 1000 kg per dry caloric tons, units currently billion kcals
         feed_over_time_dry_caloric_tons = feed_over_time.values * 1e9 / 4e6
 
+        # tons annually to thousand tons per month
+        fat_thousand_tons_per_month_over_time = (
+            feed_over_time_dry_caloric_tons
+            * constants_for_params["FEED_FAT"]
+            / constants_for_params["FEED_KCALS"]
+            if constants_for_params["FEED_KCALS"] > 0
+            else np.array(feed_over_time_dry_caloric_tons) * 0
+        )
+
+        # tons annually to thousand tons per month
+        protein_thousand_tons_per_month_over_time = (
+            feed_over_time_dry_caloric_tons
+            * constants_for_params["FEED_PROTEIN"]
+            / constants_for_params["FEED_KCALS"]
+            if constants_for_params["FEED_KCALS"] > 0
+            else np.array(feed_over_time_dry_caloric_tons) * 0
+        )
+
         feed_before_cap_prewaste = Food(
             # billion kcals per month
             kcals=feed_over_time.values,
-            # tons annually to thousand tons per month
-            fat=feed_over_time_dry_caloric_tons
-            * constants_for_params["FEED_FAT"]
-            / constants_for_params["FEED_KCALS"],
-            # tons annually to thousand tons per month
-            protein=feed_over_time_dry_caloric_tons
-            * constants_for_params["FEED_PROTEIN"]
-            / constants_for_params["FEED_KCALS"],
+            fat=fat_thousand_tons_per_month_over_time,
+            protein=protein_thousand_tons_per_month_over_time,
             kcals_units="billion kcals each month",
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
-        # print("feed_before_cap_prewaste")
-        # print(feed_before_cap_prewaste)
-        # print("biofuels_before_cap_prewaste")
-        # print(biofuels_before_cap_prewaste)
+
         return (
             biofuels_before_cap_prewaste,
             feed_before_cap_prewaste,

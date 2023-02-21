@@ -3,7 +3,9 @@ Optimizer Model
 In this model, we estimate the macronutrient production allocated optimally
 over time including models for traditional and resilient foods.
 """
+from datetime import time
 import pulp
+import numpy as np
 from pulp import LpMaximize, LpMinimize, LpProblem, LpVariable
 
 
@@ -22,6 +24,9 @@ class Optimizer:
         variables["objective_function"] = LpVariable(
             name="Least_Humans_Fed_Any_Month", lowBound=0
         )
+
+        # make sure there's nothing fishy going on with the constants (no nan's)
+        # (otherwise the linear optimizer will fail in a very mysterious way)
 
         self.single_valued_constants = single_valued_constants
         self.time_consts = time_consts
@@ -411,17 +416,17 @@ class Optimizer:
                 "Culled_Meat_Start_Month_0_Constraint",
             )
 
-        elif month == self.single_valued_constants["NMONTHS"] - 1:  # last month
-            model += (
-                variables["culled_meat_end"][month] == 0,
-                "Culled_Meat_End_Month_" + str(month) + "_Constraint",
-            )
+        # elif month == self.single_valued_constants["NMONTHS"] - 1:  # last month
+        #     model += (t_End_Month_" + str(month) + "_Constraint",
+        #     )
+        #         variables["culled_meat_end"][month] == 0,
+        #         "Culled_Mea
 
-            model += (
-                variables["culled_meat_start"][month]
-                == variables["culled_meat_end"][month - 1],
-                "Culled_Meat_Start_Month_" + str(month) + "_Constraint",
-            )
+        #     model += (
+        #         variables["culled_meat_start"][month]
+        #         == variables["culled_meat_end"][month - 1],
+        #         "Culled_Meat_Start_Month_" + str(month) + "_Constraint",
+        #     )
 
         else:
             model += (

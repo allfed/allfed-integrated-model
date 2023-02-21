@@ -87,7 +87,7 @@ class ScenarioRunner:
         (
             single_valued_constants,
             time_consts,
-        ) = constants_loader.computeParameters(constants_for_params, scenarios_loader)
+        ) = constants_loader.compute_parameters(constants_for_params, scenarios_loader)
 
         return (single_valued_constants, time_consts)
 
@@ -124,7 +124,6 @@ class ScenarioRunner:
 
     def set_depending_on_option(self, country_data, scenario_option):
         scenario_loader = Scenarios()
-        print("setting depending on option")
         # SCALE
 
         if scenario_option["scale"] == "global":
@@ -134,17 +133,16 @@ class ScenarioRunner:
                 country_data
             )
 
-            constants_for_params["iso3"] = country_data["iso3"]
+            constants_for_params["COUNTRY_CODE"] = country_data["iso3"]
         else:
             scenario_is_correct = False
+            constants_for_params["COUNTRY_CODE"] = "global"
 
             assert (
                 scenario_is_correct
             ), "You must specify 'scale' key as global,or country"
 
         # EXCESS
-
-        print("returning9")
         constants_for_params = scenario_loader.set_excess_to_zero(constants_for_params)
 
         # BUFFER

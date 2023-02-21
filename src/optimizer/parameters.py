@@ -44,7 +44,7 @@ class Parameters:
         }
         self.SIMULATION_STARTING_MONTH_NUM = months_dict[self.SIMULATION_STARTING_MONTH]
 
-    def computeParameters(self, constants_inputs, scenarios_loader):
+    def compute_parameters(self, constants_inputs, scenarios_loader):
         if (
             constants_inputs["DELAY"]["FEED_SHUTOFF_MONTHS"] > 0
             or constants_inputs["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] > 0
@@ -67,12 +67,9 @@ class Parameters:
         time_consts = {}
         constants_out = {}
 
-        # print(constants_inputs)
         print("")
         print("")
         print("")
-        print("")
-        # print(constants_inputs)
         constants_out = self.init_scenario(constants_out, constants_inputs)
 
         # NUTRITION PER MONTH #
@@ -111,46 +108,45 @@ class Parameters:
             constants_out, constants_inputs, outdoor_crops
         )
 
-        if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
-            (
-                meat_and_dairy,
-                constants_out,
-                time_consts,
-            ) = self.init_meat_and_dairy_and_feed_from_breeding(
-                constants_out,
-                constants_inputs,
-                time_consts,
-                outdoor_crops,
-                stored_food,
-            )
+        # if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
+        (
+            meat_and_dairy,
+            feed_and_biofuels,
+            constants_out,
+            time_consts,
+        ) = self.init_meat_and_dairy_and_feed_from_breeding(
+            constants_out,
+            constants_inputs,
+            time_consts,
+            outdoor_crops,
+            stored_food,
+        )
 
-        else:
-            # FEED AND BIOFUEL VARIABLES #
+        # else:
+        # # FEED AND BIOFUEL VARIABLES #
 
-            time_consts, feed_and_biofuels = self.init_feed_and_biofuels(
-                time_consts, constants_inputs, outdoor_crops, stored_food
-            )
+        # time_consts, feed_and_biofuels = self.init_feed_and_biofuels(
+        #     time_consts, constants_inputs, outdoor_crops, stored_food
+        # )
 
-            # LIVESTOCK, MILK INITIAL VARIABLES #
+        # # LIVESTOCK, MILK INITIAL VARIABLES #
 
-            (
-                meat_and_dairy,
-                constants_out,
-                time_consts,
-            ) = self.init_meat_and_dairy_params(
-                constants_inputs,
-                constants_out,
-                time_consts,
-                feed_and_biofuels,
-                outdoor_crops,
-            )
+        # (
+        #     meat_and_dairy,
+        #     constants_out,
+        #     time_consts,
+        # ) = self.init_meat_and_dairy_params(
+        #     constants_inputs,
+        #     constants_out,
+        #     time_consts,
+        #     feed_and_biofuels,
+        #     outdoor_crops,
+        # )
 
         # CONSTANTS FOR METHANE SINGLE CELL PROTEIN #
-
         time_consts, methane_scp = self.init_scp_params(time_consts, constants_inputs)
 
         # CONSTANTS FOR CELLULOSIC SUGAR #
-
         time_consts = self.init_cs_params(time_consts, constants_inputs)
 
         # OTHER VARIABLES #
@@ -160,7 +156,7 @@ class Parameters:
 
         if PRINT_FIRST_MONTH_CONSTANTS:
             print_parameters = PrintParameters()
-            CONSIDER_WASTE_FOR_PRINTOUT = False
+            CONSIDER_WASTE_FOR_PRINTOUT = True
             if CONSIDER_WASTE_FOR_PRINTOUT:
                 print_parameters.print_constants_with_waste(
                     self.POP,
@@ -179,8 +175,45 @@ class Parameters:
                     methane_scp,
                     meat_and_dairy,
                 )
+        self.assert_constants_not_nan(constants_out, time_consts)
 
         return (constants_out, time_consts)
+
+    def assert_constants_not_nan(self, single_valued_constants, time_consts):
+        """
+        this is a utility function to
+        make sure there's nothing fishy going on with the constants (no nan's)
+        (otherwise the linear optimizer will fail in a very mysterious way)
+        """
+
+        # assert dictionary single_valued_constants values are all not nan
+        for k, v in single_valued_constants.items():
+            self.assert_dictionary_value_not_nan(k, v)
+
+        for key, month_dict in time_consts.items():
+            for v in month_dict:
+                self.assert_dictionary_value_not_nan(k, v)
+
+    def assert_dictionary_value_not_nan(self, key, value):
+        """
+        assert if a dictionary value is not nan.  if it is, assert, and print the key.
+        """
+
+        if key == "inputs":
+            # inputs to the parameters -- not going to check these are nan here.
+            # but, they might be the culprit!
+            return
+
+        # all non-integers should be Food types, and must have the following function
+        if (
+            isinstance(value, int)
+            or isinstance(value, float)
+            or isinstance(value, bool)
+        ):
+            assert not (value != value), "dictionary has nan at key" + key
+            return
+
+        value.make_sure_not_nan()
 
     def init_scenario(self, constants_out, constants_inputs):
         """
@@ -460,6 +493,7 @@ class Parameters:
         nonhuman_consumption = feed_and_biofuels.nonhuman_consumption
 
         # post waste
+        nonhuman_consumption.plot("nonhuman consumption")
         time_consts["nonhuman_consumption"] = nonhuman_consumption
         time_consts[
             "excess_feed"
@@ -484,15 +518,13 @@ class Parameters:
         feed they would use given the expected input animal populations over time.
         """
         feed_and_biofuels = FeedAndBiofuels(constants_inputs)
-        coa = CalculateAnimalOutputs()
+
         # TODO: parametrize these constants in the scenarios so they can be adjusted
         # without messing with the code
         # really what we need is an API...
         # important_results = result[["Month","Combined Feed","Beef
         # Slaughtered","Pig Slaughtered","Poultry Slaughtered","Dairy Pop"]]
-        feed_per_month_baseline = (
-            feed_and_biofuels.feed_per_year_prewaste.kcals / 12 * 4e6 / 1e9
-        )
+
         if constants_inputs["OG_USE_BETTER_ROTATION"]:
             reduction_in_dairy_calves = 0
             use_grass_and_residues_for_dairy = True
@@ -500,25 +532,21 @@ class Parameters:
             reduction_in_dairy_calves = 100
             use_grass_and_residues_for_dairy = False
 
-        print("constants_inputs")
-        print(constants_inputs)
-        quit()
-
-        feed_dairy_meat_results = (
-            coa.calculate_feed_and_animals_using_baseline_feed_usage(
-                reduction_in_beef_calves=90,
-                reduction_in_dairy_calves=reduction_in_dairy_calves,
-                reduction_in_pig_breeding=90,
-                reduction_in_poultry_breeding=90,
-                increase_in_slaughter=110,
-                months=constants_inputs["NMONTHS"],
-                discount_rate=30,
-                mother_slaughter=0,
-                use_grass_and_residues_for_dairy=use_grass_and_residues_for_dairy,
-                baseline_kcals_per_month_feed=feed_per_month_baseline,
-            )
-        )
-
+        cao = CalculateAnimalOutputs()
+        data = {
+            "country_code": constants_inputs["COUNTRY_CODE"],
+            "reduction_in_beef_calves": 90,
+            "reduction_in_dairy_calves": reduction_in_dairy_calves,
+            "increase_in_slaughter": 110,
+            "reduction_in_pig_breeding": 90,
+            "reduction_in_poultry_breeding": 90,
+            "months": constants_inputs["NMONTHS"],
+            "discount_rate": 30,
+            "mother_slaughter": 0,
+            "use_grass_and_residues_for_dairy": use_grass_and_residues_for_dairy,
+            "keep_dairy": True,
+        }
+        feed_dairy_meat_results = cao.calculate_feed_and_animals(data)
         # MEAT AND DAIRY from breeding reduction strategy
 
         meat_and_dairy = MeatAndDairy(constants_inputs)
@@ -629,14 +657,7 @@ class Parameters:
             feed_before_cap_prewaste,
             excess_feed_prewaste,
         )
-        # print("biofuels_before_cap_prewaste")
-        # print(biofuels_before_cap_prewaste)
-        # print("feed_before_cap_prewaste")
-        # print(feed_before_cap_prewaste)
-        # print("feed_and_biofuels.biofuels")
-        # print(feed_and_biofuels.biofuels)
-        # print("feed_and_biofuels.feed")
-        # print(feed_and_biofuels.feed)
+
         feed_and_biofuels.nonhuman_consumption = (
             feed_and_biofuels.get_nonhuman_consumption_with_cap_postwaste(
                 constants_inputs, feed_and_biofuels.biofuels, feed_and_biofuels.feed
@@ -652,7 +673,7 @@ class Parameters:
         ] = feed_and_biofuels.get_excess_food_usage_from_percents(
             constants_inputs["EXCESS_FEED_PERCENT"]
         )
-        return meat_and_dairy, constants_out, time_consts
+        return meat_and_dairy, feed_and_biofuels, constants_out, time_consts
 
     def init_meat_and_dairy_params(
         self,
@@ -684,11 +705,7 @@ class Parameters:
             outdoor_crops,
         )
 
-        (
-            constants_out,
-            time_consts,
-            meat_and_dairy,
-        ) = self.init_culled_meat_params(
+        (constants_out, time_consts, meat_and_dairy,) = self.init_culled_meat_params(
             constants_inputs, constants_out, time_consts, meat_and_dairy
         )
 

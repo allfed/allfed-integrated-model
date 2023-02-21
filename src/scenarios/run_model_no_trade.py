@@ -63,12 +63,41 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             show_map_figures=show_map_figures,
             add_map_slide_to_pptx=show_map_figures and create_pptx_with_all_countries,
             scenario_option=this_simulation,
-            countries_list=[],
+            countries_list=[
+                "!SWT",
+                # "!GBR",
+                "!AUT",
+                "!BEL",
+                "!BGR",
+                "!HRV",
+                "!CYP",
+                "!CZE",
+                "!DNK",
+                "!EST",
+                "!FIN",
+                "!FRA",
+                "!DEU",
+                "!GRC",
+                "!HUN",
+                "!IRL",
+                "!ITA",
+                "!LVA",
+                "!LTU",
+                "!LUX",
+                "!MLT",
+                "!NLD",
+                "!POL",
+                "!PRT",
+                "!ROU",
+                "!SVK",
+                "!SVN",
+                "!ESP",
+                "!SWE",
+            ],
         )
 
     def run_optimizer_for_country(
         self,
-        country_code,
         country_data,
         scenario_option,
         create_pptx_with_all_countries,
@@ -255,7 +284,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 scenario_description,
                 interpreted_results,
             ) = self.run_optimizer_for_country(
-                country_code,
                 country_data,
                 scenario_option,
                 create_pptx_with_all_countries,
@@ -268,15 +296,14 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 failed_countries += " " + country_name
                 continue
 
-            if country_code == "F5707+GBR":
-                for c in ImportUtilities.eu_27_p_uk_codes:
-                    self.fill_data_for_map(world, c, needs_ratio)
-            else:
-                self.fill_data_for_map(world, country_code, needs_ratio)
+            self.fill_data_for_map(world, country_code, needs_ratio)
+
+            # we say all are fed if ratio of macronutrient needs met is greater than 1
             if needs_ratio >= 1:
                 capped_ratio = 1
             else:
                 capped_ratio = needs_ratio
+
             net_pop_fed += capped_ratio * population
             net_pop += population
 
@@ -357,7 +384,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 if "!" not in c:
                     exclusive_countries_to_run.append(c)
 
-            return exclusive_countries_to_run, countries_to_skip
+        return exclusive_countries_to_run, countries_to_skip
 
     def run_many_options(
         self,
