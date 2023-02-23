@@ -55,9 +55,15 @@ class CalculateAnimalOutputs:
     def __init__(self):
         pass
 
-    def calculate_country_specific_per_species_feed_consumption(self, country_code):
+    def calculate_country_specific_per_species_feed_consumption(
+        self, country_code, feed_ratio
+    ):
         """
         This function is used to calculate the total feed usage for a country
+
+        feed_ratio is a fraction from 0 to 1 which scales the default input feed per
+        month to a lower value. This is used to account for scenarios where the feed
+        is more than could possibly be supplied in the scenario.
         """
 
         # Per country stuff from FAO (head)
@@ -83,7 +89,9 @@ class CalculateAnimalOutputs:
             + country_feed_protein_annual
         )
 
-        country_total_feed_tonnes_monthly = country_total_feed_tonnes_annual / 12
+        country_total_feed_tonnes_monthly = (
+            country_total_feed_tonnes_annual * feed_ratio / 12
+        )
 
         # Feed per animal per month calculated from bottom up assortment of papers in
         # roam
@@ -176,7 +184,7 @@ class CalculateAnimalOutputs:
         # The first one calculates the feed per animal per month for each species
         # The second one calculates the animal populations
         feed_dict = self.calculate_country_specific_per_species_feed_consumption(
-            data["country_code"]
+            data["country_code"], data["feed_ratio"]
         )
         df_out = self.calculate_animal_populations(data)
 
@@ -255,6 +263,7 @@ class CalculateAnimalOutputs:
             mother_slaughter,
             use_grass_and_residues_for_dairy,
             keep_dairy,
+            feed_ratio,
         ) = data.values()
 
         steady_state_births = 1

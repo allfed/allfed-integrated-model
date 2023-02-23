@@ -101,7 +101,7 @@ class FeedAndBiofuels:
             outdoor_crops, biofuels_before_cap, feed_before_cap
         )
 
-        self.set_biofuels_and_feed_usage_postwaste(
+        ratio = self.set_biofuels_and_feed_usage_postwaste(
             max_net_demand,
             stored_food,
             outdoor_crops,
@@ -110,6 +110,7 @@ class FeedAndBiofuels:
             excess_feed_prewaste,
         )
 
+        return ratio
         # self.nonhuman_consumption.set_to_zero_after_month(12)
 
     def get_biofuels_and_feed_before_waste_from_delayed_shutoff(
@@ -140,6 +141,13 @@ class FeedAndBiofuels:
     def get_biofuels_and_feed_before_waste_from_animal_pops(
         self, constants_for_params, feed_over_time
     ):
+        """
+        Mostly, this function converts from feed_over_time in dry caloric tons to
+        the appropriate fat and protein values, as well as getting biofules from the
+        expected shutoff duration, then creates a Food object for the feed usage.
+        This function has "animal pops" in there because it's used only in the case that
+        feed is calculated in the context of breeding.
+        """
         biofuel_duration = constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
         biofuels_before_cap_prewaste = self.get_biofuel_usage_before_cap_prewaste(
             biofuel_duration
@@ -147,12 +155,12 @@ class FeedAndBiofuels:
 
         # excess feed is just using human levels of fat and protein. May need to be
         # altered to reflect more accurate usage.
+        # The purpose of EXCESS_FEED_PERCENT is to be able to use even more feed until
+        # all the food production is accounted for. This helps us estimate human diets.
         excess_feed_prewaste = self.get_excess_food_usage_from_percents(
             constants_for_params["EXCESS_FEED_PERCENT"]
         )
 
-        # print("feed_over_time")
-        # print(feed_over_time.values)
         # 4000 kcals per kg, 1000 kg per dry caloric tons, units currently billion kcals
         feed_over_time_dry_caloric_tons = feed_over_time.values * 1e9 / 4e6
 
@@ -224,7 +232,7 @@ class FeedAndBiofuels:
             # after the meat production, and thus is part of meat waste)
             self.fed_to_animals_prewaste = feed_before_cap / waste_adjustment
 
-            return
+            return 1
 
         if not excess_feed_prewaste.all_equals_zero():
             PRINT_WARNING = False
@@ -248,8 +256,19 @@ class FeedAndBiofuels:
         self.feed = feed_before_cap * ratio
         self.fed_to_animals_prewaste = self.feed / waste_adjustment
 
+        PRINT_OVER_FEED_BIOFUEL_WARNING = True
+        if PRINT_OVER_FEED_BIOFUEL_WARNING:
+            print("WARNING: feed and biofuel is estimated at an impossibly high level")
+            print(
+                "this run has reduced biofuels and feed to a fraction of "
+                + str(round(ratio, 2))
+                + " of the original total estimate over all months!"
+            )
+
         assert self.biofuels.all_less_than_or_equal_to(biofuels_before_cap)
         assert self.feed.all_less_than_or_equal_to(feed_before_cap)
+
+        return ratio
 
     def iteratively_determine_reduction_in_nonhuman_consumption_postwaste(
         self,

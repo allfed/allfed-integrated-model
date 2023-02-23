@@ -1,6 +1,7 @@
 import pandas as pd
 import git
 from pathlib import Path
+import numpy as np
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -46,7 +47,8 @@ df_seaweed_new["initial_seaweed_fraction"] = 0
 total_coast = 0
 for i in range(0, len(df_seaweed)):
     coast = df_seaweed["Length of coastline"].values[i]
-    total_coast += coast
+    if not np.isnan(coast):
+        total_coast += coast
 
 
 growth_cols = df_seaweed.loc[
@@ -76,11 +78,10 @@ for i in range(0, len(df_seaweed)):
         )
         df_seaweed_new.loc[i, "initial_built_fraction"] = coast_fraction
         for col in growth_cols:
-            df_seaweed_new.loc[i, "seaweed_growth_per_day_" + str(col)] = df_seaweed[
-                col
-            ]
+            df_seaweed_new.loc[
+                i, "seaweed_growth_per_day_" + str(col)
+            ] = df_seaweed.loc[i, col]
 
-print(df_seaweed_new)
 # Save to file
 df_seaweed_new.to_csv(
     Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "seaweed_csv.csv",

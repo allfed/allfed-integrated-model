@@ -108,40 +108,47 @@ class Parameters:
             constants_out, constants_inputs, outdoor_crops
         )
 
-        # if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
-        (
-            meat_and_dairy,
-            feed_and_biofuels,
-            constants_out,
-            time_consts,
-        ) = self.init_meat_and_dairy_and_feed_from_breeding(
-            constants_out,
-            constants_inputs,
-            time_consts,
-            outdoor_crops,
-            stored_food,
-        )
+        USE_OLD_METHOD_OF_CALCULATING_FEED_USAGE_AND_MEAT = False
+
+        if USE_OLD_METHOD_OF_CALCULATING_FEED_USAGE_AND_MEAT:
+            (
+                time_consts,
+                feed_and_biofuels,
+            ) = self.init_feed_and_biofuels_OUTDATED_METHOD(
+                time_consts, constants_inputs, outdoor_crops, stored_food
+            )
+
+            # LIVESTOCK, MILK INITIAL VARIABLES #
+
+            (
+                meat_and_dairy,
+                constants_out,
+                time_consts,
+            ) = self.init_meat_and_dairy_params(
+                constants_inputs,
+                constants_out,
+                time_consts,
+                feed_and_biofuels,
+                outdoor_crops,
+            )
+
+        else:
+
+            (
+                feed_and_biofuels,
+                meat_and_dairy,
+                constants_out,
+                time_consts,
+            ) = self.init_meat_and_dairy_and_feed_from_breeding_and_cap_possible_feed(
+                constants_out,
+                constants_inputs,
+                time_consts,
+                outdoor_crops,
+                stored_food,
+            )
 
         # else:
         # # FEED AND BIOFUEL VARIABLES #
-
-        # time_consts, feed_and_biofuels = self.init_feed_and_biofuels(
-        #     time_consts, constants_inputs, outdoor_crops, stored_food
-        # )
-
-        # # LIVESTOCK, MILK INITIAL VARIABLES #
-
-        # (
-        #     meat_and_dairy,
-        #     constants_out,
-        #     time_consts,
-        # ) = self.init_meat_and_dairy_params(
-        #     constants_inputs,
-        #     constants_out,
-        #     time_consts,
-        #     feed_and_biofuels,
-        #     outdoor_crops,
-        # )
 
         # CONSTANTS FOR METHANE SINGLE CELL PROTEIN #
         time_consts, methane_scp = self.init_scp_params(time_consts, constants_inputs)
@@ -449,11 +456,12 @@ class Parameters:
 
         return time_consts, methane_scp
 
-    def init_feed_and_biofuels(
+    def init_feed_and_biofuels_OUTDATED_METHOD(
         self, time_consts, constants_inputs, outdoor_crops, stored_food
     ):
         """
         Initialize feed and biofuels parameters.
+        NOTE: this is out of date, and is based on the breeding algorithms which couple feed and meat produced appropriately
         """
 
         feed_and_biofuels = FeedAndBiofuels(constants_inputs)
@@ -502,7 +510,7 @@ class Parameters:
 
         return time_consts, feed_and_biofuels
 
-    def init_meat_and_dairy_and_feed_from_breeding(
+    def init_meat_and_dairy_and_feed_from_breeding_and_cap_possible_feed(
         self,
         constants_out,
         constants_inputs,
@@ -517,13 +525,15 @@ class Parameters:
         feed they would use given the expected input animal populations over time.
         """
         feed_and_biofuels = FeedAndBiofuels(constants_inputs)
+        meat_and_dairy = MeatAndDairy(constants_inputs)
 
         # TODO: parametrize these constants in the scenarios so they can be adjusted
         # without messing with the code
-        # really what we need is an API...
-        # important_results = result[["Month","Combined Feed","Beef
-        # Slaughtered","Pig Slaughtered","Poultry Slaughtered","Dairy Pop"]]
 
+        # This function encodes the fact that the use of improved crop rotations ALSO alters the way we treat dairy cattle
+        # In particular, if we are using improved crop rotations, part of this is assuming dairy cattle are fully fed by grass
+        # If we aren't using improved rotations (a somewhat more pessimistic outcome), we stop breeding cattle entirely and don't use up any of the grass
+        # for dairy output.
         if constants_inputs["OG_USE_BETTER_ROTATION"]:
             reduction_in_dairy_calves = 0
             use_grass_and_residues_for_dairy = True
@@ -532,6 +542,92 @@ class Parameters:
             use_grass_and_residues_for_dairy = False
 
         cao = CalculateAnimalOutputs()
+        feed_ratio = 1
+        (
+            biofuels_before_cap_prewaste,
+            feed_before_cap_prewaste,
+            excess_feed_prewaste,
+            feed_and_biofuels,
+            meat_and_dairy,
+            time_consts,
+            constants_out,
+        ) = self.init_meat_and_dairy_and_feed_from_breeding(
+            constants_inputs,
+            reduction_in_dairy_calves,
+            use_grass_and_residues_for_dairy,
+            cao,
+            feed_and_biofuels,
+            meat_and_dairy,
+            feed_ratio,
+            constants_out,
+            time_consts,
+        )
+
+        # make sure nonhuman consumption is always less than or equal
+        # to outdoor crops+stored food for all nutrients, PRE-WASTE
+        # in the case that feed usage is impossibly high, and it's reduced, meat is reduced as well
+        # This results in a new value assigned to "culled_meat" (note: "maintained_meat" is an artifact of the
+        # old way of calculating meat production)
+        ratio = feed_and_biofuels.set_nonhuman_consumption_with_cap(
+            constants_inputs,
+            outdoor_crops,
+            stored_food,
+            biofuels_before_cap_prewaste,
+            feed_before_cap_prewaste,
+            excess_feed_prewaste,
+        )
+
+        if ratio < 1:
+            # impossibly high feed demands, we reduced feed, now we have to reduce meat ouput accordingly
+            (
+                biofuels_before_cap_prewaste,
+                feed_before_cap_prewaste,
+                excess_feed_prewaste,
+                feed_and_biofuels,
+                meat_and_dairy,
+                time_consts,
+                constants_out,
+            ) = self.init_meat_and_dairy_and_feed_from_breeding(
+                constants_inputs,
+                reduction_in_dairy_calves,
+                use_grass_and_residues_for_dairy,
+                cao,
+                feed_and_biofuels,
+                meat_and_dairy,
+                ratio,
+                constants_out,
+                time_consts,
+            )
+
+        feed_and_biofuels.nonhuman_consumption = (
+            feed_and_biofuels.get_nonhuman_consumption_with_cap_postwaste(
+                constants_inputs, feed_and_biofuels.biofuels, feed_and_biofuels.feed
+            )
+        )
+
+        nonhuman_consumption = feed_and_biofuels.nonhuman_consumption
+
+        # post waste
+        time_consts["nonhuman_consumption"] = nonhuman_consumption
+        time_consts[
+            "excess_feed"
+        ] = feed_and_biofuels.get_excess_food_usage_from_percents(
+            constants_inputs["EXCESS_FEED_PERCENT"]
+        )
+        return feed_and_biofuels, meat_and_dairy, constants_out, time_consts
+
+    def init_meat_and_dairy_and_feed_from_breeding(
+        self,
+        constants_inputs,
+        reduction_in_dairy_calves,
+        use_grass_and_residues_for_dairy,
+        cao,
+        feed_and_biofuels,
+        meat_and_dairy,
+        feed_ratio,
+        constants_out,
+        time_consts,
+    ):
         data = {
             "country_code": constants_inputs["COUNTRY_CODE"],
             "reduction_in_beef_calves": 90,
@@ -544,11 +640,11 @@ class Parameters:
             "mother_slaughter": 0,
             "use_grass_and_residues_for_dairy": use_grass_and_residues_for_dairy,
             "keep_dairy": True,
+            "feed_ratio": feed_ratio,
         }
         feed_dairy_meat_results = cao.calculate_feed_and_animals(data)
         # MEAT AND DAIRY from breeding reduction strategy
 
-        meat_and_dairy = MeatAndDairy(constants_inputs)
         meat_and_dairy.calculate_meat_nutrition()
 
         (
@@ -646,33 +742,15 @@ class Parameters:
                 "feed_before_cap_prewaste"
             )
 
-        # make sure nonhuman consumption is always less than or equal
-        # to outdoor crops+stored food for all nutrients, pre-waste
-        feed_and_biofuels.set_nonhuman_consumption_with_cap(
-            constants_inputs,
-            outdoor_crops,
-            stored_food,
+        return (
             biofuels_before_cap_prewaste,
             feed_before_cap_prewaste,
             excess_feed_prewaste,
+            feed_and_biofuels,
+            meat_and_dairy,
+            time_consts,
+            constants_out,
         )
-
-        feed_and_biofuels.nonhuman_consumption = (
-            feed_and_biofuels.get_nonhuman_consumption_with_cap_postwaste(
-                constants_inputs, feed_and_biofuels.biofuels, feed_and_biofuels.feed
-            )
-        )
-
-        nonhuman_consumption = feed_and_biofuels.nonhuman_consumption
-
-        # post waste
-        time_consts["nonhuman_consumption"] = nonhuman_consumption
-        time_consts[
-            "excess_feed"
-        ] = feed_and_biofuels.get_excess_food_usage_from_percents(
-            constants_inputs["EXCESS_FEED_PERCENT"]
-        )
-        return meat_and_dairy, feed_and_biofuels, constants_out, time_consts
 
     def init_meat_and_dairy_params(
         self,

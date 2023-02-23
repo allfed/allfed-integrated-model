@@ -395,14 +395,14 @@ class Scenarios:
         #     v for k, v in country_data.items() if "seaweed_growth_" in k
         # ]
         all_seaweed_col_names = [
-            k for k, v in country_data.items() if "seaweed_growth_" in k
+            k for k, v in country_data.items() if "seaweed_growth_per_day_" in k
         ]
 
         constants_for_params["SEAWEED_GROWTH_PER_DAY"] = {}
         for i in range(len(all_seaweed_col_names)):
             # just have the number as a string as the keys for the dictionary
             constants_for_params["SEAWEED_GROWTH_PER_DAY"][
-                all_seaweed_col_names[i].replace("seaweed_growth_", "")
+                all_seaweed_col_names[i].replace("seaweed_growth_per_day_", "")
             ] = country_data[all_seaweed_col_names[i]]
 
         if country_data["initial_seaweed_fraction"] == 0:
@@ -1012,16 +1012,10 @@ class Scenarios:
         assert not self.IS_GLOBAL_ANALYSIS
         assert not self.GRASSES_SET
         # fractional production per month
-
         for i in range(1, int(constants_for_params["NMONTHS"] / 12 + 1)):
-            print("grasses_reduction_year" + str(i))
-            print(country_data["grasses_reduction_year" + str(i)])
             constants_for_params["RATIO_GRASSES_YEAR" + str(i)] = (
                 1 + country_data["grasses_reduction_year" + str(i)]
             )
-
-        print(constants_for_params["RATIO_GRASSES_YEAR1"])
-        print(constants_for_params["RATIO_GRASSES_YEAR10"])
 
         self.GRASSES_SET = True
         return constants_for_params

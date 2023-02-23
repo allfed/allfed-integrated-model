@@ -194,7 +194,6 @@ class ScenarioRunner:
             assert scenario_is_correct, """You must specify 'shutoff' key as immediate,short_delayed_shutoff,
             long_delayed_shutoff,or continued"""
 
-        print("returning9")
         # WASTE
 
         if scenario_option["waste"] == "zero":
@@ -249,7 +248,6 @@ class ScenarioRunner:
                 scenario_is_correct
             ), "You must specify 'nutrition' key as baseline, or catastrophe"
 
-        print("returning8")
         # SEASONALITY
 
         if scenario_option["seasonality"] == "no_seasonality":
@@ -296,7 +294,6 @@ class ScenarioRunner:
             assert scenario_is_correct, """You must specify 'grasses' key as baseline,
             global_nuclear_winter,or country_nuclear_winter"""
 
-        print("returning5")
         # FISH
 
         if scenario_option["fish"] == "nuclear_winter":
@@ -338,7 +335,6 @@ class ScenarioRunner:
             assert scenario_is_correct, """You must specify 'crop_disruption' key as either zero,
             global_nuclear_winter,or country_nuclear_winter"""
 
-        print("returning2.3")
         # PROTEIN
 
         if scenario_option["protein"] == "required":
@@ -383,7 +379,6 @@ class ScenarioRunner:
             assert (
                 scenario_is_correct
             ), "You must specify 'cull' key as either do_eat_culled, or dont_eat_culled"
-        print("returning2")
 
         # SCENARIO
 

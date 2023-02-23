@@ -106,7 +106,7 @@ class Seaweed:
         )
 
         # percentage gain per month
-        sorted_monthly_percents = 100 * ((sorted_daily_percents / 100) ** 30)
+        sorted_monthly_percents = 100 * (((sorted_daily_percents / 100) + 1) ** 30)
 
         return sorted_monthly_percents
 

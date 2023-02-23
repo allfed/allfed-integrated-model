@@ -63,7 +63,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             show_map_figures=show_map_figures,
             add_map_slide_to_pptx=show_map_figures and create_pptx_with_all_countries,
             scenario_option=this_simulation,
-            countries_list=[
+            countries_list=[  # "AUS", "USA"],
                 "!SWT",
                 "!GBR",
                 "!AUT",
