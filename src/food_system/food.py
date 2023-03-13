@@ -620,7 +620,6 @@ class Food(UnitConversions):
                     protein=np.multiply(
                         np.array(self.protein), np.array(other.protein)
                     ),
-                    # TODO: @Morgan what's going on here?
                     kcals_units=kcals_units,
                     fat_units=fat_units,
                     protein_units=protein_units,

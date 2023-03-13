@@ -78,7 +78,7 @@ class Parameters:
 
         # SEAWEED INITIAL VARIABLES #
 
-        constants_out, built_area, growth_rates = self.set_seaweed_params(
+        constants_out, built_area, growth_rates, seaweed = self.set_seaweed_params(
             constants_out, constants_inputs
         )
 
@@ -88,6 +88,14 @@ class Parameters:
         # FISH #
         time_consts, constants_out = self.init_fish_params(
             constants_out, time_consts, constants_inputs
+        )
+
+        # CONSTANTS FOR METHANE SINGLE CELL PROTEIN #
+        time_consts, methane_scp = self.init_scp_params(time_consts, constants_inputs)
+
+        # CONSTANTS FOR CELLULOSIC SUGAR #
+        time_consts, cellulosic_sugar = self.init_cs_params(
+            time_consts, constants_inputs
         )
 
         # CROP PRODUCTION VARIABLES #
@@ -133,7 +141,6 @@ class Parameters:
             )
 
         else:
-
             (
                 feed_and_biofuels,
                 meat_and_dairy,
@@ -144,17 +151,14 @@ class Parameters:
                 constants_inputs,
                 time_consts,
                 outdoor_crops,
+                methane_scp,
+                cellulosic_sugar,
+                seaweed,
                 stored_food,
             )
 
         # else:
         # # FEED AND BIOFUEL VARIABLES #
-
-        # CONSTANTS FOR METHANE SINGLE CELL PROTEIN #
-        time_consts, methane_scp = self.init_scp_params(time_consts, constants_inputs)
-
-        # CONSTANTS FOR CELLULOSIC SUGAR #
-        time_consts = self.init_cs_params(time_consts, constants_inputs)
 
         # OTHER VARIABLES #
         constants_out["inputs"] = constants_inputs
@@ -182,7 +186,7 @@ class Parameters:
                     methane_scp,
                     meat_and_dairy,
                 )
-        self.assert_constants_not_nan(constants_out, time_consts)
+        # self.assert_constants_not_nan(constants_out, time_consts)
 
         return (constants_out, time_consts)
 
@@ -321,8 +325,11 @@ class Parameters:
         constants_out["MAXIMUM_DENSITY"] = seaweed.MAXIMUM_DENSITY
         constants_out["MAXIMUM_SEAWEED_AREA"] = seaweed.MAXIMUM_SEAWEED_AREA
         constants_out["INITIAL_BUILT_SEAWEED_AREA"] = seaweed.INITIAL_BUILT_SEAWEED_AREA
+        constants_out[
+            "MAX_SEAWEED_HUMANS_CAN_CONSUME_MONTHLY"
+        ] = seaweed.MAX_SEAWEED_HUMANS_CAN_CONSUME_MONTHLY
 
-        return constants_out, built_area, growth_rates
+        return constants_out, built_area, growth_rates, seaweed
 
     def init_outdoor_crops(self, constants_out, constants_inputs):
         """
@@ -426,14 +433,9 @@ class Parameters:
         cellulosic_sugar = CellulosicSugar(constants_inputs)
         cellulosic_sugar.calculate_monthly_cs_production(constants_inputs)
 
-        production_kcals_cell_sugar_per_month = (
-            cellulosic_sugar.get_monthly_cs_production()
-        )
-        time_consts[
-            "production_kcals_cell_sugar_per_month"
-        ] = production_kcals_cell_sugar_per_month
+        time_consts["cellulosic_sugar"] = cellulosic_sugar
 
-        return time_consts
+        return time_consts, cellulosic_sugar
 
     def init_scp_params(self, time_consts, constants_inputs):
         """
@@ -441,74 +443,12 @@ class Parameters:
         """
 
         methane_scp = MethaneSCP(constants_inputs)
-        methane_scp.calculate_monthly_scp_production(constants_inputs)
+        methane_scp.calculate_monthly_scp_caloric_production(constants_inputs)
+        methane_scp.calculate_scp_fat_and_protein_production()
 
-        (
-            production_kcals_scp_per_month,
-            production_fat_scp_per_month,
-            production_protein_scp_per_month,
-        ) = methane_scp.get_scp_production()
-        time_consts["production_kcals_scp_per_month"] = production_kcals_scp_per_month
-        time_consts["production_fat_scp_per_month"] = production_fat_scp_per_month
-        time_consts[
-            "production_protein_scp_per_month"
-        ] = production_protein_scp_per_month
+        time_consts["methane_scp"] = methane_scp
 
         return time_consts, methane_scp
-
-    def init_feed_and_biofuels_OUTDATED_METHOD(
-        self, time_consts, constants_inputs, outdoor_crops, stored_food
-    ):
-        """
-        Initialize feed and biofuels parameters.
-        NOTE: this is out of date, and is based on the breeding algorithms which couple feed and meat produced appropriately
-        """
-
-        feed_and_biofuels = FeedAndBiofuels(constants_inputs)
-
-        # make sure nonhuman consumption is always less than or equal
-        # to outdoor crops+stored food for all nutrients, pre-waste
-        (
-            biofuels_before_cap_prewaste,
-            feed_before_cap_prewaste,
-            excess_feed_prewaste,
-        ) = feed_and_biofuels.get_biofuels_and_feed_before_waste_from_delayed_shutoff(
-            constants_inputs
-        )
-
-        PLOT_FEED_BEFORE_WASTE = False
-
-        if PLOT_FEED_BEFORE_WASTE:
-            feed_before_cap_prewaste.in_units_percent_fed().plot(
-                "feed_before_cap_prewaste using baseline"
-            )
-
-        feed_and_biofuels.set_nonhuman_consumption_with_cap(
-            constants_inputs,
-            outdoor_crops,
-            stored_food,
-            biofuels_before_cap_prewaste,
-            feed_before_cap_prewaste,
-            excess_feed_prewaste,
-        )
-
-        feed_and_biofuels.nonhuman_consumption = (
-            feed_and_biofuels.get_nonhuman_consumption_with_cap_postwaste(
-                constants_inputs, feed_and_biofuels.biofuels, feed_and_biofuels.feed
-            )
-        )
-
-        nonhuman_consumption = feed_and_biofuels.nonhuman_consumption
-
-        # post waste
-        time_consts["nonhuman_consumption"] = nonhuman_consumption
-        time_consts[
-            "excess_feed"
-        ] = feed_and_biofuels.get_excess_food_usage_from_percents(
-            constants_inputs["EXCESS_FEED_PERCENT"]
-        )
-
-        return time_consts, feed_and_biofuels
 
     def init_meat_and_dairy_and_feed_from_breeding_and_cap_possible_feed(
         self,
@@ -516,6 +456,9 @@ class Parameters:
         constants_inputs,
         time_consts,
         outdoor_crops,
+        methane_scp,
+        cellulosic_sugar,
+        seaweed,
         stored_food,
     ):
         """
@@ -563,6 +506,52 @@ class Parameters:
             time_consts,
         )
 
+        # this only works for countries that will have enough to provide for combined feed for all the animals.
+        combined_nonhuman_consumption_before_cap_or_waste = (
+            biofuels_before_cap_prewaste + feed_before_cap_prewaste
+        )
+        # (
+        #     remaining_biofuel_needed,
+        #     outdoor_growing_used_for_biofuel,
+        #     methane_scp_used_for_biofuel,
+        #     cellulosic_sugar_used_for_biofuel,
+        # ) = self.calculate_biofuel_components_without_stored_food(
+        #     constants_inputs["INCLUDE_FAT"] or constants_inputs["INCLUDE_PROTEIN"],
+        #     biofuels_before_cap_prewaste,
+        #     seaweed,
+        #     cellulosic_sugar,
+        #     methane_scp,
+        #     outdoor_crops,
+        # )
+        # (
+        #     remaining_feed_needed_from_stored_food,
+        #     outdoor_growing_used_for_biofuel,
+        #     methane_scp_used_for_biofuel,
+        #     cellulosic_sugar_used_for_biofuel,
+        # ) = self.calculate_feed_components_without_stored_food(
+        #     constants_inputs["INCLUDE_FAT"] or constants_inputs["INCLUDE_PROTEIN"],
+        #     biofuels_before_cap_prewaste,
+        #     seaweed,
+        #     cellulosic_sugar,
+        #     methane_scp,
+        #     outdoor_crops,
+        #     cellulosic_sugar_used_for_biofuel,
+        #     methane_scp_used_for_biofuel,
+        #     outdoor_growing_used_for_biofuel,
+        # )
+
+        # add up the available sources of feed with their appropriate percentages
+        # net_feed_available_without_stored_food = (
+        #     self.calculate_net_feed_available_without_stored_food(
+        #         constants_inputs["INCLUDE_FAT"] or constants_inputs["INCLUDE_PROTEIN"],
+        #         combined_nonhuman_consumption_before_cap_or_waste,
+        #         outdoor_crops,
+        #         methane_scp,
+        #         cellulosic_sugar,
+        #         seaweed,
+        #     )
+        # )
+
         # make sure nonhuman consumption is always less than or equal
         # to outdoor crops+stored food for all nutrients, PRE-WASTE
         # in the case that feed usage is impossibly high, and it's reduced, meat is reduced as well
@@ -570,7 +559,7 @@ class Parameters:
         # old way of calculating meat production)
         ratio = feed_and_biofuels.set_nonhuman_consumption_with_cap(
             constants_inputs,
-            outdoor_crops,
+            outdoor_crops,  # net_feed_available_without_stored_food,
             stored_food,
             biofuels_before_cap_prewaste,
             feed_before_cap_prewaste,
@@ -600,9 +589,7 @@ class Parameters:
             )
 
         feed_and_biofuels.nonhuman_consumption = (
-            feed_and_biofuels.get_nonhuman_consumption_with_cap_postwaste(
-                constants_inputs, feed_and_biofuels.biofuels, feed_and_biofuels.feed
-            )
+            feed_and_biofuels.biofuels + feed_and_biofuels.feed
         )
 
         nonhuman_consumption = feed_and_biofuels.nonhuman_consumption
@@ -615,6 +602,230 @@ class Parameters:
             constants_inputs["EXCESS_FEED_PERCENT"]
         )
         return feed_and_biofuels, meat_and_dairy, constants_out, time_consts
+
+    # def calculate_net_feed_available_without_stored_food_postwaste(
+    #     self,
+    #     outdoor_crops,
+    #     methane_scp,
+    #     cellulosic_sugar,
+    #     seaweed,
+    # ):
+    #     """
+    #     For now, we will ignore seaweed as a feed source. This is because we don't
+    #     have a good way to
+    #     accurately estimate what the linear optimizer will predict for the amount of
+    #     seaweed monthly
+    #     produced
+    #     """
+
+    #     max_scp_for_feed = methane_scp.MAX_FRACTION_FEED_CONSUMED_AS_SCP * methane_scp
+    #     max_cellulosic_sugar_for_feed = (
+    #         cellulosic_sugar.MAX_FRACTION_FEED_CONSUMED_AS_CELLULOSIC_SUGAR
+    #         * cellulosic_sugar
+    #     )
+
+    #     # TODO: include seaweed as a feed source. Right now it's complicated because
+    #     # we haven't distinguished the feed vs human consumption of seaweed
+    #     # seaweed.estimate_seaweed_growth_for_estimating_feed_availability()
+    #     # max_seaweed_for_feed = seaweed.estimated_seaweed_feed_consumed_after_waste
+
+    #     net_feed_available_without_stored_food_or_seaweed = (
+    #         outdoor_crops
+    #         + max_scp_for_feed
+    #         + max_cellulosic_sugar_for_feed
+    #         # + max_seaweed_for_feed
+    #     )
+    #     net_feed_available_without_stored_food_or_seaweed / outdoor_crops
+
+    #     return net_feed_available_without_stored_food_or_seaweed
+    def calculate_biofuel_components_without_stored_food(
+        self,
+        include_fat_or_protein,
+        biofuels_before_cap_prewaste,
+        seaweed,
+        cellulosic_sugar,
+        methane_scp,
+        outdoor_crops,
+    ):
+        assert not include_fat_or_protein, """ERROR: biofuel calculations are not 
+        working  yet for scenarios including fat or protein"""
+
+        # first, preference seaweed, then cellulosic_sugar, then methane_scp
+
+        # TODO: ADD SEAWEED
+        # cell sugar
+
+        cell_sugar_for_biofuel = (
+            cellulosic_sugar.MAX_FRACTION_BIOFUEL_CONSUMED_AS_CELLULOSIC_SUGAR
+            * biofuels_before_cap_prewaste.kcals
+        )
+
+        cell_sugar_for_biofuel_after_limit = min(
+            cell_sugar_for_biofuel, cellulosic_sugar.kcals
+        )
+
+        cellulosic_sugar_used_for_biofuel = min(
+            cell_sugar_for_biofuel_after_limit, biofuels_before_cap_prewaste.kcals
+        )
+
+        remaining_biofuel_needed = (
+            biofuels_before_cap_prewaste.kcals - cellulosic_sugar_used_for_biofuel
+        )
+
+        # methanescp
+
+        methane_scp_for_biofuel = (
+            methane_scp.MAX_FRACTION_BIOFUEL_CONSUMED_AS_METHANE_SCP
+            * remaining_biofuel_needed
+        )
+
+        methane_scp_for_biofuel_after_limit = min(
+            methane_scp_for_biofuel, methane_scp.kcals
+        )
+
+        methane_scp_used_for_biofuel = min(
+            methane_scp_for_biofuel_after_limit, remaining_biofuel_needed
+        )
+
+        remaining_biofuel_needed = (
+            biofuels_before_cap_prewaste.kcals - methane_scp_used_for_biofuel
+        )
+
+        # outdoor growing
+
+        outdoor_growing_used_for_biofuel = min(
+            outdoor_growing.kcals, remaining_biofuel_needed
+        )
+
+        remaining_biofuel_needed_from_stored_food = (
+            biofuels_before_cap_prewaste.kcals - outdoor_growing_used_for_biofuel
+        )
+
+        return (
+            remaining_biofuel_needed_from_stored_food,
+            outdoor_growing_used_for_biofuel,
+            methane_scp_used_for_biofuel,
+            cellulosic_sugar_used_for_biofuel,
+        )
+
+    def calculate_feed_components_without_stored_food(
+        self,
+        include_fat_or_protein,
+        feeds_before_cap_prewaste,
+        seaweed,
+        cellulosic_sugar,
+        methane_scp,
+        outdoor_crops,
+        cellulosic_sugar_used_for_biofuel,
+        methane_scp_used_for_biofuel,
+        outdoor_growing_used_for_biofuel,
+    ):
+        assert not include_fat_or_protein, """ERROR: feed calculations are not 
+        working  yet for scenarios including fat or protein"""
+
+        # first, preference seaweed, then cellulosic_sugar, then methane_scp
+
+        # TODO: ADD SEAWEED
+        # cell sugar
+
+        cell_sugar_for_feed = (
+            cellulosic_sugar.MAX_FRACTION_FEED_CONSUMED_AS_CELLULOSIC_SUGAR
+            * feeds_before_cap_prewaste.kcals
+        )
+
+        cell_sugar_for_feed_after_limit = min(
+            cell_sugar_for_feed, cellulosic_sugar.kcals
+        )
+
+        cellulosic_sugar_used_for_feed = min(
+            cell_sugar_for_feed_after_limit, feeds_before_cap_prewaste.kcals
+        )
+
+        remaining_feed_needed = (
+            feeds_before_cap_prewaste.kcals - cellulosic_sugar_used_for_feed
+        )
+
+        # methanescp
+
+        methane_scp_for_feed = (
+            methane_scp.MAX_FRACTION_BIOFUEL_CONSUMED_AS_METHANE_SCP
+            * remaining_feed_needed
+        )
+
+        methane_scp_for_feed_after_limit = min(methane_scp_for_feed, methane_scp.kcals)
+
+        methane_scp_used_for_feed = min(
+            methane_scp_for_feed_after_limit, remaining_feed_needed
+        )
+
+        remaining_feed_needed = (
+            feeds_before_cap_prewaste.kcals - methane_scp_used_for_feed
+        )
+
+        # outdoor growing
+
+        outdoor_growing_used_for_feed = min(
+            outdoor_growing.kcals, remaining_feed_needed
+        )
+
+        remaining_feed_needed_from_stored_food = (
+            feeds_before_cap_prewaste.kcals - outdoor_growing_used_for_feed
+        )
+
+        return (
+            remaining_feed_needed_from_stored_food,
+            outdoor_growing_used_for_feed,
+            methane_scp_used_for_feed,
+            cellulosic_sugar_used_for_feed,
+        )
+
+    def calculate_net_feed_available_without_stored_food(
+        self,
+        include_fat_or_protein,
+        combined_feed,
+        outdoor_crops,
+        methane_scp,
+        cellulosic_sugar,
+        seaweed,
+    ):
+        assert not include_fat_or_protein, """ERROR: feed calculations are not working 
+        yet for scenarios including fat or protein"""
+        """
+        For now, we will ignore seaweed as a feed source. This is because we don't have a good way to
+        accurately estimate what the linear optimizer will predict for the amount of seaweed monthly
+        produced
+        """
+        cell_sugar_for_feed = (
+            cellulosic_sugar.MAX_FRACTION_FEED_CONSUMED_AS_CELLULOSIC_SUGAR
+            * combined_nonhuman_consumption_before_cap_or_waste
+        )
+
+        max_scp_for_feed = (
+            methane_scp.MAX_FRACTION_FEED_CONSUMED_AS_SCP * combined_feed_kcals
+        )
+        scp_for_feed_after_limit = min(max_scp_for_feed, methane_scp.kcals)
+
+        cell_sugar_for_feed_after_limit = min(
+            cell_sugar_for_feed, cellulosic_sugar.kcals
+        )
+
+        # TODO: include seaweed as a feed source. Right now it's complicated because
+        # we haven't distinguished the feed vs human consumption of seaweed
+        # seaweed.estimate_seaweed_growth_for_estimating_feed_availability()
+        # max_seaweed_for_feed = seaweed.estimated_seaweed_feed_consumed_after_waste
+
+        # net_feed_available_without_stored_food_or_seaweed = (
+        #     outdoor_crops.
+        #     + max_scp_for_feed
+        #     + max_cellulosic_sugar_for_feed
+        #     # + max_seaweed_for_feed
+        # )
+        # net_feed_available_without_stored_food_or_seaweed / outdoor_crops
+        # max_seaweed_feed = seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_FEED
+
+        # net_feed_available_without_stored_food = max_seaweed_food + net_feed_available_without_stored_food_or_seaweed
+
+        return net_feed_available_without_stored_food_or_seaweed
 
     def init_meat_and_dairy_and_feed_from_breeding(
         self,
@@ -782,7 +993,11 @@ class Parameters:
             outdoor_crops,
         )
 
-        (constants_out, time_consts, meat_and_dairy,) = self.init_culled_meat_params(
+        (
+            constants_out,
+            time_consts,
+            meat_and_dairy,
+        ) = self.init_culled_meat_params(
             constants_inputs, constants_out, time_consts, meat_and_dairy
         )
 

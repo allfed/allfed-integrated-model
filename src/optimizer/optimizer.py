@@ -651,6 +651,48 @@ class Optimizer:
 
         return (model, variables)
 
+    def add_human_dietary_constraints(
+        self,
+        model,
+        variables,
+        month,
+    ):
+        if (
+            self.single_valued_constants["ADD_SEAWEED"]
+            and self.single_valued_constants["inputs"]["INITIAL_SEAWEED_FRACTION"] > 0
+        ):
+            # maximum seaweed percent of calories
+            # constraint units: billion kcals per person
+            model += (
+                variables["seaweed_food_produced"][month]
+                * self.single_valued_constants["SEAWEED_KCALS"]
+                <= self.single_valued_constants[
+                    "MAX_SEAWEED_HUMANS_CAN_CONSUME_MONTHLY"
+                ],
+                "Seaweed_Limit_Kcals_" + str(month) + "_Constraint",
+            )
+        if self.single_valued_constants["ADD_METHANE_SCP"]:
+            # loop through the methane SCP and make sure it's never greater than the
+            # minimum human able to be eaten.
+            # If it is greater, reduce it to the minimum.
+            capped_kcals_ratios = np.array([])
+            methane_scp = self.time_consts["methane_scp"]
+            methane_scp_kcals = methane_scp.for_humans.kcals
+            capped_kcals_ratios = []
+            for month in range(0, len(methane_scp_kcals)):
+                capped_kcals_ratios.append(
+                    min(
+                        methane_scp_kcals[month]
+                        / self.single_valued_constants["KCALS_DAILY"],
+                        methane_scp.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP,
+                    )
+                )
+            self.time_consts["methane_scp"].for_humans = (
+                methane_scp.for_humans * capped_kcals_ratios
+            )
+
+        return model
+
     # OBJECTIVE FUNCTIONS  #
 
     def add_objectives_to_model(self, model, variables, month, maximize_constraints):
@@ -664,28 +706,8 @@ class Optimizer:
             name="Humans_Fed_Protein_" + str(month) + "_Variable", lowBound=0
         )
 
-        if (
-            self.single_valued_constants["ADD_SEAWEED"]
-            and self.single_valued_constants["inputs"]["INITIAL_SEAWEED_FRACTION"] > 0
-        ):
-            # maximum seaweed percent of calories
-            # constraint units: billion kcals per person
-            model += (
-                variables["seaweed_food_produced"][month]
-                * self.single_valued_constants["SEAWEED_KCALS"]
-                <= (
-                    self.single_valued_constants["inputs"][
-                        "MAX_SEAWEED_AS_PERCENT_KCALS"
-                    ]
-                    / 100
-                )
-                * (
-                    self.single_valued_constants["POP"]
-                    * self.single_valued_constants["KCALS_MONTHLY"]
-                    / 1e9
-                ),
-                "Seaweed_Limit_Kcals_" + str(month) + "_Constraint",
-            )
+        model = self.add_human_dietary_constraints(model, variables, month)
+
         model += (
             variables["humans_fed_kcals"][month]
             == (
@@ -699,8 +721,8 @@ class Optimizer:
                 + self.time_consts["grazing_milk_kcals"][month]
                 + self.time_consts["cattle_grazing_maintained_kcals"][month]
                 + variables["culled_meat_eaten"][month]
-                + self.time_consts["production_kcals_cell_sugar_per_month"][month]
-                + self.time_consts["production_kcals_scp_per_month"][month]
+                + self.time_consts["cellulosic_sugar"].for_humans.kcals[month]
+                + self.time_consts["methane_scp"].for_humans.kcals[month]
                 + self.time_consts["greenhouse_area"][month]
                 * self.time_consts["greenhouse_kcals_per_ha"][month]
                 + self.time_consts["production_kcals_fish_per_month"][month]
@@ -729,7 +751,7 @@ class Optimizer:
                     + self.time_consts["cattle_grazing_maintained_fat"][month]
                     + variables["culled_meat_eaten"][month]
                     * self.single_valued_constants["CULLED_MEAT_FRACTION_FAT"]
-                    + self.time_consts["production_fat_scp_per_month"][month]
+                    + self.time_consts["methane_scp"].for_humans.fat[month]
                     + self.time_consts["greenhouse_area"][month]
                     * self.time_consts["greenhouse_fat_per_ha"][month]
                     + self.time_consts["production_fat_fish_per_month"][month]
@@ -755,7 +777,7 @@ class Optimizer:
                     * self.single_valued_constants["SEAWEED_PROTEIN"]
                     + self.time_consts["grazing_milk_protein"][month]
                     + self.time_consts["cattle_grazing_maintained_protein"][month]
-                    + self.time_consts["production_protein_scp_per_month"][month]
+                    + self.time_consts["methane_scp"].for_humans.protein[month]
                     + variables["culled_meat_eaten"][month]
                     * self.single_valued_constants["CULLED_MEAT_FRACTION_PROTEIN"]
                     + self.time_consts["greenhouse_area"][month]

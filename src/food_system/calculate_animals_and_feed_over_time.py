@@ -208,11 +208,15 @@ class CalculateAnimalOutputs:
             0 if np.isnan(feed_dict["dairy_cows"]) else feed_dict["dairy_cows"]
         )
 
-        # combine togtehr
+        # combine together
         poultry_feed = df_out["Poultry Pop"] * feed_dict["small_animals"]
         pork_feed = df_out["Pigs Pop"] * feed_dict["medium_animals"]
         beef_feed = df_out["Beef Pop"] * feed_dict["large_animals"]
-        dairy_feed = df_out["Dairy Pop"] * feed_dict["dairy_cows"]
+
+        if data["use_grass_and_residues_for_dairy"]:
+            dairy_feed = 0
+        else:
+            dairy_feed = df_out["Dairy Pop"] * feed_dict["dairy_cows"]
 
         df_out["Poultry Feed"] = poultry_feed
         df_out["Pig Feed"] = pork_feed

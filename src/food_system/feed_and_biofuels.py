@@ -44,10 +44,10 @@ class FeedAndBiofuels:
     def set_nonhuman_consumption_with_cap(
         self,
         constants_for_params,
-        outdoor_crops,
+        net_feed_available_without_stored_food,
         stored_food,
-        biofuels_before_cap_prewaste,
-        feed_before_cap_prewaste,
+        biofuels_before_cap,  # TODO: CHANGE THIS TO PREWASTE
+        feed_before_cap,  # TODO: CHANGE THIS TO PREWASTE
         excess_feed_prewaste,
     ):
         """
@@ -88,23 +88,25 @@ class FeedAndBiofuels:
         """
         # billion kcals per month
 
-        waste_adjustment = 1 - outdoor_crops.CROP_WASTE / 100
-        biofuels_before_cap = biofuels_before_cap_prewaste * waste_adjustment
-        feed_before_cap = feed_before_cap_prewaste * waste_adjustment
         # this is the total exceedance beyond outdoor growing max of any month
         # cumulative
-
         (
             max_net_demand,
             running_supply_minus_demand,
         ) = self.calculate_max_running_net_demand_postwaste(
-            outdoor_crops, biofuels_before_cap, feed_before_cap
+            constants_for_params["INCLUDE_FAT"]
+            or constants_for_params["INCLUDE_PROTEIN"],
+            net_feed_available_without_stored_food,
+            biofuels_before_cap,
+            feed_before_cap,
         )
 
         ratio = self.set_biofuels_and_feed_usage_postwaste(
+            constants_for_params["INCLUDE_FAT"]
+            or constants_for_params["INCLUDE_PROTEIN"],
             max_net_demand,
             stored_food,
-            outdoor_crops,
+            net_feed_available_without_stored_food,
             biofuels_before_cap,
             feed_before_cap,
             excess_feed_prewaste,
@@ -112,31 +114,6 @@ class FeedAndBiofuels:
 
         return ratio
         # self.nonhuman_consumption.set_to_zero_after_month(12)
-
-    def get_biofuels_and_feed_before_waste_from_delayed_shutoff(
-        self, constants_for_params
-    ):
-        biofuel_duration = constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
-        biofuels_before_cap_prewaste = self.get_biofuel_usage_before_cap_prewaste(
-            biofuel_duration
-        )
-
-        # excess feed is just using human levels of fat and protein. May need to be
-        # altered to reflect more accurate usage.
-        excess_feed_prewaste = self.get_excess_food_usage_from_percents(
-            constants_for_params["EXCESS_FEED_PERCENT"]
-        )
-
-        feed_duration = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
-        feed_before_cap_prewaste = self.get_feed_usage_before_cap_prewaste(
-            feed_duration, excess_feed_prewaste
-        )
-
-        return (
-            biofuels_before_cap_prewaste,
-            feed_before_cap_prewaste,
-            excess_feed_prewaste,
-        )
 
     def get_biofuels_and_feed_before_waste_from_animal_pops(
         self, constants_for_params, feed_over_time
@@ -200,9 +177,10 @@ class FeedAndBiofuels:
 
     def set_biofuels_and_feed_usage_postwaste(
         self,
+        include_fat_or_protein,
         max_net_demand,
         stored_food,
-        outdoor_crops,
+        net_feed_available_without_stored_food,
         biofuels_before_cap,
         feed_before_cap,
         excess_feed_prewaste,
@@ -210,27 +188,30 @@ class FeedAndBiofuels:
         # whether all macronutrients are zero (none exceed)
         all_zero = max_net_demand.all_equals_zero()
 
+        """
+        TODO
+
+        If humans cannot be fed minimum requirement from the available food, don't feed any to animals.
+        Subtract the human requirement.
+        """
+        # # calculate the amount of food expected to be eaten by humans
+        # humans_need_estimated_without_meat =
+
+        # # calculate the amount of food remaining from what's available for feed
+        # remaining_available_for_feed =
+
+        # if remaining_available_for_feed > 0:
+
         # whether macronutrients exceed availability from stored foods + og
         exceeds_less_than_stored_food = max_net_demand.all_less_than_or_equal_to(
             stored_food * (1 - self.SAFETY_MARGIN)
         )
 
-        # in order to get the pre-waste amount, we need to take the amount that we
-        # calculated feed to be after cap and waste, and divide back out the waste
-        # to get back to the original
-        assert (
-            outdoor_crops.CROP_WASTE < 100
-        ), """100 percent crop waste will cause divide by zero errors"""
-
-        waste_adjustment = 1 - outdoor_crops.CROP_WASTE / 100
         # the negative amount can be made up for by stored food, so there's no need
         # to change the biofuel or feed usage
         if all_zero or exceeds_less_than_stored_food:
             self.biofuels = biofuels_before_cap
             self.feed = feed_before_cap
-            # feed to animals does not have additional waste applied (waste is applied
-            # after the meat production, and thus is part of meat waste)
-            self.fed_to_animals_prewaste = feed_before_cap / waste_adjustment
 
             return 1
 
@@ -247,14 +228,14 @@ class FeedAndBiofuels:
                 )
 
         ratio = self.iteratively_determine_reduction_in_nonhuman_consumption_postwaste(
+            include_fat_or_protein,
             stored_food,
-            outdoor_crops,
+            net_feed_available_without_stored_food,
             biofuels_before_cap,
             feed_before_cap,
         )
         self.biofuels = biofuels_before_cap * ratio
         self.feed = feed_before_cap * ratio
-        self.fed_to_animals_prewaste = self.feed / waste_adjustment
 
         PRINT_OVER_FEED_BIOFUEL_WARNING = True
         if PRINT_OVER_FEED_BIOFUEL_WARNING:
@@ -272,8 +253,9 @@ class FeedAndBiofuels:
 
     def iteratively_determine_reduction_in_nonhuman_consumption_postwaste(
         self,
+        include_fat_or_protein,
         stored_food,
-        outdoor_crops,
+        net_feed_available_without_stored_food,
         biofuels_before_cap,
         feed_before_cap,
     ):
@@ -287,9 +269,11 @@ class FeedAndBiofuels:
         # initialized to zero but will be overwritten probably
         running_supply_minus_demand = Food()
 
-        # necessary for the way we've computed this cap to work out correctly
-        assert stored_food.SF_FRACTION_FAT == outdoor_crops.OG_FRACTION_FAT
-        assert stored_food.SF_FRACTION_PROTEIN == outdoor_crops.OG_FRACTION_PROTEIN
+        if include_fat_or_protein:
+            # necessary for the way we've computed this cap to work out correctly
+            # TODO: account for that the ratios are different now (methane, cell_sugar)
+            assert stored_food.SF_FRACTION_FAT == outdoor_crops.OG_FRACTION_FAT
+            assert stored_food.SF_FRACTION_PROTEIN == outdoor_crops.OG_FRACTION_PROTEIN
 
         ratio = 1  # initialize to an unchanged amount
         while demand_more_than_supply:
@@ -305,14 +289,15 @@ class FeedAndBiofuels:
                 max_net_demand,
                 running_supply_minus_demand,
             ) = self.calculate_max_running_net_demand_postwaste(
-                outdoor_crops,
+                include_fat_or_protein,
+                net_feed_available_without_stored_food,
                 biofuels_before_cap * ratio,
                 feed_before_cap * ratio,
             )
             demand_more_than_supply = max_net_demand.any_greater_than(stored_food)
         assert 1 >= ratio >= 0
 
-        PLOT_RUNNING_TOTAL = False
+        PLOT_RUNNING_TOTAL = True
         if PLOT_RUNNING_TOTAL:
             running_supply_minus_demand.plot("running_net_supply minus demand")
         if ratio <= self.SAFETY_MARGIN:
@@ -422,38 +407,12 @@ class FeedAndBiofuels:
             + excess_feed_prewaste.in_units_bil_kcals_thou_tons_thou_tons_per_month()
         )
 
-    def get_nonhuman_consumption_before_cap_prewaste(
-        self,
-        biofuels_before_cap_prewaste,
-        feed_before_cap_prewaste,
-    ):
-        """
-        Calculate and set the total usage for consumption of biofuels and feed
-        """
-
-        # totals human edible used for animal feed and biofuels
-        # excess is directly supplied separately from the feed_shutoff used.
-
-        nonhuman_consumption_prewaste = (
-            biofuels_before_cap_prewaste + feed_before_cap_prewaste
-        )
-
-        return nonhuman_consumption_prewaste
-
-    def get_nonhuman_consumption_with_cap_postwaste(
-        self, constants_for_params, biofuels, feed
-    ):
-        """
-        Calculate and set the total usage for consumption of biofuels and feed
-
-        assume animals need and use human levels of fat and protein per kcal
-        """
-        nonhuman_consumption = biofuels + feed
-
-        return nonhuman_consumption
-
     def calculate_max_running_net_demand_postwaste(
-        self, outdoor_crops, biofuels_before_cap, feed_before_cap
+        self,
+        account_for_fat_and_protein,
+        net_feed_available_without_stored_food,
+        biofuels_before_cap,
+        feed_before_cap,
     ):
         """
         Calculate the exceedance of the biofuel and feed usage past the outdoor
@@ -518,35 +477,24 @@ class FeedAndBiofuels:
 
         assert nonhuman_consumption_before_cap.all_greater_than_or_equal_to_zero()
 
-        amount_stored_food_and_outdoor_crops_used = (
-            nonhuman_consumption_before_cap.get_amount_used_other_food(
-                outdoor_crops.OG_FRACTION_FAT, outdoor_crops.OG_FRACTION_PROTEIN
+        # TODO: account for fat and protein appropriately here
+        if account_for_fat_and_protein:
+            amount_stored_food_and_outdoor_crops_used = (
+                nonhuman_consumption_before_cap.get_amount_used_other_food(
+                    outdoor_crops.OG_FRACTION_FAT, outdoor_crops.OG_FRACTION_PROTEIN
+                )
             )
-        )
-        diff = (
-            amount_stored_food_and_outdoor_crops_used.fat
-            / amount_stored_food_and_outdoor_crops_used.kcals
-            - outdoor_crops.OG_FRACTION_FAT
-        )
+            assert False, """ERROR: we haven't properly accounted for the fraction fat and 
+            protein used when estimating feed usage"""
+        else:
+            amount_stored_food_and_outdoor_crops_used = nonhuman_consumption_before_cap
 
-        no_nans_diff = np.where(
-            amount_stored_food_and_outdoor_crops_used.kcals == 0, 0, diff
+        # amount_stored_food_and_outdoor_crops_used is post waste (as well as
+        # nonhuman_consumption_before_cap)
+        demand_minus_supply = (
+            amount_stored_food_and_outdoor_crops_used
+            - net_feed_available_without_stored_food
         )
-        assert (np.round(no_nans_diff, 4) == 0).all()
-
-        diff = (
-            amount_stored_food_and_outdoor_crops_used.protein
-            / amount_stored_food_and_outdoor_crops_used.kcals
-            - outdoor_crops.OG_FRACTION_PROTEIN
-        )
-
-        no_nans_diff = np.where(
-            amount_stored_food_and_outdoor_crops_used.kcals == 0, 0, diff
-        )
-        assert (np.round(no_nans_diff, 4) == 0).all()
-
-        # outdoor crops is post waste (as well as nonhuman_consumption_before_cap)
-        demand_minus_supply = amount_stored_food_and_outdoor_crops_used - outdoor_crops
 
         running_demand_minus_supply = (
             demand_minus_supply.get_running_total_nutrients_sum()

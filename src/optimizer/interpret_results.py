@@ -136,7 +136,6 @@ class Interpreter:
         self.seaweed_kcals_equivalent = (
             extracted_results.seaweed.in_units_kcals_equivalent()
         )
-
         self.cell_sugar_kcals_equivalent = (
             extracted_results.cell_sugar.in_units_kcals_equivalent()
         )

@@ -386,10 +386,6 @@ class Scenarios:
             "percent_of_global_production"
         ]
         assert 1 >= constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"] >= 0
-
-        print("initial_seaweed_fraction")
-        print(country_data)
-        print(country_data["initial_seaweed_fraction"])
         assert 1 >= country_data["initial_seaweed_fraction"] >= 0
         assert 1 >= country_data["new_area_fraction"] >= 0
         assert 1 >= country_data["max_area_fraction"] >= 0

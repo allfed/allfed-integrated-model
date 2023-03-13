@@ -104,14 +104,11 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         show_country_figures,
         figure_save_postfix="",
     ):
-        print("running optimizer0")
         country_name = country_data["country"]
 
         constants_for_params, scenario_loader = self.set_depending_on_option(
             country_data, scenario_option
         )
-
-        print("running optimizer1")
 
         # No excess calories
         constants_for_params["EXCESS_FEED"] = Food(
@@ -123,7 +120,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             protein_units="thousand tons each month",
         )
 
-        print("running optimizer2")
         PRINT_COUNTRY = True
         if PRINT_COUNTRY:
             print("")

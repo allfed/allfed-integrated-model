@@ -64,6 +64,9 @@ def get_crop_ratios_this_country(country_id, crop_macros):
             "soy": kcals_soy_sum / all_relevant_sum,
             "spring_wheat": kcals_wheat_sum / all_relevant_sum,
         }
+    if country_id == "AUS":
+        print("crops")
+        print(crops)
 
     return crops
 

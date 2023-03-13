@@ -34,14 +34,14 @@ class Extractor:
 
         # if no cellulosic sugar, plot shows zero
         self.extract_cell_sugar_results(
-            time_consts["production_kcals_cell_sugar_per_month"],
+            time_consts["cellulosic_sugar"].for_humans.kcals,
         )
 
         # if no scp, plot shows zero
         self.extract_SCP_results(
-            time_consts["production_kcals_scp_per_month"],
-            time_consts["production_fat_scp_per_month"],
-            time_consts["production_protein_scp_per_month"],
+            time_consts["methane_scp"].for_humans.kcals,
+            time_consts["methane_scp"].for_humans.fat,
+            time_consts["methane_scp"].for_humans.protein,
         )
 
         # if no fish, plot shows zero
