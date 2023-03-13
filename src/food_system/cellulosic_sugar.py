@@ -19,6 +19,7 @@ class CellulosicSugar:
         self.INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = constants_for_params[
             "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
         ]
+        self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_CS = 0.4
         self.MAX_FRACTION_FEED_CONSUMED_AS_CELLULOSIC_SUGAR = 0.3
         self.MAX_FRACTION_BIOFUEL_CONSUMED_AS_CELLULOSIC_SUGAR = (
             1  # All of biofuel can be CS
@@ -58,11 +59,10 @@ class CellulosicSugar:
             0 : self.NMONTHS
         ]
 
-        self.for_humans = Food()
-        # self.for_humans.set_to_zero_after_month(0)
-        self.for_humans.kcals = self.production_kcals_CS_per_month
-
-        self.for_humans.set_units(
+        self.for_humans = Food(
+            kcals=np.array(self.production_kcals_CS_per_month),
+            fat=np.zeros(len(self.production_kcals_CS_per_month)),
+            protein=np.zeros(len(self.production_kcals_CS_per_month)),
             kcals_units="billion kcals each month",
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",

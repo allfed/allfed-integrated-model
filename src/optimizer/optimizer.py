@@ -672,8 +672,8 @@ class Optimizer:
                 "Seaweed_Limit_Kcals_" + str(month) + "_Constraint",
             )
         if self.single_valued_constants["ADD_METHANE_SCP"]:
-            # loop through the methane SCP and make sure it's never greater than the
-            # minimum human able to be eaten.
+            # loop through the methane SCP and make sure it's never greater than
+            # the minimum fraction able to be eaten by humans.
             # If it is greater, reduce it to the minimum.
             capped_kcals_ratios = np.array([])
             methane_scp = self.time_consts["methane_scp"]
@@ -687,9 +687,31 @@ class Optimizer:
                         methane_scp.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP,
                     )
                 )
-            self.time_consts["methane_scp"].for_humans = (
-                methane_scp.for_humans * capped_kcals_ratios
-            )
+            self.time_consts[
+                "methane_scp"
+            ].for_humans = methane_scp.for_humans * np.array(capped_kcals_ratios)
+
+        if self.single_valued_constants["ADD_CELLULOSIC_SUGAR"]:
+            # loop through the cellulosic sugar and make sure it's never greater than
+            # the minimum fraction able to be eaten by humans.
+            # If it is greater, reduce it to the minimum.
+            capped_kcals_ratios = np.array([])
+            cellulosic_sugar = self.time_consts["cellulosic_sugar"]
+            cellulosic_sugar.for_humans.make_sure_is_a_list()
+            cellulosic_sugar_kcals = cellulosic_sugar.for_humans.kcals
+            capped_kcals_ratios = []
+            for month in range(0, len(cellulosic_sugar_kcals)):
+                capped_kcals_ratios.append(
+                    min(
+                        cellulosic_sugar_kcals[month]
+                        / self.single_valued_constants["KCALS_DAILY"],
+                        cellulosic_sugar.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_CS,
+                    )
+                )
+
+            self.time_consts[
+                "cellulosic_sugar"
+            ].for_humans = cellulosic_sugar.for_humans * np.array(capped_kcals_ratios)
 
         return model
 
