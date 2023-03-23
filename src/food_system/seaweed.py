@@ -35,12 +35,7 @@ class Seaweed:
         self.MAX_SEAWEED_HUMANS_CAN_CONSUME_MONTHLY = (
             self.MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS
             / 100
-            * (
-                constants_for_params["POP"]
-                * constants_for_params["NUTRITION"]["KCALS_DAILY"]
-                * 30
-                / 1e9
-            )
+            * (constants_for_params["POP"] * Food.conversions.kcals_monthly / 1e9)
         )
 
         self.MAX_SEAWEED_AS_PERCENT_KCALS_FEED = constants_for_params[

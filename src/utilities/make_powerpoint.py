@@ -56,6 +56,43 @@ class MakePowerpoint:
     def save_ppt(self, pres_name):
         self.prs.save(pres_name)
 
+    def insert_slide_with_feed(
+        self, title_below, description, figure_save_loc, feed_figure_save_loc
+    ):
+        slide_layout = self.prs.slide_layouts[5]
+        slide = self.prs.slides.add_slide(slide_layout)
+        title = slide.shapes.title
+        title.text = title_below
+        slide.shapes.add_picture(
+            image_file=figure_save_loc,
+            left=Inches(0.5),
+            top=Inches(1),
+            width=Inches(6),
+            height=Inches(3),
+        )
+
+        slide.shapes.add_picture(
+            image_file=feed_figure_save_loc,
+            left=Inches(0.5),
+            top=Inches(4),
+            width=Inches(6),
+            height=Inches(3),
+        )
+
+        textbox = slide.shapes.add_textbox(
+            left=Inches(7), top=Inches(2), width=Inches(3), height=Inches(5)
+        )
+
+        tf = textbox.text_frame
+
+        para = tf.add_paragraph()
+        para.text = description
+        para.alignment = PP_ALIGN.LEFT
+        para.font.size = Pt(10)
+
+    def save_ppt(self, pres_name):
+        self.prs.save(pres_name)
+
 
 if __name__ == "__main__":
     the_title = "the_title"

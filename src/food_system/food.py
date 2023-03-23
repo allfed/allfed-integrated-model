@@ -202,6 +202,63 @@ class Food(UnitConversions):
             #       as a default python list type and then get rid of all the casting to
             #       np arrays in the rest of the code
             self.kcals = np.array(self.kcals)
+
+            # this is used to set a reasonable default if kcals are supplied but fat and
+            # protein are not
+            if "each month" not in self.kcals_units:
+                self.kcals_units = self.kcals_units + " each month"
+
+            if isinstance(self.fat, int):
+                self.fat = np.zeros(len(self.kcals))
+                self.fat_units = self.fat_units + " each month"
+            else:
+                self.fat = np.array(self.fat)
+
+            if isinstance(self.protein, int):
+                self.protein = np.zeros(len(self.kcals))
+                self.protein_units = self.protein_units + " each month"
+            else:
+                self.protein = np.array(self.protein)
+
+        else:
+            self.NMONTHS = np.nan  # number of months is not a number
+
+        self.validate_if_list()
+
+    def new_food_just_from_kcals(
+        # these are the default values but they can be overwritten
+        self,
+        kcals=0,
+        fat=0,
+        protein=0,
+        # these are the default units but they can be overwritten
+        kcals_units="billion kcals",
+        fat_units="thousand tons",
+        protein_units="thousand tons",
+    ):
+        """
+        Initializes the food with the given macronutrients, and set the default units.
+        """
+        super().__init__()
+
+        self.kcals = kcals
+        self.fat = fat
+        self.protein = protein
+
+        self.set_units(
+            kcals_units,
+            fat_units,
+            protein_units,
+        )
+
+        if self.is_list_monthly():
+            self.NMONTHS = len(self.kcals)
+
+            # np arrays are easier to work with than default python lists imho
+            # TODO: make sure there's no way to sneakily directly define the .kcals etc
+            #       as a default python list type and then get rid of all the casting to
+            #       np arrays in the rest of the code
+            self.kcals = np.array(self.kcals)
             self.fat = np.array(self.fat)
             self.protein = np.array(self.protein)
         else:
@@ -503,6 +560,7 @@ class Food(UnitConversions):
             other is a food
             other is a food list
             other is a non food (like an int or a float)
+            other is a non food numpy array (a type of list)
 
             which gives us the possible combinations:
 
@@ -514,6 +572,8 @@ class Food(UnitConversions):
             this is a food list and other is a food list
             this is a food list and other is a non food
 
+            in addition if other is a numpy array, and this is not a food list,
+            then we make this an "each month" food list.
 
         units can be complicated when multiplying.
 
@@ -576,6 +636,19 @@ class Food(UnitConversions):
                 )
 
                 assert self.get_units() == other.get_units_from_element_to_list()
+
+            # this is a food and other is a list
+            if type(other) == np.ndarray:
+                # assume the other is unitless, we're converting a non-list food amount to a list
+                # make this a food with "each month"
+                return Food(
+                    self.kcals * other,
+                    self.fat * other,
+                    self.protein * other,
+                    self.kcals_units + " each month",
+                    self.fat_units + " each month",
+                    self.protein_units + " each month",
+                )
 
             # this is a food and other is a non food
 
@@ -724,7 +797,7 @@ class Food(UnitConversions):
             a string representation of the food.
         """
         return_string = ""
-        kcal_string = "    kcals: % s % s\n" % (
+        kcal_string = "    kcals: % s % s" % (
             np.round(self.kcals, 5),
             self.kcals_units,
         )
@@ -732,11 +805,11 @@ class Food(UnitConversions):
         return_string = return_string + kcal_string
 
         if self.conversions.include_fat:
-            fat_string = "    fat: % s % s\n" % (np.round(self.fat, 5), self.fat_units)
+            fat_string = "    fat: % s % s" % (np.round(self.fat, 5), self.fat_units)
             return_string = return_string + fat_string
 
         if self.conversions.include_protein:
-            protein_string = "    protein: % s % s\n" % (
+            protein_string = "    protein: % s % s" % (
                 np.round(self.protein, 5),
                 self.protein_units,
             )

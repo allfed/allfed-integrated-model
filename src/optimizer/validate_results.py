@@ -166,10 +166,6 @@ class Validator:
 
         interpreted_results.new_stored_outdoor_crops.make_sure_fat_protein_zero_if_kcals_is_zero()
 
-        # nonhuman consumption in units percent people fed
-
-        interpreted_results.nonhuman_consumption_percent.make_sure_fat_protein_zero_if_kcals_is_zero()
-
         # TODO: REINSTATE ONCE FIGURED OUT WHY THIS FAILS
         # I'm pretty sure, if there is some food that gets its kcals used up by feed
         # but not its calories, it's alright if only fat goes to humans, and no kcals...
@@ -218,20 +214,6 @@ class Validator:
 
         interpreted_results.new_stored_outdoor_crops.make_sure_not_nan()
 
-        # nonhuman consumption in units percent people fed
-
-        interpreted_results.nonhuman_consumption_percent.make_sure_not_nan()
-
-        interpreted_results.stored_food_rounded.make_sure_not_nan()
-        interpreted_results.seaweed_rounded.make_sure_not_nan()
-        interpreted_results.outdoor_crops_rounded.make_sure_not_nan()
-        interpreted_results.immediate_outdoor_crops_rounded.make_sure_not_nan()
-        interpreted_results.new_stored_outdoor_crops_rounded.make_sure_not_nan()
-        interpreted_results.stored_food_to_humans.make_sure_not_nan()
-        interpreted_results.outdoor_crops_to_humans.make_sure_not_nan()
-        interpreted_results.immediate_outdoor_crops_to_humans.make_sure_not_nan()
-        interpreted_results.new_stored_outdoor_crops_to_humans.make_sure_not_nan()
-
     def ensure_all_greater_than_or_equal_to_zero(self, interpreted_results):
         """
         checks that all the results variables are greater than or equal to zero
@@ -262,36 +244,4 @@ class Validator:
 
         assert (
             interpreted_results.new_stored_outdoor_crops.all_greater_than_or_equal_to_zero()
-        )
-
-        # nonhuman consumption in units percent people fed
-        assert (
-            interpreted_results.nonhuman_consumption_percent.all_greater_than_or_equal_to_zero()
-        )
-
-        assert (
-            interpreted_results.stored_food_rounded.all_greater_than_or_equal_to_zero()
-        )
-        assert interpreted_results.seaweed_rounded.all_greater_than_or_equal_to_zero()
-        assert (
-            interpreted_results.outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
-        )
-        assert (
-            interpreted_results.immediate_outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
-        )
-        assert (
-            interpreted_results.new_stored_outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
-        )
-        assert interpreted_results.stored_food_to_humans.get_rounded_to_decimal(
-            6
-        ).all_greater_than_or_equal_to_zero()
-        assert interpreted_results.outdoor_crops_to_humans.get_rounded_to_decimal(
-            6
-        ).all_greater_than_or_equal_to_zero()
-
-        assert interpreted_results.immediate_outdoor_crops_to_humans.get_rounded_to_decimal(
-            6
-        ).all_greater_than_or_equal_to_zero()
-        assert (
-            interpreted_results.new_stored_outdoor_crops_to_humans.all_greater_than_or_equal_to_zero()
         )

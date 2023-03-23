@@ -8,7 +8,7 @@
 from src.food_system.food import Food
 
 
-class StoredFood(Food):
+class StoredFood:
     def __init__(self, constants_for_params, outdoor_crops):
         """
         Initializes the StoredFood class, a child of the Food class.
@@ -92,35 +92,34 @@ class StoredFood(Food):
         # convert to billion kcals
         self.INITIAL_SF_KCALS = self.TONS_DRY_CALORIC_EQIVALENT_SF * 4e6 / 1e9
 
-        self.kcals = self.INITIAL_SF_KCALS * (1 - self.CROP_WASTE / 100)
-
-        self.fat = (
-            self.INITIAL_SF_KCALS * self.SF_FRACTION_FAT * (1 - self.CROP_WASTE / 100)
-        )
-
-        self.protein = (
-            self.INITIAL_SF_KCALS
-            * self.SF_FRACTION_PROTEIN
-            * (1 - self.CROP_WASTE / 100)
-        )
-
-        self.set_units(
+        self.initial_available = Food(
+            kcals=self.INITIAL_SF_KCALS * (1 - self.CROP_WASTE / 100),
+            fat=(
+                self.INITIAL_SF_KCALS
+                * self.SF_FRACTION_FAT
+                * (1 - self.CROP_WASTE / 100)
+            ),
+            protein=(
+                self.INITIAL_SF_KCALS
+                * self.SF_FRACTION_PROTEIN
+                * (1 - self.CROP_WASTE / 100)
+            ),
             kcals_units="billion kcals",
             fat_units="thousand tons",
             protein_units="thousand tons",
         )
 
-    def set_to_zero(self):
-        """
-        Initializes the stored food to zero.
-        """
-        self.TONS_DRY_CALORIC_EQIVALENT_SF = 0
-        self.INITIAL_SF_KCALS = 0
-        self.kcals = 0
-        self.fat = 0
-        self.protein = 0
-        self.set_units(
-            kcals_units="billion kcals",
-            fat_units="thousand tons",
-            protein_units="thousand tons",
-        )
+    # def set_to_zero(self):
+    #     """
+    #     Initializes the stored food to zero.
+    #     """
+    #     self.TONS_DRY_CALORIC_EQIVALENT_SF = 0
+    #     self.INITIAL_SF_KCALS = 0
+    #     self.initial_available.kcals = 0
+    #     self.initial_available.fat = 0
+    #     self.initial_available.protein = 0
+    #     self.initial_available.set_units(
+    #         kcals_units="billion kcals",
+    #         fat_units="thousand tons",
+    #         protein_units="thousand tons",
+    #     )

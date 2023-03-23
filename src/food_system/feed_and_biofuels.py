@@ -20,15 +20,6 @@ class FeedAndBiofuels:
     def __init__(self, constants_for_params):
         self.NMONTHS = constants_for_params["NMONTHS"]
 
-        self.feed_per_year_prewaste = Food(
-            kcals=constants_for_params["FEED_KCALS"],
-            fat=constants_for_params["FEED_FAT"],
-            protein=constants_for_params["FEED_PROTEIN"],
-            kcals_units="thousand dry caloric tons per year",
-            fat_units="tons per year",
-            protein_units="tons per year",
-        )
-
         self.biofuel_per_year_prewaste = Food(
             kcals=constants_for_params["BIOFUEL_KCALS"],
             fat=constants_for_params["BIOFUEL_FAT"],
@@ -40,6 +31,83 @@ class FeedAndBiofuels:
 
         self.AMOUNT_TO_REDUCE_RATIO_EACH_ITERATION = 0.01  # 1% reduction
         self.SAFETY_MARGIN = 0.01
+
+    def set_feed_and_biofuels(
+        self,
+        outdoor_crops_used_for_biofuel,
+        methane_scp_used_for_biofuel,
+        cellulosic_sugar_used_for_biofuel,
+        remaining_biofuel_needed_from_stored_food,
+        outdoor_crops_used_for_feed,
+        methane_scp_used_for_feed,
+        cellulosic_sugar_used_for_feed,
+        remaining_feed_needed_from_stored_food,
+    ):
+        """
+        This function sets the feed and biofuel usage for each month. It takes the
+        outdoor crops, methane, and cellulosic sugar that are used for feed and
+        biofuels, and the remaining feed and biofuel needed from stored food.
+        """
+        self.cell_sugar_biofuels = Food(
+            cellulosic_sugar_used_for_biofuel
+        ).in_units_percent_fed()
+        self.cell_sugar_feed = Food(
+            cellulosic_sugar_used_for_feed
+        ).in_units_percent_fed()
+        self.scp_biofuels = Food(methane_scp_used_for_biofuel).in_units_percent_fed()
+        self.scp_feed = Food(methane_scp_used_for_feed).in_units_percent_fed()
+
+        # TODO: add seaweed as a feed source
+        self.seaweed_biofuels = Food(
+            np.zeros(len(outdoor_crops_used_for_biofuel))
+        ).in_units_percent_fed()
+        # TODO: add seaweed as a feed source
+        self.seaweed_feed = Food(
+            np.zeros(len(outdoor_crops_used_for_biofuel))
+        ).in_units_percent_fed()
+
+        self.outdoor_crops_biofuels = Food(
+            outdoor_crops_used_for_biofuel
+        ).in_units_percent_fed()
+        self.outdoor_crops_feed = Food(
+            outdoor_crops_used_for_feed
+        ).in_units_percent_fed()
+        self.stored_food_biofuels = (
+            remaining_biofuel_needed_from_stored_food.in_units_percent_fed()
+        )
+
+        self.stored_food_feed = (
+            remaining_feed_needed_from_stored_food.in_units_percent_fed()
+        )
+
+        self.cell_sugar_biofuels_kcals_equivalent = (
+            self.cell_sugar_biofuels.in_units_kcals_equivalent()
+        )
+        self.cell_sugar_feed_kcals_equivalent = (
+            self.cell_sugar_feed.in_units_kcals_equivalent()
+        )
+        self.scp_biofuels_kcals_equivalent = (
+            self.scp_biofuels.in_units_kcals_equivalent()
+        )
+        self.scp_feed_kcals_equivalent = self.scp_feed.in_units_kcals_equivalent()
+        self.seaweed_biofuels_kcals_equivalent = (
+            self.seaweed_biofuels.in_units_kcals_equivalent()
+        )
+        self.seaweed_feed_kcals_equivalent = (
+            self.seaweed_feed.in_units_kcals_equivalent()
+        )
+        self.outdoor_crops_biofuels_kcals_equivalent = (
+            self.outdoor_crops_biofuels.in_units_kcals_equivalent()
+        )
+        self.outdoor_crops_feed_kcals_equivalent = (
+            self.outdoor_crops_feed.in_units_kcals_equivalent()
+        )
+        self.stored_food_biofuels_kcals_equivalent = (
+            self.stored_food_biofuels.in_units_kcals_equivalent()
+        )
+        self.stored_food_feed_kcals_equivalent = (
+            self.stored_food_feed.in_units_kcals_equivalent()
+        )
 
     def set_nonhuman_consumption_with_cap(
         self,
@@ -138,42 +206,11 @@ class FeedAndBiofuels:
             constants_for_params["EXCESS_FEED_PERCENT"]
         )
 
-        # 4000 kcals per kg, 1000 kg per dry caloric tons, units currently billion kcals
-        feed_over_time_dry_caloric_tons = feed_over_time.values * 1e9 / 4e6
-
-        # tons annually to thousand tons per month
-        fat_thousand_tons_per_month_over_time = (
-            feed_over_time_dry_caloric_tons
-            * constants_for_params["FEED_FAT"]
-            / constants_for_params["FEED_KCALS"]
-            if constants_for_params["FEED_KCALS"] > 0
-            else np.array(feed_over_time_dry_caloric_tons) * 0
+        total_feed_usage = (
+            feed_over_time.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            + excess_feed_prewaste.in_units_bil_kcals_thou_tons_thou_tons_per_month()
         )
-
-        # tons annually to thousand tons per month
-        protein_thousand_tons_per_month_over_time = (
-            feed_over_time_dry_caloric_tons
-            * constants_for_params["FEED_PROTEIN"]
-            / constants_for_params["FEED_KCALS"]
-            if constants_for_params["FEED_KCALS"] > 0
-            else np.array(feed_over_time_dry_caloric_tons) * 0
-        )
-
-        feed_before_cap_prewaste = Food(
-            # billion kcals per month
-            kcals=feed_over_time.values,
-            fat=fat_thousand_tons_per_month_over_time,
-            protein=protein_thousand_tons_per_month_over_time,
-            kcals_units="billion kcals each month",
-            fat_units="thousand tons each month",
-            protein_units="thousand tons each month",
-        )
-
-        return (
-            biofuels_before_cap_prewaste,
-            feed_before_cap_prewaste,
-            excess_feed_prewaste,
-        )
+        return (biofuels_before_cap_prewaste, total_feed_usage, excess_feed_prewaste)
 
     def set_biofuels_and_feed_usage_postwaste(
         self,
@@ -358,54 +395,6 @@ class FeedAndBiofuels:
         )
 
         return biofuels_before_cap_prewaste
-
-    def get_feed_usage_before_cap_prewaste(self, feed_duration, excess_feed_prewaste):
-        """
-        This function is used to get the feed usage before the cap is applied.
-        The total number of months before shutoff is the duration, representing the
-        number of nonzero feed months for feeds to be used.
-        """
-
-        self.feed_monthly_usage_prewaste = Food(
-            # thousand tons annually to billion kcals per month
-            kcals=self.feed_per_year_prewaste.kcals / 12 * 4e6 / 1e9,
-            # tons annually to thousand tons per month
-            fat=self.feed_per_year_prewaste.fat / 12 / 1e3,
-            # tons annually to thousand tons per month
-            protein=self.feed_per_year_prewaste.protein / 12 / 1e3,
-            kcals_units="billion kcals per month",
-            fat_units="thousand tons per month",
-            protein_units="thousand tons per month",
-        )
-
-        assert self.feed_monthly_usage_prewaste.all_greater_than_or_equal_to_zero()
-
-        baseline_feed_before_cap_prewaste_kcals = np.array(
-            [self.feed_monthly_usage_prewaste.kcals] * feed_duration
-            + [0] * (self.NMONTHS - feed_duration)
-        )
-        baseline_feed_before_cap_prewaste_fat = np.array(
-            [self.feed_monthly_usage_prewaste.fat] * feed_duration
-            + [0] * (self.NMONTHS - feed_duration)
-        )
-        baseline_feed_before_cap_prewaste_protein = np.array(
-            [self.feed_monthly_usage_prewaste.protein] * feed_duration
-            + [0] * (self.NMONTHS - feed_duration)
-        )
-
-        baseline_feed_before_cap_prewaste = Food(
-            kcals=baseline_feed_before_cap_prewaste_kcals,
-            fat=baseline_feed_before_cap_prewaste_fat,
-            protein=baseline_feed_before_cap_prewaste_protein,
-            kcals_units="billion kcals each month",
-            fat_units="thousand tons each month",
-            protein_units="thousand tons each month",
-        )
-
-        return (
-            baseline_feed_before_cap_prewaste
-            + excess_feed_prewaste.in_units_bil_kcals_thou_tons_thou_tons_per_month()
-        )
 
     def calculate_max_running_net_demand_postwaste(
         self,

@@ -59,7 +59,7 @@ class CellulosicSugar:
             0 : self.NMONTHS
         ]
 
-        self.for_humans = Food(
+        self.production = Food(
             kcals=np.array(self.production_kcals_CS_per_month),
             fat=np.zeros(len(self.production_kcals_CS_per_month)),
             protein=np.zeros(len(self.production_kcals_CS_per_month)),

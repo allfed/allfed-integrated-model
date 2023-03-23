@@ -13,7 +13,7 @@ class Extractor:
     def __init__(self, constants):
         self.constants = constants
 
-    def extract_results(self, model, variables, single_valued_constants, time_consts):
+    def extract_results(self, model, variables, time_consts):
         # extract the results from the model
 
         self.get_objective_optimization_results(model)
@@ -63,7 +63,7 @@ class Extractor:
         self.extract_outdoor_crops_results(
             variables["crops_food_eaten_no_relocation"],
             variables["crops_food_eaten_relocated"],
-            time_consts["outdoor_crops"],
+            time_consts["outdoor_crops"].for_humans,
         )
 
         # if nonegg nonmilk meat isn't included, these results plot shows zero
@@ -443,6 +443,7 @@ class Extractor:
 
         # make sure we haven't messed up and changed total outdoor growing production
         # each month
+        pass
 
         difference = self.outdoor_crops - (
             self.immediate_outdoor_crops + self.new_stored_outdoor_crops

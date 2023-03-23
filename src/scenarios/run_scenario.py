@@ -40,7 +40,10 @@ class ScenarioRunner:
         (
             single_valued_constants,
             time_consts,
+            feed_biofuels,
         ) = self.compute_parameters(constants_for_params, scenarios_loader)
+
+        interpreter.set_feed(feed_biofuels)
 
         # actually make PuLP optimize effective people fed based on all the constants
         # we've determined
@@ -53,17 +56,13 @@ class ScenarioRunner:
 
         extractor = Extractor(single_valued_constants)
         #  get values from all the optimizer in list and integer formats
-        extracted_results = extractor.extract_results(
-            model, variables, single_valued_constants, time_consts
-        )
+        extracted_results = extractor.extract_results(model, variables, time_consts)
 
         # TODO: eventually all the values not directly solved by the optimizer should
         # be removed from extracted_results
 
         #  interpret the results, nicer for plotting, reporting, and printing results
-        interpreted_results = interpreter.interpret_results(
-            extracted_results, time_consts
-        )
+        interpreted_results = interpreter.interpret_results(extracted_results)
 
         # ensure no errors were made in the extraction and interpretation, or if the
         # optimizer did not correctly satisfy constraints within a reasonable margin
@@ -87,9 +86,10 @@ class ScenarioRunner:
         (
             single_valued_constants,
             time_consts,
+            feed_and_biofuels,
         ) = constants_loader.compute_parameters(constants_for_params, scenarios_loader)
 
-        return (single_valued_constants, time_consts)
+        return (single_valued_constants, time_consts, feed_and_biofuels)
 
     def run_optimizer(self, single_valued_constants, time_consts):
         """

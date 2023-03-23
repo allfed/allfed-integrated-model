@@ -11,7 +11,7 @@ from src.utilities.plotter import Plotter
 from src.food_system.food import Food
 
 
-class OutdoorCrops(Food):
+class OutdoorCrops:
     def __init__(self, constants_for_params):
         super().__init__()
 
@@ -328,23 +328,21 @@ class OutdoorCrops(Food):
         else:
             crops_produced = np.array([0] * self.NMONTHS)
 
-        self.kcals = np.array(crops_produced) * (1 - self.CROP_WASTE / 100)
-        self.fat = np.array(self.OG_FRACTION_FAT * crops_produced) * (
-            1 - self.CROP_WASTE / 100
-        )
-        self.protein = np.array(self.OG_FRACTION_PROTEIN * crops_produced) * (
-            1 - self.CROP_WASTE / 100
-        )
-
-        assert not np.isnan(
-            self.kcals
-        ).any(), """Error: the outdoor crop production expected is
-            unknown, cannot compute optimization"""
-        self.set_units(
+        self.production = Food(
+            kcals=np.array(crops_produced) * (1 - self.CROP_WASTE / 100),
+            fat=np.array(self.OG_FRACTION_FAT * crops_produced)
+            * (1 - self.CROP_WASTE / 100),
+            protein=np.array(self.OG_FRACTION_PROTEIN * crops_produced)
+            * (1 - self.CROP_WASTE / 100),
             kcals_units="billion kcals each month",
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
+
+        assert not np.isnan(
+            self.production.kcals
+        ).any(), """Error: the outdoor crop production expected is
+            unknown, cannot compute optimization"""
 
         # import matplotlib.pyplot as plt
         # import pandas as pd

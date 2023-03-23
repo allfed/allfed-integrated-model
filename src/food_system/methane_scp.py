@@ -25,7 +25,7 @@ class MethaneSCP:
         # feed can't be more than this fraction in terms of calories in any month
         self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP = 0.3
         self.MAX_FRACTION_FEED_CONSUMED_AS_SCP = 0.3
-        MAX_FRACTION_BIOFUEL_CONSUMED_AS_METHANE_SCP = 1
+        self.MAX_FRACTION_BIOFUEL_CONSUMED_AS_SCP = 1
 
         # billion kcals a month for 100% population (7.8 billion people).
         self.GLOBAL_MONTHLY_NEEDS = (
@@ -73,14 +73,14 @@ class MethaneSCP:
             self.production_kcals_scp_per_month_long = [0] * self.NMONTHS
 
     def calculate_scp_fat_and_protein_production(self):
-        self.for_humans = Food()
-        self.for_humans.kcals = np.array(
+        self.production = Food()
+        self.production.kcals = np.array(
             self.production_kcals_scp_per_month_long[0 : self.NMONTHS]
         )
         # billions of kcals converted to 1000s of tons protein
-        self.for_humans.protein = np.array(
+        self.production.protein = np.array(
             list(
-                np.array(self.for_humans.kcals)
+                np.array(self.production.kcals)
                 * 1e9
                 * self.SCP_FRAC_PROTEIN
                 / self.SCP_KCALS_PER_KG
@@ -89,9 +89,9 @@ class MethaneSCP:
         )
 
         # billions of kcals converted to 1000s of tons fat
-        self.for_humans.fat = np.array(
+        self.production.fat = np.array(
             list(
-                np.array(self.for_humans.kcals)
+                np.array(self.production.kcals)
                 * 1e9
                 * self.SCP_FRAC_FAT
                 / self.SCP_KCALS_PER_KG
@@ -99,7 +99,7 @@ class MethaneSCP:
             )
         )
 
-        self.for_humans.set_units(
+        self.production.set_units(
             kcals_units="billion kcals each month",
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
