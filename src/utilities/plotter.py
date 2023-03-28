@@ -246,29 +246,19 @@ class Plotter:
             return
 
         xlim = min(xlim, len(interpreter.time_months_middle))
-        legend = Plotter.get_feed_biofuels_legend(interpreter, True)
+        legend = Plotter.get_feed_biofuels_legend(interpreter)
         fig = plt.figure()
         pal = [
-            "#1e7ecd",
-            "#1e7ecd",
-            "#71797E",
-            "#71797E",
-            "#e75480",
-            "#e75480",
-            "#76d7ea",
-            "#76d7ea",
-            "#056608",
-            "#056608",
-            "#f3f4e3",
-            "#f3f4e3",
-            "#ff0606",
-            "#ff0606",
-            "#a5d610",
-            "#a5d610",
-            "#ffeb7a",
-            "#ffeb7a",
-            "#e7d2ad",
-            "#e7d2ad",
+            "#71797E",  # CS
+            "#71797E",  # CS
+            "#e75480",  # SCP
+            "#e75480",  # SCP
+            "#056608",  # seaweeed
+            "#056608",  # seaweeed
+            "#a5d610",  # OG
+            "#a5d610",  # OG
+            "#e7d2ad",  # stored food
+            "#e7d2ad",  # stored food
         ]
         hatches_list = [
             "xx",
@@ -282,10 +272,10 @@ class Plotter:
             "xx",
             "",
         ]
-        custom_handles = [
-            Patch(facecolor=pal[i], hatch=hatches_list[i] * 2, label=legend[i])
-            for i in range(len(legend))
-        ]
+        # custom_handles = [
+        #     Patch(facecolor=pal[i], hatch=hatches_list[i] * 2, label=legend[i])
+        #     for i in range(len(legend))
+        # ]
 
         for i, label in enumerate(("a", "b")):
             ax = fig.add_subplot(1, 2, i + 1)
@@ -332,6 +322,12 @@ class Plotter:
                     va="top",
                     ha="right",
                 )
+                print("len(pal)")
+                print(len(pal))
+                print("len np.array(ykcals)")
+                print(len(np.array(ykcals)))
+                print("len legend")
+                print(len(legend))
                 stack_plots = ax.stackplot(
                     interpreter.time_months_middle,
                     np.array(ykcals),
@@ -549,16 +545,16 @@ class Plotter:
         xlim = min(xlim, len(interpreter.time_months_middle))
         legend = Plotter.get_people_fed_legend(interpreter, True)
         pal = [
-            "#1e7ecd",
-            "#71797E",
-            "#e75480",
-            "#76d7ea",
-            "#056608",
-            "#f3f4e3",
-            "#ff0606",
-            "#a5d610",
-            "#ffeb7a",
-            "#e7d2ad",
+            "#1e7ecd",  # fish
+            "#71797E",  # CS
+            "#e75480",  # SCP
+            "#76d7ea",  # greenhouses
+            "#056608",  # seaweeed
+            "#f3f4e3",  # milk
+            "#ff0606",  # meat
+            "#a5d610",  # immediate OG
+            "#ffeb7a",  # new stored OG
+            "#e7d2ad",  # stored food
         ]
         for i, label in enumerate(("a", "b")):
             ykcals = []
@@ -1779,19 +1775,8 @@ class Plotter:
 
         return legend
 
-    def get_feed_biofuels_legend(interpreter, is_nuclear_winter):
-        if not is_nuclear_winter:
-            stored_food_label = (
-                "Crops consumed that month that were\nstored before simulation"
-            )
-            OG_stored_label = (
-                "Crops consumed that month that were\nstored after simulation start"
-            )
-        else:
-            stored_food_label = "Crops consumed that month that were\nstored before nuclear winter onset"
-            OG_stored_label = (
-                "Crops consumed that month that were\nstored after nuclear winter onset"
-            )
+    def get_feed_biofuels_legend(interpreter):
+        stored_food_label = "Stored food, either from before or after catastrophe"
 
         legend = []
         if interpreter.constants["ADD_CELLULOSIC_SUGAR"]:
