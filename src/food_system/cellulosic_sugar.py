@@ -55,6 +55,10 @@ class CellulosicSugar:
                     * constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"]
                     * (1 - self.SUGAR_WASTE / 100)
                 )
+        else:
+            production_kcals_CS_per_month_long = np.zeros(
+                constants_for_params["NMONTHS"]
+            )
         self.production_kcals_CS_per_month = production_kcals_CS_per_month_long[
             0 : self.NMONTHS
         ]

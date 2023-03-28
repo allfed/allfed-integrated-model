@@ -59,7 +59,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         self.run_model_no_trade(
             title=this_simulation["scenario"] + "_" + this_simulation["fish"],
             create_pptx_with_all_countries=create_pptx_with_all_countries,
-            show_country_figures=False,
+            show_country_figures=show_country_figures,
             show_map_figures=show_map_figures,
             add_map_slide_to_pptx=show_map_figures and create_pptx_with_all_countries,
             scenario_option=this_simulation,
@@ -152,7 +152,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 constants_for_params, scenario_loader
             )
             percent_people_fed = interpreted_results.percent_people_fed
-
+        print("percent_people_fed")
+        print(percent_people_fed)
         if not np.isnan(percent_people_fed):
             Plotter.plot_feed(
                 interpreted_results,

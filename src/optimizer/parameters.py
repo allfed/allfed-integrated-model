@@ -122,7 +122,7 @@ class Parameters:
             constants_out,
             time_consts,
             feed_and_biofuels,
-        ) = self.init_meat_and_dairy_and_feed_from_breeding_and_cap_possible_feed(
+        ) = self.init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels(
             constants_out,
             constants_inputs,
             time_consts,
@@ -433,7 +433,7 @@ class Parameters:
 
         return time_consts, methane_scp
 
-    def init_meat_and_dairy_and_feed_from_breeding_and_cap_possible_feed(
+    def init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels(
         self,
         constants_out,
         constants_inputs,
@@ -560,11 +560,61 @@ class Parameters:
         #     constants_inputs["EXCESS_FEED_PERCENT"]
         # )
         # return feed_and_biofuels, meat_and_dairy, constants_out, time_consts
+        time_consts = self.add_dietary_constraints_to_scp_and_cs(
+            constants_out, time_consts
+        )
         return (
             constants_out,
             time_consts,
             feed_and_biofuels,
         )
+
+    def add_dietary_constraints_to_scp_and_cs(self, constants_out, time_consts):
+        if constants_out["ADD_METHANE_SCP"]:
+            # loop through the methane SCP and make sure it's never greater than
+            # the minimum fraction able to be eaten by humans.
+            # If it is greater, reduce it to the minimum.
+            capped_kcals_ratios = np.array([])
+            methane_scp = time_consts["methane_scp"]
+            methane_scp_fraction = (
+                methane_scp.for_humans.in_units_percent_fed().kcals / 100
+            )
+            capped_kcals_ratios = []
+            for month in range(0, len(methane_scp_fraction)):
+                capped_kcals_ratios.append(
+                    min(
+                        methane_scp_fraction[month],
+                        methane_scp.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP,
+                    )
+                )
+            time_consts["methane_scp"].for_humans = methane_scp.for_humans * np.array(
+                capped_kcals_ratios
+            )
+
+            return time_consts
+
+        if constants_out["ADD_CELLULOSIC_SUGAR"]:
+            # loop through the cellulosic sugar and make sure it's never greater than
+            # the minimum fraction able to be eaten by humans.
+            # If it is greater, reduce it to the minimum.
+            capped_kcals_ratios = np.array([])
+            cellulosic_sugar = self.time_consts["cellulosic_sugar"]
+            cellulosic_sugar.for_humans.make_sure_is_a_list()
+            cellulosic_sugar_fraction = (
+                cellulosic_sugar.for_humans.in_units_percent_fed().kcals / 100
+            )
+            capped_kcals_ratios = []
+            for month in range(0, len(cellulosic_sugar_fraction)):
+                capped_kcals_ratios.append(
+                    min(
+                        cellulosic_sugar_fraction[month],
+                        cellulosic_sugar.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_CS,
+                    )
+                )
+
+            self.time_consts[
+                "cellulosic_sugar"
+            ].for_humans = cellulosic_sugar.for_humans * np.array(capped_kcals_ratios)
 
     def subtract_feed_and_biofuels_from_production(
         self,
@@ -927,7 +977,6 @@ class Parameters:
         constants_out,
         time_consts,
     ):
-        all_inedible_feed = meat_and_dairy.human_inedible_feed
         data = {
             "country_code": constants_inputs["COUNTRY_CODE"],
             "reduction_in_beef_calves": 90,
@@ -941,8 +990,6 @@ class Parameters:
             "use_grass_and_residues_for_dairy": use_grass_and_residues_for_dairy,
             "keep_dairy": True,
             "feed_ratio": feed_ratio,
-            "all_inedible_feed": all_inedible_feed,
-
         }
         feed_dairy_meat_results, feed = cao.calculate_feed_and_animals(data)
         # MEAT AND DAIRY from breeding reduction strategy
@@ -1036,12 +1083,6 @@ class Parameters:
             constants_inputs,
             feed,
         )
-
-        print("biofuels_before_cap_prewaste")
-        print(biofuels_before_cap_prewaste)
-        print("feed_before_cap_prewaste")
-        print(feed_before_cap_prewaste)
-        print(feed_before_cap_prewaste.in_units_percent_fed())
 
         feed_and_biofuels.nonhuman_consumption = (
             biofuels_before_cap_prewaste + feed_before_cap_prewaste

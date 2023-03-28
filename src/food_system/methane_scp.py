@@ -24,6 +24,7 @@ class MethaneSCP:
 
         # feed can't be more than this fraction in terms of calories in any month
         self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP = 0.3
+
         self.MAX_FRACTION_FEED_CONSUMED_AS_SCP = 0.3
         self.MAX_FRACTION_BIOFUEL_CONSUMED_AS_SCP = 1
 

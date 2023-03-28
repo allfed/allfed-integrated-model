@@ -434,6 +434,9 @@ class Scenarios:
         constants_for_params["INITIAL_CROP_AREA_FRACTION"] = country_data[
             "fraction_crop_area"
         ]
+        constants_for_params["INITIAL_CROP_AREA_HA"] = (
+            np.array(country_data["crop_area_1000ha"]) * 1000
+        )
 
         # total head count of medium sized animals
         constants_for_params["INIT_MEDIUM_ANIMALS"] = country_data["medium_animals"]

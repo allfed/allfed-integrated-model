@@ -19,7 +19,7 @@ def run_USA_with_and_without_resilient():
     this_simulation["crop_disruption"] = "country_nuclear_winter"
     this_simulation["fish"] = "nuclear_winter"
 
-    this_simulation["waste"] = "zero"
+    this_simulation["waste"] = "doubled_prices_in_country"
     this_simulation["fat"] = "not_required"
     this_simulation["protein"] = "not_required"
     this_simulation["nutrition"] = "catastrophe"
@@ -38,7 +38,7 @@ def run_USA_with_and_without_resilient():
         show_map_figures=True,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
-        countries_list=["AUS"],
+        countries_list=["ARG"],
         #     "CHN",
         #     "FRA",
         #     "IND",

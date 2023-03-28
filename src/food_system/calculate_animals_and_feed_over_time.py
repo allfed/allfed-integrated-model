@@ -73,14 +73,7 @@ class CalculateAnimalOutputs:
         medium_animals = df_fao_animals.at[country_code, "medium_animals"]
         large_animals = df_fao_animals.at[country_code, "large_animals"]
         dairy_cows = df_fao_animals.at[country_code, "dairy_cows"]
-        print("small_animals")
-        print(small_animals)
-        print("medium_animals")
-        print(medium_animals)
-        print("large_animals")
-        print(large_animals)
-        print("dairy_cows")
-        print(dairy_cows)
+
         # Per country stuff from mike's data (million tonnes)
         country_feed_caloric_annual = df_feed_country.at[
             country_code,
@@ -169,12 +162,6 @@ class CalculateAnimalOutputs:
             monthly_feed_consumption_dairy_cows / dairy_cows
         )
 
-        print("country_specific_feed_per_small_animal_head_pm")
-        print(country_specific_feed_per_small_animal_head_pm)
-        print(country_specific_feed_per_medium_animal_head_pm)
-        print(country_specific_feed_per_large_animal_head_pm)
-        print(country_specific_feed_per_dairy_cow_head_pm)
-
         # create dict from the above
         country_specific_feed_per_animal_head_pm = {
             "small_animals": country_specific_feed_per_small_animal_head_pm,
@@ -204,8 +191,6 @@ class CalculateAnimalOutputs:
             data["country_code"], data["feed_ratio"]
         )
         df_out = self.calculate_animal_populations(data)
-        print("Beef Pop trtpe")
-        print(type(df_out["Beef Pop"].values))
 
         # if nan population, assume zero
         df_out["Poultry Pop"] = df_out["Poultry Pop"].replace(np.nan, 0)
@@ -228,12 +213,6 @@ class CalculateAnimalOutputs:
         #     0 if np.isnan(feed_dict["dairy_cows"]) else feed_dict["dairy_cows"]
         # )
 
-        print("feed_dict")
-        print(feed_dict)
-        print("large_animals")
-        print("medium_animals")
-        print(feed_dict["large_animals"].units)
-        print(feed_dict["medium_animals"].units)
 
         # combine together
         poultry_feed = feed_dict["small_animals"] * np.array(
@@ -258,11 +237,6 @@ class CalculateAnimalOutputs:
         df_out["Pig Feed"] = pork_feed
         df_out["Beef Feed"] = beef_feed
         df_out["Dairy Feed"] = dairy_feed
-        print("Poultry Feed")
-        print(df_out["Poultry Feed"])
-        print(df_out["Pig Feed"])
-        print(df_out["Beef Feed"])
-        print(df_out["Dairy Feed"])
         feed = poultry_feed + pork_feed + beef_feed + dairy_feed
 
         return df_out,feed
