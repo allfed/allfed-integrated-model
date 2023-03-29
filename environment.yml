@@ -1,6 +1,7 @@
 name: intmodel
 channels:
   - defaults
+  - conda-forge
 dependencies:
   - openpyxl
   - statsmodels
