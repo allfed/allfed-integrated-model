@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import git
 from src.food_system.food import Food
+import pdb
 
 
 """
@@ -20,7 +21,6 @@ Start main function
 # data is imported in the other parts of the model...
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
-
 
 animal_feed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
 InputDataAndSources_location = Path.joinpath(
@@ -317,6 +317,8 @@ class CalculateAnimalOutputs:
         cowGestation = animal_inputs.loc["cowGestation", "Qty"]
         calves_per_mother = 1
 
+        print(f"cow_slaughter_pm: {cow_slaughter_pm}")
+
         # life expetency values
         dairy_life_expectancy = (
             5.87  # https://www.frontiersin.org/articles/10.3389/fvets.2021.646672/full
@@ -402,6 +404,9 @@ class CalculateAnimalOutputs:
         )  # measured in head
         spare_slaughter_hours = 0
 
+
+        print(f"current_cow_slaughter: {current_cow_slaughter}")
+
         # # define current totals
         # current_beef_feed_cattle = cattle_on_feed
         current_beef_cattle = total_beef_cows
@@ -465,6 +470,8 @@ class CalculateAnimalOutputs:
                     / cow_slaughter_hours
                 )
 
+            print(f"current_cow_slaughter: {current_cow_slaughter}")
+
             # this set up only kills dairy cows when they are getting to the end of
             # their life.
             current_dairy_slaughter = (
@@ -484,6 +491,13 @@ class CalculateAnimalOutputs:
 
             else:
                 actual_beef_slaughter = current_beef_slaughter
+
+            print(f"actual beef slaughter {actual_beef_slaughter}")
+            print(f"current beef slaughter {current_beef_slaughter}")
+            print(f"current cow slaughter {current_cow_slaughter}")
+            print(f"current dairy slaughter {current_dairy_slaughter}")
+
+
 
             other_beef_death = other_cow_death_rate_monthly * current_beef_cattle
             other_dairy_death = other_cow_death_rate_monthly * current_dairy_cattle
