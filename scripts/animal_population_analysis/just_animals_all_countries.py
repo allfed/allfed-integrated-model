@@ -17,11 +17,26 @@ head_count_csv_location = Path.joinpath(
     Path(animal_feed_data_dir), "head_count_csv.csv"
 )
 
+gdp_csv_location = Path.joinpath(
+    Path(animal_feed_data_dir), "gdp_owid_2018.csv"
+)
+
+# Load data
+processed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "processed_data"
+pop_csv_location = Path.joinpath(
+    Path(processed_data_dir), "population_csv.csv"
+)
+
+
+
 df_feed_country = pd.read_csv(country_feed_data_location, index_col="ISO3 Country Code")
 df_fao_animals = pd.read_csv(head_count_csv_location, index_col="iso3")
+df_gdp = pd.read_csv(gdp_csv_location, index_col="iso3")
 df_fao_slaughter = pd.read_csv(
     FAO_stat_slaughter_counts_processed_location, index_col="iso3"
 )
+df_pop_country = pd.read_csv(pop_csv_location, index_col="iso3")
+
 
 # join on inner to only calauclate for countries that all three of the datatsets exist
 df_fao_slaughter = df_fao_slaughter.join(df_fao_animals, how="inner", rsuffix="_animals")
@@ -127,17 +142,35 @@ df = pd.DataFrame(
         "initial_beef_slaughter": initial_beef_slaughter,
         "initial_pig_slaughter": initial_pig_slaughter,
         "initial_poultry_slaughter": initial_poultry_slaughter,
+        
     }
 )
+# merge gdp dataframe
+df = df.merge(df_gdp, left_on="country", right_on="iso3", how="left")
+
+# merge population dataframe
+df = df.merge(df_pop_country, left_on="country_x", right_on="iso3", how="left")
+
+
 # create population to slaughter ratio
 df["beef_ratio"] = df["initial_beef_slaughter"] / df["initial_beef"]
 df["pig_ratio"] = df["initial_pig_slaughter"] / df["initial_pig"]
 df["poultry_ratio"] = df["initial_poultry_slaughter"] / df["initial_poultry"]
 
+# create gdp per capita
+df["GDP_per_capita"] = df["GDP"] / df["population"]
 
-#plot max month er country
-fig = px.bar(df, x="country", y="max_month", title="Months to zero animal population")
+
+#plot max month er country, sorted by max month
+fig = px.bar(
+    df.sort_values("max_month"),
+    x="max_month",
+    y="country",
+    title="Time to zero population",
+    orientation="h",
+)
 fig.show()
+
 
 #plot beef population against beef salughter, with country labels
 fig = px.scatter(
@@ -148,4 +181,22 @@ fig = px.scatter(
     title="Beef population vs slaughter",
 )
 fig.show()
+
+
+# plot beef ratio against time to zero population (max_month)
+fig = px.scatter(
+    df,     
+    x="max_month",
+    y="GDP_per_capita",
+    color="country_x",
+    title="Beef ratio vs time to zero population",
+    # use the beef pop as the size of the marker, with a min size of 10 and max size of 100
+    size="initial_beef",
+    size_max=40,
+    
+
+
+)
+fig.show()
+
 

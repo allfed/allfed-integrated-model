@@ -317,7 +317,6 @@ class CalculateAnimalOutputs:
         cowGestation = animal_inputs.loc["cowGestation", "Qty"]
         calves_per_mother = 1
 
-        print(f"cow_slaughter_pm: {cow_slaughter_pm}")
 
         # life expetency values
         dairy_life_expectancy = (
@@ -405,7 +404,6 @@ class CalculateAnimalOutputs:
         spare_slaughter_hours = 0
 
 
-        print(f"current_cow_slaughter: {current_cow_slaughter}")
 
         # # define current totals
         # current_beef_feed_cattle = cattle_on_feed
@@ -470,7 +468,6 @@ class CalculateAnimalOutputs:
                     / cow_slaughter_hours
                 )
 
-            print(f"current_cow_slaughter: {current_cow_slaughter}")
 
             # this set up only kills dairy cows when they are getting to the end of
             # their life.
@@ -491,12 +488,6 @@ class CalculateAnimalOutputs:
 
             else:
                 actual_beef_slaughter = current_beef_slaughter
-
-            print(f"actual beef slaughter {actual_beef_slaughter}")
-            print(f"current beef slaughter {current_beef_slaughter}")
-            print(f"current cow slaughter {current_cow_slaughter}")
-            print(f"current dairy slaughter {current_dairy_slaughter}")
-
 
 
             other_beef_death = other_cow_death_rate_monthly * current_beef_cattle

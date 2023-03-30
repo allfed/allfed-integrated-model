@@ -28,8 +28,10 @@ df_head_country = pd.read_csv(head_count_csv_location, index_col="iso3")
 df_slaughter_country = pd.read_csv(FAO_stat_slaughter_counts_processed_location, index_col="iso3")
 
 
-# merge data
-df_pop_head_country = pd.merge(df_pop_country, df_head_country, on="iso3")
+# merge all three dataframes
+df_pop_head_country = pd.merge(df_pop_country, df_head_country, left_index=True, right_index=True)
+df_pop_head_country = pd.merge(df_pop_head_country, df_slaughter_country, left_index=True, right_index=True)
+
 
 # Calculate per head, small_animals,medium_animals,large_animals,dairy_cows
 df_pop_head_country["poultry_per_head"] = df_pop_head_country["small_animals"] / df_pop_head_country["population"]
@@ -54,5 +56,14 @@ fig2.update_layout(title_text="Slaughter to Head Ratio")
 # include the country code (index) in the hover text
 fig2.show()
 
+# plotly to plot scatter comparing beef per head and slaughter to head ratio, use color to show country
+fig3 = px.scatter(df_pop_head_country, x="large_animals", y="large_animal_slaughter", title="Beef Per Head vs Slaughter to Head Ratio", trendline="ols")
+# inlcude hover data for country
+fig3.update_traces(hovertemplate="<b>Country</b>: %{text}<br><b>Beef Pop</b>: %{x}<br><b>Slaughter Count</b>: %{y}")
+fig3.update_traces(text=df_pop_head_country.index)
+
+# draw a trendline
+fig3.update_layout(title_text="Beef Pop vs Slaughter Count")
+fig3.show()
 
 
