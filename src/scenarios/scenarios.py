@@ -548,7 +548,7 @@ class Scenarios:
         return constants_for_params
 
     def reduce_breeding_USA(self, constants_for_params):
-        self.scenario_description += "\ncontinued feed/biofuel"
+        self.scenario_description += "\nreduced breeding/biofuel"
         assert not self.NONHUMAN_CONSUMPTION_SET
         # if there is no food storage, then feed and biofuels when no food is being
         # stored would not make any sense, as the total food available could go negative
