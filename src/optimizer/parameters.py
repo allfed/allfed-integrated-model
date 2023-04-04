@@ -591,14 +591,12 @@ class Parameters:
                 capped_kcals_ratios
             )
 
-            return time_consts
-
         if constants_out["ADD_CELLULOSIC_SUGAR"]:
             # loop through the cellulosic sugar and make sure it's never greater than
             # the minimum fraction able to be eaten by humans.
             # If it is greater, reduce it to the minimum.
             capped_kcals_ratios = np.array([])
-            cellulosic_sugar = self.time_consts["cellulosic_sugar"]
+            cellulosic_sugar = time_consts["cellulosic_sugar"]
             cellulosic_sugar.for_humans.make_sure_is_a_list()
             cellulosic_sugar_fraction = (
                 cellulosic_sugar.for_humans.in_units_percent_fed().kcals / 100
@@ -612,10 +610,12 @@ class Parameters:
                     )
                 )
 
-            self.time_consts[
+            time_consts[
                 "cellulosic_sugar"
             ].for_humans = cellulosic_sugar.for_humans * np.array(capped_kcals_ratios)
 
+        return time_consts
+    
     def subtract_feed_and_biofuels_from_production(
         self,
         constants_inputs,

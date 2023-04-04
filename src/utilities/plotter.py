@@ -229,8 +229,8 @@ class Plotter:
 
         if plot_figure:
             plt.show()
-        else:
-            plt.close()
+        # else:
+        # plt.close()
 
     @classmethod
     def plot_feed(
@@ -437,8 +437,8 @@ class Plotter:
         )
         if plot_figure:
             plt.show()
-        else:
-            plt.close()
+        # else:
+        # plt.close()
 
     @classmethod
     def plot_fig_1ab_updated(
@@ -1643,7 +1643,7 @@ class Plotter:
             saveloc,
             dpi=300,
         )
-        plt.close()
+        # plt.close()
         print("saved figure s1abcd")
         # else:
         plt.show()
@@ -1897,8 +1897,8 @@ class Plotter:
         SHOWPLOT = True
         if SHOWPLOT:
             plt.show()
-        else:
-            plt.close()
+        # else:
+        # plt.close()
         return saveloc
 
     def plot_food_alternative(food, title):
@@ -1956,8 +1956,8 @@ class Plotter:
         SHOWPLOT = True
         if SHOWPLOT:
             plt.show()
-        else:
-            plt.close()
+        # else:
+        # plt.close()
         return saveloc
 
     @classmethod
@@ -1995,8 +1995,8 @@ class Plotter:
 
         if plot_map:
             plt.show()
-        else:
-            plt.close()
+        # else:
+        # plt.close()
         if create_slide:
             crs.mp.insert_slide(
                 title_below=save_title_string,
