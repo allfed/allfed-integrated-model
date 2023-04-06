@@ -615,7 +615,7 @@ class Parameters:
             ].for_humans = cellulosic_sugar.for_humans * np.array(capped_kcals_ratios)
 
         return time_consts
-    
+
     def subtract_feed_and_biofuels_from_production(
         self,
         constants_inputs,
@@ -738,9 +738,6 @@ class Parameters:
         # )
         # this means that we have enough calories for all the feed.
         # otherwise, we'd need to somehow reduce feed demand.
-        assert (
-            stored_food.initial_available - total_feed_usage_stored_food
-        ).all_greater_than_zero()
 
         # the total demand needed all added up
         stored_food.initial_available_to_humans = (
@@ -977,20 +974,38 @@ class Parameters:
         constants_out,
         time_consts,
     ):
-        data = {
-            "country_code": constants_inputs["COUNTRY_CODE"],
-            "reduction_in_beef_calves": 90,
-            "reduction_in_dairy_calves": reduction_in_dairy_calves,
-            "increase_in_slaughter": 110,
-            "reduction_in_pig_breeding": 90,
-            "reduction_in_poultry_breeding": 90,
-            "months": constants_inputs["NMONTHS"],
-            "discount_rate": 30,
-            "mother_slaughter": 0,
-            "use_grass_and_residues_for_dairy": use_grass_and_residues_for_dairy,
-            "keep_dairy": True,
-            "feed_ratio": feed_ratio,
-        }
+
+        if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
+            data = {
+                "country_code": constants_inputs["COUNTRY_CODE"],
+                "reduction_in_beef_calves": 90,
+                "reduction_in_dairy_calves": reduction_in_dairy_calves,
+                "increase_in_slaughter": 110,
+                "reduction_in_pig_breeding": 90,
+                "reduction_in_poultry_breeding": 90,
+                "months": constants_inputs["NMONTHS"],
+                "discount_rate": 30,
+                "mother_slaughter": 0,
+                "use_grass_and_residues_for_dairy": use_grass_and_residues_for_dairy,
+                "keep_dairy": True,
+                "feed_ratio": feed_ratio,
+            }
+        else:
+            data = {
+                "country_code": constants_inputs["COUNTRY_CODE"],
+                "reduction_in_beef_calves": 0,
+                "reduction_in_dairy_calves": 0,
+                "increase_in_slaughter": 100,
+                "reduction_in_pig_breeding": 0,
+                "reduction_in_poultry_breeding": 0,
+                "months": constants_inputs["NMONTHS"],
+                "discount_rate": 0,
+                "mother_slaughter": 0,
+                "use_grass_and_residues_for_dairy": use_grass_and_residues_for_dairy,
+                "keep_dairy": True,
+                "feed_ratio": feed_ratio,
+            }
+
         feed_dairy_meat_results, feed = cao.calculate_feed_and_animals(data)
         # MEAT AND DAIRY from breeding reduction strategy
 

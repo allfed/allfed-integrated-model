@@ -13,11 +13,17 @@ def main(args):
     this_simulation = {}
 
     this_simulation["scale"] = "country"
-    this_simulation["seasonality"] = "no_seasonality"
+    this_simulation["seasonality"] = "country"
     this_simulation["grasses"] = "baseline"
     this_simulation["crop_disruption"] = "zero"
     this_simulation["scenario"] = "no_resilient_foods"
     this_simulation["fish"] = "baseline"
+
+    this_simulation["waste"] = "baseline_in_country"
+    this_simulation["nutrition"] = "baseline"
+    this_simulation["buffer"] = "baseline"
+    this_simulation["shutoff"] = "continued"
+    this_simulation["cull"] = "dont_eat_culled"
 
     # command line argument inputs (optional)
     scenario_runner = ScenarioRunnerNoTrade()

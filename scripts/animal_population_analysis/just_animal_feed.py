@@ -4,7 +4,7 @@ import plotly.express as px
 cao = CalculateAnimalOutputs()
 constants_inputs = {}
 
-constants_inputs["COUNTRY_CODE"] = "ARG" 
+constants_inputs["COUNTRY_CODE"] = "ARG"
 constants_inputs["NMONTHS"] = 120
 reduction_in_dairy_calves = 0
 use_grass_and_residues_for_dairy = False
@@ -28,15 +28,27 @@ data = {
 feed_dairy_meat_results, feed = cao.calculate_feed_and_animals(data)
 
 
-
-
-
 # plotly to plot species slaughter
-fig = px.line(feed_dairy_meat_results, x="Month", y=["Poultry Slaughtered", "Pig Slaughtered", "Beef Slaughtered", "Dairy Slaughtered"], title="Species Slaughtered")
-fig.update_layout(title_text="Species Slaughtered "+ constants_inputs["COUNTRY_CODE"])
+fig = px.line(
+    feed_dairy_meat_results,
+    x="Month",
+    y=[
+        "Poultry Slaughtered",
+        "Pig Slaughtered",
+        "Beef Slaughtered",
+        "Dairy Slaughtered",
+    ],
+    title="Species Slaughtered",
+)
+fig.update_layout(title_text="Species Slaughtered " + constants_inputs["COUNTRY_CODE"])
 fig.show()
 
 
-fig2 = px.line(feed_dairy_meat_results, x="Month", y=["Beef Pop", "Dairy Pop", "Pigs Pop", "Poultry Pop"], title="Species Pops")
-fig2.update_layout(title_text="Species Pops "+ constants_inputs["COUNTRY_CODE"])
+fig2 = px.line(
+    feed_dairy_meat_results,
+    x="Month",
+    y=["Beef Pop", "Dairy Pop", "Pigs Pop", "Poultry Pop"],
+    title="Species Pops",
+)
+fig2.update_layout(title_text="Species Pops " + constants_inputs["COUNTRY_CODE"])
 fig2.show()
