@@ -250,27 +250,27 @@ class Plotter:
         fig = plt.figure()
         pal = [
             "#71797E",  # CS
-            "#71797E",  # CS
-            "#e75480",  # SCP
             "#e75480",  # SCP
             "#056608",  # seaweeed
-            "#056608",  # seaweeed
-            "#a5d610",  # OG
             "#a5d610",  # OG
             "#e7d2ad",  # stored food
+            "#71797E",  # CS
+            "#e75480",  # SCP
+            "#056608",  # seaweeed
+            "#a5d610",  # OG
             "#e7d2ad",  # stored food
         ]
         hatches_list = [
-            "xx",
+            "",
+            "",
+            "",
+            "",
             "",
             "xx",
-            "",
             "xx",
-            "",
             "xx",
-            "",
             "xx",
-            "",
+            "xx",
         ]
         # custom_handles = [
         #     Patch(facecolor=pal[i], hatch=hatches_list[i] * 2, label=legend[i])
@@ -283,32 +283,32 @@ class Plotter:
 
             ykcals = []
             ykcals.append(
-                interpreter.feed_and_biofuels.cell_sugar_biofuels_kcals_equivalent.kcals
-            )
-            ykcals.append(
                 interpreter.feed_and_biofuels.cell_sugar_feed_kcals_equivalent.kcals
-            )
-            ykcals.append(
-                interpreter.feed_and_biofuels.scp_biofuels_kcals_equivalent.kcals
             )
             ykcals.append(interpreter.feed_and_biofuels.scp_feed_kcals_equivalent.kcals)
             ykcals.append(
-                interpreter.feed_and_biofuels.seaweed_biofuels_kcals_equivalent.kcals
-            )
-            ykcals.append(
                 interpreter.feed_and_biofuels.seaweed_feed_kcals_equivalent.kcals
-            )
-            ykcals.append(
-                interpreter.feed_and_biofuels.outdoor_crops_biofuels_kcals_equivalent.kcals
             )
             ykcals.append(
                 interpreter.feed_and_biofuels.outdoor_crops_feed_kcals_equivalent.kcals
             )
             ykcals.append(
-                interpreter.feed_and_biofuels.stored_food_biofuels_kcals_equivalent.kcals
+                interpreter.feed_and_biofuels.stored_food_feed_kcals_equivalent.kcals
             )
             ykcals.append(
-                interpreter.feed_and_biofuels.stored_food_feed_kcals_equivalent.kcals
+                interpreter.feed_and_biofuels.cell_sugar_biofuels_kcals_equivalent.kcals
+            )
+            ykcals.append(
+                interpreter.feed_and_biofuels.scp_biofuels_kcals_equivalent.kcals
+            )
+            ykcals.append(
+                interpreter.feed_and_biofuels.seaweed_biofuels_kcals_equivalent.kcals
+            )
+            ykcals.append(
+                interpreter.feed_and_biofuels.outdoor_crops_biofuels_kcals_equivalent.kcals
+            )
+            ykcals.append(
+                interpreter.feed_and_biofuels.stored_food_biofuels_kcals_equivalent.kcals
             )
 
             if label == "a":
@@ -416,9 +416,9 @@ class Plotter:
                 )
 
             if label == "a":
-                plt.title("Feed Usage")
+                plt.title("Feed + Biofuel Usage")
             if label == "b":
-                plt.title("Feed macronutrition used")
+                plt.title("Feed + Biofuel macronutrition used")
 
             plt.xlabel("Months since May nuclear winter onset")
 
@@ -1780,38 +1780,53 @@ class Plotter:
 
         legend = []
         if interpreter.constants["ADD_CELLULOSIC_SUGAR"]:
-            legend = legend + ["Cellulosic Sugar Biofuels"]
             legend = legend + ["Cellulosic Sugar Feed"]
         else:
             legend = legend + [""]
+
+        if interpreter.constants["ADD_METHANE_SCP"]:
+            legend = legend + ["Methane SCP Feed"]
+        else:
+            legend = legend + [""]
+
+        if interpreter.constants["ADD_SEAWEED"]:
+            legend = legend + ["Seaweed Feed"]
+        else:
+            legend = legend + [""]
+
+        if interpreter.constants["ADD_OUTDOOR_GROWING"]:
+            legend = legend + ["Outdoor Crops consumed Feed"]
+        else:
+            legend = legend + [""]
+
+        if interpreter.constants["ADD_STORED_FOOD"]:
+            legend = legend + [stored_food_label + " Feed"]
+        else:
+            legend = legend + [""]
+
+        if interpreter.constants["ADD_CELLULOSIC_SUGAR"]:
+            legend = legend + ["Cellulosic Sugar Feed"]
+        else:
             legend = legend + [""]
 
         if interpreter.constants["ADD_METHANE_SCP"]:
             legend = legend + ["Methane SCP Biofuels"]
-            legend = legend + ["Methane SCP Feed"]
         else:
-            legend = legend + [""]
             legend = legend + [""]
 
         if interpreter.constants["ADD_SEAWEED"]:
             legend = legend + ["Seaweed Biofuels"]
-            legend = legend + ["Seaweed Feed"]
         else:
-            legend = legend + [""]
             legend = legend + [""]
 
         if interpreter.constants["ADD_OUTDOOR_GROWING"]:
             legend = legend + ["Outdoor Crops consumed Biofuels"]
-            legend = legend + ["Outdoor Crops consumed Feed"]
         else:
-            legend = legend + [""]
             legend = legend + [""]
 
         if interpreter.constants["ADD_STORED_FOOD"]:
             legend = legend + [stored_food_label + " Biofuels"]
-            legend = legend + [stored_food_label + " Feed"]
         else:
-            legend = legend + [""]
             legend = legend + [""]
 
         return legend

@@ -58,7 +58,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             show_map_figures=show_map_figures,
             add_map_slide_to_pptx=show_map_figures and create_pptx_with_all_countries,
             scenario_option=this_simulation,
-            countries_list=["AUS"],  # , "USA"],
+            countries_list=["ARG"],  # , "USA"],
             #     "!SWT",
             #     "!GBR",
             #     "!AUT",
@@ -158,6 +158,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 create_pptx_with_all_countries,
                 scenario_loader.scenario_description,
             )
+            print("plotted feed...")
             Plotter.plot_fig_1ab(
                 interpreted_results,
                 constants_for_params["NMONTHS"],
