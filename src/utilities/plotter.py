@@ -322,12 +322,6 @@ class Plotter:
                     va="top",
                     ha="right",
                 )
-                print("len(pal)")
-                print(len(pal))
-                print("len np.array(ykcals)")
-                print(len(np.array(ykcals)))
-                print("len legend")
-                print(len(legend))
                 stack_plots = ax.stackplot(
                     interpreter.time_months_middle,
                     np.array(ykcals),

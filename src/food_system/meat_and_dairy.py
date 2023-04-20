@@ -717,7 +717,7 @@ class MeatAndDairy:
     ):
         """
         Get the maximum number of animals that can be culled in a month and return the
-        resulting array for max total calories consumed that month.
+        resulting array for max total calories slaughtered that month.
         """
         calories_max_monthly = []
         for m in range(0, len(small_animals_culled)):
@@ -726,6 +726,7 @@ class MeatAndDairy:
                 medium_animals_culled[m],
                 large_animals_culled[m],
             )
+            # no negative slaughter rates (addresses rounding errors)
             calories_max_monthly.append(max(calories, 0))
         return calories_max_monthly
 

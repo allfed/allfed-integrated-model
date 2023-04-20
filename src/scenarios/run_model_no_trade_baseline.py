@@ -23,7 +23,7 @@ def main(args):
     this_simulation["nutrition"] = "baseline"
     this_simulation["buffer"] = "baseline"
     this_simulation["shutoff"] = "continued"
-    this_simulation["cull"] = "dont_eat_culled"
+    this_simulation["cull"] = "do_eat_culled"
 
     # command line argument inputs (optional)
     scenario_runner = ScenarioRunnerNoTrade()

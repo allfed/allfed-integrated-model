@@ -630,7 +630,6 @@ class Parameters:
         stored_food,
         feed_and_biofuels,
     ):
-
         (
             remaining_biofuel_needed_from_stored_food,
             outdoor_crops_used_for_biofuel,
@@ -974,7 +973,6 @@ class Parameters:
         constants_out,
         time_consts,
     ):
-
         if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
             data = {
                 "country_code": constants_inputs["COUNTRY_CODE"],
@@ -1005,7 +1003,6 @@ class Parameters:
                 "keep_dairy": True,
                 "feed_ratio": feed_ratio,
             }
-
         feed_dairy_meat_results, feed = cao.calculate_feed_and_animals(data)
         # MEAT AND DAIRY from breeding reduction strategy
 
@@ -1026,7 +1023,6 @@ class Parameters:
             feed_dairy_meat_results["Pig Slaughtered"],
             feed_dairy_meat_results["Poultry Slaughtered"],
         )
-
         # https://www.nass.usda.gov/Charts_and_Maps/Milk_Production_and_Milk_Cows/cowrates.php
         monthly_milk_tons = (
             feed_dairy_meat_results["Dairy Pop"]
@@ -1150,7 +1146,11 @@ class Parameters:
             outdoor_crops,
         )
 
-        (constants_out, time_consts, meat_and_dairy,) = self.init_culled_meat_params(
+        (
+            constants_out,
+            time_consts,
+            meat_and_dairy,
+        ) = self.init_culled_meat_params(
             constants_inputs, constants_out, time_consts, meat_and_dairy
         )
 
