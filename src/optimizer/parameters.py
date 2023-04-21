@@ -47,6 +47,7 @@ class Parameters:
         self.SIMULATION_STARTING_MONTH_NUM = months_dict[self.SIMULATION_STARTING_MONTH]
 
     def compute_parameters(self, constants_inputs, scenarios_loader):
+        # TODO: is this still necessary?
         if (
             constants_inputs["DELAY"]["FEED_SHUTOFF_MONTHS"] > 0
             or constants_inputs["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] > 0
@@ -468,7 +469,13 @@ class Parameters:
             use_grass_and_residues_for_dairy = False
 
         cao = CalculateAnimalOutputs()
-        feed_ratio = 1
+
+        # if we have an immediate shutoff, then turn off the feed to animals entirely
+        if constants_inputs["DELAY"]["FEED_SHUTOFF_MONTHS"] == 0:
+            feed_ratio = 0
+        else:
+            feed_ratio = 1
+
         (
             biofuels_before_cap_prewaste,
             feed_before_cap_prewaste,

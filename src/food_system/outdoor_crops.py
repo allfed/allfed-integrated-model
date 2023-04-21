@@ -250,6 +250,9 @@ class OutdoorCrops:
 
         self.assign_reduction_from_climate_impact(constants_for_params)
 
+        if constants_for_params["RATIO_INCREASED_CROP_AREA"] > 1:
+            self.assign_increase_from_increased_cultivated_area(constants_for_params)
+
         PLOT_WITH_SEASONALITY = False
         if PLOT_WITH_SEASONALITY:
             print("Plotting with seasonality")
@@ -261,6 +264,32 @@ class OutdoorCrops:
             print(ratios)
             # Plotter.plot_monthly_reductions_seasonally(ratios)
             Plotter.plot_monthly_reductions_seasonally(ratios)
+
+    def assign_increase_from_increased_cultivated_area(self, constants_for_params):
+        # Constants
+
+        N = constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"]
+        max_value = constants_for_params["RATIO_INCREASED_CROP_AREA"]
+        total_months = (
+            constants_for_params["NUMBER_YEARS_TAKES_TO_REACH_INCREASED_AREA"] * 12
+        )
+
+        # Create the linspace
+        linspace = np.ones(self.NMONTHS)
+
+        # Calculate the increment per month after the delay
+        increment = (max_value - 1) / (total_months - N)
+
+        # Update the linspace values
+        for i in range(N, total_months):
+            linspace[i] = 1 + (i - N) * increment
+
+        # Maintain the value after the specified number of years
+        linspace[total_months:] = max_value
+
+        # increase the kcals grown using the increased ratio due to increased area
+        for i in range(self.NMONTHS):
+            self.KCALS_GROWN[i] = self.KCALS_GROWN[i] * linspace[i]
 
     def assign_reduction_from_climate_impact(self, constants_for_params):
         self.KCALS_GROWN = []

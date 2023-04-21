@@ -386,6 +386,12 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.get_all_resilient_foods_scenario(
                 constants_for_params
             )
+        elif scenario_option["scenario"] == "all_resilient_foods_and_more_area":
+            constants_for_params = (
+                scenario_loader.get_all_resilient_foods_and_more_area_scenario(
+                    constants_for_params
+                )
+            )
         elif scenario_option["scenario"] == "no_resilient_foods":
             constants_for_params = scenario_loader.get_no_resilient_food_scenario(
                 constants_for_params
@@ -414,7 +420,7 @@ class ScenarioRunner:
             scenario_is_correct = False
 
             assert scenario_is_correct, """You must specify 'scenario' key as either baseline_climate,
-            all_resilient_foods,no_resilient_foods,seaweed,methane_scp,
+            all_resilient_foods,all_resilient_foods_and_more_area,no_resilient_foods,seaweed,methane_scp,
             cellulosic_sugar,relocated_crops or greenhouse"""
 
         if scenario_option["meat_strategy"] == "efficient_meat_strategy":

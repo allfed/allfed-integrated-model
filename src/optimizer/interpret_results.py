@@ -14,6 +14,9 @@ import numpy as np
 from src.food_system.food import Food
 import pandas as pd
 
+import datetime
+from datetime import date
+
 
 class Interpreter:
     """
@@ -83,7 +86,28 @@ class Interpreter:
 
             # saving the dataframe
             # df.to_csv("ykcals" + self.constants["scenario_name"] + ".csv")
-            df.to_csv("ykcals.csv")
+            year = str(date.today().year)
+            month = str(date.today().month)
+            day = str(date.today().day)
+            hour = str(datetime.datetime.now().hour)
+            minute = str(datetime.datetime.now().minute)
+            second = str(datetime.datetime.now().second)
+            df.to_csv(
+                "ykcals"
+                + "."
+                + year
+                + "."
+                + month
+                + "."
+                + day
+                + "."
+                + hour
+                + "."
+                + minute
+                + "."
+                + second
+                + ".csv"
+            )
 
         return self
 

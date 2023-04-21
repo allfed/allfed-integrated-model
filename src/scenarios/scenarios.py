@@ -1320,6 +1320,8 @@ class Scenarios:
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 0
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 0
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
+        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
+
         constants_for_params["OG_USE_BETTER_ROTATION"] = False
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
         constants_for_params["ADD_GREENHOUSES"] = False
@@ -1336,12 +1338,26 @@ class Scenarios:
 
         return constants_for_params
 
+    def low_area_greenhouse(self, constants_for_params):
+        constants_for_params["GREENHOUSE_GAIN_PCT"] = 44
+
+        # half values from greenhouse paper due to higher cost
+        constants_for_params["DELAY"]["GREENHOUSE_MONTHS"] = 2
+        constants_for_params[
+            "GREENHOUSE_AREA_MULTIPLIER"
+        ] = (
+            np.nan
+        )  # this will be used to indicate a more realistic, smaller greenhouse area ramp
+        constants_for_params["ADD_GREENHOUSES"] = True
+        return constants_for_params
+
     def greenhouse(self, constants_for_params):
         constants_for_params["GREENHOUSE_GAIN_PCT"] = 44
 
         # half values from greenhouse paper due to higher cost
         constants_for_params["DELAY"]["GREENHOUSE_MONTHS"] = 2
-        constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
+        # constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
+        constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 2.4 / 39
         constants_for_params["ADD_GREENHOUSES"] = True
         return constants_for_params
 
@@ -1354,6 +1370,21 @@ class Scenarios:
         constants_for_params["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7 + 1
         constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 2
+        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
+
+        return constants_for_params
+
+    def expanded_area_and_relocated_outdoor_crops(self, constants_for_params):
+        constants_for_params["OG_USE_BETTER_ROTATION"] = True
+
+        # this may seem confusing. KCALS_REDUCTION is the reduction that would otherwise
+        # occur averaging in year 3 globally
+        constants_for_params["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.647
+        constants_for_params["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
+        constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7 + 1
+        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 2
+        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 72 / 39
+        constants_for_params["NUMBER_YEARS_TAKES_TO_REACH_INCREASED_AREA"] = 3
 
         return constants_for_params
 
@@ -1380,6 +1411,21 @@ class Scenarios:
         assert not self.SCENARIO_SET
 
         constants_for_params = self.relocated_outdoor_crops(constants_for_params)
+        constants_for_params = self.methane_scp(constants_for_params)
+        constants_for_params = self.cellulosic_sugar(constants_for_params)
+        constants_for_params = self.low_area_greenhouse(constants_for_params)
+        constants_for_params = self.seaweed(constants_for_params)
+
+        self.SCENARIO_SET = True
+        return constants_for_params
+
+    def get_all_resilient_foods_and_more_area_scenario(self, constants_for_params):
+        self.scenario_description += "\nall resilient foods"
+        assert not self.SCENARIO_SET
+
+        constants_for_params = self.expanded_area_and_relocated_outdoor_crops(
+            constants_for_params
+        )
         constants_for_params = self.methane_scp(constants_for_params)
         constants_for_params = self.cellulosic_sugar(constants_for_params)
         constants_for_params = self.greenhouse(constants_for_params)

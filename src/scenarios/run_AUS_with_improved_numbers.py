@@ -9,7 +9,7 @@ import sys
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 
 
-def run_USA_with_and_without_resilient():
+def run_AUS_with_and_without_resilient():
     this_simulation = {}
 
     this_simulation["scale"] = "country"
@@ -38,45 +38,12 @@ def run_USA_with_and_without_resilient():
         show_map_figures=True,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
-        countries_list=["ARG"],
-        #     "CHN",
-        #     "FRA",
-        #     "IND",
-        #     "ISR",
-        #     "PRK",
-        #     "PAK",
-        #     "RUS",
-        #     "F5707+GBR",
-        #     "USA",
-        # ],
+        countries_list=["AUS"],
     )
-
-    # this_simulation["waste"] = "zero"
-    # this_simulation["scenario"] = "no_resilient_foods"
-
-    # scenario_runner.run_model_no_trade(
-    #     title="Resilient foods for US only",
-    #     create_pptx_with_all_countries=False,
-    #     show_country_figures=True,
-    #     show_map_figures=True,
-    #     add_map_slide_to_pptx=False,
-    #     scenario_option=this_simulation,
-    #     countries_list=["AUS"],
-    #     #     "CHN",
-    #     #     "FRA",
-    #     #     "IND",
-    #     #     "ISR",
-    #     #     "PRK",
-    #     #     "PAK",
-    #     #     "RUS",
-    #     #     "F5707+GBR",
-    #     #     "USA",
-    #     # ],
-    # )
 
 
 def main(args):
-    run_USA_with_and_without_resilient()
+    run_AUS_with_and_without_resilient()
 
 
 if __name__ == "__main__":

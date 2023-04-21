@@ -53,6 +53,8 @@ class Plotter:
         if (not plot_figure) and (not add_slide_with_fig):
             return
 
+        ADD_THE_NUTRITION_PLOT = interpreter.include_protein or interpreter.include_fat
+
         xlim = min(xlim, len(interpreter.time_months_middle))
         legend = Plotter.get_people_fed_legend(interpreter, True)
         fig = plt.figure()
@@ -69,7 +71,13 @@ class Plotter:
             "#e7d2ad",
         ]
         for i, label in enumerate(("a", "b")):
-            ax = fig.add_subplot(1, 2, i + 1)
+            if ADD_THE_NUTRITION_PLOT:
+                ax = fig.add_subplot(1, 2, i + 1)
+            else:
+                if label == "b":
+                    continue
+                ax = fig.add_subplot(1, 1, 1)
+
             ax.set_xlim([0.5, xlim])
 
             ykcals = []
@@ -95,16 +103,17 @@ class Plotter:
             ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
 
             if label == "a":
-                ax.text(
-                    -0.06,
-                    1.1,
-                    label,
-                    transform=ax.transAxes,
-                    fontsize=11,
-                    fontweight="bold",
-                    va="top",
-                    ha="right",
-                )
+                if ADD_THE_NUTRITION_PLOT:
+                    ax.text(
+                        -0.06,
+                        1.1,
+                        label,
+                        transform=ax.transAxes,
+                        fontsize=11,
+                        fontweight="bold",
+                        va="top",
+                        ha="right",
+                    )
                 ax.stackplot(
                     interpreter.time_months_middle,
                     np.array(ykcals),
@@ -114,7 +123,7 @@ class Plotter:
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
                 # maxy = max(sum([x[0:xlim] for x in ykcals]))
-                # maxy = max([sum(x[0:xlim]) for x in ykcals])
+                maxy = max([sum(x[0:xlim]) for x in ykcals])
                 maxy = 0
                 for i in range(xlim):
                     maxy = max(maxy, sum([x[i] for x in ykcals]))
@@ -125,16 +134,19 @@ class Plotter:
 
                 plt.ylabel("Kcals / capita / day")
             if label == "b":
-                ax.text(
-                    -0.06,
-                    1.1,
-                    label,
-                    transform=ax.transAxes,
-                    fontsize=11,
-                    fontweight="bold",
-                    va="top",
-                    ha="right",
-                )
+                if not ADD_THE_NUTRITION_PLOT:
+                    continue
+
+                    ax.text(
+                        -0.06,
+                        1.1,
+                        label,
+                        transform=ax.transAxes,
+                        fontsize=11,
+                        fontweight="bold",
+                        va="top",
+                        ha="right",
+                    )
                 plt.xlabel("Months since May nuclear winter onset")
 
                 ax.plot(
@@ -165,12 +177,17 @@ class Plotter:
                 # ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
             if label == "a":
+                if ADD_THE_NUTRITION_PLOT:
+                    legend_loc = (-0.15, -0.4)
+                else:
+                    legend_loc = (0, -0.2)
+
                 # get the handles
                 handles, labels = ax.get_legend_handles_labels()
                 plt.legend(
                     loc="center left",
                     frameon=False,
-                    bbox_to_anchor=(-0.15, -0.4),
+                    bbox_to_anchor=legend_loc,
                     shadow=False,
                     handles=reversed(handles),
                     labels=reversed(labels),
@@ -186,7 +203,11 @@ class Plotter:
                 )
 
             if label == "a":
-                plt.title("Food availability")
+                if ADD_THE_NUTRITION_PLOT:
+                    plt.title("Food availability")
+                else:
+                    plt.title("Food availability, " + newtitle)
+
             if label == "b":
                 plt.title("Available food macronutrition")
 
@@ -197,7 +218,9 @@ class Plotter:
         fig.set_figheight(8)
         fig.set_figwidth(8)
         plt.tight_layout()
-        fig.suptitle(newtitle)
+        if ADD_THE_NUTRITION_PLOT:
+            fig.suptitle(newtitle)
+
         path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
 
         saveloc = path_string + newtitle + ".png"
@@ -242,8 +265,11 @@ class Plotter:
         add_slide_with_fig=True,
         description="",
     ):
+        print("feed")
         if (not plot_figure) and (not add_slide_with_fig):
             return
+
+        ADD_THE_NUTRITION_PLOT = interpreter.include_protein or interpreter.include_fat
 
         xlim = min(xlim, len(interpreter.time_months_middle))
         legend = Plotter.get_feed_biofuels_legend(interpreter)
@@ -278,7 +304,12 @@ class Plotter:
         # ]
 
         for i, label in enumerate(("a", "b")):
-            ax = fig.add_subplot(1, 2, i + 1)
+            if ADD_THE_NUTRITION_PLOT:
+                ax = fig.add_subplot(1, 2, i + 1)
+            else:
+                if label == "b":
+                    continue
+                ax = fig.add_subplot(1, 1, 1)
             ax.set_xlim([0.5, xlim])
 
             ykcals = []
@@ -312,16 +343,18 @@ class Plotter:
             )
 
             if label == "a":
-                ax.text(
-                    -0.06,
-                    1.1,
-                    label,
-                    transform=ax.transAxes,
-                    fontsize=11,
-                    fontweight="bold",
-                    va="top",
-                    ha="right",
-                )
+                if ADD_THE_NUTRITION_PLOT:
+                    ax.text(
+                        -0.06,
+                        1.1,
+                        label,
+                        transform=ax.transAxes,
+                        fontsize=11,
+                        fontweight="bold",
+                        va="top",
+                        ha="right",
+                    )
+
                 stack_plots = ax.stackplot(
                     interpreter.time_months_middle,
                     np.array(ykcals),
@@ -336,6 +369,10 @@ class Plotter:
                 # then find max month
                 # maxy = max(sum([x[0:xlim] for x in ykcals]))
                 # maxy = max([sum(x[0:xlim]) for x in ykcals])
+                print("xlim")
+                print(xlim)
+                maxy = max([sum(x[0:xlim]) for x in ykcals])
+
                 maxy = 0
                 for i in range(xlim):
                     maxy = max(maxy, sum([x[i] for x in ykcals]))
@@ -346,6 +383,8 @@ class Plotter:
 
                 plt.ylabel("Kcals / capita / day")
             if label == "b":
+                if not ADD_THE_NUTRITION_PLOT:
+                    continue
                 ax.text(
                     -0.06,
                     1.1,
@@ -391,10 +430,14 @@ class Plotter:
             if label == "a":
                 # get the handles
                 handles, labels = ax.get_legend_handles_labels()
+                if ADD_THE_NUTRITION_PLOT:
+                    legend_loc = (-0.15, -0.4)
+                else:
+                    legend_loc = (0, -0.2)
                 plt.legend(
                     loc="center left",
                     frameon=False,
-                    bbox_to_anchor=(-0.15, -0.4),
+                    bbox_to_anchor=legend_loc,
                     shadow=False,
                     handles=reversed(handles),
                     labels=reversed(labels),
@@ -410,7 +453,11 @@ class Plotter:
                 )
 
             if label == "a":
-                plt.title("Feed + Biofuel Usage")
+                if ADD_THE_NUTRITION_PLOT:
+                    plt.title("Feed + Biofuel Usage")
+                else:
+                    plt.title("Feed + Biofuel Usage, " + newtitle)
+
             if label == "b":
                 plt.title("Feed + Biofuel macronutrition used")
 
@@ -421,7 +468,8 @@ class Plotter:
         fig.set_figheight(8)
         fig.set_figwidth(8)
         plt.tight_layout()
-        fig.suptitle(newtitle)
+        if ADD_THE_NUTRITION_PLOT:
+            fig.suptitle(newtitle)
         path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
 
         saveloc = path_string + newtitle + "_feed.png"

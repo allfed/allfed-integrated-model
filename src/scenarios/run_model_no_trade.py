@@ -152,16 +152,16 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         if not np.isnan(percent_people_fed):
             Plotter.plot_feed(
                 interpreted_results,
-                constants_for_params["NMONTHS"],
+                84,  # constants_for_params["NMONTHS"],
                 country_data["country"] + figure_save_postfix,
                 show_country_figures,
                 create_pptx_with_all_countries,
                 scenario_loader.scenario_description,
             )
-            print("plotted feed...")
             Plotter.plot_fig_1ab(
                 interpreted_results,
-                constants_for_params["NMONTHS"],
+                84,
+                # constants_for_params["NMONTHS"],
                 country_data["country"] + figure_save_postfix,
                 show_country_figures,
                 create_pptx_with_all_countries,

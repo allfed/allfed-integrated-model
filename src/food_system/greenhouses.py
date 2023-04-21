@@ -82,17 +82,11 @@ class Greenhouses:
             return np.zeros(self.NMONTHS)
 
         if self.ADD_GREENHOUSES:
-            GREENHOUSE_LIMIT_AREA = (
-                self.TOTAL_CROP_AREA * self.GREENHOUSE_AREA_MULTIPLIER
-            )
             # NOTE:
             # we've decided to limit the crop area to the fraction of australian crop
             # area that can be grown in greenhouses
             #
-            if (
-                constants_for_params["COUNTRY_CODE"] == "AUS"
-                or constants_for_params["COUNTRY_CODE"] == "ARG"
-            ):
+            if np.isnan(self.GREENHOUSE_AREA_MULTIPLIER):
                 greenhouse_fraction_from_australia_long = np.array(
                     [
                         0,
@@ -224,7 +218,11 @@ class Greenhouses:
                     greenhouse_fraction_from_australia_long
                     * constants_for_params["INITIAL_CROP_AREA_HA"]
                 )
+
             else:
+                GREENHOUSE_LIMIT_AREA = (
+                    self.TOTAL_CROP_AREA * self.GREENHOUSE_AREA_MULTIPLIER
+                )
                 greenhouse_area_long = list(
                     np.append(
                         np.append(
