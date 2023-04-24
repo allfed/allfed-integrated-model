@@ -519,7 +519,6 @@ class Scenarios:
     def set_immediate_shutoff(self, constants_for_params):
         self.scenario_description += "\nno feed/biofuel"
         assert not self.NONHUMAN_CONSUMPTION_SET
-
         constants_for_params["REDUCED_BREEDING_STRATEGY"] = False
         constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 0
         constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 0
@@ -587,6 +586,7 @@ class Scenarios:
                 "BIOFUEL_SHUTOFF_MONTHS"
             ] = constants_for_params["NMONTHS"]
         else:
+            constants_for_params["REDUCED_BREEDING_STRATEGY"] = False
             constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 11
             constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 11
 
