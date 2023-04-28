@@ -10,6 +10,8 @@ Note that occasionally, this class is instantiated with each nutrient set as an 
 where each element of the array is a different month of the simulation, and the total
 number of months is NMONTHS, which is also the length of each of the 3 arrays.
 
+TODO: comment on kcal inclusivness.
+
 Created on Tue Jul 19
 
 @author: morgan
@@ -267,6 +269,36 @@ class Food(UnitConversions):
         self.validate_if_list()
 
     # validation functions
+
+    def total_energy_in_food(self):
+        """
+        uses conversion of energy in protein and  energy in fat to detrmine the total kcals in a given food
+        Only works if:
+
+        kcals_units="billion kcals",
+        fat_units="thousand tons",
+        protein_units="thousand tons",
+        
+        As a thousand tonnes, and a billion kcals are the same (10^9), the maths for conversion is simple
+
+
+
+        thousand_tonnes to grams = 1e9
+        billion_kcals = 1e9
+
+        """
+        assert self.kcals_units == "billion kcals"
+        assert self.fat_units == "thousand tons"
+        assert self.protein_units == "thousand tons"
+
+        protein_kcal = 4 # kcals per gram OR billion kcals per thousand tonnes
+        fat_kcal = 9 # kcals per gram OR billion kcals per thousand tonnes
+        
+        total_energy_billion_kcals = (self.protein * protein_kcal +  # billion kcals
+                        self.fat * fat_kcal + # billion kcals
+                        self.kcals ) # billion kcals
+        
+        return total_energy_billion_kcals
 
     def validate_if_list(self):
         """

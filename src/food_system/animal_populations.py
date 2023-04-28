@@ -1,7 +1,27 @@
 """
-This is a function used to quickly estimate the feed usage and resulting meat when
-breeding is changed and slaughter is increased somewhat (or whatever reasonable result
-is to be expected in the scenario in question).
+
+Function which initiliases all of the animal population data
+Working file for now, may be broken up. 
+
+Requierments:
+    - animal population data
+    - animal slaughter data
+    - animal feed data
+    - animal nutrition data
+    - RATIO_GRASSES_YEAR coupled with 
+
+Functionality required
+    - read in animal population data
+    - read in animal slaughter data
+    - read in animal feed data
+    - read in animal nutrition data
+    - create animal population classes
+
+Ideal for the future:
+    - maintain ability for 'efficient' or 'inefficient' farming, that is the difference between focusing on dairy vs business as usual
+    - 
+
+
 """
 from pathlib import Path
 import pandas as pd
@@ -38,17 +58,48 @@ class SpeciesCurrentState:
         Number of animals starving this month
         feed_required : int
         Amount of feed required this month
+        nutrition_ratio : object
+        Object containing the nutrition ratio for the animal type
+
     """
-    def __init__(self, animal_type, population, slaughter, pregnant, starving, feed_required, carb_requirement, protein_requirement, fat_requirement):
+    def __init__(self, animal_type, population, slaughter, pregnant, starving, livestock_unit, carb_requirement, protein_requirement, fat_requirement):
         self.animal_type = animal_type  # beef, pork, chicken etc...
         self.population = population # number of animals (total)
         self.slaughter = slaughter # number of animals slaughtered this month
         self.pregnant = pregnant # number of animals pregnant this month
         self.starving = starving # number of animals starving this month
-        self.feed_required = feed_required # amount of feed required this month
-        self.carb_requirement = carb_requirement # ratio of carbs required 
-        self.protein_requirement = protein_requirement # ratio of protein required 
-        self.fat_requirement = fat_requirement # ratio of fat required 
+        self.feed_LSU = livestock_unit # amount of feed required this month
+        self.nutrition_ratio=Food(carb_requirement,fat_requirement,protein_requirement)
+        self.nutrition_ratio.set_units(
+                kcals_units = 'ratio of carbs in diet required',
+                fat_units = 'ratio of fat in diet required',
+                protein_units = 'ratio of protein in diet required',
+        )
+        # now do calculations for the feed required, 
+
+        ## then consider a further food object for the actual feed, this having kcals etc. as the units.
+        ## this will be able to be changed based on the LSU for that particualr heopgraphy etc.
+    
+    def __repr__(self):
+        # function to print the class
+        return f"SpeciesCurrentState(animal_type='{self.animal_type}', population={self.population}, slaughter={self.slaughter}, pregnant={self.pregnant}, starving={self.starving}, feed_required={self.feed_required}, nutrition_ratio={self.nutrition_ratio})"
+    
+    def feed_use_this_month(self):
+        # function to calculate the total feed for this month for the species
+        #     (defaults to billion kcals, thousand tons monthly fat, thousand tons monthly protein)
+        kcal_feed_use = self.feed_LSU * self.nutrition_ratio.kcals
+        fat_feed_use = self.feed_LSU * self.nutrition_ratio.fat
+        protein_feed_use = self.feed_LSU * self.nutrition_ratio.protein
+
+        feed_use = Food(kcal_feed_use, fat_feed_use, protein_feed_use)
+        feed_use.set_units(
+                kcals_units = 'billion kcals',
+                fat_units = 'thousand tons',
+                protein_units = 'thousand tons',
+        )
+        return feed_use
+
+
 
 # create function that reads CSV info and populates the classes
 def read_animal_population_data():
@@ -106,8 +157,6 @@ def read_animal_nutrition_data():
     df_animal_nutrition = pd.read_csv(animal_nutrition_data_location, index_col="animal_type")
 
     return df_animal_nutrition
-
-
 
 def create_animal_objects(df_animal_stock_info, df_animal_nutrition):
     """
@@ -198,6 +247,13 @@ def create_available_feed_object():
     return available_feed
 
 
+def food_conversion():
+    # convert food to animal feed
+
+    return
+
+
+
 def main(country_code):
     """
     Main function to be called by the user. This function will call the other functions in this file.
@@ -217,18 +273,18 @@ def main(country_code):
 
 
 
-
-
-
-
 # if __name__ == "__main__":
 #     main("USA")
 
+LSU = 1
+kcal_per_LSU = 1
+fatpercent = 0.05
+carbpercent = 0.45
+proteinpercent = 0.5
 
+total_energy = Food.total_energy_in_food(Food(1,1,1))
+print(total_energy)
 
-feed = create_available_feed_object()
+# default cows eat 2% DM of fat, so 98g carbs/protein, 2g fat = 
+# 18kcal from fat, 392 from carbs
 
-
-
-
-print(feed.kcals)

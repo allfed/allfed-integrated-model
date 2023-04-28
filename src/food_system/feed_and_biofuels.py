@@ -509,3 +509,7 @@ class FeedAndBiofuels:
             fat_units="percent people fed each month",
             protein_units="percent people fed each month",
         )
+
+    def convert_kcal_to_tons(self, kcals):
+        return kcals / self.KCAL_PER_TON
+        # what is KCAL_PER_TON?
