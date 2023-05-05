@@ -62,20 +62,23 @@ class SpeciesCurrentState:
         Object containing the nutrition ratio for the animal type
 
     """
-    def __init__(self, animal_type, population, slaughter, pregnant, starving, livestock_unit, carb_requirement, protein_requirement, fat_requirement):
+    def __init__(self, animal_type, population, slaughter, pregnant, starving, feed_required, carb_requirement, protein_requirement, fat_requirement):
         self.animal_type = animal_type  # beef, pork, chicken etc...
         self.population = population # number of animals (total)
         self.slaughter = slaughter # number of animals slaughtered this month
         self.pregnant = pregnant # number of animals pregnant this month
         self.starving = starving # number of animals starving this month
-        self.feed_LSU = livestock_unit # amount of feed required this month
+        self.feed_LSU = feed_required # amount of feed required this month
         self.nutrition_ratio=Food(carb_requirement,fat_requirement,protein_requirement)
         self.nutrition_ratio.set_units(
                 kcals_units = 'ratio of carbs in diet required',
                 fat_units = 'ratio of fat in diet required',
                 protein_units = 'ratio of protein in diet required',
         )
-        # now do calculations for the feed required, 
+
+        def energy_per_month_required(self):
+            kcal_per_month_LSU = 72746.18
+            return self.feed_required * kcal_per_month_LSU # monthly kcal budget for this animal
 
         ## then consider a further food object for the actual feed, this having kcals etc. as the units.
         ## this will be able to be changed based on the LSU for that particualr heopgraphy etc.
@@ -117,22 +120,14 @@ def read_animal_population_data():
     # Load data
     animal_feed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
 
-    FAO_stat_slaughter_counts_processed_location = Path.joinpath(
-        Path(animal_feed_data_dir), "FAO_stat_slaughter_counts_processed.csv"
+    FAO_data = Path.joinpath(
+        Path(animal_feed_data_dir), "FAOSTAT_head_and_slaughter.csv"
     )
-    head_count_csv_location = Path.joinpath(
-        Path(animal_feed_data_dir), "head_count_csv.csv"
-    )
-
-    # TODO import animal nutrition data
-
-
+    
     # Load data
-    df_head_country = pd.read_csv(head_count_csv_location, index_col="iso3")
-    df_slaughter_country = pd.read_csv(FAO_stat_slaughter_counts_processed_location, index_col="iso3")
+    df_animal_stock_info = pd.read_csv(FAO_data, index_col="iso3")
 
     # merge the two dataframes on index
-    df_animal_stock_info = pd.merge(df_head_country, df_slaughter_country, left_index=True, right_index=True)
 
     return df_animal_stock_info
 
@@ -182,9 +177,9 @@ def create_animal_objects(df_animal_stock_info, df_animal_nutrition):
     
     # Create obnjects for each animal type, using the class SpeciesCurrentState, and populate with data from the dataframe
     cattle_beef = SpeciesCurrentState(
-        animal_type="beef",
+        animal_type="large_livestock",
         population=df_animal_stock_info.loc["large_animals"],
-        slaughter=df_animal_stock_info.loc["large_animal_slaughter"],
+        slaughter=df_animal_stock_info.loc["large_animals_slaughter"],
         pregnant=0,
         starving=0,
         feed_required=df_animal_nutrition.loc["beef_cattle"]["livestock_unit"],
@@ -194,9 +189,9 @@ def create_animal_objects(df_animal_stock_info, df_animal_nutrition):
     )
     # now the same for pigs
     pigs = SpeciesCurrentState(
-        animal_type="pigs",
+        animal_type="medium_livestock",
         population=df_animal_stock_info.loc["medium_animals"],
-        slaughter=df_animal_stock_info.loc["medium_animal_slaughter"],
+        slaughter=df_animal_stock_info.loc["medium_animals_slaughter"],
         pregnant=0,
         starving=0,
         feed_required=df_animal_nutrition.loc["pigs"]["livestock_unit"],
@@ -206,9 +201,9 @@ def create_animal_objects(df_animal_stock_info, df_animal_nutrition):
     )
     # and chickens
     chickens = SpeciesCurrentState(
-        animal_type="chickens",
+        animal_type="small_livetsock",
         population=df_animal_stock_info.loc["small_animals"],
-        slaughter=df_animal_stock_info.loc["small_animal_slaughter"],
+        slaughter=df_animal_stock_info.loc["small_animals_slaughter"],
         pregnant=0,
         starving=0,
         feed_required=df_animal_nutrition.loc["meat_chicken"]["livestock_unit"],
@@ -219,7 +214,7 @@ def create_animal_objects(df_animal_stock_info, df_animal_nutrition):
     # and dairy
     dairy = SpeciesCurrentState(
         animal_type="dairy",
-        population=df_animal_stock_info.loc["dairy_cows"],
+        population=df_animal_stock_info.loc["milk_cattle_head"],
         slaughter=0,
         pregnant=0,
         starving=0,
@@ -276,15 +271,23 @@ def main(country_code):
 # if __name__ == "__main__":
 #     main("USA")
 
-LSU = 1
-kcal_per_LSU = 1
-fatpercent = 0.05
-carbpercent = 0.45
-proteinpercent = 0.5
+# LSU = 1
+# kcal_per_LSU = 1
+# fatpercent = 0.05
+# carbpercent = 0.45
+# proteinpercent = 0.5
 
-total_energy = Food.total_energy_in_food(Food(1,1,1))
-print(total_energy)
+# total_energy = Food.total_energy_in_food(Food(1,1,1))
+# print(total_energy)
 
 # default cows eat 2% DM of fat, so 98g carbs/protein, 2g fat = 
 # 18kcal from fat, 392 from carbs
+
+main("USA")
+
+
+# 
+# 0.01834935 MJ/KG/DAY
+kcal_per_month_LSU = 72,746.18
+
 

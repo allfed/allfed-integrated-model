@@ -4,6 +4,12 @@ import numpy as np
 import pycountry
 
 
+"""
+This script imports the FAO animal data and converts it into a simple csv format
+Should be mostly evergreen, but needs to be updated if FAO changes their data format
+Created Early 2023 - Kevin
+"""
+
 
 
 ## function to get slaughterdataframe
@@ -421,7 +427,6 @@ df_out_slaughter["medium_animals_slaughter"] = df_out_slaughter.apply(
 df_out_slaughter["small_animals_slaughter"] = df_out_slaughter.apply(
     lambda x: sum(x.filter(like=keyword).sum() for keyword in small_animal_keywords_slaughter), axis=1
 )
-
 
 # merge the head and slaughter dataframes
 df_out = df_out_head.merge(df_out_slaughter.drop(columns=["country"]), on="iso3", how="left")
