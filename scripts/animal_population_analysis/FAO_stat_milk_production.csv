@@ -1,0 +1,420 @@
+,Domain Code,Domain,Area Code (M49),Area,Element Code,Element,Item Code (CPC),Item,Year Code,Year,Unit,Value,Flag,Flag Description,Area Code (ISO3)
+0,QCL,Crops and livestock products,4,Afghanistan,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,7036877.0,I,Imputed value,AFG
+9,QCL,Crops and livestock products,4,Afghanistan,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,3447771.0,I,Imputed value,AFG
+10,QCL,Crops and livestock products,4,Afghanistan,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,2739703.0,I,Imputed value,AFG
+16,QCL,Crops and livestock products,4,Afghanistan,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,21922.0,I,Imputed value,AFG
+25,QCL,Crops and livestock products,8,Albania,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,1150824.0,A,Official figure,ALB
+30,QCL,Crops and livestock products,8,Albania,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,638228.0,A,Official figure,ALB
+31,QCL,Crops and livestock products,8,Albania,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,296311.0,A,Official figure,ALB
+42,QCL,Crops and livestock products,8,Albania,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,30.0,I,Imputed value,ALB
+45,QCL,Crops and livestock products,12,Algeria,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,19265036.0,A,Official figure,DZA
+50,QCL,Crops and livestock products,12,Algeria,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,2835109.0,A,Official figure,DZA
+55,QCL,Crops and livestock products,12,Algeria,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,908409.0,A,Official figure,DZA
+61,QCL,Crops and livestock products,12,Algeria,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,97251.0,I,Imputed value,DZA
+84,QCL,Crops and livestock products,24,Angola,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,440852.0,I,Imputed value,AGO
+91,QCL,Crops and livestock products,28,Antigua and Barbuda,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,3444.0,E,Estimated value,ATG
+120,QCL,Crops and livestock products,32,Argentina,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1643664.0,E,Estimated value,ARG
+145,QCL,Crops and livestock products,51,Armenia,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,452646.0,A,Official figure,ARM
+146,QCL,Crops and livestock products,51,Armenia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,251716.0,A,Official figure,ARM
+150,QCL,Crops and livestock products,51,Armenia,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,15828.0,A,Official figure,ARM
+173,QCL,Crops and livestock products,36,Australia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1393782.0,A,Official figure,AUS
+187,QCL,Crops and livestock products,40,Austria,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,524780.0,A,Official figure,AUT
+193,QCL,Crops and livestock products,40,Austria,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,59730.0,A,Official figure,AUT
+198,QCL,Crops and livestock products,40,Austria,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,28054.0,A,Official figure,AUT
+207,QCL,Crops and livestock products,31,Azerbaijan,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1278208.0,A,Official figure,AZE
+208,QCL,Crops and livestock products,31,Azerbaijan,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,318622.0,E,Estimated value,AZE
+209,QCL,Crops and livestock products,31,Azerbaijan,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,104678.0,E,Estimated value,AZE
+219,QCL,Crops and livestock products,44,Bahamas,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,7149.0,I,Imputed value,BHS
+229,QCL,Crops and livestock products,44,Bahamas,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,706.0,I,Imputed value,BHS
+248,QCL,Crops and livestock products,48,Bahrain,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,5124.0,I,Imputed value,BHR
+249,QCL,Crops and livestock products,48,Bahrain,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,3126.0,I,Imputed value,BHR
+250,QCL,Crops and livestock products,48,Bahrain,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,1984.0,I,Imputed value,BHR
+259,QCL,Crops and livestock products,50,Bangladesh,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,29785464.0,I,Imputed value,BGD
+260,QCL,Crops and livestock products,50,Bangladesh,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,4105199.0,I,Imputed value,BGD
+269,QCL,Crops and livestock products,50,Bangladesh,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,593291.0,I,Imputed value,BGD
+272,QCL,Crops and livestock products,50,Bangladesh,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,90743.0,I,Imputed value,BGD
+283,QCL,Crops and livestock products,52,Barbados,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,3127.0,I,Imputed value,BRB
+301,QCL,Crops and livestock products,112,Belarus,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1485200.0,A,Official figure,BLR
+311,QCL,Crops and livestock products,112,Belarus,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,30644.0,I,Imputed value,BLR
+325,QCL,Crops and livestock products,56,Belgium,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,537940.0,A,Official figure,BEL
+344,QCL,Crops and livestock products,84,Belize,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,6122.0,E,Estimated value,BLZ
+356,QCL,Crops and livestock products,204,Benin,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,623376.0,A,Official figure,BEN
+365,QCL,Crops and livestock products,204,Benin,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,283327.0,I,Imputed value,BEN
+375,QCL,Crops and livestock products,64,Bhutan,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,129339.0,I,Imputed value,BTN
+393,QCL,Crops and livestock products,64,Bhutan,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,239.0,I,Imputed value,BTN
+409,QCL,Crops and livestock products,68,Bolivia (Plurinational State of),5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,1201650.0,I,Imputed value,BOL
+410,QCL,Crops and livestock products,68,Bolivia (Plurinational State of),5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,460223.0,I,Imputed value,BOL
+416,QCL,Crops and livestock products,68,Bolivia (Plurinational State of),5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,196740.0,I,Imputed value,BOL
+423,QCL,Crops and livestock products,70,Bosnia and Herzegovina,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,273101.0,A,Official figure,BIH
+424,QCL,Crops and livestock products,70,Bosnia and Herzegovina,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,207622.0,A,Official figure,BIH
+452,QCL,Crops and livestock products,72,Botswana,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,192361.0,E,Estimated value,BWA
+461,QCL,Crops and livestock products,72,Botswana,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,101280.0,I,Imputed value,BWA
+475,QCL,Crops and livestock products,76,Brazil,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,16167625.0,A,Official figure,BRA
+481,QCL,Crops and livestock products,76,Brazil,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,5677073.0,I,Imputed value,BRA
+515,QCL,Crops and livestock products,96,Brunei Darussalam,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,179.0,I,Imputed value,BRN
+516,QCL,Crops and livestock products,96,Brunei Darussalam,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,105.0,I,Imputed value,BRN
+517,QCL,Crops and livestock products,100,Bulgaria,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,1008100.0,A,Official figure,BGR
+525,QCL,Crops and livestock products,100,Bulgaria,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,241940.0,A,Official figure,BGR
+526,QCL,Crops and livestock products,100,Bulgaria,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,216270.0,A,Official figure,BGR
+536,QCL,Crops and livestock products,100,Bulgaria,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,11471.0,A,Official figure,BGR
+545,QCL,Crops and livestock products,854,Burkina Faso,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,2081951.0,I,Imputed value,BFA
+546,QCL,Crops and livestock products,854,Burkina Faso,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1660000.0,E,Estimated value,BFA
+547,QCL,Crops and livestock products,854,Burkina Faso,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,1345375.0,I,Imputed value,BFA
+558,QCL,Crops and livestock products,854,Burkina Faso,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,2518.0,I,Imputed value,BFA
+569,QCL,Crops and livestock products,108,Burundi,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,633894.0,I,Imputed value,BDI
+573,QCL,Crops and livestock products,108,Burundi,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,135113.0,E,Estimated value,BDI
+574,QCL,Crops and livestock products,108,Burundi,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,95425.0,I,Imputed value,BDI
+587,QCL,Crops and livestock products,132,Cabo Verde,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,94687.0,E,Estimated value,CPV
+595,QCL,Crops and livestock products,132,Cabo Verde,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,6747.0,E,Estimated value,CPV
+613,QCL,Crops and livestock products,116,Cambodia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,120592.0,I,Imputed value,KHM
+633,QCL,Crops and livestock products,120,Cameroon,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1052252.0,I,Imputed value,CMR
+634,QCL,Crops and livestock products,120,Cameroon,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,931386.0,I,Imputed value,CMR
+639,QCL,Crops and livestock products,120,Cameroon,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,301807.0,I,Imputed value,CMR
+653,QCL,Crops and livestock products,124,Canada,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,980700.0,A,Official figure,CAN
+676,QCL,Crops and livestock products,140,Central African Republic,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,327246.0,I,Imputed value,CAF
+695,QCL,Crops and livestock products,148,Chad,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1728491.0,I,Imputed value,TCD
+696,QCL,Crops and livestock products,148,Chad,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,1116603.0,I,Imputed value,TCD
+697,QCL,Crops and livestock products,148,Chad,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,859426.0,E,Estimated value,TCD
+698,QCL,Crops and livestock products,148,Chad,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,249044.0,I,Imputed value,TCD
+716,QCL,Crops and livestock products,152,Chile,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,586779.0,E,Estimated value,CHL
+726,QCL,Crops and livestock products,152,Chile,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,245804.0,I,Imputed value,CHL
+784,QCL,Crops and livestock products,344,"China, Hong Kong SAR",5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,20.0,E,Estimated value,HKG
+820,QCL,Crops and livestock products,156,"China, mainland",5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,43905979.0,I,Imputed value,CHN
+825,QCL,Crops and livestock products,156,"China, mainland",5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,12113630.0,E,Estimated value,CHN
+827,QCL,Crops and livestock products,156,"China, mainland",5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,5799582.0,I,Imputed value,CHN
+834,QCL,Crops and livestock products,156,"China, mainland",5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1221196.0,I,Imputed value,CHN
+844,QCL,Crops and livestock products,156,"China, mainland",5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,87892.0,I,Imputed value,CHN
+853,QCL,Crops and livestock products,158,"China, Taiwan Province of",5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,62916.0,A,Official figure,TWN
+855,QCL,Crops and livestock products,158,"China, Taiwan Province of",5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,38543.0,A,Official figure,TWN
+871,QCL,Crops and livestock products,170,Colombia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,3496794.0,E,Estimated value,COL
+901,QCL,Crops and livestock products,174,Comoros,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,9702.0,I,Imputed value,COM
+924,QCL,Crops and livestock products,178,Congo,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,2970.0,E,Estimated value,COG
+939,QCL,Crops and livestock products,188,Costa Rica,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,838333.0,E,Estimated value,CRI
+957,QCL,Crops and livestock products,188,Costa Rica,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,494.0,I,Imputed value,CRI
+966,QCL,Crops and livestock products,384,Côte d'Ivoire,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,318800.0,A,Official figure,CIV
+988,QCL,Crops and livestock products,191,Croatia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,110000.0,A,Official figure,HRV
+989,QCL,Crops and livestock products,191,Croatia,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,95000.0,A,Official figure,HRV
+990,QCL,Crops and livestock products,191,Croatia,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,66000.0,A,Official figure,HRV
+1009,QCL,Crops and livestock products,192,Cuba,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,311400.0,A,Official figure,CUB
+1014,QCL,Crops and livestock products,192,Cuba,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,20935.0,A,Official figure,CUB
+1031,QCL,Crops and livestock products,196,Cyprus,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,36710.0,A,Official figure,CYP
+1042,QCL,Crops and livestock products,203,Czechia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,357010.0,A,Official figure,CZE
+1073,QCL,Crops and livestock products,408,Democratic People's Republic of Korea,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,36268.0,I,Imputed value,PRK
+1093,QCL,Crops and livestock products,180,Democratic Republic of the Congo,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,9093.0,I,Imputed value,COD
+1098,QCL,Crops and livestock products,208,Denmark,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,565000.0,A,Official figure,DNK
+1126,QCL,Crops and livestock products,262,Djibouti,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,31078.0,I,Imputed value,DJI
+1127,QCL,Crops and livestock products,262,Djibouti,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,25302.0,I,Imputed value,DJI
+1131,QCL,Crops and livestock products,212,Dominica,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,7606.0,I,Imputed value,DMA
+1152,QCL,Crops and livestock products,214,Dominican Republic,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,560000.0,E,Estimated value,DOM
+1174,QCL,Crops and livestock products,218,Ecuador,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,962520.0,A,Official figure,ECU
+1180,QCL,Crops and livestock products,218,Ecuador,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,143704.0,E,Estimated value,ECU
+1182,QCL,Crops and livestock products,218,Ecuador,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,9502.0,I,Imputed value,ECU
+1191,QCL,Crops and livestock products,818,Egypt,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1418355.0,I,Imputed value,EGY
+1192,QCL,Crops and livestock products,818,Egypt,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,1310443.0,I,Imputed value,EGY
+1197,QCL,Crops and livestock products,818,Egypt,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,1175402.0,I,Imputed value,EGY
+1211,QCL,Crops and livestock products,818,Egypt,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,405163.0,I,Imputed value,EGY
+1224,QCL,Crops and livestock products,222,El Salvador,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,179858.0,I,Imputed value,SLV
+1259,QCL,Crops and livestock products,232,Eritrea,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,720000.0,E,Estimated value,ERI
+1272,QCL,Crops and livestock products,232,Eritrea,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,231146.0,I,Imputed value,ERI
+1273,QCL,Crops and livestock products,232,Eritrea,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,179001.0,I,Imputed value,ERI
+1274,QCL,Crops and livestock products,232,Eritrea,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,75098.0,I,Imputed value,ERI
+1283,QCL,Crops and livestock products,233,Estonia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,84300.0,A,Official figure,EST
+1298,QCL,Crops and livestock products,748,Eswatini,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,136166.0,I,Imputed value,SWZ
+1324,QCL,Crops and livestock products,231,Ethiopia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,7556402.0,A,Official figure,ETH
+1329,QCL,Crops and livestock products,231,Ethiopia,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,3306255.0,I,Imputed value,ETH
+1330,QCL,Crops and livestock products,231,Ethiopia,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1717132.0,I,Imputed value,ETH
+1331,QCL,Crops and livestock products,231,Ethiopia,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,273516.0,I,Imputed value,ETH
+1352,QCL,Crops and livestock products,242,Fiji,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,32620.0,A,Official figure,FJI
+1376,QCL,Crops and livestock products,246,Finland,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,255620.0,A,Official figure,FIN
+1400,QCL,Crops and livestock products,250,France,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,3454980.0,A,Official figure,FRA
+1401,QCL,Crops and livestock products,250,France,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,1604520.0,A,Official figure,FRA
+1402,QCL,Crops and livestock products,250,France,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1193400.0,A,Official figure,FRA
+1423,QCL,Crops and livestock products,258,French Polynesia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,465.0,E,Estimated value,PYF
+1442,QCL,Crops and livestock products,266,Gabon,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,10089.0,E,Estimated value,GAB
+1454,QCL,Crops and livestock products,270,Gambia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,56470.0,I,Imputed value,GMB
+1471,QCL,Crops and livestock products,268,Georgia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,441800.0,A,Official figure,GEO
+1480,QCL,Crops and livestock products,268,Georgia,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,134924.0,I,Imputed value,GEO
+1481,QCL,Crops and livestock products,268,Georgia,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,33300.0,A,Official figure,GEO
+1483,QCL,Crops and livestock products,268,Georgia,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,10249.0,I,Imputed value,GEO
+1495,QCL,Crops and livestock products,276,Germany,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,3921410.0,A,Official figure,DEU
+1510,QCL,Crops and livestock products,276,Germany,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,12800.0,A,Official figure,DEU
+1528,QCL,Crops and livestock products,288,Ghana,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,338955.0,I,Imputed value,GHA
+1535,QCL,Crops and livestock products,300,Greece,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,6260000.0,A,Official figure,GRC
+1540,QCL,Crops and livestock products,300,Greece,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,2694000.0,A,Official figure,GRC
+1553,QCL,Crops and livestock products,300,Greece,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,86000.0,A,Official figure,GRC
+1571,QCL,Crops and livestock products,308,Grenada,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,689.0,I,Imputed value,GRD
+1581,QCL,Crops and livestock products,320,Guatemala,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,709909.0,I,Imputed value,GTM
+1594,QCL,Crops and livestock products,320,Guatemala,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,14226.0,I,Imputed value,GTM
+1603,QCL,Crops and livestock products,324,Guinea,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,705204.0,E,Estimated value,GIN
+1608,QCL,Crops and livestock products,324,Guinea,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,443696.0,I,Imputed value,GIN
+1609,QCL,Crops and livestock products,324,Guinea,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,238191.0,I,Imputed value,GIN
+1622,QCL,Crops and livestock products,624,Guinea-Bissau,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,128996.0,I,Imputed value,GNB
+1627,QCL,Crops and livestock products,624,Guinea-Bissau,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,109069.0,I,Imputed value,GNB
+1628,QCL,Crops and livestock products,624,Guinea-Bissau,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,99380.0,I,Imputed value,GNB
+1639,QCL,Crops and livestock products,328,Guyana,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,39000.0,E,Estimated value,GUY
+1653,QCL,Crops and livestock products,332,Haiti,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,653591.0,I,Imputed value,HTI
+1665,QCL,Crops and livestock products,332,Haiti,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,195574.0,I,Imputed value,HTI
+1678,QCL,Crops and livestock products,340,Honduras,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,498124.0,I,Imputed value,HND
+1701,QCL,Crops and livestock products,348,Hungary,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,226000.0,A,Official figure,HUN
+1711,QCL,Crops and livestock products,348,Hungary,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,29000.0,A,Official figure,HUN
+1713,QCL,Crops and livestock products,348,Hungary,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,17000.0,A,Official figure,HUN
+1726,QCL,Crops and livestock products,352,Iceland,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,25763.0,A,Official figure,ISL
+1739,QCL,Crops and livestock products,356,India,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,51568474.0,E,Estimated value,IND
+1740,QCL,Crops and livestock products,356,India,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,44318220.0,E,Estimated value,IND
+1741,QCL,Crops and livestock products,356,India,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,32806636.0,I,Imputed value,IND
+1757,QCL,Crops and livestock products,356,India,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,8710852.0,I,Imputed value,IND
+1761,QCL,Crops and livestock products,356,India,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,35241.0,I,Imputed value,IND
+1765,QCL,Crops and livestock products,360,Indonesia,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,7464180.0,I,Imputed value,IDN
+1774,QCL,Crops and livestock products,360,Indonesia,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,6268948.0,I,Imputed value,IDN
+1780,QCL,Crops and livestock products,360,Indonesia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,568265.0,A,Official figure,IDN
+1782,QCL,Crops and livestock products,360,Indonesia,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,123196.0,I,Imputed value,IDN
+1791,QCL,Crops and livestock products,364,Iran (Islamic Republic of),5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,11371807.0,A,Official figure,IRN
+1796,QCL,Crops and livestock products,364,Iran (Islamic Republic of),5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,7048013.0,A,Official figure,IRN
+1801,QCL,Crops and livestock products,364,Iran (Islamic Republic of),5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,2038571.0,A,Official figure,IRN
+1808,QCL,Crops and livestock products,364,Iran (Islamic Republic of),5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,45000.0,E,Estimated value,IRN
+1822,QCL,Crops and livestock products,368,Iraq,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,3244755.0,I,Imputed value,IRQ
+1827,QCL,Crops and livestock products,368,Iraq,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,712774.0,I,Imputed value,IRQ
+1832,QCL,Crops and livestock products,368,Iraq,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,414580.0,I,Imputed value,IRQ
+1838,QCL,Crops and livestock products,368,Iraq,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,53700.0,E,Estimated value,IRQ
+1846,QCL,Crops and livestock products,368,Iraq,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,5817.0,E,Estimated value,IRQ
+1859,QCL,Crops and livestock products,372,Ireland,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1456050.0,A,Official figure,IRL
+1866,QCL,Crops and livestock products,372,Ireland,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,0.0,A,Official figure,IRL
+1882,QCL,Crops and livestock products,376,Israel,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,227493.0,I,Imputed value,ISR
+1886,QCL,Crops and livestock products,376,Israel,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,123079.0,A,Official figure,ISR
+1887,QCL,Crops and livestock products,376,Israel,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,89760.0,I,Imputed value,ISR
+1898,QCL,Crops and livestock products,380,Italy,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,4851240.0,A,Official figure,ITA
+1907,QCL,Crops and livestock products,380,Italy,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1871270.0,A,Official figure,ITA
+1908,QCL,Crops and livestock products,380,Italy,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,826390.0,A,Official figure,ITA
+1922,QCL,Crops and livestock products,388,Jamaica,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,537970.0,I,Imputed value,JAM
+1935,QCL,Crops and livestock products,388,Jamaica,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,5523.0,A,Official figure,JAM
+1950,QCL,Crops and livestock products,392,Japan,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,838900.0,A,Official figure,JPN
+1955,QCL,Crops and livestock products,392,Japan,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,8754.0,I,Imputed value,JPN
+1960,QCL,Crops and livestock products,392,Japan,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,6434.0,I,Imputed value,JPN
+1966,QCL,Crops and livestock products,400,Jordan,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,2302517.0,E,Estimated value,JOR
+1971,QCL,Crops and livestock products,400,Jordan,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,537293.0,E,Estimated value,JOR
+1981,QCL,Crops and livestock products,400,Jordan,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,44834.0,I,Imputed value,JOR
+1998,QCL,Crops and livestock products,398,Kazakhstan,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,2539679.0,A,Official figure,KAZ
+2008,QCL,Crops and livestock products,398,Kazakhstan,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,427878.0,I,Imputed value,KAZ
+2010,QCL,Crops and livestock products,398,Kazakhstan,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,32400.0,E,Estimated value,KAZ
+2024,QCL,Crops and livestock products,404,Kenya,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,5112340.0,A,Official figure,KEN
+2025,QCL,Crops and livestock products,404,Kenya,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,3893656.0,E,Estimated value,KEN
+2030,QCL,Crops and livestock products,404,Kenya,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,1806667.0,E,Estimated value,KEN
+2031,QCL,Crops and livestock products,404,Kenya,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,1653749.0,I,Imputed value,KEN
+2055,QCL,Crops and livestock products,414,Kuwait,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,34853.0,E,Estimated value,KWT
+2056,QCL,Crops and livestock products,414,Kuwait,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,9616.0,I,Imputed value,KWT
+2065,QCL,Crops and livestock products,414,Kuwait,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,1418.0,I,Imputed value,KWT
+2066,QCL,Crops and livestock products,414,Kuwait,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,281.0,E,Estimated value,KWT
+2071,QCL,Crops and livestock products,417,Kyrgyzstan,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,854963.0,A,Official figure,KGZ
+2076,QCL,Crops and livestock products,417,Kyrgyzstan,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,469946.0,I,Imputed value,KGZ
+2081,QCL,Crops and livestock products,417,Kyrgyzstan,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,302892.0,E,Estimated value,KGZ
+2107,QCL,Crops and livestock products,418,Lao People's Democratic Republic,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,39639.0,E,Estimated value,LAO
+2115,QCL,Crops and livestock products,428,Latvia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,136040.0,A,Official figure,LVA
+2125,QCL,Crops and livestock products,428,Latvia,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,7920.0,A,Official figure,LVA
+2130,QCL,Crops and livestock products,428,Latvia,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,40.0,A,Official figure,LVA
+2131,QCL,Crops and livestock products,422,Lebanon,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,241697.0,I,Imputed value,LBN
+2136,QCL,Crops and livestock products,422,Lebanon,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,190405.0,E,Estimated value,LBN
+2146,QCL,Crops and livestock products,422,Lebanon,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,51657.0,I,Imputed value,LBN
+2151,QCL,Crops and livestock products,426,Lesotho,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,123333.0,E,Estimated value,LSO
+2188,QCL,Crops and livestock products,430,Liberia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,6821.0,I,Imputed value,LBR
+2196,QCL,Crops and livestock products,434,Libya,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,1964983.0,I,Imputed value,LBY
+2201,QCL,Crops and livestock products,434,Libya,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,523815.0,E,Estimated value,LBY
+2202,QCL,Crops and livestock products,434,Libya,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,128353.0,I,Imputed value,LBY
+2211,QCL,Crops and livestock products,434,Libya,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,13867.0,E,Estimated value,LBY
+2216,QCL,Crops and livestock products,440,Lithuania,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,232900.0,A,Official figure,LTU
+2226,QCL,Crops and livestock products,440,Lithuania,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,8900.0,A,Official figure,LTU
+2231,QCL,Crops and livestock products,440,Lithuania,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,0.0,A,Official figure,LTU
+2235,QCL,Crops and livestock products,442,Luxembourg,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,54230.0,A,Official figure,LUX
+2251,QCL,Crops and livestock products,450,Madagascar,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1666216.0,I,Imputed value,MDG
+2283,QCL,Crops and livestock products,454,Malawi,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,2133698.0,I,Imputed value,MWI
+2292,QCL,Crops and livestock products,454,Malawi,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,110394.0,E,Estimated value,MWI
+2293,QCL,Crops and livestock products,454,Malawi,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,92359.0,I,Imputed value,MWI
+2309,QCL,Crops and livestock products,458,Malaysia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,45434.0,A,Official figure,MYS
+2319,QCL,Crops and livestock products,458,Malaysia,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,5348.0,I,Imputed value,MYS
+2323,QCL,Crops and livestock products,466,Mali,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,20857914.0,A,Official figure,MLI
+2324,QCL,Crops and livestock products,466,Mali,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,15107006.0,A,Official figure,MLI
+2325,QCL,Crops and livestock products,466,Mali,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1995914.0,A,Official figure,MLI
+2338,QCL,Crops and livestock products,466,Mali,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,417752.0,A,Official figure,MLI
+2353,QCL,Crops and livestock products,470,Malta,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,11700.0,A,Official figure,MLT
+2358,QCL,Crops and livestock products,470,Malta,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,6060.0,A,Official figure,MLT
+2359,QCL,Crops and livestock products,470,Malta,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,4610.0,A,Official figure,MLT
+2375,QCL,Crops and livestock products,478,Mauritania,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,2315435.0,I,Imputed value,MRT
+2376,QCL,Crops and livestock products,478,Mauritania,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1651943.0,I,Imputed value,MRT
+2381,QCL,Crops and livestock products,478,Mauritania,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,422577.0,I,Imputed value,MRT
+2389,QCL,Crops and livestock products,478,Mauritania,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,107316.0,I,Imputed value,MRT
+2406,QCL,Crops and livestock products,480,Mauritius,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,3067.0,E,Estimated value,MUS
+2431,QCL,Crops and livestock products,484,Mexico,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,2594901.0,A,Official figure,MEX
+2437,QCL,Crops and livestock products,484,Mexico,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,1483019.0,I,Imputed value,MEX
+2438,QCL,Crops and livestock products,484,Mexico,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,765595.0,I,Imputed value,MEX
+2467,QCL,Crops and livestock products,496,Mongolia,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,6895427.0,A,Official figure,MNG
+2468,QCL,Crops and livestock products,496,Mongolia,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,6686690.0,A,Official figure,MNG
+2473,QCL,Crops and livestock products,496,Mongolia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1314828.0,A,Official figure,MNG
+2476,QCL,Crops and livestock products,496,Mongolia,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,515987.0,A,Official figure,MNG
+2480,QCL,Crops and livestock products,496,Mongolia,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,73799.0,A,Official figure,MNG
+2487,QCL,Crops and livestock products,499,Montenegro,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,96812.0,E,Estimated value,MNE
+2488,QCL,Crops and livestock products,499,Montenegro,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,55841.0,I,Imputed value,MNE
+2514,QCL,Crops and livestock products,504,Morocco,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1668447.0,I,Imputed value,MAR
+2515,QCL,Crops and livestock products,504,Morocco,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1600882.0,I,Imputed value,MAR
+2520,QCL,Crops and livestock products,504,Morocco,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,1062820.0,I,Imputed value,MAR
+2523,QCL,Crops and livestock products,504,Morocco,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,32982.0,I,Imputed value,MAR
+2537,QCL,Crops and livestock products,508,Mozambique,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,421296.0,E,Estimated value,MOZ
+2538,QCL,Crops and livestock products,508,Mozambique,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,173206.0,I,Imputed value,MOZ
+2562,QCL,Crops and livestock products,104,Myanmar,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,3766667.0,E,Estimated value,MMR
+2567,QCL,Crops and livestock products,104,Myanmar,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1824136.0,I,Imputed value,MMR
+2573,QCL,Crops and livestock products,104,Myanmar,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,398944.0,E,Estimated value,MMR
+2578,QCL,Crops and livestock products,104,Myanmar,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,278427.0,I,Imputed value,MMR
+2593,QCL,Crops and livestock products,516,Namibia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,249726.0,I,Imputed value,NAM
+2614,QCL,Crops and livestock products,524,Nepal,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,2101421.0,I,Imputed value,NPL
+2615,QCL,Crops and livestock products,524,Nepal,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,1635492.0,A,Official figure,NPL
+2616,QCL,Crops and livestock products,524,Nepal,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1166156.0,A,Official figure,NPL
+2628,QCL,Crops and livestock products,524,Nepal,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,323175.0,I,Imputed value,NPL
+2644,QCL,Crops and livestock products,528,Netherlands,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1569000.0,A,Official figure,NLD
+2650,QCL,Crops and livestock products,528,Netherlands,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,513000.0,A,Official figure,NLD
+2656,QCL,Crops and livestock products,528,Netherlands,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,16000.0,A,Official figure,NLD
+2671,QCL,Crops and livestock products,540,New Caledonia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,305.0,I,Imputed value,NCL
+2681,QCL,Crops and livestock products,554,New Zealand,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,4836726.0,A,Official figure,NZL
+2701,QCL,Crops and livestock products,558,Nicaragua,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,825481.0,I,Imputed value,NIC
+2721,QCL,Crops and livestock products,562,Niger,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,6591358.0,A,Official figure,NER
+2722,QCL,Crops and livestock products,562,Niger,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,4096403.0,A,Official figure,NER
+2723,QCL,Crops and livestock products,562,Niger,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,2420840.0,A,Official figure,NER
+2732,QCL,Crops and livestock products,562,Niger,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,241644.0,A,Official figure,NER
+2764,QCL,Crops and livestock products,566,Nigeria,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,2213856.0,I,Imputed value,NGA
+2770,QCL,Crops and livestock products,570,Niue,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,74.0,I,Imputed value,NIU
+2777,QCL,Crops and livestock products,807,North Macedonia,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,451111.0,A,Official figure,MKD
+2785,QCL,Crops and livestock products,807,North Macedonia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,111083.0,A,Official figure,MKD
+2786,QCL,Crops and livestock products,807,North Macedonia,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,70132.0,A,Official figure,MKD
+2807,QCL,Crops and livestock products,578,Norway,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,219453.0,E,Estimated value,NOR
+2809,QCL,Crops and livestock products,578,Norway,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,34279.0,E,Estimated value,NOR
+2820,QCL,Crops and livestock products,512,Oman,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1473508.0,I,Imputed value,OMN
+2829,QCL,Crops and livestock products,512,Oman,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,471796.0,I,Imputed value,OMN
+2830,QCL,Crops and livestock products,512,Oman,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,127884.0,A,Official figure,OMN
+2844,QCL,Crops and livestock products,586,Pakistan,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,15404000.0,A,Official figure,PAK
+2849,QCL,Crops and livestock products,586,Pakistan,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,14640000.0,A,Official figure,PAK
+2858,QCL,Crops and livestock products,586,Pakistan,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,6798000.0,A,Official figure,PAK
+2860,QCL,Crops and livestock products,586,Pakistan,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,811000.0,A,Official figure,PAK
+2867,QCL,Crops and livestock products,275,Palestine,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,535957.0,I,Imputed value,PSE
+2876,QCL,Crops and livestock products,275,Palestine,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,160712.0,I,Imputed value,PSE
+2882,QCL,Crops and livestock products,275,Palestine,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,15627.0,I,Imputed value,PSE
+2891,QCL,Crops and livestock products,591,Panama,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,144347.0,I,Imputed value,PAN
+2909,QCL,Crops and livestock products,598,Papua New Guinea,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1626.0,I,Imputed value,PNG
+2910,QCL,Crops and livestock products,598,Papua New Guinea,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1367.0,I,Imputed value,PNG
+2927,QCL,Crops and livestock products,600,Paraguay,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,215193.0,I,Imputed value,PRY
+2955,QCL,Crops and livestock products,604,Peru,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,906689.0,A,Official figure,PER
+2962,QCL,Crops and livestock products,604,Peru,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,254248.0,I,Imputed value,PER
+2991,QCL,Crops and livestock products,608,Philippines,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,5433.0,I,Imputed value,PHL
+2997,QCL,Crops and livestock products,616,Poland,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,2125700.0,A,Official figure,POL
+3025,QCL,Crops and livestock products,620,Portugal,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,263280.0,A,Official figure,PRT
+3026,QCL,Crops and livestock products,620,Portugal,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,246780.0,A,Official figure,PRT
+3027,QCL,Crops and livestock products,620,Portugal,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,232750.0,A,Official figure,PRT
+3035,QCL,Crops and livestock products,630,Puerto Rico,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,86530.0,I,Imputed value,PRI
+3044,QCL,Crops and livestock products,630,Puerto Rico,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1782.0,I,Imputed value,PRI
+3059,QCL,Crops and livestock products,634,Qatar,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,278836.0,I,Imputed value,QAT
+3060,QCL,Crops and livestock products,634,Qatar,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,143757.0,I,Imputed value,QAT
+3065,QCL,Crops and livestock products,634,Qatar,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,33101.0,I,Imputed value,QAT
+3074,QCL,Crops and livestock products,634,Qatar,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,5300.0,E,Estimated value,QAT
+3084,QCL,Crops and livestock products,410,Republic of Korea,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,202349.0,A,Official figure,KOR
+3089,QCL,Crops and livestock products,410,Republic of Korea,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,84027.0,I,Imputed value,KOR
+3102,QCL,Crops and livestock products,498,Republic of Moldova,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,565916.0,I,Imputed value,MDA
+3107,QCL,Crops and livestock products,498,Republic of Moldova,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,111561.0,I,Imputed value,MDA
+3108,QCL,Crops and livestock products,498,Republic of Moldova,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,87321.0,I,Imputed value,MDA
+3120,QCL,Crops and livestock products,642,Romania,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,7908300.0,A,Official figure,ROU
+3128,QCL,Crops and livestock products,642,Romania,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1310000.0,A,Official figure,ROU
+3129,QCL,Crops and livestock products,642,Romania,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1139800.0,A,Official figure,ROU
+3154,QCL,Crops and livestock products,643,Russian Federation,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,6571603.0,A,Official figure,RUS
+3155,QCL,Crops and livestock products,643,Russian Federation,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,3705813.0,A,Official figure,RUS
+3161,QCL,Crops and livestock products,643,Russian Federation,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,765330.0,A,Official figure,RUS
+3169,QCL,Crops and livestock products,643,Russian Federation,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,188.0,I,Imputed value,RUS
+3171,QCL,Crops and livestock products,646,Rwanda,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,931477.0,I,Imputed value,RWA
+3183,QCL,Crops and livestock products,646,Rwanda,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,335087.0,I,Imputed value,RWA
+3184,QCL,Crops and livestock products,646,Rwanda,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,117896.0,I,Imputed value,RWA
+3225,QCL,Crops and livestock products,662,Saint Lucia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,742.0,I,Imputed value,LCA
+3242,QCL,Crops and livestock products,670,Saint Vincent and the Grenadines,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,723.0,I,Imputed value,VCT
+3253,QCL,Crops and livestock products,882,Samoa,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1810.0,I,Imputed value,WSM
+3272,QCL,Crops and livestock products,678,Sao Tome and Principe,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,406.0,I,Imputed value,STP
+3284,QCL,Crops and livestock products,682,Saudi Arabia,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,2900860.0,I,Imputed value,SAU
+3285,QCL,Crops and livestock products,682,Saudi Arabia,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,2095183.0,I,Imputed value,SAU
+3290,QCL,Crops and livestock products,682,Saudi Arabia,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,284533.0,I,Imputed value,SAU
+3291,QCL,Crops and livestock products,682,Saudi Arabia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,224541.0,A,Official figure,SAU
+3306,QCL,Crops and livestock products,686,Senegal,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,708652.0,E,Estimated value,SEN
+3307,QCL,Crops and livestock products,686,Senegal,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,698942.0,I,Imputed value,SEN
+3308,QCL,Crops and livestock products,686,Senegal,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,667564.0,E,Estimated value,SEN
+3321,QCL,Crops and livestock products,686,Senegal,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,1579.0,I,Imputed value,SEN
+3332,QCL,Crops and livestock products,688,Serbia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,421748.0,A,Official figure,SRB
+3341,QCL,Crops and livestock products,688,Serbia,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,119145.0,A,Official figure,SRB
+3343,QCL,Crops and livestock products,688,Serbia,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,67242.0,A,Official figure,SRB
+3359,QCL,Crops and livestock products,690,Seychelles,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,137.0,E,Estimated value,SYC
+3375,QCL,Crops and livestock products,694,Sierra Leone,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,108316.0,I,Imputed value,SLE
+3414,QCL,Crops and livestock products,703,Slovakia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,122050.0,A,Official figure,SVK
+3435,QCL,Crops and livestock products,705,Slovenia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,99210.0,A,Official figure,SVN
+3445,QCL,Crops and livestock products,705,Slovenia,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,5118.0,A,Official figure,SVN
+3446,QCL,Crops and livestock products,705,Slovenia,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,3655.0,A,Official figure,SVN
+3458,QCL,Crops and livestock products,90,Solomon Islands,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,2281.0,I,Imputed value,SLB
+3461,QCL,Crops and livestock products,706,Somalia,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,6330020.0,I,Imputed value,SOM
+3462,QCL,Crops and livestock products,706,Somalia,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,6248478.0,I,Imputed value,SOM
+3471,QCL,Crops and livestock products,706,Somalia,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,2429464.0,I,Imputed value,SOM
+3472,QCL,Crops and livestock products,706,Somalia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1186851.0,I,Imputed value,SOM
+3496,QCL,Crops and livestock products,710,South Africa,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1001111.0,E,Estimated value,ZAF
+3508,QCL,Crops and livestock products,728,South Sudan,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,8432559.0,I,Imputed value,SSD
+3509,QCL,Crops and livestock products,728,South Sudan,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,6943889.0,E,Estimated value,SSD
+3510,QCL,Crops and livestock products,728,South Sudan,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,6431693.0,I,Imputed value,SSD
+3540,QCL,Crops and livestock products,724,Spain,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,2354800.0,A,Official figure,ESP
+3541,QCL,Crops and livestock products,724,Spain,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1890490.0,A,Official figure,ESP
+3546,QCL,Crops and livestock products,724,Spain,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,810740.0,A,Official figure,ESP
+3549,QCL,Crops and livestock products,144,Sri Lanka,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,338350.0,A,Official figure,LKA
+3555,QCL,Crops and livestock products,144,Sri Lanka,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,140337.0,I,Imputed value,LKA
+3556,QCL,Crops and livestock products,144,Sri Lanka,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,102050.0,A,Official figure,LKA
+3575,QCL,Crops and livestock products,729,Sudan,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,23156278.0,A,Official figure,SDN
+3576,QCL,Crops and livestock products,729,Sudan,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,18209736.0,A,Official figure,SDN
+3585,QCL,Crops and livestock products,729,Sudan,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,8226490.0,A,Official figure,SDN
+3590,QCL,Crops and livestock products,729,Sudan,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,1726047.0,A,Official figure,SDN
+3604,QCL,Crops and livestock products,740,Suriname,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1230.0,E,Estimated value,SUR
+3622,QCL,Crops and livestock products,752,Sweden,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,304400.0,A,Official figure,SWE
+3633,QCL,Crops and livestock products,752,Sweden,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,0.0,A,Official figure,SWE
+3641,QCL,Crops and livestock products,756,Switzerland,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,544588.0,A,Official figure,CHE
+3651,QCL,Crops and livestock products,756,Switzerland,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,36593.0,A,Official figure,CHE
+3652,QCL,Crops and livestock products,756,Switzerland,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,14539.0,A,Official figure,CHE
+3658,QCL,Crops and livestock products,760,Syrian Arab Republic,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,10539397.0,A,Official figure,SYR
+3663,QCL,Crops and livestock products,760,Syrian Arab Republic,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1345722.0,A,Official figure,SYR
+3664,QCL,Crops and livestock products,760,Syrian Arab Republic,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,513543.0,A,Official figure,SYR
+3676,QCL,Crops and livestock products,760,Syrian Arab Republic,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,4051.0,A,Official figure,SYR
+3692,QCL,Crops and livestock products,762,Tajikistan,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1057966.0,I,Imputed value,TJK
+3697,QCL,Crops and livestock products,762,Tajikistan,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,213549.0,I,Imputed value,TJK
+3712,QCL,Crops and livestock products,764,Thailand,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,220000.0,E,Estimated value,THA
+3736,QCL,Crops and livestock products,626,Timor-Leste,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,41345.0,I,Imputed value,TLS
+3762,QCL,Crops and livestock products,768,Togo,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,68485.0,I,Imputed value,TGO
+3786,QCL,Crops and livestock products,776,Tonga,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,207.0,I,Imputed value,TON
+3796,QCL,Crops and livestock products,780,Trinidad and Tobago,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,7244.0,E,Estimated value,TTO
+3815,QCL,Crops and livestock products,788,Tunisia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,432740.0,I,Imputed value,TUN
+3816,QCL,Crops and livestock products,788,Tunisia,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,394346.0,I,Imputed value,TUN
+3817,QCL,Crops and livestock products,788,Tunisia,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,318148.0,E,Estimated value,TUN
+3830,QCL,Crops and livestock products,788,Tunisia,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,3633.0,I,Imputed value,TUN
+3834,QCL,Crops and livestock products,792,Türkiye,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,20428674.0,I,Imputed value,TUR
+3835,QCL,Crops and livestock products,792,Türkiye,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,6309235.0,E,Estimated value,TUR
+3836,QCL,Crops and livestock products,792,Türkiye,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,5333592.0,I,Imputed value,TUR
+3851,QCL,Crops and livestock products,792,Türkiye,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,80287.0,I,Imputed value,TUR
+3872,QCL,Crops and livestock products,795,Turkmenistan,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1001516.0,I,Imputed value,TKM
+3895,QCL,Crops and livestock products,800,Uganda,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,4037038.0,I,Imputed value,UGA
+3920,QCL,Crops and livestock products,804,Ukraine,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1765600.0,A,Official figure,UKR
+3922,QCL,Crops and livestock products,804,Ukraine,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,408300.0,A,Official figure,UKR
+3931,QCL,Crops and livestock products,804,Ukraine,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,277900.0,A,Official figure,UKR
+3939,QCL,Crops and livestock products,804,Ukraine,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,344.0,I,Imputed value,UKR
+3944,QCL,Crops and livestock products,784,United Arab Emirates,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,862860.0,I,Imputed value,ARE
+3945,QCL,Crops and livestock products,784,United Arab Emirates,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,573732.0,I,Imputed value,ARE
+3946,QCL,Crops and livestock products,784,United Arab Emirates,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,314501.0,I,Imputed value,ARE
+3959,QCL,Crops and livestock products,784,United Arab Emirates,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,40848.0,I,Imputed value,ARE
+3972,QCL,Crops and livestock products,826,United Kingdom of Great Britain and Northern Ireland,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,1859000.0,A,Official figure,GBR
+3980,QCL,Crops and livestock products,834,United Republic of Tanzania,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,7116771.0,I,Imputed value,TZA
+3981,QCL,Crops and livestock products,834,United Republic of Tanzania,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,3662021.0,I,Imputed value,TZA
+4009,QCL,Crops and livestock products,840,United States of America,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,9342600.0,A,Official figure,USA
+4019,QCL,Crops and livestock products,840,United States of America,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,257878.0,I,Imputed value,USA
+4036,QCL,Crops and livestock products,858,Uruguay,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,749000.0,A,Official figure,URY
+4056,QCL,Crops and livestock products,860,Uzbekistan,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,4024308.0,E,Estimated value,UZB
+4072,QCL,Crops and livestock products,548,Vanuatu,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,10592.0,I,Imputed value,VUT
+4085,QCL,Crops and livestock products,862,Venezuela (Bolivarian Republic of),5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,2191928.0,E,Estimated value,VEN
+4120,QCL,Crops and livestock products,704,Viet Nam,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,331368.0,A,Official figure,VNM
+4123,QCL,Crops and livestock products,704,Viet Nam,5318,Milk Animals,2212.0,Raw milk of buffalo,2020,2020,Head,27105.0,I,Imputed value,VNM
+4134,QCL,Crops and livestock products,887,Yemen,5318,Milk Animals,2291.0,Raw milk of sheep,2020,2020,Head,1924032.0,E,Estimated value,YEM
+4135,QCL,Crops and livestock products,887,Yemen,5318,Milk Animals,2292.0,Raw milk of goats,2020,2020,Head,1699521.0,I,Imputed value,YEM
+4140,QCL,Crops and livestock products,887,Yemen,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,390869.0,I,Imputed value,YEM
+4142,QCL,Crops and livestock products,887,Yemen,5318,Milk Animals,2293.0,Raw milk of camel,2020,2020,Head,122559.0,I,Imputed value,YEM
+4158,QCL,Crops and livestock products,894,Zambia,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,279630.0,E,Estimated value,ZMB
+4169,QCL,Crops and livestock products,716,Zimbabwe,5318,Milk Animals,2211.0,Raw milk of cattle,2020,2020,Head,990344.0,I,Imputed value,ZWE

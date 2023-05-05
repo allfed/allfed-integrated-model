@@ -1,0 +1,18 @@
+,Domain Code,Domain,Area Code (M49),Area,Element Code,Element,Item Code (CPC),Item,Year Code,Year,Unit,Value,Flag,Flag Description,Area Code (ISO3)
+0,QCL,Crops and livestock products,4,Afghanistan,5111,Stocks,2132.0,Asses,2019,2019,Head,1563683,I,Imputed value,AFG
+1,QCL,Crops and livestock products,4,Afghanistan,5111,Stocks,2121.01,Camels,2019,2019,Head,170215,I,Imputed value,AFG
+2,QCL,Crops and livestock products,4,Afghanistan,5111,Stocks,2111.0,Cattle,2019,2019,Head,5122956,E,Estimated value,AFG
+3,QCL,Crops and livestock products,4,Afghanistan,5112,Stocks,2151.0,Chickens,2019,2019,1000 Head,13735,I,Imputed value,AFG
+4,QCL,Crops and livestock products,4,Afghanistan,5111,Stocks,2123.0,Goats,2019,2019,Head,7921542,I,Imputed value,AFG
+5,QCL,Crops and livestock products,4,Afghanistan,5111,Stocks,2131.0,Horses,2019,2019,Head,100478,I,Imputed value,AFG
+6,QCL,Crops and livestock products,4,Afghanistan,5111,Stocks,2133.0,Mules and hinnies,2019,2019,Head,24141,I,Imputed value,AFG
+7,QCL,Crops and livestock products,4,Afghanistan,5111,Stocks,2122.0,Sheep,2019,2019,Head,13526978,E,Estimated value,AFG
+9,QCL,Crops and livestock products,8,Albania,5114,Stocks,2196.0,Bees,2019,2019,No,288329,A,Official figure,ALB
+10,QCL,Crops and livestock products,8,Albania,5111,Stocks,2112.0,Buffalo,2019,2019,Head,94,I,Imputed value,ALB
+13,QCL,Crops and livestock products,8,Albania,5112,Stocks,2154.0,Ducks,2019,2019,1000 Head,0,M,"Missing value (data cannot exist, not applicable)",ALB
+14,QCL,Crops and livestock products,8,Albania,5112,Stocks,2153.0,Geese,2019,2019,1000 Head,0,M,"Missing value (data cannot exist, not applicable)",ALB
+19,QCL,Crops and livestock products,8,Albania,5111,Stocks,2140.0,Swine / pigs,2019,2019,Head,183847,A,Official figure,ALB
+20,QCL,Crops and livestock products,8,Albania,5112,Stocks,2152.0,Turkeys,2019,2019,1000 Head,404,A,Official figure,ALB
+31,QCL,Crops and livestock products,12,Algeria,5112,Stocks,2191.0,Rabbits and hares,2019,2019,1000 Head,1677,I,Imputed value,DZA
+180,QCL,Crops and livestock products,68,Bolivia (Plurinational State of),5111,Stocks,2121.02,Other camelids,2019,2019,Head,3039226,A,Official figure,BOL
+181,QCL,Crops and livestock products,68,Bolivia (Plurinational State of),5112,Stocks,2192.01,Other rodents,2019,2019,1000 Head,426,I,Imputed value,BOL
