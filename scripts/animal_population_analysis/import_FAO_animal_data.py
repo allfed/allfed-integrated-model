@@ -65,14 +65,12 @@ def get_slaughter_dataframe(df):
         rabbit_slaughter = get_max_from_species(slaughter_head_for_country, rabbit_1000_head) * 1000
         turkeys_slaughter = get_max_from_species(slaughter_head_for_country, turkeys_1000_head) * 1000
         other_rodents_slaughter = get_max_from_species(slaughter_head_for_country, other_rodents_1000_head) * 1000
-        small_animal_slaughter = chicken_slaughter + rabbit_slaughter + ducks_slaughter + geese_slaughter + turkeys_slaughter + other_rodents_slaughter
 
         #medium animals, pig, goat, sheep, camelids
         pig_slaughter = get_max_from_species(slaughter_head_for_country, pig)
         goat_slaughter = get_max_from_species(slaughter_head_for_country, goat)
         sheep_slaughter = get_max_from_species(slaughter_head_for_country, sheep)
         camelids_slaughter = get_max_from_species(slaughter_head_for_country, camelids)
-        medium_animal_slaughter = pig_slaughter + goat_slaughter + sheep_slaughter + camelids_slaughter
 
         #large animals, cattle, camel, buffalo
         cattle_slaughter = get_max_from_species(slaughter_head_for_country, cattle)
@@ -82,18 +80,12 @@ def get_slaughter_dataframe(df):
         asses_slughter = get_max_from_species(slaughter_head_for_country, asses)
         horse_slaughter = get_max_from_species(slaughter_head_for_country, horses)
 
-        #  horses/donkeys/asses/mules excluded as they are not used for meat ######
-        large_animal_slaughter = cattle_slaughter + camel_slaughter + buffalo_slaughter #+ mule_slaughter + asses_slughter + horse_slaughter
-
         # add to list
         d.append(
 
                     {
                         "iso3": country,
                         "country": country_name,
-                        "small_animal_slaughter": small_animal_slaughter,
-                        "medium_animal_slaughter": medium_animal_slaughter,
-                        "large_animal_slaughter": large_animal_slaughter,
                         "chicken_slaughter": chicken_slaughter,
                         "rabbit_slaughter": rabbit_slaughter,
                         "duck_slaughter": ducks_slaughter,
@@ -171,7 +163,6 @@ def get_headcount_dataframe(df):
         # get population head for country
         pop_head_for_country = df_dict[country]
 
-        # this is where we define the species we want to include in each category
         #small animals, chicken, rabbit, rodents (only in Peru and Bolivia), duck, goose, turkey
         chicken_head = get_max_from_species(pop_head_for_country, Chickens_1000_head) * 1000
         rabbit_head = get_max_from_species(pop_head_for_country, Rabbits_and_hares_1000_head) * 1000
@@ -179,14 +170,12 @@ def get_headcount_dataframe(df):
         goose_head = get_max_from_species(pop_head_for_country, Geese_1000_head) * 1000
         turkey_head = get_max_from_species(pop_head_for_country, Turkeys_1000_head) * 1000
         other_rodents_head = get_max_from_species(pop_head_for_country, Other_rodents_1000_head) * 1000
-        small_animal_head = chicken_head + rabbit_head + duck_head + goose_head + turkey_head + other_rodents_head
 
         #medium animals, pig, goat, sheep, camelids
         pig_head = get_max_from_species(pop_head_for_country, Swine_or_pigs)
         goat_head = get_max_from_species(pop_head_for_country, Goats)
         sheep_head = get_max_from_species(pop_head_for_country, Sheep)
         camelids_head = get_max_from_species(pop_head_for_country, Other_camelids)
-        medium_animal_head = pig_head + goat_head + sheep_head + camelids_head
 
         #large animals, cattle, camel, buffalo, horses/donkleys
         cattle_head = get_max_from_species(pop_head_for_country, Cattle)
@@ -195,17 +184,12 @@ def get_headcount_dataframe(df):
         mule_head = get_max_from_species(pop_head_for_country, Mules_and_hinnies)
         horse_head = get_max_from_species(pop_head_for_country, Horses)
         asses_head = get_max_from_species(pop_head_for_country, Asses) 
-        #######  horses/donkeys/asses/mules excluded as they are not used for meat ######
-        large_animal_head = cattle_head + camel_head + buffalo_head #+ mule_head + horse_head + asses_head
 
         # add to list
         d.append(
                     {
                         "iso3": country,
                         "country": country_name,
-                        "small_animal_head": small_animal_head,
-                        "medium_animal_head": medium_animal_head,
-                        "large_animal_head": large_animal_head,
                         "chicken_head": chicken_head,
                         "rabbit_head": rabbit_head,
                         "duck_head": duck_head,
@@ -304,7 +288,7 @@ def subtract_milk_from_head(df, meat_col, milk_col):
 
     returns: dataframe with milk head subtracted from meat head
     """
-    df[milk_col] = df[milk_col] - df[milk_col]
+    df[meat_col] = df[meat_col] - df[milk_col]
     df = df.rename(columns={meat_col: "meat_" + meat_col})
     return df
 
@@ -351,6 +335,25 @@ df_importhead = pd.read_csv(
     DATA_PATH.joinpath("FAOSTAT_data_en_4-14-2023_head_counts.csv") # change this to the file you want to import
 )
 
+
+#### HARDCODE DEFINTION OF ANIMAL SIZE ####
+
+#animal size keywords
+# milk and meat are include in these keywords, thjey are filtered out later to determine correct headcount
+# removing animals from these keywords will remove them from the head and slaughter counts
+# if you remove the milk animals, they will be considered as meat animals
+# if you remove the meat animals, it will break the code
+small_animal_keywords = ["chicken" , "rabbit", "duck", "goose", "turkey", "other_rodents"]
+medium_animal_keywords = ["pig", "meat_goat", "meat_sheep", "camelids", "milk_goat", "milk_sheep"]
+large_animal_keywords = ["meat_cattle", "meat_camel","meat_buffalo","milk_cattle", "milk_camel", "milk_buffalo"] #, "mule", "horse", "asses"]
+# hardcode exclusion of horse like animals from meat (even though they are used for meat in some countries?)
+# it is difficult to distinguish between horse like animals used for meat and those used for work, so the slaiughter 
+# so the slaughter numbers are not a reliable indicator of meat production, and inclusion would skey the "large animal" category
+small_animal_keywords_slaughter = ["chicken" , "rabbit", "duck", "goose", "turkey", "other_rodents"]
+medium_animal_keywords_slaughter = ["pig", "goat", "sheep", "camelids"]
+large_animal_keywords_slaughter = ["cattle", "camel","buffalo"] #, "mule", "horse", "asses"]
+
+
 # Add alpha3 codes to dataframe
 iso_num_col = "Area Code (M49)"
 new_col_name = "Area Code (ISO3)"
@@ -365,23 +368,63 @@ df_head = df_head.drop(df_head[df_head["Area Code (ISO3)"] == "NA"].index)
 # filter dataframe by elemenmt which conatins milking
 df_milking = df_slaughter[df_slaughter["Element"].str.contains("Milk")]
 
-
+# simplify the dataframe to only include the columns we need (this is the heavy lifting)
 df_out_slaughter = get_slaughter_dataframe(df_slaughter)
 df_out_head = get_headcount_dataframe(df_head)
 df_out_milking = get_milk_headcount(df_milking)
 
-#merge dataframes milk and head, to get all headcounts in one dataframe
-df_out_head = df_out_head.merge(df_out_milking, on="iso3", how="left")
+#merge dataframes milk and head, to get all headcounts in one dataframe, prvenet duplication of columns
+# i.e merge but prevent _x, _y stuff from happeing
+# drop the country column from the milk dataframe, as it is already in the head dataframe
+df_out_head = df_out_head.merge(df_out_milking.drop(columns=["country"]), on="iso3", how="left")
 
-# subtract milk species from headcounts, start with cattle.
+# subtract milk species from headcounts
 # this is because the milk headcounts are already included in the total headcounts
 # rename the columns to meat_cattle_head etc.
 df_out_head = subtract_milk_from_head(df_out_head, "sheep_head", "milk_sheep_head")
-df_out_head = subtract_milk_from_head(df_out_head, "goats_head", "milk_goats_head")
+df_out_head = subtract_milk_from_head(df_out_head, "goat_head", "milk_goats_head")
 df_out_head = subtract_milk_from_head(df_out_head, "camel_head", "milk_camel_head")
 df_out_head = subtract_milk_from_head(df_out_head, "buffalo_head", "milk_buffalo_head")
 df_out_head = subtract_milk_from_head(df_out_head, "cattle_head", "milk_cattle_head")
 
-## export dataframes to csv
-df_out_head.to_csv("FAO_stat_head_counts_processed.csv")
-df_out_slaughter.to_csv("FAO_stat_slaughter_counts_processed.csv")
+
+#### Create summary columns ####
+# based on the keywords defined above, create summary columns for animal size and milk animals
+df_out_head["large_animals"] = df_out_head.apply(
+    lambda x: sum(x.filter(like=keyword).sum() for keyword in large_animal_keywords if 'milk' not in keyword), axis=1
+)
+df_out_head["medium_animals"] = df_out_head.apply(
+    lambda x: sum(x.filter(like=keyword).sum() for keyword in medium_animal_keywords if 'milk' not in keyword), axis=1
+)
+df_out_head["small_animals"] = df_out_head.apply(
+    lambda x: sum(x.filter(like=keyword).sum() for keyword in small_animal_keywords if 'milk' not in keyword), axis=1
+)
+
+# create summary columns for milk animals
+df_out_head["large_milk_animals"] = df_out_head.apply(
+    lambda x: sum(x.filter(like=keyword).sum() for keyword in large_animal_keywords if 'milk' in keyword), axis=1
+)
+df_out_head["medium_milk_animals"] = df_out_head.apply(
+    lambda x: sum(x.filter(like=keyword).sum() for keyword in medium_animal_keywords if 'milk' in keyword), axis=1
+)
+df_out_head["small_milk_animals"] = df_out_head.apply(
+    lambda x: sum(x.filter(like=keyword).sum() for keyword in small_animal_keywords if 'milk' in keyword), axis=1
+)
+
+# summary columns for slaughter
+df_out_slaughter["large_animals_slaughter"] = df_out_slaughter.apply(
+    lambda x: sum(x.filter(like=keyword).sum() for keyword in large_animal_keywords_slaughter), axis=1
+)
+df_out_slaughter["medium_animals_slaughter"] = df_out_slaughter.apply(
+    lambda x: sum(x.filter(like=keyword).sum() for keyword in medium_animal_keywords_slaughter), axis=1
+)
+df_out_slaughter["small_animals_slaughter"] = df_out_slaughter.apply(
+    lambda x: sum(x.filter(like=keyword).sum() for keyword in small_animal_keywords_slaughter), axis=1
+)
+
+
+# merge the head and slaughter dataframes
+df_out = df_out_head.merge(df_out_slaughter.drop(columns=["country"]), on="iso3", how="left")
+
+# export to csv
+df_out.to_csv("FAOSTAT_head_and_slaughter.csv", index=False)
