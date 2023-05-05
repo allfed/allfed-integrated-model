@@ -55,6 +55,10 @@ df = add_alpha_codes_from_ISO(df_import, iso_num_col,new_col_name)
 #find area code iso3 with no match and drop them, for this dataset it's just "China", which is instead split in to China Mainlaind, Hong kong etc.
 df = df.drop(df[df["Area Code (ISO3)"] == "NA"].index)
 
+
+#create fucntion to get headcount dataframe
+def get_headcount_df(df):
+
 # Get list of countries
 countries = list(df[new_col_name].unique())
 country_names = list(df["Area"].unique())
