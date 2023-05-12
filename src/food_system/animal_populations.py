@@ -62,17 +62,17 @@ class AnimalSpecies:
         Object containing the nutrition ratio for the animal type
 
     """
-    def __init__(self, animal_type, population, slaughter, feed_LSU, digestion_type, pregnant=None, starving=None, carb_requirement=None, protein_requirement=None, fat_requirement=None):
+    def __init__(self, animal_type, population, slaughter, feed_LSU, digestion_type, pregnant=None, carb_requirement=-1, protein_requirement=-1, fat_requirement=-1):
             self.animal_type = animal_type
             self.population = [population] # this is a list so that it can be appended to later
             self.slaughter = [slaughter] # this is a list so that it can be appended to later
             self.feed_LSU = feed_LSU
             self.digestion_type = digestion_type
+
             # set by default to 50%, can be changed if species specific data is available
             self.digestion_efficiency = 0.5 # this is the conversion from gross energy to net energy
             # to be set later (but leaving here so it could be set on initialisation)
             self.pregnant = pregnant
-            self.starving = starving
             # not currently used
             self.nutrition_ratio = Food(carb_requirement, fat_requirement, protein_requirement) if carb_requirement and fat_requirement and protein_requirement else None
             if self.nutrition_ratio:
@@ -81,6 +81,13 @@ class AnimalSpecies:
                     fat_units='ratio of fat in diet required',
                     protein_units='ratio of protein in diet required',
                 )
+            if slaughter>0:
+                self.statistical_lifetime = population/slaughter # this is the statistical lifetime of the animal, used to calculate the number of animals slaughtered per month
+
+            self.feed_balance = self.feed_required_per_month_species() # this is the feed required per month for the species
+            self.population_fed = 0
+            self.population_starving = 0
+
             # not currently used, used for meat production information
             self.carcass_weight = None # update to include this in the csv file
             self.offal_percentage = None # update to include this in the csv file
@@ -114,39 +121,69 @@ class AnimalSpecies:
         #     (defaults to billion kcals, thousand tons monthly fat, thousand tons monthly protein)
         # protein and fat is not currently used
         # uses the net energy required per month function and the digestion efficiency
-        return Food(self.net_energy_required_per_month()/self.digestion_efficiency, None, None)
+        return Food(self.net_energy_required_per_month()/self.digestion_efficiency, -1, -1)
     
     def feed_required_per_month_species(self):
         # function to calculate the total feed for this month for the species
         #     (defaults to billion kcals, thousand tons monthly fat, thousand tons monthly protein)
         # protein and fat is not currently used
         # uses the net energy required per month function and the digestion efficiency
-        return Food(self.net_energy_required_per_month()/self.digestion_efficiency * self.population, None, None)
-    # def __repr__(self):
-    #     # function to print the class
-    #     return f"SpeciesCurrentState(animal_type='{self.animal_type}', population={self.population}, slaughter={self.slaughter}, pregnant={self.pregnant}, starving={self.starving}, feed_required={self.feed_required}, nutrition_ratio={self.nutrition_ratio})"
+        return Food(self.net_energy_required_per_month()/self.digestion_efficiency * self.population[-1], -1, -1)
+
     
-    def example_full_feed_usage(self):
-        """
-        NOT USED, JUST EXAMPLE OF HOW TO USE THE FOOD CLASS
-        """
-        # function to calculate the total feed for this month for the species
-        #     (defaults to billion kcals, thousand tons monthly fat, thousand tons monthly protein)
-        kcal_feed_use = self.feed_LSU * self.nutrition_ratio.kcals
-        fat_feed_use = self.feed_LSU * self.nutrition_ratio.fat
-        protein_feed_use = self.feed_LSU * self.nutrition_ratio.protein
 
-        feed_use = Food(kcal_feed_use, fat_feed_use, protein_feed_use)
-        feed_use.set_units(
-                kcals_units = 'billion kcals',
-                fat_units = 'thousand tons',
-                protein_units = 'thousand tons',
-        )
-        return feed_use
+    
+    def feed_the_species(self, food_input):
 
+        # function to feed the species
+        feed_required = self.feed_balance
 
+        if self.feed_balance.kcals == 0:
+            # no food required
+            print('no food required for ' + self.animal_type)
 
-# create function that reads CSV info and populates the classes
+            return food_input
+
+        # if protein and fats are used
+        
+        if self.feed_balance.fat>0 and self.feed_balance.protein>0:
+            # still need more thought on how to deal with this. Units of food aren't fungible neccesarily, can't easily moce macros between
+            if food_input.kcals > self.feed_balance.kcals & food_input.fat > self.feed_balance.fat & food_input.protein > self.feed_balance.protein:
+                # whole population is fed
+                self.population_fed = self.population
+                # update the food object
+                food_input.kcals -= self.feed_balance.kcals
+                food_input.fat -= self.feed_balance.fat
+                food_input.protein -= self.feed_balance.protein
+                self.feed_balance = Food(0,0,0)
+            else:
+                # not enough food to feed the whole population
+                # calculate the number of animals that can be fed
+                self.population_fed = round(food_input.kcals / feed_required.kcals * self.population[-1])
+                # update the food object
+                food_input.kcals = 0
+                food_input.fat = 0
+                food_input.protein = 0
+                self.feed_balance = feed_required - food_input
+        else:
+            # only using kcals
+            if food_input.kcals > self.feed_balance.kcals:
+                # whole population is fed
+                self.population_fed = self.population
+                # update the food object
+                food_input.kcals -= self.feed_balance.kcals
+                self.feed_balance = Food(0,0,0)
+
+            else:
+                # not enough food to feed the whole population
+                # calculate the number of animals that can be fed
+                self.population_fed = round(food_input.kcals / self.feed_balance.kcals * self.population[-1])
+                # update the food object
+                self.feed_balance = self.feed_balance - food_input
+                food_input.kcals = 0
+
+        return food_input
+        
 def read_animal_population_data():
     """
     Read animal population data from CSV file
@@ -208,12 +245,8 @@ def create_animal_objects(df_animal_stock_info, df_animal_nutrition):
 
     Returns
     -------
-    cattle_beef : object
-        Object containing animal population data for beef cattle
-    pigs : object
-        Object containing animal population data for pigs
-    chickens : object
-        Object containing animal population data for chickens
+    animal_objects : list
+        List of animal objects
     """
 
     # use loops to populate all the different species:
@@ -224,15 +257,9 @@ def create_animal_objects(df_animal_stock_info, df_animal_nutrition):
     # create a dict of the objects
     # return the dict
 
-    # count the number of columns containing the word "head"
-    # this is the number of animal types
-    df_animal_stock_info.index.str.contains("head").sum()
-    # count the number of columns containing the word "slaughter"
-    df_animal_stock_info.index.str.contains("slaughter").sum()
-
     # create assertion to check that the number of columns containing the word "head" is equal to the number of columns containing the word "slaughter"
     assert (
-        df_animal_stock_info.index.str.contains("head").sum()
+        (~(df_animal_stock_info.index.str.contains("milk")) * df_animal_stock_info.index.str.contains("head")).sum()
         == df_animal_stock_info.index.str.contains("slaughter").sum()
     )
 
@@ -248,27 +275,29 @@ def create_animal_objects(df_animal_stock_info, df_animal_nutrition):
 
     # loop through the animal types and create objects for each
     for animal_type in animal_types:
-        print(animal_type)
+        
+        # if animal type contains the word "milk" then it is a dairy animal
+        if "milk" in animal_type:
+            slaughter_input = 0
+        else:
+            # remove "meat_" from the animal type
+            slaughter_input = df_animal_stock_info.loc[animal_type.replace("meat_", "") + "_slaughter"]
+
         animal_species = AnimalSpecies(
             animal_type=animal_type,
             population=df_animal_stock_info.loc[animal_type + "_head"],
-            slaughter=df_animal_stock_info.loc[animal_type + "_slaughter"],
+            slaughter=slaughter_input,
             feed_LSU=df_animal_nutrition.loc[animal_type]["LSU"],
             digestion_type=df_animal_nutrition.loc[animal_type]["digestion type"],
         )
         animal_objects[animal_type] = animal_species
 
-
-    # return the list
     return animal_objects
-
-
 
 def food_conversion():
     # convert food to animal feed
 
     return
-
 
 def available_feed():
 
@@ -289,14 +318,13 @@ def available_feed():
     
 
     # create food objects
-    example_food1=Food(10,None,None)
-    example_food2=Food(10,None,None)
+    example_food1=Food(1000,-1,-1)
+    example_food2=Food(100,-1,-1)
 
     # add the food objects together
     feed = example_food1 + example_food2
 
     return feed
-
 
 def available_grass():
 
@@ -315,7 +343,7 @@ def available_grass():
     # convert grass to animal feed
     # units idealy in kcal
     #consider if ME or DE is more appropriate
-    grass=Food(10,None,None)
+    grass=Food(1000,-1,-1)
 
     return grass
 
@@ -329,6 +357,19 @@ def feed_animals(animal_list, available_feed, available_grass):
     This means starting with milk
     """
 
+    # grass to rumiants, milk first
+    # feed to milk animals
+
+    for milk_animal in milk_animals:
+        available_grass = milk_animal.feed_the_species(available_grass)
+    
+    for milk_animal in milk_animals:
+        available_feed = milk_animal.feed_the_species(available_feed)
+
+        ##### TODO ADD REST OF ANIMNAL TYPES TO FEED
+
+    return available_feed, available_grass
+
 
 
 def main(country_code):
@@ -336,37 +377,11 @@ def main(country_code):
     Main function to be called by the user. This function will call the other functions in this file.
     """
 
-    # read animal population data
-    df_animal_stock_info = read_animal_population_data()
-
-    # read animal nutrition data
-    df_animal_nutrition = read_animal_nutrition_data()
-
-    # create animal objects
-    animal_list = create_animal_objects(df_animal_stock_info.loc[country_code], df_animal_nutrition)
-
-    # create available feed object
-    available_feed = available_feed()
-    available_grass = available_grass()
-
-
-    # feed_animals(animal_list, available_feed, available_grass)
-
-
-
-
 # if __name__ == "__main__":
 #     main("USA")
 
 
-
-
-country_code = "USA"
-
-animal_class_instance = AnimalSpecies
-
-
-
+country_code="AUS"
 
 # read animal population data
 df_animal_stock_info = read_animal_population_data()
@@ -374,89 +389,29 @@ df_animal_stock_info = read_animal_population_data()
 # read animal nutrition data
 df_animal_nutrition = read_animal_nutrition_data()
 
+# create animal objects
+animal_list = create_animal_objects(df_animal_stock_info.loc[country_code], df_animal_nutrition)
 
-df_animal_stock_info = df_animal_stock_info.loc[country_code]
+# create available feed object
+feed_MJ_available_this_month = available_feed()
+grass_MJ_available_this_month = available_grass()
 
+animal_list["meat_cattle"].net_energy_required_per_month()
 
+# get list of all ruminants
+ruminants = [animal for animal in animal_list.values() if animal.digestion_type == "ruminant"]
+# get list of milk animals, 
+milk_animals = [animal for animal in animal_list.values() if "milk" in animal.animal_type]
 
-# count the number of columns containing the word "head"
-# but does not contain milk
+# get list of non-ruminants
+non_ruminants = [animal for animal in animal_list.values() if animal.digestion_type == "non-ruminant"]
 
-
-# create assertion to check that the number of columns containing the word "head" is equal to the number of columns containing the word "slaughter"
-assert (
-    (~(df_animal_stock_info.index.str.contains("milk")) * df_animal_stock_info.index.str.contains("head")).sum()
-    == df_animal_stock_info.index.str.contains("slaughter").sum()
-)
-
-# create a list of the animal types (use index not columns, because it is a series that is passed in)
-animal_types = df_animal_stock_info.index[
-    df_animal_stock_info.index.str.contains("head")
-].str.replace("_head", "")
-
-
-# create dict to store the animal objects
-animal_objects = {}
-
-
-# loop through the animal types and create objects for each
-for animal_type in animal_types:
-    # if animal type contains the word "milk" then it is a dairy animal
-    if "milk" in animal_type:
-        slaughter_input = 0
-    else:
-        slaughter_input = df_animal_stock_info.loc[animal_type + "_slaughter"]
-
-    print(animal_type)
-    animal_species = AnimalSpecies(
-        animal_type=animal_type,
-        population=df_animal_stock_info.loc[animal_type + "_head"],
-        slaughter=slaughter_input,
-        feed_LSU=df_animal_nutrition.loc[animal_type]["LSU"],
-        digestion_type=df_animal_nutrition.loc[animal_type]["digestion type"],
-    )
-    animal_objects[animal_type] = animal_species
+# feed the animals
+feed_MJ_available_this_month, grass_MJ_available_this_month = feed_animals(animal_list, feed_MJ_available_this_month, grass_MJ_available_this_month)
 
 
 
 
-
-
-
-
-# # read animal population data
-# df_animal_stock_info = read_animal_population_data()
-
-# # read animal nutrition data
-# df_animal_nutrition = read_animal_nutrition_data()
-
-# just_country = df_animal_stock_info.loc[country_code]
-
-
-
-# get names of animal types
-# animal_types = just_country.columns
-
-# create_animal_objects(df_animal_stock_info.loc[country_code], df_animal_nutrition)
-
-
-# call net_energy_required_per_month function from animal class
-
-
-
-
-# # read animal population data
-# df_animal_stock_info = read_animal_population_data()
-
-# # read animal nutrition data
-# df_animal_nutrition = read_animal_nutrition_data()
-
-# # create animal objects
-# animal_list = create_animal_objects(df_animal_stock_info.loc[country_code], df_animal_nutrition)
-
-# # create available feed object
-
-# animal_list["cattle_beef"].energy_per_month_required()
-
+## At the end of the month, reset the feed balance with the new popluaton and feed required
 
 

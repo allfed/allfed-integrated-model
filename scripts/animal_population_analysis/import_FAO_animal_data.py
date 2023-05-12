@@ -242,7 +242,7 @@ def get_milk_headcount(df):
     ########### START CODES #####################
     sheep = [2291.0]
     cattle = [2211.0]
-    goats = [2292.0]
+    goat = [2292.0]
     camel = [2293.0]
     buffalo = [2212.0]
     ########### END CODES #####################
@@ -264,7 +264,7 @@ def get_milk_headcount(df):
         #small animals, chicken, rabbit, rodents (only in Peru and Bolivia), duck, goose, turkey
         milk_sheep = get_max_from_species(pop_head_for_country, sheep)
         milk_cattle = get_max_from_species(pop_head_for_country, cattle)
-        milk_goats = get_max_from_species(pop_head_for_country, goats)
+        milk_goat = get_max_from_species(pop_head_for_country, goat)
         milk_camel = get_max_from_species(pop_head_for_country, camel)
         milk_buffalo = get_max_from_species(pop_head_for_country, buffalo)
  
@@ -275,7 +275,7 @@ def get_milk_headcount(df):
                         "country": country_name,
                         "milk_sheep_head": milk_sheep,
                         "milk_cattle_head": milk_cattle,
-                        "milk_goats_head": milk_goats,
+                        "milk_goat_head": milk_goat,
                         "milk_camel_head": milk_camel,
                         "milk_buffalo_head": milk_buffalo,
                     }
@@ -433,7 +433,7 @@ df_out_head = df_out_head.merge(df_out_milking.drop(columns=["country"]), on="is
 # this is because the milk headcounts are already included in the total headcounts
 # rename the columns to meat_cattle_head etc.
 df_out_head = subtract_milk_from_head(df_out_head, "sheep_head", "milk_sheep_head")
-df_out_head = subtract_milk_from_head(df_out_head, "goat_head", "milk_goats_head")
+df_out_head = subtract_milk_from_head(df_out_head, "goat_head", "milk_goat_head")
 df_out_head = subtract_milk_from_head(df_out_head, "camel_head", "milk_camel_head")
 df_out_head = subtract_milk_from_head(df_out_head, "buffalo_head", "milk_buffalo_head")
 df_out_head = subtract_milk_from_head(df_out_head, "cattle_head", "milk_cattle_head")
