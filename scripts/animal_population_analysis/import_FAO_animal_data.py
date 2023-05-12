@@ -331,6 +331,66 @@ def add_alpha_codes_from_ISO(df, incol,outcol):
     df[outcol] = countries
     return df
 
+def add_summary_columns(df_out_head, df_out_slaughter):
+
+
+
+    #### HARDCODE DEFINTION OF ANIMAL SIZE ####
+
+    #animal size keywords
+    # milk and meat are include in these keywords, thjey are filtered out later to determine correct headcount
+    # removing animals from these keywords will remove them from the head and slaughter counts
+    # if you remove the milk animals, they will be considered as meat animals
+    # if you remove the meat animals, it will break the code
+    small_animal_keywords = ["chicken" , "rabbit", "duck", "goose", "turkey", "other_rodents"]
+    medium_animal_keywords = ["pig", "meat_goat", "meat_sheep", "camelids", "milk_goat", "milk_sheep"]
+    large_animal_keywords = ["meat_cattle", "meat_camel","meat_buffalo","milk_cattle", "milk_camel", "milk_buffalo"] #, "mule", "horse", "asses"]
+    # hardcode exclusion of horse like animals from meat (even though they are used for meat in some countries?)
+    # it is difficult to distinguish between horse like animals used for meat and those used for work, so the slaiughter 
+    # so the slaughter numbers are not a reliable indicator of meat production, and inclusion would skey the "large animal" category
+    small_animal_keywords_slaughter = ["chicken" , "rabbit", "duck", "goose", "turkey", "other_rodents"]
+    medium_animal_keywords_slaughter = ["pig", "goat", "sheep", "camelids"]
+    large_animal_keywords_slaughter = ["cattle", "camel","buffalo"] #, "mule", "horse", "asses"]
+
+
+
+    #### Create summary columns ####
+    # based on the keywords defined above, create summary columns for animal size and milk animals
+    df_out_head["large_animals"] = df_out_head.apply(
+        lambda x: sum(x.filter(like=keyword).sum() for keyword in large_animal_keywords if 'milk' not in keyword), axis=1
+    )
+    df_out_head["medium_animals"] = df_out_head.apply(
+        lambda x: sum(x.filter(like=keyword).sum() for keyword in medium_animal_keywords if 'milk' not in keyword), axis=1
+    )
+    df_out_head["small_animals"] = df_out_head.apply(
+        lambda x: sum(x.filter(like=keyword).sum() for keyword in small_animal_keywords if 'milk' not in keyword), axis=1
+    )
+
+    # create summary columns for milk animals
+    df_out_head["large_milk_animals"] = df_out_head.apply(
+        lambda x: sum(x.filter(like=keyword).sum() for keyword in large_animal_keywords if 'milk' in keyword), axis=1
+    )
+    df_out_head["medium_milk_animals"] = df_out_head.apply(
+        lambda x: sum(x.filter(like=keyword).sum() for keyword in medium_animal_keywords if 'milk' in keyword), axis=1
+    )
+    df_out_head["small_milk_animals"] = df_out_head.apply(
+        lambda x: sum(x.filter(like=keyword).sum() for keyword in small_animal_keywords if 'milk' in keyword), axis=1
+    )
+
+    # summary columns for slaughter
+    df_out_slaughter["large_animals_slaughter"] = df_out_slaughter.apply(
+        lambda x: sum(x.filter(like=keyword).sum() for keyword in large_animal_keywords_slaughter), axis=1
+    )
+    df_out_slaughter["medium_animals_slaughter"] = df_out_slaughter.apply(
+        lambda x: sum(x.filter(like=keyword).sum() for keyword in medium_animal_keywords_slaughter), axis=1
+    )
+    df_out_slaughter["small_animals_slaughter"] = df_out_slaughter.apply(
+        lambda x: sum(x.filter(like=keyword).sum() for keyword in small_animal_keywords_slaughter), axis=1
+    )
+
+    return df_out_head, df_out_slaughter
+
+
 # Import CSV to dataframes
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath(".").resolve()
@@ -341,23 +401,8 @@ df_importhead = pd.read_csv(
     DATA_PATH.joinpath("FAOSTAT_data_en_4-14-2023_head_counts.csv") # change this to the file you want to import
 )
 
-
-#### HARDCODE DEFINTION OF ANIMAL SIZE ####
-
-#animal size keywords
-# milk and meat are include in these keywords, thjey are filtered out later to determine correct headcount
-# removing animals from these keywords will remove them from the head and slaughter counts
-# if you remove the milk animals, they will be considered as meat animals
-# if you remove the meat animals, it will break the code
-small_animal_keywords = ["chicken" , "rabbit", "duck", "goose", "turkey", "other_rodents"]
-medium_animal_keywords = ["pig", "meat_goat", "meat_sheep", "camelids", "milk_goat", "milk_sheep"]
-large_animal_keywords = ["meat_cattle", "meat_camel","meat_buffalo","milk_cattle", "milk_camel", "milk_buffalo"] #, "mule", "horse", "asses"]
-# hardcode exclusion of horse like animals from meat (even though they are used for meat in some countries?)
-# it is difficult to distinguish between horse like animals used for meat and those used for work, so the slaiughter 
-# so the slaughter numbers are not a reliable indicator of meat production, and inclusion would skey the "large animal" category
-small_animal_keywords_slaughter = ["chicken" , "rabbit", "duck", "goose", "turkey", "other_rodents"]
-medium_animal_keywords_slaughter = ["pig", "goat", "sheep", "camelids"]
-large_animal_keywords_slaughter = ["cattle", "camel","buffalo"] #, "mule", "horse", "asses"]
+## OPTION, DO SUMMARY COLUMNS?
+summary_cols = False
 
 
 # Add alpha3 codes to dataframe
@@ -393,40 +438,9 @@ df_out_head = subtract_milk_from_head(df_out_head, "camel_head", "milk_camel_hea
 df_out_head = subtract_milk_from_head(df_out_head, "buffalo_head", "milk_buffalo_head")
 df_out_head = subtract_milk_from_head(df_out_head, "cattle_head", "milk_cattle_head")
 
-
-#### Create summary columns ####
-# based on the keywords defined above, create summary columns for animal size and milk animals
-df_out_head["large_animals"] = df_out_head.apply(
-    lambda x: sum(x.filter(like=keyword).sum() for keyword in large_animal_keywords if 'milk' not in keyword), axis=1
-)
-df_out_head["medium_animals"] = df_out_head.apply(
-    lambda x: sum(x.filter(like=keyword).sum() for keyword in medium_animal_keywords if 'milk' not in keyword), axis=1
-)
-df_out_head["small_animals"] = df_out_head.apply(
-    lambda x: sum(x.filter(like=keyword).sum() for keyword in small_animal_keywords if 'milk' not in keyword), axis=1
-)
-
-# create summary columns for milk animals
-df_out_head["large_milk_animals"] = df_out_head.apply(
-    lambda x: sum(x.filter(like=keyword).sum() for keyword in large_animal_keywords if 'milk' in keyword), axis=1
-)
-df_out_head["medium_milk_animals"] = df_out_head.apply(
-    lambda x: sum(x.filter(like=keyword).sum() for keyword in medium_animal_keywords if 'milk' in keyword), axis=1
-)
-df_out_head["small_milk_animals"] = df_out_head.apply(
-    lambda x: sum(x.filter(like=keyword).sum() for keyword in small_animal_keywords if 'milk' in keyword), axis=1
-)
-
-# summary columns for slaughter
-df_out_slaughter["large_animals_slaughter"] = df_out_slaughter.apply(
-    lambda x: sum(x.filter(like=keyword).sum() for keyword in large_animal_keywords_slaughter), axis=1
-)
-df_out_slaughter["medium_animals_slaughter"] = df_out_slaughter.apply(
-    lambda x: sum(x.filter(like=keyword).sum() for keyword in medium_animal_keywords_slaughter), axis=1
-)
-df_out_slaughter["small_animals_slaughter"] = df_out_slaughter.apply(
-    lambda x: sum(x.filter(like=keyword).sum() for keyword in small_animal_keywords_slaughter), axis=1
-)
+# create summary columns before merging if required. Consider remvoing totally and movig to main model
+if summary_cols:
+    df_out_head, df_out_slaughter = add_summary_columns(df_out_head, df_out_slaughter)
 
 # merge the head and slaughter dataframes
 df_out = df_out_head.merge(df_out_slaughter.drop(columns=["country"]), on="iso3", how="left")
