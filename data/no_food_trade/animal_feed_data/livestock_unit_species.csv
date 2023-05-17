@@ -1,22 +1,22 @@
-animal,digestion type,LSU,source,notes,average bodyweight,source,carcass percent,source,carcass kg,offals edible percent,offals kg,fat percent,fat kg
-chicken,monogastric,0.007,EU,,2.072,"TCF USA, at slaughter",78%,TCF trees,1.61616,0.00%,0,0.00%,0
-rabbit,hindgut fermenter,0.014,EU,,,,0%,,0,,0,,0
-duck,monogastric,0.02,EU,,2.162,"TCF USA, at slaughter",0%,TCF USA,0,,0,,0
-goose,monogastric,0.01,EU,,,,0%,,0,,0,,0
-turkey,monogastric,0.03,EU,,10.296,"TCF USA, at slaughter",77%,TCF USA,7.92792,,0,,0
-other_rodents,hindgut fermenter,0.02,EU,,,,0%,,0,,0,,0
-pig,monogastric,0.02,copied from rabbits,,117,"TCF USA, at slaughter",76%,TCF trees,88.92,4.00%,4.68,6.00%,7.02
-meat_goat,ruminant,0.3,EU,,,,0%,,0,,0,,0
-meat_sheep,ruminant,0.1,EU,,59,"TCF USA, at slaughter",50%,TCF trees,29.5,8.00%,4.72,3.00%,1.77
-camelids,ruminant,0.1,EU,,,,0%,,0,,0,,0
-meat_cattle,ruminant,0.8,EU,"defined at different stages of growth, this is taken as a 'generalised/approximated' value",539,"TCF USA, at slaughter",52%,TCF trees,280.28,7.00%,37.73,3.00%,16.17
-meat_camel,ruminant,0.8,EU,,,,0%,,0,,0,,0
-meat_buffalo,ruminant,0.85,Interpolated from FAO,,,,0%,,0,,0,,0
-mule,hindgut fermenter,0.8,EU,,,,0%,,0,,0,,0
-horse,hindgut fermenter,0.8,EU,,500,"TCF USA, at slaughter",50%,TCF USA,250,,0,,0
-asses,hindgut fermenter,0.8,EU,,,,0%,,0,,0,,0
-milk_sheep,ruminant,0.125,Estimated by 25% increase on meat animal,,,,0%,,0,,0,,0
-milk_cattle,ruminant,1,EU,,,,0%,,0,,0,,0
-milk_goat,ruminant,0.375,Estimated by 25% increase on meat animal,,,,0%,,0,,0,,0
-milk_camel,ruminant,1,Estimated by 25% increase on meat animal,,,,0%,,0,,0,,0
-milk_buffalo,ruminant,1.0625,Estimated by 25% increase on meat animal,,,,0%,,0,,0,,0
+animal,digestion type,LSU,source,notes,average bodyweight,source,carcass percent,source,carcass kg,offals edible percent,offals kg,fat percent,fat kg,approximate feed conversion
+chicken,monogastric,0.007,EU,,2.072,"TCF USA, at slaughter",78%,TCF trees,1.61616,0.00%,0,0.00%,0,2
+rabbit,hindgut fermenter,0.014,EU,,,,0%,,0,,0,,0,3.5
+duck,monogastric,0.02,EU,,2.162,"TCF USA, at slaughter",0%,TCF USA,0,,0,,0,3
+goose,monogastric,0.01,EU,,,,0%,,0,,0,,0,3
+turkey,monogastric,0.03,EU,,10.296,"TCF USA, at slaughter",77%,TCF USA,7.92792,,0,,0,3
+other_rodents,hindgut fermenter,0.02,EU,,,,0%,,0,,0,,0,5
+pig,monogastric,0.02,copied from rabbits,,117,"TCF USA, at slaughter",76%,TCF trees,88.92,4.00%,4.68,6.00%,7.02,3
+meat_goat,ruminant,0.3,EU,,,,0%,,0,,0,,0,5
+meat_sheep,ruminant,0.1,EU,,59,"TCF USA, at slaughter",50%,TCF trees,29.5,8.00%,4.72,3.00%,1.77,5
+camelids,ruminant,0.1,EU,,,,0%,,0,,0,,0,5
+meat_cattle,ruminant,0.8,EU,"defined at different stages of growth, this is taken as a 'generalised/approximated' value",539,"TCF USA, at slaughter",52%,TCF trees,280.28,7.00%,37.73,3.00%,16.17,8
+meat_camel,ruminant,0.8,EU,,,,0%,,0,,0,,0,8
+meat_buffalo,ruminant,0.85,Interpolated from FAO,,,,0%,,0,,0,,0,8
+mule,hindgut fermenter,0.8,EU,,,,0%,,0,,0,,0,6.5
+horse,hindgut fermenter,0.8,EU,,500,"TCF USA, at slaughter",50%,TCF USA,250,,0,,0,8
+asses,hindgut fermenter,0.8,EU,,,,0%,,0,,0,,0,8
+milk_sheep,ruminant,0.125,Estimated by 25% increase on meat animal,,,,0%,,0,,0,,0,.4
+milk_cattle,ruminant,1,EU,,,,0%,,0,,0,,0,.1
+milk_goat,ruminant,0.375,Estimated by 25% increase on meat animal,,,,0%,,0,,0,,0,.3
+milk_camel,ruminant,1,Estimated by 25% increase on meat animal,,,,0%,,0,,0,,0,.5
+milk_buffalo,ruminant,1.0625,Estimated by 25% increase on meat animal,,,,0%,,0,,0,,0,.2
