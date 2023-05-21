@@ -153,7 +153,7 @@ def run_ARG_net_nuclear_winter_reduced_feed_waste():
     this_simulation["protein"] = "not_required"
     this_simulation["nutrition"] = "catastrophe"
     this_simulation["buffer"] = "zero"
-    this_simulation["shutoff"] = "reduce_breeding_USA"
+    this_simulation["shutoff"] = "reduce_breeding"
     this_simulation["cull"] = "do_eat_culled"
     this_simulation["meat_strategy"] = "efficient_meat_strategy"
 
@@ -197,7 +197,7 @@ def run_ARG_net_nuclear_winter_reduced_feed_waste_resilient():
     this_simulation["protein"] = "not_required"
     this_simulation["nutrition"] = "catastrophe"
     this_simulation["buffer"] = "zero"
-    this_simulation["shutoff"] = "reduce_breeding_USA"
+    this_simulation["shutoff"] = "reduce_breeding"
     this_simulation["cull"] = "do_eat_culled"
     this_simulation["meat_strategy"] = "efficient_meat_strategy"
 
@@ -243,7 +243,7 @@ def run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area():
     this_simulation["protein"] = "not_required"
     this_simulation["nutrition"] = "catastrophe"
     this_simulation["buffer"] = "zero"
-    this_simulation["shutoff"] = "reduce_breeding_USA"
+    this_simulation["shutoff"] = "reduce_breeding"
     this_simulation["cull"] = "do_eat_culled"
     this_simulation["meat_strategy"] = "efficient_meat_strategy"
 
@@ -278,9 +278,9 @@ def main(args):
     # run_ARG_net_baseline()
     # run_ARG_gross_baseline()
     # run_ARG_net_nuclear_winter()
-    # run_ARG_net_nuclear_winter_reduced_feed_waste()
+    run_ARG_net_nuclear_winter_reduced_feed_waste()
     # run_ARG_net_nuclear_winter_reduced_feed_waste_resilient()
-    run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area()
+    # run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area()
 
 
 if __name__ == "__main__":

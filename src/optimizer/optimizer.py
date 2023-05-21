@@ -82,7 +82,7 @@ class Optimizer:
             [model, variables, maximize_constraints] = self.add_objectives_to_model(
                 model, variables, month, maximize_constraints
             )
-        PRINT_PULP_MESSAGES = True
+        PRINT_PULP_MESSAGES = False
         model += variables["objective_function"]
 
         status = model.solve(
@@ -218,43 +218,66 @@ class Optimizer:
         model_max_to_humans = model
 
         # Create the model to optimize
-        model_max_to_humans.sense = LpMinimize
+        model_max_to_humans.sense = LpMaximize
         variables["objective_function_best_to_humans"] = LpVariable(
             name="TO_HUMANS_OBJECTIVE", lowBound=0
         )
-        for month in range(0, NMONTHS):
-            maximizer_string = "Crops_And_Stored_Food_Optimization_Month_" + str(month)
 
-            model_max_to_humans += (
-                variables["objective_function_best_to_humans"]
-                <= (
-                    variables["crops_food_to_humans"][month]
-                    + variables["stored_food_to_humans"][month]
-                ),
-                maximizer_string,
-            )
+        maximizer_string = "Crops_And_Stored_Food_Optimization_Averaged"
+        total_feed_biofuel_variable = 0
+        for month in range(0, NMONTHS):
+
+            total_feed_biofuel_variable += (
+                variables["methane_scp_feed"][month]
+                + variables["methane_scp_biofuel"][month]
+                + variables["cellulosic_sugar_feed"][month]
+                + variables["cellulosic_sugar_biofuel"][month]
+                + variables["seaweed_feed"][month]
+                + variables["seaweed_biofuel"][month]
+            ) / NMONTHS
+
+        model_max_to_humans += (
+            variables["objective_function_best_to_humans"]
+            <= total_feed_biofuel_variable,
+            maximizer_string,
+        )
 
         model_max_to_humans.setObjective(variables["objective_function_best_to_humans"])
 
         status = model_max_to_humans.solve(
             pulp.PULP_CBC_CMD(gapRel=0.0001, msg=True, fracGap=0.001)
         )
-        model_max_to_humans
+
+        print("model_max_to_humans")
+        print(model_max_to_humans)
+
         assert status == 1, "ERROR: OPTIMIZATION FAILED!"
 
         # here we're constraining the previous optimization to the previously determined optimal value
-
+        total_feed_biofuel_variable = 0
+        maximizer_string = "Crops_And_Stored_Food_Optimization_Averaged_Objective"
         for month in range(0, NMONTHS):
-            model_max_to_humans += (
-                variables["crops_food_to_humans"][month]
-                + variables["stored_food_to_humans"][month]
-                >= (
-                    variables["crops_food_to_humans"][month].varValue
-                    + variables["stored_food_to_humans"][month].varValue
-                )
-                * 0.99999,
-                "Old_Objective_Best_To_Humans_Month" + str(month),
-            )
+            total_feed_biofuel_variable += (
+                variables["methane_scp_feed"][month]
+                + variables["methane_scp_biofuel"][month]
+                + variables["cellulosic_sugar_feed"][month]
+                + variables["cellulosic_sugar_biofuel"][month]
+                + variables["seaweed_feed"][month]
+                + variables["seaweed_biofuel"][month]
+            ) / NMONTHS >= (
+                variables["methane_scp_feed"][month].varValue
+                + variables["methane_scp_biofuel"][month].varValue
+                + variables["cellulosic_sugar_feed"][month].varValue
+                + variables["cellulosic_sugar_biofuel"][month].varValue
+                + variables["seaweed_feed"][month].varValue
+                + variables["seaweed_biofuel"][month].varValue
+            ) / NMONTHS * 0.99999
+
+        model_max_to_humans += (
+            variables["objective_function_best_to_humans"]
+            <= total_feed_biofuel_variable,
+            maximizer_string,
+        )
 
         return model_max_to_humans, variables
 
@@ -287,7 +310,7 @@ class Optimizer:
 
                 model_smoothing += (
                     variables["objective_function_smoothing"]
-                    >= variables["culled_meat_eaten"][month],
+                    >= variables["culled_meat_eaten"][month] * 0.9999,
                     # - variables["culled_meat_eaten"][month - 1],
                     maximizer_string,
                 )
@@ -297,7 +320,7 @@ class Optimizer:
                 )
                 model_smoothing += (
                     variables["objective_function_smoothing"]
-                    >= -variables["culled_meat_eaten"][month],
+                    >= -variables["culled_meat_eaten"][month] * 0.9999,
                     maximizer_string,
                 )
 
@@ -309,9 +332,11 @@ class Optimizer:
 
                 model_smoothing += (
                     variables["objective_function_smoothing"]
-                    >= variables["stored_food_to_humans"][month],
+                    >= variables["stored_food_to_humans"][month] * 0.99999,
                     maximizer_string,
                 )
+        print("model_smoothing")
+        print(model_smoothing)
 
         model_smoothing.setObjective(variables["objective_function_smoothing"])
 
