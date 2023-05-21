@@ -22,15 +22,31 @@ class MethaneSCP:
         self.SCP_FRAC_PROTEIN = 0.650
         self.SCP_FRAC_FAT = 0.09
 
+        self.SCP_KCALS_TO_FAT_CONVERSION = (
+            1e9 * self.SCP_FRAC_FAT / self.SCP_KCALS_PER_KG / 1e6
+        )
+        self.SCP_KCALS_TO_PROTEIN_CONVERSION = (
+            1e9 * self.SCP_FRAC_PROTEIN / self.SCP_KCALS_PER_KG / 1e6
+        )
+
         # feed can't be more than this fraction in terms of calories in any month
         self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP = 0.3
 
-        self.MAX_FRACTION_FEED_CONSUMED_AS_SCP = 0.3
-        self.MAX_FRACTION_BIOFUEL_CONSUMED_AS_SCP = 1
+        self.MAX_METHANE_SCP_AS_PERCENT_KCALS_FEED = 30
+        self.MAX_METHANE_SCP_AS_PERCENT_KCALS_BIOFUEL = 100
+
+        # billion kcals a month for country in question
+        self.COUNTRY_MONTHLY_NEEDS = (
+            constants_for_params["POP"] * Food.conversions.kcals_monthly / 1e9
+        )
 
         # billion kcals a month for 100% population (7.8 billion people).
         self.GLOBAL_MONTHLY_NEEDS = (
             constants_for_params["GLOBAL_POP"] * Food.conversions.kcals_monthly / 1e9
+        )
+
+        self.MAX_METHANE_SCP_HUMANS_CAN_CONSUME_MONTHLY = (
+            self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP * self.COUNTRY_MONTHLY_NEEDS
         )
 
         # apply sugar waste also to methane scp, for lack of better baseline

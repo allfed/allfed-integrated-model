@@ -43,7 +43,7 @@ class ScenarioRunner:
             feed_biofuels,
         ) = self.compute_parameters(constants_for_params, scenarios_loader)
 
-        interpreter.set_feed(feed_biofuels)
+        # interpreter.set_feed(feed_biofuels)
 
         # actually make PuLP optimize effective people fed based on all the constants
         # we've determined
@@ -62,7 +62,9 @@ class ScenarioRunner:
         # be removed from extracted_results
 
         #  interpret the results, nicer for plotting, reporting, and printing results
-        interpreted_results = interpreter.interpret_results(extracted_results)
+        interpreted_results = interpreter.interpret_results(
+            extracted_results, time_consts
+        )
 
         # ensure no errors were made in the extraction and interpretation, or if the
         # optimizer did not correctly satisfy constraints within a reasonable margin
@@ -184,14 +186,12 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.set_continued_feed_biofuels(
                 constants_for_params
             )
-        elif scenario_option["shutoff"] == "reduce_breeding_USA":
-            constants_for_params = scenario_loader.reduce_breeding_USA(
-                constants_for_params
-            )
+        elif scenario_option["shutoff"] == "reduce_breeding":
+            constants_for_params = scenario_loader.reduce_breeding(constants_for_params)
         else:
             scenario_is_correct = False
 
-            assert scenario_is_correct, """You must specify 'shutoff' key as immediate,short_delayed_shutoff,
+            assert scenario_is_correct, """You must specify 'shutoff' key as immediate,short_delayed_shutoff,reduce_breeding,
             long_delayed_shutoff,or continued"""
 
         # WASTE
@@ -433,7 +433,7 @@ class ScenarioRunner:
                     constants_for_params
                 )
             )
-        elif scenario_option["meat_strategy"] == "reduce_breeding_USA":
+        elif scenario_option["meat_strategy"] == "reduce_breeding":
             constants_for_params = scenario_loader.set_feed_based_on_livestock_levels(
                 constants_for_params
             )

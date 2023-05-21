@@ -6,6 +6,7 @@
 ###############################################################################
 """
 import numpy as np
+from src.food_system.food import Food
 
 
 class Seafood:
@@ -42,7 +43,7 @@ class Seafood:
         )
 
     # includes all seafood (except seaweed), not just fish
-    def get_seafood_production(self, constants_for_params):
+    def set_seafood_production(self, constants_for_params):
         # Based on Xia et al. (2021): Global Famine after Nuclear War
 
         FISH_PERCENT_EACH_MONTH_LONG = constants_for_params["FISH_PERCENT_MONTHLY"]
@@ -62,8 +63,11 @@ class Seafood:
             production_protein_fish_per_month = [0] * len(FISH_PERCENT_EACH_MONTH)
             production_fat_fish_per_month = [0] * len(FISH_PERCENT_EACH_MONTH)
 
-        return (
-            np.array(production_kcals_fish_per_month),
-            np.array(production_fat_fish_per_month),
-            np.array(production_protein_fish_per_month),
+        self.to_humans = Food(
+            kcals=np.array(production_kcals_fish_per_month),
+            fat=np.array(production_fat_fish_per_month),
+            protein=np.array(production_protein_fish_per_month),
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
         )

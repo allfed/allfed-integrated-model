@@ -302,6 +302,20 @@ class UnitConversions:
                 protein_units="billion people fed per month",
             )
 
+        if (
+            self.kcals_units == "billion kcals each month"
+            and self.fat_units == "thousand tons each month"
+            and self.protein_units == "thousand tons each month"
+        ):
+            return Food(
+                kcals=self.kcals * billion_kcal_conversion,
+                fat=self.fat * thou_tons_fat_conversion,
+                protein=self.protein * thou_tons_protein_conversion,
+                kcals_units="billion people fed each month",
+                fat_units="billion people fed each month",
+                protein_units="billion people fed each month",
+            )
+
         percent_people_kcal_conversion = conversions.population / 1e9 / 100
         percent_people_fat_conversion = conversions.population / 1e9 / 100
         percent_people_protein_conversion = conversions.population / 1e9 / 100
@@ -320,17 +334,17 @@ class UnitConversions:
                 protein_units="billion people fed per month",
             )
         if (
-            self.kcals_units == "percent people fed per month"
-            and self.fat_units == "percent people fed per month"
-            and self.protein_units == "percent people fed per month"
+            self.kcals_units == "percent people fed each month"
+            and self.fat_units == "percent people fed each month"
+            and self.protein_units == "percent people fed each month"
         ):
             return Food(
                 kcals=self.kcals * percent_people_kcal_conversion,
                 fat=self.fat * percent_people_fat_conversion,
                 protein=self.protein * percent_people_protein_conversion,
-                kcals_units="billion people fed per month",
-                fat_units="billion people fed per month",
-                protein_units="billion people fed per month",
+                kcals_units="billion people fed each month",
+                fat_units="billion people fed each month",
+                protein_units="billion people fed each month",
             )
         else:
             print("Error: conversion from these units not known")

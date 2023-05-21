@@ -63,9 +63,6 @@ class OutdoorCrops:
                 "POWER_LAW_IMPROVEMENT"
             ]
 
-            self.OG_ROTATION_FRACTION_KCALS = 1
-
-            self.KCAL_RATIO_ROTATION = 1
             self.FAT_ROTATION_RATIO = constants_for_params["ROTATION_IMPROVEMENTS"][
                 "FAT_RATIO"
             ]
@@ -84,11 +81,9 @@ class OutdoorCrops:
             self.PROTEIN_RATIO_ROTATION = self.OG_ROTATION_FRACTION_PROTEIN
         else:
             self.OG_KCAL_EXPONENT = 1
-            self.OG_ROTATION_FRACTION_KCALS = 1
             self.OG_ROTATION_FRACTION_FAT = self.OG_FRACTION_FAT
             self.OG_ROTATION_FRACTION_PROTEIN = self.OG_FRACTION_PROTEIN
 
-            self.KCAL_RATIO_ROTATION = 1
             self.FAT_RATIO_ROTATION = self.OG_FRACTION_FAT
             self.PROTEIN_RATIO_ROTATION = self.OG_FRACTION_PROTEIN
 

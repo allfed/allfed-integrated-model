@@ -25,15 +25,9 @@ class Interpreter:
     """
 
     def __init__(self):
-        self.show_feed_biofuels = (
-            False  # until set to true, this will not show the feed or biofuels
-        )
+        pass
 
-    def set_feed(self, feed_and_biofuels):
-        self.show_feed_biofuels = True
-        self.feed_and_biofuels = feed_and_biofuels
-
-    def interpret_results(self, extracted_results):
+    def interpret_results(self, extracted_results, time_consts):
         """
         This function takes the raw output of the optimizer food categories and total
         people fed in list form, and converts the naive people fed which includes
@@ -53,6 +47,20 @@ class Interpreter:
 
         self.constants = extracted_results.constants
         self.assign_time_months_middle(self.constants["NMONTHS"])
+        self.nonhuman_consumption = extracted_results.nonhuman_consumption
+        # nonhuman consumption in units percent people fed
+        self.set_feed_and_biofuels(
+            extracted_results.seaweed_biofuel,
+            extracted_results.scp_biofuel,
+            extracted_results.cell_sugar_biofuel,
+            extracted_results.stored_food_biofuel,
+            extracted_results.outdoor_crops_biofuel,
+            extracted_results.seaweed_feed,
+            extracted_results.scp_feed,
+            extracted_results.cell_sugar_feed,
+            extracted_results.stored_food_feed,
+            extracted_results.outdoor_crops_feed,
+        )
 
         self.assign_interpreted_properties(extracted_results)
 
@@ -112,15 +120,20 @@ class Interpreter:
         return self
 
     def assign_percent_fed_from_extractor(self, extracted_results):
-        self.stored_food = extracted_results.stored_food.in_units_percent_fed()
 
-        self.outdoor_crops = extracted_results.outdoor_crops.in_units_percent_fed()
+        self.stored_food = (
+            extracted_results.stored_food_to_humans.in_units_percent_fed()
+        )
 
-        self.seaweed = extracted_results.seaweed.in_units_percent_fed()
+        self.outdoor_crops = (
+            extracted_results.outdoor_crops_to_humans.in_units_percent_fed()
+        )
 
-        self.cell_sugar = extracted_results.cell_sugar.in_units_percent_fed()
+        self.seaweed = extracted_results.seaweed_to_humans.in_units_percent_fed()
 
-        self.scp = extracted_results.scp.in_units_percent_fed()
+        self.cell_sugar = extracted_results.cell_sugar_to_humans.in_units_percent_fed()
+
+        self.scp = extracted_results.scp_to_humans.in_units_percent_fed()
 
         self.greenhouse = extracted_results.greenhouse.in_units_percent_fed()
 
@@ -145,20 +158,22 @@ class Interpreter:
         )
 
     def assign_kcals_equivalent_from_extractor(self, extracted_results):
-        self.stored_food_kcals_equivalent = self.stored_food.in_units_kcals_equivalent()
 
-        self.outdoor_crops_kcals_equivalent = (
-            self.outdoor_crops.in_units_kcals_equivalent()
+        self.stored_food_kcals_equivalent = (
+            extracted_results.stored_food_to_humans.in_units_kcals_equivalent()
         )
 
         self.seaweed_kcals_equivalent = (
-            extracted_results.seaweed.in_units_kcals_equivalent()
-        )
-        self.cell_sugar_kcals_equivalent = (
-            extracted_results.cell_sugar.in_units_kcals_equivalent()
+            extracted_results.seaweed_to_humans.in_units_kcals_equivalent()
         )
 
-        self.scp_kcals_equivalent = extracted_results.scp.in_units_kcals_equivalent()
+        self.cell_sugar_kcals_equivalent = (
+            extracted_results.cell_sugar_to_humans.in_units_kcals_equivalent()
+        )
+
+        self.scp_kcals_equivalent = (
+            extracted_results.scp_to_humans.in_units_kcals_equivalent()
+        )
 
         self.greenhouse_kcals_equivalent = (
             extracted_results.greenhouse.in_units_kcals_equivalent()
@@ -183,11 +198,29 @@ class Interpreter:
         )
 
         self.immediate_outdoor_crops_kcals_equivalent = (
-            self.immediate_outdoor_crops.in_units_kcals_equivalent()
+            extracted_results.immediate_outdoor_crops.in_units_kcals_equivalent()
         )
 
         self.new_stored_outdoor_crops_kcals_equivalent = (
-            self.new_stored_outdoor_crops.in_units_kcals_equivalent()
+            extracted_results.new_stored_outdoor_crops.in_units_kcals_equivalent()
+        )
+
+    def set_to_humans_properties_kcals_equivalent(self, extracted_results):
+
+        self.stored_food_to_humans_kcals_equivalent = (
+            self.stored_food_to_humans.in_units_kcals_equivalent()
+        )
+
+        self.outdoor_crops_to_humans_kcals_equivalent = (
+            self.outdoor_crops_to_humans.in_units_kcals_equivalent()
+        )
+
+        self.immediate_outdoor_crops_to_humans_kcals_equivalent = (
+            self.immediate_outdoor_crops_to_humans.in_units_kcals_equivalent()
+        )
+
+        self.new_stored_outdoor_crops_to_humans_kcals_equivalent = (
+            self.new_stored_outdoor_crops_to_humans.in_units_kcals_equivalent()
         )
 
     def assign_time_months_middle(self, NMONTHS):
@@ -196,24 +229,17 @@ class Interpreter:
             self.time_months_middle.append(month + 0.5)
 
     def assign_interpreted_properties(self, extracted_results):
+
         humans_fed_sum = self.get_sum_by_adding_to_humans()
 
         (
             self.percent_people_fed,
             self.constraining_nutrient,
         ) = self.get_percent_people_fed(humans_fed_sum)
-
         # rounding errors can be introduced by the optimizer. We correct them here.
         # ... at least the ones that we can identify.
         # We also round everything to within 0.1% of its value,
         # in terms of % people fed.
-        (
-            self.stored_food,
-            self.outdoor_crops,
-            self.immediate_outdoor_crops,
-            self.new_stored_outdoor_crops,
-            self.seaweed_rounded,
-        ) = self.correct_and_validate_rounding_errors()
 
         self.excess_feed = extracted_results.excess_feed
 
@@ -244,7 +270,6 @@ class Interpreter:
     def get_sum_by_adding_to_humans(self):
         """
         sum the resulting nutrients from the extracted_results
-
         """
 
         to_humans_fed_sum = (
@@ -285,6 +310,7 @@ class Interpreter:
 
         PRINT_FED = False
         if PRINT_FED:
+
             print("Nutrients with constraining values are: " + str(min_nutrient))
             print(
                 "Estimated percent people fed is "
@@ -406,6 +432,121 @@ class Interpreter:
         # kcals per month, units percent
         return excess_per_month
 
+    def correct_and_validate_rounding_errors(self):
+        """
+        any round error we might expect to be very small and easily fixable is corrected
+        here. "small" is with respect to percent people fed
+
+        Note: outdoor_crops_to_humans, stored_food, and seaweed are the only actual outputs of
+              the optimizer!
+        """
+        assert (
+            self.stored_food.NMONTHS
+            == self.outdoor_crops.NMONTHS
+            == self.immediate_outdoor_crops.NMONTHS
+            == self.new_stored_outdoor_crops.NMONTHS
+            == self.seaweed.NMONTHS
+        )
+
+        assert self.stored_food.is_units_percent()
+        assert self.outdoor_crops.is_units_percent()
+        assert self.immediate_outdoor_crops.is_units_percent()
+        assert self.new_stored_outdoor_crops.is_units_percent()
+        assert self.seaweed.is_units_percent()
+
+        stored_food_rounded = self.stored_food.get_rounded_to_decimal(3)
+        outdoor_crops_rounded = self.outdoor_crops.get_rounded_to_decimal(3)
+        seaweed_rounded = self.seaweed.get_rounded_to_decimal(3)
+
+        immediate_outdoor_crops_rounded = (
+            self.immediate_outdoor_crops.get_rounded_to_decimal(3)
+        )
+        new_stored_outdoor_crops_rounded = (
+            self.new_stored_outdoor_crops.get_rounded_to_decimal(3)
+        )
+
+        # if the value was a little less than zero, when rounded it would no longer be
+        # less than zero.
+
+        assert stored_food_rounded.all_greater_than_or_equal_to_zero()
+        assert seaweed_rounded.all_greater_than_or_equal_to_zero()
+        assert outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
+        assert immediate_outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
+        assert new_stored_outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
+
+        return (
+            stored_food_rounded,
+            outdoor_crops_rounded,
+            immediate_outdoor_crops_rounded,
+            new_stored_outdoor_crops_rounded,
+            seaweed_rounded,
+        )
+
+    def set_feed_and_biofuels(
+        self,
+        seaweed_used_for_biofuel,
+        methane_scp_used_for_biofuel,
+        cellulosic_sugar_used_for_biofuel,
+        stored_food_used_for_biofuel,
+        outdoor_crops_used_for_biofuel,
+        seaweed_used_for_feed,
+        methane_scp_used_for_feed,
+        cellulosic_sugar_used_for_feed,
+        stored_food_used_for_feed,
+        outdoor_crops_used_for_feed,
+    ):
+        """
+        This function sets the feed and biofuel usage for each month. It takes the
+        outdoor crops, methane, and cellulosic sugar that are used for feed and
+        biofuels, and the remaining feed and biofuel needed from stored food.
+        """
+        self.cell_sugar_biofuels = (
+            cellulosic_sugar_used_for_biofuel.in_units_percent_fed()
+        )
+        self.cell_sugar_feed = cellulosic_sugar_used_for_feed.in_units_percent_fed()
+        self.scp_biofuels = methane_scp_used_for_biofuel.in_units_percent_fed()
+        self.scp_feed = methane_scp_used_for_feed.in_units_percent_fed()
+
+        self.seaweed_biofuels = seaweed_used_for_biofuel.in_units_percent_fed()
+        self.seaweed_feed = seaweed_used_for_feed.in_units_percent_fed()
+
+        self.outdoor_crops_biofuels = (
+            outdoor_crops_used_for_biofuel.in_units_percent_fed()
+        )
+        self.outdoor_crops_feed = outdoor_crops_used_for_feed.in_units_percent_fed()
+        self.stored_food_biofuels = stored_food_used_for_biofuel.in_units_percent_fed()
+
+        self.stored_food_feed = stored_food_used_for_feed.in_units_percent_fed()
+
+        self.cell_sugar_biofuels_kcals_equivalent = (
+            self.cell_sugar_biofuels.in_units_kcals_equivalent()
+        )
+        self.cell_sugar_feed_kcals_equivalent = (
+            self.cell_sugar_feed.in_units_kcals_equivalent()
+        )
+        self.scp_biofuels_kcals_equivalent = (
+            self.scp_biofuels.in_units_kcals_equivalent()
+        )
+        self.scp_feed_kcals_equivalent = self.scp_feed.in_units_kcals_equivalent()
+        self.seaweed_biofuels_kcals_equivalent = (
+            self.seaweed_biofuels.in_units_kcals_equivalent()
+        )
+        self.seaweed_feed_kcals_equivalent = (
+            self.seaweed_feed.in_units_kcals_equivalent()
+        )
+        self.outdoor_crops_biofuels_kcals_equivalent = (
+            self.outdoor_crops_biofuels.in_units_kcals_equivalent()
+        )
+        self.outdoor_crops_feed_kcals_equivalent = (
+            self.outdoor_crops_feed.in_units_kcals_equivalent()
+        )
+        self.stored_food_biofuels_kcals_equivalent = (
+            self.stored_food_biofuels.in_units_kcals_equivalent()
+        )
+        self.stored_food_feed_kcals_equivalent = (
+            self.stored_food_feed.in_units_kcals_equivalent()
+        )
+
     def sum_many_results_together(many_results, cap_at_100_percent):
         """
         sum together the results from many different runs of the model
@@ -419,6 +560,7 @@ class Interpreter:
         net_pop = 0
         previous_interpreter = []
         for country, interpreter in many_results.items():
+
             # record some useful values for plotting from the interpreter
             # will check later that these are consistent
             include_fat = interpreter.include_fat
@@ -477,13 +619,13 @@ class Interpreter:
             )
 
             immediate_outdoor_crops = (
-                interpreter.immediate_outdoor_crops.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+                interpreter.immediate_outdoor_crops_to_humans.in_units_bil_kcals_thou_tons_thou_tons_per_month()
             )
             new_stored_outdoor_crops = (
-                interpreter.new_stored_outdoor_crops.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+                interpreter.new_stored_outdoor_crops_to_humans.in_units_bil_kcals_thou_tons_thou_tons_per_month()
             )
             stored_food = (
-                interpreter.stored_food.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+                interpreter.stored_food_to_humans.in_units_bil_kcals_thou_tons_thou_tons_per_month()
             )
 
             if interpreter.percent_people_fed <= 100:
@@ -687,13 +829,13 @@ class Interpreter:
         global_results.grain_fed_meat_kcals_equivalent = (
             grain_fed_meat_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
         )
-        global_results.immediate_outdoor_crops_kcals_equivalent = (
+        global_results.immediate_outdoor_crops_to_humans_kcals_equivalent = (
             immediate_outdoor_crops_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
         )
-        global_results.new_stored_outdoor_crops_kcals_equivalent = (
+        global_results.new_stored_outdoor_crops_to_humans_kcals_equivalent = (
             new_stored_outdoor_crops_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
         )
-        global_results.stored_food_kcals_equivalent = (
+        global_results.stored_food_to_humans_kcals_equivalent = (
             stored_food_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
         )
         return global_results

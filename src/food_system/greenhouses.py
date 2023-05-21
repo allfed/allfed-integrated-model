@@ -260,7 +260,6 @@ class Greenhouses:
     # estimate and decreasing the estimated fat and protein by the same
     # factor that kcals are decreased by
     def get_greenhouse_yield_per_ha(self, constants_for_params, outdoor_crops):
-        KCAL_RATIO = outdoor_crops.KCAL_RATIO_ROTATION
         FAT_RATIO = outdoor_crops.FAT_RATIO_ROTATION
         PROTEIN_RATIO = outdoor_crops.PROTEIN_RATIO_ROTATION
         if not self.ADD_GREENHOUSES:
@@ -278,10 +277,8 @@ class Greenhouses:
         relocation_protein_per_ha_long = []
 
         for kcals_per_month in self.GH_KCALS_GROWN_PER_HECTARE:
-            gh_kcals = (
-                kcals_per_month
-                * KCAL_RATIO
-                * (1 + constants_for_params["GREENHOUSE_GAIN_PCT"] / 100)
+            gh_kcals = kcals_per_month * (
+                1 + constants_for_params["GREENHOUSE_GAIN_PCT"] / 100
             )  # units: billion kcals per month
 
             relocation_kcals_per_ha_long.append(gh_kcals)

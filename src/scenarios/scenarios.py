@@ -546,7 +546,7 @@ class Scenarios:
         self.NONHUMAN_CONSUMPTION_SET = True
         return constants_for_params
 
-    def reduce_breeding_USA(self, constants_for_params):
+    def reduce_breeding(self, constants_for_params):
         self.scenario_description += "\nreduced breeding/biofuel"
         assert not self.NONHUMAN_CONSUMPTION_SET
         # if there is no food storage, then feed and biofuels when no food is being
@@ -1319,6 +1319,7 @@ class Scenarios:
         constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = 0
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 0
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = 0
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
         constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
 
@@ -1335,6 +1336,7 @@ class Scenarios:
         constants_for_params["DELAY"]["SEAWEED_MONTHS"] = 1
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 30
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 10
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = 10
 
         return constants_for_params
 
@@ -1458,6 +1460,7 @@ class Scenarios:
 
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 0
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = 0
 
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
 
@@ -1477,6 +1480,7 @@ class Scenarios:
 
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 0
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = 0
 
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
 
@@ -1498,6 +1502,7 @@ class Scenarios:
 
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 0
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = 0
 
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
         constants_for_params["ADD_GREENHOUSES"] = False
@@ -1517,6 +1522,7 @@ class Scenarios:
 
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 0
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = 0
 
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
 

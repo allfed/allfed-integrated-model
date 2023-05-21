@@ -313,34 +313,26 @@ class Plotter:
             ax.set_xlim([0.5, xlim])
 
             ykcals = []
-            ykcals.append(
-                interpreter.feed_and_biofuels.cell_sugar_feed_kcals_equivalent.kcals
-            )
-            ykcals.append(interpreter.feed_and_biofuels.scp_feed_kcals_equivalent.kcals)
-            ykcals.append(
-                interpreter.feed_and_biofuels.seaweed_feed_kcals_equivalent.kcals
-            )
-            ykcals.append(
-                interpreter.feed_and_biofuels.outdoor_crops_feed_kcals_equivalent.kcals
-            )
-            ykcals.append(
-                interpreter.feed_and_biofuels.stored_food_feed_kcals_equivalent.kcals
-            )
-            ykcals.append(
-                interpreter.feed_and_biofuels.cell_sugar_biofuels_kcals_equivalent.kcals
-            )
-            ykcals.append(
-                interpreter.feed_and_biofuels.scp_biofuels_kcals_equivalent.kcals
-            )
-            ykcals.append(
-                interpreter.feed_and_biofuels.seaweed_biofuels_kcals_equivalent.kcals
-            )
-            ykcals.append(
-                interpreter.feed_and_biofuels.outdoor_crops_biofuels_kcals_equivalent.kcals
-            )
-            ykcals.append(
-                interpreter.feed_and_biofuels.stored_food_biofuels_kcals_equivalent.kcals
-            )
+            # ykcals.append(interpreter.cell_sugar_biofuels_kcals_equivalent.kcals)
+            # ykcals.append(interpreter.cell_sugar_feed_kcals_equivalent.kcals)
+            # ykcals.append(interpreter.scp_biofuels_kcals_equivalent.kcals)
+            # ykcals.append(interpreter.scp_feed_kcals_equivalent.kcals)
+            # ykcals.append(interpreter.seaweed_biofuels_kcals_equivalent.kcals)
+            # ykcals.append(interpreter.seaweed_feed_kcals_equivalent.kcals)
+            # ykcals.append(interpreter.outdoor_crops_biofuels_kcals_equivalent.kcals)
+            # ykcals.append(interpreter.outdoor_crops_feed_kcals_equivalent.kcals)
+            # ykcals.append(interpreter.stored_food_biofuels_kcals_equivalent.kcals)
+            # ykcals.append(interpreter.stored_food_feed_kcals_equivalent.kcals)
+            ykcals.append(interpreter.cell_sugar_feed_kcals_equivalent.kcals)
+            ykcals.append(interpreter.scp_feed_kcals_equivalent.kcals)
+            ykcals.append(interpreter.seaweed_feed_kcals_equivalent.kcals)
+            ykcals.append(interpreter.outdoor_crops_feed_kcals_equivalent.kcals)
+            ykcals.append(interpreter.stored_food_feed_kcals_equivalent.kcals)
+            ykcals.append(interpreter.cell_sugar_biofuels_kcals_equivalent.kcals)
+            ykcals.append(interpreter.scp_biofuels_kcals_equivalent.kcals)
+            ykcals.append(interpreter.seaweed_biofuels_kcals_equivalent.kcals)
+            ykcals.append(interpreter.outdoor_crops_biofuels_kcals_equivalent.kcals)
+            ykcals.append(interpreter.stored_food_biofuels_kcals_equivalent.kcals)
 
             if label == "a":
                 if ADD_THE_NUTRITION_PLOT:
@@ -402,7 +394,7 @@ class Plotter:
 
                 ax.plot(
                     interpreter.time_months_middle,
-                    interpreter.feed_and_biofuels.nonhuman_consumption.kcals,
+                    interpreter.nonhuman_consumption.kcals,
                     color="blue",
                     linestyle="solid",
                 )
@@ -410,7 +402,7 @@ class Plotter:
                 if interpreter.include_protein:
                     ax.plot(
                         interpreter.time_months_middle,
-                        interpreter.feed_and_biofuels.nonhuman_consumption.protein,
+                        interpreter.nonhuman_consumption.protein,
                         color="red",
                         linestyle="dotted",
                     )
@@ -419,7 +411,7 @@ class Plotter:
                     # 1 gram of fat is 9 kcals.
                     ax.plot(
                         interpreter.time_months_middle,
-                        interpreter.feed_and_biofuels.nonhuman_consumption.fat,
+                        interpreter.nonhuman_consumption.fat,
                         color="green",
                         linestyle="dashed",
                     )

@@ -24,9 +24,9 @@ def run_USA_with_and_without_resilient():
     this_simulation["protein"] = "not_required"
     this_simulation["nutrition"] = "catastrophe"
     this_simulation["buffer"] = "zero"
-    this_simulation["shutoff"] = "reduce_breeding_USA"
+    this_simulation["shutoff"] = "reduce_breeding"
     this_simulation["cull"] = "do_eat_culled"
-    this_simulation["meat_strategy"] = "reduce_breeding_USA"
+    this_simulation["meat_strategy"] = "reduce_breeding"
 
     # command line argument inputs (optional)
     scenario_runner = ScenarioRunnerNoTrade()

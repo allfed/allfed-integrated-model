@@ -72,10 +72,10 @@ Ensure all properties of scenarios have been set
 ```
 
 
-### .reduce_breeding_USA
+### .reduce_breeding
 [source](https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L411)
 ```python
-.reduce_breeding_USA(
+.reduce_breeding(
    constants_for_params
 )
 ```
