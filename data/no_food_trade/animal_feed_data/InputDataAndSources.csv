@@ -1,0 +1,34 @@
+Variable,Qty,Units,Chickens,Source Date,Source,
+Cattle and calves,98800000.00,Head,Cattle,July 2022,https://usda.library.cornell.edu/concern/publications/h702q636h?locale=en,
+Cows and heifers that have calved,39800000.00,Head,Cattle,July 2022,https://usda.library.cornell.edu/concern/publications/h702q636h?locale=en,
+Beef cows,30350000.00,Head,Cattle,July 2022,https://usda.library.cornell.edu/concern/publications/h702q636h?locale=en,
+Milk cows,9450000.00,Head,Cattle,July 2022,https://usda.library.cornell.edu/concern/publications/h702q636h?locale=en,
+Heifers 500 pounds and over,15600000.00,Head,Cattle,July 2022,https://usda.library.cornell.edu/concern/publications/h702q636h?locale=en,
+For beef cow replacement,4150000.00,Head,Cattle,July 2022,https://usda.library.cornell.edu/concern/publications/h702q636h?locale=en,
+For milk cow replacement,3750000.00,Head,Cattle,July 2022,https://usda.library.cornell.edu/concern/publications/h702q636h?locale=en,
+Other heifers,7700000.00,Head,Cattle,July 2022,https://usda.library.cornell.edu/concern/publications/h702q636h?locale=en,
+Steers 500 pounds and over,14400000.00,Head,Cattle,July 2022,https://usda.library.cornell.edu/concern/publications/h702q636h?locale=en,
+Bulls 500 pounds and over,2000000.00,Head,Cattle,July 2022,https://usda.library.cornell.edu/concern/publications/h702q636h?locale=en,
+Calves under 500 pounds,27000000.00,Head,Cattle,July 2022,https://usda.library.cornell.edu/concern/publications/h702q636h?locale=en,
+Cattle on feed,13400000.00,Head,Cattle,July 2022,https://usda.library.cornell.edu/concern/publications/h702q636h?locale=en,
+Calf crop,34600000.00,Head,Cattle,July 2022,https://usda.library.cornell.edu/concern/publications/h702q636h?locale=en,
+CowSlaughter,2839607.692,Head,Cattle,Avg July 2021 to June 2022,https://www.ers.usda.gov/data-products/livestock-and-meat-domestic-data/,
+cowGestation,9,Months,Cattle,N/A,https://www.farmanimalreport.com/2020/02/03/what-is-the-gestation-period-for-a-cow/,Rounded
+Other cow death,5,Percent,Cattle,2015,https://www.aphis.usda.gov/animal_health/nahms/general/downloads/cattle_calves_deathloss_2015.pdf,
+TotalPigs,72689000,Head,Hogs,July 2022,https://usda.library.cornell.edu/concern/publications/rj430453j?locale=en,
+Under50,20045000,Head,Hogs,July 2022,https://usda.library.cornell.edu/concern/publications/rj430453j?locale=en,
+From50to119,15600000.00,Head,Hogs,July 2022,https://usda.library.cornell.edu/concern/publications/rj430453j?locale=en,
+From120to179,4150000.00,Head,Hogs,July 2022,https://usda.library.cornell.edu/concern/publications/rj430453j?locale=en,
+Over180,3750000.00,Head,Hogs,July 2022,https://usda.library.cornell.edu/concern/publications/rj430453j?locale=en,
+PigsPerLitter,11,Head/Sow,Hogs,July 2022,https://usda.library.cornell.edu/concern/publications/rj430453j?locale=en,
+PigletsPerMonth,10624000,Head,Hogs,July 2022,https://usda.library.cornell.edu/concern/publications/rj430453j?locale=en,
+SlaughterPerMonth,10460046.15,Head,Hogs,Avg July 2021 to June 2022,https://www.ers.usda.gov/data-products/livestock-and-meat-domestic-data/,
+pigGestation,4,Months,Hogs,N/A,,Rounded
+Other pig death,9,Percent,Hogs,2018,https://www.agupdate.com/iowafarmertoday/news/livestock/a-look-back-at-pig-death-loss-factors-in-2020/article_057609b6-efa6-11eb-81b6-7f1a636fabee.html,
+Rooster Pop,6997595,Head,Chickens,2017,"https://www.nass.usda.gov/Publications/AgCensus/2017/Full_Report/Volume_1,_Chapter_1_US/st99_1_0030_0031.pdf",
+Egg layer Population,498772378,Head,Chickens,2017,"https://www.nass.usda.gov/Publications/AgCensus/2017/Full_Report/Volume_1,_Chapter_1_US/st99_1_0030_0031.pdf",Pullets plus Layers
+Broiler Population,1621400316,Head,Chickens,2017,"https://www.nass.usda.gov/Publications/AgCensus/2017/Full_Report/Volume_1,_Chapter_1_US/st99_1_0030_0031.pdf",Just broilers
+TotalChickenPop,2127170289,Head,Chickens,2017,"https://www.nass.usda.gov/Publications/AgCensus/2017/Full_Report/Volume_1,_Chapter_1_US/st99_1_0030_0031.pdf"," Summed broilers, layers, pullets, roosters"
+poultry_slaughter_pm,771655000,Head,Chickens,Avg July 2021 to June 2022,https://www.ers.usda.gov/data-products/livestock-and-meat-domestic-data/,
+Chicken Gestation,1,Months,Chickens,N/A,,Rounded
+Other poultry death,3.8,Percent,Chickens,2013,https://www.aphis.usda.gov/animal_health/emergency_management/downloads/documents_manuals/poultry_ind_manual.pdf,"Section 1.1.1, page 7"
