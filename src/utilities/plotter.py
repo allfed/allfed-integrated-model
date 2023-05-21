@@ -313,16 +313,6 @@ class Plotter:
             ax.set_xlim([0.5, xlim])
 
             ykcals = []
-            # ykcals.append(interpreter.cell_sugar_biofuels_kcals_equivalent.kcals)
-            # ykcals.append(interpreter.cell_sugar_feed_kcals_equivalent.kcals)
-            # ykcals.append(interpreter.scp_biofuels_kcals_equivalent.kcals)
-            # ykcals.append(interpreter.scp_feed_kcals_equivalent.kcals)
-            # ykcals.append(interpreter.seaweed_biofuels_kcals_equivalent.kcals)
-            # ykcals.append(interpreter.seaweed_feed_kcals_equivalent.kcals)
-            # ykcals.append(interpreter.outdoor_crops_biofuels_kcals_equivalent.kcals)
-            # ykcals.append(interpreter.outdoor_crops_feed_kcals_equivalent.kcals)
-            # ykcals.append(interpreter.stored_food_biofuels_kcals_equivalent.kcals)
-            # ykcals.append(interpreter.stored_food_feed_kcals_equivalent.kcals)
             ykcals.append(interpreter.cell_sugar_feed_kcals_equivalent.kcals)
             ykcals.append(interpreter.scp_feed_kcals_equivalent.kcals)
             ykcals.append(interpreter.seaweed_feed_kcals_equivalent.kcals)
