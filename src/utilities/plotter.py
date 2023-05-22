@@ -31,10 +31,20 @@ repo_root = git.Repo(".", search_parent_directories=True).working_dir
 # matplotlib.use('QtAgg')
 
 
-font = {"family": "normal", "weight": "bold", "size": 7}
+
+# font = {"family": 'normal', "weight": "bold", "size": 7}
+font = { "weight": "bold", "size": 7}
+if "normal" in matplotlib.font_manager.findSystemFonts():
+    font["family"] = "normal"
+elif "sans-serif" in matplotlib.font_manager.findSystemFonts():
+    font["family"] = "sans-serif"
+    print("Warning: primary font not found, using sans-serif font")
+else:
+    font["family"] = "Arial"  # or any other available font family
+    print("Warning: primary font not found, using Arial font")
+
 
 matplotlib.rc("font", **font)
-
 
 class Plotter:
     def __init__(self):
