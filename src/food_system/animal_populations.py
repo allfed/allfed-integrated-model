@@ -30,6 +30,7 @@ import git
 from src.food_system.food import Food
 import pdb
 import matplotlib.pyplot as plt
+import copy
 
 
 """
@@ -60,7 +61,7 @@ class AnimalSpecies:
         Object containing the nutrition ratio for the animal type
 
     """
-    def __init__(self, animal_type, population, slaughter, animal_function, feed_LSU, digestion_type, approximate_feed_conversion, digestion_efficiency = 0.5, carb_requirement=-1, protein_requirement=-1, fat_requirement=-1):
+    def __init__(self, total_months, animal_type, population, slaughter, animal_function, feed_LSU, digestion_type, approximate_feed_conversion, digestion_efficiency = 0.5, carb_requirement=-1, protein_requirement=-1, fat_requirement=-1):
         # basic attributes
         self.animal_type = animal_type
         self.population = [population] # this is a list so that it can be appended to later
@@ -73,9 +74,10 @@ class AnimalSpecies:
         self.digestion_type = digestion_type
         self.approximate_feed_conversion = approximate_feed_conversion # note this only used for ranking the efficiency, not used for calculating the feed required
         self.digestion_efficiency = digestion_efficiency # this is the conversion from gross energy to net energy
-        self.feed_balance = self.feed_required_per_month_species() # this is the feed required per month for the species
-        self.population_fed = 0
-        self.population_starving = 0
+        #self.feed_balance = 
+        self.init_feed_required_monthly_species(total_months) # this is the feed required per month for the species, attribute is populated within the function
+        self.population_fed = [0]
+        self.population_starving = [0]
 
         # slaughtering attributes
         if slaughter>0:
@@ -166,66 +168,120 @@ class AnimalSpecies:
         # uses the net energy required per month function and the digestion efficiency
         return Food(self.net_energy_required_per_month()/self.digestion_efficiency, -1, -1)
     
-    def feed_required_per_month_species(self):
+    def init_feed_required_monthly_species(self, total_months):
         # function to calculate the total feed for this month for the species
         #     (defaults to billion kcals, thousand tons monthly fat, thousand tons monthly protein)
         # protein and fat is not currently used
         # uses the net energy required per month function and the digestion efficiency
-        return Food(self.net_energy_required_per_month()/self.digestion_efficiency * self.population[-1], -1, -1)
-    
-    def feed_the_species(self, food_input):
+        
+        self.feed_balance = Food(0,0,0)
+        self.feed_balance.kcals_units="billion kcals each month",
+        self.feed_balance.fat_units="thousand tons each month",
+        self.feed_balance.protein_units="thousand tons  each month",
+        # initialise zeros array for the length oftotal months
+        self.feed_balance.kcals = np.zeros(total_months)
+        self.feed_balance.fat = np.zeros(total_months) -1
+        self.feed_balance.protein = np.zeros(total_months) -1
+
+        # set the first month to the feed required
+        self.feed_balance.kcals[0] = self.net_energy_required_per_month()/self.digestion_efficiency * self.population[0]
+
+
+
+
+
+    def feed_the_species(self, food_available):
 
         # function to feed the species
-        feed_required = self.feed_balance
+        population = self.population[-1]
+        month = len(self.population)
+        population_fed = None
+        kcals_required_this_month = self.feed_balance.kcals[month]
+        fat_required_this_month = self.feed_balance.fat[month]
+        protein_required_this_month = self.feed_balance.protein[month]
+        
+        print(food_available.kcals)
+        # attempt to dealw tih either static or monthly values
+        try:
+            kcals_available_this_month = food_available.kcals[month]
+            fat_available_this_month = food_available.fat[month]
+            protein_available_this_month = food_available.protein[month]
+        except:
+            kcals_available_this_month = food_available.kcals
+            fat_available_this_month = food_available.fat
+            protein_available_this_month = food_available.protein
 
-        if self.feed_balance.kcals == 0:
-            # no food required
-            # print('no food required for ' + self.animal_type)
 
-            return food_input
-
-        # if protein and fats are used NOT IMPLEMENTED AS OF 17th May 2023
-        if self.feed_balance.fat>0 and self.feed_balance.protein>0:
+        # if there is no food required
+        if kcals_required_this_month == 0:
+            population_fed = population
+        # if food required & protein and fats are used (NOT IMPLEMENTED AS OF 17th May 2023)
+        elif fat_required_this_month>0 and protein_required_this_month>0:
             # still need more thought on how to deal with this. Units of food aren't fungible neccesarily, can't easily moce macros between
-            if food_input.kcals > self.feed_balance.kcals & food_input.fat > self.feed_balance.fat & food_input.protein > self.feed_balance.protein:
+            if food_available.kcals > kcals_required_this_month & food_available.fat > fat_required_this_month & food_available.protein > protein_required_this_month:
                 # whole population is fed
-                self.population_fed = self.population
+                population_fed = population
                 # update the food object
-                food_input.kcals -= self.feed_balance.kcals
-                food_input.fat -= self.feed_balance.fat
-                food_input.protein -= self.feed_balance.protein
-                self.feed_balance = Food(0,0,0)
+                kcals_available_this_month -= kcals_required_this_month
+                fat_available_this_month -= fat_required_this_month
+                protein_available_this_month -= protein_required_this_month
+                
+                kcals_required_this_month = 0
+                fat_required_this_month = 0
+                protein_required_this_month = 0
             else:
                 # not enough food to feed the whole population
                 # calculate the number of animals that can be fed
-                self.population_fed = round(food_input.kcals / feed_required.kcals * self.population[-1])
+                population_fed = round(food_available.kcals / kcals_required_this_month * population)
                 # update the food object
-                food_input.kcals = 0
-                food_input.fat = 0
-                food_input.protein = 0
-                self.feed_balance = feed_required - food_input
+                kcals_available_this_month = kcals_required_this_month - kcals_available_this_month
+                fat_required_this_month = fat_required_this_month - fat_available_this_month
+                protein_required_this_month = protein_required_this_month - protein_available_this_month
+
+                kcals_available_this_month = 0
+                fat_available_this_month = 0
+                protein_available_this_month = 0
+                
+        # else food required and only use kcals
         else:
-            # only using kcals
-            if food_input.kcals > self.feed_balance.kcals:
+            if food_available.kcals > kcals_required_this_month:
                 # whole population is fed
-                self.population_fed = self.population
+                population_fed = population
                 # update the food object
-                food_input.kcals -= self.feed_balance.kcals
-                self.feed_balance = Food(0,0,0)
+                kcals_available_this_month -= kcals_required_this_month
+                kcals_available_this_month = 0
 
             else:
                 # not enough food to feed the whole population
                 # calculate the number of animals that can be fed
-                self.population_fed = round(food_input.kcals / self.feed_balance.kcals * self.population[-1])
+                population_fed = round(food_available.kcals / kcals_required_this_month * population)
                 # update the food object
-                self.feed_balance = self.feed_balance - food_input
-                food_input.kcals = 0
+                kcals_available_this_month = 0
+                kcals_required_this_month -= kcals_available_this_month
 
         # calculate the starving population based on the population fed
         # don't forget that population is a list of the population over time
-        self.population_starving = self.population[-1] - self.population_fed
 
-        return food_input
+        # append the population fed and starving to the population fed and starving lists
+        self.population_fed.append(population_fed)
+        self.population_starving.append(population - population_fed)
+
+        #update objects (uses pointers/ references, so no need to return)
+        self.feed_balance.kcals[month] = kcals_required_this_month
+        self.feed_balance.fat[month] = fat_required_this_month
+        self.feed_balance.protein[month] = protein_required_this_month
+
+        # again try to deal with static or dynamic food objects
+        try:
+            food_available.kcals[month] = kcals_available_this_month
+            food_available.fat[month] = fat_available_this_month
+            food_available.protein[month] = protein_available_this_month
+        except:
+            food_available.kcals = kcals_available_this_month
+            food_available.fat = fat_available_this_month
+            food_available.protein = protein_available_this_month
+
+        return 
         
 def read_animal_population_data():
     """
@@ -297,7 +353,7 @@ def read_animal_options():
     return df_animal_options
 
 
-def create_animal_objects(df_animal_stock_info, df_animal_attributes):
+def create_animal_objects(df_animal_stock_info, df_animal_attributes, total_months):
     """
     Create animal objects from dataframes
 
@@ -349,6 +405,7 @@ def create_animal_objects(df_animal_stock_info, df_animal_attributes):
             animal_function = "meat"
 
         animal_species = AnimalSpecies(
+            total_months = total_months,
             animal_type=animal_type,
             population=df_animal_stock_info.loc[animal_type + "_head"],
             slaughter=slaughter_input,
@@ -499,7 +556,7 @@ def available_grass():
 
     return grass
 
-def feed_animals(animal_list, available_feed, available_grass):
+def feed_animals(animal_list, milk_animals, non_milk_ruminants, non_milk_animals, available_feed, available_grass):
     """
     This function will feed the animals
     It will do so by allocating the grass first to those animals that can eat it,
@@ -510,7 +567,6 @@ def feed_animals(animal_list, available_feed, available_grass):
 
     List needs to be sorted in the oprder you want the animals to be prioritised for feed
     """
-
     # grass to rumiants, milk first
     # feed to milk animals
     for milk_animal in milk_animals:
@@ -862,79 +918,124 @@ def main(country_code):
     Main function to be called by the user. This function will call the other functions in this file.
     """
 
-# if __name__ == "__main__":
-#     main("USA")
+    country_code="AUS"
 
 
-country_code="AUS"
+    ## IMPORT DATA
+
+    # read animal population data
+    df_animal_stock_info = read_animal_population_data()
+
+    # read animal nutrition data
+    df_animal_attributes = read_animal_nutrition_data()
 
 
-## IMPORT DATA
+    df_animal_options = read_animal_options()
 
-# read animal population data
-df_animal_stock_info = read_animal_population_data()
-
-# read animal nutrition data
-df_animal_attributes = read_animal_nutrition_data()
+    # months to run the model for
+    months_to_run = 12
 
 
-df_animal_options = read_animal_options()
+    ## Populate animal objects ##
 
 
-## Populate animal objects ##
+    # create animal objects
+    animal_list = create_animal_objects(df_animal_stock_info.loc[country_code], df_animal_attributes, months_to_run)
 
-# create animal objects
-animal_list = create_animal_objects(df_animal_stock_info.loc[country_code], df_animal_attributes)
-
-# sort the animal objects by approximate feed conversion
-animal_dict = dict(
-    sorted(
-        animal_list.items(),
-        key=lambda item: item[1].approximate_feed_conversion,
+    # sort the animal objects by approximate feed conversion
+    animal_dict = dict(
+        sorted(
+            animal_list.items(),
+            key=lambda item: item[1].approximate_feed_conversion,
+        )
     )
-)
 
-# create available feed object
-feed_MJ_available_this_month = available_feed()
-grass_MJ_available_this_month = available_grass()
+    # create available feed object
+    feed_MJ_available_this_month = available_feed()
+    grass_MJ_available_this_month = available_grass()
 
-# get list of milk animals, 
-milk_animals = [animal for animal in animal_dict.values() if "milk" in animal.animal_type]
-# get list of non-milk animals
-non_milk_animals = [animal for animal in animal_dict.values() if "milk" not in animal.animal_type]
-# non milk runminants
-non_milk_ruminants = [animal for animal in animal_dict.values() if "milk" not in animal.animal_type and animal.digestion_type == "ruminant"]
-# get list of all ruminants
-ruminants = [animal for animal in animal_dict.values() if animal.digestion_type == "ruminant"]
-# get list of non-ruminants
-non_ruminants = [animal for animal in animal_dict.values() if animal.digestion_type != "ruminant"]
-# all animals
-all_animals = [animal for animal in animal_dict.values()]
+    # get list of milk animals, 
+    milk_animals = [animal for animal in animal_dict.values() if "milk" in animal.animal_type]
+    # get list of non-milk animals
+    non_milk_animals = [animal for animal in animal_dict.values() if "milk" not in animal.animal_type]
+    # non milk runminants
+    non_milk_ruminants = [animal for animal in animal_dict.values() if "milk" not in animal.animal_type and animal.digestion_type == "ruminant"]
+    # get list of all ruminants
+    ruminants = [animal for animal in animal_dict.values() if animal.digestion_type == "ruminant"]
+    # get list of non-ruminants
+    non_ruminants = [animal for animal in animal_dict.values() if animal.digestion_type != "ruminant"]
+    # all animals
+    all_animals = [animal for animal in animal_dict.values()]
 
-## Do the feeding
-# feed the animals
-feed_MJ_available_this_month, grass_MJ_available_this_month = feed_animals(animal_dict, feed_MJ_available_this_month, grass_MJ_available_this_month)
+    ## Do the feeding
+    # feed the animals
+    feed_MJ_available_this_month, grass_MJ_available_this_month = feed_animals(animal_dict, milk_animals, non_milk_ruminants, non_milk_animals,  feed_MJ_available_this_month, grass_MJ_available_this_month)
 
-## OKAY SO NOW WE HAVE THE ANIMALS FED, WE NEED TO LOOK AT SLAUGHTERING
+    ## OKAY SO NOW WE HAVE THE ANIMALS FED, WE NEED TO LOOK AT SLAUGHTERING
 
-update_animal_objects_with_slaughter(all_animals,df_animal_attributes,df_animal_options)
-update_animal_objects_with_milk(milk_animals,df_animal_attributes)
-
+    update_animal_objects_with_slaughter(all_animals,df_animal_attributes,df_animal_options)
+    update_animal_objects_with_milk(milk_animals,df_animal_attributes)
 
 
-spare_slaughter_hours = 0 
-for month in range(0,12):
+
+    spare_slaughter_hours = 0 
+    for month in range(0,months_to_run):
+        for animal in all_animals:
+            retired_animals, spare_slaughter_hours = change_in_animal_population(animal,month,spare_slaughter_hours,0) # TARGET POPS IS BROKEN
+            # if milk animal, update corresponding meat animal with theadded population from the retired animals
+            if animal.animal_type == 'milk':
+                for meat_animal in non_milk_animals:
+                    if meat_animal.animal_type == animal.animal_type.replace('milk','meat'):
+                        meat_animal.population[month] += retired_animals
+
+
+    #plot the results
     for animal in all_animals:
-        retired_animals, spare_slaughter_hours = change_in_animal_population(animal,month,spare_slaughter_hours,0) # TARGET POPS IS BROKEN
-        # if milk animal, update corresponding meat animal with theadded population from the retired animals
-        if animal.animal_type == 'milk':
-            for meat_animal in non_milk_animals:
-                if meat_animal.animal_type == animal.animal_type.replace('milk','meat'):
-                    meat_animal.population[month] += retired_animals
+        plt.plot(animal.population, label=animal.animal_type)
+    plt.legend()
+    plt.show()
+
+    return
 
 
-#plot the results
-for animal in all_animals:
-    plt.plot(animal.population, label=animal.animal_type)
-plt.legend()
-plt.show()
+if __name__ == "__main__":
+    main("USA")
+
+
+
+
+
+##### TESTS #####
+
+
+# Functions:
+# AnimalSpecies.__init__
+# AnimalSpecies.feed_required_per_month_individual
+# AnimalSpecies.feed_required_per_month_species
+# AnimalSpecies.feed_the_species
+# AnimalSpecies.net_energy_required_per_month
+# AnimalSpecies.set_species_milk_attributes
+# AnimalSpecies.set_species_slaughter_attributes
+# available_feed
+# available_grass
+# calculate_animal_population
+# calculate_births
+# calculate_breeding_changes
+# calculate_meat_change_in_population
+# calculate_milk_change_in_population
+# calculate_other_deaths
+# calculate_pregnant_animals_birthing
+# calculate_pregnant_slaughter
+# calculate_retiring_milk_animals
+# calculate_slaughter_rate
+# change_in_animal_population
+# create_animal_objects
+# feed_animals
+# food_conversion
+# read_animal_nutrition_data
+# read_animal_options
+# read_animal_population_data
+# update_animal_objects_with_milk
+# update_animal_objects_with_slaughter
+
+

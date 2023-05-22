@@ -10,7 +10,10 @@ Note that occasionally, this class is instantiated with each nutrient set as an 
 where each element of the array is a different month of the simulation, and the total
 number of months is NMONTHS, which is also the length of each of the 3 arrays.
 
-TODO: comment on kcal inclusivness.
+TODO: comment on kcal inclusivness. that is, kcals from protein and fat are already 
+accounted for in the 'kcal' property. This is important because the 'kcal' property
+is used to calculate the number of animals that can be fed, and if the 'kcal' property
+is not inclusive, then the number of animals that can be fed will be overestimated.
 
 Created on Tue Jul 19
 
