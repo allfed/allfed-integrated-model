@@ -226,7 +226,7 @@ class AnimalSpecies:
         self.population_starving = self.population[-1] - self.population_fed
 
         return food_input
-        
+       
 def read_animal_population_data():
     """
     Read animal population data from CSV file
@@ -499,7 +499,7 @@ def available_grass():
 
     return grass
 
-def feed_animals(animal_list, available_feed, available_grass):
+def feed_animals(animal_list, milk_animals, non_milk_ruminants, non_milk_animals, available_feed, available_grass):
     """
     This function will feed the animals
     It will do so by allocating the grass first to those animals that can eat it,
@@ -510,7 +510,6 @@ def feed_animals(animal_list, available_feed, available_grass):
 
     List needs to be sorted in the oprder you want the animals to be prioritised for feed
     """
-
     # grass to rumiants, milk first
     # feed to milk animals
     for milk_animal in milk_animals:
@@ -837,7 +836,6 @@ def calculate_slaughter_rate(animal_object, spare_slaughter_hours, target_animal
         return new_slaughter_rate, spare_slaughter_hours
     
     else:
-        print(animal_object.slaughter[-1])
         # if there are no spare slaughter hours, then set the slaughter rate to the previous slaughter rate, this will 
         # will happen becuase the numerator will be 0
         new_slaughter_rate = animal_object.slaughter[-1] + round(spare_slaughter_hours/animal_object.animal_slaughter_hours)
@@ -862,79 +860,120 @@ def main(country_code):
     Main function to be called by the user. This function will call the other functions in this file.
     """
 
-# if __name__ == "__main__":
-#     main("USA")
+
+    ## IMPORT DATA
+
+    # read animal population data
+    df_animal_stock_info = read_animal_population_data()
+
+    # read animal nutrition data
+    df_animal_attributes = read_animal_nutrition_data()
 
 
-country_code="AUS"
+    df_animal_options = read_animal_options()
+
+    # months to run the model for
+    months_to_run = 12
 
 
-## IMPORT DATA
-
-# read animal population data
-df_animal_stock_info = read_animal_population_data()
-
-# read animal nutrition data
-df_animal_attributes = read_animal_nutrition_data()
+    ## Populate animal objects ##
 
 
-df_animal_options = read_animal_options()
+    # create animal objects
+    animal_list = create_animal_objects(df_animal_stock_info.loc[country_code], df_animal_attributes)
 
-
-## Populate animal objects ##
-
-# create animal objects
-animal_list = create_animal_objects(df_animal_stock_info.loc[country_code], df_animal_attributes)
-
-# sort the animal objects by approximate feed conversion
-animal_dict = dict(
-    sorted(
-        animal_list.items(),
-        key=lambda item: item[1].approximate_feed_conversion,
+    # sort the animal objects by approximate feed conversion
+    animal_dict = dict(
+        sorted(
+            animal_list.items(),
+            key=lambda item: item[1].approximate_feed_conversion,
+        )
     )
-)
 
-# create available feed object
-feed_MJ_available_this_month = available_feed()
-grass_MJ_available_this_month = available_grass()
+    # create available feed object
+    feed_MJ_available_this_month = available_feed()
+    grass_MJ_available_this_month = available_grass()
 
-# get list of milk animals, 
-milk_animals = [animal for animal in animal_dict.values() if "milk" in animal.animal_type]
-# get list of non-milk animals
-non_milk_animals = [animal for animal in animal_dict.values() if "milk" not in animal.animal_type]
-# non milk runminants
-non_milk_ruminants = [animal for animal in animal_dict.values() if "milk" not in animal.animal_type and animal.digestion_type == "ruminant"]
-# get list of all ruminants
-ruminants = [animal for animal in animal_dict.values() if animal.digestion_type == "ruminant"]
-# get list of non-ruminants
-non_ruminants = [animal for animal in animal_dict.values() if animal.digestion_type != "ruminant"]
-# all animals
-all_animals = [animal for animal in animal_dict.values()]
+    # get list of milk animals, 
+    milk_animals = [animal for animal in animal_dict.values() if "milk" in animal.animal_type]
+    # get list of non-milk animals
+    non_milk_animals = [animal for animal in animal_dict.values() if "milk" not in animal.animal_type]
+    # non milk runminants
+    non_milk_ruminants = [animal for animal in animal_dict.values() if "milk" not in animal.animal_type and animal.digestion_type == "ruminant"]
+    # get list of all ruminants
+    ruminants = [animal for animal in animal_dict.values() if animal.digestion_type == "ruminant"]
+    # get list of non-ruminants
+    non_ruminants = [animal for animal in animal_dict.values() if animal.digestion_type != "ruminant"]
+    # all animals
+    all_animals = [animal for animal in animal_dict.values()]
 
-## Do the feeding
-# feed the animals
-feed_MJ_available_this_month, grass_MJ_available_this_month = feed_animals(animal_dict, feed_MJ_available_this_month, grass_MJ_available_this_month)
+    ## Do the feeding
+    # feed the animals
+    feed_MJ_available_this_month, grass_MJ_available_this_month = feed_animals(animal_dict, milk_animals, non_milk_ruminants, non_milk_animals,  feed_MJ_available_this_month, grass_MJ_available_this_month)
 
-## OKAY SO NOW WE HAVE THE ANIMALS FED, WE NEED TO LOOK AT SLAUGHTERING
+    ## OKAY SO NOW WE HAVE THE ANIMALS FED, WE NEED TO LOOK AT SLAUGHTERING
 
-update_animal_objects_with_slaughter(all_animals,df_animal_attributes,df_animal_options)
-update_animal_objects_with_milk(milk_animals,df_animal_attributes)
-
+    update_animal_objects_with_slaughter(all_animals,df_animal_attributes,df_animal_options)
+    update_animal_objects_with_milk(milk_animals,df_animal_attributes)
 
 
-spare_slaughter_hours = 0 
-for month in range(0,12):
+
+    spare_slaughter_hours = 0 
+    for month in range(0,months_to_run):
+        for animal in all_animals:
+            retired_animals, spare_slaughter_hours = change_in_animal_population(animal,month,spare_slaughter_hours,0) # TARGET POPS IS BROKEN
+            # if milk animal, update corresponding meat animal with theadded population from the retired animals
+            if animal.animal_type == 'milk':
+                for meat_animal in non_milk_animals:
+                    if meat_animal.animal_type == animal.animal_type.replace('milk','meat'):
+                        meat_animal.population[month] += retired_animals
+
+
+    #plot the results
     for animal in all_animals:
-        retired_animals, spare_slaughter_hours = change_in_animal_population(animal,month,spare_slaughter_hours,0) # TARGET POPS IS BROKEN
-        # if milk animal, update corresponding meat animal with theadded population from the retired animals
-        if animal.animal_type == 'milk':
-            for meat_animal in non_milk_animals:
-                if meat_animal.animal_type == animal.animal_type.replace('milk','meat'):
-                    meat_animal.population[month] += retired_animals
+        plt.plot(animal.population, label=animal.animal_type)
+    plt.legend()
+    plt.show()
+
+    return
 
 
-#plot the results
-for animal in all_animals:
-    plt.plot(animal.population, label=animal.animal_type)
-plt.legend()
-plt.show()
+if __name__ == "__main__":
+    main("AUS")
+
+
+
+
+
+##### TESTS #####
+
+
+# Functions:
+# AnimalSpecies.__init__
+# AnimalSpecies.feed_required_per_month_individual
+# AnimalSpecies.feed_required_per_month_species
+# AnimalSpecies.feed_the_species
+# AnimalSpecies.net_energy_required_per_month
+# AnimalSpecies.set_species_milk_attributes
+# AnimalSpecies.set_species_slaughter_attributes
+# available_feed
+# available_grass
+# calculate_animal_population
+# calculate_births
+# calculate_breeding_changes
+# calculate_meat_change_in_population
+# calculate_milk_change_in_population
+# calculate_other_deaths
+# calculate_pregnant_animals_birthing
+# calculate_pregnant_slaughter
+# calculate_retiring_milk_animals
+# calculate_slaughter_rate
+# change_in_animal_population
+# create_animal_objects
+# feed_animals
+# food_conversion
+# read_animal_nutrition_data
+# read_animal_options
+# read_animal_population_data
+# update_animal_objects_with_milk
+# update_animal_objects_with_slaughter
