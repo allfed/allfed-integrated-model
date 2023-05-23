@@ -60,9 +60,10 @@ class AnimalSpecies:
         Object containing the nutrition ratio for the animal type
 
     """
-    def __init__(self, animal_type, population, slaughter, animal_function, feed_LSU, digestion_type, approximate_feed_conversion, digestion_efficiency = 0.5, carb_requirement=-1, protein_requirement=-1, fat_requirement=-1):
+    def __init__(self, animal_type, animal_species, population, slaughter, animal_function, feed_LSU, digestion_type, approximate_feed_conversion, digestion_efficiency = 0.5, carb_requirement=-1, protein_requirement=-1, fat_requirement=-1):
         # basic attributes
         self.animal_type = animal_type
+        self.animal_species = animal_species
         self.population = [population] # this is a list so that it can be appended to later
         self.baseline_slaughter = slaughter/12 # static, initial value as it gets called to set other attributes, it's handy to have it simplified
         self.animal_function = animal_function
