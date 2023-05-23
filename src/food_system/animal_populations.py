@@ -109,9 +109,47 @@ class AnimalSpecies:
         self.productive_milk_age_end = productive_milk_age_end
         self.population_proportion_productive_milk = (productive_milk_age_end - productive_milk_age_start) / productive_milk_age_end
         self.milk_production_per_month = milk_production_per_month # update to include this in the csv file
-        self.retiring_milk_animals = [self.population[0] / productive_milk_age_end]
+        self.statistical_lifetime = productive_milk_age_end
+        self.retiring_milk_animals_fraction = 1 / productive_milk_age_end
+        self.retiring_milk_animals = self.retiring_milk_head_monthly()
+    
+    def retiring_milk_head_monthly(self):
+        """
+        Function to calculate the number of retiring milk animals per month
+        """
+        return self.population[-1] * self.retiring_milk_animals_fraction
 
-    def set_species_slaughter_attributes(self, gestation, other_animal_death_rate_annual, animals_per_pregnancy, animal_slaughter_hours, change_in_slaughter_rate, pregnant_animal_slaughter_percent, reduction_in_animal_breeding, target_population):
+    def set_species_slaughter_attributes(self, gestation, other_animal_death_rate_annual, animals_per_pregnancy, animal_slaughter_hours, change_in_slaughter_rate, pregnant_animal_slaughter_fraction, reduction_in_animal_breeding, target_population_fraction, transfer_births_or_head = 0):
+        """
+        Function to set the attributes of the animal species that are related to slaughter
+
+        Parameters
+        ----------
+        gestation : int
+            gestation period in months
+        other_animal_death_rate_annual : float
+            annual death rate of animals
+        animals_per_pregnancy : int
+            number of animals per pregnancy
+        animal_slaughter_hours : int
+            hours per animal spent slaughtering
+        change_in_slaughter_rate : float
+            change in slaughter rate (a static value, given by assumptions of loss of industry etc...)
+        pregnant_animal_slaughter_fraction : float
+            this is the fraction of pregnant animals that are attempted to be slaughtered each month
+        reduction_in_animal_breeding : float
+            this is the reduction in animal breeding (a static value, given by assumptions of loss of industry etc...)
+        target_population_fraction : float
+            this is the target population fraction (a static value, given by assumptions of loss of industry etc...)
+        transfer_births_or_head : int
+            this is head of increased population due to either male offspring of milk animals being added toa meat population or head imported from other countries
+
+        Returns
+        -------
+        None
+
+
+        """
         # attributes of the animal species
         self.gestation =  gestation # gestation period in months
         self.other_animal_death_rate_annual = other_animal_death_rate_annual # annual death rate of animals
@@ -122,25 +160,46 @@ class AnimalSpecies:
         self.change_in_slaughter_rate = change_in_slaughter_rate # change in slaughter rate (a static value, given by assumptions of loss of industry etc...)
 
         # options of the scenario
-        self.pregnant_animal_slaughter_percent = pregnant_animal_slaughter_percent # this is the percent of pregnant animals that are attempted to be slaughtered each month
+        self.pregnant_animal_slaughter_fraction = pregnant_animal_slaughter_fraction # this is the fraction of pregnant animals that are attempted to be slaughtered each month
         self.reduction_in_animal_breeding = reduction_in_animal_breeding
-        self.target_population = target_population # acts as a minimum, will not be used to increase pops in current version
-        
+        self.target_population_fraction = target_population_fraction # acts as a minimum, will not be used to increase pops in current version
+        self.target_population_head = self.target_population_fraction * self.population[0] # this is the target population head, used to calculate the number of animals slaughtered per month
         # calculations based off of the above
         self.other_animal_death_rate_monthly =  other_animal_death_rate_annual / 12
         self.other_animal_death_basline_head_monthly = self.other_animal_death_rate_monthly * self.population[0]
         self.total_animal_death_head_monthly = [self.other_animal_death_basline_head_monthly + self.baseline_slaughter] # this will change, maybe should be list
         self.other_animal_death = [self.other_animal_death_basline_head_monthly] # this will change, maybe should be list
         if self.animal_function == 'milk':
-            birth_ratio = 1
+            self.birth_ratio = 2 # number of animals born per milk animal
         else:   
-            birth_ratio = 1
-        self.births_animals_month = self.total_animal_death_head_monthly*birth_ratio # this will be a list because  total death is a list
+            self.birth_ratio = 1 # number of animals born (total from population) per milk animal. I.e all male milk animals are not considered milk anaimls and need to be moved over to meat
+        self.transfer_births_or_head = [transfer_births_or_head]
+        self.births_animals_month = [self.total_animal_death_head_monthly[0] - transfer_births_or_head ] 
         self.slaughter = [self.baseline_slaughter*change_in_slaughter_rate] # is list
-        self.pregnant_animals_total = [self.births_animals_month[-1] / self.animals_per_pregnancy * self.gestation] # assumes even distribution of births, this is not true. OPTIONAL TODO, update this to be more accurate and deal with seasonal births. Can be done by chaning the "gestation" to be a complicated value based on month/season
+        self.pregnant_animals_total = self.birth_ratio * [self.births_animals_month[-1] / self.animals_per_pregnancy * self.gestation] # assumes even distribution of births, this is not true. OPTIONAL TODO, update this to be more accurate and deal with seasonal births. Can be done by chaning the "gestation" to be a complicated value based on month/season
         self.pregnant_animals_birthing_this_month = [self.pregnant_animals_total[-1] /  self.gestation] 
-        self.slaughtered_pregnant_animals = [self.pregnant_animals_total[-1] * pregnant_animal_slaughter_percent]
+        self.slaughtered_pregnant_animals = [self.pregnant_animals_total[-1] * pregnant_animal_slaughter_fraction]
 
+        return 
+    
+    def exported_births(self):
+        """
+        Function to calculate the number of births exported from the animal population
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        exported_births : int
+            the number of births exported from the animal population
+        """
+
+        exported_births = self.births_animals_month * (self.birth_ratio-1)
+
+        return exported_births
+    
 
     def net_energy_required_per_month(self):
         # this section based on:
@@ -348,9 +407,13 @@ def create_animal_objects(df_animal_stock_info, df_animal_attributes):
             # remove "meat_" from the animal type
             slaughter_input = df_animal_stock_info.loc[animal_type.replace("meat_", "") + "_slaughter"]
             animal_function = "meat"
+        
+        # create string of animal species (remove milk or meat from the animal type)
+        animal_species = animal_type.replace("milk_", "").replace("meat_", "")
 
-        animal_species = AnimalSpecies(
+        animal_object = AnimalSpecies(
             animal_type=animal_type,
+            animal_species=animal_species,
             population=df_animal_stock_info.loc[animal_type + "_head"],
             slaughter=slaughter_input,
             animal_function=animal_function,
@@ -358,14 +421,14 @@ def create_animal_objects(df_animal_stock_info, df_animal_attributes):
             digestion_type=df_animal_attributes.loc[animal_type]["digestion type"],
             approximate_feed_conversion=df_animal_attributes.loc[animal_type]["approximate feed conversion"],
         )
-        animal_objects[animal_type] = animal_species
+        animal_objects[animal_type] = animal_object
 
     return animal_objects
 
 
 
 
-def update_animal_objects_with_slaughter(animal_list,df_animal_attributes,df_animal_options):
+def update_animal_objects_with_slaughter(animal_list, df_animal_attributes,df_animal_options):
     """
     This function updates the animal objects with the slaughter data
 
@@ -398,17 +461,17 @@ def update_animal_objects_with_slaughter(animal_list,df_animal_attributes,df_ani
         animals_per_pregnancy = df_animal_attributes.loc[animal.animal_type]["animals_per_pregnancy"]
         reduction_in_animal_breeding = df_animal_options.loc[animal.animal_type]["reduction_in_animal_breeding"]
         change_in_slaughter_rate = df_animal_options.loc[animal.animal_type]["change_in_slaughter_rate"]
-        pregnant_animal_slaughter_percent = df_animal_options.loc[animal.animal_type]["pregnant_animal_slaughter_percent"]
-        target_population = df_animal_options.loc[animal.animal_type]["target_population"]
+        pregnant_animal_slaughter_fraction = df_animal_options.loc[animal.animal_type]["pregnant_animal_slaughter_fraction"]
+        target_population_fraction = df_animal_options.loc[animal.animal_type]["target_population_fraction"]
         animal.set_species_slaughter_attributes(
             gestation, 
             other_animal_death_rate_annual, 
             animals_per_pregnancy,
             animal_slaughter_hours,
             change_in_slaughter_rate,
-            pregnant_animal_slaughter_percent,
+            pregnant_animal_slaughter_fraction,
             reduction_in_animal_breeding,
-            target_population
+            target_population_fraction
             )
     return
 
@@ -534,7 +597,7 @@ def feed_animals(animal_list, milk_animals, non_milk_ruminants, non_milk_animals
 
 
 
-def change_in_animal_population(animal_object,current_month, spare_slaughter_hours, target_animal_population=0):
+def change_in_animal_population(animal_object,current_month, spare_slaughter_hours, new_additive_animals_month):
     """
     
     This function will calculate the change in animal population for a given animal type
@@ -574,37 +637,44 @@ def change_in_animal_population(animal_object,current_month, spare_slaughter_hou
         The number of spare slaughter hours available this month
 
     """
-
     # if non milk animal
-    if animal_object.animal_function != "milk":
-        spare_slaughter_hours = calculate_meat_change_in_population(animal_object,current_month, spare_slaughter_hours, target_animal_population)
-    # if milk animal
-    else:
-        # calculate pops
-        spare_slaughter_hours = calculate_milk_change_in_population(animal_object,current_month, spare_slaughter_hours, target_animal_population)
-        # do transfer of retired milk animlas to meat
+    spare_slaughter_hours = calculate_change_in_population(animal_object,current_month, spare_slaughter_hours, new_additive_animals_month)
+  
 
-    return animal_object.retiring_milk_animals[-1], spare_slaughter_hours
+    return spare_slaughter_hours
 
 
 
-def calculate_milk_change_in_population(animal_object,current_month, spare_slaughter_hours, target_animal_population):
-    # First, check if breeding intervention has kicked in (based on gestation period)
+def calculate_additive_population(animal_object, current_month):
+        # First, check if breeding intervention has kicked in (based on gestation period)
     # If so, bring the reduction in breeding into impact the new births
     # Also turn off the need to slaughter pregnant animals (as we have already reduced the pregnant animals through the breeding intervention)
     if np.abs(current_month - animal_object.gestation) <= 0.5:
         calculate_breeding_changes(animal_object)
 
     # Calculate the number of new animals born this month given the number of pregnant animals
-    # (must run after calculate_breeding_changes and pregnant animals)
-    # MILK only half of new births will be milk animals
-    new_births_animals_month = calculate_births(animal_object)
-    new_births_meat_animals = new_births_animals_month * 0.5
-    new_births_milk_animals = new_births_animals_month * 0.5
-    retiring_animals = calculate_retiring_milk_animals(animal_object)
-    # this Is mkind of broken, but it's definitely TODO broken at line 133 in the if statement doubling the breeding
+    # (must run after calculate_breeding_changes)
+    # MILK only half of new births will be milk animals (captured in export animals)
+    new_births_animals_month, new_export_births = calculate_births(animal_object)
+    new_imported_and_transfer_population = calculate_imported_and_transfer_population(animal_object)
+    total_additive_head_month = new_births_animals_month + new_imported_and_transfer_population
+    
+    return total_additive_head_month, new_export_births
 
+def calculate_change_in_population(animal_object, spare_slaughter_hours,new_additive_animals_month):
 
+    
+    if animal_object.animal_function == "milk":
+        # they turn in to meat animls, this is done in a previous step already
+        # incoming retiring animals (that is, those going from milk -> meat), are already contained in the
+        # new_additive_animals_month variable
+        retiring_animals = calculate_retiring_milk_animals(animal_object)
+        animal_object.retiring_milk_animals.append(retiring_animals)
+
+    else:
+        retiring_animals = 0
+
+    target_animal_population = animal_object.target_population_head
 
     # Calculate other deaths
     new_other_animal_death = calculate_other_deaths(animal_object)
@@ -612,15 +682,11 @@ def calculate_milk_change_in_population(animal_object,current_month, spare_slaug
     # Determine slaughter rates (USE spare slaughter hours)
     # Each call of this function is "greedy" and will take as many slaughter hours as possible until the species is at the target population
     # This means that the slaughter hours are used in the order that the species are listed in the animal_types list
-    new_slaughter_rate, spare_slaughter_hours = calculate_slaughter_rate(animal_object, spare_slaughter_hours, target_animal_population, new_births_milk_animals, new_other_animal_death)
+    new_slaughter_rate, spare_slaughter_hours = calculate_slaughter_rate(animal_object, spare_slaughter_hours, target_animal_population, new_additive_animals_month, new_other_animal_death)
 
-    # retiring milk animals (if they are too old)
-    # they turn in to meat animls, returned from this function as an int
-    new_retiring_milk_animals = calculate_retiring_milk_animals(animal_object)
 
     # This is the main calculation of the population
-    new_animal_population = calculate_animal_population(animal_object, new_births_milk_animals, new_other_animal_death, new_slaughter_rate)
-    new_animal_population -= new_retiring_milk_animals
+    new_animal_population = calculate_animal_population(animal_object, new_additive_animals_month, new_other_animal_death + retiring_animals, new_slaughter_rate)
 
     # Determine how many of the animals who died this month were pregnant
     # Check if the number of pregnant animals set for slaughter is less than the number of animals slaughtered this month
@@ -651,64 +717,64 @@ def calculate_milk_change_in_population(animal_object,current_month, spare_slaug
     animal_object.pregnant_animals_birthing_this_month.append(new_pregnant_animals_birthing)
     animal_object.other_animal_death.append(new_other_animal_death)
     animal_object.slaughtered_pregnant_animals.append(new_slaughtered_pregnant_animals)
-    animal_object.retiring_milk_animals.append(new_retiring_milk_animals)
 
     return spare_slaughter_hours
 
-def calculate_meat_change_in_population(animal_object,current_month, spare_slaughter_hours, target_animal_population):
-    # First, check if breeding intervention has kicked in (based on gestation period)
-    # If so, bring the reduction in breeding into impact the new births
-    # Also turn off the need to slaughter pregnant animals (as we have already reduced the pregnant animals through the breeding intervention)
-    if np.abs(current_month - animal_object.gestation) <= 0.5:
-        calculate_breeding_changes(animal_object)
 
-    # Calculate the number of new animals born this month given the number of pregnant animals
-    # (must run after calculate_breeding_changes and pregnant animals)
-    new_births_animals_month = calculate_births(animal_object)
 
-    # Calculate other deaths
-    new_other_animal_death = calculate_other_deaths(animal_object)
+# def calculate_meat_change_in_population(animal_object,current_month, spare_slaughter_hours):
+#     # First, check if breeding intervention has kicked in (based on gestation period)
+#     # If so, bring the reduction in breeding into impact the new births
+#     # Also turn off the need to slaughter pregnant animals (as we have already reduced the pregnant animals through the breeding intervention)
 
-    # Determine slaughter rates (USE spare slaughter hours)
-    # Each call of this function is "greedy" and will take as many slaughter hours as possible until the species is at the target population
-    # This means that the slaughter hours are used in the order that the species are listed in the animal_types list
-    new_slaughter_rate, spare_slaughter_hours = calculate_slaughter_rate(animal_object, spare_slaughter_hours, target_animal_population, new_births_animals_month, new_other_animal_death)
+#     target_animal_population = animal_object.target_population_head
 
-    # This is the main calculation of the population
-    new_animal_population = calculate_animal_population(animal_object, new_births_animals_month, new_other_animal_death, new_slaughter_rate)
+#     # Calculate the number of new animals born this month given the number of pregnant animals
+#     # (must run after calculate_breeding_changes and pregnant animals)
 
-    # Determine how many of the animals who died this month were pregnant
-    # Check if the number of pregnant animals set for slaughter is less than the number of animals slaughtered this month
-    # If so, proceed to calculate the number of pregnant animals slaughtered
-    # Otherwise, set the number of pregnant animals slaughtered to the number of animals slaughtered this month
-    new_pregnant_animals_total, new_slaughtered_pregnant_animals = calculate_pregnant_slaughter(animal_object, new_slaughter_rate)
+#     # Calculate other deaths
+#     new_other_animal_death = calculate_other_deaths(animal_object)
 
-    # Calculate the number of pregnant animals birthing this month, based on the number of pregnant animals remaining
-    # This is effectively the pregnant animals _next_ month
-    new_pregnant_animals_birthing = calculate_pregnant_animals_birthing(animal_object, new_pregnant_animals_total)
+#     # Determine slaughter rates (USE spare slaughter hours)
+#     # Each call of this function is "greedy" and will take as many slaughter hours as possible until the species is at the target population
+#     # This means that the slaughter hours are used in the order that the species are listed in the animal_types list
+#     new_slaughter_rate, spare_slaughter_hours = calculate_slaughter_rate(animal_object, spare_slaughter_hours, target_animal_population, new_births_animals_month, new_other_animal_death)
+
+#     # This is the main calculation of the population
+#     new_animal_population = calculate_animal_population(animal_object, new_births_animals_month, new_other_animal_death, new_slaughter_rate)
+
+#     # Determine how many of the animals who died this month were pregnant
+#     # Check if the number of pregnant animals set for slaughter is less than the number of animals slaughtered this month
+#     # If so, proceed to calculate the number of pregnant animals slaughtered
+#     # Otherwise, set the number of pregnant animals slaughtered to the number of animals slaughtered this month
+#     new_pregnant_animals_total, new_slaughtered_pregnant_animals = calculate_pregnant_slaughter(animal_object, new_slaughter_rate)
+
+#     # Calculate the number of pregnant animals birthing this month, based on the number of pregnant animals remaining
+#     # This is effectively the pregnant animals _next_ month
+#     new_pregnant_animals_birthing = calculate_pregnant_animals_birthing(animal_object, new_pregnant_animals_total)
 
     
 
-    # quick check to fix any overshoots
-    if new_pregnant_animals_total < 0: # this is to avoid negative numbers of pregnant animals
-        new_pregnant_animals_total = 0
+#     # quick check to fix any overshoots
+#     if new_pregnant_animals_total < 0: # this is to avoid negative numbers of pregnant animals
+#         new_pregnant_animals_total = 0
 
-    if new_animal_population < target_animal_population:
-        new_animal_population = target_animal_population
+#     if new_animal_population < target_animal_population:
+#         new_animal_population = target_animal_population
 
 
-    # don't need to return much as the animal object is passed by reference, so the changes are made to the object itself
-    # just need to return the spare slaughter hours
+#     # don't need to return much as the animal object is passed by reference, so the changes are made to the object itself
+#     # just need to return the spare slaughter hours
 
-    # append new values to the animal object
-    animal_object.population.append(new_animal_population)
-    animal_object.slaughter.append(new_slaughter_rate)
-    animal_object.pregnant_animals_total.append(new_pregnant_animals_total)
-    animal_object.pregnant_animals_birthing_this_month.append(new_pregnant_animals_birthing)
-    animal_object.other_animal_death.append(new_other_animal_death)
-    animal_object.slaughtered_pregnant_animals.append(new_slaughtered_pregnant_animals)
+#     # append new values to the animal object
+#     animal_object.population.append(new_animal_population)
+#     animal_object.slaughter.append(new_slaughter_rate)
+#     animal_object.pregnant_animals_total.append(new_pregnant_animals_total)
+#     animal_object.pregnant_animals_birthing_this_month.append(new_pregnant_animals_birthing)
+#     animal_object.other_animal_death.append(new_other_animal_death)
+#     animal_object.slaughtered_pregnant_animals.append(new_slaughtered_pregnant_animals)
 
-    return spare_slaughter_hours
+#     return spare_slaughter_hours
 
 
 
@@ -746,8 +812,8 @@ def calculate_pregnant_slaughter(animal_object, new_slaughter_rate):
 
     """
     new_pregnant_animals_total = animal_object.pregnant_animals_total[-1]
-    if animal_object.pregnant_animal_slaughter_percent * animal_object.pregnant_animals_total[-1]  < new_slaughter_rate:
-        new_slaughtered_pregnant_animals = animal_object.pregnant_animal_slaughter_percent * animal_object.pregnant_animals_total[-1]
+    if animal_object.pregnant_animal_slaughter_fraction * animal_object.pregnant_animals_total[-1]  < new_slaughter_rate:
+        new_slaughtered_pregnant_animals = animal_object.pregnant_animal_slaughter_fraction * animal_object.pregnant_animals_total[-1]
         new_pregnant_animals_total -= ( 
             new_slaughtered_pregnant_animals +
             animal_object.other_animal_death_rate_monthly * animal_object.pregnant_animals_total[-1]
@@ -760,6 +826,12 @@ def calculate_pregnant_slaughter(animal_object, new_slaughter_rate):
 def calculate_animal_population(animal_object, new_births_animals_month, new_other_animal_death, new_slaughter_rate):
     new_animal_population = animal_object.population[-1]  - new_slaughter_rate - new_other_animal_death + new_births_animals_month
     return new_animal_population
+
+# def calculate_imported_and_transfer_population(animal_object):
+
+
+#     animal_object.transfer_births_or_head
+
 
 def calculate_retiring_milk_animals(animal_object):
     """
@@ -777,7 +849,7 @@ def calculate_retiring_milk_animals(animal_object):
     """
     # calculate the number of animals retiring from milk production this month
     # this is the number of animals that are at the end of their productive life
-    new_retiring_milk_animals = animal_object.population[-1] / animal_object.productive_milk_age_end
+    new_retiring_milk_animals = animal_object.population[-1] * animal_object.retiring_milk_animals_fraction
     return new_retiring_milk_animals
 
 def calculate_births(animal_object):
@@ -795,12 +867,15 @@ def calculate_births(animal_object):
         The number of new births this month        
     """
     new_births_animals_month = animal_object.pregnant_animals_birthing_this_month[-1] * animal_object.animals_per_pregnancy
-    return new_births_animals_month
+    new_export_births_animals_month = new_births_animals_month * (animal_object.birth_ratio - 1)
+    # new export births will be an optional return. Birth ratio is defined in the class
+    # for milk animals "export births = new births" for meat animals "export births = 0"
+    return new_births_animals_month, new_export_births_animals_month
 
 def calculate_breeding_changes(animal_object):
     animal_object.pregnant_animals_birthing_this_month[-1] *= 1 - animal_object.reduction_in_animal_breeding #consider doing this as a list? 
     animal_object.pregnant_animals_total[-1] *= 1 - animal_object.reduction_in_animal_breeding #consider doing this as a list? 
-    animal_object.pregnant_animal_slaughter_percent = 0 # this seems a bit risky for the mode, it's simplistic
+    animal_object.pregnant_animal_slaughter_fraction = 0 # this seems a bit risky for the mode, it's simplistic
     return 
 
 def calculate_other_deaths(animal_object):
@@ -846,9 +921,12 @@ def calculate_slaughter_rate(animal_object, spare_slaughter_hours, target_animal
         if animal_object.population[-1]-new_slaughter_rate < target_animal_population + new_births_animals_month - new_other_animal_death:
             new_slaughter_rate = animal_object.population[-1] - target_animal_population + new_births_animals_month - new_other_animal_death
             # spare slaugthter hours ae calculated based on the new (reduced) slaughter rate
+            if new_slaughter_rate < 0:
+                new_slaughter_rate = 0
             spare_slaughter_hours = (
                 abs(new_slaughter_rate - animal_object.slaughter[-1])
             ) * animal_object.animal_slaughter_hours
+            
 
         return new_slaughter_rate, spare_slaughter_hours
 
@@ -918,17 +996,33 @@ def main(country_code):
     update_animal_objects_with_milk(milk_animals,df_animal_attributes)
 
 
-
     spare_slaughter_hours = 0 
+
+    # create a list of transfer populations, based on all the different animal species, use for loop to create a dict that can be used to store the transfer populations
+    transfer_populations = {}
+    for animal in all_animals:
+        transfer_populations[animal.animal_species] = 0
+
+
+
     for month in range(0,months_to_run):
         for animal in all_animals:
-            retired_animals, spare_slaughter_hours = change_in_animal_population(animal,month,spare_slaughter_hours,0) # TARGET POPS IS BROKEN
-            # if milk animal, update corresponding meat animal with theadded population from the retired animals
-            if animal.animal_type == 'milk':
-                for meat_animal in non_milk_animals:
-                    if meat_animal.animal_type == animal.animal_type.replace('milk','meat'):
-                        meat_animal.population[month] += retired_animals
+            # additive population
 
+            new_births, new_transfer_births = calculate_additive_population(animal, month)
+            # add new population to the animal object
+            if animal.animal_type == 'milk':
+                transfer_populations[animal.animal_species] = animal.retiring_milk_head_monthly() + new_transfer_births
+                # add to tranfser population
+
+            if animal.animal_type != 'milk':
+                new_additive_animals_month =  new_births + transfer_populations[animal.animal_species]
+            else:
+                new_additive_animals_month =  new_births
+            
+
+            spare_slaughter_hours = change_in_animal_population(animal,month,spare_slaughter_hours, new_additive_animals_month) 
+            # if milk animal, update corresponding meat animal with theadded population from the retired animals
 
     #plot the results
     for animal in all_animals:
@@ -940,7 +1034,7 @@ def main(country_code):
 
 
 if __name__ == "__main__":
-    main("AUS")
+    main("USA")
 
 
 
