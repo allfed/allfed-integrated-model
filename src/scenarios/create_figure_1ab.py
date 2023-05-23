@@ -74,7 +74,7 @@ def recalculate_plots():
     this_simulation["shutoff"] = "long_delayed_shutoff"
     this_simulation["meat_strategy"] = "efficient_meat_strategy"
 
-    simple_adaptations_title = "simple_adaptations"
+    simple_adaptations_title = "simple adaptations"
     [
         world_simple_adaptations,
         fraction_needs_simple_adaptations,
@@ -86,7 +86,7 @@ def recalculate_plots():
 
     this_simulation["cull"] = "do_eat_culled"
 
-    simple_adaptations_culling_title = "simple_adaptations,\nculling"
+    simple_adaptations_culling_title = "simple adaptations,\nculling"
     [
         world_simple_adaptations_culling,
         fraction_needs_simple_adaptations_culling,
@@ -128,7 +128,7 @@ def recalculate_plots():
     )
 
     this_simulation["scenario"] = "methane_scp"
-    methane_scp_title = "Example Scenario\n + methane_scp"
+    methane_scp_title = "Example Scenario\n + methane scp"
     [
         world_methane_scp,
         fraction_needs_methane_scp,
@@ -137,14 +137,14 @@ def recalculate_plots():
     )
 
     this_simulation["scenario"] = "cellulosic_sugar"
-    cs_title = "Example Scenario\n+ cellulosic_sugar"
+    cs_title = "Example Scenario\n+ cellulosic sugar"
     [
         world_cellulosic_sugar,
         fraction_needs_cellulosic_sugar,
     ] = call_scenario_runner_with_and_without_fat_protein(this_simulation, cs_title)
 
     this_simulation["scenario"] = "relocated_crops"
-    cold_crops_title = "Example Scenario\n+ cold_crops"
+    cold_crops_title = "Example Scenario\n+ cold crops"
     [
         world_cold_crops,
         fraction_needs_cold_crops,
@@ -153,7 +153,7 @@ def recalculate_plots():
     )
 
     this_simulation["scenario"] = "greenhouse"
-    greenhouse_title = "Example Scenario\n+ greenhouse_crops"
+    greenhouse_title = "Example Scenario\n+ greenhouse crops"
     [
         world_greenhouses,
         fraction_needs_greenhouses,
