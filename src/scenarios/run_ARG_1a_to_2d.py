@@ -275,12 +275,12 @@ def run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area():
 
 
 def main(args):
-    # run_ARG_net_baseline()
-    # run_ARG_gross_baseline()
+    run_ARG_net_baseline()
+    run_ARG_gross_baseline()
     # run_ARG_net_nuclear_winter()
     run_ARG_net_nuclear_winter_reduced_feed_waste()
-    # run_ARG_net_nuclear_winter_reduced_feed_waste_resilient()
-    # run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area()
+    run_ARG_net_nuclear_winter_reduced_feed_waste_resilient()
+    run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area()
 
 
 if __name__ == "__main__":

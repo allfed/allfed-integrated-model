@@ -24,11 +24,6 @@ class Optimizer:
 
         # If having trouble with the optimization, here are a few parameters to reduce the number of variables
         # so you can print(model) to see what constraints are being added
-        # single_valued_constants["NMONTHS"] = 1
-        # single_valued_constants["ADD_SEAWEED"] = False
-        # single_valued_constants["ADD_METHANE_SCP"] = False
-        # single_valued_constants["ADD_CULLED_MEAT"] = False
-        # single_valued_constants["inputs"]["OG_USE_BETTER_ROTATION"] = False
 
         self.single_valued_constants = single_valued_constants
         self.time_consts = time_consts
@@ -38,10 +33,9 @@ class Optimizer:
         NMONTHS = single_valued_constants["NMONTHS"]
 
         variables = self.load_variable_names_and_prefixes(NMONTHS)
+
         # MODEL GENERATION LOOP #
 
-        # TODO: it would be nice to not pass model or variables in, and instead to simply
-        # get conditions as a dictionary, and add the conditions to the model in this function
         resource_constants = {
             "ADD_SEAWEED": {
                 "prefixes": self.seaweed_prefixes,
@@ -88,6 +82,7 @@ class Optimizer:
         status = model.solve(
             pulp.PULP_CBC_CMD(gapRel=0.0001, msg=PRINT_PULP_MESSAGES, fracGap=0.001)
         )
+
         ASSERT_SUCCESSFUL_OPTIMIZATION = True
         if ASSERT_SUCCESSFUL_OPTIMIZATION:
             assert status == 1, "ERROR: OPTIMIZATION FAILED!"
@@ -226,7 +221,6 @@ class Optimizer:
         maximizer_string = "Crops_And_Stored_Food_Optimization_Averaged"
         total_feed_biofuel_variable = 0
         for month in range(0, NMONTHS):
-
             total_feed_biofuel_variable += (
                 variables["methane_scp_feed"][month]
                 + variables["methane_scp_biofuel"][month]
@@ -248,34 +242,46 @@ class Optimizer:
             pulp.PULP_CBC_CMD(gapRel=0.0001, msg=True, fracGap=0.001)
         )
 
-        print("model_max_to_humans")
-        print(model_max_to_humans)
-
         assert status == 1, "ERROR: OPTIMIZATION FAILED!"
 
         # here we're constraining the previous optimization to the previously determined optimal value
-        total_feed_biofuel_variable = 0
+        scp_sum = 0
+        cell_sugar_sum = 0
+        seaweed_sum = 0
+
+        total_feed_biofuel_variable_for_constraint = 0
         maximizer_string = "Crops_And_Stored_Food_Optimization_Averaged_Objective"
         for month in range(0, NMONTHS):
-            total_feed_biofuel_variable += (
+            scp_sum = (
+                variables["methane_scp_feed"][month].varValue
+                + variables["methane_scp_biofuel"][month].varValue
+                if hasattr(variables["methane_scp_feed"][month], "varValue")
+                else 0
+            )
+            cell_sugar_sum = (
+                variables["cellulosic_sugar_feed"][month].varValue
+                + variables["cellulosic_sugar_biofuel"][month].varValue
+                if hasattr(variables["cellulosic_sugar_feed"][month], "varValue")
+                else 0
+            )
+            seaweed_sum = (
+                variables["seaweed_feed"][month].varValue
+                + variables["seaweed_biofuel"][month].varValue
+                if hasattr(variables["seaweed_feed"][month], "varValue")
+                else 0
+            )
+            total_feed_biofuel_variable_for_constraint += (
                 variables["methane_scp_feed"][month]
                 + variables["methane_scp_biofuel"][month]
                 + variables["cellulosic_sugar_feed"][month]
                 + variables["cellulosic_sugar_biofuel"][month]
                 + variables["seaweed_feed"][month]
                 + variables["seaweed_biofuel"][month]
-            ) / NMONTHS >= (
-                variables["methane_scp_feed"][month].varValue
-                + variables["methane_scp_biofuel"][month].varValue
-                + variables["cellulosic_sugar_feed"][month].varValue
-                + variables["cellulosic_sugar_biofuel"][month].varValue
-                + variables["seaweed_feed"][month].varValue
-                + variables["seaweed_biofuel"][month].varValue
-            ) / NMONTHS * 0.99999
+            ) / NMONTHS >= (scp_sum + cell_sugar_sum + seaweed_sum) / NMONTHS * 0.9999
 
         model_max_to_humans += (
             variables["objective_function_best_to_humans"]
-            <= total_feed_biofuel_variable,
+            <= total_feed_biofuel_variable_for_constraint,
             maximizer_string,
         )
 
@@ -290,61 +296,45 @@ class Optimizer:
         single_valued_constants,
     ):
         """
-        in this case we are trying to get the differences between all the variables
-        to be the
-        smallest, without causing the optimization to fail.
+        Optimize the smoothing objective function.
         """
 
         # Create the model to optimize
-        model_smoothing = model
+        model_smoothing = model.copy()  # copy the model instead of referencing it
         model_smoothing.sense = LpMinimize
-        variables["objective_function_smoothing"] = LpVariable(
-            name="SMOOTHING_OBJECTIVE", lowBound=0
-        )
 
-        for month in range(0, NMONTHS):
+        smoothing_obj = LpVariable(name="SMOOTHING_OBJECTIVE", lowBound=0)
+        variables["objective_function_smoothing"] = smoothing_obj
+
+        for month in range(NMONTHS):
             if single_valued_constants["ADD_CULLED_MEAT"]:
-                maximizer_string = (
-                    "Smoothing_Culled_Pos_Month" + str(month) + "_Objective_Constraint"
-                )
+                constraint_name = f"Smoothing_Culled_{month}_Objective_Constraint"
 
                 model_smoothing += (
-                    variables["objective_function_smoothing"]
-                    >= variables["culled_meat_eaten"][month] * 0.9999,
-                    # - variables["culled_meat_eaten"][month - 1],
-                    maximizer_string,
-                )
-
-                maximizer_string = (
-                    "Smoothing_Culled_Neg_Month" + str(month) + "_Objective_Constraint"
+                    smoothing_obj >= variables["culled_meat_eaten"][month] * 0.9999,
+                    constraint_name + "_Pos",
                 )
                 model_smoothing += (
-                    variables["objective_function_smoothing"]
-                    >= -variables["culled_meat_eaten"][month] * 0.9999,
-                    maximizer_string,
+                    smoothing_obj >= -variables["culled_meat_eaten"][month] * 0.9999,
+                    constraint_name + "_Neg",
                 )
 
         for month in range(3, NMONTHS):
             if single_valued_constants["ADD_STORED_FOOD"]:
-                maximizer_string = (
-                    "Smoothing_Stored_Pos_Month" + str(month) + "_Objective_Constraint"
-                )
+                constraint_name = f"Smoothing_Stored_{month}_Objective_Constraint"
 
                 model_smoothing += (
-                    variables["objective_function_smoothing"]
-                    >= variables["stored_food_to_humans"][month] * 0.99999,
-                    maximizer_string,
+                    smoothing_obj >= variables["stored_food_to_humans"][month] * 0.9999,
+                    constraint_name + "_Pos",
                 )
-        print("model_smoothing")
-        print(model_smoothing)
 
-        model_smoothing.setObjective(variables["objective_function_smoothing"])
+        model_smoothing.setObjective(smoothing_obj)
 
         status = model_smoothing.solve(
             pulp.PULP_CBC_CMD(gapRel=0.0001, msg=False, fracGap=0.001)
         )
-
         assert status == 1, "ERROR: OPTIMIZATION FAILED!"
+
         return model_smoothing, variables
 
     def add_old_objective_as_constraint(self, model, variables, NMONTHS):
@@ -354,7 +344,7 @@ class Optimizer:
         """
 
         min_value = (
-            model.objective.value() * 0.999999
+            model.objective.value() * 0.9999
         )  # reach almost the same as objective, but allow for small rounding error if needed
 
         # add the constraint for consumed_kcals each month
@@ -522,7 +512,7 @@ class Optimizer:
                 == variables["stored_food_end"][month - 1]
             )
 
-        conditions["Stored_Food_Eaten_Feed_Biofuels"] = (
+        conditions["Stored_Food_Eaten"] = (
             variables["stored_food_end"][month]
             == variables["stored_food_start"][month]
             - variables["stored_food_to_humans"][month]
@@ -792,18 +782,8 @@ class Optimizer:
         )
 
         conditions = {
-            "Feed_Used": (
-                feed_sum / self.single_valued_constants["BILLION_KCALS_NEEDED"] * 100
-                == self.time_consts["feed"].kcals[month]
-                / self.single_valued_constants["BILLION_KCALS_NEEDED"]
-                * 100
-            ),
-            "Biofuel_Used": (
-                biofuel_sum / self.single_valued_constants["BILLION_KCALS_NEEDED"] * 100
-                == self.time_consts["biofuel"].kcals[month]
-                / self.single_valued_constants["BILLION_KCALS_NEEDED"]
-                * 100
-            ),
+            "Feed_Used": (feed_sum == self.time_consts["feed"].kcals[month]),
+            "Biofuel_Used": (biofuel_sum == self.time_consts["biofuel"].kcals[month]),
         }
         model = self.add_conditions_to_model(model, month, conditions)
         return model
@@ -823,28 +803,18 @@ class Optimizer:
         variables["consumed_protein"][month] = LpVariable(
             name="Humans_Fed_Protein_" + str(month) + "_Variable", lowBound=0
         )
-
         model += (
             variables["consumed_kcals"][month]
             == (
                 variables["stored_food_to_humans"][month]
                 + variables["crops_food_to_humans"][month]
-                # + variables["crops_food_eaten"][month]
                 + variables["seaweed_to_humans"][month]
                 * self.single_valued_constants["SEAWEED_KCALS"]
-                # + variables["seaweed_feed"][month]
-                # * self.single_valued_constants["SEAWEED_KCALS"]
-                # + variables["seaweed_biofuel"][month]
-                # * self.single_valued_constants["SEAWEED_KCALS"]
                 + self.time_consts["grazing_milk_kcals"][month]
                 + self.time_consts["cattle_grazing_maintained_kcals"][month]
                 + variables["culled_meat_eaten"][month]
                 + variables["cellulosic_sugar_to_humans"][month]
-                # + variables["cellulosic_sugar_feed"][month]
-                # + variables["cellulosic_sugar_biofuel"][month]
                 + variables["methane_scp_to_humans"][month]
-                # + variables["methane_scp_feed"][month]
-                # + variables["methane_scp_biofuel"][month]
                 + self.time_consts["greenhouse_area"][month]
                 * self.time_consts["greenhouse_kcals_per_ha"][month]
                 + self.time_consts["fish"].to_humans.kcals[month]
