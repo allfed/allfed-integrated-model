@@ -108,18 +108,3 @@ class StoredFood:
             fat_units="thousand tons",
             protein_units="thousand tons",
         )
-
-    # def set_to_zero(self):
-    #     """
-    #     Initializes the stored food to zero.
-    #     """
-    #     self.TONS_DRY_CALORIC_EQIVALENT_SF = 0
-    #     self.INITIAL_SF_KCALS = 0
-    #     self.initial_available.kcals = 0
-    #     self.initial_available.fat = 0
-    #     self.initial_available.protein = 0
-    #     self.initial_available.set_units(
-    #         kcals_units="billion kcals",
-    #         fat_units="thousand tons",
-    #         protein_units="thousand tons",
-    #     )

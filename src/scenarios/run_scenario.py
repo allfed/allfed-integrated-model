@@ -43,8 +43,6 @@ class ScenarioRunner:
             feed_biofuels,
         ) = self.compute_parameters(constants_for_params, scenarios_loader)
 
-        # interpreter.set_feed(feed_biofuels)
-
         # actually make PuLP optimize effective people fed based on all the constants
         # we've determined
         (
@@ -97,8 +95,16 @@ class ScenarioRunner:
         """
         Runs the optimizer and returns the model, variables, and constants
         """
-        optimizer = Optimizer()
+        optimizer = Optimizer(single_valued_constants, time_consts)
         validator = Validator()
+
+        # (
+        #     model,
+        #     variables,
+        #     maximize_constraints,
+        #     single_valued_constants,
+        #     time_consts,
+        # ) = optimizer.optimize_nonhuman_consumption(single_valued_constants, time_consts)
 
         (
             model,
@@ -106,7 +112,7 @@ class ScenarioRunner:
             maximize_constraints,
             single_valued_constants,
             time_consts,
-        ) = optimizer.optimize(single_valued_constants, time_consts)
+        ) = optimizer.optimize_to_humans(single_valued_constants, time_consts)
 
         CHECK_CONSTRAINTS = False
         if CHECK_CONSTRAINTS:

@@ -151,72 +151,44 @@ class Extractor:
     # order the variables that occur mid-month into a list of numeric values
 
     def to_monthly_list_outdoor_crops_kcals(
-        self,
-        crops_food_eaten,
-        crops_kcals_produced,
-        conversion,
+        self, crops_food_eaten, crops_kcals_produced, conversion
     ):
         """
-        This function is actually guessing at the internal operations of the optimizer
-        when it creates an optimized plot.
+        This function calculates the amount of outdoor crop production that is immediately eaten and the
+        amount that is stored for later consumption. If more is eaten than produced, the difference is
+        attributed to the eating of stored up crops.
 
-        It takes the total outdoor crop production and limits it by the actual amount
-        eaten by people reported by the optimizer.
+        Args:
+        - crops_food_eaten: list of the amount of crops eaten each month
+        - crops_kcals_produced: list of the amount of crop production (kcals) each month
+        - conversion: conversion factor from kcals to another unit of measurement
 
-        If more is eaten than produced, this difference is attributed to the eating
-        of stored up crops.
-
-        We know it can't be stored food from before the simulation because the variable
-        only considers the outdoor_crops variable, not the stored_food variable
-
-        The amount of expected crops produced that month that were eaten is assigned to
-        the "immediate" list.
-        The amount eaten beyond the production that month is assigned to the
-        new stored list.
-
-        NOTE: the validator will check that the sum of immediate and new stored is the
-              same as the total amount eaten.
-
+        Returns:
+        - A list of two lists:
+            - The first list contains the amount of outdoor crop production (converted to the specified
+            unit of measurement) that is immediately eaten each month.
+            - The second list contains the amount of outdoor crop production (converted to the specified
+            unit of measurement) that is stored for later consumption each month.
         """
 
         immediately_eaten_output = []
         new_stored_eaten_output = []
-        cf_eaten_output = []
         cf_produced_output = []
-
-        # if the variable was not modeled
-        if isinstance(crops_food_eaten[0], int):
-            return [
-                [0] * len(crops_food_eaten),
-            ]  # return initial value
-
         for month in range(0, self.constants["NMONTHS"]):
             cf_produced = crops_kcals_produced[month]
             cf_produced_output.append(cf_produced)
 
             cf_eaten = crops_food_eaten[month].varValue
 
-            cf_eaten_output.append(cf_eaten)
-
             if cf_produced <= cf_eaten:
                 immediately_eaten = cf_produced
                 new_stored_crops_eaten = cf_eaten - cf_produced
-            else:  # crops_food_eaten < crops_kcals_produced
+            else:
                 immediately_eaten = cf_eaten
                 new_stored_crops_eaten = 0
 
             immediately_eaten_output.append(immediately_eaten * conversion)
             new_stored_eaten_output.append(new_stored_crops_eaten * conversion)
-            SHOW_OUTPUT = False
-            if SHOW_OUTPUT:
-                print(
-                    "   Month "
-                    + str(month)
-                    + ": imm eaten: "
-                    + str(immediately_eaten_output[month])
-                    + " new stored eaten: "
-                    + str(new_stored_eaten_output[month])
-                )
 
         return [immediately_eaten_output, new_stored_eaten_output]
 
@@ -570,7 +542,6 @@ class Extractor:
         protein_ratio,
         constants,
     ):
-
         amount_to_humans = self.extract_generic_results(
             to_humans,
             kcals_ratio,

@@ -1283,9 +1283,6 @@ class Parameters:
         # the crops and stored food before waste, which means the subtraction of waste
         # happens
         # to the feed and biofuels before subtracting from stored food and crops.
-        # any reasonable cap of production should reflect a cap on the actual amount
-        # available
-        # to humans.
 
         # "grain" in all cases just means the stored food + outdoor crop production
         # that is human edible and used for feed
