@@ -155,6 +155,93 @@ class Parameters:
 
         return (constants_out, time_consts, feed_and_biofuels)
 
+    def init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels(
+        self,
+        constants_out,
+        constants_inputs,
+        time_consts,
+        outdoor_crops,
+        methane_scp,
+        cellulosic_sugar,
+        seaweed,
+        stored_food,
+    ):
+        """
+        Calculates the expected amount of livestock if breeding were quickly reduced and slaughter only increased slightly,
+        then using that we calculate the feed they would use given the expected input animal populations over time.
+        Args:
+            self: instance of the class
+            constants_out (dict): dictionary containing output constants
+            constants_inputs (dict): dictionary containing input constants
+            time_consts (dict): dictionary containing time constants
+            outdoor_crops (dict): dictionary containing outdoor crop constants
+            methane_scp (dict): dictionary containing methane SCP constants
+            cellulosic_sugar (dict): dictionary containing cellulosic sugar constants
+            seaweed (dict): dictionary containing seaweed constants
+            stored_food (dict): dictionary containing stored food constants
+        Returns:
+            tuple: tuple containing constants_out, time_consts, and feed_and_biofuels
+        """
+
+        feed_and_biofuels = FeedAndBiofuels(constants_inputs)
+        meat_and_dairy = MeatAndDairy(constants_inputs)
+
+        # TODO: parametrize these constants in the scenarios so they can be adjusted
+        # without messing with the code
+        # This function encodes the fact that the use of improved crop rotations ALSO alters the way we treat dairy cattle
+        # In particular, if we are using improved crop rotations, part of this is assuming dairy cattle are fully fed by grass
+        # If we aren't using improved rotations (a somewhat more pessimistic outcome), we stop breeding cattle entirely and don't use up any of the grass
+        # for dairy output.
+        if constants_inputs["OG_USE_BETTER_ROTATION"]:
+            reduction_in_dairy_calves = 0
+            use_grass_and_residues_for_dairy = True
+        else:
+            reduction_in_dairy_calves = 100
+            use_grass_and_residues_for_dairy = False
+        cao = CalculateAnimalOutputs()
+        # if we have an immediate shutoff, then turn off the feed to animals entirely
+        if constants_inputs["DELAY"]["FEED_SHUTOFF_MONTHS"] == 0:
+            feed_ratio = 0
+        else:
+            feed_ratio = 1
+        (
+            biofuels_prewaste,
+            feed_prewaste,
+            meat_and_dairy,
+            time_consts,
+            constants_out,
+        ) = self.init_meat_and_dairy_and_feed_from_breeding(
+            constants_inputs,
+            reduction_in_dairy_calves,
+            use_grass_and_residues_for_dairy,
+            cao,
+            feed_and_biofuels,
+            meat_and_dairy,
+            feed_ratio,
+            constants_out,
+            time_consts,
+        )
+        feed_and_biofuels.biofuel = biofuels_prewaste
+        feed_and_biofuels.feed = feed_prewaste
+        feed_and_biofuels.nonhuman_consumption = (
+            feed_and_biofuels.biofuel + feed_and_biofuels.feed
+        )
+        nonhuman_consumption = feed_and_biofuels.nonhuman_consumption
+        # post waste
+        time_consts["nonhuman_consumption"] = nonhuman_consumption
+        time_consts["feed"] = feed_and_biofuels.feed
+        time_consts["biofuel"] = feed_and_biofuels.biofuel
+        time_consts[
+            "excess_feed"
+        ] = feed_and_biofuels.get_excess_food_usage_from_percents(
+            constants_inputs["EXCESS_FEED_PERCENT"]
+        )
+        return (
+            constants_out,
+            time_consts,
+            feed_and_biofuels,
+        )
+
     def assert_constants_not_nan(self, single_valued_constants, time_consts):
         """
         This function checks that there are no NaN values in the constants, as the linear optimizer
