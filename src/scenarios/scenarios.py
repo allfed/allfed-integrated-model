@@ -2278,12 +2278,6 @@ class Scenarios:
         Raises:
             AssertionError: if the scenario set is already True
 
-        Example:
-            >>>
-            >>> constants_for_params = {'param1': 1, 'param2': 2}
-            >>> instance = ClassName()
-            >>> instance.get_all_resilient_foods_and_more_area_scenario(constants_for_params)
-            {'param1': 1, 'param2': 2, 'scenario': 'all resilient foods and more area'}
         """
         # Add scenario description
         self.scenario_description += "\nall resilient foods"

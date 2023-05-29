@@ -17,52 +17,8 @@ from src.optimizer.parameters import Parameters
 
 
 class ScenarioRunner:
-    def run_scenario(scenario_file_path: str, output_file_path: str) -> None:
-        """
-        Runs a scenario file and writes the output to a file.
-
-        Args:
-            scenario_file_path (str): The path to the scenario file.
-            output_file_path (str): The path to the output file.
-
-        Returns:
-            None
-        """
-        # Open the scenario file and read its contents
-        with open(scenario_file_path, "r") as scenario_file:
-            scenario = scenario_file.read()
-
-        # Split the scenario into individual lines
-        lines = scenario.split("\n")
-
-        # Initialize the output string
-        output = ""
-
-        # Loop through each line of the scenario
-        for line in lines:
-            # Strip any leading or trailing whitespace
-            line = line.strip()
-
-            # Ignore any empty lines or comments
-            if not line or line.startswith("#"):
-                continue
-
-            # Split the line into individual words
-            words = line.split()
-
-            # Get the command and its arguments
-            command = words[0]
-            args = words[1:]
-
-            # Execute the command and get its output
-            command_output = execute_command(command, args)
-
-            # Add the command output to the output string
-            output += command_output + "\n"
-
-        # Write the output string to the output file
-        with open(output_file_path, "w") as output_file:
-            output_file.write(output)
+    def __init__(self):
+        pass
 
     def run_and_analyze_scenario(self, constants_for_params, scenarios_loader):
         """
