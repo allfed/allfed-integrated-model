@@ -9,6 +9,16 @@ copyright: ALLFED
 
 #This specifies the autogeneration portion
 pages:
+  - page: "modules/src/scenarios/run_ARG_1a_to_2d.md"
+    source: "src/scenarios/run_ARG_1a_to_2d.py"
+    functions:
+      - run_ARG_net_baseline
+      - run_ARG_gross_baseline
+      - run_ARG_net_nuclear_winter
+      - run_ARG_net_nuclear_winter_reduced_feed_waste
+      - run_ARG_net_nuclear_winter_reduced_feed_waste_resilient
+      - run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area
+
   - page: "modules/src/scenarios/run_model_with_resilient_foods.md"
     source: "src/scenarios/run_model_with_resilient_foods.py"
     functions:
@@ -30,11 +40,46 @@ pages:
     functions:
       - call_scenario_runner
 
+  - page: "modules/src/scenarios/create_figure_2abcde.md"
+    source: "src/scenarios/create_figure_2abcde.py"
+    functions:
+      - call_scenario_runner
+      - call_scenario_runner_whole_world_combined
+      - call_scenario_runner_with_and_without_fat_protein
+      - recalculate_plots
+
+  - page: "modules/src/scenarios/run_model_no_trade.md"
+    source: "src/scenarios/run_model_no_trade.py"
+    classes:
+      - ScenarioRunnerNoTrade
+
+  - page: "modules/src/scenarios/run_USA_with_improved_numbers.md"
+    source: "src/scenarios/run_USA_with_improved_numbers.py"
+    functions:
+      - run_USA_with_and_without_resilient
+
   - page: "modules/src/scenarios/run_model_no_resilient_foods.md"
     source: "src/scenarios/run_model_no_resilient_foods.py"
     functions:
       - run_model_no_resilient_foods
       - set_common_no_resilient_properties
+
+  - page: "modules/src/scenarios/create_figure_1ab.md"
+    source: "src/scenarios/create_figure_1ab.py"
+    functions:
+      - call_scenario_runner
+      - call_scenario_runner_with_and_without_fat_protein
+      - recalculate_plots
+
+  - page: "modules/src/scenarios/run_country_specific_KR.md"
+    source: "src/scenarios/run_country_specific_KR.py"
+    functions:
+      - run_USA_with_and_without_resilient
+
+  - page: "modules/src/scenarios/run_AUS_with_improved_numbers.md"
+    source: "src/scenarios/run_AUS_with_improved_numbers.py"
+    functions:
+      - run_AUS_with_and_without_resilient
 
   - page: "modules/src/scenarios/run_model_baseline.md"
     source: "src/scenarios/run_model_baseline.py"
@@ -42,10 +87,29 @@ pages:
       - run_model_baseline
       - set_common_baseline_properties
 
+  - page: "modules/src/import_scripts_no_food_trade/create_nuclear_winter_csv.md"
+    source: "src/import_scripts_no_food_trade/create_nuclear_winter_csv.py"
+    functions:
+      - get_crop_ratios_this_country
+      - get_overall_reduction
+      - calculate_reductions
+      - clean_up_nw_csv
+      - get_all_crops_correct_countries
+
+  - page: "modules/src/import_scripts_no_food_trade/create_crop_macros_csv.md"
+    source: "src/import_scripts_no_food_trade/create_crop_macros_csv.py"
+    classes:
+      - CropMacros
+
   - page: "modules/src/utilities/make_powerpoint.md"
     source: "src/utilities/make_powerpoint.py"
     classes:
       - MakePowerpoint
+
+  - page: "modules/src/utilities/import_utilities.md"
+    source: "src/utilities/import_utilities.py"
+    classes:
+      - ImportUtilities
 
   - page: "modules/src/utilities/plotter.md"
     source: "src/utilities/plotter.py"
