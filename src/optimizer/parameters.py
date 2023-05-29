@@ -1192,7 +1192,7 @@ class Parameters:
 
         # Calculate the number of animals culled
         meat_and_dairy.calculate_animals_culled(constants_inputs)
-
+        asdf
         # Calculate the initial culled meat pre-waste, as well as the fraction of fat and protein
         (
             meat_and_dairy.initial_culled_meat_prewaste,

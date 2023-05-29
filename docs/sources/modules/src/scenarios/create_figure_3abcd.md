@@ -9,3 +9,16 @@
 )
 ```
 
+---
+Runs a scenario using the ScenarioRunner class and prints the results.
+
+**Args**
+
+* **this_simulation** (str) : the name of the simulation to run
+* **title** (str) : the title to print before the results
+
+
+**Returns**
+
+* **ScenarioResults**  : the results of the scenario
+

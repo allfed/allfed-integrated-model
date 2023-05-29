@@ -159,16 +159,16 @@ class Extractor:
         attributed to the eating of stored up crops.
 
         Args:
-        - crops_food_eaten: list of the amount of crops eaten each month
-        - crops_kcals_produced: list of the amount of crop production (kcals) each month
-        - conversion: conversion factor from kcals to another unit of measurement
+            - crops_food_eaten: list of the amount of crops eaten each month
+            - crops_kcals_produced: list of the amount of crop production (kcals) each month
+            - conversion: conversion factor from kcals to another unit of measurement
 
         Returns:
-        - A list of two lists:
-            - The first list contains the amount of outdoor crop production (converted to the specified
-            unit of measurement) that is immediately eaten each month.
-            - The second list contains the amount of outdoor crop production (converted to the specified
-            unit of measurement) that is stored for later consumption each month.
+            - A list of two lists:
+                - The first list contains the amount of outdoor crop production (converted to the specified
+                unit of measurement) that is immediately eaten each month.
+                - The second list contains the amount of outdoor crop production (converted to the specified
+                unit of measurement) that is stored for later consumption each month.
         """
 
         immediately_eaten_output = []

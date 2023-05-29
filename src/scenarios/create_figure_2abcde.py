@@ -47,6 +47,7 @@ def call_scenario_runner(this_simulation, title):
     # return the results
     return [world, pop_total, pop_fed, results]
 
+
 def call_scenario_runner_whole_world_combined(this_simulation, title):
     """
     Runs a simulation of a nuclear winter catastrophe on the world, with all countries affected.
@@ -89,6 +90,7 @@ def call_scenario_runner_whole_world_combined(this_simulation, title):
     # Return the world object, total population, fed population, and global results
     return [world, pop_total, pop_fed, global_result_no_trade]
 
+
 def call_scenario_runner_with_and_without_fat_protein(this_simulation, title):
     """
     Runs a simulation with and without fat and protein, and returns the results.
@@ -102,9 +104,7 @@ def call_scenario_runner_with_and_without_fat_protein(this_simulation, title):
 
     Example:
         >>>
-        >>> simulation = {"scale": "country", "crop_disruption": "country_nuclear_winter",
-        ...               "grasses": "country_nuclear_winter", "fish": "nuclear_winter",
-        ...               "nutrition": "catastrophe", "fat": "not_required", "protein": "not_required"}
+        >>> simulation = (some python dictionary with appropriate options)
         >>> results = call_scenario_runner_with_and_without_fat_protein(simulation, "Simulation Title")
     """
 
@@ -122,6 +122,7 @@ def call_scenario_runner_with_and_without_fat_protein(this_simulation, title):
 
     # Return results
     return results
+
 
 def recalculate_plots():
     """
@@ -169,7 +170,8 @@ def recalculate_plots():
 
     # Run simulation for worst-case scenario with simple adaptations, culling, storage, and all resilient foods
     results_resilient_foods = call_scenario_runner_with_and_without_fat_protein(
-        this_simulation, "Example_Scenario + Simple Adaptations + Culling + All Resilient Foods"
+        this_simulation,
+        "Example_Scenario + Simple Adaptations + Culling + All Resilient Foods",
     )
 
     # Define a dictionary of countries and their names
@@ -227,6 +229,7 @@ def recalculate_plots():
         )
 
     return list_by_country
+
 
 def main(RECALCULATE_PLOTS=True):
     """

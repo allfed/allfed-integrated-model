@@ -373,15 +373,15 @@ class ImportUtilities:
         the combined original and layer with the list stacked down below it.
 
         Example:
-        If we have an existing list [a,b,c] and we want to add [d,e,f] to it, we can call the
-        function like this:
-        stack_on_list([a,b,c], [d,e,f])
+            If we have an existing list [a,b,c] and we want to add [d,e,f] to it, we can call the
+            function like this:
+            stack_on_list([a,b,c], [d,e,f])
 
-        This will give us:
-        [
-            [a,b,c],
-            [d,e,f]
-        ]
+            This will give us:
+            [
+                [a,b,c],
+                [d,e,f]
+            ]
 
         Args:
             list (numpy.ndarray): The original list to which the layer is to be added
@@ -502,10 +502,10 @@ class ImportUtilities:
         The weightings are set up to be even across all percentages.
 
         Args:
-        percentages (list): A list of percentages to be averaged.
+            percentages (list): A list of percentages to be averaged.
 
         Returns:
-        float: The weighted average of the percentages.
+            float: The weighted average of the percentages.
         """
 
         # Calculate the length of the input list
@@ -553,10 +553,10 @@ class ImportUtilities:
         for Eswatini.
 
         Args:
-        nw_csv (numpy.ndarray): A numpy array containing country codes and other data
+            nw_csv (numpy.ndarray): A numpy array containing country codes and other data
 
         Returns:
-        numpy.ndarray: The input numpy array with the Swaziland country code changed to Eswatini
+            numpy.ndarray: The input numpy array with the Swaziland country code changed to Eswatini
         """
 
         # Find the index of the Swaziland country code in the input numpy array

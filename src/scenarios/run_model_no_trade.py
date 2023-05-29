@@ -43,6 +43,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         self.predictions = None
         self.metrics = None
         self.trained = False
+
     ...
 
     def run_model_defaults_no_trade(
@@ -67,7 +68,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         this_simulation["fat"] = "not_required"
         this_simulation["protein"] = "not_required"
         this_simulation["meat_strategy"] = "efficient_meat_strategy"
-        
+
         # Call the run_model_no_trade function with the given options
         self.run_model_no_trade(
             title=this_simulation["scenario"] + "_" + this_simulation["fish"],
@@ -120,7 +121,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         """
         Runs the optimizer for a given country and scenario option, and returns the percentage of people fed,
         the scenario description, and the interpreted results.
-    
+
         Args:
             self: instance of the Optimizer class
             country_data (dict): dictionary containing data for the country
@@ -128,19 +129,19 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             create_pptx_with_all_countries (bool): whether to create a PowerPoint file with all countries' figures
             show_country_figures (bool): whether to show the figures for the country
             figure_save_postfix (str): postfix to add to the figure file names
-    
+
         Returns:
             tuple: a tuple containing the percentage of people fed, the scenario description, and the interpreted results
         """
-    
+
         # Extract the country name from the country data
         country_name = country_data["country"]
-    
+
         # Set the constants and scenario loader based on the scenario option
         constants_for_params, scenario_loader = self.set_depending_on_option(
             country_data, scenario_option
         )
-    
+
         # Set the excess feed to 0
         constants_for_params["EXCESS_FEED"] = Food(
             kcals=[0] * constants_for_params["NMONTHS"],
@@ -150,7 +151,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
-    
+
         # Print the country name
         PRINT_COUNTRY = True
         if PRINT_COUNTRY:
@@ -164,7 +165,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             print("")
             print("")
             print("")
-    
+
         # Run the scenario and analyze the results
         USE_TRY_CATCH = False
         if USE_TRY_CATCH:
@@ -185,11 +186,11 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 constants_for_params, scenario_loader
             )
             percent_people_fed = interpreted_results.percent_people_fed
-    
+
         # Print the percentage of people fed
         print("percent_people_fed")
         print(percent_people_fed)
-    
+
         # If the percentage of people fed is not NaN, plot the feed and figure 1ab
         if not np.isnan(percent_people_fed):
             Plotter.plot_feed(
@@ -209,7 +210,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 create_pptx_with_all_countries,
                 scenario_loader.scenario_description,
             )
-    
+
         # Return the percentage of people fed, the scenario description, and the interpreted results
         return (
             percent_people_fed / 100,
@@ -221,32 +222,32 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         """
         This function fills the needs_ratio column of the world dataframe with the kcals_ratio_capped value for a given
         country_code. If the country_code is not found in the world dataframe, a message is printed.
-    
+
         Args:
             world (pandas.DataFrame): the dataframe containing the data for all countries
             country_code (str): the ISO3 code of the country for which the needs_ratio is to be filled
             needs_ratio (float): the kcals_ratio value for the country
-    
+
         Returns:
             None
         """
-    
+
         # Map the country_code to the corresponding ISO3 code in the world dataframe
         if country_code == "SWT":
             country_code_map = "SWZ"
         else:
             country_code_map = country_code
-    
+
         # Get the row(s) corresponding to the country_code_map in the world dataframe
         country_map = world[world["iso_a3"].apply(lambda x: x == country_code_map)]
-    
+
         # If no match is found, print a message
         if len(country_map) == 0:
             PRINT_NO_MATCH = False
             if PRINT_NO_MATCH:
                 print("no match")
                 print(country_code_map)
-    
+
         # If exactly one match is found, fill the needs_ratio column with kcals_ratio_capped
         if len(country_map) == 1:
             # cap at 100% fed, surplus is not traded away in this scenario
@@ -271,9 +272,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         countries_list is a list of country codes to run the model for, but if
         there's an "!" in the list, you skip that one.
         If you leave it blank, it runs all the countries
-    
+
         You can generate a powerpoint as an option here too
-    
+
         Args:
             title (str): title of the powerpoint presentation
             create_pptx_with_all_countries (bool): whether to create a powerpoint presentation
@@ -284,17 +285,17 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             countries_list (list): list of country codes to run the model for
             figure_save_postfix (str): postfix to add to the figure save name
             return_results (bool): whether to return the results
-    
+
         Returns:
             list: a list containing the world, net population, net population fed, and results
         """
         assert len(scenario_option) > 0, "ERROR: a scenario must be specified"
-    
+
         if create_pptx_with_all_countries:
             if not os.path.exists(Path(repo_root) / "results" / "large_reports"):
                 os.mkdir(Path(repo_root) / "results" / "large_reports")
             Plotter.start_pptx("No trade by country")
-    
+
         # read the no trade csv file
         NO_TRADE_CSV = (
             Path(repo_root)
@@ -303,47 +304,47 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             / "computer_readable_combined.csv"
         )
         no_trade_table = pd.read_csv(NO_TRADE_CSV)
-    
+
         # import the visual map
         world = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
-    
+
         # oddly, some of these were -99
         world.loc[world.name == "France", "iso_a3"] = "FRA"
         world.loc[world.name == "Norway", "iso_a3"] = "NOR"
         world.loc[world.name == "Kosovo", "iso_a3"] = "KOS"
-    
+
         # get the countries to run and skip
         (
             exclusive_countries_to_run,
             countries_to_skip,
         ) = self.get_countries_to_run_and_skip(countries_list)
-    
+
         results = {}
         net_pop_fed = 0
         net_pop = 0
         scenario_description = ""
         n_errors = 0
         failed_countries = "Failed Countries: \n"
-    
+
         # iterate over each country from spreadsheet, run the optimizer, plot the result
         for index, country_data in no_trade_table.iterrows():
             country_code = country_data["iso3"]
-    
+
             if len(exclusive_countries_to_run) > 0:
                 if country_code not in exclusive_countries_to_run:
                     continue
-    
+
             if country_code in countries_to_skip:
                 continue
-    
+
             population = country_data["population"]
-    
+
             # skip countries with no population
             if np.isnan(population):
                 continue
-    
+
             print("about to run optimizer for country")
-    
+
             # run the optimizer for the country
             (
                 needs_ratio,
@@ -361,27 +362,27 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 n_errors += 1
                 failed_countries += " " + country_name
                 continue
-    
+
             # fill data for map
             self.fill_data_for_map(world, country_code, needs_ratio)
-    
+
             # we say all are fed if ratio of macronutrient needs met is greater than 1
             if needs_ratio >= 1:
                 capped_ratio = 1
             else:
                 capped_ratio = needs_ratio
-    
+
             net_pop_fed += capped_ratio * population
             net_pop += population
-    
+
             if return_results:
                 results[country_name] = interpreted_results
-    
+
         if net_pop > 0:
             ratio_fed = str(round(float(net_pop_fed) / float(net_pop), 4))
         else:
             ratio_fed = str(np.nan)
-    
+
         print("Net population considered: " + str(net_pop / 1e9) + " Billion people")
         print("Fraction of this population fed: " + ratio_fed)
         print(scenario_description)
@@ -392,7 +393,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         print("")
         print("")
         print("")
-    
+
         # plot the map of countries fed
         if show_map_figures or add_map_slide_to_pptx:
             Plotter.plot_map_of_countries_fed(
@@ -402,7 +403,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 show_map_figures,
                 add_map_slide_to_pptx,
             )
-    
+
         # save the powerpoint presentation
         year = str(date.today().year)
         month = str(date.today().month)
@@ -426,7 +427,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 + minute
                 + ".pptx"
             )
-    
+
         # return a dataframe with each country and the world needs ratio
         return [world, net_pop, net_pop_fed, results]
 
@@ -437,23 +438,23 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         that should be skipped. If a country code has a "!" in front of it, it should be
         skipped. If there are no "!" in any of the codes, then only the ones listed will
         be run.
-    
+
         Args:
             countries_list (list): A list of country codes.
-    
+
         Returns:
             tuple: A tuple containing two lists: the first list contains the country codes
             that should be run exclusively, and the second list contains the country codes
             that should be skipped.
         """
-    
+
         countries_to_skip = []
         exclusive_countries_to_run = []
-    
+
         # If the countries_list is empty, return two empty lists
         if countries_list == []:
             return [[], []]
-    
+
         # If all the country codes have a "!" in front of them, skip all of them except
         # the ones without the "!".
         if np.array([("!" in c) for c in countries_list]).all():
@@ -466,7 +467,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             for c in countries_list:
                 if "!" not in c:
                     exclusive_countries_to_run.append(c)
-    
+
         return exclusive_countries_to_run, countries_to_skip
 
     def run_many_options(
@@ -495,11 +496,11 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         print("")
         print("")
         print("")
-        
+
         # If add_map_slide_to_pptx is True, start a PowerPoint presentation
         if add_map_slide_to_pptx:
             Plotter.start_pptx("Various Scenario Options " + title)
-    
+
         # Loop through each scenario and run the model
         scenario_number = 1
         for scenario_option in scenario_options:
@@ -515,7 +516,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 countries_list=countries_list,
                 return_results=False,
             )
-    
+
         # If add_map_slide_to_pptx is True, end the PowerPoint presentation and save it
         if add_map_slide_to_pptx:
             year = str(date.today().year)
@@ -552,19 +553,19 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         This function creates several maps with different assumptions by combining different options
         for waste, buffer, shutoff, fat, and protein. It then runs many options using the
         run_many_options function.
-    
+
         Args:
             self: instance of the class
             this_simulation (dict): dictionary containing the simulation parameters
             show_map_figures (bool): whether to show the map figures or not
-    
+
         Returns:
             None
         """
-    
+
         # initializing lists
         this_simulation_combinations = {}
-    
+
         # creating different options for waste, buffer, shutoff, fat, and protein
         this_simulation_combinations["waste"] = [
             "baseline_in_country",
@@ -577,11 +578,11 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         ]
         this_simulation_combinations["fat"] = ["required", "not_required"]
         this_simulation_combinations["protein"] = ["required", "not_required"]
-    
+
         # combining the different options using itertools.product
         flat = [[(k, v) for v in vs] for k, vs in this_simulation_combinations.items()]
         options = [dict(items) for items in product(*flat)]
-    
+
         # adding default options to the list of options
         defaults = this_simulation
         defaults["nutrition"] = "catastrophe"
@@ -590,7 +591,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         options_including_defaults = []
         for option in options:
             options_including_defaults.append(defaults | option)
-    
+
         # running the simulation for each option
         self.run_many_options(
             scenario_options=options_including_defaults,
@@ -602,23 +603,23 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
     def run_desired_simulation(self, this_simulation, args):
         """
         Runs the desired simulation based on the given arguments and generates a report if specified.
-    
+
         Args:
             this_simulation (Simulation): The simulation object to run.
             args (list): A list of optional arguments to specify the type of simulation to run and report generation.
-    
+
         Optional Args:
             first: [single|multi] (single set of assumptions or multiple)
             second: [pptx|no_pptx] (save a pptx report or not)
             third: [no_plot|plot] (plots figures)
-    
+
         Returns:
             None
-    
+
         Example:
             >>>
             >>> run_desired_simulation(simulation_object, ['single', 'pptx', 'plot'])
-    
+
         """
         # Print optional argument descriptions
         print("arguments, all optional:")
@@ -628,7 +629,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         print("")
         print("")
         print("")
-    
+
         # Determine which optional arguments were provided
         if len(args) == 1:
             single_or_various = args[0]
@@ -650,14 +651,14 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             single_or_various = "single"
             create_pptx = "pptx"
             plot_figs = "no_plot"
-    
+
         # Determine if multiple maps need to be created
         CREATE_SEVERAL_MAPS_PPTX = single_or_various == "multi"
         if CREATE_SEVERAL_MAPS_PPTX:
             self.create_several_maps_with_different_assumptions(
                 this_simulation, show_map_figures=(plot_figs == "plot")
             )
-    
+
         # Determine if a report needs to be generated for each country
         CREATE_PPTX_EACH_COUNTRY = single_or_various == "single"
         if CREATE_PPTX_EACH_COUNTRY:
