@@ -385,16 +385,17 @@ class Parameters:
         constants_out["OG_FRACTION_FAT"] = outdoor_crops.OG_FRACTION_FAT
         constants_out["OG_FRACTION_PROTEIN"] = outdoor_crops.OG_FRACTION_PROTEIN
 
-        # Update the constants_out dictionary with the outdoor crops' rotation fraction of kcals, fat, and protein
-        constants_out[
-            "OG_ROTATION_FRACTION_KCALS"
-        ] = outdoor_crops.OG_ROTATION_FRACTION_KCALS
+        # Update the constants_out dictionary with the outdoor crops' rotation fraction fat, and protein and harvest duration in months
         constants_out[
             "OG_ROTATION_FRACTION_FAT"
         ] = outdoor_crops.OG_ROTATION_FRACTION_FAT
         constants_out[
             "OG_ROTATION_FRACTION_PROTEIN"
         ] = outdoor_crops.OG_ROTATION_FRACTION_PROTEIN
+
+        constants_out["INITIAL_HARVEST_DURATION_IN_MONTHS"] = constants_inputs[
+            "INITIAL_HARVEST_DURATION_IN_MONTHS"
+        ]
         constants_out["DELAY"] = constants_inputs["DELAY"]
 
         # Return the updated constants_out dictionary and the outdoor_crops object
@@ -575,7 +576,7 @@ class Parameters:
         methane_scp.calculate_scp_fat_and_protein_production()
 
         # Add the methane_scp object to the time_consts dictionary.
-        time_consts["methane_scp"] = methane_scp
+        time_consts["methane_scp"] = methane_scp.production
 
         constants_out[
             "MAX_METHANE_SCP_HUMANS_CAN_CONSUME_MONTHLY"

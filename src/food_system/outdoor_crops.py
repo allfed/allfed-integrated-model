@@ -224,7 +224,101 @@ class OutdoorCrops:
         RATIO_KCALS_POSTDISASTER_10Y = constants_for_params["RATIO_CROPS_YEAR10"]
 
         # create the reduction lists for each year
+
+        # we want to start at 1, then end up at the month reduction appropriate for
+        # the month before the next 12 month cycle. That means there are 13 total
+        # values and we only keep the first 12 (the 13th index would have been the
+        # reduction value we were interpolating towards, but instead we add that in
+        # the next array of 12 months)
         y1_to_y2 = np.linspace(1, RATIO_KCALS_POSTDISASTER_1Y, 13)[:-1]
+        y2_to_y3 = np.linspace(
+            RATIO_KCALS_POSTDISASTER_1Y, RATIO_KCALS_POSTDISASTER_2Y, 13
+        )[:-1]
+        y3_to_y4 = np.linspace(
+            RATIO_KCALS_POSTDISASTER_2Y, RATIO_KCALS_POSTDISASTER_3Y, 13
+        )[:-1]
+        y4_to_y5 = np.linspace(
+            RATIO_KCALS_POSTDISASTER_3Y, RATIO_KCALS_POSTDISASTER_4Y, 13
+        )[:-1]
+        y5_to_y6 = np.linspace(
+            RATIO_KCALS_POSTDISASTER_4Y, RATIO_KCALS_POSTDISASTER_5Y, 13
+        )[:-1]
+        y6_to_y7 = np.linspace(
+            RATIO_KCALS_POSTDISASTER_5Y, RATIO_KCALS_POSTDISASTER_6Y, 13
+        )[:-1]
+        y7_to_y8 = np.linspace(
+            RATIO_KCALS_POSTDISASTER_6Y, RATIO_KCALS_POSTDISASTER_7Y, 13
+        )[:-1]
+        y8_to_y9 = np.linspace(
+            RATIO_KCALS_POSTDISASTER_7Y, RATIO_KCALS_POSTDISASTER_8Y, 13
+        )[:-1]
+        y9_to_y10 = np.linspace(
+            RATIO_KCALS_POSTDISASTER_8Y, RATIO_KCALS_POSTDISASTER_9Y, 13
+        )[:-1]
+        y10_to_y11 = np.linspace(
+            RATIO_KCALS_POSTDISASTER_9Y, RATIO_KCALS_POSTDISASTER_10Y, 13
+        )[:-1]
+
+        # this just appends all the reduction lists together
+        # this starts on the month of interest (not necessarily january; probably may)
+        self.all_months_reductions = np.array(
+            list(y1_to_y2)
+            + list(y2_to_y3)
+            + list(y3_to_y4)
+            + list(y4_to_y5)
+            + list(y5_to_y6)
+            + list(y6_to_y7)
+            + list(y7_to_y8)
+            + list(y8_to_y9)
+            + list(y9_to_y10)
+            + list(y10_to_y11)
+        )
+
+        # 7 years of reductions should be 12*7 months.
+        assert len(self.all_months_reductions) == self.NMONTHS
+
+        PLOT_NO_SEASONALITY = False
+        if PLOT_NO_SEASONALITY:
+            print("Plotting with no seasonality")
+            Plotter.plot_monthly_reductions_no_seasonality(self.all_months_reductions)
+
+        month_cycle_starting_january = [
+            JAN_KCALS_OG,
+            FEB_KCALS_OG,
+            MAR_KCALS_OG,
+            APR_KCALS_OG,
+            MAY_KCALS_OG,
+            JUN_KCALS_OG,
+            JUL_KCALS_OG,
+            AUG_KCALS_OG,
+            SEP_KCALS_OG,
+            OCT_KCALS_OG,
+            NOV_KCALS_OG,
+            DEC_KCALS_OG,
+        ]
+
+        # adjust cycle so it starts at the first month of the simulation
+        self.months_cycle = (
+            month_cycle_starting_january[month_index:]
+            + month_cycle_starting_january[0:month_index]
+        )
+
+        self.assign_reduction_from_climate_impact(constants_for_params)
+
+        if constants_for_params["RATIO_INCREASED_CROP_AREA"] > 1:
+            self.assign_increase_from_increased_cultivated_area(constants_for_params)
+
+        PLOT_WITH_SEASONALITY = False
+        if PLOT_WITH_SEASONALITY:
+            print("Plotting with seasonality")
+            # ratios between baseline production and actual production
+            ratios = np.divide(
+                self.NO_ROT_KCALS_GROWN, self.ANNUAL_YIELD * 4e6 / 1e9 / 12
+            )
+            print("ratios")
+            print(ratios)
+            # Plotter.plot_monthly_reductions_seasonally(ratios)
+            Plotter.plot_monthly_reductions_seasonally(ratios)
 
     def assign_increase_from_increased_cultivated_area(self, constants_for_params):
         """
@@ -319,42 +413,33 @@ class OutdoorCrops:
         Returns:
             None
         """
-        # Set the crop waste constant
+
         self.CROP_WASTE = constants_for_params["WASTE"]["CROPS"]
 
-        # Check if outdoor growing is enabled
         if self.ADD_OUTDOOR_GROWING:
-            # Check if better rotation is enabled
             if constants_for_params["OG_USE_BETTER_ROTATION"]:
-                # Initialize an array to store the crops produced
                 crops_produced = np.array([0] * self.NMONTHS)
 
-                # Calculate the harvest duration
                 hd = (
                     constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"]
                     + constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"]
                 )
 
-                # Calculate the crops produced for months after the harvest duration
                 crops_produced[hd:] = np.multiply(
                     np.array(self.KCALS_GROWN[hd:]), (1 - greenhouse_fraction_area[hd:])
                 )
 
-                # Calculate the crops produced for months before the harvest duration
                 crops_produced[:hd] = np.multiply(
                     np.array(self.NO_ROT_KCALS_GROWN[:hd]),
                     (1 - greenhouse_fraction_area[:hd]),
                 )
 
             else:
-                # Use the no rotation crops produced
                 crops_produced = np.array(self.NO_ROT_KCALS_GROWN)
 
         else:
-            # No crops produced if outdoor growing is disabled
             crops_produced = np.array([0] * self.NMONTHS)
 
-        # Set the production attribute of the class instance
         self.production = Food(
             kcals=np.array(crops_produced) * (1 - self.CROP_WASTE / 100),
             fat=np.array(self.OG_FRACTION_FAT * crops_produced)
@@ -366,30 +451,7 @@ class OutdoorCrops:
             protein_units="thousand tons each month",
         )
 
-        # Check if any of the crop production values are NaN
         assert not np.isnan(
             self.production.kcals
         ).any(), """Error: the outdoor crop production expected is
             unknown, cannot compute optimization"""
-
-        # The following code is commented out and not used in the function
-        # import matplotlib.pyplot as plt
-        # import pandas as pd
-
-        # outdoor_growing_dict = {
-        #     "outdoor_growing": np.array(
-        #         np.array(self.KCALS_GROWN) * 1e9 / (340e6 * 2100 * 365 / 12) * 2100
-        #     ),
-        # }
-
-        # df = pd.DataFrame(outdoor_growing_dict)
-
-        # saving the dataframe
-        # df.to_csv("ykcals" + self.constants["scenario_name"] + ".csv")
-        # df.to_csv("ykcals.csv")
-        # plt.figure()
-        # plt.plot(self.kcals * 1e9 / (340e6 * 2100 * 365 / 12))
-        # plt.title(
-        #     "CROP PRODUCTION MINUS GREENHOUSE AREA, people fed multiples of US population"
-        # )
-        # plt.show()

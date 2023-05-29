@@ -496,6 +496,85 @@ class Scenarios:
         ]
 
         # Set the initial crop area ha to crop area 1000ha times 100
+        constants_for_params["INITIAL_CROP_AREA_HA"] = (
+            np.array(country_data["crop_area_1000ha"]) * 1000
+        )
+
+        # total head count of medium sized animals
+        constants_for_params["INIT_MEDIUM_ANIMALS"] = country_data["medium_animals"]
+
+        # total head count of large sized animals minus milk cows
+        constants_for_params["INIT_LARGE_ANIMALS_WITH_MILK_COWS"] = country_data[
+            "large_animals"
+        ]
+
+        # fish kcals per month, billions
+        constants_for_params["FISH_DRY_CALORIC_ANNUAL"] = country_data["aq_kcals"]
+
+        # units of 1000s tons fat
+        # (so, global value is in the tens of thousands of tons)
+        constants_for_params["FISH_FAT_TONS_ANNUAL"] = country_data["aq_fat"]
+
+        # units of 1000s tons protein monthly
+        # (so, global value is in the hundreds of thousands of tons)
+        constants_for_params["FISH_PROTEIN_TONS_ANNUAL"] = country_data["aq_protein"]
+
+        # annual tons milk production
+        constants_for_params["TONS_MILK_ANNUAL"] = country_data["dairy"]
+
+        # annual tons chicken and pork production
+        constants_for_params["TONS_CHICKEN_AND_PORK_ANNUAL"] = (
+            country_data["chicken"] + country_data["pork"]
+        )
+
+        constants_for_params["ROTATION_IMPROVEMENTS"] = {}
+        constants_for_params["ROTATION_IMPROVEMENTS"][
+            "POWER_LAW_IMPROVEMENT"
+        ] = country_data["power_law_improvement"]
+
+        # annual tons cattle beef production
+        constants_for_params["TONS_BEEF_ANNUAL"] = country_data["beef"]
+
+        constants_for_params["END_OF_MONTH_STOCKS"] = {}
+        constants_for_params["END_OF_MONTH_STOCKS"]["JAN"] = country_data[
+            "stocks_kcals_jan"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["FEB"] = country_data[
+            "stocks_kcals_feb"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["MAR"] = country_data[
+            "stocks_kcals_mar"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["APR"] = country_data[
+            "stocks_kcals_apr"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["MAY"] = country_data[
+            "stocks_kcals_may"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["JUN"] = country_data[
+            "stocks_kcals_jun"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["JUL"] = country_data[
+            "stocks_kcals_jul"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["AUG"] = country_data[
+            "stocks_kcals_aug"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["SEP"] = country_data[
+            "stocks_kcals_sep"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["OCT"] = country_data[
+            "stocks_kcals_oct"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["NOV"] = country_data[
+            "stocks_kcals_nov"
+        ]
+        constants_for_params["END_OF_MONTH_STOCKS"]["DEC"] = country_data[
+            "stocks_kcals_dec"
+        ]
+
+        self.SCALE_SET = True
+        return constants_for_params
 
     def set_immediate_shutoff(self, constants_for_params):
         """
