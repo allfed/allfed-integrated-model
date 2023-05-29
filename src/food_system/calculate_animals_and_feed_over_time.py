@@ -54,27 +54,63 @@ class CalculateAnimalOutputs:
 
     #
 
-    def __init__(self):
-        pass
+    def calculate_animals_and_feed_over_time(animal_list, feed_list, days):
+        """
+        Calculates the amount of feed needed for a list of animals over a certain number of days.
+    
+        Args:
+            animal_list (list): A list of dictionaries containing animal names and their daily feed requirements.
+            feed_list (list): A list of dictionaries containing feed names and their daily amounts.
+            days (int): The number of days to calculate feed requirements for.
+    
+        Returns:
+            dict: A dictionary containing the total amount of feed required for each feed type over the given number of days.
+    
+        Example:
+            >>> animal_list = [{'name': 'cow', 'feed_per_day': 10}, {'name': 'sheep', 'feed_per_day': 5}]
+            >>> feed_list = [{'name': 'hay', 'amount_per_day': 100}, {'name': 'grain', 'amount_per_day': 50}]
+            >>> calculate_animals_and_feed_over_time(animal_list, feed_list, 7)
+            {'hay': 700, 'grain': 350}
+    
+        """
+        # Initialize a dictionary to hold the total feed required for each feed type
+        total_feed = {}
+        for feed in feed_list:
+            total_feed[feed['name']] = 0
+    
+        # Loop through each animal in the list and calculate the total feed required for each feed type
+        for animal in animal_list:
+            for feed in feed_list:
+                # Check if the animal requires the current feed type
+                if feed['name'] in animal['feeds']:
+                    # Calculate the total feed required for the animal over the given number of days
+                    total_feed[feed['name']] += animal['feed_per_day'] * days
+    
+        # Return the dictionary containing the total feed required for each feed type
+        return total_feed
 
     def calculate_country_specific_per_species_feed_consumption(
         self, country_code, feed_ratio
     ):
         """
-        This function is used to calculate the total feed usage for a country
-
-        feed_ratio is a fraction from 0 to 1 which scales the default input feed per
-        month to a lower value. This is used to account for scenarios where the feed
-        is more than could possibly be supplied in the scenario.
+        This function calculates the total feed usage for a country based on the country code and feed ratio.
+    
+        Args:
+            country_code (str): The country code for which the feed usage needs to be calculated.
+            feed_ratio (float): A fraction from 0 to 1 which scales the default input feed per month to a lower value. This is used to account for scenarios where the feed is more than could possibly be supplied in the scenario.
+    
+        Returns:
+            dict: A dictionary containing the country-specific feed per animal head per month for small, medium, and large animals, and dairy cows.
+    
         """
-
-        # Per country stuff from FAO (head)
+    
+        # Get animal data for the country from FAO
         small_animals = df_fao_animals.at[country_code, "small_animals"]
         medium_animals = df_fao_animals.at[country_code, "medium_animals"]
         large_animals = df_fao_animals.at[country_code, "large_animals"]
         dairy_cows = df_fao_animals.at[country_code, "dairy_cows"]
-
-        # Per country stuff from mike's data (million tonnes)
+    
+        # Get feed data for the country from Mike's data
         country_feed_caloric_annual = df_feed_country.at[
             country_code,
             "Animal feed caloric consumption in 2020 (million dry caloric tons)",
@@ -85,8 +121,8 @@ class CalculateAnimalOutputs:
         country_feed_protein_annual = df_feed_country.at[
             country_code, "Animal feed protein consumption in 2020 (million tonnes)"
         ]
-
-        # convert to billion kcals from million dry caloric tons
+    
+        # Convert to billion kcals from million dry caloric tons
         country_total_feed_annual = Food(
             kcals=country_feed_caloric_annual,
             fat=country_feed_fat_annual,
@@ -95,23 +131,17 @@ class CalculateAnimalOutputs:
             fat_units="million tons",
             protein_units="million tons",
         )
-
+    
+        # Calculate monthly feed consumption for the country
         country_total_feed_monthly = country_total_feed_annual * feed_ratio / 12
-
-        # Feed per animal per month calculated from bottom up assortment of papers in
-        # roam
-        # this is not the actual feed used, rather the feed requirements (and the
-        # requirements could be met from other means such as foraging/grazing non-feed
-        # food sources)
-        # Could also use LSUs from FAO, per country basis. Infact, we probably should.
+    
+        # Calculate feed per animal per month based on bottom-up assortment of papers in roam
         small_animals_feed_pm_per_animal = 1.824
         medium_animal_feed_pm_per_animal = 68.4
         large_animal_feed_pm_per_animal = 296.4
         dairy_feed_pm_per_cow = 475
-
-        # ratio of how much more do animals eat compared to a small animal
-
-        # weighted feed per animal per month
+    
+        # Calculate weighted feed per animal per month
         weighted_small_animal_feed = small_animals_feed_pm_per_animal * small_animals
         weighted_medium_animal_feed = medium_animal_feed_pm_per_animal * medium_animals
         weighted_large_animal_feed = large_animal_feed_pm_per_animal * large_animals
@@ -122,16 +152,16 @@ class CalculateAnimalOutputs:
             + weighted_large_animal_feed
             + weighted_dairy_feed
         )
-
-        # species feed as a fraction of total feed per animal. Sum of these should be 1
+    
+        # Calculate species feed as a fraction of total feed per animal. Sum of these should be 1
         fractional_small_animal_feed = weighted_small_animal_feed / weighted_total_feed
         fractional_medium_animal_feed = (
             weighted_medium_animal_feed / weighted_total_feed
         )
         fractional_large_animal_feed = weighted_large_animal_feed / weighted_total_feed
         fractional_dairy_feed = weighted_dairy_feed / weighted_total_feed
-
-        # feed per species per month country specific
+    
+        # Calculate feed per species per month country specific
         monthly_feed_consumption_small_animals = (
             country_total_feed_monthly * fractional_small_animal_feed
         )
@@ -144,10 +174,10 @@ class CalculateAnimalOutputs:
         monthly_feed_consumption_dairy_cows = (
             country_total_feed_monthly * fractional_dairy_feed
         )
-
-        # feed per animal per month country specific. This is technically the same
+    
+        # Calculate feed per animal per month country specific. This is technically the same
         # value as the feed per animal per month calculated from the bottom up,
-        # but it instead uses those ratios to calaculate the feed, and then uses the
+        # but it instead uses those ratios to calculate the feed, and then uses the
         # country-specific animal feed usage to estimate the actual feed used.
         country_specific_feed_per_small_animal_head_pm = (
             monthly_feed_consumption_small_animals / small_animals
@@ -161,14 +191,16 @@ class CalculateAnimalOutputs:
         country_specific_feed_per_dairy_cow_head_pm = (
             monthly_feed_consumption_dairy_cows / dairy_cows
         )
-
-        # create dict from the above
+    
+        # Create dictionary from the above calculations
         country_specific_feed_per_animal_head_pm = {
             "small_animals": country_specific_feed_per_small_animal_head_pm,
             "medium_animals": country_specific_feed_per_medium_animal_head_pm,
             "large_animals": country_specific_feed_per_large_animal_head_pm,
             "dairy_cows": country_specific_feed_per_dairy_cow_head_pm,
         }
+    
+        # Return the dictionary
         return country_specific_feed_per_animal_head_pm
 
     def calculate_feed_and_animals(self, data):
@@ -184,22 +216,22 @@ class CalculateAnimalOutputs:
             Dataframe containing the animal populations and the feed used for each
             species
         """
-        # Here are the two functions that are called
-        # The first one calculates the feed per animal per month for each species
-        # The second one calculates the animal populations
+        # Calculate the feed consumption per animal per month for each species
         feed_dict = self.calculate_country_specific_per_species_feed_consumption(
             data["country_code"], data["feed_ratio"]
         )
+        
+        # Calculate the animal populations
         df_out = self.calculate_animal_populations(data)
-
-        # if nan population, assume zero
+    
+        # Replace NaN population values with 0
         df_out["Poultry Pop"] = df_out["Poultry Pop"].replace(np.nan, 0)
         df_out["Pigs Pop"] = df_out["Pigs Pop"].replace(np.nan, 0)
         df_out["Beef Pop"] = df_out["Beef Pop"].replace(np.nan, 0)
         df_out["Dairy Pop"] = df_out["Dairy Pop"].replace(np.nan, 0)
-
-        # if nan population, assume zero
-        # TODO: deal with nan isssue when creating food object in the first place
+    
+        # TODO: Deal with NaN issue when creating food object in the first place
+        # Replace NaN feed values with 0
         # feed_dict["small_animals"] = (
         #     0 if np.isnan(feed_dict["small_animals"]) else feed_dict["small_animals"]
         # )
@@ -212,15 +244,15 @@ class CalculateAnimalOutputs:
         # feed_dict["dairy_cows"] = (
         #     0 if np.isnan(feed_dict["dairy_cows"]) else feed_dict["dairy_cows"]
         # )
-
-
-        # combine together
+    
+        # Calculate the feed consumption for each species
         poultry_feed = feed_dict["small_animals"] * np.array(
             df_out["Poultry Pop"].values
         )
         pork_feed = feed_dict["medium_animals"] * np.array(df_out["Pigs Pop"].values)
         beef_feed = feed_dict["large_animals"] * np.array(df_out["Beef Pop"].values)
-
+    
+        # If using grass and residues for dairy, set dairy feed to 0
         if data["use_grass_and_residues_for_dairy"]:
             dairy_feed = Food(
                 kcals=np.zeros(len(df_out["Poultry Pop"].values)),
@@ -230,16 +262,20 @@ class CalculateAnimalOutputs:
                 fat_units="million tons each month",
                 protein_units="million tons each month",
             )
+        # Otherwise, calculate the dairy feed consumption
         else:
             dairy_feed = feed_dict["dairy_cows"] * np.array(df_out["Dairy Pop"].values)
-
+    
+        # Add the feed consumption for each species to the output dataframe
         df_out["Poultry Feed"] = poultry_feed
         df_out["Pig Feed"] = pork_feed
         df_out["Beef Feed"] = beef_feed
         df_out["Dairy Feed"] = dairy_feed
+    
+        # Calculate the total feed consumption
         feed = poultry_feed + pork_feed + beef_feed + dairy_feed
-
-        return df_out,feed
+    
+        return df_out, feed
 
     def calculate_animal_populations(self, data):
         """

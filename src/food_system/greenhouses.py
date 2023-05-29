@@ -11,18 +11,32 @@ import numpy as np
 
 class Greenhouses:
     def __init__(self, constants_for_params):
+        """
+        Initializes the Greenhouses class with the given constants for parameters.
+
+        Args:
+            constants_for_params (dict): A dictionary containing the constants for parameters.
+
+        Returns:
+            None
+
+        """
         # GLOBAL CROP AREA INCLUDING US:
         # (calculated from sum of crop area in between 23 latitude)
         # UNITS: hectares
+        # Set the total crop area based on the given constants.
         self.TOTAL_CROP_AREA = (
             769176.2e3 * constants_for_params["INITIAL_CROP_AREA_FRACTION"]
         )
 
+        # Set the starting month number based on the given constants.
         self.STARTING_MONTH_NUM = constants_for_params["STARTING_MONTH_NUM"]
 
+        # Set the flag for adding greenhouses and the number of months based on the given constants.
         self.ADD_GREENHOUSES = constants_for_params["ADD_GREENHOUSES"]
         self.NMONTHS = constants_for_params["NMONTHS"]
 
+        # If greenhouses are being added, set the greenhouse delay and greenhouse area multiplier based on the given constants.
         if self.ADD_GREENHOUSES:
             # this is in addition to the 5 month delay till harvest
             self.greenhouse_delay = constants_for_params["DELAY"]["GREENHOUSE_MONTHS"]

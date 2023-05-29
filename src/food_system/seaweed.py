@@ -110,6 +110,16 @@ class Seaweed:
         )
 
     def get_growth_rates(self, constants_for_params):
+        """
+        Calculates the monthly growth rates of seaweed based on the daily growth percentages provided in the constants.
+
+        Args:
+            constants_for_params (dict): A dictionary containing the constants for the seaweed growth model.
+
+        Returns:
+            numpy.ndarray: An array of monthly growth rates for the seaweed.
+
+        """
         # Convert keys to integers and sort them
         sorted_columns = sorted(
             [int(key) for key in constants_for_params["SEAWEED_GROWTH_PER_DAY"].keys()]
@@ -123,32 +133,52 @@ class Seaweed:
             ]
         )
 
-        # percentage gain per month
+        # Calculate the monthly growth rates based on the daily growth percentages
         sorted_monthly_percents = 100 * (((sorted_daily_percents / 100) + 1) ** 30)
+
+        # Store the monthly growth rates in the object's growth_rates_monthly attribute
         self.growth_rates_monthly = sorted_monthly_percents
 
+        # Return the monthly growth rates
         return sorted_monthly_percents
 
     def get_built_area(self, constants_for_params):
+        """
+        Calculates the built area of seaweed based on the provided constants.
+
+        Args:
+            constants_for_params (dict): A dictionary containing the constants for the seaweed growth model.
+
+        Returns:
+            numpy.ndarray: An array of the built area of seaweed over time.
+
+        """
+        # Calculate the new area of seaweed per month based on the global value and the fraction provided in the constants
         SEAWEED_NEW_AREA_PER_MONTH = (
             self.SEAWEED_NEW_AREA_PER_MONTH_GLOBAL
             * constants_for_params["SEAWEED_NEW_AREA_FRACTION"]
         )
+
+        # Set a flag to print the difference in seaweed area if desired
         PRINT_DIFFERENCE_IN_SEAWEED_AREA = False
+
+        # Print the difference in seaweed area if desired
         if PRINT_DIFFERENCE_IN_SEAWEED_AREA:
             print("MAX SEAWEED AREA Was: ")
             print(self.MAXIMUM_SEAWEED_AREA / (200 / 30.4))
             print("now is")
             print(SEAWEED_NEW_AREA_PER_MONTH)
 
+        # If seaweed is being added, create a list of built seaweed areas for the delay period
         if constants_for_params["ADD_SEAWEED"]:
             sd = [self.INITIAL_BUILT_SEAWEED_AREA] * constants_for_params["DELAY"][
                 "SEAWEED_MONTHS"
             ]
         else:
-            # arbitrarily long list of months all at constant area
+            # Create an arbitrarily long list of months all at the constant initial area
             sd = [self.INITIAL_BUILT_SEAWEED_AREA] * 1000
 
+        # Create a long list of the built seaweed area over time, starting with the delay period and then increasing linearly
         built_area_long = np.append(
             np.array(sd),
             np.linspace(
@@ -158,56 +188,58 @@ class Seaweed:
                 self.NMONTHS,
             ),
         )
+
+        # Cap the built seaweed area at the maximum allowed area
         built_area_long[
             built_area_long > self.MAXIMUM_SEAWEED_AREA
         ] = self.MAXIMUM_SEAWEED_AREA
 
-        # reduce list to length of months of simulation
+        # Reduce the list to the length of the simulation
         built_area = built_area_long[: self.NMONTHS]
-        # print("built_area")
-        # print(built_area)
+
+        # Store the built seaweed area in the object's built_area attribute
         self.built_area = built_area
 
+        # Return the built seaweed area
         return built_area
 
     def estimate_seaweed_growth_for_estimating_feed_availability(self):
         """
-        We have to see whether predicted feed needs are more than available feed, in which case the feed needs to be reduced. We have to do that before we run the optimization which more accurately determines seaweed growth. So, this function makes the simplifying assumptions which no longer require linear optimization
+        Estimates the growth of seaweed for the purpose of estimating feed availability.
+
+        We have to see whether predicted feed needs are more than available feed, in which case the feed needs to be reduced.
+        We have to do that before we run the optimization which more accurately determines seaweed growth.
+        So, this function makes the simplifying assumptions which no longer require linear optimization:
         1. seaweed is not harvested until production would reach the human consumption percentage calories limit
         2. once it reaches this limit, it stays at that rate of production for the rest of the simulation
+
+        Returns:
+            None
+
         """
+        # If there is no growth, set the estimated seaweed to an empty Food object and return
         if (np.array(self.growth_rates_monthly) == 0).all():
-            # empty, there's no food produced
             self.estimated_seaweed = Food()
             return
 
-        # seaweed_threshold_to_provide_max_allowed_calories => must be the smallest
-        # amount wet on farm, that after being reduced, can grow back to itself or
-        # more.
-
+        # Initialize variables for estimating seaweed consumption
         estimated_seaweed_consumed_after_waste_wet = np.zeros(self.NMONTHS)
         seaweed_wet_on_farm = self.INITIAL_SEAWEED
-        # set the fat, kcals,protein of amount consumed
 
-        # set multiplier to 1 and solve for smallest_harvest_for_min_sufficient_consumption:
-        # multiplier = (smallest_harvest_for_min_sufficient_consumption - max_seaweed_harvested) * (1 + growth_rate / 100.0) / smallest_harvest_for_min_sufficient_consumption
+        # Set the smallest harvest for minimum sufficient consumption
         smallest_harvest_for_min_sufficient_consumption = max_seaweed_harvested / (
             1 - 1 / (1 + growth_rate / 100.0)
         )
-        used_area = self.INITIAL_BUILT_SEAWEED_AREA
-        for month in range(0, self.NMONTHS):
-            # there is some maximum seaweed that could be consumed by humans in a
-            # given month, which we assign to max_consumed_in_month.
-            # We usually hit this limit in only a few months of seaweed growth.
-            #
-            # if the increase in seaweed mass in a month, starting at the mass that
-            # would be available  that amount was harvested
-            # is greater than the maximum seaweed that could be consumed in that month
-            # then we are probably ready to start harvesting at full capacity.
 
+        used_area = self.INITIAL_BUILT_SEAWEED_AREA
+
+        # Loop through each month of the simulation
+        for month in range(0, self.NMONTHS):
+            # Calculate the maximum seaweed that could be consumed by humans in a given month
             max_seaweed_eaten = self.MAX_SEAWEED_HUMANS_CAN_CONSUME_MONTHLY
             max_seaweed_harvested = max_seaweed_eaten / (self.HARVEST_LOSS / 100)
 
+            # Calculate the growth rate and the amount of seaweed wet on the farm
             growth_rate = self.growth_rates_monthly[month]
             seaweed_wet_on_farm_without_considering_max_seaweed = (
                 seaweed_wet_on_farm * (1 + growth_rate / 100.0)
@@ -216,9 +248,8 @@ class Seaweed:
                 seaweed_wet_on_farm_without_considering_max_seaweed,
                 self.built_area[month] * self.MAXIMUM_DENSITY,
             )
-            # estimate used area as starting off as the initial builtself seaweed[] area
-            # and then assume we want to minimize used area if possible (so our
-            # harvests can get seaweed down to a low value)
+
+            # Estimate the used area as the initial built seaweed area or the minimum density times the used area
             used_area_without_considering_whats_built = max(
                 seaweed_wet_on_farm / self.MAXIMUM_DENSITY,
                 self.INITIAL_BUILT_SEAWEED_AREA,
@@ -226,11 +257,12 @@ class Seaweed:
             used_area = min(
                 used_area_without_considering_whats_built, self.built_area[month]
             )
+
+            # Calculate the amount of seaweed that can be harvested
             amount_can_harvest = seaweed_wet_on_farm - self.MINIMUM_DENSITY * used_area
 
             if amount_can_harvest >= smallest_harvest_for_min_sufficient_consumption:
-                # if we can actually harvest all the seaweed to meet minimum needs,
-                # start doing it
+                # If we can actually harvest all the seaweed to meet minimum needs, start doing it
                 seaweed_wet_on_farm = seaweed_wet_on_farm - max_seaweed_harvested
                 estimated_seaweed_consumed_after_waste_wet[
                     month
@@ -238,6 +270,7 @@ class Seaweed:
             else:
                 estimated_seaweed_consumed_after_waste_wet[month] = 0
 
+        # Set the estimated seaweed consumed after waste
         self.estimated_seaweed_consumed_after_waste = Food(
             kcals=estimated_seaweed_consumed_after_waste_wet * self.SEAWEED_KCALS,
             fat=estimated_seaweed_consumed_after_waste_wet * self.SEAWEED_FAT,
@@ -246,6 +279,8 @@ class Seaweed:
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
+
+        # Plot the estimated seaweed
         convenient_units = (
             self.estimated_seaweed_consumed_after_waste.in_units_percent_fed()
         )

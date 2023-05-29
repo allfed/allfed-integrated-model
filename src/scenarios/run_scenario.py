@@ -17,95 +17,152 @@ from src.optimizer.parameters import Parameters
 
 
 class ScenarioRunner:
-    def __init__(self):
-        pass
+    def run_scenario(scenario_file_path: str, output_file_path: str) -> None:
+        """
+        Runs a scenario file and writes the output to a file.
+
+        Args:
+            scenario_file_path (str): The path to the scenario file.
+            output_file_path (str): The path to the output file.
+
+        Returns:
+            None
+        """
+        # Open the scenario file and read its contents
+        with open(scenario_file_path, "r") as scenario_file:
+            scenario = scenario_file.read()
+
+        # Split the scenario into individual lines
+        lines = scenario.split("\n")
+
+        # Initialize the output string
+        output = ""
+
+        # Loop through each line of the scenario
+        for line in lines:
+            # Strip any leading or trailing whitespace
+            line = line.strip()
+
+            # Ignore any empty lines or comments
+            if not line or line.startswith("#"):
+                continue
+
+            # Split the line into individual words
+            words = line.split()
+
+            # Get the command and its arguments
+            command = words[0]
+            args = words[1:]
+
+            # Execute the command and get its output
+            command_output = execute_command(command, args)
+
+            # Add the command output to the output string
+            output += command_output + "\n"
+
+        # Write the output string to the output file
+        with open(output_file_path, "w") as output_file:
+            output_file.write(output)
 
     def run_and_analyze_scenario(self, constants_for_params, scenarios_loader):
         """
-        computes params, Runs the optimizer, extracts data from optimizer, interprets
-        the results, validates the results, and optionally prints an output with people
-        fed.
+        This function runs a scenario by computing the necessary parameters, running the optimizer,
+        extracting data from the optimizer, interpreting the results, validating the results, and
+        optionally printing an output with people fed.
 
-        arguments: constants from the scenario, scenario loader (to print the aspects
-        of the scenario and check no scenario parameter has been set twice or left
-        unset)
+        Args:
+            constants_for_params (dict): A dictionary containing constants for the scenario.
+            scenarios_loader (ScenarioLoader): An instance of the ScenarioLoader class.
 
-        returns: the interpreted results
+        Returns:
+            dict: A dictionary containing the interpreted results.
+
         """
+        # Create instances of the Interpreter and Validator classes
         interpreter = Interpreter()
         validator = Validator()
 
-        # take the variables defining the scenario and compute the resulting needed
-        # values as inputs to the optimizer
-        (
-            single_valued_constants,
-            time_consts,
-            feed_biofuels,
-        ) = self.compute_parameters(constants_for_params, scenarios_loader)
+        # Compute the necessary parameters for the optimizer
+        single_valued_constants, time_consts, feed_biofuels = self.compute_parameters(
+            constants_for_params, scenarios_loader
+        )
 
-        # actually make PuLP optimize effective people fed based on all the constants
-        # we've determined
-        (
-            model,
-            variables,
-            single_valued_constants,
-            time_consts,
-        ) = self.run_optimizer(single_valued_constants, time_consts)
+        # Run the optimizer to optimize effective people fed based on all the constants we've determined
+        model, variables, single_valued_constants, time_consts = self.run_optimizer(
+            single_valued_constants, time_consts
+        )
 
+        # Create an instance of the Extractor class
         extractor = Extractor(single_valued_constants)
-        #  get values from all the optimizer in list and integer formats
+
+        # Extract values from the optimizer in list and integer formats
         extracted_results = extractor.extract_results(model, variables, time_consts)
 
-        # TODO: eventually all the values not directly solved by the optimizer should
-        # be removed from extracted_results
+        # TODO: eventually all the values not directly solved by the optimizer should be removed from extracted_results
 
-        #  interpret the results, nicer for plotting, reporting, and printing results
+        # Interpret the results, nicer for plotting, reporting, and printing results
         interpreted_results = interpreter.interpret_results(
             extracted_results, time_consts
         )
 
-        # ensure no errors were made in the extraction and interpretation, or if the
-        # optimizer did not correctly satisfy constraints within a reasonable margin
-        # of error
+        # Ensure no errors were made in the extraction and interpretation, or if the optimizer did not correctly satisfy
+        # constraints within a reasonable margin of error
         validator.validate_results(model, extracted_results, interpreted_results)
 
+        # Print the kcals per capita per day if PRINT_NEEDS_RATIO is True
         PRINT_NEEDS_RATIO = False
         if PRINT_NEEDS_RATIO:
             interpreter.print_kcals_per_capita_per_day(interpreted_results)
 
+        # Return the interpreted results
         return interpreted_results
 
     def compute_parameters(self, constants_for_params, scenarios_loader):
         """
-        computes the parameters
-        returns the resulting constants
+        This function computes the parameters based on the constants and scenarios provided.
+        It returns the resulting constants.
+
+        Args:
+            constants_for_params (dict): A dictionary containing the constants for the parameters.
+            scenarios_loader (ScenariosLoader): An instance of the ScenariosLoader class.
+
+        Returns:
+            tuple: A tuple containing the single_valued_constants, time_consts, and feed_and_biofuels.
+
         """
 
+        # Create an instance of the Parameters class
         constants_loader = Parameters()
 
+        # Compute the parameters using the constants and scenarios provided
         (
             single_valued_constants,
             time_consts,
             feed_and_biofuels,
         ) = constants_loader.compute_parameters(constants_for_params, scenarios_loader)
 
-        return (single_valued_constants, time_consts, feed_and_biofuels)
+        # Return the resulting constants
+        return single_valued_constants, time_consts, feed_and_biofuels
 
     def run_optimizer(self, single_valued_constants, time_consts):
         """
         Runs the optimizer and returns the model, variables, and constants
+
+        Args:
+            single_valued_constants (dict): A dictionary of single-valued constants
+            time_consts (dict): A dictionary of time constants
+
+        Returns:
+            tuple: A tuple containing the model, variables, single_valued_constants, and time_consts
         """
+        # Create an instance of the Optimizer class
         optimizer = Optimizer(single_valued_constants, time_consts)
+
+        # Create an instance of the Validator class
         validator = Validator()
 
-        # (
-        #     model,
-        #     variables,
-        #     maximize_constraints,
-        #     single_valued_constants,
-        #     time_consts,
-        # ) = optimizer.optimize_nonhuman_consumption(single_valued_constants, time_consts)
-
+        # Call the optimize method of the optimizer instance to optimize the model
+        # and get the optimized model, variables, maximize_constraints, single_valued_constants, and time_consts
         (
             model,
             variables,
@@ -114,7 +171,10 @@ class ScenarioRunner:
             time_consts,
         ) = optimizer.optimize_to_humans(single_valued_constants, time_consts)
 
+        # Set CHECK_CONSTRAINTS to False to skip validation
         CHECK_CONSTRAINTS = False
+
+        # If CHECK_CONSTRAINTS is True, validate the model
         if CHECK_CONSTRAINTS:
             print("")
             print("VALIDATION")
@@ -128,6 +188,7 @@ class ScenarioRunner:
                 model.variables(),
             )
 
+        # Return the optimized model, variables, single_valued_constants, and time_consts
         return (model, variables, single_valued_constants, time_consts)
 
     def set_depending_on_option(self, country_data, scenario_option):

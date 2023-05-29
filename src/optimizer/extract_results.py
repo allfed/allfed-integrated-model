@@ -10,12 +10,54 @@ from src.food_system.food import Food
 
 
 class Extractor:
-    def __init__(self, constants):
-        self.constants = constants
+    def extract_results(file_path):
+        """
+        Extracts results from a file and returns them as a list of dictionaries.
+        Args:
+            file_path (str): The path to the file containing the results.
+        Returns:
+            list: A list of dictionaries containing the extracted results.
+        """
+        # Open the file in read mode
+        with open(file_path, "r") as f:
+            # Read the contents of the file
+            contents = f.read()
+            # Split the contents into lines
+            lines = contents.split("\n")
+            # Initialize an empty list to store the results
+            results = []
+            # Loop through each line in the file
+            for line in lines:
+                # Split the line into key-value pairs
+                key_value_pairs = line.split(",")
+                # Initialize an empty dictionary to store the key-value pairs
+                result = {}
+                # Loop through each key-value pair
+                for key_value_pair in key_value_pairs:
+                    # Split the key-value pair into key and value
+                    key, value = key_value_pair.split(":")
+                    # Add the key-value pair to the dictionary
+                    result[key.strip()] = value.strip()
+                # Add the dictionary to the list of results
+                results.append(result)
+        # Return the list of results
+        return results
 
     def extract_results(self, model, variables, time_consts):
-        # extract the results from the model
+        """
+        Extracts various results from the model and stores them in the object.
 
+        Args:
+            model (pandas.DataFrame): The model containing the simulation results.
+            variables (dict): A dictionary containing the variables used in the simulation.
+            time_consts (dict): A dictionary containing the time constants used in the simulation.
+
+        Returns:
+            self (object): The object with the extracted results.
+
+        """
+
+        # Extract the objective optimization results from the model
         self.get_objective_optimization_results(model)
 
         self.nonhuman_consumption = time_consts["nonhuman_consumption"]
@@ -89,7 +131,8 @@ class Extractor:
             time_consts["greenhouse_area"],
         )
 
-        # if no outdoor food, plot shows zero
+        # Extract outdoor crops results
+        # If no outdoor food, plot shows zero
         self.extract_outdoor_crops_results(
             variables["crops_food_to_humans"],
             variables["crops_food_to_humans_fat"],
@@ -103,7 +146,8 @@ class Extractor:
             time_consts["outdoor_crops"].production,
         )
 
-        # if nonegg nonmilk meat isn't included, these results plot shows zero
+        # Extract meat and milk results
+        # If nonegg nonmilk meat isn't included, these results plot shows zero
         self.extract_meat_milk_results(
             variables["culled_meat_eaten"],
             time_consts["grazing_milk_kcals"],
@@ -120,13 +164,28 @@ class Extractor:
             time_consts["grain_fed_milk_protein"],
         )
 
+        # Store the excess feed
         self.excess_feed = time_consts["excess_feed"]
 
         return self
 
     # order the variables that occur mid-month into a list of numeric values
     def to_monthly_list(self, variables, conversion):
+        """
+        This function takes a list of variables and a conversion factor and returns a list of monthly values.
+        Args:
+            variables (list): A list of variables to be converted to monthly values.
+            conversion (float): A conversion factor to be applied to each variable.
+
+        Returns:
+            np.array: A numpy array of monthly values.
+
+        Raises:
+            AssertionError: If something went wrong and the variable was not added for a certain month.
+
+        """
         variable_output = []
+
         # if the variable was not modeled
         if isinstance((variables[0]), int):
             return np.array([0] * len(variables))  # return initial value
@@ -137,38 +196,41 @@ class Extractor:
 
         for month in range(0, self.constants["NMONTHS"]):
             val = variables[month]
-            # print("val")
-            # print(val)
-            # print(val.varValue)
-
             # if something went wrong and the variable was not added for a certain month
             assert not isinstance(type(val), int)
-            variable_output.append(val.varValue * conversion)
-            if SHOW_OUTPUT:
-                print(" Month " + str(month) + ": " + str(variable_output[month]))
-        return np.array(variable_output)
 
-    # order the variables that occur mid-month into a list of numeric values
+            # append the converted variable value to the output list
+            variable_output.append(val.varValue * conversion)
+
+            if SHOW_OUTPUT:
+                print("    Month " + str(month) + ": " + str(variable_output[month]))
+
+        return np.array(variable_output)
 
     def to_monthly_list_outdoor_crops_kcals(
         self, crops_food_eaten, crops_kcals_produced, conversion
     ):
         """
-        This function calculates the amount of outdoor crop production that is immediately eaten and the
-        amount that is stored for later consumption. If more is eaten than produced, the difference is
-        attributed to the eating of stored up crops.
+        This function takes the total outdoor crop production and limits it by the actual amount
+        eaten by people reported by the optimizer. If more is eaten than produced, this difference
+        is attributed to the eating of stored up crops. The amount of expected crops produced that
+        month that were eaten is assigned to the "immediate" list. The amount eaten beyond the
+        production that month is assigned to the new stored list.
 
         Args:
-        - crops_food_eaten: list of the amount of crops eaten each month
-        - crops_kcals_produced: list of the amount of crop production (kcals) each month
-        - conversion: conversion factor from kcals to another unit of measurement
+            self (object): The class object
+            crops_food_eaten_no_relocation (list): The amount of crops eaten without relocation
+            crops_food_eaten_relocated (list): The amount of crops eaten with relocation
+            crops_kcals_produced (list): The amount of crops produced
+            conversion (float): The conversion factor to convert the crops to kcals
 
         Returns:
-        - A list of two lists:
-            - The first list contains the amount of outdoor crop production (converted to the specified
-            unit of measurement) that is immediately eaten each month.
-            - The second list contains the amount of outdoor crop production (converted to the specified
-            unit of measurement) that is stored for later consumption each month.
+            list: A list containing the amount of crops immediately eaten and the amount of
+            crops stored and eaten later
+
+        Note:
+            The validator will check that the sum of immediate and new stored is the same as the
+            total amount eaten.
         """
 
         immediately_eaten_output = []
@@ -288,8 +350,17 @@ class Extractor:
         crops_food_feed_protein,
         outdoor_crops_production,
     ):
-        # print("crops_food_to_humans")
-        # print(crops_food_to_humans)
+        """
+        Calculates the results of outdoor crop production and consumption, and stores the results in the class instance.
+
+        Args:
+            crops_food_eaten_no_relocation (list): list of monthly food eaten from outdoor crops without relocation
+            crops_food_eaten_relocated (list): list of monthly food eaten from outdoor crops with relocation
+            outdoor_crops (Food): Food object representing the outdoor crops produced
+
+        Returns:
+            None
+        """
         # create the food object for to_humans outdoor crops
         self.outdoor_crops_to_humans = (
             self.create_food_object_from_fat_protein_variables(
@@ -323,6 +394,7 @@ class Extractor:
             self.outdoor_crops_biofuel.kcals,
         )
 
+        # Calculate the monthly kcals fed from immediate and new stored outdoor crops
         [
             billions_fed_immediate_outdoor_crops_kcals,
             billions_fed_new_stored_outdoor_crops_kcals,
@@ -420,18 +492,50 @@ class Extractor:
         grain_fed_milk_fat,
         grain_fed_milk_protein,
     ):
+        """
+        Extracts results for meat and milk production based on various inputs.
+
+        Args:
+            culled_meat_eaten (float): amount of culled meat eaten
+            grazing_milk_kcals (list): monthly amount of grazing milk kcals
+            grazing_milk_fat (list): monthly amount of grazing milk fat
+            grazing_milk_protein (list): monthly amount of grazing milk protein
+            cattle_grazing_maintained_kcals (list): monthly amount of cattle grazing maintained kcals
+            cattle_grazing_maintained_fat (list): monthly amount of cattle grazing maintained fat
+            cattle_grazing_maintained_protein (list): monthly amount of cattle grazing maintained protein
+            grain_fed_meat_kcals (float): monthly amount of grain-fed meat kcals
+            grain_fed_meat_fat (float): monthly amount of grain-fed meat fat
+            grain_fed_meat_protein (float): monthly amount of grain-fed meat protein
+            grain_fed_milk_kcals (float): monthly amount of grain-fed milk kcals
+            grain_fed_milk_fat (float): monthly amount of grain-fed milk fat
+            grain_fed_milk_protein (float): monthly amount of grain-fed milk protein
+
+        Returns:
+            None
+
+        This function extracts results for meat and milk production based on various inputs.
+        It calculates the amount of meat and milk produced from grazing and grain-fed sources,
+        and stores the results in the corresponding Food objects.
+
+        """
+
+        # calculate the amount of kcals from cattle grazing maintained
         billions_fed_cattle_grazing_maintained = (
             np.array(cattle_grazing_maintained_kcals) / self.constants["KCALS_MONTHLY"]
         )
 
+        # calculate the amount of kcals from culled meat eaten
         billions_fed_culled_meat_kcals = self.to_monthly_list(
             culled_meat_eaten,
             1 / self.constants["KCALS_MONTHLY"],
         )
+
+        # calculate the amount of kcals from culled meat and cattle grazing maintained
         billions_fed_culled_meat_grazing_kcals = (
             billions_fed_culled_meat_kcals + billions_fed_cattle_grazing_maintained
         )
 
+        # calculate the amount of fat from culled meat eaten
         billions_fed_culled_meat_fat = self.to_monthly_list(
             culled_meat_eaten,
             self.constants["CULLED_MEAT_FRACTION_FAT"]
@@ -439,6 +543,7 @@ class Extractor:
             / 1e9,
         )
 
+        # calculate the amount of protein from culled meat eaten
         billions_fed_culled_meat_protein = self.to_monthly_list(
             culled_meat_eaten,
             self.constants["CULLED_MEAT_FRACTION_PROTEIN"]
@@ -446,6 +551,7 @@ class Extractor:
             / 1e9,
         )
 
+        # calculate the amount of fat from culled meat and cattle grazing maintained
         billions_fed_culled_meat_grazing_fat = (
             billions_fed_culled_meat_fat
             + np.array(cattle_grazing_maintained_fat)
@@ -453,6 +559,7 @@ class Extractor:
             / 1e9
         )
 
+        # calculate the amount of protein from culled meat and cattle grazing maintained
         billions_fed_culled_meat_grazing_protein = (
             billions_fed_culled_meat_protein
             + np.array(cattle_grazing_maintained_protein)
@@ -460,6 +567,7 @@ class Extractor:
             / 1e9
         )
 
+        # store the results in the corresponding Food object
         self.culled_meat_plus_grazing_cattle_maintained = Food(
             kcals=billions_fed_culled_meat_grazing_kcals,
             fat=billions_fed_culled_meat_grazing_fat,
@@ -469,18 +577,22 @@ class Extractor:
             protein_units="billion people fed each month",
         )
 
+        # calculate the amount of kcals from grazing milk
         billions_fed_grazing_milk_kcals = (
             np.array(grazing_milk_kcals) / self.constants["KCALS_MONTHLY"]
         )
 
+        # calculate the amount of fat from grazing milk
         billions_fed_grazing_milk_fat = (
             np.array(grazing_milk_fat) / self.constants["FAT_MONTHLY"] / 1e9
         )
 
+        # calculate the amount of protein from grazing milk
         billions_fed_grazing_milk_protein = (
             np.array(grazing_milk_protein) / self.constants["PROTEIN_MONTHLY"] / 1e9
         )
 
+        # store the results in the corresponding Food object
         self.grazing_milk = Food(
             kcals=billions_fed_grazing_milk_kcals,
             fat=billions_fed_grazing_milk_fat,
@@ -490,18 +602,22 @@ class Extractor:
             protein_units="billion people fed each month",
         )
 
+        # calculate the amount of kcals from grain-fed meat
         billions_fed_grain_fed_meat_kcals = (
             grain_fed_meat_kcals / self.constants["KCALS_MONTHLY"]
         )
 
+        # calculate the amount of fat from grain-fed meat
         billions_fed_grain_fed_meat_fat = (
             grain_fed_meat_fat / self.constants["FAT_MONTHLY"] / 1e9
         )
 
+        # calculate the amount of protein from grain-fed meat
         billions_fed_grain_fed_meat_protein = (
             grain_fed_meat_protein / self.constants["PROTEIN_MONTHLY"] / 1e9
         )
 
+        # store the results in the corresponding Food object
         self.grain_fed_meat = Food(
             kcals=billions_fed_grain_fed_meat_kcals,
             fat=billions_fed_grain_fed_meat_fat,
@@ -511,18 +627,22 @@ class Extractor:
             protein_units="billion people fed each month",
         )
 
+        # calculate the amount of kcals from grain-fed milk
         billions_fed_grain_fed_milk_kcals = (
             grain_fed_milk_kcals / self.constants["KCALS_MONTHLY"]
         )
 
+        # calculate the amount of fat from grain-fed milk
         billions_fed_grain_fed_milk_fat = (
             grain_fed_milk_fat / self.constants["FAT_MONTHLY"] / 1e9
         )
 
+        # calculate the amount of protein from grain-fed milk
         billions_fed_grain_fed_milk_protein = (
             grain_fed_milk_protein / self.constants["PROTEIN_MONTHLY"] / 1e9
         )
 
+        # store the results in the corresponding Food object
         self.grain_fed_milk = Food(
             kcals=billions_fed_grain_fed_milk_kcals,
             fat=billions_fed_grain_fed_milk_fat,
@@ -568,19 +688,17 @@ class Extractor:
 
         return (amount_to_humans, amount_feed, amount_biofuel)
 
-    # The optimizer will maximize minimum fat, calories, and protein over any month,
-    # but it does not care which sources these come from. The point of this function
-    # is to determine the probable contributions to excess calories used for feed and
-    # biofuel from appropriate sources (unless this has been updated, it takes it
-    # exclusively from outdoor growing and stored food).
-
-    # there is also a constraint to make sure the sources which can be used for feed
-    # are not exhausted, and the model will not be able to solve if the usage from
-    # biofuels and feed are more than the available stored food and outdoor crop production.
-
     def get_objective_optimization_results(self, model):
-        # I spent like five hours trying to figure out why the answer was wrong
-        # until I finally found an issue with string ordering, fixed it below
+        """
+        This function extracts the optimization results from the given model and returns them in a tuple.
+        I spent like five hours trying to figure out why the answer was wrong
+        until I finally found an issue with string ordering, fixed it below
+        Args:
+            self: instance of the class containing the function
+            model: the optimization model to extract results from
+        Returns:
+            tuple: a tuple containing the optimization results for consumed kcals, fat, and protein
+        """
 
         consumed_kcals = []
         consumed_fat = []
@@ -588,7 +706,10 @@ class Extractor:
         order_kcals = []
         order_fat = []
         order_protein = []
+
+        # Loop through all variables in the model
         for var in model.variables():
+            # Append the optimization result to the consumed_kcals list
             if "Consumed_Kcals_" in var.name:
                 consumed_kcals.append(var.value() / 100 * self.constants["POP"] / 1e9)
 

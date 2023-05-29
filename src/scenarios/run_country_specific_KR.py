@@ -10,15 +10,18 @@ from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 
 
 def run_USA_with_and_without_resilient():
+    """
+    This function runs a simulation for the USA with and without resilient foods.
+    It sets up a dictionary of simulation parameters and passes it to the ScenarioRunnerNoTrade class to run the model.
+    """
+    # Set up simulation parameters
     this_simulation = {}
-
     this_simulation["scale"] = "country"
     this_simulation["scenario"] = "all_resilient_foods"
     this_simulation["seasonality"] = "no_seasonality"
     this_simulation["grasses"] = "country_nuclear_winter"
     this_simulation["crop_disruption"] = "country_nuclear_winter"
     this_simulation["fish"] = "nuclear_winter"
-
     this_simulation["waste"] = "zero"
     this_simulation["fat"] = "not_required"
     this_simulation["protein"] = "not_required"
@@ -28,9 +31,8 @@ def run_USA_with_and_without_resilient():
     this_simulation["cull"] = "do_eat_culled"
     this_simulation["meat_strategy"] = "reduce_breeding"
 
-    # command line argument inputs (optional)
+    # Run the simulation using the ScenarioRunnerNoTrade class
     scenario_runner = ScenarioRunnerNoTrade()
-
     scenario_runner.run_model_no_trade(
         title="Resilient foods for US only",
         create_pptx_with_all_countries=False,
@@ -53,9 +55,18 @@ def run_USA_with_and_without_resilient():
 
 
 def main(args):
+    """
+    This function is the entry point of the program. It runs the 'run_USA_with_and_without_resilient' function.
+
+    Args:
+        args (list): A list of command-line arguments.
+
+    Returns:
+        None
+    """
     run_USA_with_and_without_resilient()
 
 
 if __name__ == "__main__":
-    args = sys.argv[1:]
-    main(args)
+    args = sys.argv[1:]  # Get command-line arguments
+    main(args)  # Call the main function with the arguments
