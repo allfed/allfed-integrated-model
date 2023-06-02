@@ -22,6 +22,7 @@ def run_ARG_net_baseline():
     Returns:
         None
     """
+
     # Set up simulation parameters
     this_simulation = {}
     this_simulation["scale"] = "country"

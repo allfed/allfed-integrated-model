@@ -406,25 +406,41 @@ class OutdoorCrops:
     ):
         """
         Calculates the crop production minus greenhouse area and sets the production attribute of the class instance.
+
         Args:
-            self: instance of the class
+            self (OutdoorCrops): instance of the class
             constants_for_params (dict): dictionary containing constants for parameters
             greenhouse_fraction_area (numpy.ndarray): array containing the fraction of greenhouse area for each month
+
         Returns:
             None
+
+        Example:
+            >>>
+            >>> constants_for_params = {"WASTE": {"CROPS": 10}, "OG_USE_BETTER_ROTATION": True, "INITIAL_HARVEST_DURATION_IN_MONTHS": 3, "DELAY": {"ROTATION_CHANGE_IN_MONTHS": 2}}
+            >>> greenhouse_fraction_area = np.array([0.5, 0.6, 0.7, 0.8, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2])
+            >>> oc = OutdoorCrops()
+            >>> oc.set_crop_production_minus_greenhouse_area(constants_for_params, greenhouse_fraction_area)
+
         """
 
+        # Set the crop waste constant
         self.CROP_WASTE = constants_for_params["WASTE"]["CROPS"]
 
+        # Check if outdoor growing is enabled
         if self.ADD_OUTDOOR_GROWING:
+            # Check if better rotation is enabled
             if constants_for_params["OG_USE_BETTER_ROTATION"]:
+                # Initialize an array to store the crops produced
                 crops_produced = np.array([0] * self.NMONTHS)
 
+                # Calculate the harvest duration
                 hd = (
                     constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"]
                     + constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"]
                 )
 
+                # Calculate the crops produced for each month
                 crops_produced[hd:] = np.multiply(
                     np.array(self.KCALS_GROWN[hd:]), (1 - greenhouse_fraction_area[hd:])
                 )
@@ -435,11 +451,14 @@ class OutdoorCrops:
                 )
 
             else:
+                # Use the default crop production values
                 crops_produced = np.array(self.NO_ROT_KCALS_GROWN)
 
         else:
+            # No outdoor growing, so no crops produced
             crops_produced = np.array([0] * self.NMONTHS)
 
+        # Calculate the production of food
         self.production = Food(
             kcals=np.array(crops_produced) * (1 - self.CROP_WASTE / 100),
             fat=np.array(self.OG_FRACTION_FAT * crops_produced)
@@ -451,6 +470,7 @@ class OutdoorCrops:
             protein_units="thousand tons each month",
         )
 
+        # Check if any NaN values are present in the production
         assert not np.isnan(
             self.production.kcals
         ).any(), """Error: the outdoor crop production expected is

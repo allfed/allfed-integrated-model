@@ -12,6 +12,29 @@ from src.food_system.food import Food
 
 class Seaweed:
     def __init__(self, constants_for_params):
+        """
+        Initializes the Seaweed class with constants for parameters.
+
+        Args:
+            constants_for_params (dict): A dictionary containing constants for parameters.
+
+        Returns:
+            None
+
+        Example:
+            >>> constants_for_params = {
+            ...     "NMONTHS": 12,
+            ...     "SEAWEED_MAX_AREA_FRACTION": 0.5,
+            ...     "POP": 8000000000,
+            ...     "SEAWEED_NEW_AREA_FRACTION": 0.1,
+            ...     "INITIAL_SEAWEED_FRACTION": 0.1,
+            ...     "MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS": 5,
+            ...     "MAX_SEAWEED_AS_PERCENT_KCALS_FEED": 10,
+            ...     "MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL": 10,
+            ...     "WASTE": {"SEAWEED": 20},
+            ... }
+            >>> seaweed = Seaweed(constants_for_params)
+        """
         self.NMONTHS = constants_for_params["NMONTHS"]
         # Cutting back based on this paper
         # https://www.sciencedirect.com/science/article/abs/pii/0044848678900303
@@ -32,6 +55,7 @@ class Seaweed:
             "MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"
         ]
 
+        # Calculate the maximum amount of seaweed humans can consume monthly
         self.MAX_SEAWEED_HUMANS_CAN_CONSUME_MONTHLY = (
             self.MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS
             / 100
@@ -83,7 +107,7 @@ class Seaweed:
 
         self.SEAWEED_WASTE = constants_for_params["WASTE"]["SEAWEED"]
 
-        # seaweed billion kcals per 1000 tons wet
+        # Calculate the number of billion kcals per 1000 tons wet of seaweed
         # convert 1000 tons to kg
         # convert kg to kcals
         # convert kcals to billions of kcals
@@ -95,14 +119,14 @@ class Seaweed:
             * self.WET_TO_DRY_MASS_CONVERSION
             * (1 - self.SEAWEED_WASTE / 100)
         )
-        # seaweed fraction digestible protein per 1000 ton wet
+        # Calculate the fraction digestible protein per 1000 ton wet of seaweed
         self.SEAWEED_PROTEIN = (
             self.MASS_FRACTION_PROTEIN_DRY
             * self.WET_TO_DRY_MASS_CONVERSION
             * (1 - self.SEAWEED_WASTE / 100)
         )
 
-        # seaweed fraction fat per 1000 tons wet
+        # Calculate the fraction fat per 1000 tons wet of seaweed
         self.SEAWEED_FAT = (
             self.MASS_FRACTION_FAT_DRY
             * self.WET_TO_DRY_MASS_CONVERSION

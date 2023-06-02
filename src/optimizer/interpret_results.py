@@ -39,21 +39,34 @@ class Interpreter:
         negative feed, into a purely list of values, where the negative feed has been
         subtracted from the sum of outdoor growing and stored food.
 
+        Args:
+            extracted_results (object): The raw output of the optimizer food categories and
+            total people fed in list form
+            time_consts (dict): A dictionary containing time constants
+
+        Returns:
+            object: An instance of the Interpreter class
+
         ANYTHING assigned to "self" here is part of a useful result that will either
         be printed or plotted as a result
-
         """
 
+        # Assign percent fed from extractor
         self.assign_percent_fed_from_extractor(extracted_results)
+
+        # Assign kcals equivalent from extractor
         self.assign_kcals_equivalent_from_extractor(extracted_results)
 
-        # now the same, but in units effective kcals per day
-        # all these are just used for plotting only
-
+        # Assign constants
         self.constants = extracted_results.constants
+
+        # Assign time months middle
         self.assign_time_months_middle(self.constants["NMONTHS"])
+
+        # Assign nonhuman consumption
         self.nonhuman_consumption = extracted_results.nonhuman_consumption
-        # nonhuman consumption in units percent people fed
+
+        # Set feed and biofuels
         self.set_feed_and_biofuels(
             extracted_results.seaweed_biofuel,
             extracted_results.scp_biofuel,
@@ -67,11 +80,14 @@ class Interpreter:
             extracted_results.outdoor_crops_feed,
         )
 
+        # Assign interpreted properties
         self.assign_interpreted_properties(extracted_results)
 
+        # Set include fat and protein
         self.include_fat = Food.conversions.include_fat
         self.include_protein = Food.conversions.include_protein
 
+        # Create CSV output
         CREATE_CSV_OUTPUT = True
         if CREATE_CSV_OUTPUT:
             dict = {
@@ -97,8 +113,7 @@ class Interpreter:
 
             df = pd.DataFrame(dict)
 
-            # saving the dataframe
-            # df.to_csv("ykcals" + self.constants["scenario_name"] + ".csv")
+            # Saving the dataframe
             year = str(date.today().year)
             month = str(date.today().month)
             day = str(date.today().day)
@@ -128,154 +143,266 @@ class Interpreter:
         return self
 
     def assign_percent_fed_from_extractor(self, extracted_results):
+        """
+        Assigns the percentage of food fed to humans from each food source extracted from the results.
+        Args:
+            extracted_results (ExtractedResults): An instance of the ExtractedResults class containing the results
+            of the extraction process.
+        Returns:
+            None
+        """
+        # Assign the percentage of stored food fed to humans
         self.stored_food = (
             extracted_results.stored_food_to_humans.in_units_percent_fed()
         )
 
+        # Assign the percentage of outdoor crops fed to humans
         self.outdoor_crops = (
             extracted_results.outdoor_crops_to_humans.in_units_percent_fed()
         )
 
+        # Assign the percentage of seaweed fed to humans
         self.seaweed = extracted_results.seaweed_to_humans.in_units_percent_fed()
 
+        # Assign the percentage of cell sugar fed to humans
         self.cell_sugar = extracted_results.cell_sugar_to_humans.in_units_percent_fed()
 
+        # Assign the percentage of SCP fed to humans
         self.scp = extracted_results.scp_to_humans.in_units_percent_fed()
 
+        # Assign the percentage of food from the greenhouse fed to humans
         self.greenhouse = extracted_results.greenhouse.in_units_percent_fed()
 
+        # Assign the percentage of fish fed to humans
         self.fish = extracted_results.fish.in_units_percent_fed()
 
+        # Assign the percentage of culled meat plus grazing cattle maintained fed to humans
         self.culled_meat_plus_grazing_cattle_maintained = (
             extracted_results.culled_meat_plus_grazing_cattle_maintained.in_units_percent_fed()
         )
 
+        # Assign the percentage of grazing milk fed to humans
         self.grazing_milk = extracted_results.grazing_milk.in_units_percent_fed()
 
+        # Assign the percentage of grain-fed meat fed to humans
         self.grain_fed_meat = extracted_results.grain_fed_meat.in_units_percent_fed()
 
+        # Assign the percentage of grain-fed milk fed to humans
         self.grain_fed_milk = extracted_results.grain_fed_milk.in_units_percent_fed()
 
+        # Assign the percentage of immediate outdoor crops fed to humans
         self.immediate_outdoor_crops = (
             extracted_results.immediate_outdoor_crops.in_units_percent_fed()
         )
 
+        # Assign the percentage of new stored outdoor crops fed to humans
         self.new_stored_outdoor_crops = (
             extracted_results.new_stored_outdoor_crops.in_units_percent_fed()
         )
 
     def assign_kcals_equivalent_from_extractor(self, extracted_results):
+        """
+        Assigns the kcals equivalent of various food sources to their respective attributes in the Interpreter object.
+        Args:
+            extracted_results (ExtractedResults): An object containing the results of the extraction process.
+        Returns:
+            None
+        """
+        # Assign kcals equivalent of stored food to humans
         self.stored_food_kcals_equivalent = (
             extracted_results.stored_food_to_humans.in_units_kcals_equivalent()
         )
 
+        # Assign kcals equivalent of seaweed to humans
         self.seaweed_kcals_equivalent = (
             extracted_results.seaweed_to_humans.in_units_kcals_equivalent()
         )
 
+        # Assign kcals equivalent of cell sugar to humans
         self.cell_sugar_kcals_equivalent = (
             extracted_results.cell_sugar_to_humans.in_units_kcals_equivalent()
         )
 
+        # Assign kcals equivalent of SCP to humans
         self.scp_kcals_equivalent = (
             extracted_results.scp_to_humans.in_units_kcals_equivalent()
         )
 
+        # Assign kcals equivalent of greenhouse to its attribute
         self.greenhouse_kcals_equivalent = (
             extracted_results.greenhouse.in_units_kcals_equivalent()
         )
 
+        # Assign kcals equivalent of fish to its attribute
         self.fish_kcals_equivalent = extracted_results.fish.in_units_kcals_equivalent()
 
+        # Assign kcals equivalent of culled meat plus grazing cattle maintained to its attribute
         self.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent = (
             extracted_results.culled_meat_plus_grazing_cattle_maintained.in_units_kcals_equivalent()
         )
 
+        # Assign kcals equivalent of grazing milk to its attribute
         self.grazing_milk_kcals_equivalent = (
             extracted_results.grazing_milk.in_units_kcals_equivalent()
         )
 
+        # Assign kcals equivalent of grain fed meat to its attribute
         self.grain_fed_meat_kcals_equivalent = (
             extracted_results.grain_fed_meat.in_units_kcals_equivalent()
         )
 
+        # Assign kcals equivalent of grain fed milk to its attribute
         self.grain_fed_milk_kcals_equivalent = (
             extracted_results.grain_fed_milk.in_units_kcals_equivalent()
         )
 
+        # Assign kcals equivalent of immediate outdoor crops to its attribute
         self.immediate_outdoor_crops_kcals_equivalent = (
             extracted_results.immediate_outdoor_crops.in_units_kcals_equivalent()
         )
 
+        # Assign kcals equivalent of new stored outdoor crops to its attribute
         self.new_stored_outdoor_crops_kcals_equivalent = (
             extracted_results.new_stored_outdoor_crops.in_units_kcals_equivalent()
         )
 
     def set_to_humans_properties_kcals_equivalent(self, extracted_results):
+        """
+        Converts the stored food and outdoor crops to humans properties to their equivalent in kcals.
+        Args:
+            extracted_results (dict): A dictionary containing the extracted results from the simulation.
+
+        Returns:
+            None
+
+        """
+        # Convert stored food to humans properties to kcals equivalent
         self.stored_food_to_humans_kcals_equivalent = (
             self.stored_food_to_humans.in_units_kcals_equivalent()
         )
 
+        # Convert outdoor crops to humans properties to kcals equivalent
         self.outdoor_crops_to_humans_kcals_equivalent = (
             self.outdoor_crops_to_humans.in_units_kcals_equivalent()
         )
 
+        # Convert immediate outdoor crops to humans properties to kcals equivalent
         self.immediate_outdoor_crops_to_humans_kcals_equivalent = (
             self.immediate_outdoor_crops_to_humans.in_units_kcals_equivalent()
         )
 
+        # Convert new stored outdoor crops to humans properties to kcals equivalent
         self.new_stored_outdoor_crops_to_humans_kcals_equivalent = (
             self.new_stored_outdoor_crops_to_humans.in_units_kcals_equivalent()
         )
 
     def assign_time_months_middle(self, NMONTHS):
+        """
+        This function assigns the middle of each month to a list of time_months_middle.
+        Args:
+            NMONTHS (int): The number of months to assign the middle of.
+
+        Returns:
+            None
+
+        Example:
+            >>> interpreter = Interpreter()
+            >>> interpreter.assign_time_months_middle(12)
+            >>> print(interpreter.time_months_middle)
+            [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5]
+        """
+        # Clear the list to start fresh
         self.time_months_middle = []
+
+        # Loop through each month and add the middle to the list
         for month in range(0, NMONTHS):
             self.time_months_middle.append(month + 0.5)
 
     def assign_interpreted_properties(self, extracted_results):
+        """
+        Assigns interpreted properties to the Interpreter object based on the extracted results.
+        Args:
+            extracted_results (ExtractedResults): The extracted results object to interpret.
+
+        Returns:
+            None
+
+        Example:
+            >>> extracted_results = ExtractedResults()
+            >>> interpreter = Interpreter()
+            >>> interpreter.assign_interpreted_properties(extracted_results)
+        """
+        # Get the sum of humans fed by adding to humans.
         humans_fed_sum = self.get_sum_by_adding_to_humans()
 
+        # Get the percentage of people fed and the constraining nutrient.
         (
             self.percent_people_fed,
             self.constraining_nutrient,
         ) = self.get_percent_people_fed(humans_fed_sum)
-        # rounding errors can be introduced by the optimizer. We correct them here.
-        # ... at least the ones that we can identify.
-        # We also round everything to within 0.1% of its value,
-        # in terms of % people fed.
 
+        # Set the excess feed property.
         self.excess_feed = extracted_results.excess_feed
 
+        # Set the kcals, fat, and protein fed properties.
         self.kcals_fed = humans_fed_sum.kcals
         self.fat_fed = humans_fed_sum.fat
         self.protein_fed = humans_fed_sum.protein
 
     def get_mean_min_nutrient(self):
         """
-        for finding the minimum of any nutrient in any month
-        and then getting the mean people fed in all the months
-        This is useful for assessing what would have happened if stored food were not
-        a constraint on number of people fed
+        Calculates the mean number of people fed in all months by finding the minimum of any nutrient in any month.
+        This is useful for assessing what would have happened if stored food were not a constraint on the number of people fed.
 
-        returns: the mean people fed in all months
+        Args:
+            self (Interpreter): An instance of the Interpreter class.
+
+        Returns:
+            float: The mean number of people fed in all months.
+
+        Example:
+            >>> interpreter = Interpreter()
+            >>> interpreter.get_mean_min_nutrient()
+            2.0
         """
-        # this is what the command below does
-        # >>> a = np.array([3,2,1])
-        # >>> b = np.array([2,2,6])
-        # >>> c = np.array([100,100,0])
-        # >>> np.min([a,b,c],axis=0)
-        # array([2, 2, 0])
+        # Find the minimum of kcals_fed, fat_fed, and protein_fed for each month
+        # and store the resulting array in min_fed.
         min_fed = np.min([self.kcals_fed, self.fat_fed, self.protein_fed], axis=0)
 
+        # Calculate the mean of the min_fed array and store the result in mean_fed.
         mean_fed = np.mean(min_fed)
+
+        # Return the mean_fed value.
         return mean_fed
 
     def get_sum_by_adding_to_humans(self):
         """
-        sum the resulting nutrients from the extracted_results
+        Sums the resulting nutrients from the extracted_results and returns the total.
+
+        Args:
+            self: instance of the Interpreter class
+
+        Returns:
+            float: the total amount of nutrients that can be fed to humans
+
+        Example:
+            >>> interpreter = Interpreter()
+            >>> interpreter.stored_food = 100
+            >>> interpreter.outdoor_crops = 200
+            >>> interpreter.seaweed = 50
+            >>> interpreter.cell_sugar = 75
+            >>> interpreter.scp = 150
+            >>> interpreter.greenhouse = 300
+            >>> interpreter.fish = 100
+            >>> interpreter.culled_meat_plus_grazing_cattle_maintained = 50
+            >>> interpreter.grazing_milk = 25
+            >>> interpreter.grain_fed_meat = 75
+            >>> interpreter.grain_fed_milk = 50
+            >>> interpreter.get_sum_by_adding_to_humans()
+            1025.0
         """
 
+        # Sum the resulting nutrients from the extracted_results
         to_humans_fed_sum = (
             self.stored_food
             + self.outdoor_crops
@@ -290,28 +417,54 @@ class Interpreter:
             + self.grain_fed_milk
         )
 
+        # Return the total amount of nutrients that can be fed to humans
         return to_humans_fed_sum
 
     def print_kcals_per_capita_per_day(self, interpreted_results):
         """
-        This function prints the ratio of needs to actual needs for a given scenario
-        result.
-        """
+        This function calculates and prints the expected kcals/capita/day for a given scenario result.
+        Args:
+            interpreted_results (InterpretedResults): An instance of the InterpretedResults class containing
+            the interpreted results of a scenario.
 
+        Returns:
+            None
+
+        Example:
+            >>> interpreted_results = Interpreter.interpret(scenario)
+            >>> Interpreter.print_kcals_per_capita_per_day(interpreted_results)
+
+        """
+        # Calculate the ratio of people fed to total population
         needs_ratio = interpreted_results.percent_people_fed / 100
 
+        # Calculate and print the expected kcals/capita/day
         print("Expected kcals/capita/day")
         print(needs_ratio * 2100)
         print("")
 
     def get_percent_people_fed(self, humans_fed_sum):
         """
-        get the minimum nutrients required to meet the needs of the population
-         in any month, for kcals, fat, and protein
+        Calculates the estimated percentage of people fed based on the minimum nutrients required to meet the needs of the population in any month, for kcals, fat, and protein.
+
+        Args:
+            humans_fed_sum (HumanFedSum): An instance of the HumanFedSum class representing the total amount of nutrients available for the population.
+
+        Returns:
+            list: A list containing the estimated percentage of people fed and the minimum nutrients required to meet their needs.
+
+        Example:
+            >>> humans_fed_sum = HumanFedSum(1000, 50, 20)
+            >>> interpreter = Interpreter()
+            >>> interpreter.get_percent_people_fed(humans_fed_sum)
+            [50.0, {'kcal': 1000, 'fat': 50, 'protein': 20}]
         """
         assert humans_fed_sum.is_units_percent()
+
+        # Get the minimum nutrients required to meet the needs of the population
         (min_nutrient, percent_people_fed) = humans_fed_sum.get_min_nutrient()
 
+        # Print the nutrients with constraining values and the estimated percentage of people fed
         PRINT_FED = False
         if PRINT_FED:
             print("Nutrients with constraining values are: " + str(min_nutrient))
@@ -320,16 +473,27 @@ class Interpreter:
                 + str(round(percent_people_fed, 1))
                 + "%"
             )
+
+        # Return the estimated percentage of people fed and the minimum nutrients required to meet their needs
         return [percent_people_fed, min_nutrient]
 
     def correct_and_validate_rounding_errors(self):
         """
-        any round error we might expect to be very small and easily fixable is corrected
-        here. "small" is with respect to percent people fed
+        This function corrects any rounding errors that might have occurred during the optimization process.
+        It ensures that the values are rounded to the nearest 3 decimal places and that they are greater than or equal to zero.
+        The function returns the corrected values for stored_food, outdoor_crops, immediate_outdoor_crops, new_stored_outdoor_crops, and seaweed.
 
-        Note: outdoor_crops_to_humans, stored_food, and seaweed are the only actual outputs of
-              the optimizer!
+        Args:
+            None
+
+        Returns:
+            tuple: A tuple containing the corrected values for stored_food, outdoor_crops, immediate_outdoor_crops, new_stored_outdoor_crops, and seaweed.
+
+        Example:
+            >>> interpreter = Interpreter()
+            >>> stored_food, outdoor_crops, immediate_outdoor_crops, new_stored_outdoor_crops, seaweed = interpreter.correct_and_validate_rounding_errors()
         """
+        # Ensure that all the outputs have the same number of months
         assert (
             self.stored_food.NMONTHS
             == self.outdoor_crops.NMONTHS
@@ -338,16 +502,17 @@ class Interpreter:
             == self.seaweed.NMONTHS
         )
 
+        # Ensure that all the outputs are in percentage units
         assert self.stored_food.is_units_percent()
         assert self.outdoor_crops.is_units_percent()
         assert self.immediate_outdoor_crops.is_units_percent()
         assert self.new_stored_outdoor_crops.is_units_percent()
         assert self.seaweed.is_units_percent()
 
+        # Round the values to the nearest 3 decimal places
         stored_food_rounded = self.stored_food.get_rounded_to_decimal(3)
         outdoor_crops_rounded = self.outdoor_crops.get_rounded_to_decimal(3)
         seaweed_rounded = self.seaweed.get_rounded_to_decimal(3)
-
         immediate_outdoor_crops_rounded = (
             self.immediate_outdoor_crops.get_rounded_to_decimal(3)
         )
@@ -355,15 +520,14 @@ class Interpreter:
             self.new_stored_outdoor_crops.get_rounded_to_decimal(3)
         )
 
-        # if the value was a little less than zero, when rounded it would no longer be
-        # less than zero.
-
+        # Ensure that all the rounded values are greater than or equal to zero
         assert stored_food_rounded.all_greater_than_or_equal_to_zero()
         assert seaweed_rounded.all_greater_than_or_equal_to_zero()
         assert outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
         assert immediate_outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
         assert new_stored_outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
 
+        # Return the corrected values
         return (
             stored_food_rounded,
             outdoor_crops_rounded,
@@ -378,15 +542,20 @@ class Interpreter:
         percent_fed,
     ):
         """
-        when calculating the excess calories, the amount of human edible feed
-        used can't be more than the excess calories. Because the baseline feed
-        usage is higher than in nuclear winter, we don't want to increase
-        feed usage before the shutoff.
+        Calculates the excess feed to be added to the diet at a consistent percentage
+        in the months of interest (months to calculate diet).
 
-        this function adds an additional amount of excess at a consistent percentage
-        in the months of interest (months to calculate diet)
+        Args:
+            feed_delay (int): the number of months before the shutoff
+            percent_fed (float): the percentage of the baseline feed to be fed to the population
+
+        Returns:
+            excess_per_month (numpy.ndarray): kcals per month, units percent
+
+        Raises:
+            AssertionError: if the length of additional_excess_to_add_percent is not equal to after_shutoff_feed
+
         """
-
         # these months are used to estimate the diet before the full scale-up of
         # resilient foods makes there be way too much food to make sense economically
         N_MONTHS_TO_CALCULATE_DIET = 49
@@ -396,18 +565,23 @@ class Interpreter:
         SMALL_INCREASE_IN_EXCESS = 0.1
         LARGE_INCREASE_IN_EXCESS = 1.0
 
+        # get excess feed per month
         excess_per_month_percent = self.excess_feed.kcals
 
+        # get baseline feed
         baseline_feed = excess_per_month_percent[:feed_delay]
 
+        # get the part at the end to leave unchanged
         part_at_end_to_leave_unchanged = excess_per_month_percent[
             N_MONTHS_TO_CALCULATE_DIET:
         ]
 
+        # get the feed after the shutoff
         after_shutoff_feed = excess_per_month_percent[
             feed_delay:N_MONTHS_TO_CALCULATE_DIET
         ]
 
+        # determine the additional excess to add based on the percentage fed
         if percent_fed < 106 and percent_fed > 100:
             additional_excess_to_add_percent = np.linspace(
                 SMALL_INCREASE_IN_EXCESS,
@@ -421,18 +595,18 @@ class Interpreter:
                 N_MONTHS_TO_CALCULATE_DIET - feed_delay,
             )
 
+        # check that the length of additional_excess_to_add_percent is equal to after_shutoff_feed
         assert len(additional_excess_to_add_percent) == len(after_shutoff_feed)
 
-        # don't add any additional feed before the shutoff, that's already at
-        # baseline feed levels
+        # add the additional excess to the feed after the shutoff
         new_excess_kcals = after_shutoff_feed + additional_excess_to_add_percent
 
+        # combine the baseline feed, new excess, and part at the end to leave unchanged
         excess_per_month = np.append(
             np.append(baseline_feed, new_excess_kcals),
             part_at_end_to_leave_unchanged,
         )
 
-        # kcals per month, units percent
         return excess_per_month
 
     def correct_and_validate_rounding_errors(self):
