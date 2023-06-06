@@ -118,9 +118,9 @@ class AnimalSpecies:
         self.approximate_feed_conversion = approximate_feed_conversion # note this only used for ranking the efficiency, not used for calculating the feed required
         self.digestion_efficiency = digestion_efficiency # this is the conversion from gross energy to net energy
         self.feed_balance = self.feed_required_per_month_species() # this is the feed required per month for the species
-        self.population_fed = 0
-        self.population_starving_pre_slaughter = [0]
-        self.population_starving_month = [0]
+        self.population_fed = 0 # a variable to store the number of animals fed this month, overwritten and not a list (useful for handling the case where animals are fed more than once per month (i.e a ruminent eats grass and grain))
+        self.population_starving_pre_slaughter = [] # will be appended to, population - population fed each month.
+        self.population_starving_month = []
 
         # slaughtering attributes
         if slaughter>0:
@@ -306,6 +306,15 @@ class AnimalSpecies:
         # uses the net energy required per month function and the digestion efficiency
         return Food(self.net_energy_required_per_month()/self.digestion_efficiency * self.population[-1], -1, -1)
     
+    def reset_feed_balance(self):
+        """
+        This function resets the feed balance to the feed required per month for the species
+        Needs to be run before feeding the animals each month.
+        
+        """
+        self.feed_balance = self.feed_required_per_month_species() # this is the feed required per month for the species
+
+    
     def feed_the_species(self, food_input):
         """
         Main function to feed the species
@@ -341,33 +350,12 @@ class AnimalSpecies:
             # no food required
             # print('no food required for ' + self.animal_type)
 
-            return food_input
-
-        # if protein and fats are used NOT IMPLEMENTED AS OF 17th May 2023
-        if self.feed_balance.fat>0 and self.feed_balance.protein>0:
-            # still need more thought on how to deal with this. Units of food aren't fungible neccesarily, can't easily moce macros between
-            if food_input.kcals > self.feed_balance.kcals & food_input.fat > self.feed_balance.fat & food_input.protein > self.feed_balance.protein:
-                # whole population is fed
-                self.population_fed = self.population
-                # update the food object
-                food_input.kcals -= self.feed_balance.kcals
-                food_input.fat -= self.feed_balance.fat
-                food_input.protein -= self.feed_balance.protein
-                self.feed_balance = Food(0,0,0)
-            else:
-                # not enough food to feed the whole population
-                # calculate the number of animals that can be fed
-                self.population_fed = round(food_input.kcals / feed_required.kcals * self.population[-1])
-                # update the food object
-                food_input.kcals = 0
-                food_input.fat = 0
-                food_input.protein = 0
-                self.feed_balance = feed_required - food_input
+            return food_input 
         else:
             # only using kcals
             if food_input.kcals > self.feed_balance.kcals:
                 # whole population is fed
-                self.population_fed = self.population
+                self.population_fed = self.population[-1]
                 # update the food object
                 food_input.kcals -= self.feed_balance.kcals
                 self.feed_balance = Food(0,0,0)
@@ -377,12 +365,8 @@ class AnimalSpecies:
                 # calculate the number of animals that can be fed
                 self.population_fed = round(food_input.kcals / self.feed_balance.kcals * self.population[-1])
                 # update the food object
-                self.feed_balance = self.feed_balance - food_input
+                self.feed_balance.kcals -= food_input.kcals
                 food_input.kcals = 0
-
-        # calculate the starving population based on the population fed
-        # don't forget that population is a list of the population over time
-        self.population_starving_pre_slaughter.append(self.population[-1] - self.population_fed)
 
         return food_input
        
@@ -669,11 +653,11 @@ def available_grass():
     # units idealy in kcal
     # all imports should be in GE, gross energy
     # calacuklation of NE is done in the feed animals function
-    grass=Food(1000,-1,-1)
+    grass=Food(6000,-1,-1)
 
     return grass
 
-def feed_animals(animal_list, milk_animals, non_milk_ruminants, non_milk_animals, available_feed, available_grass):
+def feed_animals(animal_list, ruminants, available_feed, available_grass):
     """
     This function will feed the animals
     It will do so by allocating the grass first to those animals that can eat it,
@@ -684,26 +668,28 @@ def feed_animals(animal_list, milk_animals, non_milk_ruminants, non_milk_animals
 
     List needs to be sorted in the oprder you want the animals to be prioritised for feed
     """
-    # grass to rumiants, milk first
-    # feed to milk animals
-    for milk_animal in milk_animals:
-        # print(f"trying to feed grass to " + milk_animal.animal_type)
-        available_grass = milk_animal.feed_the_species(available_grass)
     
-    for milk_animal in milk_animals:
-        # print(f"trying to feed feed to " + milk_animal.animal_type)
-        available_feed = milk_animal.feed_the_species(available_feed)
-
-    for ruminant in non_milk_ruminants:
-        # print(f"trying to feed grass to " + ruminant.animal_type)
+    # reset the feed balance
+    for animal in animal_list:
+        animal.reset_feed_balance()
+    
+    # feed the ruminants grass
+    for ruminant in ruminants:
+        # print(f"trying to feed grass to " + milk_animal.animal_type)
         available_grass = ruminant.feed_the_species(available_grass)
+    
+    # feed everything grain
+    for animal in animal_list:
+        # print(f"trying to feed feed to " + milk_animal.animal_type)
+        available_feed = animal.feed_the_species(available_feed)
 
-    for non_milk_animal in non_milk_animals:
-        # print(f"trying to feed feed to " + non_milk_animal.animal_type)
-        available_feed = non_milk_animal.feed_the_species(available_feed)
-
+    #all feeding is done in the order of the lists supplied.
     return available_feed, available_grass
 
+def calculate_starving_animals_after_feed(animal_list):
+    
+    for animal in animal_list:
+        animal.population_starving_pre_slaughter.append(animal.population[-1]-animal.population_fed)
 
 
 def calculate_additive_births(animal_object, current_month):
@@ -797,8 +783,6 @@ def calculate_change_in_population(animal_object, spare_slaughter_hours, new_add
     return spare_slaughter_hours
 
 
-
-
 def calculate_pregnant_animals_birthing(animal_object, new_pregnant_animals_total):
     """
     
@@ -845,7 +829,14 @@ def calculate_pregnant_slaughter(animal_object, new_slaughter_rate):
     return new_pregnant_animals_total,new_slaughtered_pregnant_animals
 
 def calculate_animal_population(animal_object, new_births_animals_month, new_other_animal_death, new_slaughter_rate):
-    new_animal_population = animal_object.population[-1]  - new_slaughter_rate - new_other_animal_death + new_births_animals_month
+    new_animal_population_pre_slaughter = animal_object.population[-1] - new_other_animal_death + new_births_animals_month
+
+
+    # check if the slaughtering is greater than the population
+    if new_slaughter_rate > new_animal_population_pre_slaughter:
+        new_animal_population = 0
+    else:
+        new_animal_population = new_animal_population_pre_slaughter - new_slaughter_rate
     return new_animal_population
 
 # def calculate_imported_and_transfer_population(animal_object):
@@ -960,6 +951,11 @@ def calculate_other_death_homekill_head(animal_object,country_object):
     max_homekill_head = other_death*recoverable_meat_other_death_fraction
     home_kill_capacity = country_object.homekill_hours_budget[-1] / animal_object.animal_slaughter_hours
     actual_homekill_head = min(max_homekill_head,home_kill_capacity)
+    # the above is the actual homemkill, based on the homekill capacity and the max homekill head
+    # max homemkill head is how many animals that died due to other causes can be homekilled/butchered/recovered
+    # the the homekill capacity is the number of animals that can be homekilled based on the number of hours available
+    # actual homekill head is the minimum of the two
+    # don't remove the actual homekill from this fucntion from the population, as they were already dead
     
     animal_object.homekill_other_death_this_month.append(actual_homekill_head)
     country_object.homekill_hours_budget[-1] -= actual_homekill_head * animal_object.animal_slaughter_hours
@@ -1027,7 +1023,10 @@ def calculate_starving_homekill_head(animal_object,country_object ,  population_
     
 
 def calculate_starving_pop_post_all_slaughter_homekill(animal, population_starving_post_slaughter_and_healthy_homekill):
-    return population_starving_post_slaughter_and_healthy_homekill - animal.homekill_starving_this_month[-1]
+    # return zero if negative
+    pop_starving =  population_starving_post_slaughter_and_healthy_homekill - animal.homekill_starving_this_month[-1]
+    
+    return max(pop_starving,0) 
 
     
 def calculate_starving_other_death_head(animal_object, population_starving_post_slaughter_and_all_homekill):
@@ -1056,6 +1055,38 @@ def calculate_starving_other_death_head(animal_object, population_starving_post_
     
     return population_starving_post_slaughter_and_all_homekill*animal_object.starvation_death_fraction
 
+
+def calculate_final_population(animal_object):
+    """
+    This function calculates the final population of the animal after all the slaughter and homekill has been done.
+
+    Parameters
+    ----------
+    animal_object : Animal
+        The animal object that is being calculated for.
+
+    Returns
+    -------
+    float
+        The final population of the animal.
+
+    """
+    
+    animal_object.other_death_starving[-1]
+    animal_object.homekill_healthy_this_month[-1]
+    animal_object.homekill_starving_this_month[-1]
+    
+    
+    animal_object.population[-1] -=     (   animal_object.other_death_starving[-1] +
+                                            animal_object.homekill_healthy_this_month[-1] +
+                                            animal_object.homekill_starving_this_month[-1]
+    )
+
+    
+    
+    
+    
+    return animal_object.population[-1] - animal_object.slaughter[-1] - animal_object.homekill_healthy_this_month[-1] - animal_object.homekill_starving_this_month[-1] - animal_object.other_animal_death[-1]
 
 def main(country_code):
     """
@@ -1121,25 +1152,30 @@ def main(country_code):
 
     #### END CREATION OF OBJECTS ####
 
-    ## THESE FEED OBJECTS WILL BE PASSED IN ####
-    # create available feed object
-    feed_MJ_available_this_month = available_feed()
-    grass_MJ_available_this_month = available_grass()
-
-
-    ## Do the feeding
-    # feed the animals
-    feed_MJ_available_this_month, grass_MJ_available_this_month = feed_animals(animal_dict, milk_animals, non_milk_ruminants, non_milk_animals,  feed_MJ_available_this_month, grass_MJ_available_this_month)
-
-    ## OKAY SO NOW WE HAVE THE ANIMALS FED, WE NEED TO LOOK AT SLAUGHTERING
-
-    spare_slaughter_hours = 0 # this should be stored somewqhere betterthat stays persietnt over the months
-
-
 
     # THIS month for loop won't reallt exist here, i will be called in a loop somewhere else
     # this is required as the I/O needs to interact with the rest of the model each month
     for month in range(0,months_to_run):
+        
+        print(month)
+
+
+        ## THESE FEED OBJECTS WILL BE PASSED IN ####
+        # create available feed object
+        feed_MJ_available_this_month = available_feed()
+        grass_MJ_available_this_month = available_grass()
+
+
+        ## Do the feeding
+        # feed the animals
+        
+        feed_MJ_available_this_month, grass_MJ_available_this_month = feed_animals(all_animals, ruminants ,  feed_MJ_available_this_month, grass_MJ_available_this_month)
+        calculate_starving_animals_after_feed(all_animals)
+
+        ## OKAY SO NOW WE HAVE THE ANIMALS FED, WE NEED TO LOOK AT SLAUGHTERING
+
+        spare_slaughter_hours = 0 # this should be stored somewqhere betterthat stays persietnt over the months
+
 
 
 
@@ -1168,6 +1204,7 @@ def main(country_code):
             new_births, new_transfer_births = calculate_additive_births(animal, month)
             # add new population to the animal object
             births[animal.animal_type] = new_births
+            animal.births_animals_month.append(new_births)
             
             if animal.animal_type == 'milk':
                 transfer_populations[animal.animal_species] = animal.retiring_milk_head_monthly() + new_transfer_births
@@ -1230,7 +1267,11 @@ def main(country_code):
             population_starving_post_slaughter_and_healthy_homekill = calculate_starving_pop_post_slaughter_healthy_homekill(animal)
             calculate_starving_homekill_head(animal,country_object,population_starving_post_slaughter_and_healthy_homekill) # this could be a hard limit based on capacity of the homekill system. Could take in to account healthy homekill (to see if there is capacity for more)
             population_starving_post_all_slaughter_homekill =  calculate_starving_pop_post_all_slaughter_homekill(animal, population_starving_post_slaughter_and_healthy_homekill)
+            # the end of this section returns the population of animals that are starving after all the homekill and slaughtering. This will be used o calculate the other death from starving
+            
+            # OTHER DEATH resulting from starvation of the 'starving' population
             animal.other_death_starving.append(calculate_starving_other_death_head(animal,population_starving_post_all_slaughter_homekill)) # RATE will be very high, no more than the starving pop though (obviously) this should be in the test, value should be: 0>value>starving_pop_after_homekill_and_slaughter
+
 
             # next do the other death from starving.
             #might be zero if all of starving is dead
@@ -1239,7 +1280,10 @@ def main(country_code):
             animal.total_homekill_this_month.append(animal.total_homekill())
 
             # FINALLY WE CAN APPEND THE NEW POPULATION
-            animal.population[-1] -= population_starving_post_all_slaughter_homekill - animal.other_death_starving[-1]
+            
+            calculate_final_population(animal)
+            
+            # animal.population[-1] -= population_starving_post_all_slaughter_homekill - animal.other_death_starving[-1]
             
             
             ### FINALLY, we have it all
@@ -1262,22 +1306,36 @@ def main(country_code):
             # final pop
             # population_after_homekill_and_starvation = population_starving_post_slaughter_and_homekill - other_death_starving
 
-    #plot the results
-    for animal in all_animals:
-        # if name containes milk
-        
-        
-        #if not chicken
-        # if "milk" in animal.animal_type:
-        plt.plot(animal.population, label=animal.animal_type)
-    plt.legend()
-    plt.show()
-
     return all_animals
 
 
 if __name__ == "__main__":
     output_list = main("USA")
+    
+    # plot reults
+    for animal in output_list:
+        # if name containes milk
+        
+        
+        #if not chicken
+        if "milk_cattle" in animal.animal_type:
+            
+                
+            print("Target population: ", animal.target_population_head)
+            print("Final population: ", animal.population[-1])
+            print("Difference: ", animal.population[-1] - animal.target_population_head)
+
+            
+            plt.plot(animal.population, label="population")
+            # plt.plot(animal.population_starving_pre_slaughter, label="pop_starving_pre_salughter")
+            # plt.plot(animal.other_death_total, label="otherdeath")
+            # plt.plot(animal.total_homekill_this_month, label="homekill")
+            # plt.plot(animal.slaughter, label="slaughter")
+            plt.plot(animal.births_animals_month, label="births")
+            # plt.plot(animal.transfer_births_or_head, label="transfer_births_or_head")
+
+    plt.legend()
+    plt.show()
 
 
 
