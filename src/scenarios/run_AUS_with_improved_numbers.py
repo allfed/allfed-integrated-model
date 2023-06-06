@@ -10,6 +10,19 @@ from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 
 
 def run_AUS_with_and_without_resilient():
+    """
+    This function runs a simulation for AUS with and without resilient foods. It sets up a dictionary of simulation
+    parameters and passes it to the ScenarioRunnerNoTrade object to run the simulation. It also takes optional command
+    line arguments.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
+    # Set up dictionary of simulation parameters
     this_simulation = {}
 
     this_simulation["scale"] = "country"
@@ -28,7 +41,7 @@ def run_AUS_with_and_without_resilient():
     this_simulation["cull"] = "do_eat_culled"
     this_simulation["meat_strategy"] = "reduce_breeding"
 
-    # command line argument inputs (optional)
+    # Set up ScenarioRunnerNoTrade object and run simulation
     scenario_runner = ScenarioRunnerNoTrade()
 
     scenario_runner.run_model_no_trade(
@@ -43,9 +56,21 @@ def run_AUS_with_and_without_resilient():
 
 
 def main(args):
+    """
+    This function is the entry point of the program. It takes in command line arguments and runs the AUS simulation
+    with and without resilient features.
+
+    Args:
+        args (list): A list of command line arguments.
+
+    Returns:
+        None
+    """
     run_AUS_with_and_without_resilient()
 
 
 if __name__ == "__main__":
+    # Get command line arguments
     args = sys.argv[1:]
+    # Call main function with arguments
     main(args)

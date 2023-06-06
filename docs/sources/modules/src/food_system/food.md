@@ -2,7 +2,7 @@
 
 
 ## Food
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L23)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L25)
 ```python 
 Food(
    kcals = 0, fat = 0, protein = 0, kcals_units = 'billionkcals',
@@ -93,8 +93,103 @@ protein)
 **Methods:**
 
 
+### .get_Food_class
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L110)
+```python
+.get_Food_class(
+   cls
+)
+```
+
+---
+get this class
+
+### .get_conversions
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L117)
+```python
+.get_conversions(
+   cls
+)
+```
+
+---
+return the class conversions object
+this is only used by the parent UnitConversions class
+
+### .get_nutrient_names
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L131)
+```python
+.get_nutrient_names(
+   cls
+)
+```
+
+
+**Returns**
+
+the macronutrients of the food.
+
+### .ratio_one
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L140)
+```python
+.ratio_one(
+   cls
+)
+```
+
+
+**Returns**
+
+a ratio of one.
+
+### .ratio_zero
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L157)
+```python
+.ratio_zero(
+   cls
+)
+```
+
+
+**Returns**
+
+a ratio of zero.
+
+### .new_food_just_from_kcals
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L230)
+```python
+.new_food_just_from_kcals(
+   kcals = 0, fat = 0, protein = 0, kcals_units = 'billionkcals',
+   fat_units = 'thousandtons', protein_units = 'thousandtons'
+)
+```
+
+---
+Initializes the food with the given macronutrients, and set the default units.
+
+### .total_energy_in_food
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L273)
+```python
+.total_energy_in_food()
+```
+
+---
+uses conversion of energy in protein and  energy in fat to detrmine the total kcals in a given food
+Only works if:
+
+kcals_units="billion kcals",
+fat_units="thousand tons",
+protein_units="thousand tons",
+
+As a thousand tonnes, and a billion kcals are the same (10^9), the maths for conversion is simple
+
+
+
+thousand_tonnes to grams = 1e9
+billion_kcals = 1e9
+
 ### .validate_if_list
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L214)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L303)
 ```python
 .validate_if_list()
 ```
@@ -103,7 +198,7 @@ protein)
 Runs all the checks to make sure the list is properly set up
 
 ### .make_sure_not_a_list
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L241)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L330)
 ```python
 .make_sure_not_a_list()
 ```
@@ -112,7 +207,7 @@ Runs all the checks to make sure the list is properly set up
 throw an error if any of the food nutrients are a list
 
 ### .make_sure_is_a_list
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L249)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L338)
 ```python
 .make_sure_is_a_list()
 ```
@@ -122,7 +217,7 @@ throw an error if any of the food nutrients is not a list, then validate
 list properties
 
 ### .ensure_other_list_zero_if_this_is_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L258)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L347)
 ```python
 .ensure_other_list_zero_if_this_is_zero(
    other_list
@@ -134,7 +229,7 @@ Get the value of the elements where the passed in list is zero, otherwise
 returned elements are zero.
 
 ### .make_sure_fat_protein_zero_if_kcals_is_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L322)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L411)
 ```python
 .make_sure_fat_protein_zero_if_kcals_is_zero()
 ```
@@ -144,7 +239,7 @@ Get the value of the elements where the passed in list is zero, otherwise
 returned elements are zero.
 
 ### .make_sure_not_nan
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L357)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L445)
 ```python
 .make_sure_not_nan()
 ```
@@ -153,7 +248,7 @@ returned elements are zero.
 Make sure that the food is not a nan number, or fail the assertion
 
 ### .plot
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L713)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L814)
 ```python
 .plot(
    title = 'genericfoodobjectovertime'
@@ -164,7 +259,7 @@ Make sure that the food is not a nan number, or fail the assertion
 Use the plotter to plot this food's properties.
 
 ### .is_list_monthly
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L765)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L866)
 ```python
 .is_list_monthly()
 ```
@@ -173,7 +268,7 @@ Use the plotter to plot this food's properties.
 return whether this is a list
 
 ### .is_never_negative
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L771)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L872)
 ```python
 .is_never_negative()
 ```
@@ -182,7 +277,7 @@ return whether this is a list
 Checks wether the food's macronutrients are never negative.
 
 ### .all_greater_than
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L793)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L894)
 ```python
 .all_greater_than(
    other
@@ -195,7 +290,7 @@ Checks wether the food's macronutrients are never negative.
 True if the food's macronutrients are greater than the other food's.
 
 ### .all_less_than
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L822)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L922)
 ```python
 .all_less_than(
    other
@@ -208,7 +303,7 @@ True if the food's macronutrients are greater than the other food's.
 True if the food's macronutrients are greater than the other food's.
 
 ### .any_greater_than
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L852)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L951)
 ```python
 .any_greater_than(
    other
@@ -221,7 +316,7 @@ True if the food's macronutrients are greater than the other food's.
 True if the food's macronutrients are greater than the other food's.
 
 ### .any_less_than
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L888)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L986)
 ```python
 .any_less_than(
    other
@@ -234,7 +329,7 @@ True if the food's macronutrients are greater than the other food's.
 True if the food's macronutrients are less than the other food's.
 
 ### .all_greater_than_or_equal_to
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L924)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1021)
 ```python
 .all_greater_than_or_equal_to(
    other
@@ -248,7 +343,7 @@ True if the food's macronutrients are greater than or equal to
 the other food's.
 
 ### .all_less_than_or_equal_to
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L954)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1050)
 ```python
 .all_less_than_or_equal_to(
    other
@@ -268,7 +363,7 @@ cases:
     this is food list, other is food list
 
 ### .any_greater_than_or_equal_to
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L998)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1094)
 ```python
 .any_greater_than_or_equal_to(
    other
@@ -282,7 +377,7 @@ True if the food's macronutrients are greater than or equal to
 the other food's.
 
 ### .any_less_than_or_equal_to
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1028)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1123)
 ```python
 .any_less_than_or_equal_to(
    other
@@ -296,7 +391,7 @@ True if the food's macronutrients are less than or equal to
 the other food's.
 
 ### .all_equals_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1069)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1163)
 ```python
 .all_equals_zero()
 ```
@@ -307,7 +402,7 @@ the other food's.
 True if the food's macronutrients are equal to zero.
 
 ### .any_equals_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1093)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1186)
 ```python
 .any_equals_zero()
 ```
@@ -318,7 +413,7 @@ True if the food's macronutrients are equal to zero.
 True if the food's macronutrients are equal to zero.
 
 ### .all_greater_than_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1126)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1218)
 ```python
 .all_greater_than_zero()
 ```
@@ -329,7 +424,7 @@ True if the food's macronutrients are equal to zero.
 True if the food's macronutrients are greater than zero.
 
 ### .any_greater_than_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1147)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1238)
 ```python
 .any_greater_than_zero()
 ```
@@ -338,7 +433,7 @@ True if the food's macronutrients are greater than zero.
 Returns True if any of the food's macronutrients are greater than zero.
 
 ### .all_greater_than_or_equal_to_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1179)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1269)
 ```python
 .all_greater_than_or_equal_to_zero()
 ```
@@ -349,7 +444,7 @@ Returns True if any of the food's macronutrients are greater than zero.
 True if the food's macronutrients are greater than or equal to zero.
 
 ### .as_numpy_array
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1205)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1294)
 ```python
 .as_numpy_array()
 ```
@@ -360,7 +455,7 @@ True if the food's macronutrients are greater than or equal to zero.
 the nutrients as an ordered numpy_array.
 
 ### .get_min_nutrient
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1212)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1301)
 ```python
 .get_min_nutrient()
 ```
@@ -379,7 +474,7 @@ Only works when the units is identical for the different nutrients
 (minimum nutrient name, minimum nutrient value)
 
 ### .get_max_nutrient
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1259)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1348)
 ```python
 .get_max_nutrient()
 ```
@@ -396,7 +491,7 @@ only works on single valued instances of nutrients, not arrays.
 (maximum nutrient name, maximum nutrient value)
 
 ### .get_nutrients_sum
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1296)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1385)
 ```python
 .get_nutrients_sum()
 ```
@@ -406,7 +501,7 @@ Sum up the nutrients in all the months, then alter the units to remove
  "each month"
 
 ### .get_running_total_nutrients_sum
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1318)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1407)
 ```python
 .get_running_total_nutrients_sum()
 ```
@@ -415,7 +510,7 @@ Sum up the nutrients in all the months, then alter the units to remove
 Running sum of the nutrients in all the months, don't alter units
 
 ### .get_amount_used_other_food
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1355)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1444)
 ```python
 .get_amount_used_other_food(
    other_fat_ratio, other_protein_ratio
@@ -433,7 +528,7 @@ which is satisfied by a certain number of units of the other food. Surplus
 of the nutrients used is not used at all in the calculation.
 
 ### .get_consumed_amount
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1400)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1489)
 ```python
 .get_consumed_amount(
    demand_to_be_met, used_nutrient_ratio
@@ -446,7 +541,7 @@ The maximum nutrient used is used to determine the amount of the consumed
 food will be used.
 
 ### .get_first_month
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1426)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1515)
 ```python
 .get_first_month()
 ```
@@ -456,7 +551,7 @@ Just get the first month's nutrient values and convert the units from "each" to
 "per"
 
 ### .get_month
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1434)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1523)
 ```python
 .get_month(
    index
@@ -468,7 +563,7 @@ Get the i month's nutrient values, and convert the units from "each" to
 "per"
 
 ### .get_min_all_months
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1455)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1544)
 ```python
 .get_min_all_months()
 ```
@@ -477,7 +572,7 @@ Get the i month's nutrient values, and convert the units from "each" to
 create a food with the minimum of every month as a total nutrient
 
 ### .get_max_all_months
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1473)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1562)
 ```python
 .get_max_all_months()
 ```
@@ -486,7 +581,7 @@ create a food with the minimum of every month as a total nutrient
 create a food with the maximum of every month as a total nutrient
 
 ### .negative_values_to_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1491)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1580)
 ```python
 .negative_values_to_zero()
 ```
@@ -501,7 +596,7 @@ Also tests that the function worked.
 the relevant food object with negative values replaced
 
 ### .get_rounded_to_decimal
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1524)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1613)
 ```python
 .get_rounded_to_decimal(
    decimals
@@ -519,7 +614,7 @@ array([ 1. , -1. ,  0.1, -0.1,  0. , -0. ])
 NOTE: only implemented for lists at the moment
 
 ### .replace_if_list_with_zeros_is_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1548)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1637)
 ```python
 .replace_if_list_with_zeros_is_zero(
    list_with_zeros, replacement
@@ -538,7 +633,7 @@ returns:
     itself, but with places list_with_zeros zero replaced with replacement
 
 ### .set_to_zero_after_month
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1645)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1734)
 ```python
 .set_to_zero_after_month(
    month

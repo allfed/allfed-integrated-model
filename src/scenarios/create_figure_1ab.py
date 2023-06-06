@@ -17,8 +17,21 @@ repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 
 def call_scenario_runner(this_simulation, title):
+    """
+    Runs a simulation using the ScenarioRunnerNoTrade class and returns the resulting world, total population, and fed population.
+
+    Args:
+        this_simulation (str): the name of the simulation to run
+        title (str): the title of the simulation
+
+    Returns:
+        list: a list containing the resulting world, total population, and fed population
+    """
+
+    # create a new instance of the ScenarioRunnerNoTrade class
     scenario_runner = ScenarioRunnerNoTrade()
 
+    # run the model with the given simulation and options
     [world, pop_total, pop_fed, return_results] = scenario_runner.run_model_no_trade(
         title=title,
         create_pptx_with_all_countries=False,
@@ -29,25 +42,46 @@ def call_scenario_runner(this_simulation, title):
         countries_list=[],
     )
 
+    # return the resulting world, total population, and fed population
     return [world, pop_total, pop_fed]
 
-
 def call_scenario_runner_with_and_without_fat_protein(this_simulation, title):
+    """
+    Runs a simulation with and without fat and protein, and returns the world object and the percentage of population fed.
+
+    Args:
+        this_simulation (dict): A dictionary containing simulation parameters.
+        title (str): A string containing the title of the simulation.
+
+    Returns:
+        tuple: A tuple containing the world object and the percentage of population fed.
+
+    """
+    # Set simulation parameters for the scenario without fat and protein
     this_simulation["scale"] = "country"
     this_simulation["crop_disruption"] = "country_nuclear_winter"
     this_simulation["grasses"] = "country_nuclear_winter"
     this_simulation["fish"] = "nuclear_winter"
     this_simulation["nutrition"] = "catastrophe"
-
     this_simulation["fat"] = "not_required"
     this_simulation["protein"] = "not_required"
 
+    # Call the scenario runner function with the simulation parameters for the scenario without fat and protein
     [world, pop_total, pop_fed] = call_scenario_runner(this_simulation, title)
 
+    # Return the world object and the percentage of population fed
     return world, round(100 * pop_fed / pop_total, 0)
 
-
 def recalculate_plots():
+    """
+    This function recalculates plots for different scenarios and returns the results.
+
+    Returns:
+        tuple: A tuple containing two dictionaries. The first dictionary contains the
+        results for each scenario, and the second dictionary contains the fraction of
+        needs met for each scenario.
+    """
+
     # WORST CASE #
     this_simulation = {}
     this_simulation["scenario"] = "no_resilient_foods"
@@ -187,15 +221,26 @@ def recalculate_plots():
 
     return worlds, ratios
 
-
 def main(args):
-    RECALCULATE_PLOTS = True
+    """
+    This function recalculates plots and saves them to a file, or loads them from a file if they already exist.
+    It then calls a function to plot the figures.
+
+    Args:
+        args (list): a list of command line arguments
+
+    Returns:
+        None
+    """
+    RECALCULATE_PLOTS = True  # set to True to recalculate plots, False to load from file
     if RECALCULATE_PLOTS:
+        # if RECALCULATE_PLOTS is True, recalculate the plots and save them to a file
         the_path = Path(repo_root) / "results" / "large_reports" / "worlds1.npy"
         worlds, ratios = recalculate_plots()
         np.save(the_path, worlds)
         np.save(Path(repo_root) / "results" / "large_reports" / "ratios1.npy", ratios)
     else:
+        # if RECALCULATE_PLOTS is False, load the plots from a file
         worlds = np.load(
             Path(repo_root) / "results" / "large_reports" / "worlds1.npy",
             allow_pickle=True,
@@ -205,6 +250,7 @@ def main(args):
             allow_pickle=True,
         ).item()
 
+    # plot the figures using the loaded or recalculated data
     Plotter.plot_fig_1ab_updated(worlds=worlds, ratios=ratios, xlim=72)
 
 

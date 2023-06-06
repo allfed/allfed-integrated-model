@@ -30,6 +30,18 @@ python run_baseline_by_country_no_trade.py
 ```
 if you want to recreate the figures and results from the Nature Foods paper. 
 
+# Update Documentation with MkDocs
+
+Once conda is activated, you can use gendocs
+
+```bash
+python automate_mkdocs.py
+gendocs --config mkgendocs.yml
+mkdocs serve
+```
+
+Then navigate to localhost:8000 in your browser to see the locally built documentation.
+
 # More Details
 
 See the zenodo repository for more results and reports:

@@ -11,6 +11,10 @@ results/large_reports/*.jpeg
 results/large_reports/*.bmp
 results/large_reports/*.pkl
 
+#DELETEME
+old_src/
+# mkdocs
+site/ 
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

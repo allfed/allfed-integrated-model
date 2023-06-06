@@ -19,13 +19,13 @@ Extractor(
 [source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L16)
 ```python
 .extract_results(
-   model, variables, single_valued_constants, time_consts
+   model, variables, time_consts
 )
 ```
 
 
 ### .to_monthly_list
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L94)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L128)
 ```python
 .to_monthly_list(
    variables, conversion
@@ -34,97 +34,120 @@ Extractor(
 
 
 ### .to_monthly_list_outdoor_crops_kcals
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L116)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L153)
 ```python
 .to_monthly_list_outdoor_crops_kcals(
-   crops_food_eaten_no_relocation, crops_food_eaten_relocated,
-   crops_kcals_produced, conversion
+   crops_food_eaten, crops_kcals_produced, conversion
 )
 ```
 
 ---
-This function is actually guessing at the internal operations of the optimizer
-when it creates an optimized plot.
+This function calculates the amount of outdoor crop production that is immediately eaten and the
+amount that is stored for later consumption. If more is eaten than produced, the difference is
+attributed to the eating of stored up crops.
 
-It takes the total outdoor crop production and limits it by the actual amount
-eaten by people reported by the optimizer.
 
-If more is eaten than produced, this difference is attributed to the eating
-of stored up crops.
+**Args**
 
-We know it can't be stored food from before the simulation because the variable
-only considers the outdoor_crops variable, not the stored_food variable
+* **crops_food_eaten**  : list of the amount of crops eaten each month
+* **crops_kcals_produced**  : list of the amount of crop production (kcals) each month
+* **conversion**  : conversion factor from kcals to another unit of measurement
 
-The amount of expected crops produced that month that were eaten is assigned to
-the "immediate" list.
-The amount eaten beyond the production that month is assigned to the
-new stored list.
 
-NOTE: the validator will check that the sum of immediate and new stored is the
-same as the total amount eaten.
+**Returns**
 
-### .extract_greenhouse_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L198)
+- A list of two lists:
+    - The first list contains the amount of outdoor crop production (converted to the specified
+    unit of measurement) that is immediately eaten each month.
+    - The second list contains the amount of outdoor crop production (converted to the specified
+    unit of measurement) that is stored for later consumption each month.
+
+### .get_greenhouse_results
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L197)
 ```python
-.extract_greenhouse_results(
+.get_greenhouse_results(
    greenhouse_kcals_per_ha, greenhouse_fat_per_ha, greenhouse_protein_per_ha,
    greenhouse_area
 )
 ```
 
 
-### .extract_fish_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L235)
+### .create_food_object_from_fat_protein_variables
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L219)
 ```python
-.extract_fish_results(
-   production_kcals_fish_per_month, production_fat_fish_per_month,
-   production_protein_fish_per_month
+.create_food_object_from_fat_protein_variables(
+   production_kcals, production_fat, production_protein
+)
+```
+
+
+### .extract_generic_results
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L248)
+```python
+.extract_generic_results(
+   production_kcals, ratio_kcals, ratio_fat, ratio_protein, constants
 )
 ```
 
 
 ### .extract_outdoor_crops_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L267)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L278)
 ```python
 .extract_outdoor_crops_results(
-   crops_food_eaten_no_relocation, crops_food_eaten_relocated, outdoor_crops
+   crops_food_to_humans, crops_food_to_humans_fat, crops_food_to_humans_protein,
+   crops_food_biofuel, crops_food_biofuel_fat, crops_food_biofuel_protein,
+   crops_food_feed, crops_food_feed_fat, crops_food_feed_protein,
+   outdoor_crops_production
 )
 ```
 
 
-### .set_crop_produced_monthly
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L459)
+### .calculate_outdoor_crops_kcals
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L352)
 ```python
-.set_crop_produced_monthly(
-   outdoor_crops
-)
-```
-
----
-get the crop produced monthly, rather than the amount eaten
-incorporates relocations
-
-### .extract_cell_sugar_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L541)
-```python
-.extract_cell_sugar_results(
-   production_kcals_cell_sugar_per_month
+.calculate_outdoor_crops_kcals(
+   crops_food_to_humans, to_humans_outdoor_crop_production
 )
 ```
 
 
-### .extract_SCP_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L562)
+### .validate_sources_add_up
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L361)
 ```python
-.extract_SCP_results(
-   production_kcals_scp_per_month, production_fat_scp_per_month,
-   production_protein_scp_per_month
+.validate_sources_add_up(
+   billions_fed_immediate_outdoor_crops_kcals,
+   billions_fed_new_stored_outdoor_crops_kcals
 )
+```
+
+
+### .set_new_stored_outdoor_crops_values
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L376)
+```python
+.set_new_stored_outdoor_crops_values(
+   billions_fed_new_stored_outdoor_crops_kcals
+)
+```
+
+
+### .set_immediate_outdoor_crops_values
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L388)
+```python
+.set_immediate_outdoor_crops_values(
+   billions_fed_immediate_outdoor_crops_kcals
+)
+```
+
+
+### .validate_outdoor_growing_production
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L400)
+```python
+.validate_outdoor_growing_production()
 ```
 
 
 ### .extract_meat_milk_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L593)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L407)
 ```python
 .extract_meat_milk_results(
    culled_meat_eaten, grazing_milk_kcals, grazing_milk_fat,
@@ -136,28 +159,17 @@ incorporates relocations
 ```
 
 
-### .extract_stored_food_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L747)
+### .extract_to_humans_feed_and_biofuel
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L535)
 ```python
-.extract_stored_food_results(
-   stored_food_eaten
-)
-```
-
----
-Extracts results from stored food eaten.
-
-### .extract_seaweed_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L778)
-```python
-.extract_seaweed_results(
-   seaweed_wet_on_farm, used_area, built_area, seaweed_food_produced
+.extract_to_humans_feed_and_biofuel(
+   to_humans, feed, biofuel, kcals_ratio, fat_ratio, protein_ratio, constants
 )
 ```
 
 
 ### .get_objective_optimization_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L827)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L581)
 ```python
 .get_objective_optimization_results(
    model
