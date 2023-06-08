@@ -112,9 +112,10 @@ Assigns the reduction in crop production due to climate impact for each month of
 ---
 Calculates the crop production minus greenhouse area and sets the production attribute of the class instance.
 
+
 **Args**
 
-* **self**  : instance of the class
+* **self** (OutdoorCrops) : instance of the class
 * **constants_for_params** (dict) : dictionary containing constants for parameters
 * **greenhouse_fraction_area** (numpy.ndarray) : array containing the fraction of greenhouse area for each month
 
@@ -122,3 +123,15 @@ Calculates the crop production minus greenhouse area and sets the production att
 **Returns**
 
 None
+
+
+**Example**
+
+* {"CROPS": 10}, "OG_USE_BETTER_ROTATION": True, "INITIAL_HARVEST_DURATION_IN_MONTHS": 3, "DELAY": {"ROTATION_CHANGE_IN_MONTHS": 2}}
+
+```python
+
+>>> greenhouse_fraction_area = np.array([0.5, 0.6, 0.7, 0.8, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2])
+>>> oc = OutdoorCrops()
+>>> oc.set_crop_production_minus_greenhouse_area(constants_for_params, greenhouse_fraction_area)
+```

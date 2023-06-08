@@ -102,10 +102,20 @@ protein)
 ```
 
 ---
-get this class
+This function returns the class object of the current class.
+
+**Args**
+
+* **cls** (class) : The class object of the current class.
+
+
+**Returns**
+
+* **class**  : The class object of the current class.
+
 
 ### .get_conversions
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L117)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L121)
 ```python
 .get_conversions(
    cls
@@ -113,50 +123,91 @@ get this class
 ```
 
 ---
-return the class conversions object
-this is only used by the parent UnitConversions class
+Returns the class conversions object.
+This method is only used by the parent UnitConversions class.
+
+
+**Args**
+
+* **cls** (class) : The class object.
+
+
+**Returns**
+
+* **conversions** (object) : The class conversions object.
+
+
+**Raises**
+
+* **AssertionError**  : If the conversions property has not been assigned before
+attempting to convert between food units.
 
 ### .get_nutrient_names
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L131)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L148)
 ```python
 .get_nutrient_names(
    cls
 )
 ```
 
+---
+Returns a list of the macronutrients of the food.
+
+
+**Args**
+
+* **cls** (class) : The class object representing the Food class.
+
 
 **Returns**
 
-the macronutrients of the food.
+* **list**  : A list of strings representing the macronutrients of the food.
+
+
+**Example**
+
+>>> Food.get_nutrient_names()
+['kcals', 'fat', 'protein']
 
 ### .ratio_one
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L140)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L166)
 ```python
 .ratio_one(
    cls
 )
 ```
 
+---
+Creates a Food object with kcals, fat, and protein all set to 1, and units set to "ratio".
 
 **Returns**
 
-a ratio of one.
+* **Food**  : a Food object with kcals, fat, and protein all set to 1, and units set to "ratio".
+
 
 ### .ratio_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L157)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L184)
 ```python
 .ratio_zero(
    cls
 )
 ```
 
+---
+Creates a Food object with all nutrient values set to 0 and units set to "ratio".
+
+**Args**
+
+* **cls**  : the class object
+
 
 **Returns**
 
-a ratio of zero.
+* **Food**  : a Food object with kcals, fat, and protein set to 0 and units set to "ratio".
+
 
 ### .new_food_just_from_kcals
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L230)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L261)
 ```python
 .new_food_just_from_kcals(
    kcals = 0, fat = 0, protein = 0, kcals_units = 'billionkcals',
@@ -165,59 +216,153 @@ a ratio of zero.
 ```
 
 ---
-Initializes the food with the given macronutrients, and set the default units.
+Initializes a new food object with the given macronutrients and sets the default units.
+
+
+**Args**
+
+* **kcals** (float) : The number of kilocalories in the food. Default is 0.
+* **fat** (float) : The amount of fat in the food. Default is 0.
+* **protein** (float) : The amount of protein in the food. Default is 0.
+* **kcals_units** (str) : The units for the kilocalories. Default is "billion kcals".
+* **fat_units** (str) : The units for the fat. Default is "thousand tons".
+* **protein_units** (str) : The units for the protein. Default is "thousand tons".
+
+
+**Returns**
+
+None
+
+
+**Example**
+
+
+```python
+
+>>> food.new_food_just_from_kcals(kcals=100, fat=10, protein=20)
+```
 
 ### .total_energy_in_food
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L273)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L327)
 ```python
 .total_energy_in_food()
 ```
 
 ---
-uses conversion of energy in protein and  energy in fat to detrmine the total kcals in a given food
+Calculates the total energy in a given food in billion kcals by converting energy in protein and fat.
 Only works if:
-
 kcals_units="billion kcals",
 fat_units="thousand tons",
 protein_units="thousand tons",
-
-As a thousand tonnes, and a billion kcals are the same (10^9), the maths for conversion is simple
-
+As a thousand tonnes, and a billion kcals are the same (10^9), the maths for conversion is simple.
 
 
-thousand_tonnes to grams = 1e9
-billion_kcals = 1e9
+**Args**
+
+* **self** (Food) : An instance of the Food class.
+
+
+**Returns**
+
+* **float**  : The total energy in billion kcals.
+
+
+**Raises**
+
+* **AssertionError**  : If kcals_units, fat_units, or protein_units are not set to the correct values.
+
+
+**Example**
+
+
+```python
+
+>>> food.kcals_units = "billion kcals"
+>>> food.fat_units = "thousand tons"
+>>> food.protein_units = "thousand tons"
+>>> food.protein = 1000
+>>> food.fat = 2000
+>>> food.kcals = 3000
+>>> food.total_energy_in_food()
+23000.0
+```
 
 ### .validate_if_list
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L303)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L375)
 ```python
 .validate_if_list()
 ```
 
 ---
-Runs all the checks to make sure the list is properly set up
+Checks if the food object is a list type and runs all the necessary checks to ensure
+that the list is properly set up.
+
+
+**Args**
+
+* **self** (Food) : The Food object to be validated.
+
+
+**Returns**
+
+None
+
+
+**Example**
+
+
+```python
+
+>>> food.validate_if_list()
+```
 
 ### .make_sure_not_a_list
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L330)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L419)
 ```python
 .make_sure_not_a_list()
 ```
 
 ---
-throw an error if any of the food nutrients are a list
+Check if any of the food nutrients are a list or numpy array and throw an error if so.
+
+**Args**
+
+* **self**  : instance of the Food class
+
+
+**Returns**
+
+None
 
 ### .make_sure_is_a_list
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L338)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L434)
 ```python
 .make_sure_is_a_list()
 ```
 
 ---
-throw an error if any of the food nutrients is not a list, then validate
-list properties
+This function checks if the food nutrients are in the form of a list and throws an error if not.
+It then validates the list properties.
+
+**Args**
+
+* **self** (Food) : An instance of the Food class.
+
+
+**Returns**
+
+None
+
+**Example**
+
+
+```python
+
+>>> food.make_sure_is_a_list()
+```
 
 ### .ensure_other_list_zero_if_this_is_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L347)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L451)
 ```python
 .ensure_other_list_zero_if_this_is_zero(
    other_list
@@ -229,26 +374,43 @@ Get the value of the elements where the passed in list is zero, otherwise
 returned elements are zero.
 
 ### .make_sure_fat_protein_zero_if_kcals_is_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L411)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L515)
 ```python
 .make_sure_fat_protein_zero_if_kcals_is_zero()
 ```
 
 ---
-Get the value of the elements where the passed in list is zero, otherwise
-returned elements are zero.
+This function ensures that the values of fat and protein are zero if kcals is zero.
+
+**Args**
+
+* **self** (Food) : an instance of the Food class
+
+
+**Returns**
+
+None
 
 ### .make_sure_not_nan
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L445)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L557)
 ```python
 .make_sure_not_nan()
 ```
 
 ---
-Make sure that the food is not a nan number, or fail the assertion
+Check if the food's nutritional values are NaN and raise an assertion error if they are.
+
+**Args**
+
+* **self** (Food) : An instance of the Food class.
+
+
+**Returns**
+
+None
 
 ### .plot
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L814)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1048)
 ```python
 .plot(
    title = 'genericfoodobjectovertime'
@@ -256,94 +418,218 @@ Make sure that the food is not a nan number, or fail the assertion
 ```
 
 ---
-Use the plotter to plot this food's properties.
+Plots the properties of this food object using the Plotter class.
+
+
+**Args**
+
+* **title** (str) : The title of the plot. Defaults to "generic food object over time".
+
+
+**Returns**
+
+* **str**  : The file path of the saved plot.
+
+
+**Example**
+
+
+```python
+
+>>> food.plot("My Food Plot")
+'/path/to/saved/plot.png'
+```
 
 ### .is_list_monthly
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L866)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1143)
 ```python
 .is_list_monthly()
 ```
 
 ---
-return whether this is a list
+Check if kcals is a list or numpy array.
+
+**Args**
+
+* **self**  : instance of Food class
+
+
+**Returns**
+
+* **bool**  : True if kcals is a list or numpy array, False otherwise
+
 
 ### .is_never_negative
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L872)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1154)
 ```python
 .is_never_negative()
 ```
 
 ---
-Checks wether the food's macronutrients are never negative.
+Checks whether the food's macronutrients are never negative.
+
+
+**Returns**
+
+* **bool**  : True if all macronutrients are non-negative, False otherwise.
+
 
 ### .all_greater_than
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L894)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1180)
 ```python
 .all_greater_than(
    other
 )
 ```
 
+---
+Determines if the macronutrient values of the current food object are greater than the macronutrient values of another food object.
+
+
+**Args**
+
+* **other** (Food) : The other food object to compare against.
+
 
 **Returns**
 
-True if the food's macronutrients are greater than the other food's.
+* **bool**  : True if the current food object's macronutrient values are greater than the other food object's macronutrient values.
+
+
+**Raises**
+
+* **AssertionError**  : If the units of the two food objects are not the same.
+
+
+**Example**
+
+
+```python
+
+>>> food2 = Food('banana', 120, 0.4, 0.6, 0.3, 'g')
+>>> food1.all_greater_than(food2)
+False
+```
 
 ### .all_less_than
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L922)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1226)
 ```python
 .all_less_than(
    other
 )
 ```
 
+---
+Compares the macronutrient values of two food items and returns True if the values of the current food item are less than the other food item's values.
+
+**Args**
+
+* **other** (Food) : The other food item to compare with.
+
 
 **Returns**
 
-True if the food's macronutrients are greater than the other food's.
+* **bool**  : True if the current food item's macronutrient values are less than the other food item's values.
+
+
+**Raises**
+
+* **AssertionError**  : If the units of the two food items are not the same.
+
+
+**Example**
+
+
+```python
+
+>>> food2 = Food('banana', 100, 1.0, 0.2, 'g')
+>>> food1.all_less_than(food2)
+True
+```
 
 ### .any_greater_than
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L951)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1272)
 ```python
 .any_greater_than(
    other
 )
 ```
 
+---
+Determines if the macronutrient values of the current food object are greater than the macronutrient values of another food object.
+
+
+**Args**
+
+* **other** (Food) : The other food object to compare against.
+
 
 **Returns**
 
-True if the food's macronutrients are greater than the other food's.
+* **bool**  : True if the current food object's macronutrient values are greater than the other food object's macronutrient values.
+
+
+**Raises**
+
+* **AssertionError**  : If the units of the two food objects are not the same.
+
+
+**Example**
+
+
+```python
+
+>>> food2 = Food('banana', 105, 0.4, 0.6, 0.1, 'g')
+>>> food1.any_greater_than(food2)
+False
+```
 
 ### .any_less_than
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L986)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1326)
 ```python
 .any_less_than(
    other
 )
 ```
 
+---
+Determines if the macronutrient values of the current food object are less than the macronutrient values of another food object.
+
+**Args**
+
+* **other** (Food) : The other food object to compare against.
+
 
 **Returns**
 
-True if the food's macronutrients are less than the other food's.
+* **bool**  : True if the current food object's macronutrient values are less than the other food object's macronutrient values.
+
 
 ### .all_greater_than_or_equal_to
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1021)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1369)
 ```python
 .all_greater_than_or_equal_to(
    other
 )
 ```
 
+---
+Compares the macronutrient values of two food items and returns True if the values of the
+current food item are greater than or equal to the other food item's values.
+
+
+**Args**
+
+* **other** (Food) : The other food item to compare with.
+
 
 **Returns**
 
-True if the food's macronutrients are greater than or equal to
-the other food's.
+* **bool**  : True if the current food item's macronutrient values are greater than or equal to
+the other food item's values, False otherwise.
 
 ### .all_less_than_or_equal_to
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1050)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1409)
 ```python
 .all_less_than_or_equal_to(
    other
@@ -351,80 +637,126 @@ the other food's.
 ```
 
 ---
-Returns
-:True if the food's macronutrients are less than or equal to
-the other food's.
+Determines if the macronutrients of this food are less than or equal to the macronutrients of another food.
+
+**Args**
+
+* **other** (Food or List[Food]) : The other food or list of foods to compare to.
+
+
+**Returns**
+
+* **bool**  : True if the food's macronutrients are less than or equal to the other food's.
 
 ---
-cases:
-    this is food, other is food
-    this is food, other is food list
-    this is food list, other is food
-    this is food list, other is food list
+Cases:
+    - This is a single food, other is a single food
+    - This is a single food, other is a list of foods
+    - This is a list of foods, other is a single food
+    - This is a list of foods, other is a list of foods
 
 ### .any_greater_than_or_equal_to
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1094)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1456)
 ```python
 .any_greater_than_or_equal_to(
    other
 )
 ```
 
+---
+Determines if the macronutrient values of the current food object are greater than or equal to
+the macronutrient values of another food object.
+
+
+**Args**
+
+* **other** (Food) : The other food object to compare against.
+
 
 **Returns**
 
-True if the food's macronutrients are greater than or equal to
-the other food's.
+* **bool**  : True if the current food object's macronutrient values are greater than or equal to
+the other food object's macronutrient values.
 
 ### .any_less_than_or_equal_to
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1123)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1498)
 ```python
 .any_less_than_or_equal_to(
    other
 )
 ```
 
+---
+Determines if the macronutrients of the current food object are less than or equal to
+those of another food object.
+
+
+**Args**
+
+* **other** (Food) : The other food object to compare against.
+
 
 **Returns**
 
-True if the food's macronutrients are less than or equal to
-the other food's.
+* **bool**  : True if the current food's macronutrients are less than or equal to the other food's.
+
 
 ### .all_equals_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1163)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1558)
 ```python
 .all_equals_zero()
 ```
 
+---
+Check if all macronutrients of the food are equal to zero.
+
+**Args**
+
+None
 
 **Returns**
 
-True if the food's macronutrients are equal to zero.
+* **bool**  : True if the food's macronutrients are equal to zero, False otherwise.
+
 
 ### .any_equals_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1186)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1588)
 ```python
 .any_equals_zero()
 ```
 
+---
+Check if any of the macronutrients of the food are equal to zero.
+
+**Args**
+
+None
 
 **Returns**
 
-True if the food's macronutrients are equal to zero.
+* **bool**  : True if any of the macronutrients are equal to zero, False otherwise.
+
 
 ### .all_greater_than_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1218)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1630)
 ```python
 .all_greater_than_zero()
 ```
 
+---
+Check if all macronutrients of the food are greater than zero.
+
+**Args**
+
+None
 
 **Returns**
 
-True if the food's macronutrients are greater than zero.
+* **bool**  : True if all macronutrients are greater than zero, False otherwise.
+
 
 ### .any_greater_than_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1238)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1657)
 ```python
 .any_greater_than_zero()
 ```
@@ -432,19 +764,37 @@ True if the food's macronutrients are greater than zero.
 ---
 Returns True if any of the food's macronutrients are greater than zero.
 
-### .all_greater_than_or_equal_to_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1269)
-```python
-.all_greater_than_or_equal_to_zero()
-```
+**Args**
+
+* **self** (Food) : an instance of the Food class
 
 
 **Returns**
 
-True if the food's macronutrients are greater than or equal to zero.
+* **bool**  : True if any of the food's macronutrients are greater than zero, False otherwise
+
+
+### .all_greater_than_or_equal_to_zero
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1701)
+```python
+.all_greater_than_or_equal_to_zero()
+```
+
+---
+Checks if all macronutrients of the food are greater than or equal to zero.
+
+**Args**
+
+* **self** (Food) : An instance of the Food class.
+
+
+**Returns**
+
+* **bool**  : True if all macronutrients are greater than or equal to zero, False otherwise.
+
 
 ### .as_numpy_array
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1294)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1733)
 ```python
 .as_numpy_array()
 ```
@@ -452,10 +802,11 @@ True if the food's macronutrients are greater than or equal to zero.
 
 **Returns**
 
-the nutrients as an ordered numpy_array.
+* **ndarray**  : an ordered numpy array containing the nutrients of the food.
+
 
 ### .get_min_nutrient
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1301)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1741)
 ```python
 .get_min_nutrient()
 ```
@@ -463,18 +814,44 @@ the nutrients as an ordered numpy_array.
 ---
 Returns the minimum nutrient of the food.
 
-Can return the minimum of any month of any nutrient if a food list, or just
-`the minimum of any nutrient if a food
+If the food is a list, it can return the minimum of any month of any nutrient.
+If the food is not a list, it returns the minimum of any nutrient.
 
-Only works when the units is identical for the different nutrients
+Only works when the units are identical for the different nutrients.
+
+
+**Args**
+
+* **self**  : an instance of the Food class
 
 
 **Returns**
 
-(minimum nutrient name, minimum nutrient value)
+* **tuple**  : a tuple containing the name and value of the minimum nutrient
+
+
+**Example**
+
+
+```python
+
+>>> food.get_min_nutrient()
+('kcals', 0)
+
+```
+
+**Raises**
+
+* **AssertionError**  : if the units for kcals, fat, and protein are not identical
+* **AssertionError**  : if the minimum nutrient value is greater than the kcals value
+* **AssertionError**  : if the minimum nutrient value is greater than the fat value and
+                the fat nutrient is not excluded
+* **AssertionError**  : if the minimum nutrient value is greater than the protein value and
+                the protein nutrient is not excluded
+
 
 ### .get_max_nutrient
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1348)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1804)
 ```python
 .get_max_nutrient()
 ```
@@ -483,34 +860,81 @@ Only works when the units is identical for the different nutrients
 Returns the maximum nutrient of the food.
 
 NOTE:
-only works on single valued instances of nutrients, not arrays.
+This function only works on single valued instances of nutrients, not arrays.
+
+
+**Args**
+
+None
 
 
 **Returns**
 
-(maximum nutrient name, maximum nutrient value)
+* **tuple**  : A tuple containing the name and value of the maximum nutrient.
+
+
+**Example**
+
+
+```python
+
+>>> food.kcals = 100
+>>> food.fat = 20
+>>> food.protein = 30
+>>> food.conversions.include_fat = True
+>>> food.conversions.include_protein = True
+>>> food.kcals_units = "kcal"
+>>> food.fat_units = "g"
+>>> food.protein_units = "g"
+>>> food.get_max_nutrient()
+('fat', 20)
+```
 
 ### .get_nutrients_sum
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1385)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1866)
 ```python
 .get_nutrients_sum()
 ```
 
 ---
-Sum up the nutrients in all the months, then alter the units to remove
- "each month"
+Sums up the nutrients in all the months, then alters the units to remove "each month".
+
+**Args**
+
+* **self**  : instance of the Food class
+
+
+**Returns**
+
+* **Food**  : instance of the Food class with summed up nutrient values and altered units
+
+
+**Raises**
+
+* **AssertionError**  : if the list is not monthly
+
 
 ### .get_running_total_nutrients_sum
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1407)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1898)
 ```python
 .get_running_total_nutrients_sum()
 ```
 
 ---
-Running sum of the nutrients in all the months, don't alter units
+Calculates the running sum of the nutrients in all the months, without altering the units.
+
+**Args**
+
+* **self**  : instance of the Food class
+
+
+**Returns**
+
+* **Food**  : a new instance of the Food class with the running sum of the nutrients
+
 
 ### .get_amount_used_other_food
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1444)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1952)
 ```python
 .get_amount_used_other_food(
    other_fat_ratio, other_protein_ratio
@@ -520,15 +944,37 @@ Running sum of the nutrients in all the months, don't alter units
 ---
 Running sum of the amount used of the other food each month.
 
-Function used to determine the amount of stored food or outdoor growing that is
-used by biofuels and feed
+This function calculates the amount of stored food or outdoor growing that is
+used by biofuels and feed. It determines the amount of the other food used by
+taking the max amount used of the three nutrients, which is satisfied by a
+certain number of units of the other food. Surplus of the nutrients used is
+not used at all in the calculation.
 
-this is determined by taking the max amount used of the three nutrients,
-which is satisfied by a certain number of units of the other food. Surplus
-of the nutrients used is not used at all in the calculation.
+
+**Args**
+
+* **other_fat_ratio** (float) : The ratio of fat in the other food
+* **other_protein_ratio** (float) : The ratio of protein in the other food
+
+
+**Returns**
+
+* **Food**  : A Food object containing the amount of kcals, fat, and protein consumed
+each month
+
+
+**Example**
+
+
+```python
+
+>>> other_fat_ratio = 0.2
+>>> other_protein_ratio = 0.3
+>>> amount_consumed_list = food.get_amount_used_other_food(other_fat_ratio, other_protein_ratio)
+```
 
 ### .get_consumed_amount
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1489)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2015)
 ```python
 .get_consumed_amount(
    demand_to_be_met, used_nutrient_ratio
@@ -536,22 +982,54 @@ of the nutrients used is not used at all in the calculation.
 ```
 
 ---
-returns the amount used of the demand_to_be_met a food with a given used_nutrient_ratio.
+Returns the amount used of the demand_to_be_met a food with a given used_nutrient_ratio.
 The maximum nutrient used is used to determine the amount of the consumed
 food will be used.
 
+
+**Args**
+
+* **demand_to_be_met** (Food) : A Food object representing the nutrient demand to be met
+* **used_nutrient_ratio** (Food) : A Food object representing the nutrient ratio of the food being consumed
+
+
+**Returns**
+
+* **Food**  : A Food object representing the amount of food consumed to meet the nutrient demand
+
+
+**Raises**
+
+* **AssertionError**  : If demand_to_be_met is a monthly list
+* **AssertionError**  : If used_nutrient_ratio fat or protein is less than or equal to 0
+
+
 ### .get_first_month
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1515)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2058)
 ```python
 .get_first_month()
 ```
 
 ---
-Just get the first month's nutrient values and convert the units from "each" to
-"per"
+Returns the nutrient values for the first month and converts the units from "each" to "per".
+
+**Args**
+
+* **self**  : instance of the Food class
+
+
+**Returns**
+
+* **dict**  : dictionary containing the nutrient values for the first month
+
+
+**Raises**
+
+* **AssertionError**  : if the nutrient values are not in a list format
+
 
 ### .get_month
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1523)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2074)
 ```python
 .get_month(
    index
@@ -559,44 +1037,80 @@ Just get the first month's nutrient values and convert the units from "each" to
 ```
 
 ---
-Get the i month's nutrient values, and convert the units from "each" to
-"per"
+Get the i month's nutrient values, and convert the units from "each" to "per".
+
+**Args**
+
+* **index** (int) : The index of the month to retrieve nutrient values for.
+
+
+**Returns**
+
+* **Food**  : A Food object containing the nutrient values for the specified month.
+
 
 ### .get_min_all_months
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1544)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2104)
 ```python
 .get_min_all_months()
 ```
 
 ---
-create a food with the minimum of every month as a total nutrient
+Creates a new Food object with the minimum nutrient values for each month.
+
+**Args**
+
+* **self**  : The Food object to operate on.
+
+
+**Returns**
+
+A new Food object with the minimum nutrient values for each month.
 
 ### .get_max_all_months
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1562)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2131)
 ```python
 .get_max_all_months()
 ```
 
 ---
-create a food with the maximum of every month as a total nutrient
+Returns a new Food object with the maximum nutrient values for each month.
+
+**Args**
+
+* **self** (Food) : The Food object to find the maximum nutrient values for.
+
+
+**Returns**
+
+* **Food**  : A new Food object with the maximum nutrient values for each month.
+
 
 ### .negative_values_to_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1580)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2158)
 ```python
 .negative_values_to_zero()
 ```
 
 ---
-Replace negative values with zero for each month for all nutrients.
-Also tests that the function worked.
+Replaces negative values with zero for each month for all nutrients.
+If the food object is monthly, it replaces negative values for each month.
+If the food object is not monthly, it replaces negative values for the entire year.
+Also tests that the function worked by asserting that all values are greater than or equal to zero.
+
+
+**Args**
+
+None
 
 
 **Returns**
 
-the relevant food object with negative values replaced
+* **Food**  : the relevant food object with negative values replaced
+
 
 ### .get_rounded_to_decimal
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1613)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2201)
 ```python
 .get_rounded_to_decimal(
    decimals
@@ -604,17 +1118,38 @@ the relevant food object with negative values replaced
 ```
 
 ---
-Round to the nearest decimal place
+Round the nutritional values of a food item to the nearest decimal place.
 
-to give you an idea how this works:
->>> np.round([1,-1,.1,-.1,0.01,-0.01],decimals=1)
-array([ 1. , -1. ,  0.1, -0.1,  0. , -0. ])
 
+**Args**
+
+* **decimals** (int) : The number of decimal places to round to.
+
+
+**Returns**
+
+* **Food**  : A new Food object with rounded nutritional values.
+
+
+**Example**
+
+
+```python
+
+>>> rounded_food = food.get_rounded_to_decimal(1)
+>>> rounded_food.kcals
+100.1
+>>> rounded_food.fat
+5.7
+>>> rounded_food.protein
+11.0
+
+```
 ---
-NOTE: only implemented for lists at the moment
+NOTE: This function is only implemented for lists at the moment.
 
 ### .replace_if_list_with_zeros_is_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1637)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2239)
 ```python
 .replace_if_list_with_zeros_is_zero(
    list_with_zeros, replacement
@@ -622,18 +1157,40 @@ NOTE: only implemented for lists at the moment
 ```
 
 ---
-replace with the replacement if list_with_zeros is zero
+Replaces elements in a list with zeros with a specified replacement.
 
 
-arguments: list with zeros ( food list ): a list that has zeros in it
-                                            the elements
+**Args**
 
----
-returns:
-    itself, but with places list_with_zeros zero replaced with replacement
+* **list_with_zeros** (Food list) : A list that has zeros in it.
+* **replacement** (Food list, Food, or number) : Thing used to replace the elements.
+
+
+**Returns**
+
+* **Food**  : A copy of the original list with places where list_with_zeros is zero replaced with replacement.
+
+
+**Raises**
+
+* **AssertionError**  : If the length of list_with_zeros is not equal to the length of the original list.
+* **AssertionError**  : If the units of replacement are not the same as the units of the original list.
+
+
+**Example**
+
+* **kcals**  : [101 693   0   3 786], fat: [1 20 0 4 40], protein: [10 20 0 40 20]
+
+```python
+
+>>> list_with_zeros = Food(kcals=[0, 1, 3, 0, 5], fat=[0, 1, 3, 0, 5], protein=[0, 1, 3, 0, 5])
+>>> replacement = Food(kcals=[101, 62, 23, 3, 0], fat=[1, 2, 3, 4, 5], protein=[10, 20, 30, 40, 50])
+>>> processed_list = original_list.replace_if_list_with_zeros_is_zero(list_with_zeros, replacement)
+>>> print(processed_list)
+```
 
 ### .set_to_zero_after_month
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1734)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2330)
 ```python
 .set_to_zero_after_month(
    month
@@ -641,4 +1198,13 @@ returns:
 ```
 
 ---
-set all values after the month to zero
+Set all values after the given month to zero.
+
+**Args**
+
+* **month** (int) : The month after which all values should be set to zero.
+
+
+**Returns**
+
+None
