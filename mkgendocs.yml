@@ -132,7 +132,6 @@ pages:
       - create_animal_objects
       - update_animal_objects_with_slaughter
       - update_animal_objects_with_milk
-      - food_conversion
       - available_feed
       - available_grass
       - feed_animals

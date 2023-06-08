@@ -16,7 +16,7 @@ Seaweed(
 
 
 ### .get_growth_rates
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/seaweed.py/#L112)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/seaweed.py/#L136)
 ```python
 .get_growth_rates(
    constants_for_params
@@ -38,7 +38,7 @@ Calculates the monthly growth rates of seaweed based on the daily growth percent
 
 
 ### .get_built_area
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/seaweed.py/#L145)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/seaweed.py/#L169)
 ```python
 .get_built_area(
    constants_for_params
@@ -60,7 +60,7 @@ Calculates the built area of seaweed based on the provided constants.
 
 
 ### .estimate_seaweed_growth_for_estimating_feed_availability
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/seaweed.py/#L206)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/seaweed.py/#L230)
 ```python
 .estimate_seaweed_growth_for_estimating_feed_availability()
 ```
