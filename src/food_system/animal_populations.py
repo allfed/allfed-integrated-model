@@ -610,6 +610,9 @@ def food_conversion():
 
 def available_feed():
     """
+    ### CHEKC IS BILLION KCALS
+    
+    
     Energy is expressed as digestible (DE), metabolizable (ME), or net energy (NE) by considering the loss of energy during digestion and metabolism from gross energy (GE) in the feed, as follows:
 
     Gross energy (GE): the amount of energy in the feed.
@@ -626,7 +629,7 @@ def available_feed():
 
     # create food objects (EXAMPLE)
     example_food1=Food(000,-1,-1)
-    example_food2=Food(14000000,-1,-1)
+    example_food2=Food(0,-1,-1)
 
     # add the food objects together (EXAMPLE)
     feed = example_food1 + example_food2
@@ -635,6 +638,8 @@ def available_feed():
 
 def available_grass():
     """
+    ### CHECK IS BILLION KCALS
+    
     Energy is expressed as digestible (DE), metabolizable (ME), or net energy (NE) by considering the loss of energy during digestion and metabolism from gross energy (GE) in the feed, as follows:
 
     Gross energy (GE): the amount of energy in the feed.
@@ -653,7 +658,7 @@ def available_grass():
     # units idealy in kcal
     # all imports should be in GE, gross energy
     # calacuklation of NE is done in the feed animals function
-    grass=Food(00,-1,-1)
+    grass=Food(000,-1,-1)
 
     return grass
 
@@ -1318,46 +1323,46 @@ def main(country_code):
 
 
 if __name__ == "__main__":
-    output_list = main("USA")
+    output_list = main("AUS")
     
     
     
-    # # plot all the animals without detail
-    # # exclude chicken from output list
-    # animal_list = []
-    # for animal in output_list:
-    #     if "chicken" not in animal.animal_type:
-    #         animal_list.append(animal)
+    # plot all the animals without detail
+    # exclude chicken from output list
+    animal_list = []
+    for animal in output_list:
+        if "chicken" not in animal.animal_type:
+            animal_list.append(animal)
             
     
     
-    # for animal in animal_list:
+    for animal in animal_list:
         
-    #     plt.plot(animal.population, label=animal.animal_type)
+        plt.plot(animal.population, label=animal.animal_type)
         
     
     
     
-    # plot one or a couple of aniamls in detail
-    # plot reults
-    for animal in output_list:
-        # if name containes milk
+    # # plot one or a couple of aniamls in detail
+    # # plot reults
+    # for animal in output_list:
+    #     # if name containes milk
         
         
-        # #if  goat
-        if "meat_cattle" in animal.animal_type:
+    #     # #if  goat
+    #     if "meat_cattle" in animal.animal_type:
                 
                 
-            print("Target population: ", animal.target_population_head , animal.animal_type)
-            print("Final population: ", animal.current_population , animal.animal_type)
-            print("Difference: ", animal.current_population - animal.target_population_head , animal.animal_type)
-            # plt.plot(animal.population, label="population")
-            # plt.plot(animal.population_starving_pre_slaughter, label="pop_starving_pre_salughter")
-            # plt.plot(animal.other_death_total, label="otherdeath")
-            # plt.plot(animal.total_homekill_this_month, label="homekill")
-            # plt.plot(animal.slaughter, label="slaughter")
-            # plt.plot(animal.births_animals_month, label="births")
-            plt.plot(animal.transfer_population, label="transfer_births_or_head")
+    #         print("Target population: ", animal.target_population_head , animal.animal_type)
+    #         print("Final population: ", animal.current_population , animal.animal_type)
+    #         print("Difference: ", animal.current_population - animal.target_population_head , animal.animal_type)
+    #         # plt.plot(animal.population, label="population")
+    #         # plt.plot(animal.population_starving_pre_slaughter, label="pop_starving_pre_salughter")
+    #         # plt.plot(animal.other_death_total, label="otherdeath")
+    #         # plt.plot(animal.total_homekill_this_month, label="homekill")
+    #         # plt.plot(animal.slaughter, label="slaughter")
+    #         # plt.plot(animal.births_animals_month, label="births")
+    #         plt.plot(animal.transfer_population, label="transfer_births_or_head")
 
     plt.legend()
     plt.show()
