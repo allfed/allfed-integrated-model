@@ -13,7 +13,7 @@ Created Early 2023 - Kevin
 
 
 ## function to get slaughterdataframe
-def get_slaughter_dataframe(df):
+def get_slaughter_dataframe(df,new_col_name):
     """
     puts the slaughter count of animals into a dataframe
     Hardcoded to use FAO element codes
@@ -114,7 +114,7 @@ def get_slaughter_dataframe(df):
     df_out = pd.DataFrame(d)
     return df_out
 
-def get_headcount_dataframe(df):
+def get_headcount_dataframe(df,new_col_name):
     """
     puts the headcount of animals into a dataframe
     Hardcoded to use FAO element codes
@@ -218,7 +218,7 @@ def get_headcount_dataframe(df):
 
     return df_out
 
-def get_milk_headcount(df):
+def get_milk_headcount(df,new_col_name):
     """
     puts the headcount of milk producing animals into a dataframe
     Hardcoded to use FAO element codes for milk producing animals
@@ -391,59 +391,153 @@ def add_summary_columns(df_out_head, df_out_slaughter):
     return df_out_head, df_out_slaughter
 
 
-# Import CSV to dataframes
-PATH = pathlib.Path(__file__).parent
-DATA_PATH = PATH.joinpath(".").resolve()
-df_import_slaughter = pd.read_csv(
-    DATA_PATH.joinpath("FAO_stat_slaughter_counts.csv")
-)
-df_importhead = pd.read_csv(
-    DATA_PATH.joinpath("FAOSTAT_data_en_4-14-2023_head_counts.csv") # change this to the file you want to import
-)
 
-## OPTION, DO SUMMARY COLUMNS?
-summary_cols = False
+## function to get slaughterdataframe
+def get_landuse_dataframe(df,new_col_name):
+    """
+    puts the slaughter count of animals into a dataframe
+    Hardcoded to use FAO element codes
+
+    :df: dataframe containing meat production of animals in FAO format
+    :return: dataframe containing slaughtercount of animals in simple csv format
+    """
+
+    # Get list of countries
+    countries = list(df[new_col_name].unique())
+    country_names = list(df["Area"].unique())
+
+    # create dictionary containing each table, remove Area column
+    df_dict = {
+        k: df[df[new_col_name] == k].drop(columns=new_col_name)
+        for k in countries
+    }
+
+    # FAO Element codes for small/medium/large animal slaughter numbers
+    ########### START CODES #####################
+    chicken_1000_head = [21121]
+    ducks_1000_head	 = 	[21122]
+    6601	Land area
+    6602	Agriculture
+    6610	Agricultural land
+    6650	Land under permanent crops
+    6655	Land under perm. meadows and pastures
+    6659	Perm. meadows & pastures - Nat. growing
+    ########### FINISH CODES #####################
+
+    # create empty list to store data
+    d = []
+
+    for i in range(0, len(countries)):
+        country = countries[i]
+        country_name = country_names[i]
+        if country not in df_dict.keys():
+            print("missing" + country)
+            continue
+
+        slaughter_head_for_country = df_dict[country]
+
+        buffalo_slaughter = get_max_from_species(slaughter_head_for_country, buffalo)
+        mule_slaughter = get_max_from_species(slaughter_head_for_country, mules_and_hinnies)
+        asses_slughter = get_max_from_species(slaughter_head_for_country, asses)
+        horse_slaughter = get_max_from_species(slaughter_head_for_country, horses)
+
+        # add to list
+        d.append(
+
+                    {
+                        "iso3": country,
+                        "country": country_name,
+                        "chicken_slaughter": chicken_slaughter,
+                        "rabbit_slaughter": rabbit_slaughter,
+
+                    }
+                )
+        
+    df_out = pd.DataFrame(d)
+    return df_out
 
 
-# Add alpha3 codes to dataframe
-iso_num_col = "Area Code (M49)"
-new_col_name = "Area Code (ISO3)"
-df_slaughter = add_alpha_codes_from_ISO(df_import_slaughter, iso_num_col,new_col_name)
-df_slaughter = df_slaughter.drop(df_slaughter[df_slaughter["Area Code (ISO3)"] == "NA"].index)
+def import_land_use_data():
+        # Import CSV to dataframes
+    PATH = pathlib.Path(__file__).parent
+    DATA_PATH = PATH.joinpath(".").resolve()
+    df_import_landuse = pd.read_csv(
+        DATA_PATH.joinpath("Inputs_LandUse_E_All_Data_NOFLAG.csv")
+    )
+    
+    # Add alpha3 codes to dataframe
+    iso_num_col = "Area Code (M49)"
+    new_col_name = "Area Code (ISO3)"
+    df_landuse = add_alpha_codes_from_ISO(df_import_landuse, iso_num_col,new_col_name)
+    df_landuse = df_landuse.drop(df_landuse[df_landuse["Area Code (ISO3)"] == "NA"].index)
+    
+    df_landuse = get_landuse_dataframe(df_landuse,new_col_name)
+    
+    df_landuse.to_csv("FAOSTAT_landuse.csv", index=False)
+    return df_landuse
 
-df_head = add_alpha_codes_from_ISO(df_importhead, iso_num_col,new_col_name)
-df_head = df_head.drop(df_head[df_head["Area Code (ISO3)"] == "NA"].index)
+def import_animal_data():
 
-#find area code iso3 with no match and drop them, for this dataset it's just "China", which is instead split in to China Mainlaind, Hong kong etc.
+    # Import CSV to dataframes
+    PATH = pathlib.Path(__file__).parent
+    DATA_PATH = PATH.joinpath(".").resolve()
+    df_import_slaughter = pd.read_csv(
+        DATA_PATH.joinpath("FAO_stat_slaughter_counts.csv")
+    )
+    df_importhead = pd.read_csv(
+        DATA_PATH.joinpath("FAOSTAT_data_en_4-14-2023_head_counts.csv") # change this to the file you want to import
+    )
 
-# filter dataframe by elemenmt which conatins milking
-df_milking = df_slaughter[df_slaughter["Element"].str.contains("Milk")]
+    ## OPTION, DO SUMMARY COLUMNS?
+    summary_cols = False
 
-# simplify the dataframe to only include the columns we need (this is the heavy lifting)
-df_out_slaughter = get_slaughter_dataframe(df_slaughter)
-df_out_head = get_headcount_dataframe(df_head)
-df_out_milking = get_milk_headcount(df_milking)
 
-#merge dataframes milk and head, to get all headcounts in one dataframe, prvenet duplication of columns
-# i.e merge but prevent _x, _y stuff from happeing
-# drop the country column from the milk dataframe, as it is already in the head dataframe
-df_out_head = df_out_head.merge(df_out_milking.drop(columns=["country"]), on="iso3", how="left")
+    # Add alpha3 codes to dataframe
+    iso_num_col = "Area Code (M49)"
+    new_col_name = "Area Code (ISO3)"
+    df_slaughter = add_alpha_codes_from_ISO(df_import_slaughter, iso_num_col,new_col_name)
+    df_slaughter = df_slaughter.drop(df_slaughter[df_slaughter["Area Code (ISO3)"] == "NA"].index)
 
-# subtract milk species from headcounts
-# this is because the milk headcounts are already included in the total headcounts
-# rename the columns to meat_cattle_head etc.
-df_out_head = subtract_milk_from_head(df_out_head, "sheep_head", "milk_sheep_head")
-df_out_head = subtract_milk_from_head(df_out_head, "goat_head", "milk_goat_head")
-df_out_head = subtract_milk_from_head(df_out_head, "camel_head", "milk_camel_head")
-df_out_head = subtract_milk_from_head(df_out_head, "buffalo_head", "milk_buffalo_head")
-df_out_head = subtract_milk_from_head(df_out_head, "cattle_head", "milk_cattle_head")
+    df_head = add_alpha_codes_from_ISO(df_importhead, iso_num_col,new_col_name)
+    df_head = df_head.drop(df_head[df_head["Area Code (ISO3)"] == "NA"].index)
 
-# create summary columns before merging if required. Consider remvoing totally and movig to main model
-if summary_cols:
-    df_out_head, df_out_slaughter = add_summary_columns(df_out_head, df_out_slaughter)
+    #find area code iso3 with no match and drop them, for this dataset it's just "China", which is instead split in to China Mainlaind, Hong kong etc.
 
-# merge the head and slaughter dataframes
-df_out = df_out_head.merge(df_out_slaughter.drop(columns=["country"]), on="iso3", how="left")
+    # filter dataframe by elemenmt which conatins milking
+    df_milking = df_slaughter[df_slaughter["Element"].str.contains("Milk")]
 
-# export to csv
-df_out.to_csv("FAOSTAT_head_and_slaughter.csv", index=False)
+    # simplify the dataframe to only include the columns we need (this is the heavy lifting)
+    df_out_slaughter = get_slaughter_dataframe(df_slaughter,new_col_name)
+    df_out_head = get_headcount_dataframe(df_head,new_col_name)
+    df_out_milking = get_milk_headcount(df_milking,new_col_name)
+
+    #merge dataframes milk and head, to get all headcounts in one dataframe, prvenet duplication of columns
+    # i.e merge but prevent _x, _y stuff from happeing
+    # drop the country column from the milk dataframe, as it is already in the head dataframe
+    df_out_head = df_out_head.merge(df_out_milking.drop(columns=["country"]), on="iso3", how="left")
+
+    # subtract milk species from headcounts
+    # this is because the milk headcounts are already included in the total headcounts
+    # rename the columns to meat_cattle_head etc.
+    df_out_head = subtract_milk_from_head(df_out_head, "sheep_head", "milk_sheep_head")
+    df_out_head = subtract_milk_from_head(df_out_head, "goat_head", "milk_goat_head")
+    df_out_head = subtract_milk_from_head(df_out_head, "camel_head", "milk_camel_head")
+    df_out_head = subtract_milk_from_head(df_out_head, "buffalo_head", "milk_buffalo_head")
+    df_out_head = subtract_milk_from_head(df_out_head, "cattle_head", "milk_cattle_head")
+
+    # create summary columns before merging if required. Consider remvoing totally and movig to main model
+    if summary_cols:
+        df_out_head, df_out_slaughter = add_summary_columns(df_out_head, df_out_slaughter)
+
+    # merge the head and slaughter dataframes
+    df_out = df_out_head.merge(df_out_slaughter.drop(columns=["country"]), on="iso3", how="left")
+
+    # export to csv
+    df_out.to_csv("FAOSTAT_head_and_slaughter.csv", index=False)
+    
+    
+# do main 
+if __name__ == "__main__":
+    # import_animal_data()
+    import_land_use_data()
+    

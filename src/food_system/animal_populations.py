@@ -17,7 +17,12 @@ Functionality required
     - read in animal nutrition data
     - create animal population classes
 
-
+# TODO:
+ # check that we line up with actual FAO usage. Do this straight away, and then consider doing it after adjysting for the LSU variation
+ # fix the transfer births, milk behaving weirdly
+ # DONE: fixed the milk birth... as animals need to give birth constantly to produce milk. THis is now refectyed
+ # fix the pregannt population to be effected by homekill and other death from starvation (currently only effected by slaughter)
+ # how to allocate when human edible feed is sent to animals? 20% starvation?
 
 """
 from pathlib import Path
@@ -125,7 +130,6 @@ class AnimalSpecies:
         # slaughtering attributes
         if slaughter>0:
             self.statistical_lifetime = population/slaughter # this is the statistical lifetime of the animal, used to calculate the number of animals slaughtered per month
-        self.retiring_milk_animals = [None]
 
         # not currently used, used for meat production information
         self.carcass_weight = None # update to include this in the csv file
@@ -146,16 +150,19 @@ class AnimalSpecies:
                 protein_units='ratio of protein in diet required',
             )
 
-    def set_species_milk_attributes(self, productive_milk_age_start, productive_milk_age_end, milk_production_per_month=None):
+    def set_species_milk_attributes(self, productive_milk_age_start, productive_milk_age_end, insemination_cycle_time_for_milk, milk_production_per_month_per_head=None):
 
         # Milk attributes
         self.productive_milk_age_start = productive_milk_age_start
         self.productive_milk_age_end = productive_milk_age_end
+        self.insemination_cycle_time_for_milk = insemination_cycle_time_for_milk
         self.population_proportion_productive_milk = (productive_milk_age_end - productive_milk_age_start) / productive_milk_age_end
-        self.milk_production_per_month = milk_production_per_month # update to include this in the csv file
+        self.population_producing_milk = self.current_population * self.population_proportion_productive_milk
+        self.milk_production_per_month_per_head = milk_production_per_month_per_head # update to include this in the csv file
         self.statistical_lifetime = productive_milk_age_end
         self.retiring_milk_animals_fraction = 1 / productive_milk_age_end
-        self.retiring_milk_animals = [self.retiring_milk_head_monthly()]
+        self.retiring_milk_animals = []
+        
     
     def retiring_milk_head_monthly(self):
         """
@@ -211,16 +218,18 @@ class AnimalSpecies:
         # calculations based off of the above
         self.other_animal_death_rate_monthly =  other_animal_death_rate_annual / 12
         self.other_animal_death_basline_head_monthly = self.other_animal_death_rate_monthly * self.population[0]
-        self.total_animal_death_head_monthly = [self.other_animal_death_basline_head_monthly + self.baseline_slaughter] # this will change, maybe should be list
         self.other_animal_death = [self.other_animal_death_basline_head_monthly] # this is calculated now, as it occurs BEFORE the first month (i.e is independent of feed)
         self.other_death_starving = [] # this one starts empty because it is worked out AFTER the first month
         self.other_death_total = []
         if self.animal_function == 'milk':
             self.birth_ratio = 2 # number of animals born per milk animal
+            self.births_animals_month = [ (1/self.insemination_cycle_time_for_milk) * (self.population_producing_milk) * (1/self.birth_ratio) ]   #SET MILK BIRTHS HERE # if a milk animla, this is JUST the milk animals born (meat transfer accounted for in pregnancy attrivute)
         else:   
             self.birth_ratio = 1 # number of animals born (total from population) per milk animal. I.e all male milk animals are not considered milk anaimls and need to be moved over to meat
+            self.births_animals_month = [self.other_animal_death_basline_head_monthly - transfer_births_or_head ] # if a milk animla, this is JUST the milk animals born (meat transfer accounted for in pregnancy attrivute)
+
         self.transfer_population = [] # positive means animals transferred IN from, milk, negative means animals transferred OUT (i.e milk animals should always have a negative IF treansfer population is only related to male dairy animals). Could be psotivie IF transfer population is used to capture live imported head from somewhere
-        self.births_animals_month = [self.total_animal_death_head_monthly[0] - transfer_births_or_head ] 
+        self.transfer_births = [] # positive means animals transferred IN from, milk, negative means animals transferred OUT (i.e milk animals should always have a negative IF treansfer population is only related to male dairy animals). Could be psotivie IF transfer population is used to capture live imported head from somewhere
         self.slaughter = [self.baseline_slaughter*change_in_slaughter_rate] # is list
         self.pregnant_animals_total = self.birth_ratio * [self.births_animals_month[-1] / self.animals_per_pregnancy * self.gestation] # assumes even distribution of births, this is not true. OPTIONAL TODO, update this to be more accurate and deal with seasonal births. Can be done by chaning the "gestation" to be a complicated value based on month/season
         self.pregnant_animals_birthing_this_month = [self.pregnant_animals_total[-1] /  self.gestation] 
@@ -595,11 +604,13 @@ def update_animal_objects_with_milk(animal_list,df_animal_attributes):
         # this list of variables will be a csv file in the future
         productive_milk_age_start = df_animal_attributes.loc[animal.animal_type]["productive_milk_age_start"]
         productive_milk_age_end = df_animal_attributes.loc[animal.animal_type]["productive_milk_age_end"]
-        milk_production_per_month = df_animal_attributes.loc[animal.animal_type]["milk_production_per_month"]
+        insemination_cycle_time_for_milk = df_animal_attributes.loc[animal.animal_type]["insemination_cycle_time_for_milk"]
+        milk_production_per_month_per_head = df_animal_attributes.loc[animal.animal_type]["milk_production_per_month_per_head"]
         animal.set_species_milk_attributes(
             productive_milk_age_start, 
             productive_milk_age_end, 
-            milk_production_per_month,
+            insemination_cycle_time_for_milk,
+            milk_production_per_month_per_head,
             )   
     return
 
@@ -623,12 +634,12 @@ def available_feed():
     # import feed data from model
     ### TODO: import feed data from model
 
-    # calculate kcals in feed, don't use protein/fats just yet. That's for a revision
+    # calculate billion kcals in feed, don't use protein/fats just yet. That's for a revision
     # all imports should be in GE, gross energy
     # calacuklation of NE is done in the feed animals function
 
     # create food objects (EXAMPLE)
-    example_food1=Food(000,-1,-1)
+    example_food1=Food(00,-1,-1)
     example_food2=Food(0,-1,-1)
 
     # add the food objects together (EXAMPLE)
@@ -654,8 +665,7 @@ def available_grass():
     # calculate available grass
     # import grass data
 
-    # convert grass to animal feed
-    # units idealy in kcal
+    # units idealy in billion kcal
     # all imports should be in GE, gross energy
     # calacuklation of NE is done in the feed animals function
     grass=Food(000,-1,-1)
@@ -735,9 +745,7 @@ def calculate_change_in_population(animal_object, country_object, new_additive_a
         # they turn in to meat animls, this is done in a previous step already
         # incoming retiring animals (that is, those going from milk -> meat), are already contained in the
         # new_additive_animals_month variable
-        retiring_animals = calculate_retiring_milk_animals(animal_object)
-        animal_object.retiring_milk_animals.append(retiring_animals)
-
+        retiring_animals = animal_object.retiring_milk_animals[-1]
     else:
         retiring_animals = 0
 
@@ -751,8 +759,7 @@ def calculate_change_in_population(animal_object, country_object, new_additive_a
     # This means that the slaughter hours are used in the order that the species are listed in the animal_types list
     current_slaughter_rate = calculate_slaughter_rate(animal_object, country_object, new_additive_animals_month, new_other_animal_death)
 
-
-    # This is the main calculation of the population
+    # This is the main calculation of the population, update the slaughter rate if there are not enough animals
     current_slaughter_rate  = calculate_animal_population(animal_object, country_object, new_additive_animals_month, new_other_animal_death + retiring_animals, current_slaughter_rate)
 
     # Determine how many of the animals who died this month were pregnant
@@ -792,7 +799,6 @@ def calculate_change_in_population(animal_object, country_object, new_additive_a
 
 def calculate_pregnant_animals_birthing(animal_object, new_pregnant_animals_total):
     """
-    
     This function will calculate the number of pregnant animals birthing this month, based on the number of pregnant animals remaining
     Uses a simple calculation of the number of pregnant animals divided by the gestation period
     This is not a perfect calculation, as it assumes that an even distribution of animals will birth each month
@@ -1168,8 +1174,9 @@ def main(country_code):
     # all animals
     all_animals = [animal for animal in animal_dict.values()]
     
-    update_animal_objects_with_slaughter(all_animals,df_animal_attributes,df_animal_options) 
+    
     update_animal_objects_with_milk(milk_animals,df_animal_attributes)
+    update_animal_objects_with_slaughter(all_animals,df_animal_attributes,df_animal_options) 
 
 
     # create country object
@@ -1189,14 +1196,14 @@ def main(country_code):
         
         ## THESE FEED OBJECTS WILL BE PASSED IN ####
         # create available feed object
-        feed_MJ_available_this_month = available_feed()
-        grass_MJ_available_this_month = available_grass()
+        feed_available_this_month = available_feed()
+        grass_available_this_month = available_grass()
 
 
         ## Do the feeding
         # feed the animals
         
-        feed_MJ_available_this_month, grass_MJ_available_this_month = feed_animals(all_animals, ruminants ,  feed_MJ_available_this_month, grass_MJ_available_this_month)
+        feed_available_this_month, grass_available_this_month = feed_animals(all_animals, ruminants ,  feed_available_this_month, grass_available_this_month)
         calculate_starving_animals_after_feed(all_animals)
 
         ## OKAY SO NOW WE HAVE THE ANIMALS FED, WE NEED TO LOOK AT SLAUGHTERING
@@ -1228,6 +1235,9 @@ def main(country_code):
             
             if animal.animal_function == 'milk':
                 transfer_populations[animal.animal_species] = animal.retiring_milk_head_monthly() + new_transfer_births
+                animal.retiring_milk_animals.append(animal.retiring_milk_head_monthly())
+                animal.transfer_births.append(new_transfer_births)
+                
                 # add to tranfser population
                 ##### THIS ISN'T WORKING CHANGED TO FUCNTION, MAYBE GOOD NOW
                 
@@ -1334,38 +1344,39 @@ if __name__ == "__main__":
         if "chicken" not in animal.animal_type:
             animal_list.append(animal)
             
-    
-    
+
     for animal in animal_list:
-        
         plt.plot(animal.population, label=animal.animal_type)
         
     
     
     
-    # # plot one or a couple of aniamls in detail
-    # # plot reults
-    # for animal in output_list:
-    #     # if name containes milk
+    # plot one or a couple of aniamls in detail
+    # plot reults
+    for animal in output_list:
+        # if name containes milk
         
         
-    #     # #if  goat
-    #     if "meat_cattle" in animal.animal_type:
+        # #if  goat
+        if "milk_cattle" in animal.animal_type:
                 
                 
-    #         print("Target population: ", animal.target_population_head , animal.animal_type)
-    #         print("Final population: ", animal.current_population , animal.animal_type)
-    #         print("Difference: ", animal.current_population - animal.target_population_head , animal.animal_type)
-    #         # plt.plot(animal.population, label="population")
-    #         # plt.plot(animal.population_starving_pre_slaughter, label="pop_starving_pre_salughter")
-    #         # plt.plot(animal.other_death_total, label="otherdeath")
-    #         # plt.plot(animal.total_homekill_this_month, label="homekill")
-    #         # plt.plot(animal.slaughter, label="slaughter")
-    #         # plt.plot(animal.births_animals_month, label="births")
-    #         plt.plot(animal.transfer_population, label="transfer_births_or_head")
+            print("Target population: ", animal.target_population_head , animal.animal_type)
+            print("Final population: ", animal.current_population , animal.animal_type)
+            print("Difference: ", animal.current_population - animal.target_population_head , animal.animal_type)
+            # plt.plot(animal.population, label="population")
+            # plt.plot(animal.population_starving_pre_slaughter, label="pop_starving_pre_salughter")
+            # plt.plot(animal.other_death_total, label="otherdeath")
+            # plt.plot(animal.total_homekill_this_month, label="homekill")
+            # plt.plot(animal.slaughter, label="slaughter")
+            plt.plot(animal.births_animals_month, label="births")
+            plt.plot(animal.transfer_population, label="transfer_births_or_head")
+            plt.plot(animal.retiring_milk_animals, label="retiring_milk_animals")
+            plt.plot(animal.transfer_births, label="transfer_births")
 
     plt.legend()
     plt.show()
+
 
 
 

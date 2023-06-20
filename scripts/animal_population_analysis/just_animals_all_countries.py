@@ -1,202 +1,254 @@
-from src.food_system.calculate_animals_and_feed_over_time import CalculateAnimalOutputs
+from src.food_system.animal_populations import AnimalSpecies
+from src.food_system.animal_populations import read_animal_population_data
+from src.food_system.animal_populations import read_animal_nutrition_data
+from src.food_system.animal_populations import read_animal_options
+from src.food_system.animal_populations import create_animal_objects
+from src.food_system.food import Food
+
 import plotly.express as px
 import pandas as pd
 import git
 from pathlib import Path
+import pycountry
+
+
+
+def add_alpha_codes_from_ISO(df, incol,outcol="iso3"):
+    """
+    adds a column of alpha3 codes to a dataframe with country name in column 'col'
+    uses fuzzy logic to match countries
+    """
+    input_countries = df[incol]
+    countries = []
+    for input_country in input_countries:
+        try:
+            country = pycountry.countries.get(numeric=str(input_country).zfill(3))
+            alpha3 = country.alpha_3
+        except:
+            alpha3 = "NA"
+            print("unable to match " + str(input_country))
+        countries.append(alpha3)
+    df[outcol] = countries
+    # remove original country column
+    df = df.drop([incol], axis=1)
+    return df
+
+
+def add_alpha_codes_fuzzy(df, incol,outcol="iso3"):
+    """
+    adds a column of alpha3 codes to a dataframe with country name in column 'col'
+    uses fuzzy logic to match countries
+    """
+    input_countries = df[incol]
+    countries = []
+    for input_country in input_countries:
+        try:
+            country = pycountry.countries.search_fuzzy(input_country)
+            alpha3 = country[0].alpha_3
+        except:
+            alpha3 = "unk_" + input_country
+        countries.append(alpha3)
+    df["alpha3"] = countries
+    # remove original country column
+    df = df.drop([incol], axis=1)
+    return df
+
+def read_csv_values(path, country_code_col="Code",  year_col="Year", value_col=None,output_syntax="iso3"):
+    """
+    reads csv files downloaded from our world in data, isolates the ISO alpga 3 country code, and keeps only the most recent data per country
+    """
+    df = pd.read_csv(path)
+    df.rename(columns={country_code_col: output_syntax}, inplace=True)
+    df = df.set_index(output_syntax)
+    try:
+        df = df.sort_values(by=year_col)  # sort ascending
+        df = df[
+            ~df.index.duplicated(keep="last")
+        ]  # delete duplicate entries from countries, keep the most recent data
+    except:
+        print("no year column")
+    try:
+        df = df.drop(["Entity", year_col], axis=1)
+    except:
+        print("no entity or year column to drop")
+        
+    if value_col is not None:
+        # only keep the value column and the iso3 column
+        df = df[[value_col]]
+    return df
 
 ## import data
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
-animal_feed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
-country_feed_data_location = Path.joinpath(
-    Path(animal_feed_data_dir), "country_feed_data.csv"
-)
-FAO_stat_slaughter_counts_processed_location = Path.joinpath(
-    Path(animal_feed_data_dir), "FAO_stat_slaughter_counts_processed.csv"
-)
-head_count_csv_location = Path.joinpath(
-    Path(animal_feed_data_dir), "head_count_csv.csv"
-)
 
-gdp_csv_location = Path.joinpath(
-    Path(animal_feed_data_dir), "gdp_owid_2018.csv"
-)
-
-# Load data
+animal_pop_analysis_dir = Path(repo_root) / "scripts" / "animal_population_analysis"
 processed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "processed_data"
+
+country_feed_data_location = Path.joinpath(
+    Path(animal_pop_analysis_dir), "country_feed_data.csv"
+)
 pop_csv_location = Path.joinpath(
     Path(processed_data_dir), "population_csv.csv"
 )
-
+ag_area_csv_location = Path.joinpath(
+    Path(animal_pop_analysis_dir), "total-agricultural-area-over-the-long-term.csv"
+)
+grazing_area_csv_location = Path.joinpath(
+    Path(animal_pop_analysis_dir), "UNdata_Export_20230612_101954125.csv"
+)       
+grazing_area_owid_csv_location = Path.joinpath(
+    Path(animal_pop_analysis_dir), "grazing-land-use-over-the-long-term.csv"
+)       
 
 
 df_feed_country = pd.read_csv(country_feed_data_location, index_col="ISO3 Country Code")
-df_fao_animals = pd.read_csv(head_count_csv_location, index_col="iso3")
-df_gdp = pd.read_csv(gdp_csv_location, index_col="iso3")
-df_fao_slaughter = pd.read_csv(
-    FAO_stat_slaughter_counts_processed_location, index_col="iso3"
-)
-df_pop_country = pd.read_csv(pop_csv_location, index_col="iso3")
+df_pop_country = pd.read_csv(pop_csv_location, index_col="iso3", )
+df_grazing = read_csv_values(grazing_area_csv_location, country_code_col="Country or Area", value_col="Value", output_syntax="CountryName")
 
 
-# join on inner to only calauclate for countries that all three of the datatsets exist
-df_fao_slaughter = df_fao_slaughter.join(df_fao_animals, how="inner", rsuffix="_animals")
-df_fao_slaughter = df_fao_slaughter.join(df_feed_country, how="inner", rsuffix="_feed")
+df_grazing = df_grazing.reset_index()
+add_alpha_codes_fuzzy(df_grazing,"CountryName",outcol="iso3")
 
+df_grazing.to_csv(Path.joinpath(Path(animal_pop_analysis_dir), "grazing_area.csv"), index=False)
 
-
-
-# keep only the first 20 countries
-# df_fao_slaughter = df_fao_slaughter.iloc[:20]
-
-
-# initiliase class
-cao = CalculateAnimalOutputs()
-
-# create dictionary to emulate scenarios in integrated
-constants_inputs = {}
-
-# create lists to store output populations
-country_list = []
-max_month_list = []
-initial_beef = []
-initial_beef_slaughter = []
-initial_pig = []
-initial_pig_slaughter = []
-initial_poultry = []
-initial_poultry_slaughter = []
-
-# error countries
-error_countries = []
+## Populate animal objects ##
+# create animal objects
+df_animal_stock_info = read_animal_population_data()
+df_animal_attributes = read_animal_nutrition_data()
+df_animal_options = read_animal_options()
 
 
 
-#reate for loop to iterate through all countries
-for country in df_fao_slaughter.index:
 
-    # small_animal_slaughter,medium_animal_slaughter,large_animal_slaughter,
-    constants_inputs["COUNTRY_CODE"] = country
-    constants_inputs["NMONTHS"] = 120
-    reduction_in_dairy_calves = 0
-    use_grass_and_residues_for_dairy = False
-    feed_ratio = 1
-
-    data = {
-        "country_code": constants_inputs["COUNTRY_CODE"],
-        "reduction_in_beef_calves": 90,
-        "reduction_in_dairy_calves": reduction_in_dairy_calves,
-        "increase_in_slaughter": 110,
-        "reduction_in_pig_breeding": 90,
-        "reduction_in_poultry_breeding": 90,
-        "months": constants_inputs["NMONTHS"],
-        "discount_rate": 30,
-        "mother_slaughter": 0,
-        "use_grass_and_residues_for_dairy": use_grass_and_residues_for_dairy,
-        "keep_dairy": True,
-        "feed_ratio": feed_ratio,
-    }
-
-    feed_dairy_meat_results, feed = cao.calculate_feed_and_animals(data)
-
-
-    try:
-    #find month when poultry pop is less than 10 
-        poultry_pop_less_than_10 = feed_dairy_meat_results[feed_dairy_meat_results["Poultry Pop"] < 10]
-        zero_poultry_month = poultry_pop_less_than_10.index[0]
-
-        #find month when pig pop is less than 10
-        pig_pop_less_than_10 = feed_dairy_meat_results[feed_dairy_meat_results["Pigs Pop"] < 10]
-        zero_pig_month = pig_pop_less_than_10.index[0]
-
-
-        #find month when beef pop is less than 10
-        beef_pop_less_than_10 = feed_dairy_meat_results[feed_dairy_meat_results["Beef Pop"] < 10]
-        zero_beef_month = beef_pop_less_than_10.index[0]
-
-        # find max month
-        max_month = max(zero_poultry_month, zero_pig_month, zero_beef_month)
-        
-
-        # # append results to lists
-        country_list.append(country)
-        max_month_list.append(max_month)
-        initial_beef.append(feed_dairy_meat_results["Beef Pop"][0])
-        initial_pig.append(feed_dairy_meat_results["Pigs Pop"][0])
-        initial_poultry.append(feed_dairy_meat_results["Poultry Pop"][0])
-        initial_beef_slaughter.append(df_fao_slaughter.loc[country, "large_animal_slaughter"])
-        initial_pig_slaughter.append(df_fao_slaughter.loc[country, "medium_animal_slaughter"])
-        initial_poultry_slaughter.append(df_fao_slaughter.loc[country, "small_animal_slaughter"])
-    except:
-        error_countries.append(country)
-        pass
+# create empty list to store the total food consumed per country
+total_food_consumed = []
 
 
 
-# create dataframe from lists
-df = pd.DataFrame(
-    {
-        "country": country_list,
-        "max_month": max_month_list,
-        "initial_beef": initial_beef,
-        "initial_pig": initial_pig,
-        "initial_poultry": initial_poultry,
-        "initial_beef_slaughter": initial_beef_slaughter,
-        "initial_pig_slaughter": initial_pig_slaughter,
-        "initial_poultry_slaughter": initial_poultry_slaughter,
-        
-    }
-)
-# merge gdp dataframe
-df = df.merge(df_gdp, left_on="country", right_on="iso3", how="left")
-
-# merge population dataframe
-df = df.merge(df_pop_country, left_on="country_x", right_on="iso3", how="left")
-
-
-# create population to slaughter ratio
-df["beef_ratio"] = df["initial_beef_slaughter"] / df["initial_beef"]
-df["pig_ratio"] = df["initial_pig_slaughter"] / df["initial_pig"]
-df["poultry_ratio"] = df["initial_poultry_slaughter"] / df["initial_poultry"]
-
-# create gdp per capita
-df["GDP_per_capita"] = df["GDP"] / df["population"]
-
-
-#plot max month er country, sorted by max month
-fig = px.bar(
-    df.sort_values("max_month"),
-    x="max_month",
-    y="country",
-    title="Time to zero population",
-    orientation="h",
-)
-fig.show()
-
-
-#plot beef population against beef salughter, with country labels
-fig = px.scatter(
-    df,
-    x="initial_beef",
-    y="initial_beef_slaughter",
-    color="country",
-    title="Beef population vs slaughter",
-)
-fig.show()
-
-
-# plot beef ratio against time to zero population (max_month)
-fig = px.scatter(
-    df,     
-    x="max_month",
-    y="GDP_per_capita",
-    color="country_x",
-    title="Beef ratio vs time to zero population",
-    # use the beef pop as the size of the marker, with a min size of 10 and max size of 100
-    size="initial_beef",
-    size_max=40,
+for country_code in df_animal_stock_info.index:
+    animal_list = create_animal_objects(df_animal_stock_info.loc[country_code], df_animal_attributes)
     
+    # create empty list to store the food consumed by each animal
+    calculated_feed_demand = Food(0,0,0)
+    animal_pop = 0
+    
+    # calculate consumed food in the animla list for this country
+    for animal in animal_list:
+        animal_object = animal_list[animal]
+        calculated_feed_demand += animal_object.feed_required_per_month_species()
+        animal_pop += animal_object.current_population
+        
+        
+    
+    total_food_consumed.append(
+                    {
+                        "iso3": country_code,
+                        "calculated_feed_demand": calculated_feed_demand.kcals,
+                        "animal_pop": animal_pop,
+                    }
+                )
 
+# create dataframe from the list
+df_feed = pd.DataFrame(total_food_consumed)
 
+# merge with the df_feed_country dataframe
+df_feed = df_feed.merge(
+    df_feed_country, left_on="iso3", right_on="ISO3 Country Code"
 )
+
+# conversion from million dry caloric tons to billion kcal
+# 1 gram of dry food = 4.184 kJ
+# so 1 million tonnes of dry food = 4.184e9 kJ or 4184 billion kJ
+conversion_factor = 4184
+
+df_feed["Animal feed consumption Billion kcals"] = (
+    df_feed["Animal feed caloric consumption in 2020 (million dry caloric tons)"] * conversion_factor
+)
+
+#drop rows with zero values for feed consumption
+df_feed = df_feed[df_feed["Animal feed consumption Billion kcals"] != 0]
+
+# merge with the animal stock info dataframe
+df_merged = df_feed.merge(
+    df_animal_stock_info, left_on="iso3", right_on="iso3"
+)
+
+# merge with grazing df
+df_merged = df_merged.merge(
+    df_grazing, left_on="iso3", right_on="iso3"
+)
+
+
+
+df_feed["difference"] = df_feed["calculated_feed_demand"] - df_feed["Animal feed consumption Billion kcals"]
+df_feed["ratio"] = df_feed["calculated_feed_demand"] / df_feed["Animal feed consumption Billion kcals"]
+
+
+# plot the dat using plotly
+fig = px.scatter(
+    df_feed,
+    x="Animal feed consumption Billion kcals",
+    y="calculated_feed_demand",
+    hover_name="Country",
+    log_x=True,
+    log_y=True,
+)
+
 fig.show()
 
+# and plot the ratio, sorted by the ratio, color by the population
+fig2 = px.bar(
+    df_feed.sort_values("ratio"),
+    x="Country",
+    y="ratio",
+    hover_name="Country",
+    log_y=True,
+)
 
+fig2.show()
+
+
+#plot the feed consumption and the population
+fig3 = px.scatter(
+    df_feed,
+    x="Animal feed consumption Billion kcals",
+    y="animal_pop",
+    hover_name="Country",
+    log_x=True,
+    log_y=True,
+)
+
+fig3.show()
+
+# print the ratio stats
+print(df_feed["ratio"].describe())
+
+
+# mike is familiar with the datasets
+# also the lily paper, grass growing... maybe in supplements?
+
+
+
+# (feed + grass + residues) * growth_factor <- gdp = total demand (currenlty calculated on "maintenance" requirements, i.e no growth)
+# growth could be twice as much
+# conversion efficiency is really terrible for beef...
+
+
+# 
+
+
+# livestock units are defined differently based on region, so apply this first before introducing other factors.
+
+# residues will be proportional to crop area... so we can use the crop area data to estimate residues
+
+
+# glean database only broken down by OECD and non OEXD. But it has the consumption of grazed material as well as residues.
+
+
+# 1 ha = 0.8 tonne of residues produced by hectare. https://www.sciencedirect.com/science/article/abs/pii/S2211912416300013#preview-section-introduction
+# some are used for toher things
+# sugar (burnt for the factory)
+# 
+
+
+
+# 
