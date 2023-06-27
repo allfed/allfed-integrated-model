@@ -20,7 +20,7 @@ from src.food_system.methane_scp import MethaneSCP
 from src.food_system.seaweed import Seaweed
 from src.food_system.feed_and_biofuels import FeedAndBiofuels
 from src.food_system.food import Food
-from src.food_system.calculate_animals_and_feed_over_time import CalculateAnimalOutputs
+from src.food_system.animal_populations import CalculateFeedAndMeat
 
 
 class Parameters:
@@ -203,7 +203,27 @@ class Parameters:
             use_grass_and_residues_for_dairy = False
 
         # Initialize CalculateAnimalOutputs object
-        cao = CalculateAnimalOutputs()
+        # Initialize CalculateAnimalOutputs object with no feed
+        feed_meat_object = CalculateFeedAndMeat(
+            constants_inputs["COUNTRY_CODE"],
+            Food([0] * constants_inputs["NMONTHS"]),
+            Food([0] * constants_inputs["NMONTHS"]),
+        )
+        (
+            feed_used,
+            animals_slaughtered_small,
+            animals_slaughtered_medium,
+            animals_slaughtered_large,
+        ) = feed_meat_object.get_feed_used_and_meat_produced()
+        print("feed_used")
+        print(feed_used)
+        print("animals_slaughtered_small")
+        print(animals_slaughtered_small)
+        print("animals_slaughtered_medium")
+        print(animals_slaughtered_medium)
+        print("animals_slaughtered_large")
+        print(animals_slaughtered_large)
+        quit()
 
         # if we have an immediate shutoff, then turn off the feed to animals entirely
         if constants_inputs["DELAY"]["FEED_SHUTOFF_MONTHS"] == 0:
@@ -1077,11 +1097,7 @@ class Parameters:
         )
 
         # Initialize culled meat parameters
-        (
-            constants_out,
-            time_consts,
-            meat_and_dairy,
-        ) = self.init_culled_meat_params(
+        (constants_out, time_consts, meat_and_dairy,) = self.init_culled_meat_params(
             constants_inputs, constants_out, time_consts, meat_and_dairy
         )
 
