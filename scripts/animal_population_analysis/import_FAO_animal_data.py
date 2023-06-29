@@ -316,7 +316,7 @@ def get_max_from_species(df, species):
 def add_alpha_codes_from_ISO(df, incol,outcol):
     """
     adds a column of alpha3 codes to a dataframe with country name in column 'col'
-    uses fuzzy logic to match countries
+    uses the ISO numeric code in column 'col' to match the alpha3 code
     """
     input_countries = df[incol]
     countries = []
@@ -414,14 +414,15 @@ def get_landuse_dataframe(df,new_col_name):
 
     # FAO Element codes for small/medium/large animal slaughter numbers
     ########### START CODES #####################
-    chicken_1000_head = [21121]
-    ducks_1000_head	 = 	[21122]
-    6601	Land area
-    6602	Agriculture
-    6610	Agricultural land
-    6650	Land under permanent crops
-    6655	Land under perm. meadows and pastures
-    6659	Perm. meadows & pastures - Nat. growing
+    # TO DO UNFINISHED
+    # chicken_1000_head = [21121]
+    # ducks_1000_head	 = 	[21122]
+    # 6601	Land area
+    # 6602	Agriculture
+    # 6610	Agricultural land
+    # 6650	Land under permanent crops
+    # 6655	Land under perm. meadows and pastures
+    # 6659	Perm. meadows & pastures - Nat. growing
     ########### FINISH CODES #####################
 
     # create empty list to store data
@@ -536,8 +537,24 @@ def import_animal_data():
     df_out.to_csv("FAOSTAT_head_and_slaughter.csv", index=False)
     
     
+def import_livetsock_units():
+    
+    filename =  "LSU_Coeffs_by_Country.csv"
+    PATH = pathlib.Path(__file__).parent
+    DATA_PATH = PATH.joinpath(".").resolve()
+    df_import_LSU = pd.read_csv(
+        DATA_PATH.joinpath(filename)
+    )
+    
+     # Add alpha3 codes to dataframe
+    iso_num_col = "AreaCode"
+    new_col_name = "iso3"
+    df_LSU = add_alpha_codes_from_ISO(df_import_LSU, iso_num_col,new_col_name)
+    # imports data from FAO on licvestock units and clean it up.
+
+    
 # do main 
 if __name__ == "__main__":
     # import_animal_data()
-    import_land_use_data()
+    import_livetsock_units()
     

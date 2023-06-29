@@ -1,0 +1,2731 @@
+AreaCode,ItemCode,Value,AreaName,ItemName,Unit
+1,866,0.6,Armenia,Cattle,LSU coefficient
+2,866,0.7,Afghanistan,Cattle,LSU coefficient
+3,866,0.6,Albania,Cattle,LSU coefficient
+4,866,0.7,Algeria,Cattle,LSU coefficient
+5,866,0.6,American Samoa,Cattle,LSU coefficient
+6,866,0.6,Andorra,Cattle,LSU coefficient
+7,866,0.5,Angola,Cattle,LSU coefficient
+8,866,0.6,Antigua and Barbuda,Cattle,LSU coefficient
+9,866,0.7,Argentina,Cattle,LSU coefficient
+10,866,0.9,Australia,Cattle,LSU coefficient
+11,866,0.9,Austria,Cattle,LSU coefficient
+12,866,0.6,Bahamas,Cattle,LSU coefficient
+13,866,0.7,Bahrain,Cattle,LSU coefficient
+14,866,0.6,Barbados,Cattle,LSU coefficient
+15,866,0.9,Belgium-Luxembourg,Cattle,LSU coefficient
+16,866,0.5,Bangladesh,Cattle,LSU coefficient
+17,866,0.6,Bermuda,Cattle,LSU coefficient
+18,866,0.5,Bhutan,Cattle,LSU coefficient
+19,866,0.7,Bolivia (Plurinational State of),Cattle,LSU coefficient
+20,866,0.5,Botswana,Cattle,LSU coefficient
+21,866,0.7,Brazil,Cattle,LSU coefficient
+22,866,0.6,Aruba,Cattle,LSU coefficient
+23,866,0.7,Belize,Cattle,LSU coefficient
+24,866,0.5,British Indian Ocean Territory,Cattle,LSU coefficient
+25,866,0.6,Solomon Islands,Cattle,LSU coefficient
+26,866,0.65,Brunei Darussalam,Cattle,LSU coefficient
+27,866,0.6,Bulgaria,Cattle,LSU coefficient
+28,866,0.65,Myanmar,Cattle,LSU coefficient
+29,866,0.5,Burundi,Cattle,LSU coefficient
+30,866,0.6,Antarctica,Cattle,LSU coefficient
+31,866,0.9,Bouvet Island,Cattle,LSU coefficient
+32,866,0.5,Cameroon,Cattle,LSU coefficient
+33,866,1,Canada,Cattle,LSU coefficient
+34,866,0.6,Canton and Enderbury Islands,Cattle,LSU coefficient
+35,866,0.5,Cabo Verde,Cattle,LSU coefficient
+36,866,0.6,Cayman Islands,Cattle,LSU coefficient
+37,866,0.5,Central African Republic,Cattle,LSU coefficient
+38,866,0.5,Sri Lanka,Cattle,LSU coefficient
+39,866,0.5,Chad,Cattle,LSU coefficient
+40,866,0.7,Chile,Cattle,LSU coefficient
+41,866,0.65,"China, mainland",Cattle,LSU coefficient
+42,866,0.6,Christmas Island,Cattle,LSU coefficient
+43,866,0.6,Cocos (Keeling) Islands,Cattle,LSU coefficient
+44,866,0.7,Colombia,Cattle,LSU coefficient
+45,866,0.5,Comoros,Cattle,LSU coefficient
+46,866,0.5,Congo,Cattle,LSU coefficient
+47,866,0.6,Cook Islands,Cattle,LSU coefficient
+48,866,0.7,Costa Rica,Cattle,LSU coefficient
+49,866,0.6,Cuba,Cattle,LSU coefficient
+50,866,0.7,Cyprus,Cattle,LSU coefficient
+51,866,0.6,Czechoslovakia,Cattle,LSU coefficient
+52,866,0.6,Azerbaijan,Cattle,LSU coefficient
+53,866,0.5,Benin,Cattle,LSU coefficient
+54,866,0.9,Denmark,Cattle,LSU coefficient
+55,866,0.6,Dominica,Cattle,LSU coefficient
+56,866,0.6,Dominican Republic,Cattle,LSU coefficient
+57,866,0.6,Belarus,Cattle,LSU coefficient
+58,866,0.7,Ecuador,Cattle,LSU coefficient
+59,866,0.7,Egypt,Cattle,LSU coefficient
+60,866,0.7,El Salvador,Cattle,LSU coefficient
+61,866,0.5,Equatorial Guinea,Cattle,LSU coefficient
+62,866,0.6,Ethiopia PDR,Cattle,LSU coefficient
+63,866,0.6,Estonia,Cattle,LSU coefficient
+64,866,0.6,Faroe Islands,Cattle,LSU coefficient
+65,866,0.7,Falkland Islands (Malvinas),Cattle,LSU coefficient
+66,866,0.6,Fiji,Cattle,LSU coefficient
+67,866,0.9,Finland,Cattle,LSU coefficient
+68,866,0.9,France,Cattle,LSU coefficient
+69,866,0.7,French Guiana,Cattle,LSU coefficient
+70,866,0.6,French Polynesia,Cattle,LSU coefficient
+71,866,0.6,French Southern and Antarctic Territories,Cattle,LSU coefficient
+72,866,0.5,Djibouti,Cattle,LSU coefficient
+73,866,0.6,Georgia,Cattle,LSU coefficient
+74,866,0.5,Gabon,Cattle,LSU coefficient
+75,866,0.5,Gambia,Cattle,LSU coefficient
+76,866,0.7,NA,Cattle,LSU coefficient
+77,866,0.6,Germany Nl,Cattle,LSU coefficient
+78,866,0.6,Germany Fr,Cattle,LSU coefficient
+79,866,0.9,Germany,Cattle,LSU coefficient
+80,866,0.6,Bosnia and Herzegovina,Cattle,LSU coefficient
+81,866,0.5,Ghana,Cattle,LSU coefficient
+82,866,0.6,Gibraltar,Cattle,LSU coefficient
+83,866,0.6,Kiribati,Cattle,LSU coefficient
+84,866,0.9,Greece,Cattle,LSU coefficient
+85,866,0.6,Greenland,Cattle,LSU coefficient
+86,866,0.6,Grenada,Cattle,LSU coefficient
+87,866,0.6,Guadeloupe,Cattle,LSU coefficient
+88,866,0.6,Guam,Cattle,LSU coefficient
+89,866,0.7,Guatemala,Cattle,LSU coefficient
+90,866,0.5,Guinea,Cattle,LSU coefficient
+91,866,0.7,Guyana,Cattle,LSU coefficient
+92,866,0.6,Heard and McDonald Islands,Cattle,LSU coefficient
+93,866,0.6,Haiti,Cattle,LSU coefficient
+94,866,0.6,Holy See,Cattle,LSU coefficient
+95,866,0.7,Honduras,Cattle,LSU coefficient
+96,866,0.65,"China, Hong Kong SAR",Cattle,LSU coefficient
+97,866,0.6,Hungary,Cattle,LSU coefficient
+98,866,0.6,Croatia,Cattle,LSU coefficient
+99,866,0.9,Iceland,Cattle,LSU coefficient
+100,866,0.5,India,Cattle,LSU coefficient
+101,866,0.65,Indonesia,Cattle,LSU coefficient
+102,866,0.7,Iran (Islamic Republic of),Cattle,LSU coefficient
+103,866,0.7,Iraq,Cattle,LSU coefficient
+104,866,0.9,Ireland,Cattle,LSU coefficient
+105,866,0.6,Israel,Cattle,LSU coefficient
+106,866,0.9,Italy,Cattle,LSU coefficient
+107,866,0.5,Côte d'Ivoire,Cattle,LSU coefficient
+108,866,0.6,Kazakhstan,Cattle,LSU coefficient
+109,866,0.6,Jamaica,Cattle,LSU coefficient
+110,866,0.9,Japan,Cattle,LSU coefficient
+111,866,0.6,Johnston Island,Cattle,LSU coefficient
+112,866,0.7,Jordan,Cattle,LSU coefficient
+113,866,0.6,Kyrgyzstan,Cattle,LSU coefficient
+114,866,0.5,Kenya,Cattle,LSU coefficient
+115,866,0.65,Cambodia,Cattle,LSU coefficient
+116,866,0.65,Democratic People's Republic of Korea,Cattle,LSU coefficient
+117,866,0.65,Republic of Korea,Cattle,LSU coefficient
+118,866,0.7,Kuwait,Cattle,LSU coefficient
+119,866,0.6,Latvia,Cattle,LSU coefficient
+120,866,0.65,Lao People's Democratic Republic,Cattle,LSU coefficient
+121,866,0.7,Lebanon,Cattle,LSU coefficient
+122,866,0.5,Lesotho,Cattle,LSU coefficient
+123,866,0.5,Liberia,Cattle,LSU coefficient
+124,866,0.7,Libya,Cattle,LSU coefficient
+125,866,0.6,Liechtenstein,Cattle,LSU coefficient
+126,866,0.6,Lithuania,Cattle,LSU coefficient
+127,866,0.6,Marshall Islands,Cattle,LSU coefficient
+128,866,0.65,"China, Macao SAR",Cattle,LSU coefficient
+129,866,0.5,Madagascar,Cattle,LSU coefficient
+130,866,0.5,Malawi,Cattle,LSU coefficient
+131,866,0.65,Malaysia,Cattle,LSU coefficient
+132,866,0.5,Maldives,Cattle,LSU coefficient
+133,866,0.5,Mali,Cattle,LSU coefficient
+134,866,0.6,Malta,Cattle,LSU coefficient
+135,866,0.6,Martinique,Cattle,LSU coefficient
+136,866,0.5,Mauritania,Cattle,LSU coefficient
+137,866,0.5,Mauritius,Cattle,LSU coefficient
+138,866,0.7,Mexico,Cattle,LSU coefficient
+139,866,0.6,Midway Island,Cattle,LSU coefficient
+140,866,0.6,Monaco,Cattle,LSU coefficient
+141,866,0.65,Mongolia,Cattle,LSU coefficient
+142,866,0.6,Montserrat,Cattle,LSU coefficient
+143,866,0.7,Morocco,Cattle,LSU coefficient
+144,866,0.5,Mozambique,Cattle,LSU coefficient
+145,866,0.6,Micronesia (Federated States of),Cattle,LSU coefficient
+146,866,0.6,Republic of Moldova,Cattle,LSU coefficient
+147,866,0.5,Namibia,Cattle,LSU coefficient
+148,866,0.6,Nauru,Cattle,LSU coefficient
+149,866,0.5,Nepal,Cattle,LSU coefficient
+150,866,0.9,Netherlands,Cattle,LSU coefficient
+151,866,0.6,Netherlands Antilles (former),Cattle,LSU coefficient
+152,866,0.6,Neutral Zone,Cattle,LSU coefficient
+153,866,0.6,New Caledonia,Cattle,LSU coefficient
+154,866,0.6,North Macedonia,Cattle,LSU coefficient
+155,866,0.6,Vanuatu,Cattle,LSU coefficient
+156,866,0.9,New Zealand,Cattle,LSU coefficient
+157,866,0.7,Nicaragua,Cattle,LSU coefficient
+158,866,0.5,Niger,Cattle,LSU coefficient
+159,866,0.5,Nigeria,Cattle,LSU coefficient
+160,866,0.6,Niue,Cattle,LSU coefficient
+161,866,0.6,Norfolk Island,Cattle,LSU coefficient
+162,866,0.9,Norway,Cattle,LSU coefficient
+163,866,0.6,Northern Mariana Islands,Cattle,LSU coefficient
+164,866,0.6,Pacific Islands Trust Territory,Cattle,LSU coefficient
+165,866,0.5,Pakistan,Cattle,LSU coefficient
+166,866,0.7,Panama,Cattle,LSU coefficient
+167,866,0.6,Czechia,Cattle,LSU coefficient
+168,866,0.6,Papua New Guinea,Cattle,LSU coefficient
+169,866,0.7,Paraguay,Cattle,LSU coefficient
+170,866,0.7,Peru,Cattle,LSU coefficient
+171,866,0.65,Philippines,Cattle,LSU coefficient
+172,866,0.6,Pitcairn Islands,Cattle,LSU coefficient
+173,866,0.6,Poland,Cattle,LSU coefficient
+174,866,0.9,Portugal,Cattle,LSU coefficient
+175,866,0.5,Guinea-Bissau,Cattle,LSU coefficient
+176,866,0.65,Timor-Leste,Cattle,LSU coefficient
+177,866,0.6,Puerto Rico,Cattle,LSU coefficient
+178,866,0.5,Eritrea,Cattle,LSU coefficient
+179,866,0.7,Qatar,Cattle,LSU coefficient
+180,866,0.6,Palau,Cattle,LSU coefficient
+181,866,0.5,Zimbabwe,Cattle,LSU coefficient
+182,866,0.5,Réunion,Cattle,LSU coefficient
+183,866,0.6,Romania,Cattle,LSU coefficient
+184,866,0.5,Rwanda,Cattle,LSU coefficient
+185,866,0.6,Russian Federation,Cattle,LSU coefficient
+186,866,0.6,Serbia and Montenegro,Cattle,LSU coefficient
+187,866,0.5,"Saint Helena, Ascension and Tristan da Cunha",Cattle,LSU coefficient
+188,866,0.6,Saint Kitts and Nevis,Cattle,LSU coefficient
+189,866,0.6,Saint Lucia,Cattle,LSU coefficient
+190,866,0.6,Saint Pierre and Miquelon,Cattle,LSU coefficient
+191,866,0.6,Saint Vincent and the Grenadines,Cattle,LSU coefficient
+192,866,0.6,San Marino,Cattle,LSU coefficient
+193,866,0.5,Sao Tome and Principe,Cattle,LSU coefficient
+194,866,0.7,Saudi Arabia,Cattle,LSU coefficient
+195,866,0.5,Senegal,Cattle,LSU coefficient
+196,866,0.5,Seychelles,Cattle,LSU coefficient
+197,866,0.5,Sierra Leone,Cattle,LSU coefficient
+198,866,0.6,Slovenia,Cattle,LSU coefficient
+199,866,0.6,Slovakia,Cattle,LSU coefficient
+200,866,0.65,Singapore,Cattle,LSU coefficient
+201,866,0.5,Somalia,Cattle,LSU coefficient
+202,866,0.7,South Africa,Cattle,LSU coefficient
+203,866,0.9,Spain,Cattle,LSU coefficient
+205,866,0.5,Western Sahara,Cattle,LSU coefficient
+206,866,0.5,Sudan (former),Cattle,LSU coefficient
+207,866,0.7,Suriname,Cattle,LSU coefficient
+208,866,0.6,Tajikistan,Cattle,LSU coefficient
+209,866,0.5,Eswatini,Cattle,LSU coefficient
+210,866,0.9,Sweden,Cattle,LSU coefficient
+211,866,0.9,Switzerland,Cattle,LSU coefficient
+212,866,0.7,Syrian Arab Republic,Cattle,LSU coefficient
+213,866,0.6,Turkmenistan,Cattle,LSU coefficient
+214,866,0.65,"China, Taiwan Province of",Cattle,LSU coefficient
+215,866,0.5,United Republic of Tanzania,Cattle,LSU coefficient
+216,866,0.65,Thailand,Cattle,LSU coefficient
+217,866,0.5,Togo,Cattle,LSU coefficient
+218,866,0.6,Tokelau,Cattle,LSU coefficient
+219,866,0.6,Tonga,Cattle,LSU coefficient
+220,866,0.6,Trinidad and Tobago,Cattle,LSU coefficient
+221,866,0.7,Oman,Cattle,LSU coefficient
+222,866,0.7,Tunisia,Cattle,LSU coefficient
+223,866,0.7,Turkey,Cattle,LSU coefficient
+224,866,0.6,Turks and Caicos Islands,Cattle,LSU coefficient
+225,866,0.7,United Arab Emirates,Cattle,LSU coefficient
+226,866,0.5,Uganda,Cattle,LSU coefficient
+227,866,0.6,Tuvalu,Cattle,LSU coefficient
+228,866,0.6,USSR,Cattle,LSU coefficient
+229,866,0.9,United Kingdom,Cattle,LSU coefficient
+230,866,0.6,Ukraine,Cattle,LSU coefficient
+231,866,1,United States of America,Cattle,LSU coefficient
+232,866,0.6,US Minor Is.,Cattle,LSU coefficient
+233,866,0.5,Burkina Faso,Cattle,LSU coefficient
+234,866,0.7,Uruguay,Cattle,LSU coefficient
+235,866,0.6,Uzbekistan,Cattle,LSU coefficient
+236,866,0.7,Venezuela (Bolivarian Republic of),Cattle,LSU coefficient
+237,866,0.65,Viet Nam,Cattle,LSU coefficient
+238,866,0.5,Ethiopia,Cattle,LSU coefficient
+239,866,0.6,British Virgin Islands,Cattle,LSU coefficient
+240,866,0.6,United States Virgin Islands,Cattle,LSU coefficient
+242,866,0.6,Wake Island,Cattle,LSU coefficient
+243,866,0.6,Wallis and Futuna Islands,Cattle,LSU coefficient
+244,866,0.6,Samoa,Cattle,LSU coefficient
+245,866,0.7,NA,Cattle,LSU coefficient
+246,866,0.6,Yemen Ar Rp,Cattle,LSU coefficient
+247,866,0.6,Yemen Dem,Cattle,LSU coefficient
+248,866,0.6,Yugoslav SFR,Cattle,LSU coefficient
+249,866,0.7,Yemen,Cattle,LSU coefficient
+250,866,0.5,Democratic Republic of the Congo,Cattle,LSU coefficient
+251,866,0.5,Zambia,Cattle,LSU coefficient
+252,866,0.6,Unspecified Area,Cattle,LSU coefficient
+255,866,0.9,Belgium,Cattle,LSU coefficient
+256,866,0.9,Luxembourg,Cattle,LSU coefficient
+258,866,0.6,Anguilla,Cattle,LSU coefficient
+259,866,0.6,Channel Islands,Cattle,LSU coefficient
+260,866,0.6,Svalbard and Jan Mayen Islands,Cattle,LSU coefficient
+264,866,0.6,Isle of Man,Cattle,LSU coefficient
+270,866,0.6,Mayotte,Cattle,LSU coefficient
+271,866,0.6,South Georgia and the South Sandwich Islands,Cattle,LSU coefficient
+272,866,0.6,Serbia,Cattle,LSU coefficient
+273,866,0.6,Montenegro,Cattle,LSU coefficient
+274,866,0.6,Guernsey,Cattle,LSU coefficient
+275,866,0.6,Kosovo,Cattle,LSU coefficient
+276,866,0.5,Sudan,Cattle,LSU coefficient
+277,866,0.5,South Sudan,Cattle,LSU coefficient
+278,866,0.6,"Bonaire, Sint Eustatius and Saba",Cattle,LSU coefficient
+279,866,0.6,Curaçao,Cattle,LSU coefficient
+280,866,0.6,Sint Maarten (Dutch Part),Cattle,LSU coefficient
+281,866,0.6,Saint-Martin (French Part),Cattle,LSU coefficient
+282,866,0.6,Saint Barthélemy,Cattle,LSU coefficient
+283,866,0.6,Jersey,Cattle,LSU coefficient
+284,866,0.6,Åland Islands,Cattle,LSU coefficient
+285,866,0.6,Sark,Cattle,LSU coefficient
+299,866,0.7,Palestine,Cattle,LSU coefficient
+1,946,0.7,Armenia,Buffaloes,LSU coefficient
+2,946,0.7,Afghanistan,Buffaloes,LSU coefficient
+3,946,0.7,Albania,Buffaloes,LSU coefficient
+4,946,0.7,Algeria,Buffaloes,LSU coefficient
+5,946,0.6,American Samoa,Buffaloes,LSU coefficient
+6,946,0.6,Andorra,Buffaloes,LSU coefficient
+7,946,0,Angola,Buffaloes,LSU coefficient
+8,946,0.6,Antigua and Barbuda,Buffaloes,LSU coefficient
+9,946,0,Argentina,Buffaloes,LSU coefficient
+10,946,0.7,Australia,Buffaloes,LSU coefficient
+11,946,0.7,Austria,Buffaloes,LSU coefficient
+12,946,0.6,Bahamas,Buffaloes,LSU coefficient
+13,946,0.7,Bahrain,Buffaloes,LSU coefficient
+14,946,0.6,Barbados,Buffaloes,LSU coefficient
+15,946,0.7,Belgium-Luxembourg,Buffaloes,LSU coefficient
+16,946,0.5,Bangladesh,Buffaloes,LSU coefficient
+17,946,0.6,Bermuda,Buffaloes,LSU coefficient
+18,946,0.5,Bhutan,Buffaloes,LSU coefficient
+19,946,0,Bolivia (Plurinational State of),Buffaloes,LSU coefficient
+20,946,0,Botswana,Buffaloes,LSU coefficient
+21,946,0,Brazil,Buffaloes,LSU coefficient
+22,946,0.6,Aruba,Buffaloes,LSU coefficient
+23,946,0,Belize,Buffaloes,LSU coefficient
+24,946,0,British Indian Ocean Territory,Buffaloes,LSU coefficient
+25,946,0.6,Solomon Islands,Buffaloes,LSU coefficient
+26,946,0.7,Brunei Darussalam,Buffaloes,LSU coefficient
+27,946,0.7,Bulgaria,Buffaloes,LSU coefficient
+28,946,0.7,Myanmar,Buffaloes,LSU coefficient
+29,946,0,Burundi,Buffaloes,LSU coefficient
+30,946,0.6,Antarctica,Buffaloes,LSU coefficient
+31,946,0.7,Bouvet Island,Buffaloes,LSU coefficient
+32,946,0,Cameroon,Buffaloes,LSU coefficient
+33,946,0,Canada,Buffaloes,LSU coefficient
+34,946,0.6,Canton and Enderbury Islands,Buffaloes,LSU coefficient
+35,946,0,Cabo Verde,Buffaloes,LSU coefficient
+36,946,0.6,Cayman Islands,Buffaloes,LSU coefficient
+37,946,0,Central African Republic,Buffaloes,LSU coefficient
+38,946,0.5,Sri Lanka,Buffaloes,LSU coefficient
+39,946,0,Chad,Buffaloes,LSU coefficient
+40,946,0,Chile,Buffaloes,LSU coefficient
+41,946,0.7,"China, mainland",Buffaloes,LSU coefficient
+42,946,0.6,Christmas Island,Buffaloes,LSU coefficient
+43,946,0.6,Cocos (Keeling) Islands,Buffaloes,LSU coefficient
+44,946,0,Colombia,Buffaloes,LSU coefficient
+45,946,0,Comoros,Buffaloes,LSU coefficient
+46,946,0,Congo,Buffaloes,LSU coefficient
+47,946,0.6,Cook Islands,Buffaloes,LSU coefficient
+48,946,0,Costa Rica,Buffaloes,LSU coefficient
+49,946,0.6,Cuba,Buffaloes,LSU coefficient
+50,946,0.7,Cyprus,Buffaloes,LSU coefficient
+51,946,0.6,Czechoslovakia,Buffaloes,LSU coefficient
+52,946,0.7,Azerbaijan,Buffaloes,LSU coefficient
+53,946,0,Benin,Buffaloes,LSU coefficient
+54,946,0.7,Denmark,Buffaloes,LSU coefficient
+55,946,0.6,Dominica,Buffaloes,LSU coefficient
+56,946,0.6,Dominican Republic,Buffaloes,LSU coefficient
+57,946,0.7,Belarus,Buffaloes,LSU coefficient
+58,946,0,Ecuador,Buffaloes,LSU coefficient
+59,946,0.7,Egypt,Buffaloes,LSU coefficient
+60,946,0,El Salvador,Buffaloes,LSU coefficient
+61,946,0,Equatorial Guinea,Buffaloes,LSU coefficient
+62,946,0.6,Ethiopia PDR,Buffaloes,LSU coefficient
+63,946,0.7,Estonia,Buffaloes,LSU coefficient
+64,946,0.6,Faroe Islands,Buffaloes,LSU coefficient
+65,946,0,Falkland Islands (Malvinas),Buffaloes,LSU coefficient
+66,946,0.6,Fiji,Buffaloes,LSU coefficient
+67,946,0.7,Finland,Buffaloes,LSU coefficient
+68,946,0.7,France,Buffaloes,LSU coefficient
+69,946,0,French Guiana,Buffaloes,LSU coefficient
+70,946,0.6,French Polynesia,Buffaloes,LSU coefficient
+71,946,0.6,French Southern and Antarctic Territories,Buffaloes,LSU coefficient
+72,946,0,Djibouti,Buffaloes,LSU coefficient
+73,946,0.7,Georgia,Buffaloes,LSU coefficient
+74,946,0,Gabon,Buffaloes,LSU coefficient
+75,946,0,Gambia,Buffaloes,LSU coefficient
+76,946,0.7,NA,Buffaloes,LSU coefficient
+77,946,0.6,Germany Nl,Buffaloes,LSU coefficient
+78,946,0.6,Germany Fr,Buffaloes,LSU coefficient
+79,946,0.7,Germany,Buffaloes,LSU coefficient
+80,946,0.7,Bosnia and Herzegovina,Buffaloes,LSU coefficient
+81,946,0,Ghana,Buffaloes,LSU coefficient
+82,946,0.6,Gibraltar,Buffaloes,LSU coefficient
+83,946,0.6,Kiribati,Buffaloes,LSU coefficient
+84,946,0.7,Greece,Buffaloes,LSU coefficient
+85,946,0.6,Greenland,Buffaloes,LSU coefficient
+86,946,0.6,Grenada,Buffaloes,LSU coefficient
+87,946,0.6,Guadeloupe,Buffaloes,LSU coefficient
+88,946,0.6,Guam,Buffaloes,LSU coefficient
+89,946,0,Guatemala,Buffaloes,LSU coefficient
+90,946,0,Guinea,Buffaloes,LSU coefficient
+91,946,0,Guyana,Buffaloes,LSU coefficient
+92,946,0.6,Heard and McDonald Islands,Buffaloes,LSU coefficient
+93,946,0.6,Haiti,Buffaloes,LSU coefficient
+94,946,0.6,Holy See,Buffaloes,LSU coefficient
+95,946,0,Honduras,Buffaloes,LSU coefficient
+96,946,0.7,"China, Hong Kong SAR",Buffaloes,LSU coefficient
+97,946,0.7,Hungary,Buffaloes,LSU coefficient
+98,946,0.7,Croatia,Buffaloes,LSU coefficient
+99,946,0.7,Iceland,Buffaloes,LSU coefficient
+100,946,0.5,India,Buffaloes,LSU coefficient
+101,946,0.7,Indonesia,Buffaloes,LSU coefficient
+102,946,0.7,Iran (Islamic Republic of),Buffaloes,LSU coefficient
+103,946,0.7,Iraq,Buffaloes,LSU coefficient
+104,946,0.7,Ireland,Buffaloes,LSU coefficient
+105,946,0.6,Israel,Buffaloes,LSU coefficient
+106,946,0.7,Italy,Buffaloes,LSU coefficient
+107,946,0,Côte d'Ivoire,Buffaloes,LSU coefficient
+108,946,0.7,Kazakhstan,Buffaloes,LSU coefficient
+109,946,0.6,Jamaica,Buffaloes,LSU coefficient
+110,946,0.7,Japan,Buffaloes,LSU coefficient
+111,946,0.6,Johnston Island,Buffaloes,LSU coefficient
+112,946,0.7,Jordan,Buffaloes,LSU coefficient
+113,946,0.7,Kyrgyzstan,Buffaloes,LSU coefficient
+114,946,0,Kenya,Buffaloes,LSU coefficient
+115,946,0.7,Cambodia,Buffaloes,LSU coefficient
+116,946,0.7,Democratic People's Republic of Korea,Buffaloes,LSU coefficient
+117,946,0.7,Republic of Korea,Buffaloes,LSU coefficient
+118,946,0.7,Kuwait,Buffaloes,LSU coefficient
+119,946,0.7,Latvia,Buffaloes,LSU coefficient
+120,946,0.7,Lao People's Democratic Republic,Buffaloes,LSU coefficient
+121,946,0.7,Lebanon,Buffaloes,LSU coefficient
+122,946,0,Lesotho,Buffaloes,LSU coefficient
+123,946,0,Liberia,Buffaloes,LSU coefficient
+124,946,0.7,Libya,Buffaloes,LSU coefficient
+125,946,0.6,Liechtenstein,Buffaloes,LSU coefficient
+126,946,0.7,Lithuania,Buffaloes,LSU coefficient
+127,946,0.6,Marshall Islands,Buffaloes,LSU coefficient
+128,946,0.7,"China, Macao SAR",Buffaloes,LSU coefficient
+129,946,0,Madagascar,Buffaloes,LSU coefficient
+130,946,0,Malawi,Buffaloes,LSU coefficient
+131,946,0.7,Malaysia,Buffaloes,LSU coefficient
+132,946,0.5,Maldives,Buffaloes,LSU coefficient
+133,946,0,Mali,Buffaloes,LSU coefficient
+134,946,0.6,Malta,Buffaloes,LSU coefficient
+135,946,0.6,Martinique,Buffaloes,LSU coefficient
+136,946,0,Mauritania,Buffaloes,LSU coefficient
+137,946,0,Mauritius,Buffaloes,LSU coefficient
+138,946,0,Mexico,Buffaloes,LSU coefficient
+139,946,0.6,Midway Island,Buffaloes,LSU coefficient
+140,946,0.6,Monaco,Buffaloes,LSU coefficient
+141,946,0.7,Mongolia,Buffaloes,LSU coefficient
+142,946,0.6,Montserrat,Buffaloes,LSU coefficient
+143,946,0.7,Morocco,Buffaloes,LSU coefficient
+144,946,0,Mozambique,Buffaloes,LSU coefficient
+145,946,0.6,Micronesia (Federated States of),Buffaloes,LSU coefficient
+146,946,0.7,Republic of Moldova,Buffaloes,LSU coefficient
+147,946,0,Namibia,Buffaloes,LSU coefficient
+148,946,0.6,Nauru,Buffaloes,LSU coefficient
+149,946,0.5,Nepal,Buffaloes,LSU coefficient
+150,946,0.7,Netherlands,Buffaloes,LSU coefficient
+151,946,0.6,Netherlands Antilles (former),Buffaloes,LSU coefficient
+152,946,0.6,Neutral Zone,Buffaloes,LSU coefficient
+153,946,0.6,New Caledonia,Buffaloes,LSU coefficient
+154,946,0.7,North Macedonia,Buffaloes,LSU coefficient
+155,946,0.6,Vanuatu,Buffaloes,LSU coefficient
+156,946,0.7,New Zealand,Buffaloes,LSU coefficient
+157,946,0,Nicaragua,Buffaloes,LSU coefficient
+158,946,0,Niger,Buffaloes,LSU coefficient
+159,946,0,Nigeria,Buffaloes,LSU coefficient
+160,946,0.6,Niue,Buffaloes,LSU coefficient
+161,946,0.6,Norfolk Island,Buffaloes,LSU coefficient
+162,946,0.7,Norway,Buffaloes,LSU coefficient
+163,946,0.6,Northern Mariana Islands,Buffaloes,LSU coefficient
+164,946,0.6,Pacific Islands Trust Territory,Buffaloes,LSU coefficient
+165,946,0.5,Pakistan,Buffaloes,LSU coefficient
+166,946,0,Panama,Buffaloes,LSU coefficient
+167,946,0.7,Czechia,Buffaloes,LSU coefficient
+168,946,0.6,Papua New Guinea,Buffaloes,LSU coefficient
+169,946,0,Paraguay,Buffaloes,LSU coefficient
+170,946,0,Peru,Buffaloes,LSU coefficient
+171,946,0.7,Philippines,Buffaloes,LSU coefficient
+172,946,0.6,Pitcairn Islands,Buffaloes,LSU coefficient
+173,946,0.7,Poland,Buffaloes,LSU coefficient
+174,946,0.7,Portugal,Buffaloes,LSU coefficient
+175,946,0,Guinea-Bissau,Buffaloes,LSU coefficient
+176,946,0.7,Timor-Leste,Buffaloes,LSU coefficient
+177,946,0.6,Puerto Rico,Buffaloes,LSU coefficient
+178,946,0,Eritrea,Buffaloes,LSU coefficient
+179,946,0.7,Qatar,Buffaloes,LSU coefficient
+180,946,0.6,Palau,Buffaloes,LSU coefficient
+181,946,0,Zimbabwe,Buffaloes,LSU coefficient
+182,946,0,Réunion,Buffaloes,LSU coefficient
+183,946,0.7,Romania,Buffaloes,LSU coefficient
+184,946,0,Rwanda,Buffaloes,LSU coefficient
+185,946,0.7,Russian Federation,Buffaloes,LSU coefficient
+186,946,0.7,Serbia and Montenegro,Buffaloes,LSU coefficient
+187,946,0,"Saint Helena, Ascension and Tristan da Cunha",Buffaloes,LSU coefficient
+188,946,0.6,Saint Kitts and Nevis,Buffaloes,LSU coefficient
+189,946,0.6,Saint Lucia,Buffaloes,LSU coefficient
+190,946,0.6,Saint Pierre and Miquelon,Buffaloes,LSU coefficient
+191,946,0.6,Saint Vincent and the Grenadines,Buffaloes,LSU coefficient
+192,946,0.6,San Marino,Buffaloes,LSU coefficient
+193,946,0,Sao Tome and Principe,Buffaloes,LSU coefficient
+194,946,0.7,Saudi Arabia,Buffaloes,LSU coefficient
+195,946,0,Senegal,Buffaloes,LSU coefficient
+196,946,0,Seychelles,Buffaloes,LSU coefficient
+197,946,0,Sierra Leone,Buffaloes,LSU coefficient
+198,946,0.7,Slovenia,Buffaloes,LSU coefficient
+199,946,0.7,Slovakia,Buffaloes,LSU coefficient
+200,946,0.7,Singapore,Buffaloes,LSU coefficient
+201,946,0,Somalia,Buffaloes,LSU coefficient
+202,946,0,South Africa,Buffaloes,LSU coefficient
+203,946,0.7,Spain,Buffaloes,LSU coefficient
+205,946,0,Western Sahara,Buffaloes,LSU coefficient
+206,946,0,Sudan (former),Buffaloes,LSU coefficient
+207,946,0,Suriname,Buffaloes,LSU coefficient
+208,946,0.7,Tajikistan,Buffaloes,LSU coefficient
+209,946,0,Eswatini,Buffaloes,LSU coefficient
+210,946,0.7,Sweden,Buffaloes,LSU coefficient
+211,946,0.7,Switzerland,Buffaloes,LSU coefficient
+212,946,0.7,Syrian Arab Republic,Buffaloes,LSU coefficient
+213,946,0.7,Turkmenistan,Buffaloes,LSU coefficient
+214,946,0.7,"China, Taiwan Province of",Buffaloes,LSU coefficient
+215,946,0,United Republic of Tanzania,Buffaloes,LSU coefficient
+216,946,0.7,Thailand,Buffaloes,LSU coefficient
+217,946,0,Togo,Buffaloes,LSU coefficient
+218,946,0.6,Tokelau,Buffaloes,LSU coefficient
+219,946,0.6,Tonga,Buffaloes,LSU coefficient
+220,946,0.6,Trinidad and Tobago,Buffaloes,LSU coefficient
+221,946,0.7,Oman,Buffaloes,LSU coefficient
+222,946,0.7,Tunisia,Buffaloes,LSU coefficient
+223,946,0.7,Turkey,Buffaloes,LSU coefficient
+224,946,0.6,Turks and Caicos Islands,Buffaloes,LSU coefficient
+225,946,0.7,United Arab Emirates,Buffaloes,LSU coefficient
+226,946,0,Uganda,Buffaloes,LSU coefficient
+227,946,0.6,Tuvalu,Buffaloes,LSU coefficient
+228,946,0.6,USSR,Buffaloes,LSU coefficient
+229,946,0.7,United Kingdom,Buffaloes,LSU coefficient
+230,946,0.7,Ukraine,Buffaloes,LSU coefficient
+231,946,0,United States of America,Buffaloes,LSU coefficient
+232,946,0.6,US Minor Is.,Buffaloes,LSU coefficient
+233,946,0,Burkina Faso,Buffaloes,LSU coefficient
+234,946,0,Uruguay,Buffaloes,LSU coefficient
+235,946,0.7,Uzbekistan,Buffaloes,LSU coefficient
+236,946,0,Venezuela (Bolivarian Republic of),Buffaloes,LSU coefficient
+237,946,0.7,Viet Nam,Buffaloes,LSU coefficient
+238,946,0,Ethiopia,Buffaloes,LSU coefficient
+239,946,0.6,British Virgin Islands,Buffaloes,LSU coefficient
+240,946,0.6,United States Virgin Islands,Buffaloes,LSU coefficient
+242,946,0.6,Wake Island,Buffaloes,LSU coefficient
+243,946,0.6,Wallis and Futuna Islands,Buffaloes,LSU coefficient
+244,946,0.6,Samoa,Buffaloes,LSU coefficient
+245,946,0.7,NA,Buffaloes,LSU coefficient
+246,946,0.6,Yemen Ar Rp,Buffaloes,LSU coefficient
+247,946,0.6,Yemen Dem,Buffaloes,LSU coefficient
+248,946,0.6,Yugoslav SFR,Buffaloes,LSU coefficient
+249,946,0.7,Yemen,Buffaloes,LSU coefficient
+250,946,0,Democratic Republic of the Congo,Buffaloes,LSU coefficient
+251,946,0,Zambia,Buffaloes,LSU coefficient
+252,946,0.6,Unspecified Area,Buffaloes,LSU coefficient
+255,946,0.7,Belgium,Buffaloes,LSU coefficient
+256,946,0.7,Luxembourg,Buffaloes,LSU coefficient
+258,946,0.6,Anguilla,Buffaloes,LSU coefficient
+259,946,0.6,Channel Islands,Buffaloes,LSU coefficient
+260,946,0.6,Svalbard and Jan Mayen Islands,Buffaloes,LSU coefficient
+264,946,0.6,Isle of Man,Buffaloes,LSU coefficient
+270,946,0.6,Mayotte,Buffaloes,LSU coefficient
+271,946,0.6,South Georgia and the South Sandwich Islands,Buffaloes,LSU coefficient
+272,946,0.7,Serbia,Buffaloes,LSU coefficient
+273,946,0.7,Montenegro,Buffaloes,LSU coefficient
+274,946,0.6,Guernsey,Buffaloes,LSU coefficient
+275,946,0.6,Kosovo,Buffaloes,LSU coefficient
+276,946,0,Sudan,Buffaloes,LSU coefficient
+277,946,0,South Sudan,Buffaloes,LSU coefficient
+278,946,0.6,"Bonaire, Sint Eustatius and Saba",Buffaloes,LSU coefficient
+279,946,0.6,Curaçao,Buffaloes,LSU coefficient
+280,946,0.6,Sint Maarten (Dutch Part),Buffaloes,LSU coefficient
+281,946,0.6,Saint-Martin (French Part),Buffaloes,LSU coefficient
+282,946,0.6,Saint Barthélemy,Buffaloes,LSU coefficient
+283,946,0.6,Jersey,Buffaloes,LSU coefficient
+284,946,0.6,Åland Islands,Buffaloes,LSU coefficient
+285,946,0.6,Sark,Buffaloes,LSU coefficient
+299,946,0.7,Palestine,Buffaloes,LSU coefficient
+1,976,0.1,Armenia,Sheep,LSU coefficient
+2,976,0.1,Afghanistan,Sheep,LSU coefficient
+3,976,0.1,Albania,Sheep,LSU coefficient
+4,976,0.1,Algeria,Sheep,LSU coefficient
+5,976,0.1,American Samoa,Sheep,LSU coefficient
+6,976,0.1,Andorra,Sheep,LSU coefficient
+7,976,0.1,Angola,Sheep,LSU coefficient
+8,976,0.1,Antigua and Barbuda,Sheep,LSU coefficient
+9,976,0.1,Argentina,Sheep,LSU coefficient
+10,976,0.1,Australia,Sheep,LSU coefficient
+11,976,0.1,Austria,Sheep,LSU coefficient
+12,976,0.1,Bahamas,Sheep,LSU coefficient
+13,976,0.1,Bahrain,Sheep,LSU coefficient
+14,976,0.1,Barbados,Sheep,LSU coefficient
+15,976,0.1,Belgium-Luxembourg,Sheep,LSU coefficient
+16,976,0.1,Bangladesh,Sheep,LSU coefficient
+17,976,0.1,Bermuda,Sheep,LSU coefficient
+18,976,0.1,Bhutan,Sheep,LSU coefficient
+19,976,0.1,Bolivia (Plurinational State of),Sheep,LSU coefficient
+20,976,0.1,Botswana,Sheep,LSU coefficient
+21,976,0.1,Brazil,Sheep,LSU coefficient
+22,976,0.1,Aruba,Sheep,LSU coefficient
+23,976,0.1,Belize,Sheep,LSU coefficient
+24,976,0.1,British Indian Ocean Territory,Sheep,LSU coefficient
+25,976,0.1,Solomon Islands,Sheep,LSU coefficient
+26,976,0.1,Brunei Darussalam,Sheep,LSU coefficient
+27,976,0.1,Bulgaria,Sheep,LSU coefficient
+28,976,0.1,Myanmar,Sheep,LSU coefficient
+29,976,0.1,Burundi,Sheep,LSU coefficient
+30,976,0.1,Antarctica,Sheep,LSU coefficient
+31,976,0.1,Bouvet Island,Sheep,LSU coefficient
+32,976,0.1,Cameroon,Sheep,LSU coefficient
+33,976,0.15,Canada,Sheep,LSU coefficient
+34,976,0.1,Canton and Enderbury Islands,Sheep,LSU coefficient
+35,976,0.1,Cabo Verde,Sheep,LSU coefficient
+36,976,0.1,Cayman Islands,Sheep,LSU coefficient
+37,976,0.1,Central African Republic,Sheep,LSU coefficient
+38,976,0.1,Sri Lanka,Sheep,LSU coefficient
+39,976,0.1,Chad,Sheep,LSU coefficient
+40,976,0.1,Chile,Sheep,LSU coefficient
+41,976,0.1,"China, mainland",Sheep,LSU coefficient
+42,976,0.1,Christmas Island,Sheep,LSU coefficient
+43,976,0.1,Cocos (Keeling) Islands,Sheep,LSU coefficient
+44,976,0.1,Colombia,Sheep,LSU coefficient
+45,976,0.1,Comoros,Sheep,LSU coefficient
+46,976,0.1,Congo,Sheep,LSU coefficient
+47,976,0.1,Cook Islands,Sheep,LSU coefficient
+48,976,0.1,Costa Rica,Sheep,LSU coefficient
+49,976,0.1,Cuba,Sheep,LSU coefficient
+50,976,0.1,Cyprus,Sheep,LSU coefficient
+51,976,0.1,Czechoslovakia,Sheep,LSU coefficient
+52,976,0.1,Azerbaijan,Sheep,LSU coefficient
+53,976,0.1,Benin,Sheep,LSU coefficient
+54,976,0.1,Denmark,Sheep,LSU coefficient
+55,976,0.1,Dominica,Sheep,LSU coefficient
+56,976,0.1,Dominican Republic,Sheep,LSU coefficient
+57,976,0.1,Belarus,Sheep,LSU coefficient
+58,976,0.1,Ecuador,Sheep,LSU coefficient
+59,976,0.1,Egypt,Sheep,LSU coefficient
+60,976,0.1,El Salvador,Sheep,LSU coefficient
+61,976,0.1,Equatorial Guinea,Sheep,LSU coefficient
+62,976,0.1,Ethiopia PDR,Sheep,LSU coefficient
+63,976,0.1,Estonia,Sheep,LSU coefficient
+64,976,0.1,Faroe Islands,Sheep,LSU coefficient
+65,976,0.1,Falkland Islands (Malvinas),Sheep,LSU coefficient
+66,976,0.1,Fiji,Sheep,LSU coefficient
+67,976,0.1,Finland,Sheep,LSU coefficient
+68,976,0.1,France,Sheep,LSU coefficient
+69,976,0.1,French Guiana,Sheep,LSU coefficient
+70,976,0.1,French Polynesia,Sheep,LSU coefficient
+71,976,0.1,French Southern and Antarctic Territories,Sheep,LSU coefficient
+72,976,0.1,Djibouti,Sheep,LSU coefficient
+73,976,0.1,Georgia,Sheep,LSU coefficient
+74,976,0.1,Gabon,Sheep,LSU coefficient
+75,976,0.1,Gambia,Sheep,LSU coefficient
+76,976,0.1,NA,Sheep,LSU coefficient
+77,976,0.1,Germany Nl,Sheep,LSU coefficient
+78,976,0.1,Germany Fr,Sheep,LSU coefficient
+79,976,0.1,Germany,Sheep,LSU coefficient
+80,976,0.1,Bosnia and Herzegovina,Sheep,LSU coefficient
+81,976,0.1,Ghana,Sheep,LSU coefficient
+82,976,0.1,Gibraltar,Sheep,LSU coefficient
+83,976,0.1,Kiribati,Sheep,LSU coefficient
+84,976,0.1,Greece,Sheep,LSU coefficient
+85,976,0.1,Greenland,Sheep,LSU coefficient
+86,976,0.1,Grenada,Sheep,LSU coefficient
+87,976,0.1,Guadeloupe,Sheep,LSU coefficient
+88,976,0.1,Guam,Sheep,LSU coefficient
+89,976,0.1,Guatemala,Sheep,LSU coefficient
+90,976,0.1,Guinea,Sheep,LSU coefficient
+91,976,0.1,Guyana,Sheep,LSU coefficient
+92,976,0.1,Heard and McDonald Islands,Sheep,LSU coefficient
+93,976,0.1,Haiti,Sheep,LSU coefficient
+94,976,0.1,Holy See,Sheep,LSU coefficient
+95,976,0.1,Honduras,Sheep,LSU coefficient
+96,976,0.1,"China, Hong Kong SAR",Sheep,LSU coefficient
+97,976,0.1,Hungary,Sheep,LSU coefficient
+98,976,0.1,Croatia,Sheep,LSU coefficient
+99,976,0.1,Iceland,Sheep,LSU coefficient
+100,976,0.1,India,Sheep,LSU coefficient
+101,976,0.1,Indonesia,Sheep,LSU coefficient
+102,976,0.1,Iran (Islamic Republic of),Sheep,LSU coefficient
+103,976,0.1,Iraq,Sheep,LSU coefficient
+104,976,0.1,Ireland,Sheep,LSU coefficient
+105,976,0.1,Israel,Sheep,LSU coefficient
+106,976,0.1,Italy,Sheep,LSU coefficient
+107,976,0.1,Côte d'Ivoire,Sheep,LSU coefficient
+108,976,0.1,Kazakhstan,Sheep,LSU coefficient
+109,976,0.1,Jamaica,Sheep,LSU coefficient
+110,976,0.1,Japan,Sheep,LSU coefficient
+111,976,0.1,Johnston Island,Sheep,LSU coefficient
+112,976,0.1,Jordan,Sheep,LSU coefficient
+113,976,0.1,Kyrgyzstan,Sheep,LSU coefficient
+114,976,0.1,Kenya,Sheep,LSU coefficient
+115,976,0.1,Cambodia,Sheep,LSU coefficient
+116,976,0.1,Democratic People's Republic of Korea,Sheep,LSU coefficient
+117,976,0.1,Republic of Korea,Sheep,LSU coefficient
+118,976,0.1,Kuwait,Sheep,LSU coefficient
+119,976,0.1,Latvia,Sheep,LSU coefficient
+120,976,0.1,Lao People's Democratic Republic,Sheep,LSU coefficient
+121,976,0.1,Lebanon,Sheep,LSU coefficient
+122,976,0.1,Lesotho,Sheep,LSU coefficient
+123,976,0.1,Liberia,Sheep,LSU coefficient
+124,976,0.1,Libya,Sheep,LSU coefficient
+125,976,0.1,Liechtenstein,Sheep,LSU coefficient
+126,976,0.1,Lithuania,Sheep,LSU coefficient
+127,976,0.1,Marshall Islands,Sheep,LSU coefficient
+128,976,0.1,"China, Macao SAR",Sheep,LSU coefficient
+129,976,0.1,Madagascar,Sheep,LSU coefficient
+130,976,0.1,Malawi,Sheep,LSU coefficient
+131,976,0.1,Malaysia,Sheep,LSU coefficient
+132,976,0.1,Maldives,Sheep,LSU coefficient
+133,976,0.1,Mali,Sheep,LSU coefficient
+134,976,0.1,Malta,Sheep,LSU coefficient
+135,976,0.1,Martinique,Sheep,LSU coefficient
+136,976,0.1,Mauritania,Sheep,LSU coefficient
+137,976,0.1,Mauritius,Sheep,LSU coefficient
+138,976,0.1,Mexico,Sheep,LSU coefficient
+139,976,0.1,Midway Island,Sheep,LSU coefficient
+140,976,0.1,Monaco,Sheep,LSU coefficient
+141,976,0.1,Mongolia,Sheep,LSU coefficient
+142,976,0.1,Montserrat,Sheep,LSU coefficient
+143,976,0.1,Morocco,Sheep,LSU coefficient
+144,976,0.1,Mozambique,Sheep,LSU coefficient
+145,976,0.1,Micronesia (Federated States of),Sheep,LSU coefficient
+146,976,0.1,Republic of Moldova,Sheep,LSU coefficient
+147,976,0.1,Namibia,Sheep,LSU coefficient
+148,976,0.1,Nauru,Sheep,LSU coefficient
+149,976,0.1,Nepal,Sheep,LSU coefficient
+150,976,0.1,Netherlands,Sheep,LSU coefficient
+151,976,0.1,Netherlands Antilles (former),Sheep,LSU coefficient
+152,976,0.1,Neutral Zone,Sheep,LSU coefficient
+153,976,0.1,New Caledonia,Sheep,LSU coefficient
+154,976,0.1,North Macedonia,Sheep,LSU coefficient
+155,976,0.1,Vanuatu,Sheep,LSU coefficient
+156,976,0.1,New Zealand,Sheep,LSU coefficient
+157,976,0.1,Nicaragua,Sheep,LSU coefficient
+158,976,0.1,Niger,Sheep,LSU coefficient
+159,976,0.1,Nigeria,Sheep,LSU coefficient
+160,976,0.1,Niue,Sheep,LSU coefficient
+161,976,0.1,Norfolk Island,Sheep,LSU coefficient
+162,976,0.1,Norway,Sheep,LSU coefficient
+163,976,0.1,Northern Mariana Islands,Sheep,LSU coefficient
+164,976,0.1,Pacific Islands Trust Territory,Sheep,LSU coefficient
+165,976,0.1,Pakistan,Sheep,LSU coefficient
+166,976,0.1,Panama,Sheep,LSU coefficient
+167,976,0.1,Czechia,Sheep,LSU coefficient
+168,976,0.1,Papua New Guinea,Sheep,LSU coefficient
+169,976,0.1,Paraguay,Sheep,LSU coefficient
+170,976,0.1,Peru,Sheep,LSU coefficient
+171,976,0.1,Philippines,Sheep,LSU coefficient
+172,976,0.1,Pitcairn Islands,Sheep,LSU coefficient
+173,976,0.1,Poland,Sheep,LSU coefficient
+174,976,0.1,Portugal,Sheep,LSU coefficient
+175,976,0.1,Guinea-Bissau,Sheep,LSU coefficient
+176,976,0.1,Timor-Leste,Sheep,LSU coefficient
+177,976,0.1,Puerto Rico,Sheep,LSU coefficient
+178,976,0.1,Eritrea,Sheep,LSU coefficient
+179,976,0.1,Qatar,Sheep,LSU coefficient
+180,976,0.1,Palau,Sheep,LSU coefficient
+181,976,0.1,Zimbabwe,Sheep,LSU coefficient
+182,976,0.1,Réunion,Sheep,LSU coefficient
+183,976,0.1,Romania,Sheep,LSU coefficient
+184,976,0.1,Rwanda,Sheep,LSU coefficient
+185,976,0.1,Russian Federation,Sheep,LSU coefficient
+186,976,0.1,Serbia and Montenegro,Sheep,LSU coefficient
+187,976,0.1,"Saint Helena, Ascension and Tristan da Cunha",Sheep,LSU coefficient
+188,976,0.1,Saint Kitts and Nevis,Sheep,LSU coefficient
+189,976,0.1,Saint Lucia,Sheep,LSU coefficient
+190,976,0.1,Saint Pierre and Miquelon,Sheep,LSU coefficient
+191,976,0.1,Saint Vincent and the Grenadines,Sheep,LSU coefficient
+192,976,0.1,San Marino,Sheep,LSU coefficient
+193,976,0.1,Sao Tome and Principe,Sheep,LSU coefficient
+194,976,0.1,Saudi Arabia,Sheep,LSU coefficient
+195,976,0.1,Senegal,Sheep,LSU coefficient
+196,976,0.1,Seychelles,Sheep,LSU coefficient
+197,976,0.1,Sierra Leone,Sheep,LSU coefficient
+198,976,0.1,Slovenia,Sheep,LSU coefficient
+199,976,0.1,Slovakia,Sheep,LSU coefficient
+200,976,0.1,Singapore,Sheep,LSU coefficient
+201,976,0.1,Somalia,Sheep,LSU coefficient
+202,976,0.1,South Africa,Sheep,LSU coefficient
+203,976,0.1,Spain,Sheep,LSU coefficient
+205,976,0.1,Western Sahara,Sheep,LSU coefficient
+206,976,0.1,Sudan (former),Sheep,LSU coefficient
+207,976,0.1,Suriname,Sheep,LSU coefficient
+208,976,0.1,Tajikistan,Sheep,LSU coefficient
+209,976,0.1,Eswatini,Sheep,LSU coefficient
+210,976,0.1,Sweden,Sheep,LSU coefficient
+211,976,0.1,Switzerland,Sheep,LSU coefficient
+212,976,0.1,Syrian Arab Republic,Sheep,LSU coefficient
+213,976,0.1,Turkmenistan,Sheep,LSU coefficient
+214,976,0.1,"China, Taiwan Province of",Sheep,LSU coefficient
+215,976,0.1,United Republic of Tanzania,Sheep,LSU coefficient
+216,976,0.1,Thailand,Sheep,LSU coefficient
+217,976,0.1,Togo,Sheep,LSU coefficient
+218,976,0.1,Tokelau,Sheep,LSU coefficient
+219,976,0.1,Tonga,Sheep,LSU coefficient
+220,976,0.1,Trinidad and Tobago,Sheep,LSU coefficient
+221,976,0.1,Oman,Sheep,LSU coefficient
+222,976,0.1,Tunisia,Sheep,LSU coefficient
+223,976,0.1,Turkey,Sheep,LSU coefficient
+224,976,0.1,Turks and Caicos Islands,Sheep,LSU coefficient
+225,976,0.1,United Arab Emirates,Sheep,LSU coefficient
+226,976,0.1,Uganda,Sheep,LSU coefficient
+227,976,0.1,Tuvalu,Sheep,LSU coefficient
+228,976,0.1,USSR,Sheep,LSU coefficient
+229,976,0.1,United Kingdom,Sheep,LSU coefficient
+230,976,0.1,Ukraine,Sheep,LSU coefficient
+231,976,0.15,United States of America,Sheep,LSU coefficient
+232,976,0.1,US Minor Is.,Sheep,LSU coefficient
+233,976,0.1,Burkina Faso,Sheep,LSU coefficient
+234,976,0.1,Uruguay,Sheep,LSU coefficient
+235,976,0.1,Uzbekistan,Sheep,LSU coefficient
+236,976,0.1,Venezuela (Bolivarian Republic of),Sheep,LSU coefficient
+237,976,0.1,Viet Nam,Sheep,LSU coefficient
+238,976,0.1,Ethiopia,Sheep,LSU coefficient
+239,976,0.1,British Virgin Islands,Sheep,LSU coefficient
+240,976,0.1,United States Virgin Islands,Sheep,LSU coefficient
+242,976,0.1,Wake Island,Sheep,LSU coefficient
+243,976,0.1,Wallis and Futuna Islands,Sheep,LSU coefficient
+244,976,0.1,Samoa,Sheep,LSU coefficient
+245,976,0.1,NA,Sheep,LSU coefficient
+246,976,0.1,Yemen Ar Rp,Sheep,LSU coefficient
+247,976,0.1,Yemen Dem,Sheep,LSU coefficient
+248,976,0.1,Yugoslav SFR,Sheep,LSU coefficient
+249,976,0.1,Yemen,Sheep,LSU coefficient
+250,976,0.1,Democratic Republic of the Congo,Sheep,LSU coefficient
+251,976,0.1,Zambia,Sheep,LSU coefficient
+252,976,0.1,Unspecified Area,Sheep,LSU coefficient
+255,976,0.1,Belgium,Sheep,LSU coefficient
+256,976,0.1,Luxembourg,Sheep,LSU coefficient
+258,976,0.1,Anguilla,Sheep,LSU coefficient
+259,976,0.1,Channel Islands,Sheep,LSU coefficient
+260,976,0.1,Svalbard and Jan Mayen Islands,Sheep,LSU coefficient
+264,976,0.1,Isle of Man,Sheep,LSU coefficient
+270,976,0.1,Mayotte,Sheep,LSU coefficient
+271,976,0.1,South Georgia and the South Sandwich Islands,Sheep,LSU coefficient
+272,976,0.1,Serbia,Sheep,LSU coefficient
+273,976,0.1,Montenegro,Sheep,LSU coefficient
+274,976,0.1,Guernsey,Sheep,LSU coefficient
+275,976,0.1,Kosovo,Sheep,LSU coefficient
+276,976,0.1,Sudan,Sheep,LSU coefficient
+277,976,0.1,South Sudan,Sheep,LSU coefficient
+278,976,0.1,"Bonaire, Sint Eustatius and Saba",Sheep,LSU coefficient
+279,976,0.1,Curaçao,Sheep,LSU coefficient
+280,976,0.1,Sint Maarten (Dutch Part),Sheep,LSU coefficient
+281,976,0.1,Saint-Martin (French Part),Sheep,LSU coefficient
+282,976,0.1,Saint Barthélemy,Sheep,LSU coefficient
+283,976,0.1,Jersey,Sheep,LSU coefficient
+284,976,0.1,Åland Islands,Sheep,LSU coefficient
+285,976,0.1,Sark,Sheep,LSU coefficient
+299,976,0.1,Palestine,Sheep,LSU coefficient
+1,1016,0.1,Armenia,Goats,LSU coefficient
+2,1016,0.1,Afghanistan,Goats,LSU coefficient
+3,1016,0.1,Albania,Goats,LSU coefficient
+4,1016,0.1,Algeria,Goats,LSU coefficient
+5,1016,0.1,American Samoa,Goats,LSU coefficient
+6,1016,0.1,Andorra,Goats,LSU coefficient
+7,1016,0.1,Angola,Goats,LSU coefficient
+8,1016,0.1,Antigua and Barbuda,Goats,LSU coefficient
+9,1016,0.1,Argentina,Goats,LSU coefficient
+10,1016,0.1,Australia,Goats,LSU coefficient
+11,1016,0.1,Austria,Goats,LSU coefficient
+12,1016,0.1,Bahamas,Goats,LSU coefficient
+13,1016,0.1,Bahrain,Goats,LSU coefficient
+14,1016,0.1,Barbados,Goats,LSU coefficient
+15,1016,0.1,Belgium-Luxembourg,Goats,LSU coefficient
+16,1016,0.1,Bangladesh,Goats,LSU coefficient
+17,1016,0.1,Bermuda,Goats,LSU coefficient
+18,1016,0.1,Bhutan,Goats,LSU coefficient
+19,1016,0.1,Bolivia (Plurinational State of),Goats,LSU coefficient
+20,1016,0.1,Botswana,Goats,LSU coefficient
+21,1016,0.1,Brazil,Goats,LSU coefficient
+22,1016,0.1,Aruba,Goats,LSU coefficient
+23,1016,0.1,Belize,Goats,LSU coefficient
+24,1016,0.1,British Indian Ocean Territory,Goats,LSU coefficient
+25,1016,0.1,Solomon Islands,Goats,LSU coefficient
+26,1016,0.1,Brunei Darussalam,Goats,LSU coefficient
+27,1016,0.1,Bulgaria,Goats,LSU coefficient
+28,1016,0.1,Myanmar,Goats,LSU coefficient
+29,1016,0.1,Burundi,Goats,LSU coefficient
+30,1016,0.1,Antarctica,Goats,LSU coefficient
+31,1016,0.1,Bouvet Island,Goats,LSU coefficient
+32,1016,0.1,Cameroon,Goats,LSU coefficient
+33,1016,0.1,Canada,Goats,LSU coefficient
+34,1016,0.1,Canton and Enderbury Islands,Goats,LSU coefficient
+35,1016,0.1,Cabo Verde,Goats,LSU coefficient
+36,1016,0.1,Cayman Islands,Goats,LSU coefficient
+37,1016,0.1,Central African Republic,Goats,LSU coefficient
+38,1016,0.1,Sri Lanka,Goats,LSU coefficient
+39,1016,0.1,Chad,Goats,LSU coefficient
+40,1016,0.1,Chile,Goats,LSU coefficient
+41,1016,0.1,"China, mainland",Goats,LSU coefficient
+42,1016,0.1,Christmas Island,Goats,LSU coefficient
+43,1016,0.1,Cocos (Keeling) Islands,Goats,LSU coefficient
+44,1016,0.1,Colombia,Goats,LSU coefficient
+45,1016,0.1,Comoros,Goats,LSU coefficient
+46,1016,0.1,Congo,Goats,LSU coefficient
+47,1016,0.1,Cook Islands,Goats,LSU coefficient
+48,1016,0.1,Costa Rica,Goats,LSU coefficient
+49,1016,0.1,Cuba,Goats,LSU coefficient
+50,1016,0.1,Cyprus,Goats,LSU coefficient
+51,1016,0.1,Czechoslovakia,Goats,LSU coefficient
+52,1016,0.1,Azerbaijan,Goats,LSU coefficient
+53,1016,0.1,Benin,Goats,LSU coefficient
+54,1016,0.1,Denmark,Goats,LSU coefficient
+55,1016,0.1,Dominica,Goats,LSU coefficient
+56,1016,0.1,Dominican Republic,Goats,LSU coefficient
+57,1016,0.1,Belarus,Goats,LSU coefficient
+58,1016,0.1,Ecuador,Goats,LSU coefficient
+59,1016,0.1,Egypt,Goats,LSU coefficient
+60,1016,0.1,El Salvador,Goats,LSU coefficient
+61,1016,0.1,Equatorial Guinea,Goats,LSU coefficient
+62,1016,0.1,Ethiopia PDR,Goats,LSU coefficient
+63,1016,0.1,Estonia,Goats,LSU coefficient
+64,1016,0.1,Faroe Islands,Goats,LSU coefficient
+65,1016,0.1,Falkland Islands (Malvinas),Goats,LSU coefficient
+66,1016,0.1,Fiji,Goats,LSU coefficient
+67,1016,0.1,Finland,Goats,LSU coefficient
+68,1016,0.1,France,Goats,LSU coefficient
+69,1016,0.1,French Guiana,Goats,LSU coefficient
+70,1016,0.1,French Polynesia,Goats,LSU coefficient
+71,1016,0.1,French Southern and Antarctic Territories,Goats,LSU coefficient
+72,1016,0.1,Djibouti,Goats,LSU coefficient
+73,1016,0.1,Georgia,Goats,LSU coefficient
+74,1016,0.1,Gabon,Goats,LSU coefficient
+75,1016,0.1,Gambia,Goats,LSU coefficient
+76,1016,0.1,NA,Goats,LSU coefficient
+77,1016,0.1,Germany Nl,Goats,LSU coefficient
+78,1016,0.1,Germany Fr,Goats,LSU coefficient
+79,1016,0.1,Germany,Goats,LSU coefficient
+80,1016,0.1,Bosnia and Herzegovina,Goats,LSU coefficient
+81,1016,0.1,Ghana,Goats,LSU coefficient
+82,1016,0.1,Gibraltar,Goats,LSU coefficient
+83,1016,0.1,Kiribati,Goats,LSU coefficient
+84,1016,0.1,Greece,Goats,LSU coefficient
+85,1016,0.1,Greenland,Goats,LSU coefficient
+86,1016,0.1,Grenada,Goats,LSU coefficient
+87,1016,0.1,Guadeloupe,Goats,LSU coefficient
+88,1016,0.1,Guam,Goats,LSU coefficient
+89,1016,0.1,Guatemala,Goats,LSU coefficient
+90,1016,0.1,Guinea,Goats,LSU coefficient
+91,1016,0.1,Guyana,Goats,LSU coefficient
+92,1016,0.1,Heard and McDonald Islands,Goats,LSU coefficient
+93,1016,0.1,Haiti,Goats,LSU coefficient
+94,1016,0.1,Holy See,Goats,LSU coefficient
+95,1016,0.1,Honduras,Goats,LSU coefficient
+96,1016,0.1,"China, Hong Kong SAR",Goats,LSU coefficient
+97,1016,0.1,Hungary,Goats,LSU coefficient
+98,1016,0.1,Croatia,Goats,LSU coefficient
+99,1016,0.1,Iceland,Goats,LSU coefficient
+100,1016,0.1,India,Goats,LSU coefficient
+101,1016,0.1,Indonesia,Goats,LSU coefficient
+102,1016,0.1,Iran (Islamic Republic of),Goats,LSU coefficient
+103,1016,0.1,Iraq,Goats,LSU coefficient
+104,1016,0.1,Ireland,Goats,LSU coefficient
+105,1016,0.1,Israel,Goats,LSU coefficient
+106,1016,0.1,Italy,Goats,LSU coefficient
+107,1016,0.1,Côte d'Ivoire,Goats,LSU coefficient
+108,1016,0.1,Kazakhstan,Goats,LSU coefficient
+109,1016,0.1,Jamaica,Goats,LSU coefficient
+110,1016,0.1,Japan,Goats,LSU coefficient
+111,1016,0.1,Johnston Island,Goats,LSU coefficient
+112,1016,0.1,Jordan,Goats,LSU coefficient
+113,1016,0.1,Kyrgyzstan,Goats,LSU coefficient
+114,1016,0.1,Kenya,Goats,LSU coefficient
+115,1016,0.1,Cambodia,Goats,LSU coefficient
+116,1016,0.1,Democratic People's Republic of Korea,Goats,LSU coefficient
+117,1016,0.1,Republic of Korea,Goats,LSU coefficient
+118,1016,0.1,Kuwait,Goats,LSU coefficient
+119,1016,0.1,Latvia,Goats,LSU coefficient
+120,1016,0.1,Lao People's Democratic Republic,Goats,LSU coefficient
+121,1016,0.1,Lebanon,Goats,LSU coefficient
+122,1016,0.1,Lesotho,Goats,LSU coefficient
+123,1016,0.1,Liberia,Goats,LSU coefficient
+124,1016,0.1,Libya,Goats,LSU coefficient
+125,1016,0.1,Liechtenstein,Goats,LSU coefficient
+126,1016,0.1,Lithuania,Goats,LSU coefficient
+127,1016,0.1,Marshall Islands,Goats,LSU coefficient
+128,1016,0.1,"China, Macao SAR",Goats,LSU coefficient
+129,1016,0.1,Madagascar,Goats,LSU coefficient
+130,1016,0.1,Malawi,Goats,LSU coefficient
+131,1016,0.1,Malaysia,Goats,LSU coefficient
+132,1016,0.1,Maldives,Goats,LSU coefficient
+133,1016,0.1,Mali,Goats,LSU coefficient
+134,1016,0.1,Malta,Goats,LSU coefficient
+135,1016,0.1,Martinique,Goats,LSU coefficient
+136,1016,0.1,Mauritania,Goats,LSU coefficient
+137,1016,0.1,Mauritius,Goats,LSU coefficient
+138,1016,0.1,Mexico,Goats,LSU coefficient
+139,1016,0.1,Midway Island,Goats,LSU coefficient
+140,1016,0.1,Monaco,Goats,LSU coefficient
+141,1016,0.1,Mongolia,Goats,LSU coefficient
+142,1016,0.1,Montserrat,Goats,LSU coefficient
+143,1016,0.1,Morocco,Goats,LSU coefficient
+144,1016,0.1,Mozambique,Goats,LSU coefficient
+145,1016,0.1,Micronesia (Federated States of),Goats,LSU coefficient
+146,1016,0.1,Republic of Moldova,Goats,LSU coefficient
+147,1016,0.1,Namibia,Goats,LSU coefficient
+148,1016,0.1,Nauru,Goats,LSU coefficient
+149,1016,0.1,Nepal,Goats,LSU coefficient
+150,1016,0.1,Netherlands,Goats,LSU coefficient
+151,1016,0.1,Netherlands Antilles (former),Goats,LSU coefficient
+152,1016,0.1,Neutral Zone,Goats,LSU coefficient
+153,1016,0.1,New Caledonia,Goats,LSU coefficient
+154,1016,0.1,North Macedonia,Goats,LSU coefficient
+155,1016,0.1,Vanuatu,Goats,LSU coefficient
+156,1016,0.1,New Zealand,Goats,LSU coefficient
+157,1016,0.1,Nicaragua,Goats,LSU coefficient
+158,1016,0.1,Niger,Goats,LSU coefficient
+159,1016,0.1,Nigeria,Goats,LSU coefficient
+160,1016,0.1,Niue,Goats,LSU coefficient
+161,1016,0.1,Norfolk Island,Goats,LSU coefficient
+162,1016,0.1,Norway,Goats,LSU coefficient
+163,1016,0.1,Northern Mariana Islands,Goats,LSU coefficient
+164,1016,0.1,Pacific Islands Trust Territory,Goats,LSU coefficient
+165,1016,0.1,Pakistan,Goats,LSU coefficient
+166,1016,0.1,Panama,Goats,LSU coefficient
+167,1016,0.1,Czechia,Goats,LSU coefficient
+168,1016,0.1,Papua New Guinea,Goats,LSU coefficient
+169,1016,0.1,Paraguay,Goats,LSU coefficient
+170,1016,0.1,Peru,Goats,LSU coefficient
+171,1016,0.1,Philippines,Goats,LSU coefficient
+172,1016,0.1,Pitcairn Islands,Goats,LSU coefficient
+173,1016,0.1,Poland,Goats,LSU coefficient
+174,1016,0.1,Portugal,Goats,LSU coefficient
+175,1016,0.1,Guinea-Bissau,Goats,LSU coefficient
+176,1016,0.1,Timor-Leste,Goats,LSU coefficient
+177,1016,0.1,Puerto Rico,Goats,LSU coefficient
+178,1016,0.1,Eritrea,Goats,LSU coefficient
+179,1016,0.1,Qatar,Goats,LSU coefficient
+180,1016,0.1,Palau,Goats,LSU coefficient
+181,1016,0.1,Zimbabwe,Goats,LSU coefficient
+182,1016,0.1,Réunion,Goats,LSU coefficient
+183,1016,0.1,Romania,Goats,LSU coefficient
+184,1016,0.1,Rwanda,Goats,LSU coefficient
+185,1016,0.1,Russian Federation,Goats,LSU coefficient
+186,1016,0.1,Serbia and Montenegro,Goats,LSU coefficient
+187,1016,0.1,"Saint Helena, Ascension and Tristan da Cunha",Goats,LSU coefficient
+188,1016,0.1,Saint Kitts and Nevis,Goats,LSU coefficient
+189,1016,0.1,Saint Lucia,Goats,LSU coefficient
+190,1016,0.1,Saint Pierre and Miquelon,Goats,LSU coefficient
+191,1016,0.1,Saint Vincent and the Grenadines,Goats,LSU coefficient
+192,1016,0.1,San Marino,Goats,LSU coefficient
+193,1016,0.1,Sao Tome and Principe,Goats,LSU coefficient
+194,1016,0.1,Saudi Arabia,Goats,LSU coefficient
+195,1016,0.1,Senegal,Goats,LSU coefficient
+196,1016,0.1,Seychelles,Goats,LSU coefficient
+197,1016,0.1,Sierra Leone,Goats,LSU coefficient
+198,1016,0.1,Slovenia,Goats,LSU coefficient
+199,1016,0.1,Slovakia,Goats,LSU coefficient
+200,1016,0.1,Singapore,Goats,LSU coefficient
+201,1016,0.1,Somalia,Goats,LSU coefficient
+202,1016,0.1,South Africa,Goats,LSU coefficient
+203,1016,0.1,Spain,Goats,LSU coefficient
+205,1016,0.1,Western Sahara,Goats,LSU coefficient
+206,1016,0.1,Sudan (former),Goats,LSU coefficient
+207,1016,0.1,Suriname,Goats,LSU coefficient
+208,1016,0.1,Tajikistan,Goats,LSU coefficient
+209,1016,0.1,Eswatini,Goats,LSU coefficient
+210,1016,0.1,Sweden,Goats,LSU coefficient
+211,1016,0.1,Switzerland,Goats,LSU coefficient
+212,1016,0.1,Syrian Arab Republic,Goats,LSU coefficient
+213,1016,0.1,Turkmenistan,Goats,LSU coefficient
+214,1016,0.1,"China, Taiwan Province of",Goats,LSU coefficient
+215,1016,0.1,United Republic of Tanzania,Goats,LSU coefficient
+216,1016,0.1,Thailand,Goats,LSU coefficient
+217,1016,0.1,Togo,Goats,LSU coefficient
+218,1016,0.1,Tokelau,Goats,LSU coefficient
+219,1016,0.1,Tonga,Goats,LSU coefficient
+220,1016,0.1,Trinidad and Tobago,Goats,LSU coefficient
+221,1016,0.1,Oman,Goats,LSU coefficient
+222,1016,0.1,Tunisia,Goats,LSU coefficient
+223,1016,0.1,Turkey,Goats,LSU coefficient
+224,1016,0.1,Turks and Caicos Islands,Goats,LSU coefficient
+225,1016,0.1,United Arab Emirates,Goats,LSU coefficient
+226,1016,0.1,Uganda,Goats,LSU coefficient
+227,1016,0.1,Tuvalu,Goats,LSU coefficient
+228,1016,0.1,USSR,Goats,LSU coefficient
+229,1016,0.1,United Kingdom,Goats,LSU coefficient
+230,1016,0.1,Ukraine,Goats,LSU coefficient
+231,1016,0.1,United States of America,Goats,LSU coefficient
+232,1016,0.1,US Minor Is.,Goats,LSU coefficient
+233,1016,0.1,Burkina Faso,Goats,LSU coefficient
+234,1016,0.1,Uruguay,Goats,LSU coefficient
+235,1016,0.1,Uzbekistan,Goats,LSU coefficient
+236,1016,0.1,Venezuela (Bolivarian Republic of),Goats,LSU coefficient
+237,1016,0.1,Viet Nam,Goats,LSU coefficient
+238,1016,0.1,Ethiopia,Goats,LSU coefficient
+239,1016,0.1,British Virgin Islands,Goats,LSU coefficient
+240,1016,0.1,United States Virgin Islands,Goats,LSU coefficient
+242,1016,0.1,Wake Island,Goats,LSU coefficient
+243,1016,0.1,Wallis and Futuna Islands,Goats,LSU coefficient
+244,1016,0.1,Samoa,Goats,LSU coefficient
+245,1016,0.1,NA,Goats,LSU coefficient
+246,1016,0.1,Yemen Ar Rp,Goats,LSU coefficient
+247,1016,0.1,Yemen Dem,Goats,LSU coefficient
+248,1016,0.1,Yugoslav SFR,Goats,LSU coefficient
+249,1016,0.1,Yemen,Goats,LSU coefficient
+250,1016,0.1,Democratic Republic of the Congo,Goats,LSU coefficient
+251,1016,0.1,Zambia,Goats,LSU coefficient
+252,1016,0.1,Unspecified Area,Goats,LSU coefficient
+255,1016,0.1,Belgium,Goats,LSU coefficient
+256,1016,0.1,Luxembourg,Goats,LSU coefficient
+258,1016,0.1,Anguilla,Goats,LSU coefficient
+259,1016,0.1,Channel Islands,Goats,LSU coefficient
+260,1016,0.1,Svalbard and Jan Mayen Islands,Goats,LSU coefficient
+264,1016,0.1,Isle of Man,Goats,LSU coefficient
+270,1016,0.1,Mayotte,Goats,LSU coefficient
+271,1016,0.1,South Georgia and the South Sandwich Islands,Goats,LSU coefficient
+272,1016,0.1,Serbia,Goats,LSU coefficient
+273,1016,0.1,Montenegro,Goats,LSU coefficient
+274,1016,0.1,Guernsey,Goats,LSU coefficient
+275,1016,0.1,Kosovo,Goats,LSU coefficient
+276,1016,0.1,Sudan,Goats,LSU coefficient
+277,1016,0.1,South Sudan,Goats,LSU coefficient
+278,1016,0.1,"Bonaire, Sint Eustatius and Saba",Goats,LSU coefficient
+279,1016,0.1,Curaçao,Goats,LSU coefficient
+280,1016,0.1,Sint Maarten (Dutch Part),Goats,LSU coefficient
+281,1016,0.1,Saint-Martin (French Part),Goats,LSU coefficient
+282,1016,0.1,Saint Barthélemy,Goats,LSU coefficient
+283,1016,0.1,Jersey,Goats,LSU coefficient
+284,1016,0.1,Åland Islands,Goats,LSU coefficient
+285,1016,0.1,Sark,Goats,LSU coefficient
+299,1016,0.1,Palestine,Goats,LSU coefficient
+1,1034,0.25,Armenia,Pigs,LSU coefficient
+2,1034,0.2,Afghanistan,Pigs,LSU coefficient
+3,1034,0.25,Albania,Pigs,LSU coefficient
+4,1034,0.2,Algeria,Pigs,LSU coefficient
+5,1034,0.2,American Samoa,Pigs,LSU coefficient
+6,1034,0.2,Andorra,Pigs,LSU coefficient
+7,1034,0.2,Angola,Pigs,LSU coefficient
+8,1034,0.2,Antigua and Barbuda,Pigs,LSU coefficient
+9,1034,0.25,Argentina,Pigs,LSU coefficient
+10,1034,0.25,Australia,Pigs,LSU coefficient
+11,1034,0.25,Austria,Pigs,LSU coefficient
+12,1034,0.2,Bahamas,Pigs,LSU coefficient
+13,1034,0.2,Bahrain,Pigs,LSU coefficient
+14,1034,0.2,Barbados,Pigs,LSU coefficient
+15,1034,0.25,Belgium-Luxembourg,Pigs,LSU coefficient
+16,1034,0.2,Bangladesh,Pigs,LSU coefficient
+17,1034,0.2,Bermuda,Pigs,LSU coefficient
+18,1034,0.2,Bhutan,Pigs,LSU coefficient
+19,1034,0.25,Bolivia (Plurinational State of),Pigs,LSU coefficient
+20,1034,0.2,Botswana,Pigs,LSU coefficient
+21,1034,0.25,Brazil,Pigs,LSU coefficient
+22,1034,0.2,Aruba,Pigs,LSU coefficient
+23,1034,0.25,Belize,Pigs,LSU coefficient
+24,1034,0.2,British Indian Ocean Territory,Pigs,LSU coefficient
+25,1034,0.2,Solomon Islands,Pigs,LSU coefficient
+26,1034,0.25,Brunei Darussalam,Pigs,LSU coefficient
+27,1034,0.25,Bulgaria,Pigs,LSU coefficient
+28,1034,0.25,Myanmar,Pigs,LSU coefficient
+29,1034,0.2,Burundi,Pigs,LSU coefficient
+30,1034,0.2,Antarctica,Pigs,LSU coefficient
+31,1034,0.25,Bouvet Island,Pigs,LSU coefficient
+32,1034,0.2,Cameroon,Pigs,LSU coefficient
+33,1034,0.25,Canada,Pigs,LSU coefficient
+34,1034,0.2,Canton and Enderbury Islands,Pigs,LSU coefficient
+35,1034,0.2,Cabo Verde,Pigs,LSU coefficient
+36,1034,0.2,Cayman Islands,Pigs,LSU coefficient
+37,1034,0.2,Central African Republic,Pigs,LSU coefficient
+38,1034,0.2,Sri Lanka,Pigs,LSU coefficient
+39,1034,0.2,Chad,Pigs,LSU coefficient
+40,1034,0.25,Chile,Pigs,LSU coefficient
+41,1034,0.25,"China, mainland",Pigs,LSU coefficient
+42,1034,0.2,Christmas Island,Pigs,LSU coefficient
+43,1034,0.2,Cocos (Keeling) Islands,Pigs,LSU coefficient
+44,1034,0.25,Colombia,Pigs,LSU coefficient
+45,1034,0.2,Comoros,Pigs,LSU coefficient
+46,1034,0.2,Congo,Pigs,LSU coefficient
+47,1034,0.2,Cook Islands,Pigs,LSU coefficient
+48,1034,0.25,Costa Rica,Pigs,LSU coefficient
+49,1034,0.2,Cuba,Pigs,LSU coefficient
+50,1034,0.2,Cyprus,Pigs,LSU coefficient
+51,1034,0.2,Czechoslovakia,Pigs,LSU coefficient
+52,1034,0.25,Azerbaijan,Pigs,LSU coefficient
+53,1034,0.2,Benin,Pigs,LSU coefficient
+54,1034,0.25,Denmark,Pigs,LSU coefficient
+55,1034,0.2,Dominica,Pigs,LSU coefficient
+56,1034,0.2,Dominican Republic,Pigs,LSU coefficient
+57,1034,0.25,Belarus,Pigs,LSU coefficient
+58,1034,0.25,Ecuador,Pigs,LSU coefficient
+59,1034,0.2,Egypt,Pigs,LSU coefficient
+60,1034,0.25,El Salvador,Pigs,LSU coefficient
+61,1034,0.2,Equatorial Guinea,Pigs,LSU coefficient
+62,1034,0.2,Ethiopia PDR,Pigs,LSU coefficient
+63,1034,0.25,Estonia,Pigs,LSU coefficient
+64,1034,0.2,Faroe Islands,Pigs,LSU coefficient
+65,1034,0.25,Falkland Islands (Malvinas),Pigs,LSU coefficient
+66,1034,0.2,Fiji,Pigs,LSU coefficient
+67,1034,0.25,Finland,Pigs,LSU coefficient
+68,1034,0.25,France,Pigs,LSU coefficient
+69,1034,0.25,French Guiana,Pigs,LSU coefficient
+70,1034,0.2,French Polynesia,Pigs,LSU coefficient
+71,1034,0.2,French Southern and Antarctic Territories,Pigs,LSU coefficient
+72,1034,0.2,Djibouti,Pigs,LSU coefficient
+73,1034,0.25,Georgia,Pigs,LSU coefficient
+74,1034,0.2,Gabon,Pigs,LSU coefficient
+75,1034,0.2,Gambia,Pigs,LSU coefficient
+76,1034,0.2,NA,Pigs,LSU coefficient
+77,1034,0.2,Germany Nl,Pigs,LSU coefficient
+78,1034,0.2,Germany Fr,Pigs,LSU coefficient
+79,1034,0.25,Germany,Pigs,LSU coefficient
+80,1034,0.25,Bosnia and Herzegovina,Pigs,LSU coefficient
+81,1034,0.2,Ghana,Pigs,LSU coefficient
+82,1034,0.2,Gibraltar,Pigs,LSU coefficient
+83,1034,0.2,Kiribati,Pigs,LSU coefficient
+84,1034,0.25,Greece,Pigs,LSU coefficient
+85,1034,0.2,Greenland,Pigs,LSU coefficient
+86,1034,0.2,Grenada,Pigs,LSU coefficient
+87,1034,0.2,Guadeloupe,Pigs,LSU coefficient
+88,1034,0.2,Guam,Pigs,LSU coefficient
+89,1034,0.25,Guatemala,Pigs,LSU coefficient
+90,1034,0.2,Guinea,Pigs,LSU coefficient
+91,1034,0.25,Guyana,Pigs,LSU coefficient
+92,1034,0.2,Heard and McDonald Islands,Pigs,LSU coefficient
+93,1034,0.2,Haiti,Pigs,LSU coefficient
+94,1034,0.2,Holy See,Pigs,LSU coefficient
+95,1034,0.25,Honduras,Pigs,LSU coefficient
+96,1034,0.25,"China, Hong Kong SAR",Pigs,LSU coefficient
+97,1034,0.25,Hungary,Pigs,LSU coefficient
+98,1034,0.25,Croatia,Pigs,LSU coefficient
+99,1034,0.25,Iceland,Pigs,LSU coefficient
+100,1034,0.2,India,Pigs,LSU coefficient
+101,1034,0.25,Indonesia,Pigs,LSU coefficient
+102,1034,0.2,Iran (Islamic Republic of),Pigs,LSU coefficient
+103,1034,0.2,Iraq,Pigs,LSU coefficient
+104,1034,0.25,Ireland,Pigs,LSU coefficient
+105,1034,0.2,Israel,Pigs,LSU coefficient
+106,1034,0.25,Italy,Pigs,LSU coefficient
+107,1034,0.2,Côte d'Ivoire,Pigs,LSU coefficient
+108,1034,0.25,Kazakhstan,Pigs,LSU coefficient
+109,1034,0.2,Jamaica,Pigs,LSU coefficient
+110,1034,0.25,Japan,Pigs,LSU coefficient
+111,1034,0.2,Johnston Island,Pigs,LSU coefficient
+112,1034,0.2,Jordan,Pigs,LSU coefficient
+113,1034,0.25,Kyrgyzstan,Pigs,LSU coefficient
+114,1034,0.2,Kenya,Pigs,LSU coefficient
+115,1034,0.25,Cambodia,Pigs,LSU coefficient
+116,1034,0.25,Democratic People's Republic of Korea,Pigs,LSU coefficient
+117,1034,0.25,Republic of Korea,Pigs,LSU coefficient
+118,1034,0.2,Kuwait,Pigs,LSU coefficient
+119,1034,0.25,Latvia,Pigs,LSU coefficient
+120,1034,0.25,Lao People's Democratic Republic,Pigs,LSU coefficient
+121,1034,0.2,Lebanon,Pigs,LSU coefficient
+122,1034,0.2,Lesotho,Pigs,LSU coefficient
+123,1034,0.2,Liberia,Pigs,LSU coefficient
+124,1034,0.2,Libya,Pigs,LSU coefficient
+125,1034,0.2,Liechtenstein,Pigs,LSU coefficient
+126,1034,0.25,Lithuania,Pigs,LSU coefficient
+127,1034,0.2,Marshall Islands,Pigs,LSU coefficient
+128,1034,0.25,"China, Macao SAR",Pigs,LSU coefficient
+129,1034,0.2,Madagascar,Pigs,LSU coefficient
+130,1034,0.2,Malawi,Pigs,LSU coefficient
+131,1034,0.25,Malaysia,Pigs,LSU coefficient
+132,1034,0.2,Maldives,Pigs,LSU coefficient
+133,1034,0.2,Mali,Pigs,LSU coefficient
+134,1034,0.2,Malta,Pigs,LSU coefficient
+135,1034,0.2,Martinique,Pigs,LSU coefficient
+136,1034,0.2,Mauritania,Pigs,LSU coefficient
+137,1034,0.2,Mauritius,Pigs,LSU coefficient
+138,1034,0.25,Mexico,Pigs,LSU coefficient
+139,1034,0.2,Midway Island,Pigs,LSU coefficient
+140,1034,0.2,Monaco,Pigs,LSU coefficient
+141,1034,0.25,Mongolia,Pigs,LSU coefficient
+142,1034,0.2,Montserrat,Pigs,LSU coefficient
+143,1034,0.2,Morocco,Pigs,LSU coefficient
+144,1034,0.2,Mozambique,Pigs,LSU coefficient
+145,1034,0.2,Micronesia (Federated States of),Pigs,LSU coefficient
+146,1034,0.25,Republic of Moldova,Pigs,LSU coefficient
+147,1034,0.2,Namibia,Pigs,LSU coefficient
+148,1034,0.2,Nauru,Pigs,LSU coefficient
+149,1034,0.2,Nepal,Pigs,LSU coefficient
+150,1034,0.25,Netherlands,Pigs,LSU coefficient
+151,1034,0.2,Netherlands Antilles (former),Pigs,LSU coefficient
+152,1034,0.2,Neutral Zone,Pigs,LSU coefficient
+153,1034,0.2,New Caledonia,Pigs,LSU coefficient
+154,1034,0.25,North Macedonia,Pigs,LSU coefficient
+155,1034,0.2,Vanuatu,Pigs,LSU coefficient
+156,1034,0.25,New Zealand,Pigs,LSU coefficient
+157,1034,0.25,Nicaragua,Pigs,LSU coefficient
+158,1034,0.2,Niger,Pigs,LSU coefficient
+159,1034,0.2,Nigeria,Pigs,LSU coefficient
+160,1034,0.2,Niue,Pigs,LSU coefficient
+161,1034,0.2,Norfolk Island,Pigs,LSU coefficient
+162,1034,0.25,Norway,Pigs,LSU coefficient
+163,1034,0.2,Northern Mariana Islands,Pigs,LSU coefficient
+164,1034,0.2,Pacific Islands Trust Territory,Pigs,LSU coefficient
+165,1034,0.2,Pakistan,Pigs,LSU coefficient
+166,1034,0.25,Panama,Pigs,LSU coefficient
+167,1034,0.25,Czechia,Pigs,LSU coefficient
+168,1034,0.2,Papua New Guinea,Pigs,LSU coefficient
+169,1034,0.25,Paraguay,Pigs,LSU coefficient
+170,1034,0.25,Peru,Pigs,LSU coefficient
+171,1034,0.25,Philippines,Pigs,LSU coefficient
+172,1034,0.2,Pitcairn Islands,Pigs,LSU coefficient
+173,1034,0.25,Poland,Pigs,LSU coefficient
+174,1034,0.25,Portugal,Pigs,LSU coefficient
+175,1034,0.2,Guinea-Bissau,Pigs,LSU coefficient
+176,1034,0.25,Timor-Leste,Pigs,LSU coefficient
+177,1034,0.2,Puerto Rico,Pigs,LSU coefficient
+178,1034,0.2,Eritrea,Pigs,LSU coefficient
+179,1034,0.2,Qatar,Pigs,LSU coefficient
+180,1034,0.2,Palau,Pigs,LSU coefficient
+181,1034,0.2,Zimbabwe,Pigs,LSU coefficient
+182,1034,0.2,Réunion,Pigs,LSU coefficient
+183,1034,0.25,Romania,Pigs,LSU coefficient
+184,1034,0.2,Rwanda,Pigs,LSU coefficient
+185,1034,0.25,Russian Federation,Pigs,LSU coefficient
+186,1034,0.25,Serbia and Montenegro,Pigs,LSU coefficient
+187,1034,0.2,"Saint Helena, Ascension and Tristan da Cunha",Pigs,LSU coefficient
+188,1034,0.2,Saint Kitts and Nevis,Pigs,LSU coefficient
+189,1034,0.2,Saint Lucia,Pigs,LSU coefficient
+190,1034,0.2,Saint Pierre and Miquelon,Pigs,LSU coefficient
+191,1034,0.2,Saint Vincent and the Grenadines,Pigs,LSU coefficient
+192,1034,0.2,San Marino,Pigs,LSU coefficient
+193,1034,0.2,Sao Tome and Principe,Pigs,LSU coefficient
+194,1034,0.2,Saudi Arabia,Pigs,LSU coefficient
+195,1034,0.2,Senegal,Pigs,LSU coefficient
+196,1034,0.2,Seychelles,Pigs,LSU coefficient
+197,1034,0.2,Sierra Leone,Pigs,LSU coefficient
+198,1034,0.25,Slovenia,Pigs,LSU coefficient
+199,1034,0.25,Slovakia,Pigs,LSU coefficient
+200,1034,0.25,Singapore,Pigs,LSU coefficient
+201,1034,0.2,Somalia,Pigs,LSU coefficient
+202,1034,0.2,South Africa,Pigs,LSU coefficient
+203,1034,0.25,Spain,Pigs,LSU coefficient
+205,1034,0.2,Western Sahara,Pigs,LSU coefficient
+206,1034,0.2,Sudan (former),Pigs,LSU coefficient
+207,1034,0.25,Suriname,Pigs,LSU coefficient
+208,1034,0.25,Tajikistan,Pigs,LSU coefficient
+209,1034,0.2,Eswatini,Pigs,LSU coefficient
+210,1034,0.25,Sweden,Pigs,LSU coefficient
+211,1034,0.25,Switzerland,Pigs,LSU coefficient
+212,1034,0.2,Syrian Arab Republic,Pigs,LSU coefficient
+213,1034,0.25,Turkmenistan,Pigs,LSU coefficient
+214,1034,0.25,"China, Taiwan Province of",Pigs,LSU coefficient
+215,1034,0.2,United Republic of Tanzania,Pigs,LSU coefficient
+216,1034,0.25,Thailand,Pigs,LSU coefficient
+217,1034,0.2,Togo,Pigs,LSU coefficient
+218,1034,0.2,Tokelau,Pigs,LSU coefficient
+219,1034,0.2,Tonga,Pigs,LSU coefficient
+220,1034,0.2,Trinidad and Tobago,Pigs,LSU coefficient
+221,1034,0.2,Oman,Pigs,LSU coefficient
+222,1034,0.2,Tunisia,Pigs,LSU coefficient
+223,1034,0.2,Turkey,Pigs,LSU coefficient
+224,1034,0.2,Turks and Caicos Islands,Pigs,LSU coefficient
+225,1034,0.2,United Arab Emirates,Pigs,LSU coefficient
+226,1034,0.2,Uganda,Pigs,LSU coefficient
+227,1034,0.2,Tuvalu,Pigs,LSU coefficient
+228,1034,0.2,USSR,Pigs,LSU coefficient
+229,1034,0.25,United Kingdom,Pigs,LSU coefficient
+230,1034,0.25,Ukraine,Pigs,LSU coefficient
+231,1034,0.25,United States of America,Pigs,LSU coefficient
+232,1034,0.2,US Minor Is.,Pigs,LSU coefficient
+233,1034,0.2,Burkina Faso,Pigs,LSU coefficient
+234,1034,0.25,Uruguay,Pigs,LSU coefficient
+235,1034,0.25,Uzbekistan,Pigs,LSU coefficient
+236,1034,0.25,Venezuela (Bolivarian Republic of),Pigs,LSU coefficient
+237,1034,0.25,Viet Nam,Pigs,LSU coefficient
+238,1034,0.2,Ethiopia,Pigs,LSU coefficient
+239,1034,0.2,British Virgin Islands,Pigs,LSU coefficient
+240,1034,0.2,United States Virgin Islands,Pigs,LSU coefficient
+242,1034,0.2,Wake Island,Pigs,LSU coefficient
+243,1034,0.2,Wallis and Futuna Islands,Pigs,LSU coefficient
+244,1034,0.2,Samoa,Pigs,LSU coefficient
+245,1034,0.2,NA,Pigs,LSU coefficient
+246,1034,0.2,Yemen Ar Rp,Pigs,LSU coefficient
+247,1034,0.2,Yemen Dem,Pigs,LSU coefficient
+248,1034,0.2,Yugoslav SFR,Pigs,LSU coefficient
+249,1034,0.2,Yemen,Pigs,LSU coefficient
+250,1034,0.2,Democratic Republic of the Congo,Pigs,LSU coefficient
+251,1034,0.2,Zambia,Pigs,LSU coefficient
+252,1034,0.2,Unspecified Area,Pigs,LSU coefficient
+255,1034,0.25,Belgium,Pigs,LSU coefficient
+256,1034,0.25,Luxembourg,Pigs,LSU coefficient
+258,1034,0.2,Anguilla,Pigs,LSU coefficient
+259,1034,0.2,Channel Islands,Pigs,LSU coefficient
+260,1034,0.2,Svalbard and Jan Mayen Islands,Pigs,LSU coefficient
+264,1034,0.2,Isle of Man,Pigs,LSU coefficient
+270,1034,0.2,Mayotte,Pigs,LSU coefficient
+271,1034,0.2,South Georgia and the South Sandwich Islands,Pigs,LSU coefficient
+272,1034,0.25,Serbia,Pigs,LSU coefficient
+273,1034,0.25,Montenegro,Pigs,LSU coefficient
+274,1034,0.2,Guernsey,Pigs,LSU coefficient
+275,1034,0.2,Kosovo,Pigs,LSU coefficient
+276,1034,0.2,Sudan,Pigs,LSU coefficient
+277,1034,0.2,South Sudan,Pigs,LSU coefficient
+278,1034,0.2,"Bonaire, Sint Eustatius and Saba",Pigs,LSU coefficient
+279,1034,0.2,Curaçao,Pigs,LSU coefficient
+280,1034,0.2,Sint Maarten (Dutch Part),Pigs,LSU coefficient
+281,1034,0.2,Saint-Martin (French Part),Pigs,LSU coefficient
+282,1034,0.2,Saint Barthélemy,Pigs,LSU coefficient
+283,1034,0.2,Jersey,Pigs,LSU coefficient
+284,1034,0.2,Åland Islands,Pigs,LSU coefficient
+285,1034,0.2,Sark,Pigs,LSU coefficient
+299,1034,0.2,Palestine,Pigs,LSU coefficient
+1,1107,0.5,Armenia,Asses,LSU coefficient
+2,1107,0.5,Afghanistan,Asses,LSU coefficient
+3,1107,0.5,Albania,Asses,LSU coefficient
+4,1107,0.5,Algeria,Asses,LSU coefficient
+5,1107,0.5,American Samoa,Asses,LSU coefficient
+6,1107,0.5,Andorra,Asses,LSU coefficient
+7,1107,0.3,Angola,Asses,LSU coefficient
+8,1107,0.5,Antigua and Barbuda,Asses,LSU coefficient
+9,1107,0.5,Argentina,Asses,LSU coefficient
+10,1107,0.5,Australia,Asses,LSU coefficient
+11,1107,0.5,Austria,Asses,LSU coefficient
+12,1107,0.5,Bahamas,Asses,LSU coefficient
+13,1107,0.5,Bahrain,Asses,LSU coefficient
+14,1107,0.5,Barbados,Asses,LSU coefficient
+15,1107,0.5,Belgium-Luxembourg,Asses,LSU coefficient
+16,1107,0.5,Bangladesh,Asses,LSU coefficient
+17,1107,0.5,Bermuda,Asses,LSU coefficient
+18,1107,0.5,Bhutan,Asses,LSU coefficient
+19,1107,0.5,Bolivia (Plurinational State of),Asses,LSU coefficient
+20,1107,0.3,Botswana,Asses,LSU coefficient
+21,1107,0.5,Brazil,Asses,LSU coefficient
+22,1107,0.5,Aruba,Asses,LSU coefficient
+23,1107,0.5,Belize,Asses,LSU coefficient
+24,1107,0.3,British Indian Ocean Territory,Asses,LSU coefficient
+25,1107,0.5,Solomon Islands,Asses,LSU coefficient
+26,1107,0.5,Brunei Darussalam,Asses,LSU coefficient
+27,1107,0.5,Bulgaria,Asses,LSU coefficient
+28,1107,0.5,Myanmar,Asses,LSU coefficient
+29,1107,0.3,Burundi,Asses,LSU coefficient
+30,1107,0.5,Antarctica,Asses,LSU coefficient
+31,1107,0.5,Bouvet Island,Asses,LSU coefficient
+32,1107,0.3,Cameroon,Asses,LSU coefficient
+33,1107,0.5,Canada,Asses,LSU coefficient
+34,1107,0.5,Canton and Enderbury Islands,Asses,LSU coefficient
+35,1107,0.3,Cabo Verde,Asses,LSU coefficient
+36,1107,0.5,Cayman Islands,Asses,LSU coefficient
+37,1107,0.3,Central African Republic,Asses,LSU coefficient
+38,1107,0.5,Sri Lanka,Asses,LSU coefficient
+39,1107,0.3,Chad,Asses,LSU coefficient
+40,1107,0.5,Chile,Asses,LSU coefficient
+41,1107,0.5,"China, mainland",Asses,LSU coefficient
+42,1107,0.5,Christmas Island,Asses,LSU coefficient
+43,1107,0.5,Cocos (Keeling) Islands,Asses,LSU coefficient
+44,1107,0.5,Colombia,Asses,LSU coefficient
+45,1107,0.3,Comoros,Asses,LSU coefficient
+46,1107,0.3,Congo,Asses,LSU coefficient
+47,1107,0.5,Cook Islands,Asses,LSU coefficient
+48,1107,0.5,Costa Rica,Asses,LSU coefficient
+49,1107,0.5,Cuba,Asses,LSU coefficient
+50,1107,0.5,Cyprus,Asses,LSU coefficient
+51,1107,0.5,Czechoslovakia,Asses,LSU coefficient
+52,1107,0.5,Azerbaijan,Asses,LSU coefficient
+53,1107,0.3,Benin,Asses,LSU coefficient
+54,1107,0.5,Denmark,Asses,LSU coefficient
+55,1107,0.5,Dominica,Asses,LSU coefficient
+56,1107,0.5,Dominican Republic,Asses,LSU coefficient
+57,1107,0.5,Belarus,Asses,LSU coefficient
+58,1107,0.5,Ecuador,Asses,LSU coefficient
+59,1107,0.5,Egypt,Asses,LSU coefficient
+60,1107,0.5,El Salvador,Asses,LSU coefficient
+61,1107,0.3,Equatorial Guinea,Asses,LSU coefficient
+62,1107,0.5,Ethiopia PDR,Asses,LSU coefficient
+63,1107,0.5,Estonia,Asses,LSU coefficient
+64,1107,0.5,Faroe Islands,Asses,LSU coefficient
+65,1107,0.5,Falkland Islands (Malvinas),Asses,LSU coefficient
+66,1107,0.5,Fiji,Asses,LSU coefficient
+67,1107,0.5,Finland,Asses,LSU coefficient
+68,1107,0.5,France,Asses,LSU coefficient
+69,1107,0.5,French Guiana,Asses,LSU coefficient
+70,1107,0.5,French Polynesia,Asses,LSU coefficient
+71,1107,0.5,French Southern and Antarctic Territories,Asses,LSU coefficient
+72,1107,0.3,Djibouti,Asses,LSU coefficient
+73,1107,0.5,Georgia,Asses,LSU coefficient
+74,1107,0.3,Gabon,Asses,LSU coefficient
+75,1107,0.3,Gambia,Asses,LSU coefficient
+76,1107,0.5,NA,Asses,LSU coefficient
+77,1107,0.5,Germany Nl,Asses,LSU coefficient
+78,1107,0.5,Germany Fr,Asses,LSU coefficient
+79,1107,0.5,Germany,Asses,LSU coefficient
+80,1107,0.5,Bosnia and Herzegovina,Asses,LSU coefficient
+81,1107,0.3,Ghana,Asses,LSU coefficient
+82,1107,0.5,Gibraltar,Asses,LSU coefficient
+83,1107,0.5,Kiribati,Asses,LSU coefficient
+84,1107,0.5,Greece,Asses,LSU coefficient
+85,1107,0.5,Greenland,Asses,LSU coefficient
+86,1107,0.5,Grenada,Asses,LSU coefficient
+87,1107,0.5,Guadeloupe,Asses,LSU coefficient
+88,1107,0.5,Guam,Asses,LSU coefficient
+89,1107,0.5,Guatemala,Asses,LSU coefficient
+90,1107,0.3,Guinea,Asses,LSU coefficient
+91,1107,0.5,Guyana,Asses,LSU coefficient
+92,1107,0.5,Heard and McDonald Islands,Asses,LSU coefficient
+93,1107,0.5,Haiti,Asses,LSU coefficient
+94,1107,0.5,Holy See,Asses,LSU coefficient
+95,1107,0.5,Honduras,Asses,LSU coefficient
+96,1107,0.5,"China, Hong Kong SAR",Asses,LSU coefficient
+97,1107,0.5,Hungary,Asses,LSU coefficient
+98,1107,0.5,Croatia,Asses,LSU coefficient
+99,1107,0.5,Iceland,Asses,LSU coefficient
+100,1107,0.5,India,Asses,LSU coefficient
+101,1107,0.5,Indonesia,Asses,LSU coefficient
+102,1107,0.5,Iran (Islamic Republic of),Asses,LSU coefficient
+103,1107,0.5,Iraq,Asses,LSU coefficient
+104,1107,0.5,Ireland,Asses,LSU coefficient
+105,1107,0.5,Israel,Asses,LSU coefficient
+106,1107,0.5,Italy,Asses,LSU coefficient
+107,1107,0.3,Côte d'Ivoire,Asses,LSU coefficient
+108,1107,0.5,Kazakhstan,Asses,LSU coefficient
+109,1107,0.5,Jamaica,Asses,LSU coefficient
+110,1107,0.5,Japan,Asses,LSU coefficient
+111,1107,0.5,Johnston Island,Asses,LSU coefficient
+112,1107,0.5,Jordan,Asses,LSU coefficient
+113,1107,0.5,Kyrgyzstan,Asses,LSU coefficient
+114,1107,0.3,Kenya,Asses,LSU coefficient
+115,1107,0.5,Cambodia,Asses,LSU coefficient
+116,1107,0.5,Democratic People's Republic of Korea,Asses,LSU coefficient
+117,1107,0.5,Republic of Korea,Asses,LSU coefficient
+118,1107,0.5,Kuwait,Asses,LSU coefficient
+119,1107,0.5,Latvia,Asses,LSU coefficient
+120,1107,0.5,Lao People's Democratic Republic,Asses,LSU coefficient
+121,1107,0.5,Lebanon,Asses,LSU coefficient
+122,1107,0.3,Lesotho,Asses,LSU coefficient
+123,1107,0.3,Liberia,Asses,LSU coefficient
+124,1107,0.5,Libya,Asses,LSU coefficient
+125,1107,0.5,Liechtenstein,Asses,LSU coefficient
+126,1107,0.5,Lithuania,Asses,LSU coefficient
+127,1107,0.5,Marshall Islands,Asses,LSU coefficient
+128,1107,0.5,"China, Macao SAR",Asses,LSU coefficient
+129,1107,0.3,Madagascar,Asses,LSU coefficient
+130,1107,0.3,Malawi,Asses,LSU coefficient
+131,1107,0.5,Malaysia,Asses,LSU coefficient
+132,1107,0.5,Maldives,Asses,LSU coefficient
+133,1107,0.3,Mali,Asses,LSU coefficient
+134,1107,0.5,Malta,Asses,LSU coefficient
+135,1107,0.5,Martinique,Asses,LSU coefficient
+136,1107,0.3,Mauritania,Asses,LSU coefficient
+137,1107,0.3,Mauritius,Asses,LSU coefficient
+138,1107,0.5,Mexico,Asses,LSU coefficient
+139,1107,0.5,Midway Island,Asses,LSU coefficient
+140,1107,0.5,Monaco,Asses,LSU coefficient
+141,1107,0.5,Mongolia,Asses,LSU coefficient
+142,1107,0.5,Montserrat,Asses,LSU coefficient
+143,1107,0.5,Morocco,Asses,LSU coefficient
+144,1107,0.3,Mozambique,Asses,LSU coefficient
+145,1107,0.5,Micronesia (Federated States of),Asses,LSU coefficient
+146,1107,0.5,Republic of Moldova,Asses,LSU coefficient
+147,1107,0.3,Namibia,Asses,LSU coefficient
+148,1107,0.5,Nauru,Asses,LSU coefficient
+149,1107,0.5,Nepal,Asses,LSU coefficient
+150,1107,0.5,Netherlands,Asses,LSU coefficient
+151,1107,0.5,Netherlands Antilles (former),Asses,LSU coefficient
+152,1107,0.5,Neutral Zone,Asses,LSU coefficient
+153,1107,0.5,New Caledonia,Asses,LSU coefficient
+154,1107,0.5,North Macedonia,Asses,LSU coefficient
+155,1107,0.5,Vanuatu,Asses,LSU coefficient
+156,1107,0.5,New Zealand,Asses,LSU coefficient
+157,1107,0.5,Nicaragua,Asses,LSU coefficient
+158,1107,0.3,Niger,Asses,LSU coefficient
+159,1107,0.3,Nigeria,Asses,LSU coefficient
+160,1107,0.5,Niue,Asses,LSU coefficient
+161,1107,0.5,Norfolk Island,Asses,LSU coefficient
+162,1107,0.5,Norway,Asses,LSU coefficient
+163,1107,0.5,Northern Mariana Islands,Asses,LSU coefficient
+164,1107,0.5,Pacific Islands Trust Territory,Asses,LSU coefficient
+165,1107,0.5,Pakistan,Asses,LSU coefficient
+166,1107,0.5,Panama,Asses,LSU coefficient
+167,1107,0.5,Czechia,Asses,LSU coefficient
+168,1107,0.5,Papua New Guinea,Asses,LSU coefficient
+169,1107,0.5,Paraguay,Asses,LSU coefficient
+170,1107,0.5,Peru,Asses,LSU coefficient
+171,1107,0.5,Philippines,Asses,LSU coefficient
+172,1107,0.5,Pitcairn Islands,Asses,LSU coefficient
+173,1107,0.5,Poland,Asses,LSU coefficient
+174,1107,0.5,Portugal,Asses,LSU coefficient
+175,1107,0.3,Guinea-Bissau,Asses,LSU coefficient
+176,1107,0.5,Timor-Leste,Asses,LSU coefficient
+177,1107,0.5,Puerto Rico,Asses,LSU coefficient
+178,1107,0.3,Eritrea,Asses,LSU coefficient
+179,1107,0.5,Qatar,Asses,LSU coefficient
+180,1107,0.5,Palau,Asses,LSU coefficient
+181,1107,0.3,Zimbabwe,Asses,LSU coefficient
+182,1107,0.3,Réunion,Asses,LSU coefficient
+183,1107,0.5,Romania,Asses,LSU coefficient
+184,1107,0.3,Rwanda,Asses,LSU coefficient
+185,1107,0.5,Russian Federation,Asses,LSU coefficient
+186,1107,0.5,Serbia and Montenegro,Asses,LSU coefficient
+187,1107,0.3,"Saint Helena, Ascension and Tristan da Cunha",Asses,LSU coefficient
+188,1107,0.5,Saint Kitts and Nevis,Asses,LSU coefficient
+189,1107,0.5,Saint Lucia,Asses,LSU coefficient
+190,1107,0.5,Saint Pierre and Miquelon,Asses,LSU coefficient
+191,1107,0.5,Saint Vincent and the Grenadines,Asses,LSU coefficient
+192,1107,0.5,San Marino,Asses,LSU coefficient
+193,1107,0.3,Sao Tome and Principe,Asses,LSU coefficient
+194,1107,0.5,Saudi Arabia,Asses,LSU coefficient
+195,1107,0.3,Senegal,Asses,LSU coefficient
+196,1107,0.3,Seychelles,Asses,LSU coefficient
+197,1107,0.3,Sierra Leone,Asses,LSU coefficient
+198,1107,0.5,Slovenia,Asses,LSU coefficient
+199,1107,0.5,Slovakia,Asses,LSU coefficient
+200,1107,0.5,Singapore,Asses,LSU coefficient
+201,1107,0.3,Somalia,Asses,LSU coefficient
+202,1107,0.5,South Africa,Asses,LSU coefficient
+203,1107,0.5,Spain,Asses,LSU coefficient
+205,1107,0.3,Western Sahara,Asses,LSU coefficient
+206,1107,0.3,Sudan (former),Asses,LSU coefficient
+207,1107,0.5,Suriname,Asses,LSU coefficient
+208,1107,0.5,Tajikistan,Asses,LSU coefficient
+209,1107,0.3,Eswatini,Asses,LSU coefficient
+210,1107,0.5,Sweden,Asses,LSU coefficient
+211,1107,0.5,Switzerland,Asses,LSU coefficient
+212,1107,0.5,Syrian Arab Republic,Asses,LSU coefficient
+213,1107,0.5,Turkmenistan,Asses,LSU coefficient
+214,1107,0.5,"China, Taiwan Province of",Asses,LSU coefficient
+215,1107,0.3,United Republic of Tanzania,Asses,LSU coefficient
+216,1107,0.5,Thailand,Asses,LSU coefficient
+217,1107,0.3,Togo,Asses,LSU coefficient
+218,1107,0.5,Tokelau,Asses,LSU coefficient
+219,1107,0.5,Tonga,Asses,LSU coefficient
+220,1107,0.5,Trinidad and Tobago,Asses,LSU coefficient
+221,1107,0.5,Oman,Asses,LSU coefficient
+222,1107,0.5,Tunisia,Asses,LSU coefficient
+223,1107,0.5,Turkey,Asses,LSU coefficient
+224,1107,0.5,Turks and Caicos Islands,Asses,LSU coefficient
+225,1107,0.5,United Arab Emirates,Asses,LSU coefficient
+226,1107,0.3,Uganda,Asses,LSU coefficient
+227,1107,0.5,Tuvalu,Asses,LSU coefficient
+228,1107,0.5,USSR,Asses,LSU coefficient
+229,1107,0.5,United Kingdom,Asses,LSU coefficient
+230,1107,0.5,Ukraine,Asses,LSU coefficient
+231,1107,0.5,United States of America,Asses,LSU coefficient
+232,1107,0.5,US Minor Is.,Asses,LSU coefficient
+233,1107,0.3,Burkina Faso,Asses,LSU coefficient
+234,1107,0.5,Uruguay,Asses,LSU coefficient
+235,1107,0.5,Uzbekistan,Asses,LSU coefficient
+236,1107,0.5,Venezuela (Bolivarian Republic of),Asses,LSU coefficient
+237,1107,0.5,Viet Nam,Asses,LSU coefficient
+238,1107,0.3,Ethiopia,Asses,LSU coefficient
+239,1107,0.5,British Virgin Islands,Asses,LSU coefficient
+240,1107,0.5,United States Virgin Islands,Asses,LSU coefficient
+242,1107,0.5,Wake Island,Asses,LSU coefficient
+243,1107,0.5,Wallis and Futuna Islands,Asses,LSU coefficient
+244,1107,0.5,Samoa,Asses,LSU coefficient
+245,1107,0.5,NA,Asses,LSU coefficient
+246,1107,0.5,Yemen Ar Rp,Asses,LSU coefficient
+247,1107,0.5,Yemen Dem,Asses,LSU coefficient
+248,1107,0.5,Yugoslav SFR,Asses,LSU coefficient
+249,1107,0.5,Yemen,Asses,LSU coefficient
+250,1107,0.3,Democratic Republic of the Congo,Asses,LSU coefficient
+251,1107,0.3,Zambia,Asses,LSU coefficient
+252,1107,0.5,Unspecified Area,Asses,LSU coefficient
+255,1107,0.5,Belgium,Asses,LSU coefficient
+256,1107,0.5,Luxembourg,Asses,LSU coefficient
+258,1107,0.5,Anguilla,Asses,LSU coefficient
+259,1107,0.5,Channel Islands,Asses,LSU coefficient
+260,1107,0.5,Svalbard and Jan Mayen Islands,Asses,LSU coefficient
+264,1107,0.5,Isle of Man,Asses,LSU coefficient
+270,1107,0.5,Mayotte,Asses,LSU coefficient
+271,1107,0.5,South Georgia and the South Sandwich Islands,Asses,LSU coefficient
+272,1107,0.5,Serbia,Asses,LSU coefficient
+273,1107,0.5,Montenegro,Asses,LSU coefficient
+274,1107,0.5,Guernsey,Asses,LSU coefficient
+275,1107,0.5,Kosovo,Asses,LSU coefficient
+276,1107,0.3,Sudan,Asses,LSU coefficient
+277,1107,0.3,South Sudan,Asses,LSU coefficient
+278,1107,0.5,"Bonaire, Sint Eustatius and Saba",Asses,LSU coefficient
+279,1107,0.5,Curaçao,Asses,LSU coefficient
+280,1107,0.5,Sint Maarten (Dutch Part),Asses,LSU coefficient
+281,1107,0.5,Saint-Martin (French Part),Asses,LSU coefficient
+282,1107,0.5,Saint Barthélemy,Asses,LSU coefficient
+283,1107,0.5,Jersey,Asses,LSU coefficient
+284,1107,0.5,Åland Islands,Asses,LSU coefficient
+285,1107,0.5,Sark,Asses,LSU coefficient
+299,1107,0.5,Palestine,Asses,LSU coefficient
+1,1096,0.65,Armenia,Horses,LSU coefficient
+2,1096,0.4,Afghanistan,Horses,LSU coefficient
+3,1096,0.65,Albania,Horses,LSU coefficient
+4,1096,0.4,Algeria,Horses,LSU coefficient
+5,1096,0.65,American Samoa,Horses,LSU coefficient
+6,1096,0.65,Andorra,Horses,LSU coefficient
+7,1096,0.5,Angola,Horses,LSU coefficient
+8,1096,0.65,Antigua and Barbuda,Horses,LSU coefficient
+9,1096,0.65,Argentina,Horses,LSU coefficient
+10,1096,0.65,Australia,Horses,LSU coefficient
+11,1096,0.65,Austria,Horses,LSU coefficient
+12,1096,0.65,Bahamas,Horses,LSU coefficient
+13,1096,0.4,Bahrain,Horses,LSU coefficient
+14,1096,0.65,Barbados,Horses,LSU coefficient
+15,1096,0.65,Belgium-Luxembourg,Horses,LSU coefficient
+16,1096,0.65,Bangladesh,Horses,LSU coefficient
+17,1096,0.65,Bermuda,Horses,LSU coefficient
+18,1096,0.65,Bhutan,Horses,LSU coefficient
+19,1096,0.65,Bolivia (Plurinational State of),Horses,LSU coefficient
+20,1096,0.5,Botswana,Horses,LSU coefficient
+21,1096,0.65,Brazil,Horses,LSU coefficient
+22,1096,0.65,Aruba,Horses,LSU coefficient
+23,1096,0.5,Belize,Horses,LSU coefficient
+24,1096,0.5,British Indian Ocean Territory,Horses,LSU coefficient
+25,1096,0.65,Solomon Islands,Horses,LSU coefficient
+26,1096,0.65,Brunei Darussalam,Horses,LSU coefficient
+27,1096,0.65,Bulgaria,Horses,LSU coefficient
+28,1096,0.65,Myanmar,Horses,LSU coefficient
+29,1096,0.5,Burundi,Horses,LSU coefficient
+30,1096,0.65,Antarctica,Horses,LSU coefficient
+31,1096,0.65,Bouvet Island,Horses,LSU coefficient
+32,1096,0.5,Cameroon,Horses,LSU coefficient
+33,1096,0.8,Canada,Horses,LSU coefficient
+34,1096,0.65,Canton and Enderbury Islands,Horses,LSU coefficient
+35,1096,0.5,Cabo Verde,Horses,LSU coefficient
+36,1096,0.65,Cayman Islands,Horses,LSU coefficient
+37,1096,0.5,Central African Republic,Horses,LSU coefficient
+38,1096,0.65,Sri Lanka,Horses,LSU coefficient
+39,1096,0.5,Chad,Horses,LSU coefficient
+40,1096,0.65,Chile,Horses,LSU coefficient
+41,1096,0.65,"China, mainland",Horses,LSU coefficient
+42,1096,0.65,Christmas Island,Horses,LSU coefficient
+43,1096,0.65,Cocos (Keeling) Islands,Horses,LSU coefficient
+44,1096,0.65,Colombia,Horses,LSU coefficient
+45,1096,0.5,Comoros,Horses,LSU coefficient
+46,1096,0.5,Congo,Horses,LSU coefficient
+47,1096,0.65,Cook Islands,Horses,LSU coefficient
+48,1096,0.5,Costa Rica,Horses,LSU coefficient
+49,1096,0.65,Cuba,Horses,LSU coefficient
+50,1096,0.4,Cyprus,Horses,LSU coefficient
+51,1096,0.65,Czechoslovakia,Horses,LSU coefficient
+52,1096,0.65,Azerbaijan,Horses,LSU coefficient
+53,1096,0.5,Benin,Horses,LSU coefficient
+54,1096,0.65,Denmark,Horses,LSU coefficient
+55,1096,0.65,Dominica,Horses,LSU coefficient
+56,1096,0.65,Dominican Republic,Horses,LSU coefficient
+57,1096,0.65,Belarus,Horses,LSU coefficient
+58,1096,0.65,Ecuador,Horses,LSU coefficient
+59,1096,0.4,Egypt,Horses,LSU coefficient
+60,1096,0.5,El Salvador,Horses,LSU coefficient
+61,1096,0.5,Equatorial Guinea,Horses,LSU coefficient
+62,1096,0.65,Ethiopia PDR,Horses,LSU coefficient
+63,1096,0.65,Estonia,Horses,LSU coefficient
+64,1096,0.65,Faroe Islands,Horses,LSU coefficient
+65,1096,0.65,Falkland Islands (Malvinas),Horses,LSU coefficient
+66,1096,0.65,Fiji,Horses,LSU coefficient
+67,1096,0.65,Finland,Horses,LSU coefficient
+68,1096,0.65,France,Horses,LSU coefficient
+69,1096,0.65,French Guiana,Horses,LSU coefficient
+70,1096,0.65,French Polynesia,Horses,LSU coefficient
+71,1096,0.65,French Southern and Antarctic Territories,Horses,LSU coefficient
+72,1096,0.5,Djibouti,Horses,LSU coefficient
+73,1096,0.65,Georgia,Horses,LSU coefficient
+74,1096,0.5,Gabon,Horses,LSU coefficient
+75,1096,0.5,Gambia,Horses,LSU coefficient
+76,1096,0.4,NA,Horses,LSU coefficient
+77,1096,0.65,Germany Nl,Horses,LSU coefficient
+78,1096,0.65,Germany Fr,Horses,LSU coefficient
+79,1096,0.65,Germany,Horses,LSU coefficient
+80,1096,0.65,Bosnia and Herzegovina,Horses,LSU coefficient
+81,1096,0.5,Ghana,Horses,LSU coefficient
+82,1096,0.65,Gibraltar,Horses,LSU coefficient
+83,1096,0.65,Kiribati,Horses,LSU coefficient
+84,1096,0.65,Greece,Horses,LSU coefficient
+85,1096,0.65,Greenland,Horses,LSU coefficient
+86,1096,0.65,Grenada,Horses,LSU coefficient
+87,1096,0.65,Guadeloupe,Horses,LSU coefficient
+88,1096,0.65,Guam,Horses,LSU coefficient
+89,1096,0.5,Guatemala,Horses,LSU coefficient
+90,1096,0.5,Guinea,Horses,LSU coefficient
+91,1096,0.65,Guyana,Horses,LSU coefficient
+92,1096,0.65,Heard and McDonald Islands,Horses,LSU coefficient
+93,1096,0.65,Haiti,Horses,LSU coefficient
+94,1096,0.65,Holy See,Horses,LSU coefficient
+95,1096,0.5,Honduras,Horses,LSU coefficient
+96,1096,0.65,"China, Hong Kong SAR",Horses,LSU coefficient
+97,1096,0.65,Hungary,Horses,LSU coefficient
+98,1096,0.65,Croatia,Horses,LSU coefficient
+99,1096,0.65,Iceland,Horses,LSU coefficient
+100,1096,0.65,India,Horses,LSU coefficient
+101,1096,0.65,Indonesia,Horses,LSU coefficient
+102,1096,0.4,Iran (Islamic Republic of),Horses,LSU coefficient
+103,1096,0.4,Iraq,Horses,LSU coefficient
+104,1096,0.65,Ireland,Horses,LSU coefficient
+105,1096,0.65,Israel,Horses,LSU coefficient
+106,1096,0.65,Italy,Horses,LSU coefficient
+107,1096,0.5,Côte d'Ivoire,Horses,LSU coefficient
+108,1096,0.65,Kazakhstan,Horses,LSU coefficient
+109,1096,0.65,Jamaica,Horses,LSU coefficient
+110,1096,0.65,Japan,Horses,LSU coefficient
+111,1096,0.65,Johnston Island,Horses,LSU coefficient
+112,1096,0.4,Jordan,Horses,LSU coefficient
+113,1096,0.65,Kyrgyzstan,Horses,LSU coefficient
+114,1096,0.5,Kenya,Horses,LSU coefficient
+115,1096,0.65,Cambodia,Horses,LSU coefficient
+116,1096,0.65,Democratic People's Republic of Korea,Horses,LSU coefficient
+117,1096,0.65,Republic of Korea,Horses,LSU coefficient
+118,1096,0.4,Kuwait,Horses,LSU coefficient
+119,1096,0.65,Latvia,Horses,LSU coefficient
+120,1096,0.65,Lao People's Democratic Republic,Horses,LSU coefficient
+121,1096,0.4,Lebanon,Horses,LSU coefficient
+122,1096,0.5,Lesotho,Horses,LSU coefficient
+123,1096,0.5,Liberia,Horses,LSU coefficient
+124,1096,0.4,Libya,Horses,LSU coefficient
+125,1096,0.65,Liechtenstein,Horses,LSU coefficient
+126,1096,0.65,Lithuania,Horses,LSU coefficient
+127,1096,0.65,Marshall Islands,Horses,LSU coefficient
+128,1096,0.65,"China, Macao SAR",Horses,LSU coefficient
+129,1096,0.5,Madagascar,Horses,LSU coefficient
+130,1096,0.5,Malawi,Horses,LSU coefficient
+131,1096,0.65,Malaysia,Horses,LSU coefficient
+132,1096,0.65,Maldives,Horses,LSU coefficient
+133,1096,0.5,Mali,Horses,LSU coefficient
+134,1096,0.65,Malta,Horses,LSU coefficient
+135,1096,0.65,Martinique,Horses,LSU coefficient
+136,1096,0.5,Mauritania,Horses,LSU coefficient
+137,1096,0.5,Mauritius,Horses,LSU coefficient
+138,1096,0.5,Mexico,Horses,LSU coefficient
+139,1096,0.65,Midway Island,Horses,LSU coefficient
+140,1096,0.65,Monaco,Horses,LSU coefficient
+141,1096,0.65,Mongolia,Horses,LSU coefficient
+142,1096,0.65,Montserrat,Horses,LSU coefficient
+143,1096,0.4,Morocco,Horses,LSU coefficient
+144,1096,0.5,Mozambique,Horses,LSU coefficient
+145,1096,0.65,Micronesia (Federated States of),Horses,LSU coefficient
+146,1096,0.65,Republic of Moldova,Horses,LSU coefficient
+147,1096,0.5,Namibia,Horses,LSU coefficient
+148,1096,0.65,Nauru,Horses,LSU coefficient
+149,1096,0.65,Nepal,Horses,LSU coefficient
+150,1096,0.65,Netherlands,Horses,LSU coefficient
+151,1096,0.65,Netherlands Antilles (former),Horses,LSU coefficient
+152,1096,0.65,Neutral Zone,Horses,LSU coefficient
+153,1096,0.65,New Caledonia,Horses,LSU coefficient
+154,1096,0.65,North Macedonia,Horses,LSU coefficient
+155,1096,0.65,Vanuatu,Horses,LSU coefficient
+156,1096,0.65,New Zealand,Horses,LSU coefficient
+157,1096,0.5,Nicaragua,Horses,LSU coefficient
+158,1096,0.5,Niger,Horses,LSU coefficient
+159,1096,0.5,Nigeria,Horses,LSU coefficient
+160,1096,0.65,Niue,Horses,LSU coefficient
+161,1096,0.65,Norfolk Island,Horses,LSU coefficient
+162,1096,0.65,Norway,Horses,LSU coefficient
+163,1096,0.65,Northern Mariana Islands,Horses,LSU coefficient
+164,1096,0.65,Pacific Islands Trust Territory,Horses,LSU coefficient
+165,1096,0.65,Pakistan,Horses,LSU coefficient
+166,1096,0.5,Panama,Horses,LSU coefficient
+167,1096,0.65,Czechia,Horses,LSU coefficient
+168,1096,0.65,Papua New Guinea,Horses,LSU coefficient
+169,1096,0.65,Paraguay,Horses,LSU coefficient
+170,1096,0.65,Peru,Horses,LSU coefficient
+171,1096,0.65,Philippines,Horses,LSU coefficient
+172,1096,0.65,Pitcairn Islands,Horses,LSU coefficient
+173,1096,0.65,Poland,Horses,LSU coefficient
+174,1096,0.65,Portugal,Horses,LSU coefficient
+175,1096,0.5,Guinea-Bissau,Horses,LSU coefficient
+176,1096,0.65,Timor-Leste,Horses,LSU coefficient
+177,1096,0.65,Puerto Rico,Horses,LSU coefficient
+178,1096,0.5,Eritrea,Horses,LSU coefficient
+179,1096,0.4,Qatar,Horses,LSU coefficient
+180,1096,0.65,Palau,Horses,LSU coefficient
+181,1096,0.5,Zimbabwe,Horses,LSU coefficient
+182,1096,0.5,Réunion,Horses,LSU coefficient
+183,1096,0.65,Romania,Horses,LSU coefficient
+184,1096,0.5,Rwanda,Horses,LSU coefficient
+185,1096,0.65,Russian Federation,Horses,LSU coefficient
+186,1096,0.65,Serbia and Montenegro,Horses,LSU coefficient
+187,1096,0.5,"Saint Helena, Ascension and Tristan da Cunha",Horses,LSU coefficient
+188,1096,0.65,Saint Kitts and Nevis,Horses,LSU coefficient
+189,1096,0.65,Saint Lucia,Horses,LSU coefficient
+190,1096,0.65,Saint Pierre and Miquelon,Horses,LSU coefficient
+191,1096,0.65,Saint Vincent and the Grenadines,Horses,LSU coefficient
+192,1096,0.65,San Marino,Horses,LSU coefficient
+193,1096,0.5,Sao Tome and Principe,Horses,LSU coefficient
+194,1096,0.4,Saudi Arabia,Horses,LSU coefficient
+195,1096,0.5,Senegal,Horses,LSU coefficient
+196,1096,0.5,Seychelles,Horses,LSU coefficient
+197,1096,0.5,Sierra Leone,Horses,LSU coefficient
+198,1096,0.65,Slovenia,Horses,LSU coefficient
+199,1096,0.65,Slovakia,Horses,LSU coefficient
+200,1096,0.65,Singapore,Horses,LSU coefficient
+201,1096,0.5,Somalia,Horses,LSU coefficient
+202,1096,0.65,South Africa,Horses,LSU coefficient
+203,1096,0.65,Spain,Horses,LSU coefficient
+205,1096,0.5,Western Sahara,Horses,LSU coefficient
+206,1096,0.5,Sudan (former),Horses,LSU coefficient
+207,1096,0.65,Suriname,Horses,LSU coefficient
+208,1096,0.65,Tajikistan,Horses,LSU coefficient
+209,1096,0.5,Eswatini,Horses,LSU coefficient
+210,1096,0.65,Sweden,Horses,LSU coefficient
+211,1096,0.65,Switzerland,Horses,LSU coefficient
+212,1096,0.4,Syrian Arab Republic,Horses,LSU coefficient
+213,1096,0.65,Turkmenistan,Horses,LSU coefficient
+214,1096,0.65,"China, Taiwan Province of",Horses,LSU coefficient
+215,1096,0.5,United Republic of Tanzania,Horses,LSU coefficient
+216,1096,0.65,Thailand,Horses,LSU coefficient
+217,1096,0.5,Togo,Horses,LSU coefficient
+218,1096,0.65,Tokelau,Horses,LSU coefficient
+219,1096,0.65,Tonga,Horses,LSU coefficient
+220,1096,0.65,Trinidad and Tobago,Horses,LSU coefficient
+221,1096,0.4,Oman,Horses,LSU coefficient
+222,1096,0.4,Tunisia,Horses,LSU coefficient
+223,1096,0.4,Turkey,Horses,LSU coefficient
+224,1096,0.65,Turks and Caicos Islands,Horses,LSU coefficient
+225,1096,0.4,United Arab Emirates,Horses,LSU coefficient
+226,1096,0.5,Uganda,Horses,LSU coefficient
+227,1096,0.65,Tuvalu,Horses,LSU coefficient
+228,1096,0.65,USSR,Horses,LSU coefficient
+229,1096,0.65,United Kingdom,Horses,LSU coefficient
+230,1096,0.65,Ukraine,Horses,LSU coefficient
+231,1096,0.8,United States of America,Horses,LSU coefficient
+232,1096,0.65,US Minor Is.,Horses,LSU coefficient
+233,1096,0.5,Burkina Faso,Horses,LSU coefficient
+234,1096,0.65,Uruguay,Horses,LSU coefficient
+235,1096,0.65,Uzbekistan,Horses,LSU coefficient
+236,1096,0.65,Venezuela (Bolivarian Republic of),Horses,LSU coefficient
+237,1096,0.65,Viet Nam,Horses,LSU coefficient
+238,1096,0.5,Ethiopia,Horses,LSU coefficient
+239,1096,0.65,British Virgin Islands,Horses,LSU coefficient
+240,1096,0.65,United States Virgin Islands,Horses,LSU coefficient
+242,1096,0.65,Wake Island,Horses,LSU coefficient
+243,1096,0.65,Wallis and Futuna Islands,Horses,LSU coefficient
+244,1096,0.65,Samoa,Horses,LSU coefficient
+245,1096,0.4,NA,Horses,LSU coefficient
+246,1096,0.65,Yemen Ar Rp,Horses,LSU coefficient
+247,1096,0.65,Yemen Dem,Horses,LSU coefficient
+248,1096,0.65,Yugoslav SFR,Horses,LSU coefficient
+249,1096,0.4,Yemen,Horses,LSU coefficient
+250,1096,0.5,Democratic Republic of the Congo,Horses,LSU coefficient
+251,1096,0.5,Zambia,Horses,LSU coefficient
+252,1096,0.65,Unspecified Area,Horses,LSU coefficient
+255,1096,0.65,Belgium,Horses,LSU coefficient
+256,1096,0.65,Luxembourg,Horses,LSU coefficient
+258,1096,0.65,Anguilla,Horses,LSU coefficient
+259,1096,0.65,Channel Islands,Horses,LSU coefficient
+260,1096,0.65,Svalbard and Jan Mayen Islands,Horses,LSU coefficient
+264,1096,0.65,Isle of Man,Horses,LSU coefficient
+270,1096,0.65,Mayotte,Horses,LSU coefficient
+271,1096,0.65,South Georgia and the South Sandwich Islands,Horses,LSU coefficient
+272,1096,0.65,Serbia,Horses,LSU coefficient
+273,1096,0.65,Montenegro,Horses,LSU coefficient
+274,1096,0.65,Guernsey,Horses,LSU coefficient
+275,1096,0.65,Kosovo,Horses,LSU coefficient
+276,1096,0.5,Sudan,Horses,LSU coefficient
+277,1096,0.5,South Sudan,Horses,LSU coefficient
+278,1096,0.65,"Bonaire, Sint Eustatius and Saba",Horses,LSU coefficient
+279,1096,0.65,Curaçao,Horses,LSU coefficient
+280,1096,0.65,Sint Maarten (Dutch Part),Horses,LSU coefficient
+281,1096,0.65,Saint-Martin (French Part),Horses,LSU coefficient
+282,1096,0.65,Saint Barthélemy,Horses,LSU coefficient
+283,1096,0.65,Jersey,Horses,LSU coefficient
+284,1096,0.65,Åland Islands,Horses,LSU coefficient
+285,1096,0.65,Sark,Horses,LSU coefficient
+299,1096,0.4,Palestine,Horses,LSU coefficient
+1,1110,0.6,Armenia,Mules,LSU coefficient
+2,1110,0.6,Afghanistan,Mules,LSU coefficient
+3,1110,0.6,Albania,Mules,LSU coefficient
+4,1110,0.6,Algeria,Mules,LSU coefficient
+5,1110,0.6,American Samoa,Mules,LSU coefficient
+6,1110,0.6,Andorra,Mules,LSU coefficient
+7,1110,0.6,Angola,Mules,LSU coefficient
+8,1110,0.6,Antigua and Barbuda,Mules,LSU coefficient
+9,1110,0.6,Argentina,Mules,LSU coefficient
+10,1110,0.6,Australia,Mules,LSU coefficient
+11,1110,0.6,Austria,Mules,LSU coefficient
+12,1110,0.6,Bahamas,Mules,LSU coefficient
+13,1110,0.6,Bahrain,Mules,LSU coefficient
+14,1110,0.6,Barbados,Mules,LSU coefficient
+15,1110,0.6,Belgium-Luxembourg,Mules,LSU coefficient
+16,1110,0.6,Bangladesh,Mules,LSU coefficient
+17,1110,0.6,Bermuda,Mules,LSU coefficient
+18,1110,0.6,Bhutan,Mules,LSU coefficient
+19,1110,0.6,Bolivia (Plurinational State of),Mules,LSU coefficient
+20,1110,0.6,Botswana,Mules,LSU coefficient
+21,1110,0.6,Brazil,Mules,LSU coefficient
+22,1110,0.6,Aruba,Mules,LSU coefficient
+23,1110,0.6,Belize,Mules,LSU coefficient
+24,1110,0.6,British Indian Ocean Territory,Mules,LSU coefficient
+25,1110,0.6,Solomon Islands,Mules,LSU coefficient
+26,1110,0.6,Brunei Darussalam,Mules,LSU coefficient
+27,1110,0.6,Bulgaria,Mules,LSU coefficient
+28,1110,0.6,Myanmar,Mules,LSU coefficient
+29,1110,0.6,Burundi,Mules,LSU coefficient
+30,1110,0.6,Antarctica,Mules,LSU coefficient
+31,1110,0.6,Bouvet Island,Mules,LSU coefficient
+32,1110,0.6,Cameroon,Mules,LSU coefficient
+33,1110,0.6,Canada,Mules,LSU coefficient
+34,1110,0.6,Canton and Enderbury Islands,Mules,LSU coefficient
+35,1110,0.6,Cabo Verde,Mules,LSU coefficient
+36,1110,0.6,Cayman Islands,Mules,LSU coefficient
+37,1110,0.6,Central African Republic,Mules,LSU coefficient
+38,1110,0.6,Sri Lanka,Mules,LSU coefficient
+39,1110,0.6,Chad,Mules,LSU coefficient
+40,1110,0.6,Chile,Mules,LSU coefficient
+41,1110,0.6,"China, mainland",Mules,LSU coefficient
+42,1110,0.6,Christmas Island,Mules,LSU coefficient
+43,1110,0.6,Cocos (Keeling) Islands,Mules,LSU coefficient
+44,1110,0.6,Colombia,Mules,LSU coefficient
+45,1110,0.6,Comoros,Mules,LSU coefficient
+46,1110,0.6,Congo,Mules,LSU coefficient
+47,1110,0.6,Cook Islands,Mules,LSU coefficient
+48,1110,0.6,Costa Rica,Mules,LSU coefficient
+49,1110,0.6,Cuba,Mules,LSU coefficient
+50,1110,0.6,Cyprus,Mules,LSU coefficient
+51,1110,0.6,Czechoslovakia,Mules,LSU coefficient
+52,1110,0.6,Azerbaijan,Mules,LSU coefficient
+53,1110,0.6,Benin,Mules,LSU coefficient
+54,1110,0.6,Denmark,Mules,LSU coefficient
+55,1110,0.6,Dominica,Mules,LSU coefficient
+56,1110,0.6,Dominican Republic,Mules,LSU coefficient
+57,1110,0.6,Belarus,Mules,LSU coefficient
+58,1110,0.6,Ecuador,Mules,LSU coefficient
+59,1110,0.6,Egypt,Mules,LSU coefficient
+60,1110,0.6,El Salvador,Mules,LSU coefficient
+61,1110,0.6,Equatorial Guinea,Mules,LSU coefficient
+62,1110,0.6,Ethiopia PDR,Mules,LSU coefficient
+63,1110,0.6,Estonia,Mules,LSU coefficient
+64,1110,0.6,Faroe Islands,Mules,LSU coefficient
+65,1110,0.6,Falkland Islands (Malvinas),Mules,LSU coefficient
+66,1110,0.6,Fiji,Mules,LSU coefficient
+67,1110,0.6,Finland,Mules,LSU coefficient
+68,1110,0.6,France,Mules,LSU coefficient
+69,1110,0.6,French Guiana,Mules,LSU coefficient
+70,1110,0.6,French Polynesia,Mules,LSU coefficient
+71,1110,0.6,French Southern and Antarctic Territories,Mules,LSU coefficient
+72,1110,0.6,Djibouti,Mules,LSU coefficient
+73,1110,0.6,Georgia,Mules,LSU coefficient
+74,1110,0.6,Gabon,Mules,LSU coefficient
+75,1110,0.6,Gambia,Mules,LSU coefficient
+76,1110,0.6,NA,Mules,LSU coefficient
+77,1110,0.6,Germany Nl,Mules,LSU coefficient
+78,1110,0.6,Germany Fr,Mules,LSU coefficient
+79,1110,0.6,Germany,Mules,LSU coefficient
+80,1110,0.6,Bosnia and Herzegovina,Mules,LSU coefficient
+81,1110,0.6,Ghana,Mules,LSU coefficient
+82,1110,0.6,Gibraltar,Mules,LSU coefficient
+83,1110,0.6,Kiribati,Mules,LSU coefficient
+84,1110,0.6,Greece,Mules,LSU coefficient
+85,1110,0.6,Greenland,Mules,LSU coefficient
+86,1110,0.6,Grenada,Mules,LSU coefficient
+87,1110,0.6,Guadeloupe,Mules,LSU coefficient
+88,1110,0.6,Guam,Mules,LSU coefficient
+89,1110,0.6,Guatemala,Mules,LSU coefficient
+90,1110,0.6,Guinea,Mules,LSU coefficient
+91,1110,0.6,Guyana,Mules,LSU coefficient
+92,1110,0.6,Heard and McDonald Islands,Mules,LSU coefficient
+93,1110,0.6,Haiti,Mules,LSU coefficient
+94,1110,0.6,Holy See,Mules,LSU coefficient
+95,1110,0.6,Honduras,Mules,LSU coefficient
+96,1110,0.6,"China, Hong Kong SAR",Mules,LSU coefficient
+97,1110,0.6,Hungary,Mules,LSU coefficient
+98,1110,0.6,Croatia,Mules,LSU coefficient
+99,1110,0.6,Iceland,Mules,LSU coefficient
+100,1110,0.6,India,Mules,LSU coefficient
+101,1110,0.6,Indonesia,Mules,LSU coefficient
+102,1110,0.6,Iran (Islamic Republic of),Mules,LSU coefficient
+103,1110,0.6,Iraq,Mules,LSU coefficient
+104,1110,0.6,Ireland,Mules,LSU coefficient
+105,1110,0.6,Israel,Mules,LSU coefficient
+106,1110,0.6,Italy,Mules,LSU coefficient
+107,1110,0.6,Côte d'Ivoire,Mules,LSU coefficient
+108,1110,0.6,Kazakhstan,Mules,LSU coefficient
+109,1110,0.6,Jamaica,Mules,LSU coefficient
+110,1110,0.6,Japan,Mules,LSU coefficient
+111,1110,0.6,Johnston Island,Mules,LSU coefficient
+112,1110,0.6,Jordan,Mules,LSU coefficient
+113,1110,0.6,Kyrgyzstan,Mules,LSU coefficient
+114,1110,0.6,Kenya,Mules,LSU coefficient
+115,1110,0.6,Cambodia,Mules,LSU coefficient
+116,1110,0.6,Democratic People's Republic of Korea,Mules,LSU coefficient
+117,1110,0.6,Republic of Korea,Mules,LSU coefficient
+118,1110,0.6,Kuwait,Mules,LSU coefficient
+119,1110,0.6,Latvia,Mules,LSU coefficient
+120,1110,0.6,Lao People's Democratic Republic,Mules,LSU coefficient
+121,1110,0.6,Lebanon,Mules,LSU coefficient
+122,1110,0.6,Lesotho,Mules,LSU coefficient
+123,1110,0.6,Liberia,Mules,LSU coefficient
+124,1110,0.6,Libya,Mules,LSU coefficient
+125,1110,0.6,Liechtenstein,Mules,LSU coefficient
+126,1110,0.6,Lithuania,Mules,LSU coefficient
+127,1110,0.6,Marshall Islands,Mules,LSU coefficient
+128,1110,0.6,"China, Macao SAR",Mules,LSU coefficient
+129,1110,0.6,Madagascar,Mules,LSU coefficient
+130,1110,0.6,Malawi,Mules,LSU coefficient
+131,1110,0.6,Malaysia,Mules,LSU coefficient
+132,1110,0.6,Maldives,Mules,LSU coefficient
+133,1110,0.6,Mali,Mules,LSU coefficient
+134,1110,0.6,Malta,Mules,LSU coefficient
+135,1110,0.6,Martinique,Mules,LSU coefficient
+136,1110,0.6,Mauritania,Mules,LSU coefficient
+137,1110,0.6,Mauritius,Mules,LSU coefficient
+138,1110,0.6,Mexico,Mules,LSU coefficient
+139,1110,0.6,Midway Island,Mules,LSU coefficient
+140,1110,0.6,Monaco,Mules,LSU coefficient
+141,1110,0.6,Mongolia,Mules,LSU coefficient
+142,1110,0.6,Montserrat,Mules,LSU coefficient
+143,1110,0.6,Morocco,Mules,LSU coefficient
+144,1110,0.6,Mozambique,Mules,LSU coefficient
+145,1110,0.6,Micronesia (Federated States of),Mules,LSU coefficient
+146,1110,0.6,Republic of Moldova,Mules,LSU coefficient
+147,1110,0.6,Namibia,Mules,LSU coefficient
+148,1110,0.6,Nauru,Mules,LSU coefficient
+149,1110,0.6,Nepal,Mules,LSU coefficient
+150,1110,0.6,Netherlands,Mules,LSU coefficient
+151,1110,0.6,Netherlands Antilles (former),Mules,LSU coefficient
+152,1110,0.6,Neutral Zone,Mules,LSU coefficient
+153,1110,0.6,New Caledonia,Mules,LSU coefficient
+154,1110,0.6,North Macedonia,Mules,LSU coefficient
+155,1110,0.6,Vanuatu,Mules,LSU coefficient
+156,1110,0.6,New Zealand,Mules,LSU coefficient
+157,1110,0.6,Nicaragua,Mules,LSU coefficient
+158,1110,0.6,Niger,Mules,LSU coefficient
+159,1110,0.6,Nigeria,Mules,LSU coefficient
+160,1110,0.6,Niue,Mules,LSU coefficient
+161,1110,0.6,Norfolk Island,Mules,LSU coefficient
+162,1110,0.6,Norway,Mules,LSU coefficient
+163,1110,0.6,Northern Mariana Islands,Mules,LSU coefficient
+164,1110,0.6,Pacific Islands Trust Territory,Mules,LSU coefficient
+165,1110,0.6,Pakistan,Mules,LSU coefficient
+166,1110,0.6,Panama,Mules,LSU coefficient
+167,1110,0.6,Czechia,Mules,LSU coefficient
+168,1110,0.6,Papua New Guinea,Mules,LSU coefficient
+169,1110,0.6,Paraguay,Mules,LSU coefficient
+170,1110,0.6,Peru,Mules,LSU coefficient
+171,1110,0.6,Philippines,Mules,LSU coefficient
+172,1110,0.6,Pitcairn Islands,Mules,LSU coefficient
+173,1110,0.6,Poland,Mules,LSU coefficient
+174,1110,0.6,Portugal,Mules,LSU coefficient
+175,1110,0.6,Guinea-Bissau,Mules,LSU coefficient
+176,1110,0.6,Timor-Leste,Mules,LSU coefficient
+177,1110,0.6,Puerto Rico,Mules,LSU coefficient
+178,1110,0.6,Eritrea,Mules,LSU coefficient
+179,1110,0.6,Qatar,Mules,LSU coefficient
+180,1110,0.6,Palau,Mules,LSU coefficient
+181,1110,0.6,Zimbabwe,Mules,LSU coefficient
+182,1110,0.6,Réunion,Mules,LSU coefficient
+183,1110,0.6,Romania,Mules,LSU coefficient
+184,1110,0.6,Rwanda,Mules,LSU coefficient
+185,1110,0.6,Russian Federation,Mules,LSU coefficient
+186,1110,0.6,Serbia and Montenegro,Mules,LSU coefficient
+187,1110,0.6,"Saint Helena, Ascension and Tristan da Cunha",Mules,LSU coefficient
+188,1110,0.6,Saint Kitts and Nevis,Mules,LSU coefficient
+189,1110,0.6,Saint Lucia,Mules,LSU coefficient
+190,1110,0.6,Saint Pierre and Miquelon,Mules,LSU coefficient
+191,1110,0.6,Saint Vincent and the Grenadines,Mules,LSU coefficient
+192,1110,0.6,San Marino,Mules,LSU coefficient
+193,1110,0.6,Sao Tome and Principe,Mules,LSU coefficient
+194,1110,0.6,Saudi Arabia,Mules,LSU coefficient
+195,1110,0.6,Senegal,Mules,LSU coefficient
+196,1110,0.6,Seychelles,Mules,LSU coefficient
+197,1110,0.6,Sierra Leone,Mules,LSU coefficient
+198,1110,0.6,Slovenia,Mules,LSU coefficient
+199,1110,0.6,Slovakia,Mules,LSU coefficient
+200,1110,0.6,Singapore,Mules,LSU coefficient
+201,1110,0.6,Somalia,Mules,LSU coefficient
+202,1110,0.6,South Africa,Mules,LSU coefficient
+203,1110,0.6,Spain,Mules,LSU coefficient
+205,1110,0.6,Western Sahara,Mules,LSU coefficient
+206,1110,0.6,Sudan (former),Mules,LSU coefficient
+207,1110,0.6,Suriname,Mules,LSU coefficient
+208,1110,0.6,Tajikistan,Mules,LSU coefficient
+209,1110,0.6,Eswatini,Mules,LSU coefficient
+210,1110,0.6,Sweden,Mules,LSU coefficient
+211,1110,0.6,Switzerland,Mules,LSU coefficient
+212,1110,0.6,Syrian Arab Republic,Mules,LSU coefficient
+213,1110,0.6,Turkmenistan,Mules,LSU coefficient
+214,1110,0.6,"China, Taiwan Province of",Mules,LSU coefficient
+215,1110,0.6,United Republic of Tanzania,Mules,LSU coefficient
+216,1110,0.6,Thailand,Mules,LSU coefficient
+217,1110,0.6,Togo,Mules,LSU coefficient
+218,1110,0.6,Tokelau,Mules,LSU coefficient
+219,1110,0.6,Tonga,Mules,LSU coefficient
+220,1110,0.6,Trinidad and Tobago,Mules,LSU coefficient
+221,1110,0.6,Oman,Mules,LSU coefficient
+222,1110,0.6,Tunisia,Mules,LSU coefficient
+223,1110,0.6,Turkey,Mules,LSU coefficient
+224,1110,0.6,Turks and Caicos Islands,Mules,LSU coefficient
+225,1110,0.6,United Arab Emirates,Mules,LSU coefficient
+226,1110,0.6,Uganda,Mules,LSU coefficient
+227,1110,0.6,Tuvalu,Mules,LSU coefficient
+228,1110,0.6,USSR,Mules,LSU coefficient
+229,1110,0.6,United Kingdom,Mules,LSU coefficient
+230,1110,0.6,Ukraine,Mules,LSU coefficient
+231,1110,0.6,United States of America,Mules,LSU coefficient
+232,1110,0.6,US Minor Is.,Mules,LSU coefficient
+233,1110,0.6,Burkina Faso,Mules,LSU coefficient
+234,1110,0.6,Uruguay,Mules,LSU coefficient
+235,1110,0.6,Uzbekistan,Mules,LSU coefficient
+236,1110,0.6,Venezuela (Bolivarian Republic of),Mules,LSU coefficient
+237,1110,0.6,Viet Nam,Mules,LSU coefficient
+238,1110,0.6,Ethiopia,Mules,LSU coefficient
+239,1110,0.6,British Virgin Islands,Mules,LSU coefficient
+240,1110,0.6,United States Virgin Islands,Mules,LSU coefficient
+242,1110,0.6,Wake Island,Mules,LSU coefficient
+243,1110,0.6,Wallis and Futuna Islands,Mules,LSU coefficient
+244,1110,0.6,Samoa,Mules,LSU coefficient
+245,1110,0.6,NA,Mules,LSU coefficient
+246,1110,0.6,Yemen Ar Rp,Mules,LSU coefficient
+247,1110,0.6,Yemen Dem,Mules,LSU coefficient
+248,1110,0.6,Yugoslav SFR,Mules,LSU coefficient
+249,1110,0.6,Yemen,Mules,LSU coefficient
+250,1110,0.6,Democratic Republic of the Congo,Mules,LSU coefficient
+251,1110,0.6,Zambia,Mules,LSU coefficient
+252,1110,0.6,Unspecified Area,Mules,LSU coefficient
+255,1110,0.6,Belgium,Mules,LSU coefficient
+256,1110,0.6,Luxembourg,Mules,LSU coefficient
+258,1110,0.6,Anguilla,Mules,LSU coefficient
+259,1110,0.6,Channel Islands,Mules,LSU coefficient
+260,1110,0.6,Svalbard and Jan Mayen Islands,Mules,LSU coefficient
+264,1110,0.6,Isle of Man,Mules,LSU coefficient
+270,1110,0.6,Mayotte,Mules,LSU coefficient
+271,1110,0.6,South Georgia and the South Sandwich Islands,Mules,LSU coefficient
+272,1110,0.6,Serbia,Mules,LSU coefficient
+273,1110,0.6,Montenegro,Mules,LSU coefficient
+274,1110,0.6,Guernsey,Mules,LSU coefficient
+275,1110,0.6,Kosovo,Mules,LSU coefficient
+276,1110,0.6,Sudan,Mules,LSU coefficient
+277,1110,0.6,South Sudan,Mules,LSU coefficient
+278,1110,0.6,"Bonaire, Sint Eustatius and Saba",Mules,LSU coefficient
+279,1110,0.6,Curaçao,Mules,LSU coefficient
+280,1110,0.6,Sint Maarten (Dutch Part),Mules,LSU coefficient
+281,1110,0.6,Saint-Martin (French Part),Mules,LSU coefficient
+282,1110,0.6,Saint Barthélemy,Mules,LSU coefficient
+283,1110,0.6,Jersey,Mules,LSU coefficient
+284,1110,0.6,Åland Islands,Mules,LSU coefficient
+285,1110,0.6,Sark,Mules,LSU coefficient
+299,1110,0.6,Palestine,Mules,LSU coefficient
+1,1126,0,Armenia,Camels,LSU coefficient
+2,1126,0.75,Afghanistan,Camels,LSU coefficient
+3,1126,0,Albania,Camels,LSU coefficient
+4,1126,0.75,Algeria,Camels,LSU coefficient
+5,1126,0,American Samoa,Camels,LSU coefficient
+6,1126,0,Andorra,Camels,LSU coefficient
+7,1126,0.7,Angola,Camels,LSU coefficient
+8,1126,0,Antigua and Barbuda,Camels,LSU coefficient
+9,1126,0,Argentina,Camels,LSU coefficient
+10,1126,0.9,Australia,Camels,LSU coefficient
+11,1126,0.9,Austria,Camels,LSU coefficient
+12,1126,0,Bahamas,Camels,LSU coefficient
+13,1126,0.75,Bahrain,Camels,LSU coefficient
+14,1126,0,Barbados,Camels,LSU coefficient
+15,1126,0.9,Belgium-Luxembourg,Camels,LSU coefficient
+16,1126,0,Bangladesh,Camels,LSU coefficient
+17,1126,0,Bermuda,Camels,LSU coefficient
+18,1126,0,Bhutan,Camels,LSU coefficient
+19,1126,0,Bolivia (Plurinational State of),Camels,LSU coefficient
+20,1126,0.7,Botswana,Camels,LSU coefficient
+21,1126,0,Brazil,Camels,LSU coefficient
+22,1126,0,Aruba,Camels,LSU coefficient
+23,1126,0,Belize,Camels,LSU coefficient
+24,1126,0.7,British Indian Ocean Territory,Camels,LSU coefficient
+25,1126,0,Solomon Islands,Camels,LSU coefficient
+26,1126,0.8,Brunei Darussalam,Camels,LSU coefficient
+27,1126,0,Bulgaria,Camels,LSU coefficient
+28,1126,0.8,Myanmar,Camels,LSU coefficient
+29,1126,0.7,Burundi,Camels,LSU coefficient
+30,1126,0,Antarctica,Camels,LSU coefficient
+31,1126,0.9,Bouvet Island,Camels,LSU coefficient
+32,1126,0.7,Cameroon,Camels,LSU coefficient
+33,1126,0,Canada,Camels,LSU coefficient
+34,1126,0,Canton and Enderbury Islands,Camels,LSU coefficient
+35,1126,0.7,Cabo Verde,Camels,LSU coefficient
+36,1126,0,Cayman Islands,Camels,LSU coefficient
+37,1126,0.7,Central African Republic,Camels,LSU coefficient
+38,1126,0,Sri Lanka,Camels,LSU coefficient
+39,1126,0.7,Chad,Camels,LSU coefficient
+40,1126,0,Chile,Camels,LSU coefficient
+41,1126,0.8,"China, mainland",Camels,LSU coefficient
+42,1126,0,Christmas Island,Camels,LSU coefficient
+43,1126,0,Cocos (Keeling) Islands,Camels,LSU coefficient
+44,1126,0,Colombia,Camels,LSU coefficient
+45,1126,0.7,Comoros,Camels,LSU coefficient
+46,1126,0.7,Congo,Camels,LSU coefficient
+47,1126,0,Cook Islands,Camels,LSU coefficient
+48,1126,0,Costa Rica,Camels,LSU coefficient
+49,1126,0,Cuba,Camels,LSU coefficient
+50,1126,0.75,Cyprus,Camels,LSU coefficient
+51,1126,0,Czechoslovakia,Camels,LSU coefficient
+52,1126,0,Azerbaijan,Camels,LSU coefficient
+53,1126,0.7,Benin,Camels,LSU coefficient
+54,1126,0.9,Denmark,Camels,LSU coefficient
+55,1126,0,Dominica,Camels,LSU coefficient
+56,1126,0,Dominican Republic,Camels,LSU coefficient
+57,1126,0,Belarus,Camels,LSU coefficient
+58,1126,0,Ecuador,Camels,LSU coefficient
+59,1126,0.75,Egypt,Camels,LSU coefficient
+60,1126,0,El Salvador,Camels,LSU coefficient
+61,1126,0.7,Equatorial Guinea,Camels,LSU coefficient
+62,1126,0,Ethiopia PDR,Camels,LSU coefficient
+63,1126,0,Estonia,Camels,LSU coefficient
+64,1126,0,Faroe Islands,Camels,LSU coefficient
+65,1126,0,Falkland Islands (Malvinas),Camels,LSU coefficient
+66,1126,0,Fiji,Camels,LSU coefficient
+67,1126,0.9,Finland,Camels,LSU coefficient
+68,1126,0.9,France,Camels,LSU coefficient
+69,1126,0,French Guiana,Camels,LSU coefficient
+70,1126,0,French Polynesia,Camels,LSU coefficient
+71,1126,0,French Southern and Antarctic Territories,Camels,LSU coefficient
+72,1126,0.7,Djibouti,Camels,LSU coefficient
+73,1126,0,Georgia,Camels,LSU coefficient
+74,1126,0.7,Gabon,Camels,LSU coefficient
+75,1126,0.7,Gambia,Camels,LSU coefficient
+76,1126,0.75,NA,Camels,LSU coefficient
+77,1126,0,Germany Nl,Camels,LSU coefficient
+78,1126,0,Germany Fr,Camels,LSU coefficient
+79,1126,0.9,Germany,Camels,LSU coefficient
+80,1126,0,Bosnia and Herzegovina,Camels,LSU coefficient
+81,1126,0.7,Ghana,Camels,LSU coefficient
+82,1126,0,Gibraltar,Camels,LSU coefficient
+83,1126,0,Kiribati,Camels,LSU coefficient
+84,1126,0.9,Greece,Camels,LSU coefficient
+85,1126,0,Greenland,Camels,LSU coefficient
+86,1126,0,Grenada,Camels,LSU coefficient
+87,1126,0,Guadeloupe,Camels,LSU coefficient
+88,1126,0,Guam,Camels,LSU coefficient
+89,1126,0,Guatemala,Camels,LSU coefficient
+90,1126,0.7,Guinea,Camels,LSU coefficient
+91,1126,0,Guyana,Camels,LSU coefficient
+92,1126,0,Heard and McDonald Islands,Camels,LSU coefficient
+93,1126,0,Haiti,Camels,LSU coefficient
+94,1126,0,Holy See,Camels,LSU coefficient
+95,1126,0,Honduras,Camels,LSU coefficient
+96,1126,0.8,"China, Hong Kong SAR",Camels,LSU coefficient
+97,1126,0,Hungary,Camels,LSU coefficient
+98,1126,0,Croatia,Camels,LSU coefficient
+99,1126,0.9,Iceland,Camels,LSU coefficient
+100,1126,0,India,Camels,LSU coefficient
+101,1126,0.8,Indonesia,Camels,LSU coefficient
+102,1126,0.75,Iran (Islamic Republic of),Camels,LSU coefficient
+103,1126,0.75,Iraq,Camels,LSU coefficient
+104,1126,0.9,Ireland,Camels,LSU coefficient
+105,1126,0,Israel,Camels,LSU coefficient
+106,1126,0.9,Italy,Camels,LSU coefficient
+107,1126,0.7,Côte d'Ivoire,Camels,LSU coefficient
+108,1126,0,Kazakhstan,Camels,LSU coefficient
+109,1126,0,Jamaica,Camels,LSU coefficient
+110,1126,0.9,Japan,Camels,LSU coefficient
+111,1126,0,Johnston Island,Camels,LSU coefficient
+112,1126,0.75,Jordan,Camels,LSU coefficient
+113,1126,0,Kyrgyzstan,Camels,LSU coefficient
+114,1126,0.7,Kenya,Camels,LSU coefficient
+115,1126,0.8,Cambodia,Camels,LSU coefficient
+116,1126,0.8,Democratic People's Republic of Korea,Camels,LSU coefficient
+117,1126,0.8,Republic of Korea,Camels,LSU coefficient
+118,1126,0.75,Kuwait,Camels,LSU coefficient
+119,1126,0,Latvia,Camels,LSU coefficient
+120,1126,0.8,Lao People's Democratic Republic,Camels,LSU coefficient
+121,1126,0.75,Lebanon,Camels,LSU coefficient
+122,1126,0.7,Lesotho,Camels,LSU coefficient
+123,1126,0.7,Liberia,Camels,LSU coefficient
+124,1126,0.75,Libya,Camels,LSU coefficient
+125,1126,0,Liechtenstein,Camels,LSU coefficient
+126,1126,0,Lithuania,Camels,LSU coefficient
+127,1126,0,Marshall Islands,Camels,LSU coefficient
+128,1126,0.8,"China, Macao SAR",Camels,LSU coefficient
+129,1126,0.7,Madagascar,Camels,LSU coefficient
+130,1126,0.7,Malawi,Camels,LSU coefficient
+131,1126,0.8,Malaysia,Camels,LSU coefficient
+132,1126,0,Maldives,Camels,LSU coefficient
+133,1126,0.7,Mali,Camels,LSU coefficient
+134,1126,0,Malta,Camels,LSU coefficient
+135,1126,0,Martinique,Camels,LSU coefficient
+136,1126,0.7,Mauritania,Camels,LSU coefficient
+137,1126,0.7,Mauritius,Camels,LSU coefficient
+138,1126,0,Mexico,Camels,LSU coefficient
+139,1126,0,Midway Island,Camels,LSU coefficient
+140,1126,0,Monaco,Camels,LSU coefficient
+141,1126,0.8,Mongolia,Camels,LSU coefficient
+142,1126,0,Montserrat,Camels,LSU coefficient
+143,1126,0.75,Morocco,Camels,LSU coefficient
+144,1126,0.7,Mozambique,Camels,LSU coefficient
+145,1126,0,Micronesia (Federated States of),Camels,LSU coefficient
+146,1126,0,Republic of Moldova,Camels,LSU coefficient
+147,1126,0.7,Namibia,Camels,LSU coefficient
+148,1126,0,Nauru,Camels,LSU coefficient
+149,1126,0,Nepal,Camels,LSU coefficient
+150,1126,0.9,Netherlands,Camels,LSU coefficient
+151,1126,0,Netherlands Antilles (former),Camels,LSU coefficient
+152,1126,0,Neutral Zone,Camels,LSU coefficient
+153,1126,0,New Caledonia,Camels,LSU coefficient
+154,1126,0,North Macedonia,Camels,LSU coefficient
+155,1126,0,Vanuatu,Camels,LSU coefficient
+156,1126,0.9,New Zealand,Camels,LSU coefficient
+157,1126,0,Nicaragua,Camels,LSU coefficient
+158,1126,0.7,Niger,Camels,LSU coefficient
+159,1126,0.7,Nigeria,Camels,LSU coefficient
+160,1126,0,Niue,Camels,LSU coefficient
+161,1126,0,Norfolk Island,Camels,LSU coefficient
+162,1126,0.9,Norway,Camels,LSU coefficient
+163,1126,0,Northern Mariana Islands,Camels,LSU coefficient
+164,1126,0,Pacific Islands Trust Territory,Camels,LSU coefficient
+165,1126,0,Pakistan,Camels,LSU coefficient
+166,1126,0,Panama,Camels,LSU coefficient
+167,1126,0,Czechia,Camels,LSU coefficient
+168,1126,0,Papua New Guinea,Camels,LSU coefficient
+169,1126,0,Paraguay,Camels,LSU coefficient
+170,1126,0,Peru,Camels,LSU coefficient
+171,1126,0.8,Philippines,Camels,LSU coefficient
+172,1126,0,Pitcairn Islands,Camels,LSU coefficient
+173,1126,0,Poland,Camels,LSU coefficient
+174,1126,0.9,Portugal,Camels,LSU coefficient
+175,1126,0.7,Guinea-Bissau,Camels,LSU coefficient
+176,1126,0.8,Timor-Leste,Camels,LSU coefficient
+177,1126,0,Puerto Rico,Camels,LSU coefficient
+178,1126,0.7,Eritrea,Camels,LSU coefficient
+179,1126,0.75,Qatar,Camels,LSU coefficient
+180,1126,0,Palau,Camels,LSU coefficient
+181,1126,0.7,Zimbabwe,Camels,LSU coefficient
+182,1126,0.7,Réunion,Camels,LSU coefficient
+183,1126,0,Romania,Camels,LSU coefficient
+184,1126,0.7,Rwanda,Camels,LSU coefficient
+185,1126,0,Russian Federation,Camels,LSU coefficient
+186,1126,0,Serbia and Montenegro,Camels,LSU coefficient
+187,1126,0.7,"Saint Helena, Ascension and Tristan da Cunha",Camels,LSU coefficient
+188,1126,0,Saint Kitts and Nevis,Camels,LSU coefficient
+189,1126,0,Saint Lucia,Camels,LSU coefficient
+190,1126,0,Saint Pierre and Miquelon,Camels,LSU coefficient
+191,1126,0,Saint Vincent and the Grenadines,Camels,LSU coefficient
+192,1126,0,San Marino,Camels,LSU coefficient
+193,1126,0.7,Sao Tome and Principe,Camels,LSU coefficient
+194,1126,0.75,Saudi Arabia,Camels,LSU coefficient
+195,1126,0.7,Senegal,Camels,LSU coefficient
+196,1126,0.7,Seychelles,Camels,LSU coefficient
+197,1126,0.7,Sierra Leone,Camels,LSU coefficient
+198,1126,0,Slovenia,Camels,LSU coefficient
+199,1126,0,Slovakia,Camels,LSU coefficient
+200,1126,0.8,Singapore,Camels,LSU coefficient
+201,1126,0.7,Somalia,Camels,LSU coefficient
+202,1126,0,South Africa,Camels,LSU coefficient
+203,1126,0.9,Spain,Camels,LSU coefficient
+205,1126,0.7,Western Sahara,Camels,LSU coefficient
+206,1126,0.7,Sudan (former),Camels,LSU coefficient
+207,1126,0,Suriname,Camels,LSU coefficient
+208,1126,0,Tajikistan,Camels,LSU coefficient
+209,1126,0.7,Eswatini,Camels,LSU coefficient
+210,1126,0.9,Sweden,Camels,LSU coefficient
+211,1126,0.9,Switzerland,Camels,LSU coefficient
+212,1126,0.75,Syrian Arab Republic,Camels,LSU coefficient
+213,1126,0,Turkmenistan,Camels,LSU coefficient
+214,1126,0.8,"China, Taiwan Province of",Camels,LSU coefficient
+215,1126,0.7,United Republic of Tanzania,Camels,LSU coefficient
+216,1126,0.8,Thailand,Camels,LSU coefficient
+217,1126,0.7,Togo,Camels,LSU coefficient
+218,1126,0,Tokelau,Camels,LSU coefficient
+219,1126,0,Tonga,Camels,LSU coefficient
+220,1126,0,Trinidad and Tobago,Camels,LSU coefficient
+221,1126,0.75,Oman,Camels,LSU coefficient
+222,1126,0.75,Tunisia,Camels,LSU coefficient
+223,1126,0.75,Turkey,Camels,LSU coefficient
+224,1126,0,Turks and Caicos Islands,Camels,LSU coefficient
+225,1126,0.75,United Arab Emirates,Camels,LSU coefficient
+226,1126,0.7,Uganda,Camels,LSU coefficient
+227,1126,0,Tuvalu,Camels,LSU coefficient
+228,1126,0,USSR,Camels,LSU coefficient
+229,1126,0.9,United Kingdom,Camels,LSU coefficient
+230,1126,0,Ukraine,Camels,LSU coefficient
+231,1126,0,United States of America,Camels,LSU coefficient
+232,1126,0,US Minor Is.,Camels,LSU coefficient
+233,1126,0.7,Burkina Faso,Camels,LSU coefficient
+234,1126,0,Uruguay,Camels,LSU coefficient
+235,1126,0,Uzbekistan,Camels,LSU coefficient
+236,1126,0,Venezuela (Bolivarian Republic of),Camels,LSU coefficient
+237,1126,0.8,Viet Nam,Camels,LSU coefficient
+238,1126,0.7,Ethiopia,Camels,LSU coefficient
+239,1126,0,British Virgin Islands,Camels,LSU coefficient
+240,1126,0,United States Virgin Islands,Camels,LSU coefficient
+242,1126,0,Wake Island,Camels,LSU coefficient
+243,1126,0,Wallis and Futuna Islands,Camels,LSU coefficient
+244,1126,0,Samoa,Camels,LSU coefficient
+245,1126,0.75,NA,Camels,LSU coefficient
+246,1126,0,Yemen Ar Rp,Camels,LSU coefficient
+247,1126,0,Yemen Dem,Camels,LSU coefficient
+248,1126,0,Yugoslav SFR,Camels,LSU coefficient
+249,1126,0.75,Yemen,Camels,LSU coefficient
+250,1126,0.7,Democratic Republic of the Congo,Camels,LSU coefficient
+251,1126,0.7,Zambia,Camels,LSU coefficient
+252,1126,0,Unspecified Area,Camels,LSU coefficient
+255,1126,0.9,Belgium,Camels,LSU coefficient
+256,1126,0.9,Luxembourg,Camels,LSU coefficient
+258,1126,0,Anguilla,Camels,LSU coefficient
+259,1126,0,Channel Islands,Camels,LSU coefficient
+260,1126,0,Svalbard and Jan Mayen Islands,Camels,LSU coefficient
+264,1126,0,Isle of Man,Camels,LSU coefficient
+270,1126,0,Mayotte,Camels,LSU coefficient
+271,1126,0,South Georgia and the South Sandwich Islands,Camels,LSU coefficient
+272,1126,0,Serbia,Camels,LSU coefficient
+273,1126,0,Montenegro,Camels,LSU coefficient
+274,1126,0,Guernsey,Camels,LSU coefficient
+275,1126,0,Kosovo,Camels,LSU coefficient
+276,1126,0.7,Sudan,Camels,LSU coefficient
+277,1126,0.7,South Sudan,Camels,LSU coefficient
+278,1126,0,"Bonaire, Sint Eustatius and Saba",Camels,LSU coefficient
+279,1126,0,Curaçao,Camels,LSU coefficient
+280,1126,0,Sint Maarten (Dutch Part),Camels,LSU coefficient
+281,1126,0,Saint-Martin (French Part),Camels,LSU coefficient
+282,1126,0,Saint Barthélemy,Camels,LSU coefficient
+283,1126,0,Jersey,Camels,LSU coefficient
+284,1126,0,Åland Islands,Camels,LSU coefficient
+285,1126,0,Sark,Camels,LSU coefficient
+299,1126,0.75,Palestine,Camels,LSU coefficient
+1,1057,0.01,Armenia,Chickens,LSU coefficient
+2,1057,0.01,Afghanistan,Chickens,LSU coefficient
+3,1057,0.01,Albania,Chickens,LSU coefficient
+4,1057,0.01,Algeria,Chickens,LSU coefficient
+5,1057,0.01,American Samoa,Chickens,LSU coefficient
+6,1057,0.01,Andorra,Chickens,LSU coefficient
+7,1057,0.01,Angola,Chickens,LSU coefficient
+8,1057,0.01,Antigua and Barbuda,Chickens,LSU coefficient
+9,1057,0.01,Argentina,Chickens,LSU coefficient
+10,1057,0.01,Australia,Chickens,LSU coefficient
+11,1057,0.01,Austria,Chickens,LSU coefficient
+12,1057,0.01,Bahamas,Chickens,LSU coefficient
+13,1057,0.01,Bahrain,Chickens,LSU coefficient
+14,1057,0.01,Barbados,Chickens,LSU coefficient
+15,1057,0.01,Belgium-Luxembourg,Chickens,LSU coefficient
+16,1057,0.01,Bangladesh,Chickens,LSU coefficient
+17,1057,0.01,Bermuda,Chickens,LSU coefficient
+18,1057,0.01,Bhutan,Chickens,LSU coefficient
+19,1057,0.01,Bolivia (Plurinational State of),Chickens,LSU coefficient
+20,1057,0.01,Botswana,Chickens,LSU coefficient
+21,1057,0.01,Brazil,Chickens,LSU coefficient
+22,1057,0.01,Aruba,Chickens,LSU coefficient
+23,1057,0.01,Belize,Chickens,LSU coefficient
+24,1057,0.01,British Indian Ocean Territory,Chickens,LSU coefficient
+25,1057,0.01,Solomon Islands,Chickens,LSU coefficient
+26,1057,0.01,Brunei Darussalam,Chickens,LSU coefficient
+27,1057,0.01,Bulgaria,Chickens,LSU coefficient
+28,1057,0.01,Myanmar,Chickens,LSU coefficient
+29,1057,0.01,Burundi,Chickens,LSU coefficient
+30,1057,0.01,Antarctica,Chickens,LSU coefficient
+31,1057,0.01,Bouvet Island,Chickens,LSU coefficient
+32,1057,0.01,Cameroon,Chickens,LSU coefficient
+33,1057,0.01,Canada,Chickens,LSU coefficient
+34,1057,0.01,Canton and Enderbury Islands,Chickens,LSU coefficient
+35,1057,0.01,Cabo Verde,Chickens,LSU coefficient
+36,1057,0.01,Cayman Islands,Chickens,LSU coefficient
+37,1057,0.01,Central African Republic,Chickens,LSU coefficient
+38,1057,0.01,Sri Lanka,Chickens,LSU coefficient
+39,1057,0.01,Chad,Chickens,LSU coefficient
+40,1057,0.01,Chile,Chickens,LSU coefficient
+41,1057,0.01,"China, mainland",Chickens,LSU coefficient
+42,1057,0.01,Christmas Island,Chickens,LSU coefficient
+43,1057,0.01,Cocos (Keeling) Islands,Chickens,LSU coefficient
+44,1057,0.01,Colombia,Chickens,LSU coefficient
+45,1057,0.01,Comoros,Chickens,LSU coefficient
+46,1057,0.01,Congo,Chickens,LSU coefficient
+47,1057,0.01,Cook Islands,Chickens,LSU coefficient
+48,1057,0.01,Costa Rica,Chickens,LSU coefficient
+49,1057,0.01,Cuba,Chickens,LSU coefficient
+50,1057,0.01,Cyprus,Chickens,LSU coefficient
+51,1057,0.01,Czechoslovakia,Chickens,LSU coefficient
+52,1057,0.01,Azerbaijan,Chickens,LSU coefficient
+53,1057,0.01,Benin,Chickens,LSU coefficient
+54,1057,0.01,Denmark,Chickens,LSU coefficient
+55,1057,0.01,Dominica,Chickens,LSU coefficient
+56,1057,0.01,Dominican Republic,Chickens,LSU coefficient
+57,1057,0.01,Belarus,Chickens,LSU coefficient
+58,1057,0.01,Ecuador,Chickens,LSU coefficient
+59,1057,0.01,Egypt,Chickens,LSU coefficient
+60,1057,0.01,El Salvador,Chickens,LSU coefficient
+61,1057,0.01,Equatorial Guinea,Chickens,LSU coefficient
+62,1057,0.01,Ethiopia PDR,Chickens,LSU coefficient
+63,1057,0.01,Estonia,Chickens,LSU coefficient
+64,1057,0.01,Faroe Islands,Chickens,LSU coefficient
+65,1057,0.01,Falkland Islands (Malvinas),Chickens,LSU coefficient
+66,1057,0.01,Fiji,Chickens,LSU coefficient
+67,1057,0.01,Finland,Chickens,LSU coefficient
+68,1057,0.01,France,Chickens,LSU coefficient
+69,1057,0.01,French Guiana,Chickens,LSU coefficient
+70,1057,0.01,French Polynesia,Chickens,LSU coefficient
+71,1057,0.01,French Southern and Antarctic Territories,Chickens,LSU coefficient
+72,1057,0.01,Djibouti,Chickens,LSU coefficient
+73,1057,0.01,Georgia,Chickens,LSU coefficient
+74,1057,0.01,Gabon,Chickens,LSU coefficient
+75,1057,0.01,Gambia,Chickens,LSU coefficient
+76,1057,0.01,NA,Chickens,LSU coefficient
+77,1057,0.01,Germany Nl,Chickens,LSU coefficient
+78,1057,0.01,Germany Fr,Chickens,LSU coefficient
+79,1057,0.01,Germany,Chickens,LSU coefficient
+80,1057,0.01,Bosnia and Herzegovina,Chickens,LSU coefficient
+81,1057,0.01,Ghana,Chickens,LSU coefficient
+82,1057,0.01,Gibraltar,Chickens,LSU coefficient
+83,1057,0.01,Kiribati,Chickens,LSU coefficient
+84,1057,0.01,Greece,Chickens,LSU coefficient
+85,1057,0.01,Greenland,Chickens,LSU coefficient
+86,1057,0.01,Grenada,Chickens,LSU coefficient
+87,1057,0.01,Guadeloupe,Chickens,LSU coefficient
+88,1057,0.01,Guam,Chickens,LSU coefficient
+89,1057,0.01,Guatemala,Chickens,LSU coefficient
+90,1057,0.01,Guinea,Chickens,LSU coefficient
+91,1057,0.01,Guyana,Chickens,LSU coefficient
+92,1057,0.01,Heard and McDonald Islands,Chickens,LSU coefficient
+93,1057,0.01,Haiti,Chickens,LSU coefficient
+94,1057,0.01,Holy See,Chickens,LSU coefficient
+95,1057,0.01,Honduras,Chickens,LSU coefficient
+96,1057,0.01,"China, Hong Kong SAR",Chickens,LSU coefficient
+97,1057,0.01,Hungary,Chickens,LSU coefficient
+98,1057,0.01,Croatia,Chickens,LSU coefficient
+99,1057,0.01,Iceland,Chickens,LSU coefficient
+100,1057,0.01,India,Chickens,LSU coefficient
+101,1057,0.01,Indonesia,Chickens,LSU coefficient
+102,1057,0.01,Iran (Islamic Republic of),Chickens,LSU coefficient
+103,1057,0.01,Iraq,Chickens,LSU coefficient
+104,1057,0.01,Ireland,Chickens,LSU coefficient
+105,1057,0.01,Israel,Chickens,LSU coefficient
+106,1057,0.01,Italy,Chickens,LSU coefficient
+107,1057,0.01,Côte d'Ivoire,Chickens,LSU coefficient
+108,1057,0.01,Kazakhstan,Chickens,LSU coefficient
+109,1057,0.01,Jamaica,Chickens,LSU coefficient
+110,1057,0.01,Japan,Chickens,LSU coefficient
+111,1057,0.01,Johnston Island,Chickens,LSU coefficient
+112,1057,0.01,Jordan,Chickens,LSU coefficient
+113,1057,0.01,Kyrgyzstan,Chickens,LSU coefficient
+114,1057,0.01,Kenya,Chickens,LSU coefficient
+115,1057,0.01,Cambodia,Chickens,LSU coefficient
+116,1057,0.01,Democratic People's Republic of Korea,Chickens,LSU coefficient
+117,1057,0.01,Republic of Korea,Chickens,LSU coefficient
+118,1057,0.01,Kuwait,Chickens,LSU coefficient
+119,1057,0.01,Latvia,Chickens,LSU coefficient
+120,1057,0.01,Lao People's Democratic Republic,Chickens,LSU coefficient
+121,1057,0.01,Lebanon,Chickens,LSU coefficient
+122,1057,0.01,Lesotho,Chickens,LSU coefficient
+123,1057,0.01,Liberia,Chickens,LSU coefficient
+124,1057,0.01,Libya,Chickens,LSU coefficient
+125,1057,0.01,Liechtenstein,Chickens,LSU coefficient
+126,1057,0.01,Lithuania,Chickens,LSU coefficient
+127,1057,0.01,Marshall Islands,Chickens,LSU coefficient
+128,1057,0.01,"China, Macao SAR",Chickens,LSU coefficient
+129,1057,0.01,Madagascar,Chickens,LSU coefficient
+130,1057,0.01,Malawi,Chickens,LSU coefficient
+131,1057,0.01,Malaysia,Chickens,LSU coefficient
+132,1057,0.01,Maldives,Chickens,LSU coefficient
+133,1057,0.01,Mali,Chickens,LSU coefficient
+134,1057,0.01,Malta,Chickens,LSU coefficient
+135,1057,0.01,Martinique,Chickens,LSU coefficient
+136,1057,0.01,Mauritania,Chickens,LSU coefficient
+137,1057,0.01,Mauritius,Chickens,LSU coefficient
+138,1057,0.01,Mexico,Chickens,LSU coefficient
+139,1057,0.01,Midway Island,Chickens,LSU coefficient
+140,1057,0.01,Monaco,Chickens,LSU coefficient
+141,1057,0.01,Mongolia,Chickens,LSU coefficient
+142,1057,0.01,Montserrat,Chickens,LSU coefficient
+143,1057,0.01,Morocco,Chickens,LSU coefficient
+144,1057,0.01,Mozambique,Chickens,LSU coefficient
+145,1057,0.01,Micronesia (Federated States of),Chickens,LSU coefficient
+146,1057,0.01,Republic of Moldova,Chickens,LSU coefficient
+147,1057,0.01,Namibia,Chickens,LSU coefficient
+148,1057,0.01,Nauru,Chickens,LSU coefficient
+149,1057,0.01,Nepal,Chickens,LSU coefficient
+150,1057,0.01,Netherlands,Chickens,LSU coefficient
+151,1057,0.01,Netherlands Antilles (former),Chickens,LSU coefficient
+152,1057,0.01,Neutral Zone,Chickens,LSU coefficient
+153,1057,0.01,New Caledonia,Chickens,LSU coefficient
+154,1057,0.01,North Macedonia,Chickens,LSU coefficient
+155,1057,0.01,Vanuatu,Chickens,LSU coefficient
+156,1057,0.01,New Zealand,Chickens,LSU coefficient
+157,1057,0.01,Nicaragua,Chickens,LSU coefficient
+158,1057,0.01,Niger,Chickens,LSU coefficient
+159,1057,0.01,Nigeria,Chickens,LSU coefficient
+160,1057,0.01,Niue,Chickens,LSU coefficient
+161,1057,0.01,Norfolk Island,Chickens,LSU coefficient
+162,1057,0.01,Norway,Chickens,LSU coefficient
+163,1057,0.01,Northern Mariana Islands,Chickens,LSU coefficient
+164,1057,0.01,Pacific Islands Trust Territory,Chickens,LSU coefficient
+165,1057,0.01,Pakistan,Chickens,LSU coefficient
+166,1057,0.01,Panama,Chickens,LSU coefficient
+167,1057,0.01,Czechia,Chickens,LSU coefficient
+168,1057,0.01,Papua New Guinea,Chickens,LSU coefficient
+169,1057,0.01,Paraguay,Chickens,LSU coefficient
+170,1057,0.01,Peru,Chickens,LSU coefficient
+171,1057,0.01,Philippines,Chickens,LSU coefficient
+172,1057,0.01,Pitcairn Islands,Chickens,LSU coefficient
+173,1057,0.01,Poland,Chickens,LSU coefficient
+174,1057,0.01,Portugal,Chickens,LSU coefficient
+175,1057,0.01,Guinea-Bissau,Chickens,LSU coefficient
+176,1057,0.01,Timor-Leste,Chickens,LSU coefficient
+177,1057,0.01,Puerto Rico,Chickens,LSU coefficient
+178,1057,0.01,Eritrea,Chickens,LSU coefficient
+179,1057,0.01,Qatar,Chickens,LSU coefficient
+180,1057,0.01,Palau,Chickens,LSU coefficient
+181,1057,0.01,Zimbabwe,Chickens,LSU coefficient
+182,1057,0.01,Réunion,Chickens,LSU coefficient
+183,1057,0.01,Romania,Chickens,LSU coefficient
+184,1057,0.01,Rwanda,Chickens,LSU coefficient
+185,1057,0.01,Russian Federation,Chickens,LSU coefficient
+186,1057,0.01,Serbia and Montenegro,Chickens,LSU coefficient
+187,1057,0.01,"Saint Helena, Ascension and Tristan da Cunha",Chickens,LSU coefficient
+188,1057,0.01,Saint Kitts and Nevis,Chickens,LSU coefficient
+189,1057,0.01,Saint Lucia,Chickens,LSU coefficient
+190,1057,0.01,Saint Pierre and Miquelon,Chickens,LSU coefficient
+191,1057,0.01,Saint Vincent and the Grenadines,Chickens,LSU coefficient
+192,1057,0.01,San Marino,Chickens,LSU coefficient
+193,1057,0.01,Sao Tome and Principe,Chickens,LSU coefficient
+194,1057,0.01,Saudi Arabia,Chickens,LSU coefficient
+195,1057,0.01,Senegal,Chickens,LSU coefficient
+196,1057,0.01,Seychelles,Chickens,LSU coefficient
+197,1057,0.01,Sierra Leone,Chickens,LSU coefficient
+198,1057,0.01,Slovenia,Chickens,LSU coefficient
+199,1057,0.01,Slovakia,Chickens,LSU coefficient
+200,1057,0.01,Singapore,Chickens,LSU coefficient
+201,1057,0.01,Somalia,Chickens,LSU coefficient
+202,1057,0.01,South Africa,Chickens,LSU coefficient
+203,1057,0.01,Spain,Chickens,LSU coefficient
+205,1057,0.01,Western Sahara,Chickens,LSU coefficient
+206,1057,0.01,Sudan (former),Chickens,LSU coefficient
+207,1057,0.01,Suriname,Chickens,LSU coefficient
+208,1057,0.01,Tajikistan,Chickens,LSU coefficient
+209,1057,0.01,Eswatini,Chickens,LSU coefficient
+210,1057,0.01,Sweden,Chickens,LSU coefficient
+211,1057,0.01,Switzerland,Chickens,LSU coefficient
+212,1057,0.01,Syrian Arab Republic,Chickens,LSU coefficient
+213,1057,0.01,Turkmenistan,Chickens,LSU coefficient
+214,1057,0.01,"China, Taiwan Province of",Chickens,LSU coefficient
+215,1057,0.01,United Republic of Tanzania,Chickens,LSU coefficient
+216,1057,0.01,Thailand,Chickens,LSU coefficient
+217,1057,0.01,Togo,Chickens,LSU coefficient
+218,1057,0.01,Tokelau,Chickens,LSU coefficient
+219,1057,0.01,Tonga,Chickens,LSU coefficient
+220,1057,0.01,Trinidad and Tobago,Chickens,LSU coefficient
+221,1057,0.01,Oman,Chickens,LSU coefficient
+222,1057,0.01,Tunisia,Chickens,LSU coefficient
+223,1057,0.01,Turkey,Chickens,LSU coefficient
+224,1057,0.01,Turks and Caicos Islands,Chickens,LSU coefficient
+225,1057,0.01,United Arab Emirates,Chickens,LSU coefficient
+226,1057,0.01,Uganda,Chickens,LSU coefficient
+227,1057,0.01,Tuvalu,Chickens,LSU coefficient
+228,1057,0.01,USSR,Chickens,LSU coefficient
+229,1057,0.01,United Kingdom,Chickens,LSU coefficient
+230,1057,0.01,Ukraine,Chickens,LSU coefficient
+231,1057,0.01,United States of America,Chickens,LSU coefficient
+232,1057,0.01,US Minor Is.,Chickens,LSU coefficient
+233,1057,0.01,Burkina Faso,Chickens,LSU coefficient
+234,1057,0.01,Uruguay,Chickens,LSU coefficient
+235,1057,0.01,Uzbekistan,Chickens,LSU coefficient
+236,1057,0.01,Venezuela (Bolivarian Republic of),Chickens,LSU coefficient
+237,1057,0.01,Viet Nam,Chickens,LSU coefficient
+238,1057,0.01,Ethiopia,Chickens,LSU coefficient
+239,1057,0.01,British Virgin Islands,Chickens,LSU coefficient
+240,1057,0.01,United States Virgin Islands,Chickens,LSU coefficient
+242,1057,0.01,Wake Island,Chickens,LSU coefficient
+243,1057,0.01,Wallis and Futuna Islands,Chickens,LSU coefficient
+244,1057,0.01,Samoa,Chickens,LSU coefficient
+245,1057,0.01,NA,Chickens,LSU coefficient
+246,1057,0.01,Yemen Ar Rp,Chickens,LSU coefficient
+247,1057,0.01,Yemen Dem,Chickens,LSU coefficient
+248,1057,0.01,Yugoslav SFR,Chickens,LSU coefficient
+249,1057,0.01,Yemen,Chickens,LSU coefficient
+250,1057,0.01,Democratic Republic of the Congo,Chickens,LSU coefficient
+251,1057,0.01,Zambia,Chickens,LSU coefficient
+252,1057,0.01,Unspecified Area,Chickens,LSU coefficient
+255,1057,0.01,Belgium,Chickens,LSU coefficient
+256,1057,0.01,Luxembourg,Chickens,LSU coefficient
+258,1057,0.01,Anguilla,Chickens,LSU coefficient
+259,1057,0.01,Channel Islands,Chickens,LSU coefficient
+260,1057,0.01,Svalbard and Jan Mayen Islands,Chickens,LSU coefficient
+264,1057,0.01,Isle of Man,Chickens,LSU coefficient
+270,1057,0.01,Mayotte,Chickens,LSU coefficient
+271,1057,0.01,South Georgia and the South Sandwich Islands,Chickens,LSU coefficient
+272,1057,0.01,Serbia,Chickens,LSU coefficient
+273,1057,0.01,Montenegro,Chickens,LSU coefficient
+274,1057,0.01,Guernsey,Chickens,LSU coefficient
+275,1057,0.01,Kosovo,Chickens,LSU coefficient
+276,1057,0.01,Sudan,Chickens,LSU coefficient
+277,1057,0.01,South Sudan,Chickens,LSU coefficient
+278,1057,0.01,"Bonaire, Sint Eustatius and Saba",Chickens,LSU coefficient
+279,1057,0.01,Curaçao,Chickens,LSU coefficient
+280,1057,0.01,Sint Maarten (Dutch Part),Chickens,LSU coefficient
+281,1057,0.01,Saint-Martin (French Part),Chickens,LSU coefficient
+282,1057,0.01,Saint Barthélemy,Chickens,LSU coefficient
+283,1057,0.01,Jersey,Chickens,LSU coefficient
+284,1057,0.01,Åland Islands,Chickens,LSU coefficient
+285,1057,0.01,Sark,Chickens,LSU coefficient
+299,1057,0.01,Palestine,Chickens,LSU coefficient

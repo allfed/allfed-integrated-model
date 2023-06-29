@@ -23,6 +23,7 @@ Functionality required
  # DONE: fixed the milk birth... as animals need to give birth constantly to produce milk. THis is now refectyed
  # fix the pregannt population to be effected by homekill and other death from starvation (currently only effected by slaughter)
  # how to allocate when human edible feed is sent to animals? 20% starvation?
+ # change how feed is attributed, make the DI% occur in a modular way, remove from the feed required calauclations (use net energy there, not gross energy)
 
 """
 from pathlib import Path
@@ -48,6 +49,25 @@ class CountryData:
         self.homekill_hours_budget = []
         self.meat_output = []
         self.spare_slaughter_hours = 0
+
+
+    def set_livestock_unit_factors(self, df_country_info, df_regional_conversion_factors):
+        """
+        Requires inputs of the country info dataframe, and the regional conversion factors dataframe
+        df_regional_conversion_factors dataframe contains the conversion factors for the LSU for each animal type, based on ther region.
+        And the other, df_country_info contains the mapping from the country to the region.
+        """
+        
+        #get region from country info dataframe
+        self.EK_region = df_country_info[df_country_info.index == self.country_name]["FAO-region-EK"].values[0]
+
+        # now given the region, get the conversion factors for the LSU
+        # store them in a dict with the species:value format
+        # in this imnstance, the columns are the regions and the index is the animal type (so the index needs to be saved in to the dict as the 'species')
+        conversion_factors = df_regional_conversion_factors[self.EK_region].to_dict()
+        self.LSU_conversion_factors = {key:value for key, value in conversion_factors.items()}
+        print(self.LSU_conversion_factors)
+        
 
     def homekill_desperation_parameters(self):
         """
@@ -107,7 +127,7 @@ class AnimalSpecies:
         Object containing the nutrition ratio for the animal type
 
     """
-    def __init__(self, animal_type, animal_species, population, slaughter, animal_function, feed_LSU, digestion_type, approximate_feed_conversion, digestion_efficiency = 0.5, carb_requirement=-1, protein_requirement=-1, fat_requirement=-1):
+    def __init__(self, animal_type, animal_species, population, slaughter, animal_function, feed_LSU, digestion_type, approximate_feed_conversion, digestion_efficiency_grass = 0.6, digestion_efficiency_feed = 0.8, carb_requirement=-1, protein_requirement=-1, fat_requirement=-1):
         # basic attributes
         self.animal_type = animal_type
         self.animal_species = animal_species
@@ -121,8 +141,7 @@ class AnimalSpecies:
         self.feed_LSU = feed_LSU
         self.digestion_type = digestion_type
         self.approximate_feed_conversion = approximate_feed_conversion # note this only used for ranking the efficiency, not used for calculating the feed required
-        self.digestion_efficiency = digestion_efficiency # this is the conversion from gross energy to net energy
-        self.feed_balance = self.feed_required_per_month_species() # this is the feed required per month for the species
+        self.digestion_efficiency = {"grass":digestion_efficiency_grass, "feed":digestion_efficiency_feed } # this is the conversion from gross energy to net energy
         self.population_fed = 0 # a variable to store the number of animals fed this month, overwritten and not a list (useful for handling the case where animals are fed more than once per month (i.e a ruminent eats grass and grain))
         self.population_starving_pre_slaughter = [] # will be appended to, population - population fed each month.
         self.population_starving_month = []
@@ -149,6 +168,12 @@ class AnimalSpecies:
                 fat_units='ratio of fat in diet required',
                 protein_units='ratio of protein in diet required',
             )
+    def set_LSU_attributes(self, country_object):
+        
+        LSU_factor = country_object.LSU_conversion_factors[self.animal_species]
+        self.NE_balance = self.reset_NE_balance(LSU_factor) # this is the feed required per month for the species
+
+
 
     def set_species_milk_attributes(self, productive_milk_age_start, productive_milk_age_end, insemination_cycle_time_for_milk, milk_production_per_month_per_head=None):
 
@@ -283,45 +308,54 @@ class AnimalSpecies:
         return exported_births
     
 
-    def net_energy_required_per_month(self):
+    def net_energy_required_per_month(self,LSU_factor=1):
         # this section based on:
         # Livestock unit calculation: a method based on energy requirements to refine the study of livestock farming systems
         # NRAE Prod. Anim., 2021, 34 (2), 139e-160e
         # https://productions-animales.org/article/view/4855/17716
 
-        # consider adopting their method for a finer grain analysis if required.
-        # probably over-estimates the energy required for chickens...
-
-        one_year_NEt =  29000 # Mcal per year #NEt = Net Energy Total for maintenance
-
+        one_year_NEt =  29000 # MJ per year NEt = Net Energy Total (MJ/year)
+        
         # one billion kcals is the default unit for the food object
         # 1*10^9 kcal = 1 billion kcal = 1*10^6 Mcal
-        # convert to billion kcals
-        one_LSU_monthly_billion_kcal = (one_year_NEt / 12) / 4.187 * 1000 / 1e9 # 12 months ina  year, 4.187 to convert to kcal, 1000 to convert to kcal from Mcal
         
-        return self.feed_LSU * one_LSU_monthly_billion_kcal
 
-    def feed_required_per_month_individual(self):
-        # function to calculate the total feed for this month for the species
-        #     (defaults to billion kcals, thousand tons monthly fat, thousand tons monthly protein)
-        # protein and fat is not currently used
-        # uses the net energy required per month function and the digestion efficiency
-        return Food(self.net_energy_required_per_month()/self.digestion_efficiency, -1, -1)
+        
+        # convert to billion kcals
+        one_LSU_monthly_billion_kcal = ( (one_year_NEt / 12) / 4.187 ) * 1000 / 1e9 # 12 months ina  year, 4.187 to convert to kcal, 1000 to convert to kcal from Mcal
+        
+        return self.feed_LSU * one_LSU_monthly_billion_kcal * LSU_factor
+
+    def net_energy_required_per_species(self,LSU_factor):
+        """
+        Function to calculate the total net energy required per month for the species
+        """        
+        
+        return self.net_energy_required_per_month(LSU_factor) * self.current_population
+
+
+### TO DELETE
+    # def feed_required_per_month_individual(self):
+    #     # function to calculate the total feed for this month for the species
+    #     #     (defaults to billion kcals, thousand tons monthly fat, thousand tons monthly protein)
+    #     # protein and fat is not currently used
+    #     # uses the net energy required per month function and the digestion efficiency
+    #     return Food(self.net_energy_required_per_month()/self.digestion_efficiency, -1, -1)
     
-    def feed_required_per_month_species(self):
-        # function to calculate the total feed for this month for the species
-        #     (defaults to billion kcals, thousand tons monthly fat, thousand tons monthly protein)
-        # protein and fat is not currently used
-        # uses the net energy required per month function and the digestion efficiency
-        return Food(self.net_energy_required_per_month()/self.digestion_efficiency * self.current_population, -1, -1)
+    # def feed_required_per_month_species(self):
+    #     # function to calculate the total feed for this month for the species
+    #     #     (defaults to billion kcals, thousand tons monthly fat, thousand tons monthly protein)
+    #     # protein and fat is not currently used
+    #     # uses the net energy required per month function and the digestion efficiency
+    #     return Food(self.net_energy_required_per_month()/self.digestion_efficiency * self.current_population, -1, -1)
     
-    def reset_feed_balance(self):
+    def reset_NE_balance(self, LSU_factor = 1):
         """
         This function resets the feed balance to the feed required per month for the species
         Needs to be run before feeding the animals each month.
         
         """
-        self.feed_balance = self.feed_required_per_month_species() # this is the feed required per month for the species
+        self.NE_balance = Food(self.net_energy_required_per_species(LSU_factor) ,0,0)# this is the feed required per month for the species
 
     
     def feed_the_species(self, food_input):
@@ -353,29 +387,34 @@ class AnimalSpecies:
         """
 
         # function to feed the species
-        feed_required = self.feed_balance
+        NE_required = self.NE_balance.kcals
 
-        if self.feed_balance.kcals == 0:
+        if NE_required == 0:
             # no food required
             # print('no food required for ' + self.animal_type)
 
             return food_input 
         else:
+            DI_for_species = self.digestion_efficiency[food_input.type]
+            NE_in_food = food_input.kcals*DI_for_species
+            
             # only using kcals
-            if food_input.kcals > self.feed_balance.kcals:
+            if NE_in_food > NE_required:
                 # whole population is fed
                 self.population_fed = self.current_population
                 # update the food object
-                food_input.kcals -= self.feed_balance.kcals
-                self.feed_balance = Food(0,0,0)
+                NE_in_food -= NE_required
+                self.NE_balance = Food(0,0,0)
+                food_input.kcals = NE_in_food/DI_for_species
 
             else:
                 # not enough food to feed the whole population
                 # calculate the number of animals that can be fed
-                self.population_fed = round(food_input.kcals / self.feed_balance.kcals * self.current_population)
+                self.population_fed = round(NE_in_food / NE_required * self.current_population)
                 # update the food object
-                self.feed_balance.kcals -= food_input.kcals
+                NE_required -= NE_in_food
                 food_input.kcals = 0
+                self.NE_balance = Food(NE_required,0,0)
 
         return food_input
        
@@ -448,6 +487,48 @@ def read_animal_options():
 
     return df_animal_options
 
+
+def read_animal_regional_factors():
+    """"
+    Read animal nutrition data from CSV file
+
+    Returns
+    -------
+    df_animal_nutrition : pandas dataframe
+        Dataframe containing animal nutrition data
+    """
+    repo_root = git.Repo(".", search_parent_directories=True).working_dir
+    # Load data
+    animal_feed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
+
+    regional_coeffs_location = Path.joinpath(
+        Path(animal_feed_data_dir), "regional_conversion_factors.csv"
+    )
+
+    df_regional_coeffs = pd.read_csv(regional_coeffs_location, index_col="animal")
+
+    return df_regional_coeffs
+
+def read_country_data():
+    """"
+    Read animal nutrition data from CSV file
+
+    Returns
+    -------
+    df_animal_nutrition : pandas dataframe
+        Dataframe containing animal nutrition data
+    """
+    repo_root = git.Repo(".", search_parent_directories=True).working_dir
+    # Load data
+    animal_feed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
+
+    country_info_location = Path.joinpath(
+        Path(animal_feed_data_dir), "FAO_country_region_mappings.csv"
+    )
+    
+    df_country_info = pd.read_csv(country_info_location, index_col="alpha3")
+
+    return df_country_info
 
 def create_animal_objects(df_animal_stock_info, df_animal_attributes):
     """
@@ -644,6 +725,7 @@ def available_feed():
 
     # add the food objects together (EXAMPLE)
     feed = example_food1 + example_food2
+    feed.type = "feed"
 
     return feed
 
@@ -669,6 +751,7 @@ def available_grass():
     # all imports should be in GE, gross energy
     # calacuklation of NE is done in the feed animals function
     grass=Food(000,-1,-1)
+    grass.type="grass"
 
     return grass
 
@@ -686,7 +769,7 @@ def feed_animals(animal_list, ruminants, available_feed, available_grass):
     
     # reset the feed balance
     for animal in animal_list:
-        animal.reset_feed_balance()
+        animal.reset_NE_balance()
     
     # feed the ruminants grass
     for ruminant in ruminants:
@@ -1136,8 +1219,12 @@ def main(country_code):
     # read animal nutrition data
     df_animal_attributes = read_animal_nutrition_data()
 
-
     df_animal_options = read_animal_options()
+
+    df_regional_conversion_factors = read_animal_regional_factors()
+    
+    df_country_info = read_country_data()
+    
 
     # months to run the model for
     months_to_run = 24 # will be inherited from the calling function
@@ -1183,6 +1270,7 @@ def main(country_code):
     country_object = CountryData(country_code)
     country_object.calculate_homekill_hours()
     country_object.homekill_desperation_parameters()
+    country_object.set_livestock_unit_factors(df_country_info, df_regional_conversion_factors)
 
     #### END CREATION OF OBJECTS ####
 

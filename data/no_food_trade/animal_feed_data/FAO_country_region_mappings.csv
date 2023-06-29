@@ -1,0 +1,238 @@
+alpha3,country,FAO-region-EK
+AFG,Afghanistan,Near East and North Africa
+DZA,Algeria,Near East and North Africa
+BHR,Bahrain,Near East and North Africa
+CYP,Cyprus,Near East and North Africa
+EGY,Egypt,Near East and North Africa
+IRQ,Iraq,Near East and North Africa
+IRN,Islamic Republic of Iran,Near East and North Africa
+JOR,Jordan,Near East and North Africa
+KWT,Kuwait,Near East and North Africa
+LBN,Lebanon,Near East and North Africa
+LBY,Libya,Near East and North Africa
+MAR,Morocco,Near East and North Africa
+PSE,Occupied Palestinian Territory,Near East and North Africa
+OMN,Oman,Near East and North Africa
+QAT,Qatar,Near East and North Africa
+SAU,Saudi Arabia,Near East and North Africa
+SYR,Syrian Arab Republic,Near East and North Africa
+TUN,Tunisia,Near East and North Africa
+TUR,Turkey,Near East and North Africa
+ARE,United Arab Emirates,Near East and North Africa
+YEM,Yemen,Near East and North Africa
+ALB,Albania,Transition markets
+ARM,Armenia,Transition markets
+AZE,Azerbaijan,Transition markets
+BLR,Belarus,Transition markets
+BIH,Bosnia and Herzegovina,Transition markets
+BGR,Bulgaria,Transition markets
+HRV,Croatia,Transition markets
+CZE,Czech Republic,Transition markets
+EST,Estonia,Transition markets
+GEO,Georgia,Transition markets
+HUN,Hungary,Transition markets
+KAZ,Kazakhstan,Transition markets
+KGZ,Kyrgyzstan,Transition markets
+LVA,Latvia,Transition markets
+LTU,Lithuania,Transition markets
+MKD,Macedonia,Transition markets
+MNE,Montenegro,Transition markets
+POL,Poland,Transition markets
+MDA,Republic of Moldova,Transition markets
+ROU,Romania,Transition markets
+RUS,Russian Federation,Transition markets
+SRB,Serbia,Transition markets
+SCG,Serbia and Montenegro,Transition markets
+SVK,Slovakia,Transition markets
+SVN,Slovenia,Transition markets
+TJK,Tajikistan,Transition markets
+TKM,Turkmenistan,Transition markets
+UKR,Ukraine,Transition markets
+UZB,Uzbekistan,Transition markets
+ASM,American Samoa,Other
+AND,Andorra,Other
+ATG,Antigua and Bermuda,Other
+COK,Cook Islands,Other
+FRO,Faeroe Islands,Other
+FSM,Federal States of Micronesia,Other
+FJI,Fiji,Other
+PYF,French Polynesia,Other
+GIB,Gibraltar,Other
+GRL,Greenland,Other
+GUM,Guam,Other
+VAT,Holy See,Other
+COM,Island,Other
+IMN,Isle of Man,Other
+ISR,Israel,Other
+KIR,Kiribati,Other
+LIE,Liechtenstein,Other
+MLT,Malta,Other
+MHL,Marshall Islands,Other
+FRA,Mayotte,Other
+MCO,Monaco,Other
+NRU,Nauru,Other
+NCL,New Caledonia,Other
+NIU,Niue,Other
+GBR,Norfolk,Other
+MNP,Northern Mariana Islands,Other
+PLW,Palau,Other
+PNG,Papua New Guinea,Other
+PCN,Pitcairn Islands,Other
+SPM,Saint Pierre and Miquelon,Other
+WSM,Samoa,Other
+SMR,San Marino,Other
+SLB,Solomon Islands,Other
+ZAF,South Africa,South Africa
+SJM,Svalbard and Jan Mayen Islands,Other
+TKL,Tokelau,Other
+TON,Tonga,Other
+TUV,Tuvalu,Other
+VUT,Vanuatu,Other
+UMI,Wake Island,Other
+WLF,Wallis and Futuna Islands,Other
+AGO,Angola,Sub-Saharan Africa
+BEN,Benin,Sub-Saharan Africa
+BWA,Botswana,Sub-Saharan Africa
+IOT,British Indian Ocean Territory 1,Sub-Saharan Africa
+BFA,Burkina Faso,Sub-Saharan Africa
+BDI,Burundi,Sub-Saharan Africa
+CPV,Cabo Verde,Sub-Saharan Africa
+CMR,Cameroon,Sub-Saharan Africa
+CAF,Central African Republic,Sub-Saharan Africa
+TCD,Chad,Sub-Saharan Africa
+COM,Comoros,Sub-Saharan Africa
+CIV,Côte d’Ivoire,Sub-Saharan Africa
+COD,Democratic Republic of Congo,Sub-Saharan Africa
+DJI,Djibouti,Sub-Saharan Africa
+GNQ,Equatorial Guinea,Sub-Saharan Africa
+ERI,Eritrea,Sub-Saharan Africa
+ETH,Ethiopia,Sub-Saharan Africa
+GAB,Gabon,Sub-Saharan Africa
+GMB,Gambia,Sub-Saharan Africa
+GHA,Ghana,Sub-Saharan Africa
+GIN,Guinea,Sub-Saharan Africa
+GNB,Guinea-Bissau,Sub-Saharan Africa
+KEN,Kenya,Sub-Saharan Africa
+LSO,Lesotho,Sub-Saharan Africa
+LBR,Liberia,Sub-Saharan Africa
+MDG,Madagascar,Sub-Saharan Africa
+MWI,Malawi,Sub-Saharan Africa
+MLI,Mali,Sub-Saharan Africa
+MRT,Mauritania,Sub-Saharan Africa
+MUS,Mauritius,Sub-Saharan Africa
+MOZ,Mozambique,Sub-Saharan Africa
+NAM,Namibia,Sub-Saharan Africa
+NGA,Niger,Sub-Saharan Africa
+NGA,Nigeria,Sub-Saharan Africa
+COG,Republic of Congo,Sub-Saharan Africa
+REU,Réunion,Sub-Saharan Africa
+RWA,Rwanda,Sub-Saharan Africa
+STP,Sao Tome and Principe,Sub-Saharan Africa
+SEN,Senegal,Sub-Saharan Africa
+SYC,Seychelles,Sub-Saharan Africa
+SLE,Sierra Leone,Sub-Saharan Africa
+SOM,Somalia,Sub-Saharan Africa
+SHN,St Helena,Sub-Saharan Africa
+SDN,Sudan,Sub-Saharan Africa
+SWZ,Swaziland,Sub-Saharan Africa
+TGO,Togo,Sub-Saharan Africa
+UGA,Uganda,Sub-Saharan Africa
+TZA,United Republic of Tanzania,Sub-Saharan Africa
+ESH,Western Sahara,Sub-Saharan Africa
+ZMB,Zambia,Sub-Saharan Africa
+ZWE,Zimbabwe,Sub-Saharan Africa
+AIA,Anguilla,Caribbean
+ATG,Antigua and Barbuda,Caribbean
+ABW,Aruba,Caribbean
+BHS,Bahamas,Caribbean
+BRB,Barbados,Caribbean
+VGB,British Virgin Islands,Caribbean
+CYM,Cayman,Caribbean
+CUB,Cuba,Caribbean
+DMA,Dominica,Caribbean
+DOM,Dominican Republic,Caribbean
+GRD,Grenada,Caribbean
+FRA,Guadeloupe,Caribbean
+HTI,Haiti,Caribbean
+COK,Islands,Caribbean
+JAM,Jamaica,Caribbean
+FRA,Martinique,Caribbean
+MSR,Montserrat,Caribbean
+ANT,Netherlands Antilles (currently Netherlands Antilles,Caribbean
+PRI,Puerto Rico,Caribbean
+KNA,Saint Kitts and Nevis,Caribbean
+LCA,Saint Lucia,Caribbean
+VCT,Saint Vincent and the Grenadines,Caribbean
+TTO,Trinidad and Tobago,Caribbean
+TCA,Turks and Caicos Islands,Caribbean
+USA,United States,Caribbean
+VGB,Virgin Islands,Caribbean
+ARG,Argentina,South America
+VEN,Bolivarian Republic of Venezuela,South America
+BRA,Brazil,South America
+CHL,Chile,South America
+COL,Colombia,South America
+ECU,Ecuador,South America
+GUF,French Guiana,South America
+GUY,Guyana,South America
+PRY,Paraguay,South America
+PER,Peru,South America
+BOL,Plurinational State of Bolivia,South America
+SUR,Suriname,South America
+URY,Uruguay,South America
+AUS,Australia,OECD
+AUT,Austria,OECD
+BEL,Belgium,OECD
+DNK,Denmark,OECD
+FIN,Finland,OECD
+FRA,France,OECD
+DEU,Germany,OECD
+GRC,Greece,OECD
+ISL,Iceland,OECD
+IRL,Ireland,OECD
+ITA,Italy,OECD
+JPN,Japan,OECD
+LUX,Luxembourg,OECD
+NLD,Netherlands,OECD
+NZL,New Zealand,OECD
+NOR,Norway,OECD
+PRT,Portugal,OECD
+ESP,Spain,OECD
+SWE,Sweden,OECD
+CHE,Switzerland,OECD
+GBR,United Kingdom,OECD
+BGD,Bangladesh,South Asia
+BTN,Bhutan,South Asia
+IND,India,South Asia
+MDV,Maldives,South Asia
+NPL,Nepal,South Asia
+PAK,Pakistan,South Asia
+LKA,Sri Lanka,South Asia
+BLZ,Belize,Central America
+CRI,Costa Rica,Central America
+SLV,El Salvador,Central America
+GTM,Guatemala,Central America
+HND,Honduras,Central America
+MEX,Mexico,Central America
+NIC,Nicaragua,Central America
+PAN,Panama,Central America
+BRN,Brunei Darussalam,East and South East Asia
+KHM,Cambodia,East and South East Asia
+CHN,China (mainland),East and South East Asia
+HKG,China Hong Kong SAR,East and South East Asia
+MAC,China Macao SAR,East and South East Asia
+PRK,Democratic People’s Republic of Korea,East and South East Asia
+IDN,Indonesia,East and South East Asia
+LAO,Laos,East and South East Asia
+MYS,Malaysia,East and South East Asia
+MNG,Mongolia,East and South East Asia
+MMR,Myanmar,East and South East Asia
+PHL,Philippines,East and South East Asia
+PRK,Republic of Korea,East and South East Asia
+SGP,Singapore,East and South East Asia
+TWN,Taiwan Province of China,East and South East Asia
+THA,Thailand,East and South East Asia
+TLS,Timor-Leste,East and South East Asia
+VNM,Viet Nam,East and South East Asia
+CAN,Canada,North America
+USA,United States of America (USA],North America
