@@ -59,14 +59,16 @@ class CountryData:
         """
         
         #get region from country info dataframe
-        self.EK_region = df_country_info[df_country_info.index == self.country_name]["FAO-region-EK"].values[0]
-
+        try:
+            self.EK_region = df_country_info[df_country_info.index == self.country_name]["FAO-region-EK"].values[0]
+        except:
+            self.EK_region = "Other"
+            
         # now given the region, get the conversion factors for the LSU
         # store them in a dict with the species:value format
         # in this imnstance, the columns are the regions and the index is the animal type (so the index needs to be saved in to the dict as the 'species')
         conversion_factors = df_regional_conversion_factors[self.EK_region].to_dict()
         self.LSU_conversion_factors = {key:value for key, value in conversion_factors.items()}
-        print(self.LSU_conversion_factors)
         
 
     def homekill_desperation_parameters(self):
@@ -139,6 +141,7 @@ class AnimalSpecies:
 
         # FEED attributes
         self.feed_LSU = feed_LSU
+        self.LSU_factor = 1 # default value gets set at init. In most scenarios this will be overwritten by "set_LSU_factor" function
         self.digestion_type = digestion_type
         self.approximate_feed_conversion = approximate_feed_conversion # note this only used for ranking the efficiency, not used for calculating the feed required
         self.digestion_efficiency = {"grass":digestion_efficiency_grass, "feed":digestion_efficiency_feed } # this is the conversion from gross energy to net energy
@@ -170,8 +173,8 @@ class AnimalSpecies:
             )
     def set_LSU_attributes(self, country_object):
         
-        LSU_factor = country_object.LSU_conversion_factors[self.animal_species]
-        self.NE_balance = self.reset_NE_balance(LSU_factor) # this is the feed required per month for the species
+        self.LSU_factor = country_object.LSU_conversion_factors[self.animal_species]
+        self.NE_balance = self.reset_NE_balance() # this is the feed required per month for the species
 
 
 
@@ -308,7 +311,7 @@ class AnimalSpecies:
         return exported_births
     
 
-    def net_energy_required_per_month(self,LSU_factor=1):
+    def net_energy_required_per_month(self):
         # this section based on:
         # Livestock unit calculation: a method based on energy requirements to refine the study of livestock farming systems
         # NRAE Prod. Anim., 2021, 34 (2), 139e-160e
@@ -323,39 +326,23 @@ class AnimalSpecies:
         
         # convert to billion kcals
         one_LSU_monthly_billion_kcal = ( (one_year_NEt / 12) / 4.187 ) * 1000 / 1e9 # 12 months ina  year, 4.187 to convert to kcal, 1000 to convert to kcal from Mcal
-        
-        return self.feed_LSU * one_LSU_monthly_billion_kcal * LSU_factor
+        return self.feed_LSU * one_LSU_monthly_billion_kcal * self.LSU_factor 
 
-    def net_energy_required_per_species(self,LSU_factor):
+    def net_energy_required_per_species(self):
         """
         Function to calculate the total net energy required per month for the species
         """        
         
-        return self.net_energy_required_per_month(LSU_factor) * self.current_population
+        return self.net_energy_required_per_month() * self.current_population
 
 
-### TO DELETE
-    # def feed_required_per_month_individual(self):
-    #     # function to calculate the total feed for this month for the species
-    #     #     (defaults to billion kcals, thousand tons monthly fat, thousand tons monthly protein)
-    #     # protein and fat is not currently used
-    #     # uses the net energy required per month function and the digestion efficiency
-    #     return Food(self.net_energy_required_per_month()/self.digestion_efficiency, -1, -1)
-    
-    # def feed_required_per_month_species(self):
-    #     # function to calculate the total feed for this month for the species
-    #     #     (defaults to billion kcals, thousand tons monthly fat, thousand tons monthly protein)
-    #     # protein and fat is not currently used
-    #     # uses the net energy required per month function and the digestion efficiency
-    #     return Food(self.net_energy_required_per_month()/self.digestion_efficiency * self.current_population, -1, -1)
-    
-    def reset_NE_balance(self, LSU_factor = 1):
+    def reset_NE_balance(self):
         """
         This function resets the feed balance to the feed required per month for the species
         Needs to be run before feeding the animals each month.
         
         """
-        self.NE_balance = Food(self.net_energy_required_per_species(LSU_factor) ,0,0)# this is the feed required per month for the species
+        self.NE_balance = Food(self.net_energy_required_per_species() ,0,0)# this is the feed required per month for the species
 
     
     def feed_the_species(self, food_input):
@@ -693,6 +680,28 @@ def update_animal_objects_with_milk(animal_list,df_animal_attributes):
             insemination_cycle_time_for_milk,
             milk_production_per_month_per_head,
             )   
+    return
+
+def update_animal_objects_LSU_factor(animal_list,country_object):
+    """
+    This function updates the animal objects with the LSU factors
+
+    Parameters
+    ----------
+    animal_list : list
+        List of animal objects
+    country_object : object
+        Object containing country data
+
+    Returns
+    -------
+    animal_list : list
+        List of animal objects
+
+    """
+    # loop through the dict of animal objects
+    for animal in animal_list:
+        animal.set_LSU_attributes(country_object)
     return
 
 def food_conversion():
@@ -1222,7 +1231,6 @@ def main(country_code):
     df_animal_options = read_animal_options()
 
     df_regional_conversion_factors = read_animal_regional_factors()
-    
     df_country_info = read_country_data()
     
 
@@ -1271,6 +1279,9 @@ def main(country_code):
     country_object.calculate_homekill_hours()
     country_object.homekill_desperation_parameters()
     country_object.set_livestock_unit_factors(df_country_info, df_regional_conversion_factors)
+    
+    # with the country object, update the animal objects with the LSU factors
+    update_animal_objects_LSU_factor(all_animals,country_object)
 
     #### END CREATION OF OBJECTS ####
 
@@ -1279,7 +1290,6 @@ def main(country_code):
     # this is required as the I/O needs to interact with the rest of the model each month
     for month in range(0,months_to_run):
         
-        print(month)
         set_current_populations(all_animals)
         
         ## THESE FEED OBJECTS WILL BE PASSED IN ####

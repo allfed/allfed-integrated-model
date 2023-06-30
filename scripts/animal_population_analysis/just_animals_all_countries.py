@@ -3,6 +3,9 @@ from src.food_system.animal_populations import read_animal_population_data
 from src.food_system.animal_populations import read_animal_nutrition_data
 from src.food_system.animal_populations import read_animal_options
 from src.food_system.animal_populations import create_animal_objects
+from src.food_system.animal_populations import read_animal_regional_factors
+from src.food_system.animal_populations import read_country_data
+from src.food_system.animal_populations import CountryData
 from src.food_system.food import Food
 
 import plotly.express as px
@@ -33,7 +36,6 @@ def add_alpha_codes_from_ISO(df, incol,outcol="iso3"):
     # remove original country column
     df = df.drop([incol], axis=1)
     return df
-
 
 def add_alpha_codes_fuzzy(df, incol,outcol="iso3"):
     """
@@ -80,8 +82,10 @@ def read_csv_values(path, country_code_col="Code",  year_col="Year", value_col=N
 
 
 
+    read_animal_regional_factors()
+    read_country_data()
 
-def species_baseline_feed(total_net_energy_demand,feed_DI,roughages_DI,feed_percentage=0.2,roughages_percentage=0.8):
+def species_baseline_feed(total_net_energy_demand,feed_DI,roughages_DI,roughages_percentage=0.8):
 
     """
     Eq1:
@@ -116,11 +120,25 @@ def species_baseline_feed(total_net_energy_demand,feed_DI,roughages_DI,feed_perc
     """
     DI_r = roughages_DI
     DI_f = feed_DI
+    feed_percentage = 1 - roughages_percentage
     NE_req = total_net_energy_demand
     GE_r = NE_req/(DI_r + feed_percentage/roughages_percentage * DI_f) 
     GE_f = feed_percentage/roughages_percentage * GE_r
 
     return GE_r,GE_f
+
+def bulk_correlation_analysis(df, target_column):
+    # Drop the target column and index from the DataFrame
+    columns_to_check = df.columns.drop(target_column)
+    
+    # Iterate over the remaining columns and calculate correlations
+    for column in columns_to_check:
+        correlation = df[target_column].corr(df[column])
+        print(f"Correlation between {target_column} and {column}: {correlation}")
+        
+        # Create a scatter plot to visualize the correlation using Plotly
+        fig = px.scatter(df, x=target_column, y=column)
+        fig.show()
 
 
 
@@ -130,6 +148,11 @@ repo_root = git.Repo(".", search_parent_directories=True).working_dir
 animal_pop_analysis_dir = Path(repo_root) / "scripts" / "animal_population_analysis"
 processed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "processed_data"
 
+
+
+country_gdp_data_location = Path.joinpath(
+    Path(animal_pop_analysis_dir), "gdp_owid_2018.csv"
+)
 country_feed_data_location = Path.joinpath(
     Path(animal_pop_analysis_dir), "country_feed_data.csv"
 )
@@ -139,23 +162,28 @@ pop_csv_location = Path.joinpath(
 ag_area_csv_location = Path.joinpath(
     Path(animal_pop_analysis_dir), "total-agricultural-area-over-the-long-term.csv"
 )
-grazing_area_csv_location = Path.joinpath(
-    Path(animal_pop_analysis_dir), "UNdata_Export_20230612_101954125.csv"
-)       
-grazing_area_owid_csv_location = Path.joinpath(
-    Path(animal_pop_analysis_dir), "grazing-land-use-over-the-long-term.csv"
-)       
 
 
 df_feed_country = pd.read_csv(country_feed_data_location, index_col="ISO3 Country Code")
 df_pop_country = pd.read_csv(pop_csv_location, index_col="iso3", )
-df_grazing = read_csv_values(grazing_area_csv_location, country_code_col="Country or Area", value_col="Value", output_syntax="CountryName")
+df_gdp = read_csv_values(country_gdp_data_location, country_code_col="Iso3", value_col="GDP", output_syntax="iso3")
 
 
-df_grazing = df_grazing.reset_index()
-add_alpha_codes_fuzzy(df_grazing,"CountryName",outcol="iso3")
+# merge the four dataframes above
+df_country_macro_indicators = pd.merge(df_pop_country, df_feed_country, left_index=True, right_index=True)
+df_country_macro_indicators = pd.merge(df_country_macro_indicators, df_gdp, left_index=True, right_index=True)
 
-df_grazing.to_csv(Path.joinpath(Path(animal_pop_analysis_dir), "grazing_area.csv"), index=False)
+
+
+### Create secondary attributes ####
+# GDP per capita
+df_country_macro_indicators["GDP per capita"] = df_country_macro_indicators["GDP"] / df_country_macro_indicators["population"]
+# create gdp rank
+df_country_macro_indicators["GDP per capita rank"] = df_country_macro_indicators["GDP per capita"].rank(ascending=False)
+df_country_macro_indicators["GDP rank"] = df_country_macro_indicators["GDP"].rank(ascending=False)
+
+
+
 
 ## Populate animal objects ##
 # create animal objects
@@ -163,6 +191,8 @@ df_animal_stock_info = read_animal_population_data()
 df_animal_attributes = read_animal_nutrition_data()
 df_animal_options = read_animal_options()
 
+df_regional_conversion_factors = read_animal_regional_factors()
+df_country_info = read_country_data()
 
 
 
@@ -186,6 +216,8 @@ total_food_consumed = []
 
 for country_code in df_animal_stock_info.index:
     animal_list = create_animal_objects(df_animal_stock_info.loc[country_code], df_animal_attributes)
+    country_object = CountryData(country_code)
+    country_object.set_livestock_unit_factors(df_country_info, df_regional_conversion_factors)    
     
     # create empty list to store the food consumed by each animal
     calculated_feed_demand = Food(0,0,0)
@@ -193,6 +225,14 @@ for country_code in df_animal_stock_info.index:
     calculated_feed_by_species = {}
     calculated_grass_by_species = {}
     animal_pop = 0
+    
+    # contsnts from gleam.
+    ruminant_DI_grass = 0.56
+    ruminant_DI_feed = 0.8
+    ruminant_roughage_fraction = 0.8
+    monogastric_DI_feed = 0.7
+    
+    
     
     # calculate consumed food in the animla list for this country
     for animal in animal_list:
@@ -202,10 +242,11 @@ for country_code in df_animal_stock_info.index:
         
         # MATHS TO BE LINKED.
         if animal_object.digestion_type == "ruminant":
-            GE_roughage, GE_feed   = species_baseline_feed(net_energy_demand,0.8,0.56,0.2,0.8)
+            # input the roughage and feed digestion indeces and the percentage intake  of roughage
+            GE_roughage, GE_feed   = species_baseline_feed(net_energy_demand,ruminant_DI_feed,ruminant_DI_grass,ruminant_roughage_fraction)
         else:
             GE_roughage = 0 
-            GE_feed   = net_energy_demand*0.7
+            GE_feed   = net_energy_demand*monogastric_DI_feed
         
         
         df_feed.loc[country_code,animal_object.animal_type + "_grass"] = GE_roughage
@@ -219,10 +260,10 @@ for country_code in df_animal_stock_info.index:
 
 # merge with the df_feed_country dataframe, keep the index of df_feed:
 df_feed = df_feed.merge(
-    df_feed_country, left_index=True, right_index=True
+    df_country_macro_indicators, left_index=True, right_index=True
 )
 
-conversion_factor = 1
+conversion_factor = 4000
 df_feed["Animal feed consumption Billion kcals"] = (
     df_feed["Animal feed caloric consumption in 2020 (million dry caloric tons)"] * conversion_factor
 )
@@ -230,37 +271,174 @@ df_feed["Animal feed consumption Billion kcals"] = (
 #drop rows with zero values for feed consumption
 df_feed = df_feed[df_feed["Animal feed consumption Billion kcals"] != 0]
 
+# calculate the total feed demand for each country, the sum of all columns with "_feed" in the name
+df_feed["feed_calculated_demand"] = df_feed.filter(regex="_feed").sum(axis=1)
+df_feed["grass_calculated_demand"] = df_feed.filter(regex="_grass").sum(axis=1)
+df_feed["difference"] = df_feed["feed_calculated_demand"] - df_feed["Animal feed consumption Billion kcals"]
+df_feed["ratio"] = df_feed["feed_calculated_demand"] / df_feed["Animal feed consumption Billion kcals"]
+df_feed['fudge_factor'] = 1/df_feed["ratio"]
+df_feed["fudge_difference"] = df_feed["feed_calculated_demand"]*df_feed['fudge_factor'] - df_feed["Animal feed consumption Billion kcals"]
+
 # merge with the animal stock info dataframe
 df_merged = df_feed.merge(
     df_animal_stock_info, left_index=True, right_index=True
 )
 
-# calculate the total feed demand for each country, the sum of all columns with "_feed" in the name
-df_feed["feed_calculated_demand"] = df_feed.filter(regex="_feed").sum(axis=1)
-df_feed["grass_calculated_demand"] = df_feed.filter(regex="_grass").sum(axis=1)
-
-
-df_feed["difference"] = df_feed["feed_calculated_demand"] - df_feed["Animal feed consumption Billion kcals"]
-df_feed["ratio"] = df_feed["feed_calculated_demand"] / df_feed["Animal feed consumption Billion kcals"]
-
-
-
 # plot the countries using the calculated_feed_by_species as a bar chart segmented by species
 
-fig = px.scatter(
-    df_feed,
-    x="Country",
-    y="ratio",
-    # hover_name="Country",
-    # log_x=True,
-    # log_y=True,
-)
 
+print(df_feed["fudge_factor"].describe())
+
+# sort by gdp
+df_merged = df_merged.sort_values(by="GDP per capita", ascending=True)
+
+fig = px.scatter(
+    df_merged,
+    x="Country",
+    y="fudge_factor",  
+    log_y=True,  
+)
 
 fig.show()
 
 
-country_selection = "USA"
+
+
+
+
+
+
+
+# # plot GDP per capita and ratio
+# fig2 = px.scatter(
+#     df_merged,
+#     x="ratio",    
+#     y="GDP per capita",
+#     hover_name="Country",
+# )
+
+# fig2.show()
+
+# # new dataframe which removes outliers (countries with a ratio of more than 2)
+# df_feed_no_outliers = df_merged[df_merged["ratio"] <= 2]
+
+# # now check for correlation between GDP per capita and ratio
+# fig3 = px.scatter(
+#     df_feed_no_outliers,
+#     x="ratio",    
+#     y="GDP per capita",
+#     hover_name="Country",
+# )
+
+# fig3.show()
+    
+    
+    
+### NEXT DO CORR OF LOG OF RATIO
+
+cols_of_interest = [ 'fudge_factor', 
+                    'ratio'     ,
+                    'GDP rank',
+                    'GDP per capita rank',
+       'chicken_feed',
+ 'rabbit_feed',
+ 'duck_feed',
+ 'goose_feed',
+ 'turkey_feed',
+       'other_rodents_feed',
+ 'pig_feed',
+ 'meat_goat_feed',
+ 'meat_sheep_feed',
+       'camelids_feed',
+ 'meat_cattle_feed',
+ 'meat_camel_feed',
+       'meat_buffalo_feed',
+ 'mule_feed',
+ 'horse_feed',
+ 'asses_feed',
+       'milk_sheep_feed',
+ 'milk_cattle_feed',
+ 'milk_goat_feed',
+       'milk_camel_feed',
+ 'milk_buffalo_feed',
+ 'population',
+'Animal feed caloric consumption in 2020 (million dry caloric tons)',
+'Animal feed fat consumption in 2020 (million tonnes)',
+'Animal feed protein consumption in 2020 (million tonnes)',
+       'GDP',
+       'feed_calculated_demand',
+ 'grass_calculated_demand',
+ 'chicken_head',
+ 'rabbit_head',
+ 'duck_head',
+       'goose_head',
+ 'turkey_head',
+ 'other_rodents_head',
+ 'pig_head',
+       'meat_goat_head',
+ 'meat_sheep_head',
+ 'camelids_head',
+       'meat_cattle_head',
+ 'meat_camel_head',
+ 'meat_buffalo_head',
+ 'mule_head',
+       'horse_head',
+ 'asses_head',
+ 'milk_sheep_head',
+ 'milk_cattle_head',
+       'milk_goat_head',
+ 'milk_camel_head',
+ 'milk_buffalo_head',
+ 'GDP per capita', ]
+                    
+
+dataframe_corr  = df_merged[cols_of_interest]
+
+# do log of ratio
+dataframe_corr['log_ratio'] = np.log(dataframe_corr['ratio'])
+# and a log of the fudge factor
+dataframe_corr['log_fudge_factor'] = np.log(dataframe_corr['fudge_factor'])
+
+target_column = "log_fudge_factor"
+
+df= dataframe_corr
+
+# Drop the target column and index from the DataFrame
+columns_to_check = df.columns.drop(target_column)
+
+df = df.apply(pd.to_numeric, errors='coerce')
+
+
+# create an empty dictionary to store the correlations
+correlations = {}
+
+# Iterate over the remaining columns and calculate correlations
+for column in columns_to_check:
+    correlation = df[target_column].corr(df[column])
+    # find number of non-null values
+    non_null = df[column].count()
+    # and percentage of non-null values
+    non_null_percentage = non_null / len(df)
+    # add the correlation and percent non-null to dictionary
+    correlations[column] = [correlation, non_null_percentage]
+
+    print(f"Correlation between {target_column} and {column}: {correlation} percent non-null values: {non_null_percentage} non-null values")
+    
+    correlations[column] = correlation
+    
+    # Create a scatter plot to visualize the correlation using Plotly
+    # fig = px.scatter(df, x=target_column, y=column)
+    # fig.show()
+
+#create a dataframe from the dictionary of correlations
+df_correlation = pd.DataFrame.from_dict(correlations, orient='index', columns=['correlation'])
+# sort by correlation
+df_correlation = df_correlation.sort_values(by='correlation', ascending=False)
+
+# bulk_correlation_analysis(dataframe_corr, 'ratio')
+
+
+country_selection = "MNG"
 # plot mongoloia feed usage by species
 fig2 = px.bar(
     df_feed.loc[country_selection].filter(regex="_feed"),
@@ -274,73 +452,39 @@ fig2.show()
 
 
 
+# # fig3.show()
 
-# # plot the dat using plotly
-# fig = px.scatter(
-#     df_feed,
-#     x="Animal feed consumption Billion kcals",
-#     y="calculated_feed_demand",
-#     hover_name="Country",
-#     log_x=True,
-#     log_y=True,
-# )
-
-# fig.show()
-
-# # and plot the ratio, sorted by the ratio, color by the population
-# fig2 = px.bar(
-#     df_feed.sort_values("ratio"),
-#     x="Country",
-#     y="ratio",
-#     hover_name="Country",
-#     log_y=True,
-# )
-
-# fig2.show()
+# # print the ratio stats
 
 
-# #plot the feed consumption and the population
-# fig3 = px.scatter(
-#     df_feed,
-#     x="Animal feed consumption Billion kcals",
-#     y="animal_pop",
-#     hover_name="Country",
-#     log_x=True,
-#     log_y=True,
-# )
-
-# fig3.show()
-
-# print the ratio stats
-print(df_feed["ratio"].describe())
-
-
-# # mike is familiar with the datasets
-# # also the lily paper, grass growing... maybe in supplements?
+# # # mike is familiar with the datasets
+# # # also the lily paper, grass growing... maybe in supplements?
 
 
 
-# # (feed + grass + residues) * growth_factor <- gdp = total demand (currenlty calculated on "maintenance" requirements, i.e no growth)
-# # growth could be twice as much
-# # conversion efficiency is really terrible for beef...
+# # # (feed + grass + residues) * growth_factor <- gdp = total demand (currenlty calculated on "maintenance" requirements, i.e no growth)
+# # # growth could be twice as much
+# # # conversion efficiency is really terrible for beef...
 
 
-# # 
+# # # 
 
 
-# # livestock units are defined differently based on region, so apply this first before introducing other factors.
+# # # livestock units are defined differently based on region, so apply this first before introducing other factors.
 
-# # residues will be proportional to crop area... so we can use the crop area data to estimate residues
-
-
-# # glean database only broken down by OECD and non OEXD. But it has the consumption of grazed material as well as residues.
+# # # residues will be proportional to crop area... so we can use the crop area data to estimate residues
 
 
-# # 1 ha = 0.8 tonne of residues produced by hectare. https://www.sciencedirect.com/science/article/abs/pii/S2211912416300013#preview-section-introduction
-# # some are used for toher things
-# # sugar (burnt for the factory)
-# # 
+# # # glean database only broken down by OECD and non OEXD. But it has the consumption of grazed material as well as residues.
+
+
+# # # 1 ha = 0.8 tonne of residues produced by hectare. https://www.sciencedirect.com/science/article/abs/pii/S2211912416300013#preview-section-introduction
+# # # some are used for toher things
+# # # sugar (burnt for the factory)
+# # # 
 
 
 
-# # 
+# # # 
+
+

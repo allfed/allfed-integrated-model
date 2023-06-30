@@ -122,7 +122,7 @@ MRT,Mauritania,Sub-Saharan Africa
 MUS,Mauritius,Sub-Saharan Africa
 MOZ,Mozambique,Sub-Saharan Africa
 NAM,Namibia,Sub-Saharan Africa
-NGA,Niger,Sub-Saharan Africa
+NER,Niger,Sub-Saharan Africa
 NGA,Nigeria,Sub-Saharan Africa
 COG,Republic of Congo,Sub-Saharan Africa
 REU,Réunion,Sub-Saharan Africa
@@ -134,6 +134,7 @@ SLE,Sierra Leone,Sub-Saharan Africa
 SOM,Somalia,Sub-Saharan Africa
 SHN,St Helena,Sub-Saharan Africa
 SDN,Sudan,Sub-Saharan Africa
+SSD,South Sudan,Sub-Saharan Africa
 SWZ,Swaziland,Sub-Saharan Africa
 TGO,Togo,Sub-Saharan Africa
 UGA,Uganda,Sub-Saharan Africa
@@ -228,7 +229,7 @@ MYS,Malaysia,East and South East Asia
 MNG,Mongolia,East and South East Asia
 MMR,Myanmar,East and South East Asia
 PHL,Philippines,East and South East Asia
-PRK,Republic of Korea,East and South East Asia
+KOR,Republic of Korea,East and South East Asia
 SGP,Singapore,East and South East Asia
 TWN,Taiwan Province of China,East and South East Asia
 THA,Thailand,East and South East Asia
