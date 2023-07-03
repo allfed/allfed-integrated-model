@@ -183,8 +183,6 @@ df_country_macro_indicators["GDP per capita rank"] = df_country_macro_indicators
 df_country_macro_indicators["GDP rank"] = df_country_macro_indicators["GDP"].rank(ascending=False)
 
 
-
-
 ## Populate animal objects ##
 # create animal objects
 df_animal_stock_info = read_animal_population_data()
@@ -193,8 +191,6 @@ df_animal_options = read_animal_options()
 
 df_regional_conversion_factors = read_animal_regional_factors()
 df_country_info = read_country_data()
-
-
 
 # create date frame with the column names as the species (from df_animal_stock_info)
 # but remove the columns that have "salughter" in the name
@@ -209,7 +205,6 @@ col_list_feed = [col + "_feed" for col in col_list]
 col_list = col_list_grass + col_list_feed
 
 df_feed = pd.DataFrame(columns=col_list, index=df_animal_stock_info.index)
-
 
 # create empty list to store the total food consumed per country
 total_food_consumed = []
@@ -226,21 +221,17 @@ for country_code in df_animal_stock_info.index:
     calculated_grass_by_species = {}
     animal_pop = 0
     
-    # contsnts from gleam.
+    # constants from gleam.
     ruminant_DI_grass = 0.56
     ruminant_DI_feed = 0.8
     ruminant_roughage_fraction = 0.8
     monogastric_DI_feed = 0.7
-    
-    
-    
+
     # calculate consumed food in the animla list for this country
     for animal in animal_list:
         animal_object = animal_list[animal]
         net_energy_demand = animal_object.net_energy_required_per_species()
-         
-        
-        # MATHS TO BE LINKED.
+                 
         if animal_object.digestion_type == "ruminant":
             # input the roughage and feed digestion indeces and the percentage intake  of roughage
             GE_roughage, GE_feed   = species_baseline_feed(net_energy_demand,ruminant_DI_feed,ruminant_DI_grass,ruminant_roughage_fraction)
@@ -255,8 +246,6 @@ for country_code in df_animal_stock_info.index:
         ### NEXT TODO: deal with this grass and feed usage. Combine fed to compare to world average.
         # ALSO GO BACK AND DO THE REGIONAL VARIATION IN LSU
         #Thern MEssga emorgan and mike. Morgan re: merge. Mike re: data check.
-
-
 
 # merge with the df_feed_country dataframe, keep the index of df_feed:
 df_feed = df_feed.merge(
@@ -286,7 +275,6 @@ df_merged = df_feed.merge(
 
 # plot the countries using the calculated_feed_by_species as a bar chart segmented by species
 
-
 print(df_feed["fudge_factor"].describe())
 
 # sort by gdp
@@ -300,10 +288,6 @@ fig = px.scatter(
 )
 
 fig.show()
-
-
-
-
 
 
 
