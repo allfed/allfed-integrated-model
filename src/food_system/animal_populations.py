@@ -72,7 +72,7 @@ class CalculateFeedAndMeat:
                 animals_slaughtered_medium += np.array(animal.slaughter)
             if animal.animal_type in self.large_animals:
                 animals_slaughtered_large += np.array(animal.slaughter)
-            feed_used = feed_used + animal.NE_balance
+            feed_used = feed_used + animal.NE_balance # TODO: THIS was feed_used + animal.feed_balance. I removed feed_balance fomr the entire program, and moved to a system which calculates net_energy rather than gross energy. This allows varibale DI% based on Food type.
         # convert the animals slaughtered list
         return (
             feed_used,
@@ -853,7 +853,7 @@ def food_conversion():
     return
 
 
-def available_feed(billion_kcals):
+def available_feed_function(billion_kcals):
     """
     ### CHEKC IS BILLION KCALS
 
@@ -872,12 +872,23 @@ def available_feed(billion_kcals):
     # all imports should be in GE, gross energy
     # calacuklation of NE is done in the feed animals function
 
-    animal_feed = Food(billion_kcals, -1, -1)
-    animal_feed.type = "feed"
+    # animal_feed = Food(billion_kcals, -1, -1)
+    # animal_feed.type = "feed"
     
-    return 
+    animal_feed = Food(
+            kcals=[billion_kcals] * 120,
+            fat=[0] * 120,
+            protein=[0] * 120,
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
+        )
+    
+    
+    
+    return animal_feed
 
-def available_grass(billion_kcals):
+def available_grass_function(billion_kcals):
     """
     ### CHECK IS BILLION KCALS
 
@@ -898,8 +909,20 @@ def available_grass(billion_kcals):
     # units idealy in billion kcal
     # all imports should be in GE, gross energy
     # calacuklation of NE is done in the feed animals function
-    grass = Food(billion_kcals, -1, -1)
-    grass.type = "grass"
+    # grass = Food(billion_kcals, -1, -1)
+    # grass.type = "grass"
+    
+    
+    grass = Food(
+        kcals=[billion_kcals] * 120,
+        fat=[0] * 120,
+        protein=[0] * 120,
+        kcals_units="billion kcals each month",
+        fat_units="thousand tons each month",
+        protein_units="thousand tons each month",
+    )
+    
+    
 
     return grass
 
@@ -922,12 +945,10 @@ def feed_animals(animal_list, ruminants, available_feed, available_grass):
     
     # feed the ruminants grass
     for ruminant in ruminants:
-        # print(f"trying to feed grass to " + milk_animal.animal_type)
-        available_grass = ruminant.feed_the_species(available_grass, "grass")
+        available_grass = ruminant.feed_the_species(available_grass, "grass") #Currently feed type is onyl defined here, might be more sensible to attach it to the FOOD object.
 
     # feed everything grain
     for animal in animal_list:
-        # print(f"trying to feed feed to " + milk_animal.animal_type)
         available_feed = animal.feed_the_species(available_feed, "feed")
 
     # all feeding is done in the order of the lists supplied.
@@ -1713,7 +1734,7 @@ def main(country_code, available_feed, available_grass):
 
 
 if __name__ == "__main__":
-    output_list = main("AUS")
+    output_list = main("AUS",available_feed_function(1000000000),available_grass_function(100000000000000))
 
     # plot all the animals without detail
     # exclude chicken from output list
