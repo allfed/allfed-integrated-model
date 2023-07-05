@@ -12,8 +12,6 @@ dependencies:
   - yaml
   - ipykernel
   - flake8
-- pip:
-  - gitpython
-  - pulp
-
-prefix: /home/dmrivers/Apps/miniconda3/envs/intmodel
+  - pip:
+    - gitpython
+    - pulp
