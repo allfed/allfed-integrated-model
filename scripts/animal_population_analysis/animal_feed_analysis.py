@@ -162,6 +162,21 @@ pop_csv_location = Path.joinpath(
 ag_area_csv_location = Path.joinpath(
     Path(animal_pop_analysis_dir), "total-agricultural-area-over-the-long-term.csv"
 )
+total_energy_csv_location = Path.joinpath(
+    Path(animal_pop_analysis_dir), "FAO_total_energy_use_in_ag.csv"
+)
+
+
+df_energy = pd.read_csv(total_energy_csv_location)
+df_energy = add_alpha_codes_from_ISO(df_energy, incol = "Area Code (M49)", outcol="iso3")
+# df_energy = df_energy.dropna(subset=["iso3"])
+
+df_energy = df_energy[df_energy["iso3"] != "NA"]
+
+
+df_energy = df_energy.set_index("iso3")
+df_energy = df_energy.drop(["Area", "Element Code", "Element", "Unit", "Area Code", "Item Code", "Item"], axis=1)
+df_energy = df_energy.rename(columns={"Y2021": "total_energy_use_in_ag"})
 
 
 df_feed_country = pd.read_csv(country_feed_data_location, index_col="ISO3 Country Code")
