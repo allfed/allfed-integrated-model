@@ -42,6 +42,10 @@ Start main function
 
 class CalculateFeedAndMeat:
     def __init__(self, country_code, available_feed, available_grass):
+        
+        available_feed.type = "feed"
+        available_grass.type = "grass"
+        
         self.all_animals = main(country_code, available_feed, available_grass)
         self.large_animals = [
             "asses",
@@ -68,7 +72,7 @@ class CalculateFeedAndMeat:
                 animals_slaughtered_medium += np.array(animal.slaughter)
             if animal.animal_type in self.large_animals:
                 animals_slaughtered_large += np.array(animal.slaughter)
-            feed_used = feed_used + animal.feed_balance
+            feed_used = feed_used + animal.NE_balance
         # convert the animals slaughtered list
         return (
             feed_used,
@@ -225,8 +229,6 @@ class AnimalSpecies:
         
         self.LSU_factor = country_object.LSU_conversion_factors[self.animal_species]
         self.NE_balance = self.reset_NE_balance() # this is the feed required per month for the species
-
-
 
     def set_species_milk_attributes(
         self,
@@ -450,7 +452,7 @@ class AnimalSpecies:
         self.NE_balance = Food(self.net_energy_required_per_species() ,0,0)# this is the feed required per month for the species
 
     
-    def feed_the_species(self, food_input):
+    def feed_the_species(self, food_input, feed_type = "feed"):
         """
         Main function to feed the species
 
@@ -487,7 +489,7 @@ class AnimalSpecies:
 
             return food_input
         else:
-            DI_for_species = self.digestion_efficiency[food_input.type]
+            DI_for_species = self.digestion_efficiency[feed_type]
             NE_in_food = food_input.kcals*DI_for_species
             
             # only using kcals
@@ -870,8 +872,10 @@ def available_feed(billion_kcals):
     # all imports should be in GE, gross energy
     # calacuklation of NE is done in the feed animals function
 
-    return Food(billion_kcals, -1, -1)
-
+    animal_feed = Food(billion_kcals, -1, -1)
+    animal_feed.type = "feed"
+    
+    return 
 
 def available_grass(billion_kcals):
     """
@@ -895,6 +899,7 @@ def available_grass(billion_kcals):
     # all imports should be in GE, gross energy
     # calacuklation of NE is done in the feed animals function
     grass = Food(billion_kcals, -1, -1)
+    grass.type = "grass"
 
     return grass
 
@@ -918,12 +923,12 @@ def feed_animals(animal_list, ruminants, available_feed, available_grass):
     # feed the ruminants grass
     for ruminant in ruminants:
         # print(f"trying to feed grass to " + milk_animal.animal_type)
-        available_grass = ruminant.feed_the_species(available_grass)
+        available_grass = ruminant.feed_the_species(available_grass, "grass")
 
     # feed everything grain
     for animal in animal_list:
         # print(f"trying to feed feed to " + milk_animal.animal_type)
-        available_feed = animal.feed_the_species(available_feed)
+        available_feed = animal.feed_the_species(available_feed, "feed")
 
     # all feeding is done in the order of the lists supplied.
     return available_feed, available_grass
