@@ -134,8 +134,8 @@ class Scenarios:
         # annual tons protein
         constants_for_params["FEED_PROTEIN"] = 147e6
 
-        # tons dry caloric monthly
-        constants_for_params["HUMAN_INEDIBLE_FEED_BASELINE_MONTHLY"] = 4206 * 1e6 / 12
+        # million tons dry caloric monthly
+        constants_for_params["HUMAN_INEDIBLE_FEED_BASELINE_MONTHLY"] = 4206 / 12
 
         # total stocks at the end of the month in dry caloric tons
         # this is total stored food available

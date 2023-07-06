@@ -207,7 +207,7 @@ class Parameters:
         feed_meat_object = CalculateFeedAndMeat(
             constants_inputs["COUNTRY_CODE"],
             Food([0] * constants_inputs["NMONTHS"]),
-            Food([0] * constants_inputs["NMONTHS"]),
+            meat_and_dairy.human_inedible_feed,
         )
         (
             feed_used,
@@ -1097,7 +1097,11 @@ class Parameters:
         )
 
         # Initialize culled meat parameters
-        (constants_out, time_consts, meat_and_dairy,) = self.init_culled_meat_params(
+        (
+            constants_out,
+            time_consts,
+            meat_and_dairy,
+        ) = self.init_culled_meat_params(
             constants_inputs, constants_out, time_consts, meat_and_dairy
         )
 

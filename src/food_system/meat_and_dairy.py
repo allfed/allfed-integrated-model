@@ -5,7 +5,7 @@
 ##                                                                            #
 ###############################################################################
 """
-
+from src.food_system.food import Food
 import numpy as np
 
 
@@ -77,7 +77,7 @@ class MeatAndDairy:
         self.MILK_KCALS = 610
         self.MILK_FAT = 0.032
         self.MILK_PROTEIN = 0.033
-        self.human_inedible_feed = np.array([])
+        human_inedible_feed_dry_caloric_tons_list = np.array([])
         self.ratio_human_inedible_feed = np.array([])
         for i in range(1, int(self.NMONTHS / 12) + 1):
             ratio_human_inedible_feed = constants_for_params[
@@ -89,14 +89,28 @@ class MeatAndDairy:
             assert (
                 0 <= ratio_human_inedible_feed <= 10000
             ), "Error: Unreasonable ratio of grass production"
-            self.human_inedible_feed = np.append(
-                self.human_inedible_feed,
+            human_inedible_feed_dry_caloric_tons_list = np.append(
+                human_inedible_feed_dry_caloric_tons_list,
                 [
                     ratio_human_inedible_feed
                     * constants_for_params["HUMAN_INEDIBLE_FEED_BASELINE_MONTHLY"]
                 ]
                 * 12,
             )
+
+        human_inedible_feed_dry_caloric_tons = Food(
+            kcals=human_inedible_feed_dry_caloric_tons_list,
+            fat=np.zeros(len(human_inedible_feed_dry_caloric_tons_list)),
+            protein=np.zeros(len(human_inedible_feed_dry_caloric_tons_list)),
+            kcals_units="million dry caloric tons each month",
+            fat_units="million tons each month",
+            protein_units="million tons each month",
+        )
+
+        self.human_inedible_feed = (
+            human_inedible_feed_dry_caloric_tons.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+        )
+
         self.INEDIBLE_TO_MILK_CONVERSION = 1.44
         self.EDIBLE_TO_MILK_CONVERSION = 0.7
         self.EDIBLE_TO_CHICKEN_PORK_CONVERSION = 4.8
