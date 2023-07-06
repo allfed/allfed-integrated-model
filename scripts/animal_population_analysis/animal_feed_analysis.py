@@ -7,7 +7,9 @@ from src.food_system.animal_populations import read_animal_regional_factors
 from src.food_system.animal_populations import read_country_data
 from src.food_system.animal_populations import CountryData
 from src.food_system.food import Food
-
+from scripts.animal_population_analysis.import_FAO_general_data import import_FAO_general_data
+from scipy import stats
+import statsmodels.stats.power as smp
 import plotly.express as px
 import pandas as pd
 import git
@@ -402,13 +404,13 @@ target_column = "log_fudge_factor"
 
 df= dataframe_corr
 
+
 # Drop the target column and index from the DataFrame
 columns_to_check = df.columns.drop(target_column)
 
 df = df.apply(pd.to_numeric, errors='coerce')
 
-
-# create an empty dictionary to store the correlations
+# create an empty dictionary to store the correlations and statistical power
 correlations = {}
 
 # Iterate over the remaining columns and calculate correlations
@@ -418,26 +420,32 @@ for column in columns_to_check:
     non_null = df[column].count()
     # and percentage of non-null values
     non_null_percentage = non_null / len(df)
+    
+    # calculate statistical power if there are missing data points
+    if non_null_percentage < 1.0:
+        nobs1 = non_null
+        alpha = 0.05  # significance level
+        effect_size = correlation * np.sqrt((1 - correlation**2) / (1 - non_null_percentage))
+        power = smp.tt_ind_solve_power(effect_size, nobs1=nobs1, alpha=alpha)
+    else:
+        power = 1.0  # set power to 1 when there are no missing data points
+
     # add the correlation and percent non-null to dictionary
-    correlations[column] = [correlation, non_null_percentage]
-
-    print(f"Correlation between {target_column} and {column}: {correlation} percent non-null values: {non_null_percentage} non-null values")
-    
-    correlations[column] = correlation
-    
-    # Create a scatter plot to visualize the correlation using Plotly
-    # fig = px.scatter(df, x=target_column, y=column)
-    # fig.show()
-
-#create a dataframe from the dictionary of correlations
-df_correlation = pd.DataFrame.from_dict(correlations, orient='index', columns=['correlation'])
-# sort by correlation
-df_correlation = df_correlation.sort_values(by='correlation', ascending=False)
-
-# bulk_correlation_analysis(dataframe_corr, 'ratio')
+    correlations[column] = [correlation, non_null_percentage, power]
 
 
-country_selection = "MNG"
+# create a dataframe from the dictionary of correlations
+df_correlation = pd.DataFrame.from_dict(correlations, orient='index', columns=['correlation', 'non_null_percentage', 'power'])
+
+# sort by abs(correlation)
+df_correlation = df_correlation.reindex(df_correlation['correlation'].abs().sort_values(ascending=False).index)
+
+# only show correlations with a power of 0.8 or higher
+df_correlation = df_correlation[df_correlation['power'] >= 0.8]
+
+
+
+country_selection = "USA"
 # plot mongoloia feed usage by species
 fig2 = px.bar(
     df_feed.loc[country_selection].filter(regex="_feed"),

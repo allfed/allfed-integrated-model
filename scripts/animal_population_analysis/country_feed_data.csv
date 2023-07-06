@@ -43,7 +43,6 @@ SLV,El Salvador,0.89,0.05,0.1
 ERI,Eritrea,0,0,0
 SWT,Eswatini,0.04,0,0.01
 ETH,Ethiopia,2.32,0.12,0.35
-F5707+GBR,European Union (27) + UK,199.18,9.53,37.81
 FJI,Fiji,0.03,0,0
 GAB,Gabon,0.08,0,0.01
 GMB,Gambia,0.01,0,0
@@ -81,7 +80,6 @@ MLI,Mali,1.68,0.08,0.31
 MRT,Mauritania,0.09,0.01,0.02
 MUS,Mauritius,0.09,0,0.01
 MEX,Mexico,31.46,1.57,6.46
-MDA,Republic of Moldova,1.94,0.08,0.32
 MNG,Mongolia,0.07,0.01,0.02
 MAR,Morocco,4.76,0.18,0.86
 MOZ,Mozambique,0.41,0.04,0.08
@@ -136,3 +134,33 @@ VNM,Viet Nam,24.56,1.28,3.55
 YEM,Yemen,0.58,0.03,0.11
 ZMB,Zambia,1.01,0.07,0.32
 ZWE,Zimbabwe,0.22,0.01,0.08
+AUT,Austria,2.49,0.11,0.46
+BEL,Belgium,4.7,0.43,0.81
+BGR,Bulgaria,0.89,0.05,0.14
+HRV,Croatia,1.41,0.07,0.23
+CYP,Cyprus,0.41,0.02,0.06
+CZE,Czechia,1.77,0.1,0.27
+DNK,Denmark,6.17,0.21,0.94
+EST,Estonia,0.16,0.01,0.05
+FIN,Finland,1.78,0.09,0.27
+FRA,France,17.37,0.68,2.83
+DEU,Germany,22.39,1.81,3.56
+GRC,Greece,2.99,0.13,0.44
+HUN,Hungary,6.07,0.3,0.6
+IRL,Ireland,4.49,0.4,0.57
+ITA,Italy,14.15,0.77,2.03
+LVA,Latvia,0.54,0.03,0.09
+LTU,Lithuania,1.09,0.09,0.18
+LUX,Luxembourg,0.12,0.01,0.02
+MLT,Malta,0.05,0,0.01
+MDA,Republic of Moldova,1.94,0.08,0.32
+MNE,Montenegro,0.06,0,0.01
+NLD,Netherlands,11.54,0.58,1.68
+POL,Poland,14.54,0.59,1.81
+PRT,Portugal,3.57,0.21,0.45
+ROU,Romania,9.52,0.47,1.15
+SVK,Slovakia,0.78,0.04,0.1
+SVN,Slovenia,0.29,0.01,0.05
+ESP,Spain,23.66,1.07,3.14
+SWE,Sweden,1.57,0.06,0.25
+GBR,United Kingdom of Great Britain and Northern Ireland,14.02,0.61,2.32
