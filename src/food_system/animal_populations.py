@@ -43,36 +43,41 @@ Start main function
 class CalculateFeedAndMeat:
     def __init__(self, country_code, available_feed, available_grass):
         
-        available_feed.type = "feed"
-        available_grass.type = "grass"
-        
-        self.all_animals = main(country_code, available_feed, available_grass)
-        self.large_animals = [
-            "asses",
-            "horses",
-            "meat_buffalo",
-            "meat_cattle",
-            "meat_camel",
-        ]
-        self.medium_animals = ["meat_sheep", "pig", "meat_goat"]
-        self.small_animals = ["duck", "chicken", "turkey", "rabbit"]
+        """
+        Call the main function to calculate the feed and meat produced
+
+        all animals is a list of animal objects
+        feed used is a food object (of length (NMONTHS))
+        grass used is a food object (of length (NMONTHS))
+
+        """
+        self.all_animals, self.feed_used, self.grass_used = main(country_code, available_feed, available_grass)
 
     def get_feed_used_and_meat_produced(self):
         # set monthly values to zero with one example object from  all_animals
+
+       
+
         # (all such objects should be same number of months)
         animals_slaughtered_small = np.zeros(len(self.all_animals[0].slaughter))
         animals_slaughtered_medium = np.zeros(len(self.all_animals[0].slaughter))
         animals_slaughtered_large = np.zeros(len(self.all_animals[0].slaughter))
-        feed_used = Food()  # Food(np.zeros(len(self.all_animals[0].slaughter)))
+        feed_used = Food(np.zeros(len(self.all_animals[0].slaughter)))
         # add up all the numbers of animals slaughtered and feed
+
+        # get the total slaughter by animal size from the all_animals list of animal objects
         for animal in self.all_animals:
-            if animal.animal_type in self.small_animals:
+            if animal.animal_size == "small":
+                animals_killed_for_meat_small += np.array(animal.feed_used)
+            
+
+        for animal in self.all_animals:
+            if animal.animal_size in self.small_animals:
                 animals_slaughtered_small += np.array(animal.slaughter)
             if animal.animal_type in self.medium_animals:
                 animals_slaughtered_medium += np.array(animal.slaughter)
             if animal.animal_type in self.large_animals:
                 animals_slaughtered_large += np.array(animal.slaughter)
-            feed_used = feed_used + animal.NE_balance # TODO: THIS was feed_used + animal.feed_balance. I removed feed_balance fomr the entire program, and moved to a system which calculates net_energy rather than gross energy. This allows varibale DI% based on Food type.
         # convert the animals slaughtered list
         return (
             feed_used,
@@ -173,10 +178,11 @@ class AnimalSpecies:
         Object containing the nutrition ratio for the animal type
 
     """
-    def __init__(self, animal_type, animal_species, population, slaughter, animal_function, feed_LSU, digestion_type, approximate_feed_conversion, digestion_efficiency_grass = 0.6, digestion_efficiency_feed = 0.8, carb_requirement=-1, protein_requirement=-1, fat_requirement=-1):
+    def __init__(self, animal_type, animal_species, population, slaughter, animal_function, livestock_unit, digestion_type, animal_size, approximate_feed_conversion, digestion_efficiency_grass = 0.6, digestion_efficiency_feed = 0.8, carb_requirement=-1, protein_requirement=-1, fat_requirement=-1):
         # basic attributes
         self.animal_type = animal_type
         self.animal_species = animal_species
+        self.animal_size = animal_size
         self.current_population = population
         self.population = [
             population
@@ -188,7 +194,7 @@ class AnimalSpecies:
         # other slauhter attributes are set in a different function
 
         # FEED attributes
-        self.feed_LSU = feed_LSU
+        self.livestock_unit = livestock_unit
         self.LSU_factor = 1 # default value gets set at init. In most scenarios this will be overwritten by "set_LSU_factor" function
         self.digestion_type = digestion_type
         self.approximate_feed_conversion = approximate_feed_conversion # note this only used for ranking the efficiency, not used for calculating the feed required
@@ -433,7 +439,7 @@ class AnimalSpecies:
         
         # convert to billion kcals
         one_LSU_monthly_billion_kcal = ( (one_year_NEt / 12) / 4.187 ) * 1000 / 1e9 # 12 months ina  year, 4.187 to convert to kcal, 1000 to convert to kcal from Mcal
-        return self.feed_LSU * one_LSU_monthly_billion_kcal * self.LSU_factor 
+        return self.livestock_unit * one_LSU_monthly_billion_kcal * self.LSU_factor 
 
     def net_energy_required_per_species(self):
         """
@@ -696,8 +702,9 @@ def create_animal_objects(df_animal_stock_info, df_animal_attributes):
                 population=df_animal_stock_info.loc[animal_type + "_head"],
                 slaughter=slaughter_input,
                 animal_function=animal_function,
-                feed_LSU=df_animal_attributes.loc[animal_type]["LSU"],
+                livestock_unit=df_animal_attributes.loc[animal_type]["LSU"],
                 digestion_type=df_animal_attributes.loc[animal_type]["digestion type"],
+                animal_size=df_animal_attributes.loc[animal_type]["animal size"],
                 approximate_feed_conversion=df_animal_attributes.loc[animal_type][
                     "approximate feed conversion"
                 ],
@@ -1564,6 +1571,12 @@ def main(country_code, available_feed, available_grass):
     # with the country object, update the animal objects with the LSU factors
     update_animal_objects_LSU_factor(all_animals,country_object)
 
+
+    # create output feed and grass objects
+    feed_used = Food(np.zeros(len(available_feed.kcals)))
+    grass_used = Food(np.zeros(len(available_feed.kcals)))
+
+
     #### END CREATION OF OBJECTS ####
 
     # THIS month for loop won't reallt exist here, i will be called in a loop somewhere else
@@ -1586,6 +1599,12 @@ def main(country_code, available_feed, available_grass):
             grass_available_this_month,
         )
         calculate_starving_animals_after_feed(all_animals)
+
+        # update the feed and grass objects with the amount used
+        # @MORGAN TODO:, I couldn't work out how to assign the values to the feed_used object without doing this
+        # (breaking it out in to kcals)
+        feed_used.kcals[month] = available_feed.kcals[month] - feed_available_this_month.kcals 
+        grass_used.kcals[month] = available_grass.kcals[month] - grass_available_this_month.kcals 
 
         ## OKAY SO NOW WE HAVE THE ANIMALS FED, WE NEED TO LOOK AT SLAUGHTERING
 
@@ -1730,11 +1749,11 @@ def main(country_code, available_feed, available_grass):
         # and for cleanliness, the population is appended here right at the end
         appened_current_populations(all_animals)
 
-    return all_animals
+    return all_animals, feed_used, grass_used
 
 
 if __name__ == "__main__":
-    output_list = main("AUS",available_feed_function(1000000000),available_grass_function(100000000000000))
+    output_list, feed_used, grass_used = main("AUS",available_feed_function(1000000000),available_grass_function(100000000000000))
 
     # plot all the animals without detail
     # exclude chicken from output list
