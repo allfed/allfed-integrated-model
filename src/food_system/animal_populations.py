@@ -943,7 +943,7 @@ def feed_animals(animal_list, ruminants, available_feed, available_grass):
     
     # feed the ruminants grass
     for ruminant in ruminants:
-        available_grass = ruminant.feed_the_species(available_grass, "grass") #Currently feed type is onyl defined here, might be more sensible to attach it to the FOOD object.
+        available_grass = ruminant.feed_the_species(available_grass, "grass") #TODO: Currently feed type is onyl defined here, might be more sensible to attach it to the FOOD object.
 
     # feed everything grain
     for animal in animal_list:
