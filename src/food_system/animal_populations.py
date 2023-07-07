@@ -55,35 +55,26 @@ class CalculateFeedAndMeat:
 
     def get_feed_used_and_meat_produced(self):
         # set monthly values to zero with one example object from  all_animals
-
-       
-
         # (all such objects should be same number of months)
-        animals_slaughtered_small = np.zeros(len(self.all_animals[0].slaughter))
-        animals_slaughtered_medium = np.zeros(len(self.all_animals[0].slaughter))
-        animals_slaughtered_large = np.zeros(len(self.all_animals[0].slaughter))
-        feed_used = Food(np.zeros(len(self.all_animals[0].slaughter)))
+        animals_killed_for_meat_small = np.zeros(len(self.all_animals[0].slaughter))
+        animals_killed_for_meat_medium = np.zeros(len(self.all_animals[0].slaughter))
+        animals_killed_for_meat_large = np.zeros(len(self.all_animals[0].slaughter))
         # add up all the numbers of animals slaughtered and feed
 
         # get the total slaughter by animal size from the all_animals list of animal objects
         for animal in self.all_animals:
             if animal.animal_size == "small":
-                animals_killed_for_meat_small += np.array(animal.feed_used)
+                animals_killed_for_meat_small += (np.array(animal.slaughter))# + np.array(animal.total_homekill_this_month))
+            elif animal.animal_size == "medium":
+                animals_killed_for_meat_medium += (np.array(animal.slaughter))# + np.array(animal.total_homekill_this_month))
+            elif animal.animal_size == "large":
+                animals_killed_for_meat_large += (np.array(animal.slaughter))# + np.array(animal.total_homekill_this_month))
             
-
-        for animal in self.all_animals:
-            if animal.animal_size in self.small_animals:
-                animals_slaughtered_small += np.array(animal.slaughter)
-            if animal.animal_type in self.medium_animals:
-                animals_slaughtered_medium += np.array(animal.slaughter)
-            if animal.animal_type in self.large_animals:
-                animals_slaughtered_large += np.array(animal.slaughter)
         # convert the animals slaughtered list
         return (
-            feed_used,
-            animals_slaughtered_small,
-            animals_slaughtered_medium,
-            animals_slaughtered_large,
+            animals_killed_for_meat_small,
+            animals_killed_for_meat_medium,
+            animals_killed_for_meat_large,
         )
 
 

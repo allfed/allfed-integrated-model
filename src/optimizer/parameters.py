@@ -210,13 +210,12 @@ class Parameters:
             meat_and_dairy.human_inedible_feed,
         )
         (
-            feed_used,
             animals_slaughtered_small,
             animals_slaughtered_medium,
             animals_slaughtered_large,
         ) = feed_meat_object.get_feed_used_and_meat_produced()
         print("feed_used")
-        print(feed_used)
+        print(feed_meat_object.feed_used.kcals)
         print("animals_slaughtered_small")
         print(animals_slaughtered_small)
         print("animals_slaughtered_medium")
