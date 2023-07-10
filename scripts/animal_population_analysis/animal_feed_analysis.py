@@ -19,7 +19,7 @@ import pycountry
 
 
 
-def add_alpha_codes_from_ISO(df, incol,outcol="iso3"):
+def add_alpha_codes_from_ISO(df, incol,outcol="iso3",unmatched_value = "NA",keep_original = False):
     """
     adds a column of alpha3 codes to a dataframe with country name in column 'col'
     uses fuzzy logic to match countries
@@ -31,12 +31,13 @@ def add_alpha_codes_from_ISO(df, incol,outcol="iso3"):
             country = pycountry.countries.get(numeric=str(input_country).zfill(3))
             alpha3 = country.alpha_3
         except:
-            alpha3 = "NA"
+            alpha3 = unmatched_value
             print("unable to match " + str(input_country))
         countries.append(alpha3)
     df[outcol] = countries
     # remove original country column
-    df = df.drop([incol], axis=1)
+    if not keep_original:
+        df = df.drop([incol], axis=1)
     return df
 
 def add_alpha_codes_fuzzy(df, incol,outcol="iso3"):
@@ -130,6 +131,10 @@ def species_baseline_feed(total_net_energy_demand,feed_DI,roughages_DI,roughages
     return GE_r,GE_f
 
 def bulk_correlation_analysis(df, target_column):
+    # Check if the DataFrame is empty
+    if df.empty:
+        return
+    
     # Drop the target column and index from the DataFrame
     columns_to_check = df.columns.drop(target_column)
     
@@ -297,15 +302,6 @@ print(df_feed["fudge_factor"].describe())
 # sort by gdp
 df_merged = df_merged.sort_values(by="GDP per capita", ascending=True)
 
-fig = px.scatter(
-    df_merged,
-    x="Country",
-    y="fudge_factor",  
-    log_y=True,  
-)
-
-fig.show()
-
 
 
 
@@ -445,15 +441,29 @@ df_correlation = df_correlation[df_correlation['power'] >= 0.8]
 
 
 
-country_selection = "USA"
-# plot mongoloia feed usage by species
-fig2 = px.bar(
-    df_feed.loc[country_selection].filter(regex="_feed"),
-    x=df_feed.loc[country_selection].filter(regex="_feed").index,
-    y=df_feed.loc[country_selection].filter(regex="_feed").values,
-)
 
-fig2.show()
+display_figures = 0
+if display_figures:
+
+    fig = px.scatter(
+        df_merged,
+        x="Country",
+        y="fudge_factor",  
+        log_y=True,  
+    )
+
+    fig.show()
+
+
+    country_selection = "USA"
+    # plot mongoloia feed usage by species
+    fig2 = px.bar(
+        df_feed.loc[country_selection].filter(regex="_feed"),
+        x=df_feed.loc[country_selection].filter(regex="_feed").index,
+        y=df_feed.loc[country_selection].filter(regex="_feed").values,
+    )
+
+    fig2.show()
     
 
 
@@ -493,5 +503,4 @@ fig2.show()
 
 
 # # # 
-
 
