@@ -19,7 +19,7 @@ import pycountry
 
 
 
-def add_alpha_codes_from_ISO(df, incol,outcol="iso3",unmatched_value = "NA",keep_original = False):
+def add_alpha_codes_from_ISO(df, incol,outcol="iso3",unmatched_value = "NA",keep_original = False, unmatched_alert=False):
     """
     adds a column of alpha3 codes to a dataframe with country name in column 'col'
     uses fuzzy logic to match countries
@@ -32,7 +32,8 @@ def add_alpha_codes_from_ISO(df, incol,outcol="iso3",unmatched_value = "NA",keep
             alpha3 = country.alpha_3
         except:
             alpha3 = unmatched_value
-            print("unable to match " + str(input_country))
+            if unmatched_alert:
+                print("unable to match " + str(input_country))
         countries.append(alpha3)
     df[outcol] = countries
     # remove original country column
@@ -179,8 +180,6 @@ df_energy = add_alpha_codes_from_ISO(df_energy, incol = "Area Code (M49)", outco
 # df_energy = df_energy.dropna(subset=["iso3"])
 
 df_energy = df_energy[df_energy["iso3"] != "NA"]
-
-
 df_energy = df_energy.set_index("iso3")
 df_energy = df_energy.drop(["Area", "Element Code", "Element", "Unit", "Area Code", "Item Code", "Item"], axis=1)
 df_energy = df_energy.rename(columns={"Y2021": "total_energy_use_in_ag"})
@@ -246,7 +245,7 @@ for country_code in df_animal_stock_info.index:
     # constants from gleam.
     ruminant_DI_grass = 0.56
     ruminant_DI_feed = 0.8
-    ruminant_roughage_fraction = 0.8
+    ruminant_grass_fraction = 0.8
     monogastric_DI_feed = 0.7
 
     # calculate consumed food in the animla list for this country
@@ -256,7 +255,8 @@ for country_code in df_animal_stock_info.index:
                  
         if animal_object.digestion_type == "ruminant":
             # input the roughage and feed digestion indeces and the percentage intake  of roughage
-            GE_roughage, GE_feed   = species_baseline_feed(net_energy_demand,ruminant_DI_feed,ruminant_DI_grass,ruminant_roughage_fraction)
+
+            GE_roughage, GE_feed   = species_baseline_feed(net_energy_demand,ruminant_DI_feed,ruminant_DI_grass,ruminant_grass_fraction)
         else:
             GE_roughage = 0 
             GE_feed   = net_energy_demand*monogastric_DI_feed
@@ -274,7 +274,7 @@ df_feed = df_feed.merge(
     df_country_macro_indicators, left_index=True, right_index=True
 )
 
-conversion_factor = 4000
+conversion_factor = 4000/12
 df_feed["Animal feed consumption Billion kcals"] = (
     df_feed["Animal feed caloric consumption in 2020 (million dry caloric tons)"] * conversion_factor
 )
@@ -286,8 +286,7 @@ df_feed = df_feed[df_feed["Animal feed consumption Billion kcals"] != 0]
 df_feed["feed_calculated_demand"] = df_feed.filter(regex="_feed").sum(axis=1)
 df_feed["grass_calculated_demand"] = df_feed.filter(regex="_grass").sum(axis=1)
 df_feed["difference"] = df_feed["feed_calculated_demand"] - df_feed["Animal feed consumption Billion kcals"]
-df_feed["ratio"] = df_feed["feed_calculated_demand"] / df_feed["Animal feed consumption Billion kcals"]
-df_feed['fudge_factor'] = 1/df_feed["ratio"]
+df_feed["fudge_factor"] = df_feed["Animal feed consumption Billion kcals"] / df_feed["feed_calculated_demand"]
 df_feed["fudge_difference"] = df_feed["feed_calculated_demand"]*df_feed['fudge_factor'] - df_feed["Animal feed consumption Billion kcals"]
 
 # merge with the animal stock info dataframe
@@ -299,103 +298,89 @@ df_merged = df_feed.merge(
 
 print(df_feed["fudge_factor"].describe())
 
+
+###### find sum ######
+
+#sum df_merged for all countires
+df_merged_sum = df_merged.sum(axis=0)
+df_merged_sum = pd.DataFrame(df_merged_sum).T
+
+df_merged_sum["fudge_factor"] =  df_merged_sum["Animal feed consumption Billion kcals"] / df_merged_sum["feed_calculated_demand"]
+
+# print results using f print
+print(f'Global Average Fudge Factor: {df_merged_sum["fudge_factor"].loc[0]:.2f}\nFAO Monthly Feed: {df_merged_sum["Animal feed consumption Billion kcals"].loc[0]:.2f}\nCalculated Feed: {df_merged_sum["feed_calculated_demand"].loc[0]:.2f}')
+
+
+
 # sort by gdp
-df_merged = df_merged.sort_values(by="GDP per capita", ascending=True)
+df_merged = df_merged.sort_values(by="GDP per capita", ascending=True) 
 
 
 
-
-
-# # plot GDP per capita and ratio
-# fig2 = px.scatter(
-#     df_merged,
-#     x="ratio",    
-#     y="GDP per capita",
-#     hover_name="Country",
-# )
-
-# fig2.show()
-
-# # new dataframe which removes outliers (countries with a ratio of more than 2)
-# df_feed_no_outliers = df_merged[df_merged["ratio"] <= 2]
-
-# # now check for correlation between GDP per capita and ratio
-# fig3 = px.scatter(
-#     df_feed_no_outliers,
-#     x="ratio",    
-#     y="GDP per capita",
-#     hover_name="Country",
-# )
-
-# fig3.show()
+###### Start Correlation Section ######
     
-    
-    
-### NEXT DO CORR OF LOG OF RATIO
+### NEXT DO CORR OF LOG OF FUDGE FACTOR
 
 cols_of_interest = [ 'fudge_factor', 
-                    'ratio'     ,
-                    'GDP rank',
-                    'GDP per capita rank',
-       'chicken_feed',
- 'rabbit_feed',
- 'duck_feed',
- 'goose_feed',
- 'turkey_feed',
-       'other_rodents_feed',
- 'pig_feed',
- 'meat_goat_feed',
- 'meat_sheep_feed',
-       'camelids_feed',
- 'meat_cattle_feed',
- 'meat_camel_feed',
-       'meat_buffalo_feed',
- 'mule_feed',
- 'horse_feed',
- 'asses_feed',
-       'milk_sheep_feed',
- 'milk_cattle_feed',
- 'milk_goat_feed',
-       'milk_camel_feed',
- 'milk_buffalo_feed',
- 'population',
-'Animal feed caloric consumption in 2020 (million dry caloric tons)',
-'Animal feed fat consumption in 2020 (million tonnes)',
-'Animal feed protein consumption in 2020 (million tonnes)',
-       'GDP',
-       'feed_calculated_demand',
- 'grass_calculated_demand',
- 'chicken_head',
- 'rabbit_head',
- 'duck_head',
-       'goose_head',
- 'turkey_head',
- 'other_rodents_head',
- 'pig_head',
-       'meat_goat_head',
- 'meat_sheep_head',
- 'camelids_head',
-       'meat_cattle_head',
- 'meat_camel_head',
- 'meat_buffalo_head',
- 'mule_head',
-       'horse_head',
- 'asses_head',
- 'milk_sheep_head',
- 'milk_cattle_head',
-       'milk_goat_head',
- 'milk_camel_head',
- 'milk_buffalo_head',
- 'GDP per capita', ]
+    'GDP rank',
+    'GDP per capita rank',
+    'chicken_feed',
+    'rabbit_feed',
+    'duck_feed',
+    'goose_feed',
+    'turkey_feed',
+    'other_rodents_feed',
+    'pig_feed',
+    'meat_goat_feed',
+    'meat_sheep_feed',
+    'camelids_feed',
+    'meat_cattle_feed',
+    'meat_camel_feed',
+    'meat_buffalo_feed',
+    'mule_feed',
+    'horse_feed',
+    'asses_feed',
+    'milk_sheep_feed',
+    'milk_cattle_feed',
+    'milk_goat_feed',
+    'milk_camel_feed',
+    'milk_buffalo_feed',
+    'population',
+    'Animal feed caloric consumption in 2020 (million dry caloric tons)',
+    'Animal feed fat consumption in 2020 (million tonnes)',
+    'Animal feed protein consumption in 2020 (million tonnes)',
+    'GDP',
+    'feed_calculated_demand',
+    'grass_calculated_demand',
+    'chicken_head',
+    'rabbit_head',
+    'duck_head',
+    'goose_head',
+    'turkey_head',
+    'other_rodents_head',
+    'pig_head',
+    'meat_goat_head',
+    'meat_sheep_head',
+    'camelids_head',
+    'meat_cattle_head',
+    'meat_camel_head',
+    'meat_buffalo_head',
+    'mule_head',
+    'horse_head',
+    'asses_head',
+    'milk_sheep_head',
+    'milk_cattle_head',
+    'milk_goat_head',
+    'milk_camel_head',
+    'milk_buffalo_head',
+    'GDP per capita' 
+    ]
                     
 
-dataframe_corr  = df_merged[cols_of_interest]
+dataframe_corr  = df_merged[cols_of_interest].copy()
 
-# do log of ratio
-dataframe_corr['log_ratio'] = np.log(dataframe_corr['ratio'])
-# and a log of the fudge factor
+#  log of the fudge factor
 dataframe_corr['log_fudge_factor'] = np.log(dataframe_corr['fudge_factor'])
-
 target_column = "log_fudge_factor"
 
 df= dataframe_corr
@@ -439,11 +424,18 @@ df_correlation = df_correlation.reindex(df_correlation['correlation'].abs().sort
 # only show correlations with a power of 0.8 or higher
 df_correlation = df_correlation[df_correlation['power'] >= 0.8]
 
+df_correlation
 
 
+#### Present day
+# break out each animal
+# how many cows
+# how much feed is going in
 
-display_figures = 0
-if display_figures:
+
+figure_toggle = 0
+
+if figure_toggle:
 
     fig = px.scatter(
         df_merged,
@@ -468,10 +460,6 @@ if display_figures:
 
 
 
-
-# # fig3.show()
-
-# # print the ratio stats
 
 
 # # # mike is familiar with the datasets
