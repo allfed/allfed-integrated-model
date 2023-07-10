@@ -255,8 +255,10 @@ for country_code in df_animal_stock_info.index:
                  
         if animal_object.digestion_type == "ruminant":
             # input the roughage and feed digestion indeces and the percentage intake  of roughage
-
-            GE_roughage, GE_feed   = species_baseline_feed(net_energy_demand,ruminant_DI_feed,ruminant_DI_grass,ruminant_grass_fraction)
+            if animal_object.species == "camel":
+                GE_roughage, GE_feed   = species_baseline_feed(net_energy_demand,ruminant_DI_feed,ruminant_DI_grass,0.95)
+            else:
+                GE_roughage, GE_feed   = species_baseline_feed(net_energy_demand,ruminant_DI_feed,ruminant_DI_grass,ruminant_grass_fraction)
         else:
             GE_roughage = 0 
             GE_feed   = net_energy_demand*monogastric_DI_feed
