@@ -19,16 +19,17 @@ import pycountry
 
 
 
-def add_alpha_codes_from_ISO(df, incol,outcol="iso3",unmatched_value = "NA",keep_original = False, unmatched_alert=False):
+def add_alpha_codes_from_ISO(df, incol,outcol="iso3",unmatched_value = "NA",keep_original = False, unmatched_alert=True):
     """
     adds a column of alpha3 codes to a dataframe with country name in column 'col'
     uses fuzzy logic to match countries
     """
     input_countries = df[incol]
+    input_countries = input_countries.fillna(0)
     countries = []
     for input_country in input_countries:
         try:
-            country = pycountry.countries.get(numeric=str(input_country).zfill(3))
+            country = pycountry.countries.get(numeric=str(int(input_country)).zfill(3))
             alpha3 = country.alpha_3
         except:
             alpha3 = unmatched_value
@@ -41,11 +42,22 @@ def add_alpha_codes_from_ISO(df, incol,outcol="iso3",unmatched_value = "NA",keep
         df = df.drop([incol], axis=1)
     return df
 
-def add_alpha_codes_fuzzy(df, incol,outcol="iso3"):
+def add_alpha_codes_fuzzy(df, incol,outcol="iso3",unmatched_value = "NA",keep_original = False, unmatched_alert=True):
     """
     adds a column of alpha3 codes to a dataframe with country name in column 'col'
     uses fuzzy logic to match countries
     """
+    # handle empty dataframe
+    if df.empty:
+        return df
+
+    # return error if incol or outcol not strings
+    if not isinstance(incol, str):
+        raise TypeError("incol must be a string")
+    if not isinstance(outcol, str):
+        raise TypeError("outcol must be a string")
+    
+    
     input_countries = df[incol]
     countries = []
     for input_country in input_countries:
@@ -255,10 +267,7 @@ for country_code in df_animal_stock_info.index:
                  
         if animal_object.digestion_type == "ruminant":
             # input the roughage and feed digestion indeces and the percentage intake  of roughage
-            if animal_object.species == "camel":
-                GE_roughage, GE_feed   = species_baseline_feed(net_energy_demand,ruminant_DI_feed,ruminant_DI_grass,0.95)
-            else:
-                GE_roughage, GE_feed   = species_baseline_feed(net_energy_demand,ruminant_DI_feed,ruminant_DI_grass,ruminant_grass_fraction)
+            GE_roughage, GE_feed   = species_baseline_feed(net_energy_demand,ruminant_DI_feed,ruminant_DI_grass,ruminant_grass_fraction)
         else:
             GE_roughage = 0 
             GE_feed   = net_energy_demand*monogastric_DI_feed
@@ -400,13 +409,13 @@ correlations = {}
 for column in columns_to_check:
     correlation = df[target_column].corr(df[column])
     # find number of non-null values
-    non_null = df[column].count()
+    non_null_non_zero = (df[column]>0).sum()
     # and percentage of non-null values
-    non_null_percentage = non_null / len(df)
+    non_null_percentage = non_null_non_zero / len(df)
     
     # calculate statistical power if there are missing data points
     if non_null_percentage < 1.0:
-        nobs1 = non_null
+        nobs1 = non_null_non_zero
         alpha = 0.05  # significance level
         effect_size = correlation * np.sqrt((1 - correlation**2) / (1 - non_null_percentage))
         power = smp.tt_ind_solve_power(effect_size, nobs1=nobs1, alpha=alpha)
@@ -435,7 +444,7 @@ df_correlation
 # how much feed is going in
 
 
-figure_toggle = 0
+figure_toggle = False
 
 if figure_toggle:
 
@@ -443,7 +452,7 @@ if figure_toggle:
         df_merged,
         x="Country",
         y="fudge_factor",  
-        log_y=True,  
+        # log_y=True,  
     )
 
     fig.show()

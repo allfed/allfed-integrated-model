@@ -33,6 +33,8 @@ import git
 from src.food_system.food import Food
 import pdb
 import matplotlib.pyplot as plt
+import os
+
 
 
 """
@@ -81,6 +83,8 @@ class CalculateFeedAndMeat:
 # create country calss to store country data in
 class CountryData:
     def __init__(self, country_name):
+        if not isinstance(country_name, str):
+            raise TypeError("Country name must be a string")
         self.country_name = country_name
         self.slaughter_hours = []
         self.homekill_hours_total_month = []
@@ -94,8 +98,24 @@ class CountryData:
         Requires inputs of the country info dataframe, and the regional conversion factors dataframe
         df_regional_conversion_factors dataframe contains the conversion factors for the LSU for each animal type, based on ther region.
         And the other, df_country_info contains the mapping from the country to the region.
+        
+        Country Name needs to be the index of the df_country_info dataframe
         """
         
+        # raise type error if the df_country_info is not a dtaaframe with alpha3 as the index
+        if not isinstance(df_country_info, pd.DataFrame):
+            raise TypeError("df_country_info must be a dataframe")
+        if not isinstance(df_regional_conversion_factors, pd.DataFrame):
+            raise TypeError("df_regional_conversion_factors must be a dataframe")
+        if not isinstance(self.country_name, str):
+            raise TypeError("Country name must be a string")
+        # if country name not 3 letters, raise error
+        if self.country_name.isalpha() == False:
+            raise ValueError("Country name must be 3 letters")
+        if len(self.country_name) != 3:
+            raise ValueError("Country name must be 3 letters")
+        
+
         #get region from country info dataframe
         try:
             self.EK_region = df_country_info[df_country_info.index == self.country_name]["FAO-region-EK"].values[0]
@@ -520,7 +540,7 @@ def read_animal_population_data():
         Dataframe containing animal population data
 
     """
-
+    
     repo_root = git.Repo(".", search_parent_directories=True).working_dir
     # Load data
     animal_feed_data_dir = (
