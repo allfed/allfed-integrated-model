@@ -82,6 +82,29 @@ class CalculateFeedAndMeat:
 
 # create country calss to store country data in
 class CountryData:
+
+    """
+    Main functionalities:
+    CountryData is a class that represents data for a specific country in the food system model. It contains fields for various data points such as slaughter hours, homekill hours, and meat output. The class has methods for setting livestock unit factors, calculating homekill hours, and calculating total slaughter hours.
+
+    Methods:
+    - __init__(self, country_name): initializes the CountryData object with the given country name and sets various fields to empty lists or 0.
+    - set_livestock_unit_factors(self, df_country_info, df_regional_conversion_factors): sets the LSU conversion factors for the country based on the given dataframes.
+    - homekill_desperation_parameters(self): sets the homekill fraction and other death homekill rate.
+    - calculate_homekill_hours(self): calculates the number of hours required to slaughter homekill animals.
+    - calculate_total_slaughter_hours(self, all_animals): calculates the total slaughter hours for all animals in the given list.
+
+    Fields:
+    - country_name: the name of the country.
+    - slaughter_hours: a list of total slaughter hours for each month.
+    - homekill_hours_total_month: a list of total homekill hours for each month.
+    - homekill_hours_budget: a list of budgeted homekill hours for each month.
+    - meat_output: a list of meat output for each month.
+    - spare_slaughter_hours: the number of spare slaughter hours for the country.
+    - EK_region: the FAO region for the country.
+    - LSU_conversion_factors: a dictionary of livestock unit conversion factors for the country.
+    
+    """
     def __init__(self, country_name):
         if not isinstance(country_name, str):
             raise TypeError("Country name must be a string")
@@ -125,9 +148,11 @@ class CountryData:
         # now given the region, get the conversion factors for the LSU
         # store them in a dict with the species:value format
         # in this imnstance, the columns are the regions and the index is the animal type (so the index needs to be saved in to the dict as the 'species')
-        conversion_factors = df_regional_conversion_factors[self.EK_region].to_dict()
-        self.LSU_conversion_factors = {key:value for key, value in conversion_factors.items()}
-        
+        try:
+            conversion_factors = df_regional_conversion_factors[self.EK_region].to_dict()
+            self.LSU_conversion_factors = {key:value for key, value in conversion_factors.items()}
+        except:
+            raise ValueError("Region not found in the regional conversion factors dataframe")
 
     def homekill_desperation_parameters(self):
         """ """
@@ -146,25 +171,29 @@ class CountryData:
 
     def calculate_total_slaughter_hours(self, all_animals):
         """
-        Probably unneccesary, but could be sueful to ibnterogate the number of salughter hours to compare between coutnries.
-        Not rewquired for the program to work (and not called)
+        Probably unneccesary, but could be sueful to ibnterogate the number of salughter hours to compare between countries.
+        Not required for the program to work (and not called)
         """
-        # get the animal populations from the all_animals list of animal objects, save in numpy
-        animal_populations = np.array([animal.population[0] for animal in all_animals])
 
         # same for slaughter hours
-        slaughter_hours = np.array(
+        slaughter_baseline = np.array(
             [animal.baseline_slaughter for animal in all_animals]
         )
 
+        # multiply the slaughter baseline by the number of slaughter hours required per species (animal_slaughter_hours)
+        slaughter_hours = np.array(
+            [animal.animal_slaughter_hours for animal in all_animals]
+        )
+
+
+
         # calculate the total slaughter hours by multiplying the animal population by the slaughter hours
         total_slaughter_hours = sum(
-            [pop * hours for pop, hours in zip(animal_populations, slaughter_hours)]
+            np.array(slaughter_baseline) * np.array(slaughter_hours)
         )
 
         # append the total slaughter hours to the country data
-        self.slaughter_hours.append(total_slaughter_hours)
-
+        return total_slaughter_hours
 
 # create class to store animal population data in. Needs to store the following: animal type, population, and slaughter.
 class AnimalSpecies:
@@ -189,10 +218,19 @@ class AnimalSpecies:
         Object containing the nutrition ratio for the animal type
 
     """
-    def __init__(self, animal_type, animal_species, population, slaughter, animal_function, livestock_unit, digestion_type, animal_size, approximate_feed_conversion, digestion_efficiency_grass = 0.6, digestion_efficiency_feed = 0.8, carb_requirement=-1, protein_requirement=-1, fat_requirement=-1):
+
+
+    def __init__(self, animal_type, animal_species):
         # basic attributes
         self.animal_type = animal_type
         self.animal_species = animal_species
+
+    # general method for updating attributes
+    def update_attributes(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    def set_animal_attributes(self, population, slaughter, animal_function, livestock_unit, digestion_type, animal_size, approximate_feed_conversion, digestion_efficiency_grass = 0.6, digestion_efficiency_feed = 0.8, carb_requirement=-1, protein_requirement=-1, fat_requirement=-1):
         self.animal_size = animal_size
         self.current_population = population
         self.population = [
@@ -707,18 +745,19 @@ def create_animal_objects(df_animal_stock_info, df_animal_attributes):
 
         # only create an animal object if the number of animals is greater than 0
         if df_animal_stock_info.loc[animal_type + "_head"] > 0:
+            # initialise the animal object
             animal_object = AnimalSpecies(
                 animal_type=animal_type,
-                animal_species=animal_species,
+                animal_species=animal_species)
+            # set the animal attributes
+            animal_object.set_animal_attributes(
                 population=df_animal_stock_info.loc[animal_type + "_head"],
                 slaughter=slaughter_input,
                 animal_function=animal_function,
                 livestock_unit=df_animal_attributes.loc[animal_type]["LSU"],
                 digestion_type=df_animal_attributes.loc[animal_type]["digestion type"],
                 animal_size=df_animal_attributes.loc[animal_type]["animal size"],
-                approximate_feed_conversion=df_animal_attributes.loc[animal_type][
-                    "approximate feed conversion"
-                ],
+                approximate_feed_conversion=df_animal_attributes.loc[animal_type]["approximate feed conversion"],
             )
             animal_objects[animal_type] = animal_object
         else:
