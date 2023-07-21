@@ -1966,6 +1966,28 @@ def main(country_code, available_feed, available_grass):
         # and for cleanliness, the population is appended here right at the end
         appened_current_populations(all_animals)
 
+    # remove first month (as it's just the initial population)
+    for animal in all_animals:
+        animal.population = animal.population[1:]
+        animal.population_starving_pre_slaughter = animal.population_starving_pre_slaughter[1:]
+        animal.population_starving_month = animal.population_starving_month[1:]
+        animal.other_death_causes_other_than_starving = animal.other_death_causes_other_than_starving[1:]
+        animal.other_death_starving = animal.other_death_starving[1:]
+        animal.other_death_total = animal.other_death_total[1:]
+        animal.slaughter = animal.slaughter[1:]
+        animal.births_animals_month = animal.births_animals_month[1:]
+        animal.pregnant_animals_birthing_this_month = animal.pregnant_animals_birthing_this_month[1:]
+        animal.pregnant_animals_total = animal.pregnant_animals_total[1:]
+        animal.slaughtered_pregnant_animals = animal.slaughtered_pregnant_animals[1:]
+        animal.transfer_population = animal.transfer_population[1:]
+        animal.transfer_births = animal.transfer_births[1:]
+        animal.homekill_other_death_this_month = animal.homekill_other_death_this_month[1:]
+        animal.homekill_healthy_this_month = animal.homekill_healthy_this_month[1:]
+        animal.homekill_starving_this_month = animal.homekill_starving_this_month[1:]
+        animal.total_homekill_this_month = animal.total_homekill_this_month[1:]
+
+
+
     return all_animals, feed_used, grass_used
 
 ## Debug tools
