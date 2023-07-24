@@ -1,10 +1,6 @@
 from src.food_system.animal_populations import AnimalSpecies
-from src.food_system.animal_populations import read_animal_population_data
-from src.food_system.animal_populations import read_animal_nutrition_data
-from src.food_system.animal_populations import read_animal_options
-from src.food_system.animal_populations import create_animal_objects
-from src.food_system.animal_populations import read_animal_regional_factors
-from src.food_system.animal_populations import read_country_data
+from src.food_system.animal_populations import AnimalDataReader
+from src.food_system.animal_populations import AnimalModelBuilder
 from src.food_system.animal_populations import CountryData
 from src.food_system.food import Food
 from scripts.animal_population_analysis.import_FAO_general_data import import_FAO_general_data
@@ -19,7 +15,7 @@ import pycountry
 
 
 
-def add_alpha_codes_from_ISO(df, incol,outcol="iso3",unmatched_value = "NA",keep_original = False, unmatched_alert=True):
+def add_alpha_codes_from_ISO(df, incol,outcol="iso3",unmatched_value = "NA",keep_original = False, unmatched_alert=False):
     """
     adds a column of alpha3 codes to a dataframe with country name in column 'col'
     uses fuzzy logic to match countries
@@ -98,8 +94,8 @@ def read_csv_values(path, country_code_col="Code",  year_col="Year", value_col=N
 
 
 
-    read_animal_regional_factors()
-    read_country_data()
+    AnimalDataReader.read_animal_regional_factors()
+    AnimalDataReader.read_country_data()
 
 def species_baseline_feed(total_net_energy_demand,feed_DI,roughages_DI,roughages_percentage=0.8):
 
@@ -218,12 +214,12 @@ df_country_macro_indicators["GDP rank"] = df_country_macro_indicators["GDP"].ran
 
 ## Populate animal objects ##
 # create animal objects
-df_animal_stock_info = read_animal_population_data()
-df_animal_attributes = read_animal_nutrition_data()
-df_animal_options = read_animal_options()
+df_animal_stock_info = AnimalDataReader.read_animal_population_data()
+df_animal_attributes = AnimalDataReader.read_animal_nutrition_data()
+df_animal_options = AnimalDataReader.read_animal_options()
 
-df_regional_conversion_factors = read_animal_regional_factors()
-df_country_info = read_country_data()
+df_regional_conversion_factors = AnimalDataReader.read_animal_regional_factors()
+df_country_info = AnimalDataReader.read_country_data()
 
 # create date frame with the column names as the species (from df_animal_stock_info)
 # but remove the columns that have "salughter" in the name
@@ -243,7 +239,7 @@ df_feed = pd.DataFrame(columns=col_list, index=df_animal_stock_info.index)
 total_food_consumed = []
 
 for country_code in df_animal_stock_info.index:
-    animal_list = create_animal_objects(df_animal_stock_info.loc[country_code], df_animal_attributes)
+    animal_list = AnimalModelBuilder.create_animal_objects(df_animal_stock_info.loc[country_code], df_animal_attributes)
     country_object = CountryData(country_code)
     country_object.set_livestock_unit_factors(df_country_info, df_regional_conversion_factors)    
     
