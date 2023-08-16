@@ -433,7 +433,6 @@ class Food(UnitConversions):
         assert not isinstance(self.protein, list) and not isinstance(
             self.protein, np.ndarray
         )
-
     def make_sure_is_a_list(self):
         """
         This function checks if the food nutrients are in the form of a list and throws an error if not.
