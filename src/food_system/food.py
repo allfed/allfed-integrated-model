@@ -424,11 +424,11 @@ class Food(UnitConversions):
             None
         """
         # Check if kcals is a list or numpy array
-        assert type(self.kcals) != list and type(self.kcals) != np.ndarray
+        assert not isinstance(self.kcals, list) and not isinstance(self.kcals, np.ndarray)
         # Check if fat is a list or numpy array
-        assert type(self.fat) != list and type(self.fat) != np.ndarray
+        assert not isinstance(self.fat, list) and not isinstance(self.fat, np.ndarray)
         # Check if protein is a list or numpy array
-        assert type(self.protein) != list and type(self.protein) != np.ndarray
+        assert not isinstance(self.protein, list) and not isinstance(self.protein, np.ndarray)
 
     def make_sure_is_a_list(self):
         """
@@ -443,9 +443,9 @@ class Food(UnitConversions):
             >>> food.make_sure_is_a_list()
         """
         # Check if the food nutrients are in the form of a numpy array
-        assert type(self.kcals) == np.ndarray
-        assert type(self.fat) == np.ndarray
-        assert type(self.protein) == np.ndarray
+        assert isinstance(self.kcals, np.ndarray)
+        assert isinstance(self.fat, np.ndarray)
+        assert isinstance(self.protein, np.ndarray)
 
     def ensure_other_list_zero_if_this_is_zero(self, other_list):
         """
@@ -683,7 +683,7 @@ class Food(UnitConversions):
             Food(50.0, 5.0, 10.0, 'kcal', 'g', 'g')
 
         """
-        if type(other) == Food:
+        if isinstance(other, Food):
             # Check if the units of the two foods being divided are the same
             assert self.units == other.units
 
@@ -820,7 +820,7 @@ class Food(UnitConversions):
 
         """
         if not self.is_list_monthly():
-            if type(other) == Food:
+            if isinstance(other, Food):
                 # this is a food and other is a food
                 if other.is_list_monthly():
                     # this is a food and other is a food list
@@ -873,7 +873,7 @@ class Food(UnitConversions):
                 assert self.get_units() == other.get_units_from_element_to_list()
 
             # this is a food and other is a list
-            if type(other) == np.ndarray:
+            if isinstance(other, np.ndarray):
                 # assume the other is unitless, we're converting a non-list food amount to a list
                 # make this a food with "each month"
                 return Food(
@@ -899,7 +899,7 @@ class Food(UnitConversions):
         self.make_sure_is_a_list()
         self.validate_if_list()
 
-        if type(other) == Food:
+        if isinstance(other, Food):
             if other.is_list_monthly():
                 # this is a food list and other is a food list
 
@@ -1154,7 +1154,7 @@ class Food(UnitConversions):
             bool: True if kcals is a list or numpy array, False otherwise
         """
         # Check if kcals is a list or numpy array
-        return type(self.kcals) == list or type(self.kcals) == np.ndarray
+        return isinstance(self.kcals, list) or isinstance(self.kcals, np.ndarray)
 
     def is_never_negative(self):
         """
@@ -2289,7 +2289,7 @@ class Food(UnitConversions):
         assert list_with_zeros.NMONTHS == self.NMONTHS
 
         # Ensure that the units of replacement are the same as the units of the original list
-        if type(replacement) == Food:
+        if isinstance(replacement, Food):
             if replacement.is_list_monthly():
                 assert self.NMONTHS == replacement.NMONTHS
                 assert self.get_units() == replacement.get_units()
@@ -2297,7 +2297,7 @@ class Food(UnitConversions):
                 assert self.get_units() == replacement.get_units_from_element_to_list()
 
         # Replace the elements in the list with zeros with the specified replacement
-        if type(replacement) == Food:
+        if isinstance(replacement, Food):
             # Replacement specified per nutrient
             processed_list_kcals = np.where(
                 list_with_zeros.kcals == 0,
