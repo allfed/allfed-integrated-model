@@ -280,23 +280,31 @@ class Optimizer:
         variables["stored_food_start"][month] = LpVariable(
             "Stored_Food_Start_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["stored_food"].initial_available.kcals,
+            self.single_valued_constants[
+                "stored_food"
+            ].initial_available_to_humans.kcals,
         )
         variables["stored_food_end"][month] = LpVariable(
             "Stored_Food_End_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["stored_food"].initial_available.kcals,
+            self.single_valued_constants[
+                "stored_food"
+            ].initial_available_to_humans.kcals,
         )
         variables["stored_food_eaten"][month] = LpVariable(
             "Stored_Food_Eaten_During_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["stored_food"].initial_available.kcals,
+            self.single_valued_constants[
+                "stored_food"
+            ].initial_available_to_humans.kcals,
         )
 
         if month == 0:  # first month
             model += (
                 variables["stored_food_start"][month]
-                == self.single_valued_constants["stored_food"].initial_available.kcals,
+                == self.single_valued_constants[
+                    "stored_food"
+                ].initial_available_to_humans.kcals,
                 "Stored_Food_Start_Month_" + str(month) + "_Constraint",
             )
             model += (
@@ -341,23 +349,31 @@ class Optimizer:
         variables["stored_food_start"][month] = LpVariable(
             "Stored_Food_Start_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["stored_food"].initial_available.kcals,
+            self.single_valued_constants[
+                "stored_food"
+            ].initial_available_to_humans.kcals,
         )
         variables["stored_food_end"][month] = LpVariable(
             "Stored_Food_End_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["stored_food"].initial_available.kcals,
+            self.single_valued_constants[
+                "stored_food"
+            ].initial_available_to_humans.kcals,
         )
         variables["stored_food_eaten"][month] = LpVariable(
             "Stored_Food_Eaten_During_Month_" + str(month) + "_Variable",
             0,
-            self.single_valued_constants["stored_food"].initial_available.kcals,
+            self.single_valued_constants[
+                "stored_food"
+            ].initial_available_to_humans.kcals,
         )
 
         if month == 0:  # first Month
             model += (
                 variables["stored_food_start"][0]
-                == self.single_valued_constants["stored_food"].initial_available.kcals,
+                == self.single_valued_constants[
+                    "stored_food"
+                ].initial_available_to_humans.kcals,
                 "Stored_Food_Start_Month_0_Constraint",
             )
 

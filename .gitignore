@@ -106,3 +106,6 @@ target/
 
 # Mypy cache
 .mypy_cache/
+
+#csv files
+*.csv

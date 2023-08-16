@@ -92,6 +92,7 @@ class StoredFood:
         # convert to billion kcals
         self.INITIAL_SF_KCALS = self.TONS_DRY_CALORIC_EQIVALENT_SF * 4e6 / 1e9
 
+        # convert the stored food to billion kcals
         self.initial_available = Food(
             kcals=self.INITIAL_SF_KCALS * (1 - self.CROP_WASTE / 100),
             fat=(

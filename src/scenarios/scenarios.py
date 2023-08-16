@@ -306,6 +306,8 @@ class Scenarios:
         # fraction global crop area for entire earth is 1 by definition
         constants_for_params["INITIAL_CROP_AREA_FRACTION"] = 1
 
+        constants_for_params["COUNTRY_CODE"] = "global"
+
         self.SCALE_SET = True
         return constants_for_params
 

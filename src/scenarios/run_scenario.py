@@ -34,7 +34,6 @@ class ScenarioRunner:
         """
         interpreter = Interpreter()
         validator = Validator()
-
         # take the variables defining the scenario and compute the resulting needed
         # values as inputs to the optimizer
         (
@@ -128,6 +127,7 @@ class ScenarioRunner:
 
         if scenario_option["scale"] == "global":
             constants_for_params = scenario_loader.init_global_food_system_properties()
+            constants_for_params["COUNTRY_CODE"] = "global"
         elif scenario_option["scale"] == "country":
             constants_for_params = scenario_loader.init_country_food_system_properties(
                 country_data

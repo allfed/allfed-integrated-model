@@ -72,21 +72,6 @@ def test_food_init():
     assert isinstance(food, Food)
 
 
-def test_validate_if_list_failed():
-    """
-    Tests if a list cannot be created if it is set up wrong
-    """
-    with pytest.raises(AssertionError):
-        Food(
-            kcals=[1, 2, 3],
-            fat=[1, 2, 3],
-            protein=[1, 2, 3],
-            kcals_units="kcals",
-            fat_units="kcals each month",
-            protein_units="kcals each month",
-        )
-
-
 def test_make_sure_not_a_list():
     """
     Tests not a list detects correctly

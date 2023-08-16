@@ -10,7 +10,7 @@ import sys
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 
 
-def run_ARG_net_baseline():
+def run_ARG_net_baseline(show_country_figures, show_map_figures):
     this_simulation = {}
     this_simulation["scale"] = "country"
     this_simulation["seasonality"] = "country"
@@ -42,8 +42,8 @@ def run_ARG_net_baseline():
     scenario_runner.run_model_no_trade(
         title="Argentina Net Food Production",
         create_pptx_with_all_countries=False,
-        show_country_figures=True,
-        show_map_figures=False,
+        show_country_figures=show_country_figures,
+        show_map_figures=show_map_figures,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=["ARG"],  # runs all the countries if empty
@@ -52,7 +52,7 @@ def run_ARG_net_baseline():
     )
 
 
-def run_ARG_gross_baseline():
+def run_ARG_gross_baseline(show_country_figures, show_map_figures):
     this_simulation = {}
     this_simulation["scale"] = "country"
     this_simulation["seasonality"] = "country"
@@ -84,8 +84,8 @@ def run_ARG_gross_baseline():
     scenario_runner.run_model_no_trade(
         title="Argentina Net Food Production",
         create_pptx_with_all_countries=False,
-        show_country_figures=True,
-        show_map_figures=False,
+        show_country_figures=show_country_figures,
+        show_map_figures=show_map_figures,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=["ARG"],  # runs all the countries if empty
@@ -94,7 +94,7 @@ def run_ARG_gross_baseline():
     )
 
 
-def run_ARG_net_nuclear_winter():
+def run_ARG_net_nuclear_winter(show_country_figures, show_map_figures):
     this_simulation = {}
 
     this_simulation["scale"] = "country"
@@ -128,8 +128,8 @@ def run_ARG_net_nuclear_winter():
     scenario_runner.run_model_no_trade(
         title="Argentina Net Food Production, Nuclear Winter",
         create_pptx_with_all_countries=False,
-        show_country_figures=True,
-        show_map_figures=True,
+        show_country_figures=show_country_figures,
+        show_map_figures=show_map_figures,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=["ARG"],
@@ -138,7 +138,9 @@ def run_ARG_net_nuclear_winter():
     )
 
 
-def run_ARG_net_nuclear_winter_reduced_feed_waste():
+def run_ARG_net_nuclear_winter_reduced_feed_waste(
+    show_country_figures, show_map_figures
+):
     this_simulation = {}
 
     this_simulation["scale"] = "country"
@@ -172,8 +174,8 @@ def run_ARG_net_nuclear_winter_reduced_feed_waste():
     scenario_runner.run_model_no_trade(
         title="Argentina Net Food Production, Nuclear Winter, Reduced Waste",
         create_pptx_with_all_countries=False,
-        show_country_figures=True,
-        show_map_figures=True,
+        show_country_figures=show_country_figures,
+        show_map_figures=show_map_figures,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=["ARG"],
@@ -182,7 +184,9 @@ def run_ARG_net_nuclear_winter_reduced_feed_waste():
     )
 
 
-def run_ARG_net_nuclear_winter_reduced_feed_waste_resilient():
+def run_ARG_net_nuclear_winter_reduced_feed_waste_resilient(
+    show_country_figures, show_map_figures
+):
     this_simulation = {}
 
     this_simulation["scale"] = "country"
@@ -218,8 +222,8 @@ def run_ARG_net_nuclear_winter_reduced_feed_waste_resilient():
     scenario_runner.run_model_no_trade(
         title="Argentina Net Food Production, Resilient Foods",
         create_pptx_with_all_countries=False,
-        show_country_figures=True,
-        show_map_figures=True,
+        show_country_figures=show_country_figures,
+        show_map_figures=show_map_figures,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=["ARG"],
@@ -228,7 +232,9 @@ def run_ARG_net_nuclear_winter_reduced_feed_waste_resilient():
     )
 
 
-def run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area():
+def run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area(
+    show_country_figures, show_map_figures
+):
     this_simulation = {}
 
     this_simulation["scale"] = "country"
@@ -260,12 +266,11 @@ def run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area():
 
     # command line argument inputs (optional)
     scenario_runner = ScenarioRunnerNoTrade()
-
     scenario_runner.run_model_no_trade(
         title="Argentina Net Food Production, Resilient Foods",
         create_pptx_with_all_countries=False,
-        show_country_figures=True,
-        show_map_figures=True,
+        show_country_figures=show_country_figures,
+        show_map_figures=show_map_figures,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=["ARG"],
@@ -275,12 +280,33 @@ def run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area():
 
 
 def main(args):
-    # run_ARG_net_baseline()
-    # run_ARG_gross_baseline()
-    # run_ARG_net_nuclear_winter()
-    # run_ARG_net_nuclear_winter_reduced_feed_waste()
-    # run_ARG_net_nuclear_winter_reduced_feed_waste_resilient()
-    run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area()
+    print(
+        "USAGE: first arg to True to show country figures, second to show colored map"
+    )
+    print()
+    if not args or len(args) < 2:
+        if len(args) == 1:
+            args = [args[0], "False"]
+        else:
+            args = ["True", "False"]
+    run_ARG_net_baseline(
+        show_country_figures=args[0] == "True", show_map_figures=args[1] == "True"
+    )
+    run_ARG_gross_baseline(
+        show_country_figures=args[0] == "True", show_map_figures=args[1] == "True"
+    )
+    run_ARG_net_nuclear_winter(
+        show_country_figures=args[0] == "True", show_map_figures=args[1] == "True"
+    )
+    run_ARG_net_nuclear_winter_reduced_feed_waste(
+        show_country_figures=args[0] == "True", show_map_figures=args[1] == "True"
+    )
+    run_ARG_net_nuclear_winter_reduced_feed_waste_resilient(
+        show_country_figures=args[0] == "True", show_map_figures=args[1] == "True"
+    )
+    run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area(
+        show_country_figures=args[0] == "True", show_map_figures=args[1] == "True"
+    )
 
 
 if __name__ == "__main__":

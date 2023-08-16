@@ -51,6 +51,30 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         this_simulation["fat"] = "not_required"
         this_simulation["protein"] = "not_required"
         this_simulation["meat_strategy"] = "efficient_meat_strategy"
+
+        if "waste" not in this_simulation.keys():
+            this_simulation["waste"] = "zero"
+        if "nutrition" not in this_simulation.keys():
+            this_simulation["nutrition"] = "baseline"
+        if "buffer" not in this_simulation.keys():
+            this_simulation["buffer"] = "baseline"
+        if "shutoff" not in this_simulation.keys():
+            this_simulation[
+                "shutoff"
+            ] = "reduce_breeding_USA"  # this_simulation["shutoff"] = "immediate"
+        if "cull" not in this_simulation.keys():
+            this_simulation["cull"] = "do_eat_culled"
+
+        # this_simulation["waste"] = "zero"
+        # this_simulation["nutrition"] = "baseline"
+        # this_simulation["buffer"] = "baseline"
+        # this_simulation["shutoff"] = "immediate"
+        # this_simulation["cull"] = "dont_eat_culled"
+
+        # this_simulation["fat"] = "not_required"
+        # this_simulation["protein"] = "not_required"
+        # this_simulation["meat_strategy"] = "efficient_meat_strategy"
+
         self.run_model_no_trade(
             title=this_simulation["scenario"] + "_" + this_simulation["fish"],
             create_pptx_with_all_countries=create_pptx_with_all_countries,
@@ -58,37 +82,37 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             show_map_figures=show_map_figures,
             add_map_slide_to_pptx=show_map_figures and create_pptx_with_all_countries,
             scenario_option=this_simulation,
-            countries_list=["ARG"],  # , "USA"],
-            #     "!SWT",
-            #     "!GBR",
-            #     "!AUT",
-            #     "!BEL",
-            #     "!BGR",
-            #     "!HRV",
-            #     "!CYP",
-            #     "!CZE",
-            #     "!DNK",
-            #     "!EST",
-            #     "!FIN",
-            #     "!FRA",
-            #     "!DEU",
-            #     "!GRC",
-            #     "!HUN",
-            #     "!IRL",
-            #     "!ITA",
-            #     "!LVA",
-            #     "!LTU",
-            #     "!LUX",
-            #     "!MLT",
-            #     "!NLD",
-            #     "!POL",
-            #     "!PRT",
-            #     "!ROU",
-            #     "!SVK",
-            #     "!SVN",
-            #     "!ESP",
-            #     "!SWE",
-            # ],
+            countries_list=[
+                "!SWT",
+                "!GBR",
+                "!AUT",
+                "!BEL",
+                "!BGR",
+                "!HRV",
+                "!CYP",
+                "!CZE",
+                "!DNK",
+                "!EST",
+                "!FIN",
+                "!FRA",
+                "!DEU",
+                "!GRC",
+                "!HUN",
+                "!IRL",
+                "!ITA",
+                "!LVA",
+                "!LTU",
+                "!LUX",
+                "!MLT",
+                "!NLD",
+                "!POL",
+                "!PRT",
+                "!ROU",
+                "!SVK",
+                "!SVN",
+                "!ESP",
+                "!SWE",
+            ],
         )
 
     def run_optimizer_for_country(
@@ -100,7 +124,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         figure_save_postfix="",
     ):
         country_name = country_data["country"]
-
         constants_for_params, scenario_loader = self.set_depending_on_option(
             country_data, scenario_option
         )
@@ -278,8 +301,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             # skip countries with no population
             if np.isnan(population):
                 continue
-
-            print("about to run optimizer for country")
 
             (
                 needs_ratio,
@@ -505,6 +526,16 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         defaults["nutrition"] = "catastrophe"
         defaults["cull"] = "do_eat_culled"
         defaults["meat_strategy"] = "efficient_meat_strategy"
+        assert "waste" not in this_simulation.keys()
+        assert "nutrition" not in this_simulation.keys()
+        assert "buffer" not in this_simulation.keys()
+        assert "shutoff" not in this_simulation.keys()
+        assert "cull" not in this_simulation.keys()
+        defaults["waste"] = "zero"
+        defaults["nutrition"] = "baseline"
+        defaults["buffer"] = "baseline"
+        defaults["shutoff"] = "reduce_breeding_USA"
+        defaults["cull"] = "do_eat_culled"
 
         options_including_defaults = []
         for option in options:

@@ -55,7 +55,6 @@ class Parameters:
             assert (
                 constants_inputs["ADD_MAINTAINED_MEAT"] is True
             ), "Maintained meat needs to be added for continued feed usage"
-
         assert self.FIRST_TIME_RUN
         self.FIRST_TIME_RUN = False
 
@@ -638,6 +637,7 @@ class Parameters:
         feed_and_biofuels,
     ):
         (
+            outdoor_crops_remaining_after_biofuel,
             remaining_biofuel_needed_from_stored_food,
             outdoor_crops_used_for_biofuel,
             methane_scp_used_for_biofuel,
@@ -659,12 +659,8 @@ class Parameters:
             methane_scp.production.kcals,
             methane_scp_used_for_biofuel,
         )
-        outdoor_crops_remaining_after_biofuel = np.subtract(
-            outdoor_crops.production.kcals,
-            outdoor_crops_used_for_biofuel,
-        )
-
         (
+            outdoor_crops_remaining_after_feed_and_biofuel,
             remaining_feed_needed_from_stored_food,
             outdoor_crops_used_for_feed,
             methane_scp_used_for_feed,
@@ -690,9 +686,6 @@ class Parameters:
             remaining_feed_needed_from_stored_food,
         )
 
-        outdoor_crops_remaining_after_feed_and_biofuel = (
-            outdoor_crops_remaining_after_biofuel - outdoor_crops_used_for_feed
-        )
         methane_scp_remaining_after_feed_and_biofuel = (
             methane_scp_remaining_after_biofuel - methane_scp_used_for_feed
         )
@@ -732,7 +725,6 @@ class Parameters:
         assert (
             remaining_biofuel_needed_from_stored_food.all_greater_than_or_equal_to_zero()
         )
-
         total_feed_usage_stored_food = (
             remaining_feed_needed_from_stored_food.get_nutrients_sum()
             + remaining_biofuel_needed_from_stored_food.get_nutrients_sum()
@@ -749,6 +741,60 @@ class Parameters:
         stored_food.initial_available_to_humans = (
             stored_food.initial_available - total_feed_usage_stored_food
         )
+
+        if (
+            not stored_food.initial_available_to_humans.all_greater_than_or_equal_to_zero()
+        ):
+            print("")
+            print(
+                "WARNING: THE INPUT ASSUMPTIONS FOR THE SCENARIO CONSIDERED ARE UNREALISTIC!"
+            )
+            print(
+                "         You have chosen an amount of feed and biofuels which are untenable"
+            )
+            print(
+                "         and cannot be satisfied by the outdoor crop production, available"
+            )
+            print(
+                "         cellulosic sugar, and available methane single cell protein."
+            )
+            print(
+                "         The feed required before waste comes to "
+                + str(feed_before_cap_prewaste.get_nutrients_sum()).strip()
+                + " over the entire simulation."
+            )
+            print(
+                "         The biofuels required before waste comes to "
+                + str(biofuels_before_cap_prewaste.get_nutrients_sum()).strip()
+                + " over the entire simulation."
+            )
+            print(
+                "         The outdoor crop production to satisfy this before waste comes to "
+                + str(
+                    outdoor_crops.production.get_nutrients_sum()
+                    / (1 - outdoor_crops.CROP_WASTE / 100)
+                ).strip()
+                + " over the entire simulation."
+            )
+            print(
+                "         The stored food available before waste at the start of the simulation is "
+                + str(
+                    stored_food.initial_available / (1 - outdoor_crops.CROP_WASTE / 100)
+                ).strip()
+                + "."
+            )
+            print(
+                "         This results in a net deficit of calories (after using up all stored food) of:"
+                + str(-stored_food.initial_available_to_humans).strip()
+            )
+            print("Setting stored food to zero!")
+            print(
+                "(The resulting graph shown and percent people fed is therefore also likely unrealistic.)"
+            )
+            print("")
+
+            # Set stored food to zero
+            stored_food.initial_available_to_humans.new_food_just_from_kcals()
 
         time_consts["seaweed"] = seaweed
         time_consts["methane_scp"] = methane_scp
@@ -814,23 +860,42 @@ class Parameters:
 
         # outdoor growing
 
-        outdoor_crops_used_for_biofuel = np.min(
+        outdoor_crops_used_for_biofuel_before_shift = np.min(
             [outdoor_crops.production.kcals, remaining_biofuel_needed], axis=0
         )
 
-        remaining_biofuel_needed_kcals = np.subtract(
-            biofuels_before_cap_prewaste.kcals, outdoor_crops_used_for_biofuel
+        remaining_biofuel_needed_kcals_before_shift = np.subtract(
+            biofuels_before_cap_prewaste.kcals,
+            outdoor_crops_used_for_biofuel_before_shift,
         )
-        remaining_biofuel_needed_from_stored_food = Food(
-            kcals=remaining_biofuel_needed_kcals,
-            fat=np.zeros(len(remaining_biofuel_needed_kcals)),
-            protein=np.zeros(len(remaining_biofuel_needed_kcals)),
-            kcals_units="billion kcals each month",
-            fat_units="thousand tons each month",
-            protein_units="thousand tons each month",
+
+        outdoor_crops_remaining_after_biofuel_before_shift = (
+            outdoor_crops.production.kcals - outdoor_crops_used_for_biofuel_before_shift
+        )
+
+        # THE SHIFT AND SUBTRACT (ALLOWING STORED FOOD FROM OUTDOOR GROWING TO BE USED) IS BELOW
+
+        (
+            outdoor_crops_remaining_after_biofuel,
+            remaining_biofuel_needed_from_stored_food,
+            outdoor_crops_used_for_biofuel_stored_6months,
+        ) = self.subtract_off_usage_iteratively(
+            remaining_biofuel_needed_kcals_before_shift,
+            outdoor_crops_remaining_after_biofuel_before_shift,
+        )
+
+        outdoor_crops_used_for_biofuel = (
+            outdoor_crops_used_for_biofuel_stored_6months
+            + outdoor_crops_used_for_biofuel_before_shift
+        )
+
+        outdoor_crops_remaining_after_biofuel = np.subtract(
+            outdoor_crops.production.kcals,
+            outdoor_crops_used_for_biofuel,
         )
 
         return (
+            outdoor_crops_remaining_after_biofuel,
             remaining_biofuel_needed_from_stored_food,
             outdoor_crops_used_for_biofuel,
             methane_scp_used_for_biofuel,
@@ -893,31 +958,179 @@ class Parameters:
         )
 
         # outdoor growing
-
-        outdoor_crops_used_for_feed = np.min(
+        outdoor_crops_used_for_feed_before_shift = np.min(
             [outdoor_crops_remaining_after_biofuel, remaining_feed_needed], axis=0
         )
 
         # this is the amount of kcals that all the combined sources could not fulfill
         # in each month
         # TODO: deal with nutrients...
-        remaining_feed_needed_kcals = np.subtract(
-            feeds_before_cap_prewaste.kcals, outdoor_crops_used_for_feed
+        remaining_feed_needed_kcals_before_shift = np.subtract(
+            feeds_before_cap_prewaste.kcals,
+            outdoor_crops_used_for_feed_before_shift,
         )
-        remaining_feed_needed_from_stored_food = Food(
-            kcals=np.array(remaining_feed_needed_kcals),
-            fat=np.zeros(len(remaining_feed_needed_kcals)),
-            protein=np.zeros(len(remaining_feed_needed_kcals)),
+
+        # now that we have outdoor crops bottomed out in the winter seasons, let's also subtract off some of the outdoor crops in the high production seasons, if there is any remaining feed needed (because sometimes theres not enough stored food initial at start of the simulation to make up for all the lacking food needed for feed)
+
+        # there will be a bit of an offset here: the outdoor crops from months 12+ will be reduced by the amount of remaining feed needed. So we introduce a 6 month shift, so that the outdoor crops are moved forward in time by 6 months, and the feed is subtracted off.
+
+        outdoor_crops_remaining_after_feed_and_biofuel_before_shift = (
+            outdoor_crops_remaining_after_biofuel
+            - outdoor_crops_used_for_feed_before_shift
+        )
+
+        # THE SHIFT AND SUBTRACT (ALLOWING STORED FOOD FROM OUTDOOR GROWING TO BE USED) IS BELOW
+
+        (
+            outdoor_crops_remaining_after_feed_and_biofuel,
+            remaining_feed_needed_from_stored_food,
+            outdoor_crops_used_for_feed_stored_6months,
+        ) = self.subtract_off_usage_iteratively(
+            remaining_feed_needed_kcals_before_shift,
+            outdoor_crops_remaining_after_feed_and_biofuel_before_shift,
+        )
+
+        outdoor_crops_used_for_feed = (
+            outdoor_crops_used_for_feed_stored_6months
+            + outdoor_crops_used_for_feed_before_shift
+        )
+
+        # TO NOT DO THE SHIFT (may fail to have enough stored food...:
+
+        # # (
+        # #     outdoor_crops_remaining_after_feed_and_biofuel,
+        # #     remaining_feed_needed_kcals,
+        # #     outdoor_crops_used_for_feed_stored_6months,
+        # # ) = self.subtract_off_feed_from_6mo_previous_outdoor_growing(
+        # #     remaining_feed_needed_kcals_before_shift,
+        # #     outdoor_crops_remaining_after_feed_and_biofuel_before_shift,
+        # # )
+
+        # outdoor_crops_remaining_after_feed_and_biofuel = (
+        #     outdoor_crops_remaining_after_feed_and_biofuel_before_shift
+        # )
+        # remaining_feed_needed_kcals = remaining_feed_needed_kcals_before_shift
+
+        # outdoor_crops_used_for_feed = (
+        #     # outdoor_crops_used_for_feed_stored_6months
+        #     +outdoor_crops_used_for_feed_before_shift
+        # )
+
+        # remaining_feed_needed_from_stored_food = Food(
+        #     kcals=np.array(remaining_feed_needed_kcals),
+        #     fat=np.zeros(len(remaining_feed_needed_kcals)),
+        #     protein=np.zeros(len(remaining_feed_needed_kcals)),
+        #     kcals_units="billion kcals each month",
+        #     fat_units="thousand tons each month",
+        #     protein_units="thousand tons each month",
+        # )
+
+        return (
+            outdoor_crops_remaining_after_feed_and_biofuel,
+            remaining_feed_needed_from_stored_food,
+            outdoor_crops_used_for_feed,
+            methane_scp_used_for_feed,
+            cellulosic_sugar_used_for_feed,
+        )
+
+    def subtract_off_usage_iteratively(
+        self,
+        remaining_usage_needed_kcals,
+        outdoor_crops_remaining,
+        max_shift=12,
+    ):
+        total_calories_init = np.sum(outdoor_crops_remaining) - np.sum(
+            remaining_usage_needed_kcals
+        )
+
+        total_outdoor_crops_used = np.zeros_like(remaining_usage_needed_kcals)
+
+        for shift in range(1, max_shift):
+            (
+                outdoor_crops_remaining,
+                remaining_usage_needed_kcals,
+                outdoor_crops_used_for_this_shift,
+            ) = self.subtract_off_usage_by_storing_outdoor_growing(
+                remaining_usage_needed_kcals,
+                outdoor_crops_remaining,
+                shift,
+            )
+            total_outdoor_crops_used += outdoor_crops_used_for_this_shift
+
+        total_calories_final = np.sum(outdoor_crops_remaining) - np.sum(
+            remaining_usage_needed_kcals
+        )
+
+        assert abs(total_calories_init - total_calories_final) < 1e-4
+
+        remaining_usage_needed_from_stored_food = Food(
+            kcals=np.array(remaining_usage_needed_kcals),
+            fat=np.zeros(len(remaining_usage_needed_kcals)),
+            protein=np.zeros(len(remaining_usage_needed_kcals)),
             kcals_units="billion kcals each month",
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
 
         return (
-            remaining_feed_needed_from_stored_food,
-            outdoor_crops_used_for_feed,
-            methane_scp_used_for_feed,
-            cellulosic_sugar_used_for_feed,
+            outdoor_crops_remaining,
+            remaining_usage_needed_from_stored_food,
+            total_outdoor_crops_used,
+        )
+
+    def subtract_off_usage_by_storing_outdoor_growing(
+        self,
+        remaining_usage_needed_kcals_before_shift,
+        outdoor_crops_remaining_before_shift,
+        MONTH_SHIFT,
+    ):
+        # now that we have outdoor crops bottomed out in the winter seasons, let's also subtract off some of the outdoor crops in the high production seasons, if there is any remaining usage needed (because sometimes theres not enough stored food initial at start of the simulation to make up for all the lacking food needed for usage)
+
+        # there will be a bit of an offset here: the outdoor crops from months 12+ will be reduced by the amount of remaining usage needed. So we introduce a 6 month shift, so that the outdoor crops are moved forward in time by 6 months, and the usage is subtracted off.
+
+        # mask off stored food we don't want to use to zero (if available food at a given month is zero, it won't be used)
+        masked_remaining_food = np.concatenate(
+            [
+                outdoor_crops_remaining_before_shift[:-MONTH_SHIFT],
+                np.zeros(MONTH_SHIFT),
+            ]
+        )
+
+        # move the available food 6 months into the future
+        outdoor_crops_which_can_be_used_later = np.roll(
+            masked_remaining_food, MONTH_SHIFT
+        )
+
+        assert len(masked_remaining_food) == len(outdoor_crops_which_can_be_used_later)
+
+        # get the amount which could be used for usage. Only use the amount that is needed, but not more than can be supplied.
+        outdoor_crops_used_for_usage_stored_shifted = np.min(
+            [
+                outdoor_crops_which_can_be_used_later,
+                remaining_usage_needed_kcals_before_shift,
+            ],
+            axis=0,
+        )
+
+        # the remaining usage needed is reduced for the months they are used (6 months after production)
+        remaining_usage_needed_kcals = np.subtract(
+            remaining_usage_needed_kcals_before_shift,
+            outdoor_crops_used_for_usage_stored_shifted,
+        )
+
+        # the amount of outdoor crops used is applied 6 months prior. Because first 12 months were masked out,this can't subtract from food at the end of the period
+        outdoor_crops_used_for_usage_stored_shifted = np.roll(
+            outdoor_crops_used_for_usage_stored_shifted, -MONTH_SHIFT
+        )
+        outdoor_crops_remaining = (
+            outdoor_crops_remaining_before_shift
+            - outdoor_crops_used_for_usage_stored_shifted
+        )
+
+        return (
+            outdoor_crops_remaining,
+            remaining_usage_needed_kcals,
+            outdoor_crops_used_for_usage_stored_shifted,
         )
 
     def calculate_net_feed_available_without_stored_food(
@@ -1010,6 +1223,7 @@ class Parameters:
                 "keep_dairy": True,
                 "feed_ratio": feed_ratio,
             }
+
         feed_dairy_meat_results, feed = cao.calculate_feed_and_animals(data)
         # MEAT AND DAIRY from breeding reduction strategy
 

@@ -243,7 +243,3 @@ class Seaweed:
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
-        convenient_units = (
-            self.estimated_seaweed_consumed_after_waste.in_units_percent_fed()
-        )
-        convenient_units.plot("Seaweed estimate")

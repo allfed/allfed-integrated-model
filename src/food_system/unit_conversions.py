@@ -269,7 +269,6 @@ class UnitConversions:
         # okay, okay, maybe the way I did this child/parent thing is not ideal...
         # get the child class so can initialize the Food class
         Food = self.get_Food_class()
-
         billion_kcal_conversion = 1 / conversions.kcals_monthly
         thou_tons_fat_conversion = 1 / conversions.fat_monthly / 1e9
         thou_tons_protein_conversion = 1 / conversions.protein_monthly / 1e9
