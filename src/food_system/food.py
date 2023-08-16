@@ -451,6 +451,48 @@ class Food(UnitConversions):
         assert isinstance(self.fat, np.ndarray)
         assert isinstance(self.protein, np.ndarray)
 
+    def make_sure_fat_protein_zero_if_kcals_is_zero(self):
+        """
+        This function ensures that the values of fat and protein are zero if kcals is zero.
+        Args:
+            self (Food): an instance of the Food class
+        Returns:
+            None
+        """
+
+        # Check if the list is monthly
+        if self.is_list_monthly():
+            # Validate the list
+            self.validate_if_list()
+
+            # Set the value of fat and protein to zero where kcals is zero
+            fat_all_the_places_kcals_zero = np.where(
+                self.kcals == 0,
+                self.fat,
+                0,
+            )
+
+            protein_all_the_places_kcals_zero = np.where(
+                self.kcals == 0,
+                self.protein,
+                0,
+            )
+
+            # Check if fat and protein are zero where kcals is zero
+            if self.conversions.include_fat:
+                assert (fat_all_the_places_kcals_zero == 0).all()
+            if self.conversions.include_protein:
+                assert (protein_all_the_places_kcals_zero == 0).all()
+
+        else:
+            # Check if kcals is zero
+            if self.kcals == 0:
+                # Check if fat and protein are zero or excluded
+                if self.conversions.include_fat:
+                    assert self.fat == 0 or self.conversions.exclude_fat
+                if self.conversions.include_protein:
+                    assert self.protein == 0 or self.conversions.exclude_protein
+
     def ensure_other_list_zero_if_this_is_zero(self, other_list):
         """
         Get the value of the elements where the passed in list is zero, otherwise
@@ -514,48 +556,6 @@ class Food(UnitConversions):
         )
 
         assert processed_list.all_equals_zero()
-
-    def make_sure_fat_protein_zero_if_kcals_is_zero(self):
-        """
-        This function ensures that the values of fat and protein are zero if kcals is zero.
-        Args:
-            self (Food): an instance of the Food class
-        Returns:
-            None
-        """
-
-        # Check if the list is monthly
-        if self.is_list_monthly():
-            # Validate the list
-            self.validate_if_list()
-
-            # Set the value of fat and protein to zero where kcals is zero
-            fat_all_the_places_kcals_zero = np.where(
-                self.kcals == 0,
-                self.fat,
-                0,
-            )
-
-            protein_all_the_places_kcals_zero = np.where(
-                self.kcals == 0,
-                self.protein,
-                0,
-            )
-
-            # Check if fat and protein are zero where kcals is zero
-            if self.conversions.include_fat:
-                assert (fat_all_the_places_kcals_zero == 0).all()
-            if self.conversions.include_protein:
-                assert (protein_all_the_places_kcals_zero == 0).all()
-
-        else:
-            # Check if kcals is zero
-            if self.kcals == 0:
-                # Check if fat and protein are zero or excluded
-                if self.conversions.include_fat:
-                    assert self.fat == 0 or self.conversions.exclude_fat
-                if self.conversions.include_protein:
-                    assert self.protein == 0 or self.conversions.exclude_protein
 
     def make_sure_not_nan(self):
         """
