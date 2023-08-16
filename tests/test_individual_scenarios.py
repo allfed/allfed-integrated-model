@@ -11,12 +11,9 @@ Created on Wed Jul 13 11:54:39 2022
 """
 import sys
 
-from src.scenarios import run_model_baseline
 from src.scenarios import run_model_no_trade_baseline
 from src.scenarios import run_model_no_trade_no_resilient_foods
 from src.scenarios import run_model_no_trade_with_resilient_foods
-from src.scenarios import run_model_no_resilient_foods
-from src.scenarios import run_model_with_resilient_foods
 from src.scenarios import run_ARG_1a_to_2d
 
 

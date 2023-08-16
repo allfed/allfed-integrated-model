@@ -17,7 +17,6 @@ from src.utilities.make_powerpoint import MakePowerpoint
 
 from pathlib import Path
 from matplotlib.lines import Line2D
-from matplotlib.patches import Patch
 
 import git
 

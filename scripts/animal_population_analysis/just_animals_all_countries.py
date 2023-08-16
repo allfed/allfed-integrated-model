@@ -4,7 +4,7 @@ import pandas as pd
 import git
 from pathlib import Path
 
-## import data
+# import data
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 animal_feed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
 country_feed_data_location = Path.joinpath(
@@ -17,16 +17,11 @@ head_count_csv_location = Path.joinpath(
     Path(animal_feed_data_dir), "head_count_csv.csv"
 )
 
-gdp_csv_location = Path.joinpath(
-    Path(animal_feed_data_dir), "gdp_owid_2018.csv"
-)
+gdp_csv_location = Path.joinpath(Path(animal_feed_data_dir), "gdp_owid_2018.csv")
 
 # Load data
 processed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "processed_data"
-pop_csv_location = Path.joinpath(
-    Path(processed_data_dir), "population_csv.csv"
-)
-
+pop_csv_location = Path.joinpath(Path(processed_data_dir), "population_csv.csv")
 
 
 df_feed_country = pd.read_csv(country_feed_data_location, index_col="ISO3 Country Code")
@@ -39,10 +34,10 @@ df_pop_country = pd.read_csv(pop_csv_location, index_col="iso3")
 
 
 # join on inner to only calauclate for countries that all three of the datatsets exist
-df_fao_slaughter = df_fao_slaughter.join(df_fao_animals, how="inner", rsuffix="_animals")
+df_fao_slaughter = df_fao_slaughter.join(
+    df_fao_animals, how="inner", rsuffix="_animals"
+)
 df_fao_slaughter = df_fao_slaughter.join(df_feed_country, how="inner", rsuffix="_feed")
-
-
 
 
 # keep only the first 20 countries
@@ -69,10 +64,8 @@ initial_poultry_slaughter = []
 error_countries = []
 
 
-
-#reate for loop to iterate through all countries
+# reate for loop to iterate through all countries
 for country in df_fao_slaughter.index:
-
     # small_animal_slaughter,medium_animal_slaughter,large_animal_slaughter,
     constants_inputs["COUNTRY_CODE"] = country
     constants_inputs["NMONTHS"] = 120
@@ -97,24 +90,27 @@ for country in df_fao_slaughter.index:
 
     feed_dairy_meat_results, feed = cao.calculate_feed_and_animals(data)
 
-
     try:
-    #find month when poultry pop is less than 10 
-        poultry_pop_less_than_10 = feed_dairy_meat_results[feed_dairy_meat_results["Poultry Pop"] < 10]
+        # find month when poultry pop is less than 10
+        poultry_pop_less_than_10 = feed_dairy_meat_results[
+            feed_dairy_meat_results["Poultry Pop"] < 10
+        ]
         zero_poultry_month = poultry_pop_less_than_10.index[0]
 
-        #find month when pig pop is less than 10
-        pig_pop_less_than_10 = feed_dairy_meat_results[feed_dairy_meat_results["Pigs Pop"] < 10]
+        # find month when pig pop is less than 10
+        pig_pop_less_than_10 = feed_dairy_meat_results[
+            feed_dairy_meat_results["Pigs Pop"] < 10
+        ]
         zero_pig_month = pig_pop_less_than_10.index[0]
 
-
-        #find month when beef pop is less than 10
-        beef_pop_less_than_10 = feed_dairy_meat_results[feed_dairy_meat_results["Beef Pop"] < 10]
+        # find month when beef pop is less than 10
+        beef_pop_less_than_10 = feed_dairy_meat_results[
+            feed_dairy_meat_results["Beef Pop"] < 10
+        ]
         zero_beef_month = beef_pop_less_than_10.index[0]
 
         # find max month
         max_month = max(zero_poultry_month, zero_pig_month, zero_beef_month)
-        
 
         # # append results to lists
         country_list.append(country)
@@ -122,14 +118,23 @@ for country in df_fao_slaughter.index:
         initial_beef.append(feed_dairy_meat_results["Beef Pop"][0])
         initial_pig.append(feed_dairy_meat_results["Pigs Pop"][0])
         initial_poultry.append(feed_dairy_meat_results["Poultry Pop"][0])
-        initial_beef_slaughter.append(df_fao_slaughter.loc[country, "large_animal_slaughter"])
-        initial_pig_slaughter.append(df_fao_slaughter.loc[country, "medium_animal_slaughter"])
-        initial_poultry_slaughter.append(df_fao_slaughter.loc[country, "small_animal_slaughter"])
-    except:
+        initial_beef_slaughter.append(
+            df_fao_slaughter.loc[country, "large_animal_slaughter"]
+        )
+        initial_pig_slaughter.append(
+            df_fao_slaughter.loc[country, "medium_animal_slaughter"]
+        )
+        initial_poultry_slaughter.append(
+            df_fao_slaughter.loc[country, "small_animal_slaughter"]
+        )
+    except IndexError as e:
+        # If you expect an index error, catch it specifically.
+        print(f"Error processing country {country}: {e}")
         error_countries.append(country)
-        pass
-
-
+    except KeyError as e:
+        # If you expect a key error, catch it separately.
+        print(f"Error processing country {country}: {e}")
+        error_countries.append(country)
 
 # create dataframe from lists
 df = pd.DataFrame(
@@ -142,7 +147,6 @@ df = pd.DataFrame(
         "initial_beef_slaughter": initial_beef_slaughter,
         "initial_pig_slaughter": initial_pig_slaughter,
         "initial_poultry_slaughter": initial_poultry_slaughter,
-        
     }
 )
 # merge gdp dataframe
@@ -161,7 +165,7 @@ df["poultry_ratio"] = df["initial_poultry_slaughter"] / df["initial_poultry"]
 df["GDP_per_capita"] = df["GDP"] / df["population"]
 
 
-#plot max month er country, sorted by max month
+# plot max month er country, sorted by max month
 fig = px.bar(
     df.sort_values("max_month"),
     x="max_month",
@@ -172,7 +176,7 @@ fig = px.bar(
 fig.show()
 
 
-#plot beef population against beef salughter, with country labels
+# plot beef population against beef salughter, with country labels
 fig = px.scatter(
     df,
     x="initial_beef",
@@ -185,7 +189,7 @@ fig.show()
 
 # plot beef ratio against time to zero population (max_month)
 fig = px.scatter(
-    df,     
+    df,
     x="max_month",
     y="GDP_per_capita",
     color="country_x",
@@ -193,10 +197,5 @@ fig = px.scatter(
     # use the beef pop as the size of the marker, with a min size of 10 and max size of 100
     size="initial_beef",
     size_max=40,
-    
-
-
 )
 fig.show()
-
-
