@@ -46,7 +46,6 @@ def test_set_nutrition_requirement_scalar():
     """
     Tests if the function works with a scalar food
     """
-    food1 = Food()
 
     Food.conversions.set_nutrition_requirements(
         kcals_daily=1,

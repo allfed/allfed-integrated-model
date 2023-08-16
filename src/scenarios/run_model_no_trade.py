@@ -14,7 +14,6 @@ import logging
 import datetime
 from datetime import date
 from src.utilities.plotter import Plotter
-from src.utilities.import_utilities import ImportUtilities
 from src.scenarios.run_scenario import ScenarioRunner
 from src.food_system.food import Food
 from itertools import product

@@ -306,12 +306,6 @@ class FeedAndBiofuels:
         # initialized to zero but will be overwritten probably
         running_supply_minus_demand = Food()
 
-        if include_fat_or_protein:
-            # necessary for the way we've computed this cap to work out correctly
-            # TODO: account for that the ratios are different now (methane, cell_sugar)
-            assert stored_food.SF_FRACTION_FAT == outdoor_crops.OG_FRACTION_FAT
-            assert stored_food.SF_FRACTION_PROTEIN == outdoor_crops.OG_FRACTION_PROTEIN
-
         ratio = 1  # initialize to an unchanged amount
         while demand_more_than_supply:
             # if there needs to be more biofuels
@@ -467,16 +461,7 @@ class FeedAndBiofuels:
         assert nonhuman_consumption_before_cap.all_greater_than_or_equal_to_zero()
 
         # TODO: account for fat and protein appropriately here
-        if account_for_fat_and_protein:
-            amount_stored_food_and_outdoor_crops_used = (
-                nonhuman_consumption_before_cap.get_amount_used_other_food(
-                    outdoor_crops.OG_FRACTION_FAT, outdoor_crops.OG_FRACTION_PROTEIN
-                )
-            )
-            assert False, """ERROR: we haven't properly accounted for the fraction fat and 
-            protein used when estimating feed usage"""
-        else:
-            amount_stored_food_and_outdoor_crops_used = nonhuman_consumption_before_cap
+        amount_stored_food_and_outdoor_crops_used = nonhuman_consumption_before_cap
 
         # amount_stored_food_and_outdoor_crops_used is post waste (as well as
         # nonhuman_consumption_before_cap)

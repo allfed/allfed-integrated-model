@@ -7,9 +7,7 @@
 """
 # TODO: make a couple sub functions that deal with the different parts, where
 #      it assigns the returned values to the constants.
-from functools import total_ordering
 import numpy as np
-from pulp import constants
 from src.food_system.meat_and_dairy import MeatAndDairy
 from src.food_system.outdoor_crops import OutdoorCrops
 from src.food_system.seafood import Seafood
@@ -20,7 +18,6 @@ from src.food_system.methane_scp import MethaneSCP
 from src.food_system.seaweed import Seaweed
 from src.food_system.feed_and_biofuels import FeedAndBiofuels
 from src.food_system.food import Food
-from src.utilities.print_parameters import PrintParameters
 from src.food_system.calculate_animals_and_feed_over_time import CalculateAnimalOutputs
 
 
@@ -138,31 +135,6 @@ class Parameters:
 
         # OTHER VARIABLES #
         constants_out["inputs"] = constants_inputs
-
-        PRINT_FIRST_MONTH_CONSTANTS = False
-
-        # if PRINT_FIRST_MONTH_CONSTANTS:
-        #     print_parameters = PrintParameters()
-        #     CONSIDER_WASTE_FOR_PRINTOUT = False
-        #     if CONSIDER_WASTE_FOR_PRINTOUT:
-        #         print_parameters.print_constants_with_waste(
-        #             self.POP,
-        #             constants_out,
-        #             time_consts,
-        #             feed_and_biofuels,
-        #             methane_scp,
-        #             meat_and_dairy,
-        #         )
-        #     else:
-        #         print_parameters.print_constants_no_waste(
-        #             self.POP,
-        #             constants_out,
-        #             time_consts,
-        #             feed_and_biofuels,
-        #             methane_scp,
-        #             meat_and_dairy,
-        #         )
-        # self.assert_constants_not_nan(constants_out, time_consts)
 
         return (constants_out, time_consts, feed_and_biofuels)
 
@@ -456,9 +428,12 @@ class Parameters:
         # TODO: parametrize these constants in the scenarios so they can be adjusted
         # without messing with the code
 
-        # This function encodes the fact that the use of improved crop rotations ALSO alters the way we treat dairy cattle
-        # In particular, if we are using improved crop rotations, part of this is assuming dairy cattle are fully fed by grass
-        # If we aren't using improved rotations (a somewhat more pessimistic outcome), we stop breeding cattle entirely and don't use up any of the grass
+        # This function encodes the fact that the use of improved crop rotations ALSO alters the
+        # way we treat dairy cattle
+        # In particular, if we are using improved crop rotations, part of this is assuming dairy cattle
+        # are fully fed by grass
+        # If we aren't using improved rotations (a somewhat more pessimistic outcome), we stop breeding
+        # cattle entirely and don't use up any of the grass
         # for dairy output.
         if constants_inputs["OG_USE_BETTER_ROTATION"]:
             reduction_in_dairy_calves = 0
@@ -970,9 +945,14 @@ class Parameters:
             outdoor_crops_used_for_feed_before_shift,
         )
 
-        # now that we have outdoor crops bottomed out in the winter seasons, let's also subtract off some of the outdoor crops in the high production seasons, if there is any remaining feed needed (because sometimes theres not enough stored food initial at start of the simulation to make up for all the lacking food needed for feed)
+        # now that we have outdoor crops bottomed out in the winter seasons, let's also subtract off some of the outdoor
+        # crops in the high production seasons, if there is any remaining feed needed
+        # (because sometimes theres not enough stored food initial at start of the simulation to make up for all the
+        # lacking food needed for feed)
 
-        # there will be a bit of an offset here: the outdoor crops from months 12+ will be reduced by the amount of remaining feed needed. So we introduce a 6 month shift, so that the outdoor crops are moved forward in time by 6 months, and the feed is subtracted off.
+        # there will be a bit of an offset here: the outdoor crops from months 12+ will be reduced by the amount of
+        # remaining feed needed. So we introduce a 6 month shift,
+        # so that the outdoor crops are moved forward in time by 6 months, and the feed is subtracted off.
 
         outdoor_crops_remaining_after_feed_and_biofuel_before_shift = (
             outdoor_crops_remaining_after_biofuel
@@ -1084,11 +1064,17 @@ class Parameters:
         outdoor_crops_remaining_before_shift,
         MONTH_SHIFT,
     ):
-        # now that we have outdoor crops bottomed out in the winter seasons, let's also subtract off some of the outdoor crops in the high production seasons, if there is any remaining usage needed (because sometimes theres not enough stored food initial at start of the simulation to make up for all the lacking food needed for usage)
+        # now that we have outdoor crops bottomed out in the winter seasons, let's also subtract off some of the
+        # outdoor crops in the high production seasons, if there is any remaining usage needed
+        # (because sometimes theres not enough stored food initial at start of the simulation to make up for all the
+        # lacking food needed for usage)
 
-        # there will be a bit of an offset here: the outdoor crops from months 12+ will be reduced by the amount of remaining usage needed. So we introduce a 6 month shift, so that the outdoor crops are moved forward in time by 6 months, and the usage is subtracted off.
+        # there will be a bit of an offset here: the outdoor crops from months 12+ will be reduced by the amount of
+        # remaining usage needed. So we introduce a 6 month shift, so that the outdoor
+        # crops are moved forward in time by 6 months, and the usage is subtracted off.
 
-        # mask off stored food we don't want to use to zero (if available food at a given month is zero, it won't be used)
+        # mask off stored food we don't want to use to zero (if available food at a given month is zero, it won't
+        # be used)
         masked_remaining_food = np.concatenate(
             [
                 outdoor_crops_remaining_before_shift[:-MONTH_SHIFT],
@@ -1103,7 +1089,8 @@ class Parameters:
 
         assert len(masked_remaining_food) == len(outdoor_crops_which_can_be_used_later)
 
-        # get the amount which could be used for usage. Only use the amount that is needed, but not more than can be supplied.
+        # get the amount which could be used for usage. Only use the amount that is needed, but not more than can
+        # be supplied.
         outdoor_crops_used_for_usage_stored_shifted = np.min(
             [
                 outdoor_crops_which_can_be_used_later,
@@ -1118,7 +1105,8 @@ class Parameters:
             outdoor_crops_used_for_usage_stored_shifted,
         )
 
-        # the amount of outdoor crops used is applied 6 months prior. Because first 12 months were masked out,this can't subtract from food at the end of the period
+        # the amount of outdoor crops used is applied 6 months prior. Because first 12 months were masked out,this
+        # can't subtract from food at the end of the period
         outdoor_crops_used_for_usage_stored_shifted = np.roll(
             outdoor_crops_used_for_usage_stored_shifted, -MONTH_SHIFT
         )
@@ -1132,54 +1120,6 @@ class Parameters:
             remaining_usage_needed_kcals,
             outdoor_crops_used_for_usage_stored_shifted,
         )
-
-    def calculate_net_feed_available_without_stored_food(
-        self,
-        include_fat_or_protein,
-        combined_feed,
-        outdoor_crops,
-        methane_scp,
-        cellulosic_sugar,
-        seaweed,
-    ):
-        assert not include_fat_or_protein, """ERROR: feed calculations are not working 
-        yet for scenarios including fat or protein"""
-        """
-        For now, we will ignore seaweed as a feed source. This is because we don't have a good way to
-        accurately estimate what the linear optimizer will predict for the amount of seaweed monthly
-        produced
-        """
-        cell_sugar_for_feed = (
-            cellulosic_sugar.MAX_FRACTION_FEED_CONSUMED_AS_CELLULOSIC_SUGAR
-            * combined_nonhuman_consumption_before_cap_or_waste
-        )
-
-        max_scp_for_feed = (
-            methane_scp.MAX_FRACTION_FEED_CONSUMED_AS_SCP * combined_feed_kcals
-        )
-        scp_for_feed_after_limit = np.min([max_scp_for_feed, methane_scp.kcals], axis=0)
-
-        cell_sugar_for_feed_after_limit = np.min(
-            [cell_sugar_for_feed, cellulosic_sugar.kcals], axis=0
-        )
-
-        # TODO: include seaweed as a feed source. Right now it's complicated because
-        # we haven't distinguished the feed vs human consumption of seaweed
-        # seaweed.estimate_seaweed_growth_for_estimating_feed_availability()
-        # max_seaweed_for_feed = seaweed.estimated_seaweed_feed_consumed_after_waste
-
-        # net_feed_available_without_stored_food_or_seaweed = (
-        #     outdoor_crops.
-        #     + max_scp_for_feed
-        #     + max_cellulosic_sugar_for_feed
-        #     # + max_seaweed_for_feed
-        # )
-        # net_feed_available_without_stored_food_or_seaweed / outdoor_crops
-        # max_seaweed_feed = seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_FEED
-
-        # net_feed_available_without_stored_food = max_seaweed_food + net_feed_available_without_stored_food_or_seaweed
-
-        return net_feed_available_without_stored_food_or_seaweed
 
     def init_meat_and_dairy_and_feed_from_breeding(
         self,

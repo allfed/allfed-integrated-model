@@ -570,7 +570,8 @@ class Food(UnitConversions):
             assert not np.isnan(self.fat).any()
             assert not np.isnan(self.protein).any()
         else:
-            # If it's not a monthly list, check if any of the nutritional values are NaN and raise an assertion error if they are
+            # If it's not a monthly list, check if any of the nutritional values are NaN and raise an assertion error
+            # if they are
             assert not np.isnan(self.kcals)
             assert not np.isnan(self.fat)
             assert not np.isnan(self.protein)
@@ -782,9 +783,12 @@ class Food(UnitConversions):
         Returns:
             Food: A new Food object with the multiplied macronutrient values.
 
-        This function multiplies a food's macronutrients by a number. The function can handle different types of inputs for the 'other' argument, including a Food object, a numpy array, a float, or an int. The function returns a new Food object with the multiplied macronutrient values.
+        This function multiplies a food's macronutrients by a number. The function can handle different types of
+        inputs for the 'other' argument, including a Food object, a numpy array, a float,
+        # or an int. The function returns a new Food object with the multiplied macronutrient values.
 
-        The multiplication is constrained to handle only certain cases. The function can multiply ratios with non-ratios or ratios with ratios, because unit conversions can get confusing otherwise.
+        The multiplication is constrained to handle only certain cases. The function can multiply ratios with
+        non-ratios or ratios with ratios, because unit conversions can get confusing otherwise.
 
         There are many possibilities for the characteristics of the input values for self in other:
 
@@ -804,9 +808,11 @@ class Food(UnitConversions):
             - this is a food list and other is a food list
             - this is a food list and other is a non-food
 
-        In addition, if other is a numpy array and this is not a food list, then we make this an "each month" food list.
+        In addition, if other is a numpy array and this is not a food list, then we make this an "each month"
+        food list.
 
-        Units can be complicated when multiplying. If other is a non-food, there's no need to check units. Otherwise, the multiplication works right now only in the cases:
+        Units can be complicated when multiplying. If other is a non-food, there's no need to check units. Otherwise,
+        the multiplication works right now only in the cases:
 
             - this is any units, other is a ratio
             - other is a ratio, this is any units
@@ -1178,13 +1184,16 @@ class Food(UnitConversions):
 
     def all_greater_than(self, other):
         """
-        Determines if the macronutrient values of the current food object are greater than the macronutrient values of another food object.
+        Determines if the macronutrient values of the current food object are greater than the macronutrient values of
+
+        another food object.
 
         Args:
             other (Food): The other food object to compare against.
 
         Returns:
-            bool: True if the current food object's macronutrient values are greater than the other food object's macronutrient values.
+            bool: True if the current food object's macronutrient values are greater than the other food object's
+            macronutrient values.
 
         Raises:
             AssertionError: If the units of the two food objects are not the same.
@@ -1202,7 +1211,8 @@ class Food(UnitConversions):
             # If the current food object is a monthly list, validate it
             self.validate_if_list()
 
-            # Check if all macronutrient values of the current food object are greater than the other food object's macronutrient values
+            # Check if all macronutrient values of the current food object are greater than the other food object's
+            # macronutrient values
             return (
                 (np.array(self.kcals - other.kcals) > 0).all()
                 and (
@@ -1215,7 +1225,8 @@ class Food(UnitConversions):
                 )
             )
 
-        # Check if all macronutrient values of the current food object are greater than the other food object's macronutrient values
+        # Check if all macronutrient values of the current food object are greater than the other food object's
+        # macronutrient values
         return (
             self.kcals > other.kcals
             and (self.fat > other.fat or self.conversions.exclude_fat)
@@ -1224,7 +1235,8 @@ class Food(UnitConversions):
 
     def all_less_than(self, other):
         """
-        Compares the macronutrient values of two food items and returns True if the values of the current food item are less than the other food item's values.
+        Compares the macronutrient values of two food items and returns True if the values of the current food item
+        are less than the other food item's values.
         Args:
             other (Food): The other food item to compare with.
 
@@ -1270,13 +1282,15 @@ class Food(UnitConversions):
 
     def any_greater_than(self, other):
         """
-        Determines if the macronutrient values of the current food object are greater than the macronutrient values of another food object.
+        Determines if the macronutrient values of the current food object are greater than the macronutrient values of
+        another food object.
 
         Args:
             other (Food): The other food object to compare against.
 
         Returns:
-            bool: True if the current food object's macronutrient values are greater than the other food object's macronutrient values.
+            bool: True if the current food object's macronutrient values are greater than the other food object's
+            macronutrient values.
 
         Raises:
             AssertionError: If the units of the two food objects are not the same.
@@ -1295,7 +1309,8 @@ class Food(UnitConversions):
         if self.is_list_monthly():
             self.validate_if_list()
 
-            # Check if any of the macronutrient values of the current food object are greater than the other food object's
+            # Check if any of the macronutrient values of the current food object are greater than the other food
+            # object's
             return (
                 (np.array(self.kcals - other.kcals) > 0).any()
                 or (
@@ -1324,11 +1339,13 @@ class Food(UnitConversions):
 
     def any_less_than(self, other):
         """
-        Determines if the macronutrient values of the current food object are less than the macronutrient values of another food object.
+        Determines if the macronutrient values of the current food object are less than the macronutrient values of
+        another food object.
         Args:
             other (Food): The other food object to compare against.
         Returns:
-            bool: True if the current food object's macronutrient values are less than the other food object's macronutrient values.
+            bool: True if the current food object's macronutrient values are less than the other food object's
+            macronutrient values.
         """
 
         # Ensure that the units of the two food objects are the same.
@@ -1338,7 +1355,8 @@ class Food(UnitConversions):
         if self.is_list_monthly():
             self.validate_if_list()
 
-            # Check if any of the macronutrient values of the current food object are less than the other food object's macronutrient values.
+            # Check if any of the macronutrient values of the current food object are less than the other food
+            # object's macronutrient values.
             return (
                 (np.array(self.kcals - other.kcals) < 0).any()
                 or (
@@ -1362,7 +1380,8 @@ class Food(UnitConversions):
         else:
             less_than_protein = False
 
-        # Check if the current food object's macronutrient values are less than the other food object's macronutrient values.
+        # Check if the current food object's macronutrient values are less than the other food object's
+        # macronutrient values.
         return self.kcals < other.kcals or less_than_fat or less_than_protein
 
     def all_greater_than_or_equal_to(self, other):
@@ -1856,7 +1875,8 @@ class Food(UnitConversions):
         # Ensure that the maximum nutrient value is greater than or equal to the fat value, unless fat is excluded
         assert max_nutrient_val >= self.fat or self.conversions.exclude_fat
 
-        # Ensure that the maximum nutrient value is greater than or equal to the protein value, unless protein is excluded
+        # Ensure that the maximum nutrient value is greater than or equal to the protein value, unless protein is
+        #  excluded
         assert max_nutrient_val >= self.protein or self.conversions.exclude_protein
 
         # Return the name and value of the maximum nutrient
@@ -2208,7 +2228,8 @@ class Food(UnitConversions):
             Food: A new Food object with rounded nutritional values.
 
         Example:
-            >>> food = Food(kcals=100.123, fat=5.678, protein=10.987, kcals_units='kcal', fat_units='g', protein_units='g')
+            >>> food = Food(kcals=100.123, fat=5.678, protein=10.987, kcals_units='kcal',
+            fat_units='g', protein_units='g')
             >>> rounded_food = food.get_rounded_to_decimal(1)
             >>> rounded_food.kcals
             100.1
@@ -2251,7 +2272,8 @@ class Food(UnitConversions):
             AssertionError: If the units of replacement are not the same as the units of the original list.
 
         Example:
-            >>> original_list = Food(kcals=[1005, 693, 0, 532, 786], fat=[10, 20, 0, 30, 40], protein=[5, 10, 0, 15, 20])
+            >>> original_list = Food(kcals=[1005, 693, 0, 532, 786], fat=[10, 20, 0, 30, 40],
+            protein=[5, 10, 0, 15, 20])
             >>> list_with_zeros = Food(kcals=[0, 1, 3, 0, 5], fat=[0, 1, 3, 0, 5], protein=[0, 1, 3, 0, 5])
             >>> replacement = Food(kcals=[101, 62, 23, 3, 0], fat=[1, 2, 3, 4, 5], protein=[10, 20, 30, 40, 50])
             >>> processed_list = original_list.replace_if_list_with_zeros_is_zero(list_with_zeros, replacement)
