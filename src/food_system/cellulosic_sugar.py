@@ -1,23 +1,30 @@
 """
-############################## Cellulosic Sugar ################################
-##                                                                             #
-##      Functions and constants relating to cellulosic sugar production        #
-##                                                                             #
-################################################################################
+
+Functions and constants relating to cellulosic sugar production
+
 """
 
 import numpy as np
+from src.food_system.food import Food
 
 
 class CellulosicSugar:
     def __init__(self, constants_for_params):
         # billion kcals a month for 100% population (7.8 billion people).
-        self.GLOBAL_MONTHLY_NEEDS = 6793977 / 12
+        self.GLOBAL_MONTHLY_NEEDS = (
+            constants_for_params["GLOBAL_POP"] * Food.conversions.kcals_monthly / 1e9
+        )
 
         self.NMONTHS = constants_for_params["NMONTHS"]
         self.INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = constants_for_params[
             "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
         ]
+        self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_CS = 0.4
+        self.MAX_FRACTION_FEED_CONSUMED_AS_CELLULOSIC_SUGAR = 0.3
+        self.MAX_FRACTION_BIOFUEL_CONSUMED_AS_CELLULOSIC_SUGAR = (
+            1  # All of biofuel can be CS
+        )
+
         self.SUGAR_WASTE = constants_for_params["WASTE"]["SUGAR"]
 
     # this all comes from one of Juan's recently published industrial foods
@@ -27,7 +34,6 @@ class CellulosicSugar:
             industrial_delay_months = [0] * constants_for_params["DELAY"][
                 "INDUSTRIAL_FOODS_MONTHS"
             ]
-
             CELL_SUGAR_PERCENT_KCALS = list(
                 np.append(
                     industrial_delay_months,
@@ -49,14 +55,19 @@ class CellulosicSugar:
                     * constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"]
                     * (1 - self.SUGAR_WASTE / 100)
                 )
-            # @li nothing should need to be done here, but good to check that it works
-
         else:
-            production_kcals_CS_per_month_long = [0] * self.NMONTHS
-
+            production_kcals_CS_per_month_long = np.zeros(
+                constants_for_params["NMONTHS"]
+            )
         self.production_kcals_CS_per_month = production_kcals_CS_per_month_long[
             0 : self.NMONTHS
         ]
 
-    def get_monthly_cs_production(self):
-        return self.production_kcals_CS_per_month
+        self.production = Food(
+            kcals=np.array(self.production_kcals_CS_per_month),
+            fat=np.zeros(len(self.production_kcals_CS_per_month)),
+            protein=np.zeros(len(self.production_kcals_CS_per_month)),
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
+        )

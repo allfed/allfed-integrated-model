@@ -269,7 +269,6 @@ class UnitConversions:
         # okay, okay, maybe the way I did this child/parent thing is not ideal...
         # get the child class so can initialize the Food class
         Food = self.get_Food_class()
-
         billion_kcal_conversion = 1 / conversions.kcals_monthly
         thou_tons_fat_conversion = 1 / conversions.fat_monthly / 1e9
         thou_tons_protein_conversion = 1 / conversions.protein_monthly / 1e9
@@ -442,6 +441,9 @@ class UnitConversions:
         # get the child class so can initialize the Food class
         Food = self.get_Food_class()
 
+        # million dry caloric tons to billion calories
+        million_tons_to_billion_kcals_conversion = 1e6 * 1000 * 4000 / 1e9
+
         percent_kcal_conversion = (
             conversions.kcals_monthly * conversions.population / 1e9 / 100
         )
@@ -476,6 +478,32 @@ class UnitConversions:
                 kcals_units="billion kcals per month",
                 fat_units="thousand tons per month",
                 protein_units="thousand tons per month",
+            )
+        if (
+            self.kcals_units == "million dry caloric tons each month"
+            and self.fat_units == "million tons each month"
+            and self.protein_units == "million tons each month"
+        ):
+            return Food(
+                kcals=self.kcals * million_tons_to_billion_kcals_conversion,
+                fat=self.fat * 1000,
+                protein=self.protein * 1000,
+                kcals_units="billion kcals each month",
+                fat_units="thousand tons each month",
+                protein_units="thousand tons each month",
+            )
+        if (
+            self.kcals_units == "million dry caloric tons"
+            and self.fat_units == "million tons"
+            and self.protein_units == "million tons"
+        ):
+            return Food(
+                kcals=self.kcals * million_tons_to_billion_kcals_conversion,
+                fat=self.fat * 1000,
+                protein=self.protein * 1000,
+                kcals_units="billion kcals",
+                fat_units="thousand tons",
+                protein_units="thousand tons",
             )
         else:
             print("Error: conversion from these units not known")

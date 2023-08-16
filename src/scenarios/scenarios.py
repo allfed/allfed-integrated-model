@@ -61,6 +61,7 @@ class Scenarios:
 
         # the following are used for all scenarios
         constants_for_params["NMONTHS"] = 120
+        constants_for_params["GLOBAL_POP"] = 7723713182  # (about 7.8 billion)
 
         # not used unless smoothing true
         # useful for ensuring output variables don't fluctuate wildly
@@ -305,6 +306,8 @@ class Scenarios:
         # fraction global crop area for entire earth is 1 by definition
         constants_for_params["INITIAL_CROP_AREA_FRACTION"] = 1
 
+        constants_for_params["COUNTRY_CODE"] = "global"
+
         self.SCALE_SET = True
         return constants_for_params
 
@@ -380,9 +383,11 @@ class Scenarios:
             "percent_of_global_capex"
         ]
 
-        print("initial_seaweed_fraction")
-        print(country_data)
-        print(country_data["initial_seaweed_fraction"])
+        # Cellulosic sugar fraction of global production
+        constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"] = country_data[
+            "percent_of_global_production"
+        ]
+        assert 1 >= constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"] >= 0
         assert 1 >= country_data["initial_seaweed_fraction"] >= 0
         assert 1 >= country_data["new_area_fraction"] >= 0
         assert 1 >= country_data["max_area_fraction"] >= 0
@@ -395,24 +400,18 @@ class Scenarios:
         #     v for k, v in country_data.items() if "seaweed_growth_" in k
         # ]
         all_seaweed_col_names = [
-            k for k, v in country_data.items() if "seaweed_growth_" in k
+            k for k, v in country_data.items() if "seaweed_growth_per_day_" in k
         ]
 
         constants_for_params["SEAWEED_GROWTH_PER_DAY"] = {}
         for i in range(len(all_seaweed_col_names)):
             # just have the number as a string as the keys for the dictionary
             constants_for_params["SEAWEED_GROWTH_PER_DAY"][
-                all_seaweed_col_names[i].replace("seaweed_growth_", "")
+                all_seaweed_col_names[i].replace("seaweed_growth_per_day_", "")
             ] = country_data[all_seaweed_col_names[i]]
 
         if country_data["initial_seaweed_fraction"] == 0:
             constants_for_params["ADD_SEAWEED"] = False
-
-        # Cellulosic sugar fraction of global production
-        constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"] = country_data[
-            "percent_of_global_production"
-        ]
-        assert 1 >= constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"] >= 0
 
         # 1000s of tons wet
         constants_for_params["INITIAL_SEAWEED_FRACTION"] = country_data[
@@ -437,6 +436,9 @@ class Scenarios:
         constants_for_params["INITIAL_CROP_AREA_FRACTION"] = country_data[
             "fraction_crop_area"
         ]
+        constants_for_params["INITIAL_CROP_AREA_HA"] = (
+            np.array(country_data["crop_area_1000ha"]) * 1000
+        )
 
         # total head count of medium sized animals
         constants_for_params["INIT_MEDIUM_ANIMALS"] = country_data["medium_animals"]
@@ -519,7 +521,6 @@ class Scenarios:
     def set_immediate_shutoff(self, constants_for_params):
         self.scenario_description += "\nno feed/biofuel"
         assert not self.NONHUMAN_CONSUMPTION_SET
-
         constants_for_params["REDUCED_BREEDING_STRATEGY"] = False
         constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 0
         constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 0
@@ -548,7 +549,7 @@ class Scenarios:
         return constants_for_params
 
     def reduce_breeding_USA(self, constants_for_params):
-        self.scenario_description += "\ncontinued feed/biofuel"
+        self.scenario_description += "\nreduced breeding/biofuel"
         assert not self.NONHUMAN_CONSUMPTION_SET
         # if there is no food storage, then feed and biofuels when no food is being
         # stored would not make any sense, as the total food available could go negative
@@ -587,6 +588,7 @@ class Scenarios:
                 "BIOFUEL_SHUTOFF_MONTHS"
             ] = constants_for_params["NMONTHS"]
         else:
+            constants_for_params["REDUCED_BREEDING_STRATEGY"] = False
             constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 11
             constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 11
 
@@ -1012,16 +1014,10 @@ class Scenarios:
         assert not self.IS_GLOBAL_ANALYSIS
         assert not self.GRASSES_SET
         # fractional production per month
-
         for i in range(1, int(constants_for_params["NMONTHS"] / 12 + 1)):
-            print("grasses_reduction_year" + str(i))
-            print(country_data["grasses_reduction_year" + str(i)])
             constants_for_params["RATIO_GRASSES_YEAR" + str(i)] = (
                 1 + country_data["grasses_reduction_year" + str(i)]
             )
-
-        print(constants_for_params["RATIO_GRASSES_YEAR1"])
-        print(constants_for_params["RATIO_GRASSES_YEAR10"])
 
         self.GRASSES_SET = True
         return constants_for_params
@@ -1323,8 +1319,11 @@ class Scenarios:
 
     def no_resilient_foods(self, constants_for_params):
         constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = 0
-        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 0
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
+        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
+
         constants_for_params["OG_USE_BETTER_ROTATION"] = False
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
         constants_for_params["ADD_GREENHOUSES"] = False
@@ -1336,8 +1335,22 @@ class Scenarios:
     def seaweed(self, constants_for_params):
         constants_for_params["ADD_SEAWEED"] = True
         constants_for_params["DELAY"]["SEAWEED_MONTHS"] = 1
-        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 30
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 30
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 10
 
+        return constants_for_params
+
+    def low_area_greenhouse(self, constants_for_params):
+        constants_for_params["GREENHOUSE_GAIN_PCT"] = 44
+
+        # half values from greenhouse paper due to higher cost
+        constants_for_params["DELAY"]["GREENHOUSE_MONTHS"] = 2
+        constants_for_params[
+            "GREENHOUSE_AREA_MULTIPLIER"
+        ] = (
+            np.nan
+        )  # this will be used to indicate a more realistic, smaller greenhouse area ramp
+        constants_for_params["ADD_GREENHOUSES"] = True
         return constants_for_params
 
     def greenhouse(self, constants_for_params):
@@ -1345,7 +1358,8 @@ class Scenarios:
 
         # half values from greenhouse paper due to higher cost
         constants_for_params["DELAY"]["GREENHOUSE_MONTHS"] = 2
-        constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
+        # constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
+        constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 2.4 / 39
         constants_for_params["ADD_GREENHOUSES"] = True
         return constants_for_params
 
@@ -1358,6 +1372,21 @@ class Scenarios:
         constants_for_params["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7 + 1
         constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 2
+        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
+
+        return constants_for_params
+
+    def expanded_area_and_relocated_outdoor_crops(self, constants_for_params):
+        constants_for_params["OG_USE_BETTER_ROTATION"] = True
+
+        # this may seem confusing. KCALS_REDUCTION is the reduction that would otherwise
+        # occur averaging in year 3 globally
+        constants_for_params["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.647
+        constants_for_params["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
+        constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7 + 1
+        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 2
+        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 72 / 39
+        constants_for_params["NUMBER_YEARS_TAKES_TO_REACH_INCREASED_AREA"] = 3
 
         return constants_for_params
 
@@ -1384,6 +1413,21 @@ class Scenarios:
         assert not self.SCENARIO_SET
 
         constants_for_params = self.relocated_outdoor_crops(constants_for_params)
+        constants_for_params = self.methane_scp(constants_for_params)
+        constants_for_params = self.cellulosic_sugar(constants_for_params)
+        constants_for_params = self.low_area_greenhouse(constants_for_params)
+        constants_for_params = self.seaweed(constants_for_params)
+
+        self.SCENARIO_SET = True
+        return constants_for_params
+
+    def get_all_resilient_foods_and_more_area_scenario(self, constants_for_params):
+        self.scenario_description += "\nall resilient foods"
+        assert not self.SCENARIO_SET
+
+        constants_for_params = self.expanded_area_and_relocated_outdoor_crops(
+            constants_for_params
+        )
         constants_for_params = self.methane_scp(constants_for_params)
         constants_for_params = self.cellulosic_sugar(constants_for_params)
         constants_for_params = self.greenhouse(constants_for_params)
@@ -1414,7 +1458,8 @@ class Scenarios:
         self.scenario_description += "\nscaled up methane SCP"
         assert not self.SCENARIO_SET
 
-        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 0
 
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
 
@@ -1432,7 +1477,8 @@ class Scenarios:
         self.scenario_description += "\nscaled up cellulosic sugar"
         assert not self.SCENARIO_SET
 
-        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 0
 
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
 
@@ -1452,7 +1498,8 @@ class Scenarios:
 
         constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = 0
 
-        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 0
 
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
         constants_for_params["ADD_GREENHOUSES"] = False
@@ -1470,7 +1517,8 @@ class Scenarios:
 
         constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = 0
 
-        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 0
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 0
 
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
 

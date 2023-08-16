@@ -7,6 +7,7 @@
 """
 
 import numpy as np
+from src.food_system.food import Food
 
 
 class MethaneSCP:
@@ -21,13 +22,21 @@ class MethaneSCP:
         self.SCP_FRAC_PROTEIN = 0.650
         self.SCP_FRAC_FAT = 0.09
 
+        # feed can't be more than this fraction in terms of calories in any month
+        self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP = 0.3
+
+        self.MAX_FRACTION_FEED_CONSUMED_AS_SCP = 0.3
+        self.MAX_FRACTION_BIOFUEL_CONSUMED_AS_SCP = 1
+
         # billion kcals a month for 100% population (7.8 billion people).
-        self.GLOBAL_MONTHLY_NEEDS = 6793977 / 12
+        self.GLOBAL_MONTHLY_NEEDS = (
+            constants_for_params["GLOBAL_POP"] * Food.conversions.kcals_monthly / 1e9
+        )
 
         # apply sugar waste also to methane scp, for lack of better baseline
         self.SCP_WASTE = constants_for_params["WASTE"]["SUGAR"]
 
-    def calculate_monthly_scp_production(self, constants_for_params):
+    def calculate_monthly_scp_caloric_production(self, constants_for_params):
         if constants_for_params["ADD_METHANE_SCP"]:
             industrial_delay_months = [0] * constants_for_params["DELAY"][
                 "INDUSTRIAL_FOODS_MONTHS"
@@ -50,44 +59,51 @@ class MethaneSCP:
             )
 
             production_kcals_scp_per_month_long = []
-            for x in METHANE_SCP_PERCENT_KCALS:
+            for global_percent_kcals_scp in METHANE_SCP_PERCENT_KCALS:
                 production_kcals_scp_per_month_long.append(
-                    x
+                    global_percent_kcals_scp
                     / 100
                     * self.GLOBAL_MONTHLY_NEEDS
                     * constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"]
                     * (1 - self.SCP_WASTE / 100)
                 )
-
-                # @li nothing should need to be done here, but good to check that it works
+            self.production_kcals_scp_per_month_long = (
+                production_kcals_scp_per_month_long
+            )
         else:
-            production_kcals_scp_per_month_long = [0] * self.NMONTHS
+            self.production_kcals_scp_per_month_long = [0] * self.NMONTHS
 
-        self.production_kcals_scp_per_month = production_kcals_scp_per_month_long[
-            0 : self.NMONTHS
-        ]
-
-    def get_scp_production(self):
+    def calculate_scp_fat_and_protein_production(self):
+        self.production = Food()
+        self.production.kcals = np.array(
+            self.production_kcals_scp_per_month_long[0 : self.NMONTHS]
+        )
         # billions of kcals converted to 1000s of tons protein
-        production_protein_scp_per_month = list(
-            np.array(self.production_kcals_scp_per_month)
-            * 1e9
-            * self.SCP_FRAC_PROTEIN
-            / self.SCP_KCALS_PER_KG
-            / 1e6
+        self.production.protein = np.array(
+            list(
+                np.array(self.production.kcals)
+                * 1e9
+                * self.SCP_FRAC_PROTEIN
+                / self.SCP_KCALS_PER_KG
+                / 1e6
+            )
         )
 
         # billions of kcals converted to 1000s of tons fat
-        production_fat_scp_per_month = list(
-            np.array(self.production_kcals_scp_per_month)
-            * 1e9
-            * self.SCP_FRAC_FAT
-            / self.SCP_KCALS_PER_KG
-            / 1e6
+        self.production.fat = np.array(
+            list(
+                np.array(self.production.kcals)
+                * 1e9
+                * self.SCP_FRAC_FAT
+                / self.SCP_KCALS_PER_KG
+                / 1e6
+            )
         )
 
-        return (
-            self.production_kcals_scp_per_month,
-            production_fat_scp_per_month,
-            production_protein_scp_per_month,
+        self.production.set_units(
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
         )
+
+        # self.postwaste = self * (1 - self.SCP_WASTE / 100)

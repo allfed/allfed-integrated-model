@@ -11,7 +11,7 @@ from src.utilities.plotter import Plotter
 from src.food_system.food import Food
 
 
-class OutdoorCrops(Food):
+class OutdoorCrops:
     def __init__(self, constants_for_params):
         super().__init__()
 
@@ -250,6 +250,9 @@ class OutdoorCrops(Food):
 
         self.assign_reduction_from_climate_impact(constants_for_params)
 
+        if constants_for_params["RATIO_INCREASED_CROP_AREA"] > 1:
+            self.assign_increase_from_increased_cultivated_area(constants_for_params)
+
         PLOT_WITH_SEASONALITY = False
         if PLOT_WITH_SEASONALITY:
             print("Plotting with seasonality")
@@ -261,6 +264,32 @@ class OutdoorCrops(Food):
             print(ratios)
             # Plotter.plot_monthly_reductions_seasonally(ratios)
             Plotter.plot_monthly_reductions_seasonally(ratios)
+
+    def assign_increase_from_increased_cultivated_area(self, constants_for_params):
+        # Constants
+
+        N = constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"]
+        max_value = constants_for_params["RATIO_INCREASED_CROP_AREA"]
+        total_months = (
+            constants_for_params["NUMBER_YEARS_TAKES_TO_REACH_INCREASED_AREA"] * 12
+        )
+
+        # Create the linspace
+        linspace = np.ones(self.NMONTHS)
+
+        # Calculate the increment per month after the delay
+        increment = (max_value - 1) / (total_months - N)
+
+        # Update the linspace values
+        for i in range(N, total_months):
+            linspace[i] = 1 + (i - N) * increment
+
+        # Maintain the value after the specified number of years
+        linspace[total_months:] = max_value
+
+        # increase the kcals grown using the increased ratio due to increased area
+        for i in range(self.NMONTHS):
+            self.KCALS_GROWN[i] = self.KCALS_GROWN[i] * linspace[i]
 
     def assign_reduction_from_climate_impact(self, constants_for_params):
         self.KCALS_GROWN = []
@@ -328,23 +357,21 @@ class OutdoorCrops(Food):
         else:
             crops_produced = np.array([0] * self.NMONTHS)
 
-        self.kcals = np.array(crops_produced) * (1 - self.CROP_WASTE / 100)
-        self.fat = np.array(self.OG_FRACTION_FAT * crops_produced) * (
-            1 - self.CROP_WASTE / 100
-        )
-        self.protein = np.array(self.OG_FRACTION_PROTEIN * crops_produced) * (
-            1 - self.CROP_WASTE / 100
-        )
-
-        assert not np.isnan(
-            self.kcals
-        ).any(), """Error: the outdoor crop production expected is
-            unknown, cannot compute optimization"""
-        self.set_units(
+        self.production = Food(
+            kcals=np.array(crops_produced) * (1 - self.CROP_WASTE / 100),
+            fat=np.array(self.OG_FRACTION_FAT * crops_produced)
+            * (1 - self.CROP_WASTE / 100),
+            protein=np.array(self.OG_FRACTION_PROTEIN * crops_produced)
+            * (1 - self.CROP_WASTE / 100),
             kcals_units="billion kcals each month",
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
+
+        assert not np.isnan(
+            self.production.kcals
+        ).any(), """Error: the outdoor crop production expected is
+            unknown, cannot compute optimization"""
 
         # import matplotlib.pyplot as plt
         # import pandas as pd

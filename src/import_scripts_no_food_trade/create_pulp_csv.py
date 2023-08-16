@@ -13,7 +13,7 @@ PULP_CSV = (
     / "data"
     / "no_food_trade"
     / "raw_data"
-    / "FAOSTAT_wood_pulp_2020.csv"
+    / "FAOSTAT_wood_pulp_2021.csv"
 )
 
 country_codes = ImportUtilities.country_codes
@@ -53,6 +53,11 @@ pulp_csv["wood_pulp_tonnes"] = pulp_csv["wood_pulp_tonnes"].astype(float)
 pulp_csv["percent_of_global_production"] = pulp_csv["wood_pulp_tonnes"] / (
     pulp_csv["wood_pulp_tonnes"].sum()
 )
+
+PRINT_GLOBAL_WOOD_PULP = True
+if PRINT_GLOBAL_WOOD_PULP:
+    print("wood_pulp_tonnes sum 2020")
+    print(pulp_csv["wood_pulp_tonnes"].sum())
 
 pulp_csv.to_csv(
     Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "pulp_csv.csv",

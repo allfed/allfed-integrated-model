@@ -1,0 +1,5 @@
+"animal_type","fat_ratio","protein_ratio","carbohydrates_ratio","livestock_unit"
+"beef_cattle","1","7","92","0.8"
+"dairy_cattle","1","16","83","1.0"
+"pigs","5","19","76","0.3"
+"meat_chicken","4","23","73","0.007"

@@ -26,4 +26,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = sys.argv[1:]
+    args = ["single", "pptx", "plot"]
     main(args)

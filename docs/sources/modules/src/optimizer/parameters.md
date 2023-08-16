@@ -13,10 +13,10 @@
 **Methods:**
 
 
-### .computeParameters
+### .compute_parameters
 [source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L47)
 ```python
-.computeParameters(
+.compute_parameters(
    constants_inputs, scenarios_loader
 )
 ```

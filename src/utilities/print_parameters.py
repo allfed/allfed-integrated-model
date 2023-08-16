@@ -179,7 +179,7 @@ class PrintParameters:
 
         amount_to_cancel_waste = 1 / (1 - CROP_WASTE / 100)
 
-        CFP = time_consts["outdoor_crops"].kcals[0] * amount_to_cancel_waste
+        CFP = time_consts["outdoor_crops"].for_humans.kcals[0] * amount_to_cancel_waste
 
         # 1000 tons protein or fat per dry caloric ton
         print("")
@@ -230,7 +230,9 @@ class PrintParameters:
                 / 1e3
                 / (CFP * 1e9 / 4e6 / 1e6)
             )
-        INITIAL_SF_KCALS = constants["stored_food"].kcals * amount_to_cancel_waste
+        INITIAL_SF_KCALS = (
+            constants["stored_food"].initial_available.kcals * amount_to_cancel_waste
+        )
         SF_FRACTION_FAT = constants["SF_FRACTION_FAT"]
         SF_FRACTION_PROTEIN = constants["SF_FRACTION_PROTEIN"]
 

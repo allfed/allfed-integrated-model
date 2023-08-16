@@ -17,18 +17,7 @@ from src.scenarios import run_model_no_trade_no_resilient_foods
 from src.scenarios import run_model_no_trade_with_resilient_foods
 from src.scenarios import run_model_no_resilient_foods
 from src.scenarios import run_model_with_resilient_foods
-
-
-def test_run_model_baseline():
-    """
-    Runs the baseline model for testing
-
-    Arguments:
-
-    Returns:
-        None
-    """
-    run_model_baseline.run_model_baseline(plot_figures=False)
+from src.scenarios import run_ARG_1a_to_2d
 
 
 def test_run_baseline_by_country_no_trade():
@@ -67,28 +56,17 @@ def test_run_nuclear_winter_by_country_no_trade_with_resilient_foods():
     run_model_no_trade_with_resilient_foods.main(["single", "no_pptx", "no_plot"])
 
 
-def test_run_model_no_resilient_foods():
+def test_run_argentina():
     """
-    Runs the model without resilient food for testing
+    Runs the nuclear winter with res food by country and without trade model for testing
 
     Arguments:
 
     Returns:
         None
     """
-    run_model_no_resilient_foods.run_model_no_resilient_foods(plot_figures=False)
 
-
-def test_run_model_with_resilient_foods():
-    """_
-    Runs the model without resilient food for testing
-
-    Arguments:
-
-    Returns:
-        None
-    """
-    run_model_with_resilient_foods.run_model_with_resilient_foods(plot_figures=False)
+    run_ARG_1a_to_2d.main(["False", "False"])  # no plots
 
 
 def test_run_monte_carlo():
@@ -105,13 +83,11 @@ def test_run_monte_carlo():
 
 
 if __name__ == "__main__":
-    test_run_model_baseline()
     test_run_baseline_by_country_no_trade()
     test_run_nuclear_winter_by_country_no_trade_no_resilient_foods()
     test_run_nuclear_winter_by_country_no_trade_with_resilient_foods()
-    test_run_model_no_resilient_foods()
-    test_run_model_with_resilient_foods()
     test_run_monte_carlo()
+    test_run_argentina()
 
     print("All tests passed")
     sys.exit(0)

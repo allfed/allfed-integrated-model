@@ -48,41 +48,85 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         Set a few options to set on top of the specific options for the given simulation
         These could easily change if another scenario was of more interest.
         """
-        this_simulation["waste"] = "baseline_in_country"
         this_simulation["fat"] = "not_required"
         this_simulation["protein"] = "not_required"
-        this_simulation["nutrition"] = "catastrophe"
-        this_simulation["buffer"] = "zero"
-        this_simulation["shutoff"] = "long_delayed_shutoff"
-        this_simulation["cull"] = "do_eat_culled"
         this_simulation["meat_strategy"] = "efficient_meat_strategy"
+
+        if "waste" not in this_simulation.keys():
+            this_simulation["waste"] = "zero"
+        if "nutrition" not in this_simulation.keys():
+            this_simulation["nutrition"] = "baseline"
+        if "buffer" not in this_simulation.keys():
+            this_simulation["buffer"] = "baseline"
+        if "shutoff" not in this_simulation.keys():
+            this_simulation[
+                "shutoff"
+            ] = "reduce_breeding_USA"  # this_simulation["shutoff"] = "immediate"
+        if "cull" not in this_simulation.keys():
+            this_simulation["cull"] = "do_eat_culled"
+
+        # this_simulation["waste"] = "zero"
+        # this_simulation["nutrition"] = "baseline"
+        # this_simulation["buffer"] = "baseline"
+        # this_simulation["shutoff"] = "immediate"
+        # this_simulation["cull"] = "dont_eat_culled"
+
+        # this_simulation["fat"] = "not_required"
+        # this_simulation["protein"] = "not_required"
+        # this_simulation["meat_strategy"] = "efficient_meat_strategy"
+
         self.run_model_no_trade(
             title=this_simulation["scenario"] + "_" + this_simulation["fish"],
             create_pptx_with_all_countries=create_pptx_with_all_countries,
-            show_country_figures=False,
+            show_country_figures=show_country_figures,
             show_map_figures=show_map_figures,
             add_map_slide_to_pptx=show_map_figures and create_pptx_with_all_countries,
             scenario_option=this_simulation,
-            countries_list=[],
+            countries_list=[
+                "!SWT",
+                "!GBR",
+                "!AUT",
+                "!BEL",
+                "!BGR",
+                "!HRV",
+                "!CYP",
+                "!CZE",
+                "!DNK",
+                "!EST",
+                "!FIN",
+                "!FRA",
+                "!DEU",
+                "!GRC",
+                "!HUN",
+                "!IRL",
+                "!ITA",
+                "!LVA",
+                "!LTU",
+                "!LUX",
+                "!MLT",
+                "!NLD",
+                "!POL",
+                "!PRT",
+                "!ROU",
+                "!SVK",
+                "!SVN",
+                "!ESP",
+                "!SWE",
+            ],
         )
 
     def run_optimizer_for_country(
         self,
-        country_code,
         country_data,
         scenario_option,
         create_pptx_with_all_countries,
         show_country_figures,
         figure_save_postfix="",
     ):
-        print("running optimizer0")
         country_name = country_data["country"]
-
         constants_for_params, scenario_loader = self.set_depending_on_option(
             country_data, scenario_option
         )
-
-        print("running optimizer1")
 
         # No excess calories
         constants_for_params["EXCESS_FEED"] = Food(
@@ -94,7 +138,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             protein_units="thousand tons each month",
         )
 
-        print("running optimizer2")
         PRINT_COUNTRY = True
         if PRINT_COUNTRY:
             print("")
@@ -127,16 +170,27 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 constants_for_params, scenario_loader
             )
             percent_people_fed = interpreted_results.percent_people_fed
-
+        print("percent_people_fed")
+        print(percent_people_fed)
         if not np.isnan(percent_people_fed):
-            Plotter.plot_fig_1ab(
+            Plotter.plot_feed(
                 interpreted_results,
-                constants_for_params["NMONTHS"],
+                84,  # constants_for_params["NMONTHS"],
                 country_data["country"] + figure_save_postfix,
                 show_country_figures,
                 create_pptx_with_all_countries,
                 scenario_loader.scenario_description,
             )
+            Plotter.plot_fig_1ab(
+                interpreted_results,
+                84,
+                # constants_for_params["NMONTHS"],
+                country_data["country"] + figure_save_postfix,
+                show_country_figures,
+                create_pptx_with_all_countries,
+                scenario_loader.scenario_description,
+            )
+
         return (
             percent_people_fed / 100,
             scenario_loader.scenario_description,
@@ -248,14 +302,11 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             if np.isnan(population):
                 continue
 
-            print("about to run optimizer for country")
-
             (
                 needs_ratio,
                 scenario_description,
                 interpreted_results,
             ) = self.run_optimizer_for_country(
-                country_code,
                 country_data,
                 scenario_option,
                 create_pptx_with_all_countries,
@@ -268,15 +319,14 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 failed_countries += " " + country_name
                 continue
 
-            if country_code == "F5707+GBR":
-                for c in ImportUtilities.eu_27_p_uk_codes:
-                    self.fill_data_for_map(world, c, needs_ratio)
-            else:
-                self.fill_data_for_map(world, country_code, needs_ratio)
+            self.fill_data_for_map(world, country_code, needs_ratio)
+
+            # we say all are fed if ratio of macronutrient needs met is greater than 1
             if needs_ratio >= 1:
                 capped_ratio = 1
             else:
                 capped_ratio = needs_ratio
+
             net_pop_fed += capped_ratio * population
             net_pop += population
 
@@ -357,7 +407,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 if "!" not in c:
                     exclusive_countries_to_run.append(c)
 
-            return exclusive_countries_to_run, countries_to_skip
+        return exclusive_countries_to_run, countries_to_skip
 
     def run_many_options(
         self,
@@ -476,6 +526,16 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         defaults["nutrition"] = "catastrophe"
         defaults["cull"] = "do_eat_culled"
         defaults["meat_strategy"] = "efficient_meat_strategy"
+        assert "waste" not in this_simulation.keys()
+        assert "nutrition" not in this_simulation.keys()
+        assert "buffer" not in this_simulation.keys()
+        assert "shutoff" not in this_simulation.keys()
+        assert "cull" not in this_simulation.keys()
+        defaults["waste"] = "zero"
+        defaults["nutrition"] = "baseline"
+        defaults["buffer"] = "baseline"
+        defaults["shutoff"] = "reduce_breeding_USA"
+        defaults["cull"] = "do_eat_culled"
 
         options_including_defaults = []
         for option in options:

@@ -17,6 +17,8 @@ from src.utilities.make_powerpoint import MakePowerpoint
 
 from pathlib import Path
 from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
+
 import git
 
 plt.rcParams["axes.facecolor"] = "white"
@@ -51,6 +53,8 @@ class Plotter:
         if (not plot_figure) and (not add_slide_with_fig):
             return
 
+        ADD_THE_NUTRITION_PLOT = interpreter.include_protein or interpreter.include_fat
+
         xlim = min(xlim, len(interpreter.time_months_middle))
         legend = Plotter.get_people_fed_legend(interpreter, True)
         fig = plt.figure()
@@ -67,7 +71,13 @@ class Plotter:
             "#e7d2ad",
         ]
         for i, label in enumerate(("a", "b")):
-            ax = fig.add_subplot(1, 2, i + 1)
+            if ADD_THE_NUTRITION_PLOT:
+                ax = fig.add_subplot(1, 2, i + 1)
+            else:
+                if label == "b":
+                    continue
+                ax = fig.add_subplot(1, 1, 1)
+
             ax.set_xlim([0.5, xlim])
 
             ykcals = []
@@ -88,25 +98,22 @@ class Plotter:
                     + interpreter.grain_fed_meat_kcals_equivalent.kcals
                 )
             )
-            ykcals.append(
-                interpreter.immediate_outdoor_crops_to_humans_kcals_equivalent.kcals
-            )
-            ykcals.append(
-                interpreter.new_stored_outdoor_crops_to_humans_kcals_equivalent.kcals
-            )
-            ykcals.append(interpreter.stored_food_to_humans_kcals_equivalent.kcals)
+            ykcals.append(interpreter.immediate_outdoor_crops_kcals_equivalent.kcals)
+            ykcals.append(interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals)
+            ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
 
             if label == "a":
-                ax.text(
-                    -0.06,
-                    1.1,
-                    label,
-                    transform=ax.transAxes,
-                    fontsize=11,
-                    fontweight="bold",
-                    va="top",
-                    ha="right",
-                )
+                if ADD_THE_NUTRITION_PLOT:
+                    ax.text(
+                        -0.06,
+                        1.1,
+                        label,
+                        transform=ax.transAxes,
+                        fontsize=11,
+                        fontweight="bold",
+                        va="top",
+                        ha="right",
+                    )
                 ax.stackplot(
                     interpreter.time_months_middle,
                     np.array(ykcals),
@@ -116,7 +123,7 @@ class Plotter:
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
                 # maxy = max(sum([x[0:xlim] for x in ykcals]))
-                # maxy = max([sum(x[0:xlim]) for x in ykcals])
+                maxy = max([sum(x[0:xlim]) for x in ykcals])
                 maxy = 0
                 for i in range(xlim):
                     maxy = max(maxy, sum([x[i] for x in ykcals]))
@@ -127,16 +134,19 @@ class Plotter:
 
                 plt.ylabel("Kcals / capita / day")
             if label == "b":
-                ax.text(
-                    -0.06,
-                    1.1,
-                    label,
-                    transform=ax.transAxes,
-                    fontsize=11,
-                    fontweight="bold",
-                    va="top",
-                    ha="right",
-                )
+                if not ADD_THE_NUTRITION_PLOT:
+                    continue
+
+                    ax.text(
+                        -0.06,
+                        1.1,
+                        label,
+                        transform=ax.transAxes,
+                        fontsize=11,
+                        fontweight="bold",
+                        va="top",
+                        ha="right",
+                    )
                 plt.xlabel("Months since May nuclear winter onset")
 
                 ax.plot(
@@ -167,12 +177,17 @@ class Plotter:
                 # ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
             if label == "a":
+                if ADD_THE_NUTRITION_PLOT:
+                    legend_loc = (-0.15, -0.4)
+                else:
+                    legend_loc = (0, -0.2)
+
                 # get the handles
                 handles, labels = ax.get_legend_handles_labels()
                 plt.legend(
                     loc="center left",
                     frameon=False,
-                    bbox_to_anchor=(-0.15, -0.4),
+                    bbox_to_anchor=legend_loc,
                     shadow=False,
                     handles=reversed(handles),
                     labels=reversed(labels),
@@ -188,7 +203,11 @@ class Plotter:
                 )
 
             if label == "a":
-                plt.title("Food availability")
+                if ADD_THE_NUTRITION_PLOT:
+                    plt.title("Food availability")
+                else:
+                    plt.title("Food availability, " + newtitle)
+
             if label == "b":
                 plt.title("Available food macronutrition")
 
@@ -199,15 +218,29 @@ class Plotter:
         fig.set_figheight(8)
         fig.set_figwidth(8)
         plt.tight_layout()
-        fig.suptitle(newtitle)
+        if ADD_THE_NUTRITION_PLOT:
+            fig.suptitle(newtitle)
+
         path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
 
         saveloc = path_string + newtitle + ".png"
+        feed_saveloc = path_string + newtitle + "_feed.png"
         plt.savefig(
             saveloc,
             dpi=300,
         )
         if add_slide_with_fig:
+            if interpreter.show_feed_biofuels:
+                crs.mp.insert_slide_with_feed(
+                    title_below=newtitle
+                    + ": Percent fed:"
+                    + str(round(interpreter.percent_people_fed, 1))
+                    + "%",
+                    description=description,
+                    figure_save_loc=saveloc,
+                    feed_figure_save_loc=feed_saveloc,
+                )
+
             crs.mp.insert_slide(
                 title_below=newtitle
                 + ": Percent fed:"
@@ -219,8 +252,235 @@ class Plotter:
 
         if plot_figure:
             plt.show()
-        else:
-            plt.close()
+        # else:
+        # plt.close()
+
+    @classmethod
+    def plot_feed(
+        crs,
+        interpreter,
+        xlim,
+        newtitle="",
+        plot_figure=True,
+        add_slide_with_fig=True,
+        description="",
+    ):
+        print("feed")
+        if (not plot_figure) and (not add_slide_with_fig):
+            return
+
+        ADD_THE_NUTRITION_PLOT = interpreter.include_protein or interpreter.include_fat
+
+        xlim = min(xlim, len(interpreter.time_months_middle))
+        legend = Plotter.get_feed_biofuels_legend(interpreter)
+        fig = plt.figure()
+        pal = [
+            "#71797E",  # CS
+            "#e75480",  # SCP
+            "#056608",  # seaweeed
+            "#a5d610",  # OG
+            "#e7d2ad",  # stored food
+            "#71797E",  # CS
+            "#e75480",  # SCP
+            "#056608",  # seaweeed
+            "#a5d610",  # OG
+            "#e7d2ad",  # stored food
+        ]
+        hatches_list = [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "xx",
+            "xx",
+            "xx",
+            "xx",
+            "xx",
+        ]
+        # custom_handles = [
+        #     Patch(facecolor=pal[i], hatch=hatches_list[i] * 2, label=legend[i])
+        #     for i in range(len(legend))
+        # ]
+
+        for i, label in enumerate(("a", "b")):
+            if ADD_THE_NUTRITION_PLOT:
+                ax = fig.add_subplot(1, 2, i + 1)
+            else:
+                if label == "b":
+                    continue
+                ax = fig.add_subplot(1, 1, 1)
+            ax.set_xlim([0.5, xlim])
+
+            ykcals = []
+            ykcals.append(
+                interpreter.feed_and_biofuels.cell_sugar_feed_kcals_equivalent.kcals
+            )
+            ykcals.append(interpreter.feed_and_biofuels.scp_feed_kcals_equivalent.kcals)
+            ykcals.append(
+                interpreter.feed_and_biofuels.seaweed_feed_kcals_equivalent.kcals
+            )
+            ykcals.append(
+                interpreter.feed_and_biofuels.outdoor_crops_feed_kcals_equivalent.kcals
+            )
+            ykcals.append(
+                interpreter.feed_and_biofuels.stored_food_feed_kcals_equivalent.kcals
+            )
+            ykcals.append(
+                interpreter.feed_and_biofuels.cell_sugar_biofuels_kcals_equivalent.kcals
+            )
+            ykcals.append(
+                interpreter.feed_and_biofuels.scp_biofuels_kcals_equivalent.kcals
+            )
+            ykcals.append(
+                interpreter.feed_and_biofuels.seaweed_biofuels_kcals_equivalent.kcals
+            )
+            ykcals.append(
+                interpreter.feed_and_biofuels.outdoor_crops_biofuels_kcals_equivalent.kcals
+            )
+            ykcals.append(
+                interpreter.feed_and_biofuels.stored_food_biofuels_kcals_equivalent.kcals
+            )
+
+            if label == "a":
+                if ADD_THE_NUTRITION_PLOT:
+                    ax.text(
+                        -0.06,
+                        1.1,
+                        label,
+                        transform=ax.transAxes,
+                        fontsize=11,
+                        fontweight="bold",
+                        va="top",
+                        ha="right",
+                    )
+
+                stack_plots = ax.stackplot(
+                    interpreter.time_months_middle,
+                    np.array(ykcals),
+                    labels=legend,
+                    colors=pal,
+                )
+                # Add hatches to the biofuel patches
+                for stack_plot, hatch in zip(stack_plots, hatches_list):
+                    stack_plot.set_hatch(hatch)
+
+                # get the sum of all the ydata up to xlim month,
+                # then find max month
+                # maxy = max(sum([x[0:xlim] for x in ykcals]))
+                # maxy = max([sum(x[0:xlim]) for x in ykcals])
+                print("xlim")
+                print(xlim)
+                maxy = max([sum(x[0:xlim]) for x in ykcals])
+
+                maxy = 0
+                for i in range(xlim):
+                    maxy = max(maxy, sum([x[i] for x in ykcals]))
+
+                maxy += maxy / 20
+                ax.set_ylim([0, maxy])
+                # ax.set_ylim([0, maxy])
+
+                plt.ylabel("Kcals / capita / day")
+            if label == "b":
+                if not ADD_THE_NUTRITION_PLOT:
+                    continue
+                ax.text(
+                    -0.06,
+                    1.1,
+                    label,
+                    transform=ax.transAxes,
+                    fontsize=11,
+                    fontweight="bold",
+                    va="top",
+                    ha="right",
+                )
+                plt.xlabel("Months since May nuclear winter onset")
+
+                # note: nonhuman consumption is pre-waste, because it is assumed to occur
+                # before the waste happens
+
+                ax.plot(
+                    interpreter.time_months_middle,
+                    interpreter.feed_and_biofuels.nonhuman_consumption.kcals,
+                    color="blue",
+                    linestyle="solid",
+                )
+
+                if interpreter.include_protein:
+                    ax.plot(
+                        interpreter.time_months_middle,
+                        interpreter.feed_and_biofuels.nonhuman_consumption.protein,
+                        color="red",
+                        linestyle="dotted",
+                    )
+
+                if interpreter.include_fat:
+                    # 1 gram of fat is 9 kcals.
+                    ax.plot(
+                        interpreter.time_months_middle,
+                        interpreter.feed_and_biofuels.nonhuman_consumption.fat,
+                        color="green",
+                        linestyle="dashed",
+                    )
+
+                ax.set_ylabel("Percent of minimum human recommendation as feed")
+                # ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
+
+            if label == "a":
+                # get the handles
+                handles, labels = ax.get_legend_handles_labels()
+                if ADD_THE_NUTRITION_PLOT:
+                    legend_loc = (-0.15, -0.4)
+                else:
+                    legend_loc = (0, -0.2)
+                plt.legend(
+                    loc="center left",
+                    frameon=False,
+                    bbox_to_anchor=legend_loc,
+                    shadow=False,
+                    handles=reversed(handles),
+                    labels=reversed(labels),
+                )
+
+            if label == "b":
+                ax.legend(
+                    loc="center left",
+                    frameon=False,
+                    bbox_to_anchor=(-0.05, -0.3),
+                    shadow=False,
+                    labels=["Calories", "Fat", "Protein"],
+                )
+
+            if label == "a":
+                if ADD_THE_NUTRITION_PLOT:
+                    plt.title("Feed + Biofuel Usage")
+                else:
+                    plt.title("Feed + Biofuel Usage, " + newtitle)
+
+            if label == "b":
+                plt.title("Feed + Biofuel macronutrition used")
+
+            plt.xlabel("Months since May nuclear winter onset")
+
+        # plt.rcParams["figure.figsize"] = [12.50, 10]
+
+        fig.set_figheight(8)
+        fig.set_figwidth(8)
+        plt.tight_layout()
+        if ADD_THE_NUTRITION_PLOT:
+            fig.suptitle(newtitle)
+        path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
+
+        saveloc = path_string + newtitle + "_feed.png"
+        plt.savefig(
+            saveloc,
+            dpi=300,
+        )
+        if plot_figure:
+            plt.show()
+        # else:
+        # plt.close()
 
     @classmethod
     def plot_fig_1ab_updated(
@@ -327,16 +587,16 @@ class Plotter:
         xlim = min(xlim, len(interpreter.time_months_middle))
         legend = Plotter.get_people_fed_legend(interpreter, True)
         pal = [
-            "#1e7ecd",
-            "#71797E",
-            "#e75480",
-            "#76d7ea",
-            "#056608",
-            "#f3f4e3",
-            "#ff0606",
-            "#a5d610",
-            "#ffeb7a",
-            "#e7d2ad",
+            "#1e7ecd",  # fish
+            "#71797E",  # CS
+            "#e75480",  # SCP
+            "#76d7ea",  # greenhouses
+            "#056608",  # seaweeed
+            "#f3f4e3",  # milk
+            "#ff0606",  # meat
+            "#a5d610",  # immediate OG
+            "#ffeb7a",  # new stored OG
+            "#e7d2ad",  # stored food
         ]
         for i, label in enumerate(("a", "b")):
             ykcals = []
@@ -357,13 +617,9 @@ class Plotter:
                     + interpreter.grain_fed_meat_kcals_equivalent.kcals
                 )
             )
-            ykcals.append(
-                interpreter.immediate_outdoor_crops_to_humans_kcals_equivalent.kcals
-            )
-            ykcals.append(
-                interpreter.new_stored_outdoor_crops_to_humans_kcals_equivalent.kcals
-            )
-            ykcals.append(interpreter.stored_food_to_humans_kcals_equivalent.kcals)
+            ykcals.append(interpreter.immediate_outdoor_crops_kcals_equivalent.kcals)
+            ykcals.append(interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals)
+            ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
 
             if label == "a":
                 ax = fig.add_subplot(gs[row, 1])
@@ -513,13 +769,9 @@ class Plotter:
                 + interpreter.grain_fed_meat_kcals_equivalent.kcals
             )
         )
-        ykcals.append(
-            interpreter.immediate_outdoor_crops_to_humans_kcals_equivalent.kcals
-        )
-        ykcals.append(
-            interpreter.new_stored_outdoor_crops_to_humans_kcals_equivalent.kcals
-        )
-        ykcals.append(interpreter.stored_food_to_humans_kcals_equivalent.kcals)
+        ykcals.append(interpreter.immediate_outdoor_crops_kcals_equivalent.kcals)
+        ykcals.append(interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals)
+        ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
 
         # ax.text(
         #     -0.06,
@@ -826,12 +1078,12 @@ class Plotter:
                     )
                 )
                 ykcals.append(
-                    interpreter.immediate_outdoor_crops_to_humans_kcals_equivalent.kcals
+                    interpreter.immediate_outdoor_crops_kcals_equivalent.kcals
                 )
                 ykcals.append(
-                    interpreter.new_stored_outdoor_crops_to_humans_kcals_equivalent.kcals
+                    interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals
                 )
-                ykcals.append(interpreter.stored_food_to_humans_kcals_equivalent.kcals)
+                ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
 
                 ax.text(
                     -0.06,
@@ -1173,12 +1425,12 @@ class Plotter:
                     )
                 )
                 ykcals.append(
-                    interpreter.immediate_outdoor_crops_to_humans_kcals_equivalent.kcals
+                    interpreter.immediate_outdoor_crops_kcals_equivalent.kcals
                 )
                 ykcals.append(
-                    interpreter.new_stored_outdoor_crops_to_humans_kcals_equivalent.kcals
+                    interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals
                 )
-                ykcals.append(interpreter.stored_food_to_humans_kcals_equivalent.kcals)
+                ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
 
                 ax.text(
                     -0.06,
@@ -1331,12 +1583,12 @@ class Plotter:
                     )
                 )
                 ykcals.append(
-                    interpreter.immediate_outdoor_crops_to_humans_kcals_equivalent.kcals
+                    interpreter.immediate_outdoor_crops_kcals_equivalent.kcals
                 )
                 ykcals.append(
-                    interpreter.new_stored_outdoor_crops_to_humans_kcals_equivalent.kcals
+                    interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals
                 )
-                ykcals.append(interpreter.stored_food_to_humans_kcals_equivalent.kcals)
+                ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
                 ax.text(
                     -0.06,
                     1.1,
@@ -1433,7 +1685,7 @@ class Plotter:
             saveloc,
             dpi=300,
         )
-        plt.close()
+        # plt.close()
         print("saved figure s1abcd")
         # else:
         plt.show()
@@ -1565,6 +1817,62 @@ class Plotter:
 
         return legend
 
+    def get_feed_biofuels_legend(interpreter):
+        stored_food_label = "Stored food, either from before or after catastrophe"
+
+        legend = []
+        if interpreter.constants["ADD_CELLULOSIC_SUGAR"]:
+            legend = legend + ["Cellulosic Sugar Feed"]
+        else:
+            legend = legend + [""]
+
+        if interpreter.constants["ADD_METHANE_SCP"]:
+            legend = legend + ["Methane SCP Feed"]
+        else:
+            legend = legend + [""]
+
+        if interpreter.constants["ADD_SEAWEED"]:
+            legend = legend + ["Seaweed Feed"]
+        else:
+            legend = legend + [""]
+
+        if interpreter.constants["ADD_OUTDOOR_GROWING"]:
+            legend = legend + ["Outdoor Crops consumed Feed"]
+        else:
+            legend = legend + [""]
+
+        if interpreter.constants["ADD_STORED_FOOD"]:
+            legend = legend + [stored_food_label + " Feed"]
+        else:
+            legend = legend + [""]
+
+        if interpreter.constants["ADD_CELLULOSIC_SUGAR"]:
+            legend = legend + ["Cellulosic Sugar Feed"]
+        else:
+            legend = legend + [""]
+
+        if interpreter.constants["ADD_METHANE_SCP"]:
+            legend = legend + ["Methane SCP Biofuels"]
+        else:
+            legend = legend + [""]
+
+        if interpreter.constants["ADD_SEAWEED"]:
+            legend = legend + ["Seaweed Biofuels"]
+        else:
+            legend = legend + [""]
+
+        if interpreter.constants["ADD_OUTDOOR_GROWING"]:
+            legend = legend + ["Outdoor Crops consumed Biofuels"]
+        else:
+            legend = legend + [""]
+
+        if interpreter.constants["ADD_STORED_FOOD"]:
+            legend = legend + [stored_food_label + " Biofuels"]
+        else:
+            legend = legend + [""]
+
+        return legend
+
     def plot_monthly_reductions_seasonally(ratios):
         month_nums = np.linspace(0, len(ratios), len(ratios))
         plt.scatter(month_nums, ratios)
@@ -1646,8 +1954,8 @@ class Plotter:
         SHOWPLOT = True
         if SHOWPLOT:
             plt.show()
-        else:
-            plt.close()
+        # else:
+        # plt.close()
         return saveloc
 
     def plot_food_alternative(food, title):
@@ -1705,8 +2013,8 @@ class Plotter:
         SHOWPLOT = True
         if SHOWPLOT:
             plt.show()
-        else:
-            plt.close()
+        # else:
+        # plt.close()
         return saveloc
 
     @classmethod
@@ -1744,8 +2052,8 @@ class Plotter:
 
         if plot_map:
             plt.show()
-        else:
-            plt.close()
+        # else:
+        # plt.close()
         if create_slide:
             crs.mp.insert_slide(
                 title_below=save_title_string,

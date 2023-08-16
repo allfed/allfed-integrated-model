@@ -13,7 +13,7 @@ class Extractor:
     def __init__(self, constants):
         self.constants = constants
 
-    def extract_results(self, model, variables, single_valued_constants, time_consts):
+    def extract_results(self, model, variables, time_consts):
         # extract the results from the model
 
         self.get_objective_optimization_results(model)
@@ -34,14 +34,14 @@ class Extractor:
 
         # if no cellulosic sugar, plot shows zero
         self.extract_cell_sugar_results(
-            time_consts["production_kcals_cell_sugar_per_month"],
+            time_consts["cellulosic_sugar"].for_humans.kcals,
         )
 
         # if no scp, plot shows zero
         self.extract_SCP_results(
-            time_consts["production_kcals_scp_per_month"],
-            time_consts["production_fat_scp_per_month"],
-            time_consts["production_protein_scp_per_month"],
+            time_consts["methane_scp"].for_humans.kcals,
+            time_consts["methane_scp"].for_humans.fat,
+            time_consts["methane_scp"].for_humans.protein,
         )
 
         # if no fish, plot shows zero
@@ -63,7 +63,7 @@ class Extractor:
         self.extract_outdoor_crops_results(
             variables["crops_food_eaten_no_relocation"],
             variables["crops_food_eaten_relocated"],
-            time_consts["outdoor_crops"],
+            time_consts["outdoor_crops"].for_humans,
         )
 
         # if nonegg nonmilk meat isn't included, these results plot shows zero
@@ -443,6 +443,7 @@ class Extractor:
 
         # make sure we haven't messed up and changed total outdoor growing production
         # each month
+        pass
 
         difference = self.outdoor_crops - (
             self.immediate_outdoor_crops + self.new_stored_outdoor_crops

@@ -1,3 +1,6 @@
+src/scenarios/ykcals.csv
+ykcals.csv
+
 results/large_reports/*.png
 results/large_reports/*.npy
 results/large_reports/*.pptx
@@ -103,3 +106,6 @@ target/
 
 # Mypy cache
 .mypy_cache/
+
+#csv files
+*.csv

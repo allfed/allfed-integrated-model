@@ -10,8 +10,6 @@ from typing import Union
 
 
 def add_val(indices, value, data):
-    # print("value")
-    # print(value)
     if not len(indices):
         return
     element = data
