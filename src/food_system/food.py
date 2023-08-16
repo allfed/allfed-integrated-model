@@ -424,11 +424,15 @@ class Food(UnitConversions):
             None
         """
         # Check if kcals is a list or numpy array
-        assert not isinstance(self.kcals, list) and not isinstance(self.kcals, np.ndarray)
+        assert not isinstance(self.kcals, list) and not isinstance(
+            self.kcals, np.ndarray
+        )
         # Check if fat is a list or numpy array
         assert not isinstance(self.fat, list) and not isinstance(self.fat, np.ndarray)
         # Check if protein is a list or numpy array
-        assert not isinstance(self.protein, list) and not isinstance(self.protein, np.ndarray)
+        assert not isinstance(self.protein, list) and not isinstance(
+            self.protein, np.ndarray
+        )
 
     def make_sure_is_a_list(self):
         """
