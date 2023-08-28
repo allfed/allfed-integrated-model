@@ -153,9 +153,6 @@ class MakePowerpoint:
             para.alignment = PP_ALIGN.LEFT
             para.font.size = Pt(10)
 
-    def save_ppt(self, pres_name):
-        self.prs.save(pres_name)
-
 
 if __name__ == "__main__":
     the_title = "the_title"

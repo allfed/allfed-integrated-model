@@ -3,7 +3,6 @@ Optimizer Model
 In this model, we estimate the macronutrient production allocated optimally
 over time including models for traditional and resilient foods.
 """
-from datetime import time
 import pulp
 import numpy as np
 from pulp import LpMaximize, LpMinimize, LpProblem, LpVariable, LpConstraint

@@ -7,9 +7,7 @@
 """
 # TODO: make a couple sub functions that deal with the different parts, where
 #      it assigns the returned values to the constants.
-from functools import total_ordering
 import numpy as np
-from pulp import constants
 from src.food_system.meat_and_dairy import MeatAndDairy
 from src.food_system.outdoor_crops import OutdoorCrops
 from src.food_system.seafood import Seafood

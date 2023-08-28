@@ -8,7 +8,6 @@ import pandas as pd
 import numpy as np
 import git
 from src.food_system.food import Food
-import pdb
 
 
 """
@@ -150,16 +149,53 @@ class CalculateAnimalOutputs:
         # but it instead uses those ratios to calaculate the feed, and then uses the
         # country-specific animal feed usage to estimate the actual feed used.
         country_specific_feed_per_small_animal_head_pm = (
-            monthly_feed_consumption_small_animals / small_animals
+            Food(
+                kcals=0,
+                fat=0,
+                protein=0,
+                kcals_units=monthly_feed_consumption_small_animals.kcals_units,
+                fat_units=monthly_feed_consumption_small_animals.fat_units,
+                protein_units=monthly_feed_consumption_small_animals.protein_units,
+            )
+            if small_animals == 0
+            else (monthly_feed_consumption_small_animals / small_animals)
         )
         country_specific_feed_per_medium_animal_head_pm = (
-            monthly_feed_consumption_medium_animals / medium_animals
+            Food(
+                kcals=0,
+                fat=0,
+                protein=0,
+                kcals_units=monthly_feed_consumption_medium_animals.kcals_units,
+                fat_units=monthly_feed_consumption_medium_animals.fat_units,
+                protein_units=monthly_feed_consumption_medium_animals.protein_units,
+            )
+            if medium_animals == 0
+            else (monthly_feed_consumption_medium_animals / medium_animals)
         )
         country_specific_feed_per_large_animal_head_pm = (
-            monthly_feed_consumption_large_animals / large_animals
+            Food(
+                kcals=0,
+                fat=0,
+                protein=0,
+                kcals_units=monthly_feed_consumption_large_animals.kcals_units,
+                fat_units=monthly_feed_consumption_large_animals.fat_units,
+                protein_units=monthly_feed_consumption_large_animals.protein_units,
+            )
+            if large_animals == 0
+            else (monthly_feed_consumption_large_animals / large_animals)
         )
+
         country_specific_feed_per_dairy_cow_head_pm = (
-            monthly_feed_consumption_dairy_cows / dairy_cows
+            Food(
+                kcals=0,
+                fat=0,
+                protein=0,
+                kcals_units=monthly_feed_consumption_dairy_cows.kcals_units,
+                fat_units=monthly_feed_consumption_dairy_cows.fat_units,
+                protein_units=monthly_feed_consumption_dairy_cows.protein_units,
+            )
+            if dairy_cows == 0
+            else (monthly_feed_consumption_dairy_cows / dairy_cows)
         )
 
         # create dict from the above
@@ -213,7 +249,6 @@ class CalculateAnimalOutputs:
         #     0 if np.isnan(feed_dict["dairy_cows"]) else feed_dict["dairy_cows"]
         # )
 
-
         # combine together
         poultry_feed = feed_dict["small_animals"] * np.array(
             df_out["Poultry Pop"].values
@@ -238,8 +273,7 @@ class CalculateAnimalOutputs:
         df_out["Beef Feed"] = beef_feed
         df_out["Dairy Feed"] = dairy_feed
         feed = poultry_feed + pork_feed + beef_feed + dairy_feed
-
-        return df_out,feed
+        return df_out, feed
 
     def calculate_animal_populations(self, data):
         """
@@ -316,7 +350,6 @@ class CalculateAnimalOutputs:
         )
         cowGestation = animal_inputs.loc["cowGestation", "Qty"]
         calves_per_mother = 1
-
 
         # life expetency values
         dairy_life_expectancy = (
@@ -403,8 +436,6 @@ class CalculateAnimalOutputs:
         )  # measured in head
         spare_slaughter_hours = 0
 
-
-
         # # define current totals
         # current_beef_feed_cattle = cattle_on_feed
         current_beef_cattle = total_beef_cows
@@ -468,7 +499,6 @@ class CalculateAnimalOutputs:
                     / cow_slaughter_hours
                 )
 
-
             # this set up only kills dairy cows when they are getting to the end of
             # their life.
             current_dairy_slaughter = (
@@ -488,7 +518,6 @@ class CalculateAnimalOutputs:
 
             else:
                 actual_beef_slaughter = current_beef_slaughter
-
 
             other_beef_death = other_cow_death_rate_monthly * current_beef_cattle
             other_dairy_death = other_cow_death_rate_monthly * current_dairy_cattle

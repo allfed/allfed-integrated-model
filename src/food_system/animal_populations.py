@@ -28,7 +28,6 @@ Functionality required
 """
 from pathlib import Path
 import pandas as pd
-import numpy as np
 import git
 from src.food_system.food import Food
 import pdb
@@ -196,6 +195,7 @@ class CountryData:
 class AnimalSpecies:
     """
     Class to store animal population data in. Needs to store the following: animal type, population, and slaughter.
+
 
     Parameters
     ----------

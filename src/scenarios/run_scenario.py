@@ -42,6 +42,8 @@ class ScenarioRunner:
         single_valued_constants, time_consts, feed_biofuels = self.compute_parameters(
             constants_for_params, scenarios_loader
         )
+        #        interpreter.set_feed(feed_biofuels) DELETE??? TODO: check if this is necessary
+
 
         # Run the optimizer to optimize effective people fed based on all the constants we've determined
         model, variables, single_valued_constants, time_consts = self.run_optimizer(
@@ -153,6 +155,7 @@ class ScenarioRunner:
 
         if scenario_option["scale"] == "global":
             constants_for_params = scenario_loader.init_global_food_system_properties()
+            constants_for_params["COUNTRY_CODE"] = "global"
         elif scenario_option["scale"] == "country":
             constants_for_params = scenario_loader.init_country_food_system_properties(
                 country_data

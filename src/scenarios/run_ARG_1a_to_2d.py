@@ -54,8 +54,8 @@ def run_ARG_net_baseline():
     scenario_runner.run_model_no_trade(
         title="Argentina Net Food Production",
         create_pptx_with_all_countries=False,
-        show_country_figures=True,
-        show_map_figures=False,
+        show_country_figures=show_country_figures,
+        show_map_figures=show_map_figures,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=["ARG"],  # runs all the countries if empty
@@ -103,8 +103,8 @@ def run_ARG_gross_baseline():
     scenario_runner.run_model_no_trade(
         title="Argentina Net Food Production",
         create_pptx_with_all_countries=False,
-        show_country_figures=True,
-        show_map_figures=False,
+        show_country_figures=show_country_figures,
+        show_map_figures=show_map_figures,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=["ARG"],  # runs all the countries if empty
@@ -158,8 +158,8 @@ def run_ARG_net_nuclear_winter():
     scenario_runner.run_model_no_trade(
         title="Argentina Net Food Production, Nuclear Winter",
         create_pptx_with_all_countries=False,
-        show_country_figures=True,
-        show_map_figures=True,
+        show_country_figures=show_country_figures,
+        show_map_figures=show_map_figures,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=["ARG"],
@@ -206,8 +206,8 @@ def run_ARG_net_nuclear_winter_reduced_feed_waste():
     scenario_runner.run_model_no_trade(
         title="Argentina Net Food Production, Nuclear Winter, Reduced Waste",
         create_pptx_with_all_countries=False,
-        show_country_figures=True,
-        show_map_figures=True,
+        show_country_figures=show_country_figures,
+        show_map_figures=show_map_figures,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=["ARG"],
@@ -263,8 +263,8 @@ def run_ARG_net_nuclear_winter_reduced_feed_waste_resilient():
     scenario_runner.run_model_no_trade(
         title="Argentina Net Food Production, Resilient Foods",
         create_pptx_with_all_countries=False,
-        show_country_figures=True,
-        show_map_figures=True,
+        show_country_figures=show_country_figures,
+        show_map_figures=show_map_figures,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=["ARG"],
@@ -320,12 +320,11 @@ def run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area():
     # Run simulation
     # command line argument inputs (optional)
     scenario_runner = ScenarioRunnerNoTrade()
-
     scenario_runner.run_model_no_trade(
         title="Argentina Net Food Production, Resilient Foods",
         create_pptx_with_all_countries=False,
-        show_country_figures=True,
-        show_map_figures=True,
+        show_country_figures=show_country_figures,
+        show_map_figures=show_map_figures,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
         countries_list=["ARG"],
