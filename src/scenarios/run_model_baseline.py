@@ -36,7 +36,7 @@ def run_model_baseline(plot_figures=True):
     print("")
 
     print("")
-    print("Maximum usable kcals/capita/day 2020, no waste, primary production")
+    print("Maximum usable kcals/person/day 2020, no waste, primary production")
     print(results.percent_people_fed / 100 * 2100)
     print("")
 
@@ -56,7 +56,7 @@ def run_model_baseline(plot_figures=True):
         constants_for_params, scenarios_loader
     )
 
-    print("Maximum usable kcals/capita/day 2020, after waste and feed")
+    print("Maximum usable kcals/person/day 2020, after waste and feed")
     print(results.percent_people_fed / 100 * 2100)
     results2 = results
 

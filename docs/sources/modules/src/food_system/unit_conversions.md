@@ -113,7 +113,7 @@ update and return the unit values as a 3 element array
 
 ---
 Sets the units of the food (for example, billion_kcals,thousand_tons, dry
-caloric tons, kcals/capita/day, or percent of global food supply).
+caloric tons, kcals/person/day, or percent of global food supply).
 default units are billion kcals, thousand tons fat, thousand tons protein
 For convenience and as a memory tool, set the units, and make sure that whenever
 an operation on a different food is used, the units are compatible
@@ -183,12 +183,12 @@ values and units to percent of people fed.
 
 ---
 If the existing units are understood by this function, it tries to convert the
-values and units to effective kcals per capita per day for each nutrient.
+values and units to effective kcals per person per day for each nutrient.
 
-### .in_units_kcals_grams_grams_per_capita_from_ratio
+### .in_units_kcals_grams_grams_per_person_from_ratio
 [source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/unit_conversions.py/#L585)
 ```python
-.in_units_kcals_grams_grams_per_capita_from_ratio(
+.in_units_kcals_grams_grams_per_person_from_ratio(
    kcal_ratio, fat_ratio, protein_ratio
 )
 ```
@@ -202,10 +202,10 @@ kcal ratio (float): kcal  per kg of the food being converted
 fat ratio (float): grams per kcal of the food being converted
 kcal ratio (float): grams per kcal of the food being converted
 
-### .in_units_kcals_grams_grams_per_capita
+### .in_units_kcals_grams_grams_per_person
 [source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/unit_conversions.py/#L655)
 ```python
-.in_units_kcals_grams_grams_per_capita()
+.in_units_kcals_grams_grams_per_person()
 ```
 
 ---

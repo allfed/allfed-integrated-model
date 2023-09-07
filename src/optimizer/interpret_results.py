@@ -263,7 +263,7 @@ class Interpreter:
 
         return to_humans_fed_sum
 
-    def print_kcals_per_capita_per_day(self, interpreted_results):
+    def print_kcals_per_person_per_day(self, interpreted_results):
         """
         This function prints the ratio of needs to actual needs for a given scenario
         result.
@@ -271,7 +271,7 @@ class Interpreter:
 
         needs_ratio = interpreted_results.percent_people_fed / 100
 
-        print("Expected kcals/capita/day")
+        print("Expected kcals/person/day")
         print(needs_ratio * 2100)
         print("")
 

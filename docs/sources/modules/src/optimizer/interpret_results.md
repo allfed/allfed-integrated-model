@@ -127,10 +127,10 @@ it's value)
 sum the resulting nutrients from the extracted_results, but do this by adding
 all the amounts determined to go to humans
 
-### .print_kcals_per_capita_per_day
+### .print_kcals_per_person_per_day
 [source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L356)
 ```python
-.print_kcals_per_capita_per_day(
+.print_kcals_per_person_per_day(
    interpreted_results
 )
 ```

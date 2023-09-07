@@ -131,7 +131,7 @@ class Plotter:
                 ax.set_ylim([0, maxy])
                 # ax.set_ylim([0, maxy])
 
-                plt.ylabel("Kcals / capita / day")
+                plt.ylabel("Kcals / person / day")
             if label == "b":
                 if not ADD_THE_NUTRITION_PLOT:
                     continue
@@ -380,7 +380,7 @@ class Plotter:
                 ax.set_ylim([0, maxy])
                 # ax.set_ylim([0, maxy])
 
-                plt.ylabel("Kcals / capita / day")
+                plt.ylabel("Kcals / person / day")
             if label == "b":
                 if not ADD_THE_NUTRITION_PLOT:
                     continue
@@ -652,7 +652,7 @@ class Plotter:
                 ax.set_ylim([0, maxy])
                 # ax.set_ylim([0, maxy])
 
-                plt.ylabel("Kcals / capita / day", fontsize=9)
+                plt.ylabel("Kcals / person / day", fontsize=9)
             if label == "b":
                 ax = fig.add_subplot(gs[row, 2])
 
@@ -800,7 +800,7 @@ class Plotter:
         ax.set_ylim([0, min(maxy, ylim_constraint)])
         ax.set_xlim([0, xlim])
         if add_ylabel:
-            plt.ylabel("Kcals / capita / day", fontsize=9)
+            plt.ylabel("Kcals / person / day", fontsize=9)
         if add_xlabel:
             plt.xlabel("Months since May nuclear winter onset", fontsize=9)
 
@@ -1106,7 +1106,7 @@ class Plotter:
                 maxy = max(sum([x[0:xlim] for x in ykcals]))
                 ax.set_ylim([0, maxy])
 
-                plt.ylabel("Kcals / capita / day")
+                plt.ylabel("Kcals / person / day")
             if label == "b" or label == "d":
                 ax.text(
                     -0.06,
@@ -1448,7 +1448,7 @@ class Plotter:
                     colors=pal,
                 )
 
-                plt.ylabel("Kcals / capita / day")
+                plt.ylabel("Kcals / person / day")
             if label == "b" or label == "d":
                 ax.text(
                     -0.06,
@@ -1610,7 +1610,7 @@ class Plotter:
                 # maxy = max(sum([x[0:xlim] for x in ykcals]))
                 # ax.set_ylim([0, maxy])
 
-                plt.ylabel("Kcals / capita / day")
+                plt.ylabel("Kcals / person / day")
             if label == "b" or label == "d":
                 ax.text(
                     -0.06,

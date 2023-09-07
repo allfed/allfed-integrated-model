@@ -234,23 +234,25 @@ class Food(UnitConversions):
             #       as a default python list type and then get rid of all the casting to
             #       np arrays in the rest of the code
             self.kcals = np.array(self.kcals)
-
             # this is used to set a reasonable default if kcals are supplied but fat and
             # protein are not
             if "each month" not in self.kcals_units:
                 self.kcals_units = self.kcals_units + " each month"
-
             if isinstance(self.fat, int):
                 self.fat = np.zeros(len(self.kcals))
                 self.fat_units = self.fat_units + " each month"
             else:
                 self.fat = np.array(self.fat)
+                if "each month" not in self.fat_units:
+                    self.fat_units = self.fat_units + " each month"
 
             if isinstance(self.protein, int):
                 self.protein = np.zeros(len(self.kcals))
                 self.protein_units = self.protein_units + " each month"
             else:
                 self.protein = np.array(self.protein)
+                if "each month" not in self.protein_units:
+                    self.protein_units = self.protein_units + " each month"
 
         else:
             self.NMONTHS = np.nan  # number of months is not a number
@@ -284,7 +286,7 @@ class Food(UnitConversions):
 
         Example:
             >>> food = Food()
-            >>> food.new_food_just_from_kcals(kcals=100, fat=10, protein=20)
+            >>> food.new_food_just_from_kcals(kcals=100)
         """
 
         # Call the parent constructor

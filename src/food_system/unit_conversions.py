@@ -167,6 +167,7 @@ class UnitConversions:
         assert "each month" not in self.kcals_units
         assert "each month" not in self.fat_units
         assert "each month" not in self.protein_units
+
         # add " each month" to units to signify a food list
         kcals_units = self.kcals_units + " each month"
 
@@ -202,7 +203,7 @@ class UnitConversions:
     def set_units(self, kcals_units, fat_units, protein_units):
         """
         Sets the units of the food (for example, billion_kcals,thousand_tons, dry
-        caloric tons, kcals/capita/day, or percent of global food supply).
+        caloric tons, kcals/person/day, or percent of global food supply).
         default units are billion kcals, thousand tons fat, thousand tons protein
         For convenience and as a memory tool, set the units, and make sure that whenever
         an operation on a different food is used, the units are compatible
@@ -256,358 +257,7 @@ class UnitConversions:
 
     # CONVERSIONS BETWEEN UNITS
 
-    def in_units_billions_fed(self):
-        """
-        If the existing units are understood by this function, it tries to convert the
-        values and units to billions of people fed.
-        """
-        # @Morgan: Is there a reason this is done as if,if,if and not as if,elif,else?
-
-        # getting this instance of the UnitConversions from the child class
-        conversions = self.get_conversions()
-
-        # okay, okay, maybe the way I did this child/parent thing is not ideal...
-        # get the child class so can initialize the Food class
-        Food = self.get_Food_class()
-        billion_kcal_conversion = 1 / conversions.kcals_monthly
-        thou_tons_fat_conversion = 1 / conversions.fat_monthly / 1e9
-        thou_tons_protein_conversion = 1 / conversions.protein_monthly / 1e9
-
-        if (
-            self.kcals_units == "billion kcals each month"
-            and self.fat_units == "thousand tons each month"
-            and self.protein_units == "thousand tons each month"
-        ):
-            return Food(
-                kcals=self.kcals * billion_kcal_conversion,
-                fat=self.fat * thou_tons_fat_conversion,
-                protein=self.protein * thou_tons_protein_conversion,
-                kcals_units="billion people fed each month",
-                fat_units="billion people fed each month",
-                protein_units="billion people fed each month",
-            )
-
-        if (
-            self.kcals_units == "billion kcals per month"
-            and self.fat_units == "thousand tons per month"
-            and self.protein_units == "thousand tons per month"
-        ):
-            return Food(
-                kcals=self.kcals * billion_kcal_conversion,
-                fat=self.fat * thou_tons_fat_conversion,
-                protein=self.protein * thou_tons_protein_conversion,
-                kcals_units="billion people fed per month",
-                fat_units="billion people fed per month",
-                protein_units="billion people fed per month",
-            )
-
-        percent_people_kcal_conversion = conversions.population / 1e9 / 100
-        percent_people_fat_conversion = conversions.population / 1e9 / 100
-        percent_people_protein_conversion = conversions.population / 1e9 / 100
-
-        if (
-            self.kcals_units == "percent people fed per month"
-            and self.fat_units == "percent people fed per month"
-            and self.protein_units == "percent people fed per month"
-        ):
-            return Food(
-                kcals=self.kcals * percent_people_kcal_conversion,
-                fat=self.fat * percent_people_fat_conversion,
-                protein=self.protein * percent_people_protein_conversion,
-                kcals_units="billion people fed per month",
-                fat_units="billion people fed per month",
-                protein_units="billion people fed per month",
-            )
-        if (
-            self.kcals_units == "percent people fed per month"
-            and self.fat_units == "percent people fed per month"
-            and self.protein_units == "percent people fed per month"
-        ):
-            return Food(
-                kcals=self.kcals * percent_people_kcal_conversion,
-                fat=self.fat * percent_people_fat_conversion,
-                protein=self.protein * percent_people_protein_conversion,
-                kcals_units="billion people fed per month",
-                fat_units="billion people fed per month",
-                protein_units="billion people fed per month",
-            )
-        else:
-            print("Error: conversion from these units not known")
-            print("From units:")
-            self.print_units()
-            print("To units:")
-            print("    kcals: billion people fed per/each month")
-            print("    fat: billion people fed per/each month")
-            print("    protein: billion people fed per/each month")
-            success = False
-            assert success
-
-    def in_units_percent_fed(self):
-        """
-        If the existing units are understood by this function, it tries to convert the
-        values and units to percent of people fed.
-        """
-
-        # getting this instance of the UnitConversions from the child class
-        conversions = self.get_conversions()
-
-        # okay, okay, maybe the way I did this child/parent thing is not ideal...
-        # get the child class so can initialize the Food class
-        Food = self.get_Food_class()
-
-        billion_people_kcal_conversion = 100 / conversions.population * 1e9
-        billion_people_fat_conversion = 100 / conversions.population * 1e9
-        billion_people_protein_conversion = 100 / conversions.population * 1e9
-
-        if (
-            self.kcals_units == "billion people fed each month"
-            and self.fat_units == "billion people fed each month"
-            and self.protein_units == "billion people fed each month"
-        ):
-            return Food(
-                kcals=self.kcals * billion_people_kcal_conversion,
-                fat=self.fat * billion_people_fat_conversion,
-                protein=self.protein * billion_people_protein_conversion,
-                kcals_units="percent people fed each month",
-                fat_units="percent people fed each month",
-                protein_units="percent people fed each month",
-            )
-        if (
-            self.kcals_units == "billion people fed per month"
-            and self.fat_units == "billion people fed per month"
-            and self.protein_units == "billion people fed per month"
-        ):
-            return Food(
-                kcals=self.kcals * billion_people_kcal_conversion,
-                fat=self.fat * billion_people_fat_conversion,
-                protein=self.protein * billion_people_protein_conversion,
-                kcals_units="percent people fed per month",
-                fat_units="percent people fed per month",
-                protein_units="percent people fed per month",
-            )
-
-        billion_kcal_conversion = 100 / conversions.billion_kcals_needed
-        thou_tons_fat_conversion = 100 / conversions.thou_tons_fat_needed
-        thou_tons_protein_conversion = 100 / conversions.thou_tons_protein_needed
-
-        if (
-            self.kcals_units == "billion kcals each month"
-            and self.fat_units == "thousand tons each month"
-            and self.protein_units == "thousand tons each month"
-        ):
-            return Food(
-                kcals=self.kcals * billion_kcal_conversion,
-                fat=self.fat * thou_tons_fat_conversion,
-                protein=self.protein * thou_tons_protein_conversion,
-                kcals_units="percent people fed each month",
-                fat_units="percent people fed each month",
-                protein_units="percent people fed each month",
-            )
-
-        if (
-            self.kcals_units == "billion kcals per month"
-            and self.fat_units == "thousand tons per month"
-            and self.protein_units == "thousand tons per month"
-        ):
-            return Food(
-                kcals=self.kcals * billion_kcal_conversion,
-                fat=self.fat * thou_tons_fat_conversion,
-                protein=self.protein * thou_tons_protein_conversion,
-                kcals_units="percent people fed per month",
-                fat_units="percent people fed per month",
-                protein_units="percent people fed per month",
-            )
-        else:
-            print("Error: conversion from these units not known")
-            print("From units:")
-            self.print_units()
-            print("To units:")
-            print("    kcals: percent people fed per/each month")
-            print("    fat: percent people fed per/each month")
-            print("    protein: percent people fed per/each month")
-            success = False
-            assert success
-
-    def in_units_bil_kcals_thou_tons_thou_tons_per_month(self):
-        """
-        If the existing units are understood by this function, it tries to convert the
-        values and units to percent of people fed.
-        """
-
-        # getting this instance of the UnitConversions from the child class
-        conversions = self.get_conversions()
-
-        # okay, okay, maybe the way I did this child/parent thing is not ideal...
-        # get the child class so can initialize the Food class
-        Food = self.get_Food_class()
-
-        # million dry caloric tons to billion calories
-        million_tons_to_billion_kcals_conversion = 1e6 * 1000 * 4000 / 1e9
-
-        percent_kcal_conversion = (
-            conversions.kcals_monthly * conversions.population / 1e9 / 100
-        )
-        percent_fat_conversion = conversions.fat_monthly * conversions.population / 100
-        percent_protein_conversion = (
-            conversions.protein_monthly * conversions.population / 100
-        )
-
-        if (
-            self.kcals_units == "percent people fed each month"
-            and self.fat_units == "percent people fed each month"
-            and self.protein_units == "percent people fed each month"
-        ):
-            return Food(
-                kcals=self.kcals * percent_kcal_conversion,
-                fat=self.fat * percent_fat_conversion,
-                protein=self.protein * percent_protein_conversion,
-                kcals_units="billion kcals each month",
-                fat_units="thousand tons each month",
-                protein_units="thousand tons each month",
-            )
-
-        if (
-            self.kcals_units == "percent people fed per month"
-            and self.fat_units == "percent people fed per month"
-            and self.protein_units == "percent people fed per month"
-        ):
-            return Food(
-                kcals=self.kcals * percent_kcal_conversion,
-                fat=self.fat * percent_fat_conversion,
-                protein=self.protein * percent_protein_conversion,
-                kcals_units="billion kcals per month",
-                fat_units="thousand tons per month",
-                protein_units="thousand tons per month",
-            )
-        if (
-            self.kcals_units == "million dry caloric tons each month"
-            and self.fat_units == "million tons each month"
-            and self.protein_units == "million tons each month"
-        ):
-            return Food(
-                kcals=self.kcals * million_tons_to_billion_kcals_conversion,
-                fat=self.fat * 1000,
-                protein=self.protein * 1000,
-                kcals_units="billion kcals each month",
-                fat_units="thousand tons each month",
-                protein_units="thousand tons each month",
-            )
-        if (
-            self.kcals_units == "million dry caloric tons"
-            and self.fat_units == "million tons"
-            and self.protein_units == "million tons"
-        ):
-            return Food(
-                kcals=self.kcals * million_tons_to_billion_kcals_conversion,
-                fat=self.fat * 1000,
-                protein=self.protein * 1000,
-                kcals_units="billion kcals",
-                fat_units="thousand tons",
-                protein_units="thousand tons",
-            )
-        else:
-            print("Error: conversion from these units not known")
-            print("From units:")
-            self.print_units()
-            print("To units:")
-            print("    kcals: billion kcals per/each month")
-            print("    fat: thousand tons per/each month")
-            print("    protein: thousand tons per/each month")
-            success = False
-            assert success
-
-    def in_units_kcals_equivalent(self):
-        """
-        If the existing units are understood by this function, it tries to convert the
-        values and units to effective kcals per capita per day for each nutrient.
-        """
-
-        # getting this instance of the UnitConversions from the child class
-        conversions = self.get_conversions()
-
-        # okay, okay, maybe the way I did this child/parent thing is not ideal...
-        # get the child class so can initialize the Food class
-        Food = self.get_Food_class()
-
-        billion_people_kcal_conversion = (
-            1e9 / conversions.population * conversions.kcals_daily
-        )
-        billion_people_fat_conversion = (
-            1e9 / conversions.population * conversions.kcals_daily
-        )
-        billion_people_protein_conversion = (
-            1e9 / conversions.population * conversions.kcals_daily
-        )
-
-        if (
-            self.kcals_units == "billion people fed each month"
-            and self.fat_units == "billion people fed each month"
-            and self.protein_units == "billion people fed each month"
-        ):
-            return Food(
-                kcals=self.kcals * billion_people_kcal_conversion,
-                fat=self.fat * billion_people_fat_conversion,
-                protein=self.protein * billion_people_protein_conversion,
-                kcals_units="kcals per capita per day each month",
-                fat_units="effective kcals per capita per day each month",
-                protein_units="effective kcals per capita per day each month",
-            )
-        if (
-            self.kcals_units == "billion people fed per month"
-            and self.fat_units == "billion people fed per month"
-            and self.protein_units == "billion people fed per month"
-        ):
-            return Food(
-                kcals=self.kcals * billion_people_kcal_conversion,
-                fat=self.fat * billion_people_fat_conversion,
-                protein=self.protein * billion_people_protein_conversion,
-                kcals_units="kcals per capita per day per month",
-                fat_units="effective kcals per capita per day per month",
-                protein_units="effective kcals per capita per day per month",
-            )
-
-        percent_kcal_conversion = conversions.kcals_daily / 100
-        percent_fat_conversion = conversions.kcals_daily / 100
-        percent_protein_conversion = conversions.kcals_daily / 100
-
-        if (
-            self.kcals_units == "percent people fed each month"
-            and self.fat_units == "percent people fed each month"
-            and self.protein_units == "percent people fed each month"
-        ):
-            return Food(
-                kcals=self.kcals * percent_kcal_conversion,
-                fat=self.fat * percent_fat_conversion,
-                protein=self.protein * percent_protein_conversion,
-                kcals_units="kcals per capita per day each month",
-                fat_units="effective kcals per capita per day each month",
-                protein_units="effective kcals per capita per day each month",
-            )
-        if (
-            self.kcals_units == "percent people fed per month"
-            and self.fat_units == "percent people fed per month"
-            and self.protein_units == "percent people fed per month"
-        ):
-            return Food(
-                kcals=self.kcals * percent_kcal_conversion,
-                fat=self.fat * percent_fat_conversion,
-                protein=self.protein * percent_protein_conversion,
-                kcals_units="kcals per capita per day per month",
-                fat_units="effective kcals per capita per day per month",
-                protein_units="effective kcals per capita per day per month",
-            )
-        else:
-            print("Error: conversion from these units not known")
-            print("From units:")
-            self.print_units()
-            print("To units:")
-            print("    kcals: kcals per capita per day per/each month")
-            print("    effective fat: kcals per capita per day per/each month")
-            print("    effective protein: kcals per capita per day per/each month")
-            success = False
-            assert success
-
-    def in_units_kcals_grams_grams_per_capita_from_ratio(
+    def in_units_kcals_grams_grams_per_person_from_ratio(
         self, kcal_ratio, fat_ratio, protein_ratio
     ):
         """
@@ -675,61 +325,262 @@ class UnitConversions:
             success = False
             assert success
 
-    def in_units_kcals_grams_grams_per_capita(self):
-        """
-        If the existing units are understood by this function, it tries to convert the
-        values and units to kcals per person per day, grams per pseron per day, kcals
-        per person per day.
-        """
+    def in_units_billions_fed(self):
+        return self.in_units(
+            "billion people fed", "billion people fed", "billion people fed"
+        )
 
-        # getting this instance of the UnitConversions from the child class
-        # allows us to get some previously set values like kcals monthly and days in
-        # month
+    def in_units_percent_fed(self):
+        return self.in_units(
+            "percent people fed", "percent people fed", "percent people fed"
+        )
+
+    def in_units_kcals_equivalent(self):
+        return self.in_units(
+            "kcals per person per day",
+            "effective kcals per person per day",
+            "effective kcals per person per day",
+        )
+
+    def in_units_kcals_grams_grams_per_person(self):
+        return self.in_units(
+            "kcals per person per day",
+            "grams per person per day",
+            "grams per person per day",
+        )
+
+    def in_units_bil_kcals_thou_tons_thou_tons_per_month(self):
+        return self.in_units(
+            "billion kcals",
+            "thousand tons",
+            "thousand tons",
+        )
+
+    def get_kcal_multipliers(self):
+        """
+        This function returns a dictionary, where the value is the multiplier on kcals required to convert from the
+        units "billion kcals each month" (or equivalently "billion kcals per month") to whatever unit is specified as
+        the key.
+
+        Therefore, multiplying kcals by this dictionary value is applying the unit multiplication: [key units] / [
+        billion kcals (each,per) month]
+
+        """
         conversions = self.get_conversions()
 
-        # okay, okay, maybe the way I did this child/parent thing is not ideal...
-        # get the child class so can initialize the Food class
+        billion_kcal_to_billion_people = 1 / conversions.kcals_monthly
+        billion_kcal_to_percent_fed = 100 / conversions.billion_kcals_needed
+        billion_kcal_to_million_dry_caloric_tons = 1 / (1e6 * 1000 * 4000 / 1e9)
+
+        billion_people_to_kcals_equivalent = (
+            1e9 / conversions.population * conversions.kcals_daily
+        )
+        percent_kcal_to_kcals_per_day = 1 / 100 * conversions.kcals_daily
+
+        return {
+            "billion kcals": 1,
+            "billion kcals each month": 1,
+            "billion kcals per month": 1,
+            "billion people fed": billion_kcal_to_billion_people,
+            "billion people fed each month": billion_kcal_to_billion_people,
+            "billion people fed per month": billion_kcal_to_billion_people,
+            "percent people fed": billion_kcal_to_percent_fed,
+            "percent people fed each month": billion_kcal_to_percent_fed,
+            "percent people fed per month": billion_kcal_to_percent_fed,
+            "million dry caloric tons": billion_kcal_to_million_dry_caloric_tons,
+            "million dry caloric tons each month": billion_kcal_to_million_dry_caloric_tons,
+            "million dry caloric tons per month": billion_kcal_to_million_dry_caloric_tons,
+            "kcals per person per day": billion_kcal_to_billion_people
+            * billion_people_to_kcals_equivalent,
+            "kcals per person per day each month": billion_kcal_to_billion_people
+            * billion_people_to_kcals_equivalent,
+            "kcals per person per day per month": billion_kcal_to_percent_fed
+            * percent_kcal_to_kcals_per_day,
+        }
+
+    def get_fat_multipliers(self):
+        conversions = self.get_conversions()
+
+        thou_tons_fat_to_billion_people = 1 / conversions.fat_monthly / 1e9
+        thou_tons_fat_to_percent_fed = 100 / conversions.thou_tons_fat_needed
+        billion_people_fat_to_kcals_equivalent = (
+            1e9 / conversions.population * conversions.kcals_daily
+        )
+        percent_fat_to_grams_per_day = 1 / 100 * conversions.fat_daily
+
+        return {
+            "thousand tons": 1,
+            "thousand tons each month": 1,
+            "thousand tons per month": 1,
+            "million tons": 1 / 1000,
+            "million tons each month": 1 / 1000,
+            "million tons per month": 1 / 1000,
+            "billion people fed": thou_tons_fat_to_billion_people,
+            "billion people fed each month": thou_tons_fat_to_billion_people,
+            "billion people fed per month": thou_tons_fat_to_billion_people,
+            "percent people fed": thou_tons_fat_to_percent_fed,
+            "percent people fed each month": thou_tons_fat_to_percent_fed,
+            "percent people fed per month": thou_tons_fat_to_percent_fed,
+            "effective kcals per person per day": thou_tons_fat_to_billion_people
+            * billion_people_fat_to_kcals_equivalent,
+            "effective kcals per person per day each month": thou_tons_fat_to_billion_people
+            * billion_people_fat_to_kcals_equivalent,
+            "effective kcals per person per day per month": thou_tons_fat_to_billion_people
+            * billion_people_fat_to_kcals_equivalent,
+            "grams per person per day": thou_tons_fat_to_percent_fed
+            * percent_fat_to_grams_per_day,
+            "grams per person per day each month": thou_tons_fat_to_percent_fed
+            * percent_fat_to_grams_per_day,
+            "grams per person per day per month": thou_tons_fat_to_percent_fed
+            * percent_fat_to_grams_per_day,
+        }
+
+    def get_protein_multipliers(self):
+        conversions = self.get_conversions()
+
+        thou_tons_protein_to_billion_people = 1 / conversions.protein_monthly / 1e9
+        thou_tons_protein_to_percent_fed = 100 / conversions.thou_tons_protein_needed
+        billion_people_protein_to_kcals_equivalent = (
+            1e9 / conversions.population * conversions.kcals_daily
+        )
+        percent_protein_to_grams_per_day = 1 / 100 * conversions.protein_daily
+
+        return {
+            "thousand tons": 1,
+            "thousand tons each month": 1,
+            "thousand tons per month": 1,
+            "million tons": 1 / 1000,
+            "million tons each month": 1 / 1000,
+            "million tons per month": 1 / 1000,
+            "billion people fed": thou_tons_protein_to_billion_people,
+            "billion people fed each month": thou_tons_protein_to_billion_people,
+            "billion people fed per month": thou_tons_protein_to_billion_people,
+            "percent people fed": thou_tons_protein_to_percent_fed,
+            "percent people fed each month": thou_tons_protein_to_percent_fed,
+            "percent people fed per month": thou_tons_protein_to_percent_fed,
+            "effective kcals per person per day": thou_tons_protein_to_billion_people
+            * billion_people_protein_to_kcals_equivalent,
+            "effective kcals per person per day each month": thou_tons_protein_to_billion_people
+            * billion_people_protein_to_kcals_equivalent,
+            "effective kcals per person per day per month": thou_tons_protein_to_billion_people
+            * billion_people_protein_to_kcals_equivalent,
+            "grams per person per day": thou_tons_protein_to_percent_fed
+            * percent_protein_to_grams_per_day,
+            "grams per person per day each month": thou_tons_protein_to_percent_fed
+            * percent_protein_to_grams_per_day,
+            "grams per person per day per month": thou_tons_protein_to_percent_fed
+            * percent_protein_to_grams_per_day,
+        }
+
+    def get_unit_multipliers_from_billion_kcals_thou_tons_thou_tons(self, units):
+        """
+        First, check if the unit is a known conversion.
+
+        Then, returns the conversion value to get from billion kcals, thousand tons fat, thousand tons protein, to
+        whatever units are specified in "units" triplet argument. units[0] is kcals units, units[1] is fat units,
+        units[2] is protein units.
+        """
+        # the unit_multiplier refers to the fraction that the ratio this unit takes relative to the units billion
+        # kcals, thousand tons fat, thousand tons protein.
+        unit_multiplier_kcals = self.get_kcal_multipliers()
+        unit_multiplier_fat = self.get_fat_multipliers()
+        unit_multiplier_protein = self.get_protein_multipliers()
+
+        if units[0] not in unit_multiplier_kcals.keys():
+            assert False, (
+                'ERROR: the unit specified "' + units[0] + '" is not a known unit!'
+            )
+        if units[1] not in unit_multiplier_fat.keys():
+            assert False, (
+                'ERROR: the unit specified "' + units[1] + '" is not a known unit!'
+            )
+        if units[2] not in unit_multiplier_protein.keys():
+            assert False, (
+                'ERROR: the unit specified "' + units[2] + '" is not a known unit!'
+            )
+
+        return [
+            unit_multiplier_kcals[units[0]],
+            unit_multiplier_fat[units[1]],
+            unit_multiplier_protein[units[2]],
+        ]
+
+    def get_conversion(
+        self, from_units, to_units_kcals, to_units_fat, to_units_protein
+    ):
+        """
+        To get from any known unit to any other known unit, we first convert the given from_units to the equivalent
+        billion kcals, thousand tons fat, thousand tons protein, by dividing the given value by the unit_multiplier
+        dictionary value. We then convert back to the to_units by multiplying by the to_unit dictionary value.
+
+        """
+
+        from_unit_multiplier = (
+            self.get_unit_multipliers_from_billion_kcals_thou_tons_thou_tons(from_units)
+        )
+        to_unit_multiplier = (
+            self.get_unit_multipliers_from_billion_kcals_thou_tons_thou_tons(
+                [to_units_kcals, to_units_fat, to_units_protein]
+            )
+        )
+
+        kcals_conversion = 1 / from_unit_multiplier[0] * to_unit_multiplier[0]
+        fat_conversion = 1 / from_unit_multiplier[1] * to_unit_multiplier[1]
+        protein_conversion = 1 / from_unit_multiplier[2] * to_unit_multiplier[2]
+
+        return [kcals_conversion, fat_conversion, protein_conversion]
+
+    def in_units(self, to_units_kcals, to_units_fat, to_units_protein):
+        from_units = self.units
+
+        if " each month" in from_units[0]:
+            new_units_kcals = to_units_kcals + " each month"
+            new_units_fat = to_units_fat + " each month"
+            new_units_protein = to_units_protein + " each month"
+
+            [
+                kcals_conversion,
+                fat_conversion,
+                protein_conversion,
+            ] = self.get_conversion(
+                from_units, new_units_kcals, new_units_fat, new_units_protein
+            )
+
+        elif " per month" in from_units[0]:
+            new_units_kcals = to_units_kcals + " per month"
+            new_units_fat = to_units_fat + " per month"
+            new_units_protein = to_units_protein + " per month"
+
+            [
+                kcals_conversion,
+                fat_conversion,
+                protein_conversion,
+            ] = self.get_conversion(
+                from_units,
+                to_units_kcals + " per month",
+                to_units_fat + " per month",
+                to_units_protein + " per month",
+            )
+        else:
+            new_units_kcals = to_units_kcals
+            new_units_fat = to_units_fat
+            new_units_protein = to_units_protein
+
+            [
+                kcals_conversion,
+                fat_conversion,
+                protein_conversion,
+            ] = self.get_conversion(
+                from_units, to_units_kcals, to_units_fat, to_units_protein
+            )
+
         Food = self.get_Food_class()
 
-        percent_kcal_conversion = 1 / 100 * conversions.kcals_daily
-        percent_fat_conversion = 1 / 100 * conversions.fat_daily
-        percent_protein_conversion = 1 / 100 * conversions.protein_daily
-
-        if (
-            self.kcals_units == "percent people fed each month"
-            and self.fat_units == "percent people fed each month"
-            and self.protein_units == "percent people fed each month"
-        ):
-            return Food(
-                kcals=self.kcals * percent_kcal_conversion,
-                fat=self.fat * percent_fat_conversion,
-                protein=self.protein * percent_protein_conversion,
-                kcals_units="kcals per person per day each month",
-                fat_units="grams per person per day each month",
-                protein_units="grams per person per day each month",
-            )
-        if (
-            self.kcals_units == "percent people fed per month"
-            and self.fat_units == "percent people fed per month"
-            and self.protein_units == "percent people fed per month"
-        ):
-            Food = self.get_Food_class()
-            return Food(
-                kcals=self.kcals * percent_kcal_conversion,
-                fat=self.fat * percent_fat_conversion,
-                protein=self.protein * percent_protein_conversion,
-                kcals_units="kcals per person per day",
-                fat_units="grams per person per day",
-                protein_units="grams per person per day",
-            )
-
-        else:
-            print("Error: conversion from these units not known")
-            print("From units:")
-            self.print_units()
-            print("To units:")
-            print("    kcals: kcals per person per day OR per day each month")
-            print("    fat: grams per person per day OR per day each month")
-            print("    protein: grams per person per day OR per day each month")
-            success = False
-            assert success
+        return Food(
+            kcals=kcals_conversion * self.kcals,
+            fat=fat_conversion * self.fat,
+            protein=protein_conversion * self.protein,
+            kcals_units=new_units_kcals,
+            fat_units=new_units_fat,
+            protein_units=new_units_protein,
+        )

@@ -744,23 +744,34 @@ class Parameters:
                 + " over the entire simulation."
             )
             print(
-                "         The outdoor crop production to satisfy this before waste comes to "
+                "         The outdoor crop production to satisfy this after waste comes to "
                 + str(
                     outdoor_crops.production.get_nutrients_sum()
-                    / (1 - outdoor_crops.CROP_WASTE / 100)
+                    # / (1 - outdoor_crops.CROP_WASTE / 100)
                 ).strip()
                 + " over the entire simulation."
             )
             print(
-                "         The stored food available before waste at the start of the simulation is "
+                "         The stored food available after waste at the start of the simulation is "
                 + str(
-                    stored_food.initial_available / (1 - outdoor_crops.CROP_WASTE / 100)
+                    stored_food.initial_available  # / (1 - outdoor_crops.CROP_WASTE / 100)
                 ).strip()
                 + "."
             )
             print(
                 "         This results in a net deficit of calories (after using up all stored food) of:"
                 + str(-stored_food.initial_available_to_humans).strip()
+            )
+            print(
+                "         Double checking:"
+                + str(
+                    stored_food.initial_available
+                    + outdoor_crops.production.get_nutrients_sum()
+                    - (
+                        biofuels_before_cap_prewaste.get_nutrients_sum()
+                        + feed_before_cap_prewaste.get_nutrients_sum()
+                    )
+                ).strip()
             )
             print("Setting stored food to zero!")
             print(
