@@ -3,6 +3,7 @@
 import pandas as pd
 from src.food_system.animal_populations import CountryData
 from src.food_system.animal_populations import AnimalSpecies
+from src.food_system.animal_populations import Debugging
 from src.food_system.food import Food
 from click import Path
 
@@ -485,10 +486,10 @@ class TestAnimalPopulation:
         animal.target_population_head = 150
         animal.other_animal_death_rate_monthly = 5
         animal.animal_slaughter_hours = 8
-        actual_slaughter_rate = AnimalPopulation.calculate_animal_population(animal, country, 10, 5, 10)
-        assert actual_slaughter_rate == 0, 'Expected slaughter rate to be 10'
+        actual_slaughter_rate = AnimalPopulation.calculate_animal_population(animal, country, 10, 5, 10) #' numbers =  new_births_animals_month, new_other_animal_death, new_slaughter_rate,'
+        assert actual_slaughter_rate == 10, 'Expected slaughter rate to be 10'
         assert country.spares_slaughter_hours == 0, 'Expected spare slaughter hours to be 50'
-        assert animal.current_population == 300, 'Expected current population to be 95'
+        assert animal.current_population == 295, 'Expected current population to be 95'
 
     def test_calculate_animal_population_under_target(self):
         from src.food_system.animal_populations import CountryData
@@ -498,10 +499,10 @@ class TestAnimalPopulation:
         animal.target_population_head = 500
         animal.other_animal_death_rate_monthly = 5
         animal.animal_slaughter_hours = 8
-        actual_slaughter_rate = AnimalPopulation.calculate_animal_population(animal, country, 10, 5, 10)
+        actual_slaughter_rate = AnimalPopulation.calculate_animal_population(animal, country, 10, 5, 10) #' numbers =  new_births_animals_month, new_other_animal_death, new_slaughter_rate,'
         assert actual_slaughter_rate == 0, 'Expected slaughter rate to be 10'
-        assert country.spares_slaughter_hours == 0, 'Expected spare slaughter hours to be 50'
-        assert animal.current_population == 300, 'Expected current population to be 95'
+        assert country.spares_slaughter_hours == 80, 'Expected spare slaughter hours to be 80 (8 hours * 10 cows not slaughtered)'
+        assert animal.current_population == 305, 'Expected current population to be 305 (5 increase from births minus other death)'
 
 
     # Tests that calculate_retiring_milk_animals returns expected values
@@ -548,9 +549,14 @@ class TestAnimalPopulation:
         country = CountryData('country_name')
         country.month = 1
         animal.baseline_slaughter = 10
-        country.spare_slaughter_hours = 20
+        animal.slaughter = [10]
+        country.spare_slaughter_hours = 24
+        # animal.current_population = 300
+        # animal.target_population_head = 500
+        # animal.other_animal_death_rate_monthly = 5
+        animal.animal_slaughter_hours = 8
         new_slaughter_rate = AnimalPopulation.calculate_slaughter_rate(animal, country, 10, 5)
-        assert new_slaughter_rate == 30, 'Expected slaughter rate to be 30'
+        assert new_slaughter_rate == 13, 'Expected slaughter rate to be 13 (10 baseline, plus 3 from spare laughter hours)'
         assert country.spare_slaughter_hours == 0, 'Expected spare slaughter hours to be 0'
 
     # Tests that calculate_final_population updates animal population correctly
@@ -566,100 +572,159 @@ class TestAnimalPopulation:
     # Tests that calculate_starving_pop_post_slaughter_healthy_homekill returns the expected value
     def test_calculate_starving_pop_post_slaughter_healthy_homekill(self):
         # create animal object
-        animal_object = AnimalSpecies('cow', 100)
+        animal_object = AnimalSpecies('type1', 'species1')
         # set current population
         animal_object.current_population = 80
         # set other attributes
         animal_object.slaughter = [10]
         animal_object.homekill_healthy_this_month = [5]
+        animal_object.population_starving_pre_slaughter = [100]
         # call function
         result = AnimalPopulation.calculate_starving_pop_post_slaughter_healthy_homekill(animal_object)
         # assert expected result
-        assert result == 65
+        assert result == 85 # = 100 pop before slaughter, - 10 slaughtered, - 5 homekill, = 85
 
-    # Tests that calculate_starving_pop_post_all_slaughter_homekill returns the expected value
-    def test_calculate_starving_pop_post_all_slaughter_homekill(self):
+    # Tests that calculate_starving_pop_post_slaughter_healthy_homekill returns the expected value
+    def test_calculate_starving_pop_post_slaughter_healthy_homekill_no_starving(self):
         # create animal object
-        animal_object = AnimalSpecies('cow', 100)
-        # create country object
-        country_object = Country('US', 100)
-        # create animal population object
-        animal_population_object = AnimalPopulation()
+        animal_object = AnimalSpecies('type1', 'species1')
         # set current population
-        animal_object.current_population = 50
-        # calculate starving animals after feed
-        animal_population_object.calculate_starving_animals_after_feed([animal_object])
-        # calculate starving pop post all slaughter homekill
-        result = animal_population_object.calculate_starving_pop_post_all_slaughter_homekill(animal_object, animal_object.population_starving_pre_slaughter[-1])
-        # assert result
-        assert result == 25
+        animal_object.current_population = 80
+        # set other attributes
+        animal_object.slaughter = [10]
+        animal_object.homekill_healthy_this_month = [5]
+        animal_object.population_starving_pre_slaughter = [0]
+        # call function
+        result = AnimalPopulation.calculate_starving_pop_post_slaughter_healthy_homekill(animal_object)
+        # assert expected result
+        assert result == 0 # = 100 pop before slaughter, - 10 slaughtered, - 5 homekill, = 85
+
+
+#### insert calculate_starving_pop_post_all_slaughter_homekill
+    # Returns the correct value when population_starving_post_slaughter_and_healthy_homekill is greater than homekill_starving_this_month[-1]
+    def test_greater_than_homekill(self):
+        animal = AnimalSpecies('type1', 'species1')
+        animal.homekill_starving_this_month = [10]
+        population_starving_post_slaughter_and_healthy_homekill = 80
+        result = AnimalPopulation.calculate_starving_pop_post_all_slaughter_homekill(animal, population_starving_post_slaughter_and_healthy_homekill)
+        assert result == 70
+
+        # Returns 0 when population_starving_post_slaughter_and_healthy_homekill is equal to homekill_starving_this_month[-1]
+    def test_equal_to_homekill(self):
+        animal = AnimalSpecies('type1', 'species1')
+        animal.homekill_starving_this_month = [10]
+        population_starving_post_slaughter_and_healthy_homekill = 90
+        result = AnimalPopulation.calculate_starving_pop_post_all_slaughter_homekill(animal, population_starving_post_slaughter_and_healthy_homekill)
+        assert result == 80
 
     # Tests that calculate_healthy_homekill_head returns the expected value
-    def test_calculate_healthy_homekill_head(self):
+    def test_calculate_healthy_homekill_head_hours_constrained(self):
         # create animal object
-        animal = AnimalSpecies('cow', 100)
+        animal_object = AnimalSpecies('type1', 'species1')
         # create country object
-        country = Country('US', 1000, 1000, 1000, 1000, 1000, 1000)
-        # create animal population object
-        animal_population = AnimalPopulation(animal, country)
-        # set homekill hours budget
-        country.homekill_hours_budget = [100]
+        country = CountryData('country_name')
+
+        # anijmal slaughter hours
+        animal_object.current_population = 100
+        animal_object.animal_slaughter_hours = 8
+        animal_object.homekill_healthy_this_month = []
+
+        # set country params
+        country.homekill_hours_budget = [80]
+        country.homekill_fraction = 0.5
+
         # calculate healthy homekill head
-        actual_homekill_head = animal_population.calculate_healthy_homekill_head(animal, country)
+        AnimalPopulation.calculate_healthy_homekill_head(animal_object, country)
+        
         # check if actual_homekill_head is equal to expected value
-        assert actual_homekill_head == 50
+        assert animal_object.homekill_healthy_this_month[-1] == 10, 'Expected homekill_healthy_this_month to be 10 (80 hours / 8 hours = 10)'
+
+    # Tests that calculate_healthy_homekill_head returns the expected value
+    def test_calculate_healthy_homekill_head_demand_constrained(self):
+        # create animal object
+        animal_object = AnimalSpecies('type1', 'species1')
+        # create country object
+        country = CountryData('country_name')
+
+        # anijmal slaughter hours
+        animal_object.current_population = 100
+        animal_object.animal_slaughter_hours = 8
+        animal_object.homekill_healthy_this_month = []
+
+        # set country params
+        country.homekill_hours_budget = [10000]
+        country.homekill_fraction = 0.5
+
+        # calculate healthy homekill head
+        AnimalPopulation.calculate_healthy_homekill_head(animal_object, country)
+        
+        # check if actual_homekill_head is equal to expected value
+        assert animal_object.homekill_healthy_this_month[-1] == 50, 'Expected homekill_healthy_this_month to be 50 (100 animals * 50% homekill, lots of hours available)'
+
 
     # Tests that calculate_starving_animals_after_feed updates population_starving_pre_slaughter correctly
     def test_calculate_starving_animals_after_feed_updates_population_starving_pre_slaughter_correctly(self):
-        animal = AnimalSpecies('cow', 100)
-        animal_population = AnimalPopulation()
-        animal_population.current_population = 100
-        animal_population.calculate_starving_animals_after_feed([animal])
-        assert animal_population.population_starving_pre_slaughter == [100]
-        available_feed = 100
-        available_grass = 100
-        (available_feed, available_grass) = animal_population.feed_animals([animal], [], available_feed, available_grass)
-        animal_population.calculate_starving_animals_after_feed([animal])
-        assert animal_population.population_starving_pre_slaughter == [50]
+        animal_object = AnimalSpecies('type1', 'species1')
+        animal_object.current_population = 100
+        # animal_object.population_fed = 100 # 
+        animal_object.population_starving_pre_slaughter = [] # will be appended to in test
+        animal_object.livestock_unit = 1 # required for feed_animals function
+        animal_object.LSU_factor = 1 # required for feed_animals function
+        animal_object.digestion_efficiency = {"grass":.3, "feed":.3 }  # required for feed_animals function
+        # feed params
+        available_feed = Debugging.available_feed_function(100)
+        available_grass = Debugging.available_grass_function(100)
+        feed_available_this_month = available_feed[0]
+        grass_available_this_month = available_grass[0]
+        
+        # calculate starving animals after feed
+        (available_feed, available_grass) = AnimalPopulation.feed_animals([animal_object], [], feed_available_this_month,grass_available_this_month)
+
+        AnimalPopulation.calculate_starving_animals_after_feed([animal_object])
+        assert animal_object.population_starving_pre_slaughter == [0]
+
 
     # Tests that calculate_other_death_homekill_head returns the expected value
     def test_calculate_other_death_homekill_head(self):
         # create animal object
-        animal = AnimalSpecies('cow', 100, 0.5)
+        animal_object = AnimalSpecies('type1', 'species1')
         # create country object
-        country = Country('US', 1000, 1000, 1000, 1000, 1000, 1000)
+        country = CountryData('country_name')
         # create animal population object
         animal_population = AnimalPopulation()
+
+
+
         # set current population
-        animal_population.set_current_populations([animal])
+        animal_population.set_current_populations([animal_object])
         # calculate other death homekill head
-        animal_population.calculate_other_death_homekill_head(animal, country)
+        animal_population.calculate_other_death_homekill_head(animal_object, country)
         # check that the value is as expected
-        assert animal.homekill_other_death_this_month[-1] == 50
+        assert animal_object.homekill_other_death_this_month[-1] == 50
 
     # Tests that calculate_starving_other_death_head returns the expected value
     def test_calculate_starving_other_death_head(self):
         # create animal object
-        animal = AnimalSpecies('cow', 100)
+        animal_object = AnimalSpecies('type1', 'species1')
         # create country object
-        country = Country('US', 1000, 1000, 1000, 1000, 1000, 1000)
+        country = CountryData('country_name')
         # create animal population object
         animal_population = AnimalPopulation()
         # set current population
-        animal_population.set_current_populations([animal])
+        animal_population.set_current_populations([animal_object])
         # calculate starving animals after feed
         animal_population.calculate_starving_animals_after_feed([animal])
         # calculate starving other death head
-        starving_other_death_head = animal_population.calculate_starving_other_death_head(animal, animal.current_population - animal.population_fed)
+        starving_other_death_head = animal_population.calculate_starving_other_death_head(animal_object, animal_object.current_population - animal_object.population_fed)
         # assert expected value
-        assert starving_other_death_head == animal.starvation_death_fraction * (animal.current_population - animal.population_fed)
+        assert starving_other_death_head == animal_object.starvation_death_fraction * (animal_object.current_population - animal_object.population_fed)
 
     # Tests that calculate_starving_homekill_head returns the expected value
     def test_calculate_starving_homekill_head(self):
         # create animal object
-        animal_object = AnimalSpecies('cow', 100, 0.5)
+        animal_object = AnimalSpecies('type1', 'species1')
         # create country object
-        country_object = Country('US', 100, 100)
+        country = CountryData('country_name')
         # set current population
         animal_object.current_population = 50
         # calculate starving animals after feed
@@ -672,18 +737,58 @@ class TestAnimalPopulation:
         expected_homekill_head = 10
         assert actual_homekill_head == expected_homekill_head
 
+    # tests that         AnimalPopulation.one_LSU_monthly_billion_kcal() is the expected value
+    def test_one_LSU_monthly_billion_kcal(self):
+        # create animal object
+        animal_object = AnimalSpecies('type1', 'species1')
+
+        # calculate one LSU monthly billion kcal
+        actual_value = animal_object.one_LSU_monthly_billion_kcal()
+        assert actual_value == 0.0005771833452750576
+
+
     # Tests that feed_animals function updates available feed and grass correctly
     def test_feed_animals_updates_available_feed_and_grass_correctly(self):
-        # create animal objects
-        cow = AnimalSpecies('cow', 100)
-        sheep = AnimalSpecies('sheep', 50)
-        animal_list = [cow, sheep]
-        ruminants = [cow]
-        # set initial available feed and grass
-        available_feed = {'feed': 100}
-        available_grass = {'grass': 100}
-        # call feed_animals function
-        (new_available_feed, new_available_grass) = AnimalPopulation.feed_animals(animal_list, ruminants, available_feed, available_grass)
-        # check that available feed and grass have been updated correctly
-        assert new_available_feed == {'feed': 95}
-        assert new_available_grass == {'grass': 90}
+        animal_object = AnimalSpecies('type1', 'species1')
+        animal_object.current_population = 1000
+        # animal_object.population_fed = 100 # 
+        animal_object.population_starving_pre_slaughter = [] # will be appended to in test
+        animal_object.livestock_unit = 1 # required for feed_animals function
+        animal_object.LSU_factor = 1 # required for feed_animals function
+        animal_object.digestion_efficiency = {"grass":.3, "feed":.3 }  # required for feed_animals function
+        # feed params
+        available_feed = Debugging.available_feed_function(100)
+        available_grass = Debugging.available_grass_function(100)
+        feed_available_this_month = available_feed[0]
+        grass_available_this_month = available_grass[0]
+        
+        # calculate animal feed mono
+        (available_feed, available_grass) = AnimalPopulation.feed_animals([animal_object], [], feed_available_this_month,grass_available_this_month)
+
+        feed_used = animal_object.net_energy_required_per_month()/animal_object.digestion_efficiency['feed']*animal_object.current_population
+        actual_value = 100-feed_used
+        # assert available feed is correct
+        assert available_feed.kcals == actual_value, 'Unexpected available feed kcals'
+        
+        # calculate animal feed runminants grass only
+        (available_feed, available_grass) = AnimalPopulation.feed_animals([animal_object], [animal_object], feed_available_this_month,grass_available_this_month)
+        assert available_grass.kcals == actual_value, 'Unexpected available grass kcals'
+
+
+        # calculate animal feed runminants mixture 
+        available_feed = Debugging.available_feed_function(100)
+        available_grass = Debugging.available_grass_function(1)
+        feed_available_this_month = available_feed[0]
+        grass_available_this_month = available_grass[0]
+        
+        # calculate animal feed runminants grass only
+        (available_feed, available_grass) = AnimalPopulation.feed_animals([animal_object], [animal_object], feed_available_this_month,grass_available_this_month)
+        assert available_grass.kcals == 0, 'For mixture of grass and feed, expected available grass kcals to be 0 after feeding'
+        assert available_feed.kcals > 1, 'For mixture of grass and feed, expected available feed kcals to be > 1 after feeding'
+
+
+
+        # assert availoble feed is food type
+        assert type(available_feed) == Food, 'Expected available feed to be Food type'
+        # assert available grass is food type
+        assert type(available_grass) == Food, 'Expected available grass to be Food type'

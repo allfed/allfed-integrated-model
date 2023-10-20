@@ -32,6 +32,7 @@ import git
 from src.food_system.food import Food
 import pdb
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 import os
 import numpy as np
 
@@ -513,8 +514,8 @@ class AnimalSpecies:
 
         return exported_births
 
-    def net_energy_required_per_month(self):
-        # this section based on:
+
+    def one_LSU_monthly_billion_kcal(self):
         # Livestock unit calculation: a method based on energy requirements to refine the study of livestock farming systems
         # NRAE Prod. Anim., 2021, 34 (2), 139e-160e
         # https://productions-animales.org/article/view/4855/17716
@@ -523,12 +524,17 @@ class AnimalSpecies:
         
         # one billion kcals is the default unit for the food object
         # 1*10^9 kcal = 1 billion kcal = 1*10^6 Mcal
-        
-
-        
+                
         # convert to billion kcals
         one_LSU_monthly_billion_kcal = ( (one_year_NEt / 12) / 4.187 ) * 1000 / 1e9 # 12 months ina  year, 4.187 to convert to kcal, 1000 to convert to kcal from Mcal
-        return self.livestock_unit * one_LSU_monthly_billion_kcal * self.LSU_factor 
+        return one_LSU_monthly_billion_kcal
+    
+    def net_energy_required_per_month(self):
+        """
+        Function to calculate the total net energy required per month for the species
+        """
+        
+        return self.livestock_unit * self.one_LSU_monthly_billion_kcal() * self.LSU_factor 
 
     def net_energy_required_per_species(self):
         """
@@ -1239,11 +1245,15 @@ class AnimalPopulation:
 
 
     def calculate_starving_animals_after_feed(animal_list):
+        """
+        This function will calculate the number of animals that are starving after feeding
+        It iterates through the animal list and calculates the number of animals that are starving
+        result is appended to the animal object
+        """
         for animal in animal_list:
             animal.population_starving_pre_slaughter.append(
                 animal.current_population - animal.population_fed
             )
-
 
 
     def set_current_populations(animal_objects):
@@ -1982,43 +1992,34 @@ def main(country_code, available_feed, available_grass):
     return all_animals, feed_used, grass_used
 
 if __name__ == "__main__":
-    output_list, feed_used, grass_used = main("AUS",Debugging.available_feed_function(1000000000),Debugging.available_grass_function(100000000000000))
+    output_list, feed_used, grass_used = main("USA",Debugging.available_feed_function(0),Debugging.available_grass_function(0))
+
+    # Initialize figure
+    fig = go.Figure()
 
     # plot all the animals without detail
     # exclude chicken from output list
-    animal_list = []
-    for animal in output_list:
-        if "chicken" not in animal.animal_type:
-            animal_list.append(animal)
+    ignore_chicken_graph = 0
+    if ignore_chicken_graph == 1:
+        animal_list = [animal for animal in output_list if "chicken" not in animal.animal_type]
+    else:
+        animal_list = [animal for animal in output_list ]
 
     for animal in animal_list:
-        plt.plot(animal.population, label=animal.animal_type)
+        fig.add_trace(go.Scatter(y=animal.population, mode='lines', name=animal.animal_type))
 
-    # plot one or a couple of aniamls in detail
-    # plot reults
+    # plot one or a couple of animals in detail
     for animal in output_list:
-        # if name containes milk
-
-        # #if  goat
         if "milk_cattle" in animal.animal_type:
-            print(
-                "Target population: ", animal.target_population_head, animal.animal_type
-            )
+            print("Target population: ", animal.target_population_head, animal.animal_type)
             print("Final population: ", animal.current_population, animal.animal_type)
-            print(
-                "Difference: ",
-                animal.current_population - animal.target_population_head,
-                animal.animal_type,
-            )
-            # plt.plot(animal.population, label="population")
-            # plt.plot(animal.population_starving_pre_slaughter, label="pop_starving_pre_salughter")
-            # plt.plot(animal.other_death_total, label="otherdeath")
-            # plt.plot(animal.total_homekill_this_month, label="homekill")
-            # plt.plot(animal.slaughter, label="slaughter")
-            plt.plot(animal.births_animals_month, label="births")
-            plt.plot(animal.transfer_population, label="transfer_births_or_head")
-            plt.plot(animal.retiring_milk_animals, label="retiring_milk_animals")
-            plt.plot(animal.transfer_births, label="transfer_births")
+            print("Difference: ", animal.current_population - animal.target_population_head, animal.animal_type)
+            
+            # Add detailed lines to the plot
+            fig.add_trace(go.Scatter(y=animal.births_animals_month, mode='lines', name="births"))
+            fig.add_trace(go.Scatter(y=animal.transfer_population, mode='lines', name="transfer_births_or_head"))
+            fig.add_trace(go.Scatter(y=animal.retiring_milk_animals, mode='lines', name="retiring_milk_animals"))
+            fig.add_trace(go.Scatter(y=animal.transfer_births, mode='lines', name="transfer_births"))
 
-    plt.legend()
-    plt.show()
+    # Show figure
+    fig.show()

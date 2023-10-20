@@ -51,7 +51,7 @@ def run_AUS_with_and_without_resilient():
         show_map_figures=True,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
-        countries_list=["AUS"],
+        countries_list=["USA"],
     )
 
 
