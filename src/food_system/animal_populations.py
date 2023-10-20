@@ -1258,7 +1258,9 @@ class AnimalPopulation:
 
     def set_current_populations(animal_objects):
         """
-        Sets the current population of each animal object based on the sum of its slaughter, homekill, and other animal death values.
+        Sets the current population of each animal object
+        This simply sets the current population to the value at the end of the previous month.
+        This value is then updated during the month loop.
         Runs at the start opf the month before any changes to population are made.
         """
         # create checks for valid data and raise errors

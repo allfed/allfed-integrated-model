@@ -684,6 +684,8 @@ class TestAnimalPopulation:
         assert animal_object.population_starving_pre_slaughter == [0]
 
 
+
+
     # Tests that calculate_other_death_homekill_head returns the expected value
     def test_calculate_other_death_homekill_head(self):
         # create animal object
@@ -691,51 +693,75 @@ class TestAnimalPopulation:
         # create country object
         country = CountryData('country_name')
         # create animal population object
-        animal_population = AnimalPopulation()
-
-
-
-        # set current population
-        animal_population.set_current_populations([animal_object])
+        animal_object.current_population = 100
+        animal_object.population = [100] # Adding population attribute
+        animal_object.animal_slaughter_hours = 8
+        animal_object.homekill_other_death_this_month = []
+        animal_object.other_death_causes_other_than_starving = [40]
+        country.other_death_homekill_rate = 0.5
+        country.homekill_hours_budget = [1000]
         # calculate other death homekill head
-        animal_population.calculate_other_death_homekill_head(animal_object, country)
+        AnimalPopulation.calculate_other_death_homekill_head(animal_object, country)
         # check that the value is as expected
-        assert animal_object.homekill_other_death_this_month[-1] == 50
+        assert animal_object.homekill_other_death_this_month[-1] == 20
 
-    # Tests that calculate_starving_other_death_head returns the expected value
-    def test_calculate_starving_other_death_head(self):
+
+    def test_calculate_other_death_homekill_head_hours_constrained(self):
         # create animal object
         animal_object = AnimalSpecies('type1', 'species1')
         # create country object
         country = CountryData('country_name')
         # create animal population object
-        animal_population = AnimalPopulation()
+        animal_object.current_population = 100
+        animal_object.population = [100] # Adding population attribute
+        animal_object.animal_slaughter_hours = 8
+        animal_object.homekill_other_death_this_month = []
+        animal_object.other_death_causes_other_than_starving = [40]
+        country.other_death_homekill_rate = 0.5
+        country.homekill_hours_budget = [80]
+        # calculate other death homekill head
+        AnimalPopulation.calculate_other_death_homekill_head(animal_object, country)
+        # check that the value is as expected
+        assert animal_object.homekill_other_death_this_month[-1] == 10
+
+
+    # Tests that calculate_starving_other_death_head returns the expected value
+    def test_calculate_starving_other_death_head(self):
+        
+        # create animal object
+        animal_object = AnimalSpecies('type1', 'species1')
         # set current population
-        animal_population.set_current_populations([animal_object])
-        # calculate starving animals after feed
-        animal_population.calculate_starving_animals_after_feed([animal])
-        # calculate starving other death head
-        starving_other_death_head = animal_population.calculate_starving_other_death_head(animal_object, animal_object.current_population - animal_object.population_fed)
-        # assert expected value
-        assert starving_other_death_head == animal_object.starvation_death_fraction * (animal_object.current_population - animal_object.population_fed)
+        animal_object.current_population = 100
+        animal_object.starvation_death_fraction = 0.9
+        animal_object.population_fed = 80
+
+        # call function
+        starving_other_death_head = AnimalPopulation.calculate_starving_other_death_head(animal_object, animal_object.current_population - animal_object.population_fed)
+        # assert expected result
+        assert starving_other_death_head == 18, 'Expected starving_other_death_head to be 18 (20 starving *0.9 fraction)' 
+
 
     # Tests that calculate_starving_homekill_head returns the expected value
     def test_calculate_starving_homekill_head(self):
+
         # create animal object
         animal_object = AnimalSpecies('type1', 'species1')
         # create country object
         country = CountryData('country_name')
-        # set current population
-        animal_object.current_population = 50
-        # calculate starving animals after feed
-        animal_object.population_fed = 40
-        AnimalPopulation.calculate_starving_animals_after_feed([animal_object])
-        # calculate starving population post slaughter and healthy homekill
-        population_starving_post_slaughter_and_healthy_homekill = AnimalPopulation.calculate_starving_pop_post_slaughter_healthy_homekill(animal_object)
-        # calculate starving homekill head
-        actual_homekill_head = AnimalPopulation.calculate_starving_homekill_head(animal_object, country_object, population_starving_post_slaughter_and_healthy_homekill)
-        expected_homekill_head = 10
-        assert actual_homekill_head == expected_homekill_head
+        # create animal population object
+        animal_object.current_population = 100
+        animal_object.population = [100] # Adding population attribute
+        animal_object.animal_slaughter_hours = 8
+        animal_object.other_death_causes_other_than_starving = [40]
+        animal_object.homekill_starving_this_month =[]
+        country.other_death_homekill_rate = 0.5
+        country.homekill_hours_budget = [80]
+        population_starving_post_slaughter_and_healthy_homekill = 30
+        # calculate other death homekill head
+        AnimalPopulation.calculate_starving_homekill_head(animal_object, country,population_starving_post_slaughter_and_healthy_homekill)
+        # check that the value is as expected
+        assert animal_object.homekill_starving_this_month[-1] == 10
+
 
     # tests that         AnimalPopulation.one_LSU_monthly_billion_kcal() is the expected value
     def test_one_LSU_monthly_billion_kcal(self):
