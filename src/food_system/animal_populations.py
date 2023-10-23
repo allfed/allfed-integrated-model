@@ -800,15 +800,6 @@ class AnimalPopulation:
         ):  # this is to avoid negative numbers of pregnant animals
             new_pregnant_animals_total = 0
 
-        # extra check to make sure that the number of animals slaughtered is not greater than the number of animals in the population
-        # probably not needed, but just in case
-        # consider deleteing as alreayd handled in calculate_animal_population
-        if animal.current_population < target_animal_population:
-            country_object.spares_slaughter_hours += (
-                target_animal_population - animal.current_population
-            ) * animal.animal_slaughter_hours
-            animal.current_population = target_animal_population
-
         # don't need to return much as the animal object is passed by reference, so the changes are made to the object itself
         # append new values to the animal object
         # don't append to population list, this is done after homekill in it's own fucntion
@@ -910,6 +901,10 @@ class AnimalPopulation:
         else:
             # no change to slaughtering rate required, will not dip below target rate
             actual_slaughter_rate = new_slaughter_rate
+
+        # check if the actual slaughter rate is less than zero, if so, set it to zero
+        if actual_slaughter_rate < 0:
+            actual_slaughter_rate = 0
 
         country_object.spares_slaughter_hours = (
             new_slaughter_rate - actual_slaughter_rate
