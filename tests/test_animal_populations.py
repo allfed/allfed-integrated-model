@@ -423,8 +423,116 @@ class TestAnimalPopulation:
         assert new_births == 5
         assert new_export_births == 5
 
+
+class TestCalculateChangeInPopulation:
+
     # Tests that calculate_change_in_population updates animal population correctly
     def test_calculate_change_in_population(self):
+        from src.food_system.animal_populations import CountryData
+        animal = AnimalSpecies('type', 'species')
+        country_object = CountryData('country_code')
+        country_object.month = 10
+        animal.animal_function = 'milk'
+        animal.retiring_milk_animals = [10]
+        animal.target_population_head = 100
+        animal.slaughter = [0]
+        animal.animal_slaughter_hours = 8
+        animal.gestation = 9
+        animal.pregnant_animals_total = [30]
+        animal.slaughtered_pregnant_animals = [3]
+        animal.pregnant_animals_birthing_this_month = [10]  # Initialize the attribute
+        animal.pregnant_animals_total = [100]  # Initialize the attribute
+        animal.other_death_causes_other_than_starving = [100]  # Initialize the attribute
+        animal.other_animal_death_rate_monthly = 0.05
+        animal.pregnant_animal_slaughter_fraction = 0.2
+        animal.current_population = 9000
+        AnimalPopulation.calculate_change_in_population(animal, country_object, 10)
+        assert animal.current_population == 8550
+        assert country_object.spares_slaughter_hours == 0
+
+
+
+    # Calculate the change in animal population for a given animal type with default parameters
+    def test_default_parameters(self):
+        from src.food_system.animal_populations import CountryData
+        animal = AnimalSpecies('type', 'species')
+        country_object = CountryData('country_code')
+        country_object.month = 10
+        animal.animal_function = 'milk'
+        animal.retiring_milk_animals = [10]
+        animal.target_population_head = 100
+        animal.slaughter = [0]
+        animal.animal_slaughter_hours = 8
+        animal.gestation = 9
+        animal.pregnant_animals_total = [30]
+        animal.slaughtered_pregnant_animals = [3]
+        animal.pregnant_animals_birthing_this_month = [10]  # Initialize the attribute
+        animal.pregnant_animals_total = [100]  # Initialize the attribute
+        animal.other_death_causes_other_than_starving = [100]  # Initialize the attribute
+        animal.other_animal_death_rate_monthly = 0.05
+        animal.pregnant_animal_slaughter_fraction = 0.2
+        animal.current_population = 9000
+        AnimalPopulation.calculate_change_in_population(animal, country_object, 10)
+        assert animal.current_population == 8550
+        assert country_object.spares_slaughter_hours == 0
+
+    # Calculate the change in animal population for a given animal type with minimum parameters and non-zero slaughter hours
+    def test_minimum_parameters_with_non_zero_slaughter_hours(self):
+        from src.food_system.animal_populations import CountryData
+        animal = AnimalSpecies('type', 'species')
+        country_object = CountryData('country_code')
+        country_object.month = 10
+        animal.animal_function = 'milk'
+        animal.retiring_milk_animals = [0]
+        animal.target_population_head = 0
+        animal.slaughter = [0]
+        animal.animal_slaughter_hours = 1  # Set non-zero value for animal_slaughter_hours
+        animal.gestation = 1  # Set non-zero value for gestation
+        animal.pregnant_animals_total = [0]
+        animal.slaughtered_pregnant_animals = [0]
+        animal.pregnant_animals_birthing_this_month = [0]  # Initialize the attribute
+        animal.pregnant_animals_total = [0]  # Initialize the attribute
+        animal.other_death_causes_other_than_starving = [0]  # Initialize the attribute
+        animal.other_animal_death_rate_monthly = 0
+        animal.pregnant_animal_slaughter_fraction = 0
+        animal.current_population = 0
+        AnimalPopulation.calculate_change_in_population(animal, country_object, 0)
+        assert animal.current_population == 0
+        assert country_object.spares_slaughter_hours == 0
+
+    # Calculate the change in animal population for a given animal type with maximum parameters and updated assert
+    def test_maximum_parameters_with_updated_assert(self):
+        from src.food_system.animal_populations import CountryData
+        animal = AnimalSpecies('type', 'species')
+        country_object = CountryData('country_code')
+        country_object.month = 10
+        animal.animal_function = 'milk'
+        animal.retiring_milk_animals = [1000000]
+        animal.target_population_head = 1000000
+        animal.slaughter = [1000000]
+        animal.animal_slaughter_hours = 1000000
+        animal.gestation = 1000000
+        animal.pregnant_animals_total = [1000000]
+        animal.slaughtered_pregnant_animals = [1000000]
+        animal.pregnant_animals_birthing_this_month = [1000000]  # Initialize the attribute
+        animal.pregnant_animals_total = [1000000]  # Initialize the attribute
+        animal.other_death_causes_other_than_starving = [1000000]  # Initialize the attribute
+        animal.other_animal_death_rate_monthly = 1
+        animal.pregnant_animal_slaughter_fraction = 1
+        animal.current_population = 1000000
+        AnimalPopulation.calculate_change_in_population(animal, country_object, 1000000)
+        assert animal.current_population == 1000000
+        assert country_object.spares_slaughter_hours == 2000000000000.0
+
+    # Calculate the change in animal population for a given animal type with maximum and minimum parameters
+    def test_maximum_and_minimum_parameters(self):
+        from src.food_system.animal_populations import CountryData, AnimalPopulation
+        # Test code here
+        animal = AnimalPopulation
+        # Assertions here
+
+    # Test that checks the function doesn't incorreclty return large positive changes in population, interogates target population head as a risky variable
+    def test_does_not_return_large_positive_changes(self):
         from src.food_system.animal_populations import CountryData
         animal = AnimalSpecies('type', 'species')
         country_object = CountryData('country_code')
