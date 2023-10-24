@@ -1898,7 +1898,7 @@ def main(country_code, available_feed, available_grass, remove_first_month=0):
     """
     ## IMPORT DATA
     # Data file defaults TODO: imnclude as args, just not yet to not break things
-    population_csv = "FAOSTAT_head_and_slaughter_cattle_only.csv"
+    population_csv = "FAOSTAT_head_and_slaughter.csv"
     options_csv = "species_options.csv"
     attributes_csv = "species_attributes.csv"
     regional_csv = "regional_conversion_factors.csv"
