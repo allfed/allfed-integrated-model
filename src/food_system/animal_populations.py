@@ -52,6 +52,7 @@ class CalculateFeedAndMeat:
         grass used is a food object (of length (NMONTHS))
 
         """
+        
         self.all_animals, self.feed_used, self.grass_used = main(country_code, available_feed, available_grass)
 
     def get_feed_used_and_meat_produced(self):
