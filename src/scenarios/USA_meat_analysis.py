@@ -57,7 +57,78 @@ fig = go.Figure()
 fig.add_trace(go.Scatter(y=feed_used, mode='lines', name='feed used'))
 fig.add_trace(go.Scatter(y=grass_used, mode='lines', name='grass used'))
 fig.add_trace(go.Scatter(y=total_kcals_meat, mode='lines', name='meat produced'))
+# add axis labels
+fig.update_layout(
+    title="Feed and meat production",
+    xaxis_title="Months",
+    yaxis_title="Billion kcals",
+    legend_title="Legend Title",
+    font=dict(
+        family="Courier New, monospace",
+        size=18,
+        color="RebeccaPurple"
+    )
+)
+
 fig.show()
+
+
+
+# new graph with the ratio of feed/meat kcals
+ratio = []
+for i in range(len(feed_used)):
+    ratio.append(feed_used[i]/total_kcals_meat[i])
+
+fig = go.Figure()
+fig.add_trace(go.Scatter(y=ratio, mode='lines', name='ratio'))
+# add axis labels
+fig.update_layout(
+    title="Ratio of feed to meat production",
+    xaxis_title="Months",
+    yaxis_title="Ratio",
+    legend_title="Legend Title",
+    font=dict(
+        family="Courier New, monospace",
+        size=18,
+        color="RebeccaPurple"
+    )
+)
+
+fig.show()
+
+
+
+# do the same as above but for a varibale amount of animals (don't hardcode the [0], [1], [2])
+# get the number of animals
+num_animals = len(calculate_instance.all_animals)
+# create a list of animal names
+animal_names = []
+for i in range(num_animals):
+    animal_names.append(calculate_instance.all_animals[i].animal_type)
+# create a list of animal populations
+animal_populations = []
+for i in range(num_animals):
+    animal_populations.append(calculate_instance.all_animals[i].population)
+
+# now plot the animal populations
+fig = go.Figure()
+
+for i in range(num_animals):
+    fig.add_trace(go.Scatter(y=animal_populations[i], mode='lines', name=animal_names[i]))
+
+# add axis labels
+fig.update_layout(
+    title="Animal populations",
+    xaxis_title="Months",
+    yaxis_title="Population",
+    legend_title="Legend Title",
+    font=dict(
+        family="Courier New, monospace",
+        size=18,
+        color="RebeccaPurple"
+    )
+)
+
 
 
 

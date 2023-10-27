@@ -326,14 +326,14 @@ class AnimalSpecies:
             milk_production_per_month_per_head  # update to include this in the csv file
         )
         self.statistical_lifetime = productive_milk_age_end
-        self.retiring_milk_animals_fraction = 1 / productive_milk_age_end
+        self.retiring_milk_animals_fraction = 1 / productive_milk_age_end 
 
 
     def retiring_milk_head_monthly(self):
         """
         Function to calculate the number of retiring milk animals per month
         """
-        return self.current_population * self.retiring_milk_animals_fraction
+        return self.current_population * self.retiring_milk_animals_fraction / 12
 
     def set_species_slaughter_attributes(
         self,
@@ -450,7 +450,7 @@ class AnimalSpecies:
             self.births_animals_month_baseline = (
                 (1 / self.insemination_cycle_time_for_milk)
                 * (self.population_producing_milk)
-                * (1 / self.birth_ratio)
+                * (1 / self.birth_ratio) # does this do nothing now? BUG
               )  # SET MILK BIRTHS HERE # if a milk animal, this is JUST the milk animals born (meat transfer accounted for in pregnancy attribute)
         else:
             self.birth_ratio = 1  # number of animals born (total from population) per milk animal. I.e all male milk animals are not considered milk anaimls and need to be moved over to meat
@@ -1900,7 +1900,7 @@ def main(country_code, available_feed, available_grass, remove_first_month=0):
     ## IMPORT DATA
     # Data file defaults TODO: imnclude as args, just not yet to not break things
     population_csv = "FAOSTAT_head_and_slaughter.csv"
-    options_csv = "species_options.csv"
+    options_csv = "species_options_baseline.csv" # currently set to zero everything
     attributes_csv = "species_attributes.csv"
     regional_csv = "regional_conversion_factors.csv"
     country_csv = "FAO_country_region_mappings.csv"
@@ -2177,9 +2177,10 @@ def main(country_code, available_feed, available_grass, remove_first_month=0):
     return all_animals, feed_used, grass_used
 
 if __name__ == "__main__":
-    feed = 0 # billion kcals, shorthand way toa pply consistent supply over whole period
-    grass = 0 # billion kcals, shorthand way toa pply consistent supply over whole period
-    output_list, feed_used, grass_used = main("USA",Debugging.available_feed_function(feed,14),Debugging.available_grass_function(grass,14))
+    feed = 100000000000 # billion kcals, shorthand way toa pply consistent supply over whole period
+    grass = 100000000000 # billion kcals, shorthand way toa pply consistent supply over whole period
+    months = 120
+    output_list, feed_used, grass_used = main("USA",Debugging.available_feed_function(feed,months),Debugging.available_grass_function(grass,months))
 
     # Initialize figure
     fig = go.Figure()
