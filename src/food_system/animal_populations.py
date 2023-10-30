@@ -454,7 +454,7 @@ class AnimalSpecies:
               )  # SET MILK BIRTHS HERE # if a milk animal, this is JUST the milk animals born (meat transfer accounted for in pregnancy attribute)
         else:
             self.birth_ratio = 1  # number of animals born (total from population) per milk animal. I.e all male milk animals are not considered milk anaimls and need to be moved over to meat
-            self.births_animals_month_baseline =  self.other_animal_death_basline_head_monthly - transfer_births_or_head
+            self.births_animals_month_baseline =  self.other_animal_death_basline_head_monthly + self.initial_slaughter - transfer_births_or_head
               # if a milk animla, this is JUST the milk animals born (meat transfer accounted for in pregnancy attrivute)
 
          # positive means animals transferred IN from, milk, negative means animals transferred OUT (i.e milk animals should always have a negative IF treansfer population is only related to male dairy animals). Could be psotivie IF transfer population is used to capture live imported head from somewhere
@@ -692,7 +692,7 @@ class AnimalSpecies:
         self.pregnant_animals_birthing_this_month  += [self.pregnant_animals_birthing_this_month_baseline]
 
         # set arbitrary zereo values to the transfer variables as it does not impact
-        self.transfer_population += []
+        self.transfer_population += [0]
         self.transfer_births += [0]
 
         # assume no slaughter of pregnant animals at baseline
@@ -850,7 +850,10 @@ class AnimalPopulation:
         Otherwise, set the number of pregnant animals slaughtered to the number of animals slaughtered this month
 
         """
+
         new_pregnant_animals_total = animal.pregnant_animals_total[-1]
+        # if the fraction of preg * total preg is less than the slaughter rate,
+        # proceed as normal and reduce the number of pregnant animals by the slaughter farction
         if (
             animal.pregnant_animal_slaughter_fraction
             * animal.pregnant_animals_total[-1]
@@ -860,6 +863,8 @@ class AnimalPopulation:
                 animal.pregnant_animal_slaughter_fraction
                 * animal.pregnant_animals_total[-1]
             )
+            # subtract the number of slaughtered pregnant animals from the total number of pregnant animals
+            # also subtract other_death
             new_pregnant_animals_total -= (
                 new_slaughtered_pregnant_animals
                 + animal.other_animal_death_rate_monthly
@@ -868,20 +873,23 @@ class AnimalPopulation:
         else:
             new_slaughtered_pregnant_animals = new_slaughter_rate
             new_pregnant_animals_total -= new_slaughtered_pregnant_animals
+
+        assert new_pregnant_animals_total >= 0, "new pregnant animals total is negative"
+        assert new_slaughtered_pregnant_animals >= 0, "new slaughtered pregnant animals is negative"
         return new_pregnant_animals_total, new_slaughtered_pregnant_animals
 
 
     def calculate_animal_population(
         animal,
         country_object,
-        new_births_animals_month,
+        new_additive_animals_month,
         new_other_animal_death,
         new_slaughter_rate,
     ):
         new_animal_population_pre_slaughter = (
             animal.current_population
             - new_other_animal_death
-            + new_births_animals_month
+            + new_additive_animals_month
         )
 
         # check if the slaughtering is greater than the target population, create a temporary 'actual' rate.
@@ -907,7 +915,7 @@ class AnimalPopulation:
         if actual_slaughter_rate < 0:
             actual_slaughter_rate = 0
 
-        country_object.spares_slaughter_hours = (
+        country_object.spare_slaughter_hours = (
             new_slaughter_rate - actual_slaughter_rate
         ) * animal.animal_slaughter_hours
 
@@ -1025,6 +1033,7 @@ class AnimalPopulation:
             current_slaughter = animal.baseline_slaughter
         else:
             current_slaughter = animal.slaughter[-1]
+            #BUG do we need this^^^ ? baseline slaughter IS affected by the change in slaughter rate
 
 
         # for dealing with milk, if slaughter hours is nan, then set it to 0
@@ -2174,6 +2183,7 @@ def main(country_code, available_feed, available_grass, remove_first_month=0):
         for animal in all_animals:
             AnimalModelBuilder.remove_first_month(animal)
 
+    print(country_object.spare_slaughter_hours)
     return all_animals, feed_used, grass_used
 
 if __name__ == "__main__":
@@ -2194,20 +2204,34 @@ if __name__ == "__main__":
         animal_list = [animal for animal in output_list ]
 
     for animal in animal_list:
-        fig.add_trace(go.Scatter(y=animal.population, mode='lines', name=animal.animal_type))
+        fig.add_trace(go.Scatter(y=animal.slaughter, mode='lines', name=animal.animal_type))
 
-    # plot one or a couple of animals in detail
-    for animal in output_list:
-        if "milk_cattle" in animal.animal_type:
-            print("Target population: ", animal.target_population_head, animal.animal_type)
-            print("Final population: ", animal.current_population, animal.animal_type)
-            print("Difference: ", animal.current_population - animal.target_population_head, animal.animal_type)
-            
-            # Add detailed lines to the plot
-            fig.add_trace(go.Scatter(y=animal.births_animals_month, mode='lines', name="births"))
-            fig.add_trace(go.Scatter(y=animal.transfer_population, mode='lines', name="transfer_births_or_head"))
-            fig.add_trace(go.Scatter(y=animal.retiring_milk_animals, mode='lines', name="retiring_milk_animals"))
-            fig.add_trace(go.Scatter(y=animal.transfer_births, mode='lines', name="transfer_births"))
+
+
+    fig2 = go.Figure()
+
+    # Plot one animal
+    k=8
+    # Add detailed lines to the plot
+    fig2.add_trace(go.Scatter(y=animal_list[k].births_animals_month, mode='lines', name="births"))
+    fig2.add_trace(go.Scatter(y=animal_list[k].slaughter, mode='lines', name="slaughter"))
+    fig2.add_trace(go.Scatter(y=animal_list[k].total_homekill_this_month, mode='lines', name="homekill"))
+    fig2.add_trace(go.Scatter(y=animal_list[k].other_death_total, mode='lines', name="other death total"))
+    fig2.add_trace(go.Scatter(y=animal_list[k].population, mode='lines',name="population"))
+    fig2.add_trace(go.Scatter(y=animal_list[k].pregnant_animals_birthing_this_month, mode='lines',name="preg this month"))
+    fig2.add_trace(go.Scatter(y=animal_list[k].pregnant_animal_slaughter_fraction, mode='lines',name="preg sf"))
+
+
+
+    print("Baseline slaughter: ", animal_list[k].baseline_slaughter , animal_list[k].animal_type)
+    print("Target population: ", animal_list[k].target_population_head)
+    print("Final population: ", animal_list[k].current_population, )
+    # print("Difference: ", animal_list[k].current_population - animal_list[k].target_population_head)
+    
+    # add title to the figure, and set the x axis title
+    fig2.update_layout(title=animal_list[k].animal_type, xaxis_title="Month")
+
 
     # Show figure
+    fig2.show()
     fig.show()
