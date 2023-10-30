@@ -46,6 +46,7 @@ def call_scenario_runner(this_simulation, title):
     # Return the results
     return results
 
+
 def main():
     """
     This function runs a series of simulations with different parameters and plots the results.

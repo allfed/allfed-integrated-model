@@ -337,7 +337,7 @@ class Optimizer:
         Example:
             >>> model = LpProblem(name="optimization_animals", sense=LpMaximize)
             >>> conditions = {'condition1': 'x > 0', 'condition2': 'y < 10'}
-            >>> updated_model = add_conditions_to_model(model, 'January', conditions)
+            >>> updated_model = add_conditions_to_model(model, '1', conditions)
         """
         # Iterate over the conditions and add them to the model
         for prefix, condition in conditions.items():

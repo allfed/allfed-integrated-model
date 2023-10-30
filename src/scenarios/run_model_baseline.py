@@ -73,6 +73,7 @@ def run_model_baseline(plot_figures=True):
     if plot_figures:
         Plotter.plot_fig_s1abcd(results1, results2, 72, True)
 
+
 def set_common_baseline_properties():
     """
     This function sets the common baseline properties for the food system. These properties are true for the baseline
@@ -92,22 +93,32 @@ def set_common_baseline_properties():
 
     # Set params that are true for baseline regardless of whether country or global
     # Set no resilient food scenario
-    constants_for_params = scenarios_loader.get_no_resilient_food_scenario(constants_for_params)
+    constants_for_params = scenarios_loader.get_no_resilient_food_scenario(
+        constants_for_params
+    )
 
     # Set excess to zero
     constants_for_params = scenarios_loader.set_excess_to_zero(constants_for_params)
 
     # Set baseline nutrition profile
-    constants_for_params = scenarios_loader.set_baseline_nutrition_profile(constants_for_params)
+    constants_for_params = scenarios_loader.set_baseline_nutrition_profile(
+        constants_for_params
+    )
 
     # Set unchanged proportions feed grazing
-    constants_for_params = scenarios_loader.set_unchanged_proportions_feed_grazing(constants_for_params)
+    constants_for_params = scenarios_loader.set_unchanged_proportions_feed_grazing(
+        constants_for_params
+    )
 
     # Set stored food buffer as baseline
-    constants_for_params = scenarios_loader.set_stored_food_buffer_as_baseline(constants_for_params)
+    constants_for_params = scenarios_loader.set_stored_food_buffer_as_baseline(
+        constants_for_params
+    )
 
     # Set global seasonality baseline
-    constants_for_params = scenarios_loader.set_global_seasonality_baseline(constants_for_params)
+    constants_for_params = scenarios_loader.set_global_seasonality_baseline(
+        constants_for_params
+    )
 
     # Set grasses baseline
     constants_for_params = scenarios_loader.set_grasses_baseline(constants_for_params)
@@ -116,7 +127,9 @@ def set_common_baseline_properties():
     constants_for_params = scenarios_loader.set_fish_baseline(constants_for_params)
 
     # Set disruption to crops to zero
-    constants_for_params = scenarios_loader.set_disruption_to_crops_to_zero(constants_for_params)
+    constants_for_params = scenarios_loader.set_disruption_to_crops_to_zero(
+        constants_for_params
+    )
 
     # Include protein
     constants_for_params = scenarios_loader.include_protein(constants_for_params)

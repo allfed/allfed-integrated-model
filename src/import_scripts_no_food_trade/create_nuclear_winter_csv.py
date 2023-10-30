@@ -67,7 +67,9 @@ def get_crop_ratios_this_country(country_id, crop_macros):
     MIN_ACCEPTABLE_REPRESENTATIVE_RATIO = 0.33
 
     # If the sum of relevant kcals is 0 or less than the minimum acceptable representative ratio, use the global number
-    if all_relevant_sum == 0 or (all_relevant_sum / kcals_check <= MIN_ACCEPTABLE_REPRESENTATIVE_RATIO):
+    if all_relevant_sum == 0 or (
+        all_relevant_sum / kcals_check <= MIN_ACCEPTABLE_REPRESENTATIVE_RATIO
+    ):
         crops = {
             "corn": 0.332020251571745,
             "rice": 0.300642569104085,
@@ -89,6 +91,7 @@ def get_crop_ratios_this_country(country_id, crop_macros):
         print(crops)
 
     return crops
+
 
 def get_overall_reduction(country_data, country_id, crop_macros):
     """
@@ -139,6 +142,7 @@ def get_overall_reduction(country_data, country_id, crop_macros):
         yearly_reductions["grasses_reduction_year" + str(year)] = country_data[col_name]
 
     return yearly_reductions
+
 
 def calculate_reductions(country_data, country_id, crop_macros):
     """
@@ -198,6 +202,7 @@ def calculate_reductions(country_data, country_id, crop_macros):
 
     return reductions
 
+
 def clean_up_nw_csv(nw_csv, nw_csv_cols):
     """
     This function takes in a nuclear winter csv file and its columns, cleans up the data, and returns a pandas dataframe.
@@ -248,6 +253,7 @@ def clean_up_nw_csv(nw_csv, nw_csv_cols):
 
     # Return the cleaned up nuclear winter csv file
     return nw_csv
+
 
 def get_all_crops_correct_countries(input_table):
     """
@@ -313,6 +319,7 @@ def get_all_crops_correct_countries(input_table):
     country_ids = ImportUtilities.stack_on_list(country_ids, ("TWN", "Taiwan"))
 
     return country_ids, all_reductions_processed
+
 
 def main():
     """

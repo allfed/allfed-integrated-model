@@ -175,6 +175,7 @@ def run_model_with_resilient_foods(plot_figures=True):
     # Print message
     print("Diet computation complete")
 
+
 def set_common_resilient_properties():
     """
     This function sets the common resilient properties for the food system by calling various functions from the

@@ -99,6 +99,7 @@ def run_model_no_resilient_foods(plot_figures=True):
             scenarios_loader.scenario_description,
         )
 
+
 def set_common_no_resilient_properties():
     """
     This function sets the common properties for the food system in a scenario where there are no resilient foods.

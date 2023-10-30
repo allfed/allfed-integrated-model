@@ -45,6 +45,7 @@ def call_scenario_runner(this_simulation, title):
     # return the resulting world, total population, and fed population
     return [world, pop_total, pop_fed]
 
+
 def call_scenario_runner_with_and_without_fat_protein(this_simulation, title):
     """
     Runs a simulation with and without fat and protein, and returns the world object and the percentage of population fed.
@@ -71,6 +72,7 @@ def call_scenario_runner_with_and_without_fat_protein(this_simulation, title):
 
     # Return the world object and the percentage of population fed
     return world, round(100 * pop_fed / pop_total, 0)
+
 
 def recalculate_plots():
     """
@@ -221,6 +223,7 @@ def recalculate_plots():
 
     return worlds, ratios
 
+
 def main(args):
     """
     This function recalculates plots and saves them to a file, or loads them from a file if they already exist.
@@ -232,7 +235,9 @@ def main(args):
     Returns:
         None
     """
-    RECALCULATE_PLOTS = True  # set to True to recalculate plots, False to load from file
+    RECALCULATE_PLOTS = (
+        True  # set to True to recalculate plots, False to load from file
+    )
     if RECALCULATE_PLOTS:
         # if RECALCULATE_PLOTS is True, recalculate the plots and save them to a file
         the_path = Path(repo_root) / "results" / "large_reports" / "worlds1.npy"

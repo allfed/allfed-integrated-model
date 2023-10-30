@@ -214,15 +214,14 @@ class Parameters:
             animals_slaughtered_medium,
             animals_slaughtered_large,
         ) = feed_meat_object.get_feed_used_and_meat_produced()
-        print("feed_used")
-        print(feed_meat_object.feed_used.kcals)
-        print("animals_slaughtered_small")
-        print(animals_slaughtered_small)
-        print("animals_slaughtered_medium")
-        print(animals_slaughtered_medium)
-        print("animals_slaughtered_large")
-        print(animals_slaughtered_large)
-        quit()
+        # print("feed_used")
+        # print(feed_meat_object.feed_used.kcals)
+        # print("animals_slaughtered_small")
+        # print(animals_slaughtered_small)
+        # print("animals_slaughtered_medium")
+        # print(animals_slaughtered_medium)
+        # print("animals_slaughtered_large")
+        # print(animals_slaughtered_large)
 
         # if we have an immediate shutoff, then turn off the feed to animals entirely
         if constants_inputs["DELAY"]["FEED_SHUTOFF_MONTHS"] == 0:
@@ -1096,11 +1095,7 @@ class Parameters:
         )
 
         # Initialize culled meat parameters
-        (
-            constants_out,
-            time_consts,
-            meat_and_dairy,
-        ) = self.init_culled_meat_params(
+        (constants_out, time_consts, meat_and_dairy,) = self.init_culled_meat_params(
             constants_inputs, constants_out, time_consts, meat_and_dairy
         )
 

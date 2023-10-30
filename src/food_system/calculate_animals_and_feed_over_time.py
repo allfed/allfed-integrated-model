@@ -213,7 +213,6 @@ class CalculateAnimalOutputs:
         #     0 if np.isnan(feed_dict["dairy_cows"]) else feed_dict["dairy_cows"]
         # )
 
-
         # combine together
         poultry_feed = feed_dict["small_animals"] * np.array(
             df_out["Poultry Pop"].values
@@ -239,7 +238,7 @@ class CalculateAnimalOutputs:
         df_out["Dairy Feed"] = dairy_feed
         feed = poultry_feed + pork_feed + beef_feed + dairy_feed
 
-        return df_out,feed
+        return df_out, feed
 
     def calculate_animal_populations(self, data):
         """
@@ -316,7 +315,6 @@ class CalculateAnimalOutputs:
         )
         cowGestation = animal_inputs.loc["cowGestation", "Qty"]
         calves_per_mother = 1
-
 
         # life expetency values
         dairy_life_expectancy = (
@@ -403,8 +401,6 @@ class CalculateAnimalOutputs:
         )  # measured in head
         spare_slaughter_hours = 0
 
-
-
         # # define current totals
         # current_beef_feed_cattle = cattle_on_feed
         current_beef_cattle = total_beef_cows
@@ -468,7 +464,6 @@ class CalculateAnimalOutputs:
                     / cow_slaughter_hours
                 )
 
-
             # this set up only kills dairy cows when they are getting to the end of
             # their life.
             current_dairy_slaughter = (
@@ -488,7 +483,6 @@ class CalculateAnimalOutputs:
 
             else:
                 actual_beef_slaughter = current_beef_slaughter
-
 
             other_beef_death = other_cow_death_rate_monthly * current_beef_cattle
             other_dairy_death = other_cow_death_rate_monthly * current_dairy_cattle

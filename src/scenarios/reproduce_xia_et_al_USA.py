@@ -45,7 +45,7 @@ def main(args):
         show_map_figures=True,
         add_map_slide_to_pptx=False,
         scenario_option=this_simulation,
-        countries_list=["USA"]
+        countries_list=["USA"],
     )
 
 
