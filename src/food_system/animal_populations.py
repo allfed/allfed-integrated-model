@@ -460,7 +460,8 @@ class AnimalSpecies:
         # next we need add slaughter to milk animals to account for calf culling
         if self.animal_function == "milk":
             calf_slaughter = self.births_animals_month_baseline - transfer_births_or_head - self.other_animal_death_basline_head_monthly
-            self.baseline_slaughter += calf_slaughter
+            self.initial_slaughter += calf_slaughter
+            self.baseline_slaughter = self.initial_slaughter * change_in_slaughter_rate  # is list
 
 
 
@@ -692,9 +693,9 @@ class AnimalSpecies:
         self.population += [self.current_population]
         self.other_death_causes_other_than_starving += [self.other_animal_death_basline_head_monthly]
         self.other_death_total += [self.other_animal_death_basline_head_monthly]
-        self.births_animals_month += [self.births_animals_month_baseline]
+        # self.births_animals_month += [self.births_animals_month_baseline]
 
-        self.slaughter += [self.initial_slaughter] # probably should be "initial_slaughter"to reflect ex ante slaughter, but needs to be baseline (incoroprating slaughter changes), to work with the current model
+        # self.slaughter += [self.initial_slaughter] # probably should be "initial_slaughter"to reflect ex ante slaughter, but needs to be baseline (incoroprating slaughter changes), to work with the current model
         self.pregnant_animals_total += [self.pregnant_animals_total_baseline]
         self.pregnant_animals_birthing_this_month  += [self.pregnant_animals_birthing_this_month_baseline]
 
@@ -1944,7 +1945,7 @@ def main(country_code, available_feed, available_grass, remove_first_month=0):
     """
     ## IMPORT DATA
     # Data file defaults TODO: imnclude as args, just not yet to not break things
-    population_csv = "FAOSTAT_head_and_slaughter_cattle_only.csv"
+    population_csv = "FAOSTAT_head_and_slaughter.csv"
     options_csv = "species_options_baseline.csv" # currently set to zero everything
     attributes_csv = "species_attributes.csv"
     regional_csv = "regional_conversion_factors.csv"
