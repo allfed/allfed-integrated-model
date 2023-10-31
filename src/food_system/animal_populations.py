@@ -446,7 +446,7 @@ class AnimalSpecies:
         )
 
         if self.animal_function == "milk":
-            self.birth_ratio = 2  # number of animals born per milk animal
+            self.birth_ratio = 2  # number of (total) animals born per milk animal. E.g as all milk animals are female, and 50% of births are female, then 2 = milk animal, and 1 = meat animal
             self.births_animals_month_baseline = (
                 (1 / self.insemination_cycle_time_for_milk)
                 * (self.population_producing_milk)
@@ -457,9 +457,16 @@ class AnimalSpecies:
             self.births_animals_month_baseline =  self.other_animal_death_basline_head_monthly + self.initial_slaughter - transfer_births_or_head
               # if a milk animla, this is JUST the milk animals born (meat transfer accounted for in pregnancy attrivute)
 
-         # positive means animals transferred IN from, milk, negative means animals transferred OUT (i.e milk animals should always have a negative IF treansfer population is only related to male dairy animals). Could be psotivie IF transfer population is used to capture live imported head from somewhere
+        # next we need add slaughter to milk animals to account for calf culling
+        if self.animal_function == "milk":
+            calf_slaughter = self.births_animals_month_baseline - transfer_births_or_head - self.other_animal_death_basline_head_monthly
+            self.baseline_slaughter += calf_slaughter
+
+
+
+        # positive means animals transferred IN from, milk, negative means animals transferred OUT (i.e milk animals should always have a negative IF treansfer population is only related to male dairy animals). Could be psotivie IF transfer population is used to capture live imported head from somewhere
         self.pregnant_animals_total_baseline = self.birth_ratio * self.births_animals_month_baseline / self.animals_per_pregnancy * self.gestation # assumes even distribution of births, this is not true. OPTIONAL TODO, update this to be more accurate and deal with seasonal births. Can be done by chaning the "gestation" to be a complicated value based on month/season
-        self.pregnant_animals_birthing_this_month_baseline = self.births_animals_month_baseline / self.gestation
+        self.pregnant_animals_birthing_this_month_baseline = self.pregnant_animals_total_baseline / self.gestation
         self.slaughtered_pregnant_animals_baseline = self.births_animals_month_baseline * pregnant_animal_slaughter_fraction
 
 
@@ -692,8 +699,8 @@ class AnimalSpecies:
         self.pregnant_animals_birthing_this_month  += [self.pregnant_animals_birthing_this_month_baseline]
 
         # set arbitrary zereo values to the transfer variables as it does not impact
-        self.transfer_population += [0]
-        self.transfer_births += [0]
+        self.transfer_population += []
+        self.transfer_births += []
 
         # assume no slaughter of pregnant animals at baseline
         self.slaughtered_pregnant_animals  += [0]
@@ -854,7 +861,9 @@ class AnimalPopulation:
         new_pregnant_animals_total = animal.pregnant_animals_total[-1]
         # if the fraction of preg * total preg is less than the slaughter rate,
         # proceed as normal and reduce the number of pregnant animals by the slaughter farction
-        if (
+        if animal.pregnant_animal_slaughter_fraction == 0:
+            new_slaughtered_pregnant_animals = 0
+        elif (
             animal.pregnant_animal_slaughter_fraction
             * animal.pregnant_animals_total[-1]
             < new_slaughter_rate
@@ -986,6 +995,24 @@ class AnimalPopulation:
 
 
     def calculate_breeding_changes(animal):
+        """
+        This function calculates the changes in breeding for the animal type
+        This is *only* called after the gestation period is over
+        It will update the animal object with the new number of pregnant animals
+        Based on the reduction in breeding
+
+        Pregnant slaughter is halted, as breeding changes have taken place from the breeding intervention
+
+        Parameters
+        ----------
+        animal : object
+            The animal object that is being calculated
+
+        Returns
+        -------
+        None
+        """
+
         animal.pregnant_animals_birthing_this_month[-1] *= (
             1 - animal.reduction_in_animal_breeding
         )  # consider doing this as a list?
@@ -1172,6 +1199,15 @@ class AnimalPopulation:
 
     def other_death_pregnant_adjustment(animal):
         # find proportion of population that has died from starvation
+        # this is only relevant in non-baseline scenarios
+        # the scenarios where this is relevant are:
+            # rapid depop
+            # trying to maintain a population with low food availability
+        # where this just ruins things is:
+            # baseline
+
+        
+        
         if animal.population[-1] == 0:
             other_death_fraction = 1
         else:
@@ -1515,7 +1551,7 @@ class AnimalModelBuilder:
         for animal_type in animal_types:
             # if animal type contains the word "milk" then it is a dairy animal
             if "milk" in animal_type:
-                slaughter_input = 0
+                slaughter_input = 0 # set to zero for now, but will be updated to non zero due to dairy calf culling
                 animal_function = "milk"
             else:
                 # remove "meat_" from the animal type
@@ -1908,7 +1944,7 @@ def main(country_code, available_feed, available_grass, remove_first_month=0):
     """
     ## IMPORT DATA
     # Data file defaults TODO: imnclude as args, just not yet to not break things
-    population_csv = "FAOSTAT_head_and_slaughter.csv"
+    population_csv = "FAOSTAT_head_and_slaughter_cattle_only.csv"
     options_csv = "species_options_baseline.csv" # currently set to zero everything
     attributes_csv = "species_attributes.csv"
     regional_csv = "regional_conversion_factors.csv"
@@ -2079,18 +2115,19 @@ def main(country_code, available_feed, available_grass, remove_first_month=0):
         for animal in all_animals:
             if "milk" not in animal.animal_type:
                 # if not a milk animal add
+                # divide by two as the transfer population is split between meat and milk
                 new_additive_animals_month = (
-                    births[animal.animal_type]
-                    + transfer_populations[animal.animal_species]
+                    births[animal.animal_type]/2
+                    + transfer_populations[animal.animal_species]/2
                 )
                 animal.transfer_population.append(
-                    transfer_populations[animal.animal_species]
+                    transfer_populations[animal.animal_species]/2
                 )
 
             else:
                 new_additive_animals_month = births[animal.animal_type]
                 animal.transfer_population.append(
-                    -transfer_populations[animal.animal_species]
+                    -transfer_populations[animal.animal_species]/2
                 )
 
             AnimalPopulation.calculate_change_in_population(
@@ -2154,7 +2191,13 @@ def main(country_code, available_feed, available_grass, remove_first_month=0):
                 animal.other_death_starving[-1] + animal.other_death_causes_other_than_starving[-1]
             )
             # reduce pregnant animals by the other death rate (proportional to the population)
-            AnimalPopulation.other_death_pregnant_adjustment(animal,)
+            # only do this if not a baseline scenario
+            # determine if baseline scenario-like from options and absence of starvation
+            if animal.reduction_in_animal_breeding == 0 and animal.target_population_fraction == 1 and animal.other_death_starving[-1] < 10:
+                # if baseline, then don't reduce the pregnant animals
+                pass
+            else:
+                AnimalPopulation.other_death_pregnant_adjustment(animal)
 
 
             animal.total_homekill_this_month.append(animal.total_homekill())
@@ -2189,7 +2232,7 @@ def main(country_code, available_feed, available_grass, remove_first_month=0):
 if __name__ == "__main__":
     feed = 100000000000 # billion kcals, shorthand way toa pply consistent supply over whole period
     grass = 100000000000 # billion kcals, shorthand way toa pply consistent supply over whole period
-    months = 120
+    months = 150
     output_list, feed_used, grass_used = main("USA",Debugging.available_feed_function(feed,months),Debugging.available_grass_function(grass,months))
 
     # Initialize figure
@@ -2204,14 +2247,15 @@ if __name__ == "__main__":
         animal_list = [animal for animal in output_list ]
 
     for animal in animal_list:
-        fig.add_trace(go.Scatter(y=animal.slaughter, mode='lines', name=animal.animal_type))
+        fig.add_trace(go.Scatter(y=animal.slaughter, mode='lines', name=animal.animal_type + " slaughter"))
+        fig.add_trace(go.Scatter(y=animal.population, mode='lines', name=animal.animal_type + " population"))
 
 
 
     fig2 = go.Figure()
 
     # Plot one animal
-    k=8
+    k=0
     # Add detailed lines to the plot
     fig2.add_trace(go.Scatter(y=animal_list[k].births_animals_month, mode='lines', name="births"))
     fig2.add_trace(go.Scatter(y=animal_list[k].slaughter, mode='lines', name="slaughter"))
@@ -2219,7 +2263,9 @@ if __name__ == "__main__":
     fig2.add_trace(go.Scatter(y=animal_list[k].other_death_total, mode='lines', name="other death total"))
     fig2.add_trace(go.Scatter(y=animal_list[k].population, mode='lines',name="population"))
     fig2.add_trace(go.Scatter(y=animal_list[k].pregnant_animals_birthing_this_month, mode='lines',name="preg this month"))
-    fig2.add_trace(go.Scatter(y=animal_list[k].pregnant_animal_slaughter_fraction, mode='lines',name="preg sf"))
+    fig2.add_trace(go.Scatter(y=animal_list[k].pregnant_animals_total, mode='lines',name="preg total"))
+    fig2.add_trace(go.Scatter(y=animal_list[k].transfer_population, mode='lines',name="transfer pop"))
+    fig2.add_trace(go.Scatter(y=animal_list[k].transfer_births, mode='lines',name="transfer births"))
 
 
 
