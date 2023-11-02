@@ -979,7 +979,9 @@ class AnimalPopulation:
         Returns
         -------
         new_births_animals_month : int
-            The number of new births this month
+            The number of new births this month (just of this animal type i.e new biths ONLY realtes to milk births from milk animals, not total births (meat and milk))
+        new_export_births_animals_month : int
+            The number of new births that are exported this month (just of this animal type i.e new biths ONLY realtes to meat births from milk animals, not total births (meat and milk))
         """
         new_births_animals_month = (
             animal.pregnant_animals_birthing_this_month[-1]

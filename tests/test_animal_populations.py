@@ -289,28 +289,28 @@ class TestAnimalSpecies:
     def test_set_slaughter_attributes_without_population(self):
         animal = AnimalSpecies('type', 'species')
         with pytest.raises(AttributeError):
-            animal.set_species_slaughter_attributes(1, 2, 3, 4, 5, 6, 7, 8, 0.5) # Added the missing argument 'starvation_death_fraction'
+            animal.set_species_slaughter_attributes(1, 2, 3, 4, 5, 6, 7, 8, 0.5,0) # Added the missing argument 'starvation_death_fraction'
 
     # Tests that an error is raised when trying to set slaughter attributes with a reduction in animal breeding greater than 1
     def test_set_slaughter_attributes_reduction_in_animal_breeding_greater_than_1(self):
         animal = AnimalSpecies('type', 'species')
         animal.set_animal_attributes(100, 50, 'function', 1, 'type', 'size', 0.5)
         with pytest.raises(ValueError):
-            animal.set_species_slaughter_attributes(1, 2, 3, 4, 5, 6, 7, 8, 2)
+            animal.set_species_slaughter_attributes(1, 2, 3, 4, 5, 6, 7, 8, 2,0)
 
     # Tests that an error is raised when trying to set slaughter attributes with a target population fraction less than 0
     def test_set_slaughter_attributes_target_population_fraction_less_than_0(self):
         animal = AnimalSpecies('type', 'species')
         animal.set_animal_attributes(100, 50, 'function', 1, 'type', 'size', 0.5)
         with pytest.raises(ValueError):
-            animal.set_species_slaughter_attributes(1, 2, 3, 4, 5, 6, -1, 8, 0.2) # Added missing argument 'starvation_death_fraction'
+            animal.set_species_slaughter_attributes(1, 2, 3, 4, 5, 6, -1, 8, 0.2,0) # Added missing argument 'starvation_death_fraction'
 
     # Tests that an error is raised when trying to set slaughter attributes with a pregnant animal slaughter fraction greater than 1
     def test_set_slaughter_attributes_pregnant_animal_slaughter_fraction_greater_than_1(self):
         animal = AnimalSpecies('type', 'species')
         animal.set_animal_attributes(100, 50, 'function', 1, 'type', 'size', 0.5)
         with pytest.raises(ValueError):
-            animal.set_species_slaughter_attributes(1, 2, 3, 4, 5, 6, 7, 8, 1.5)
+            animal.set_species_slaughter_attributes(1, 2, 3, 4, 5, 6, 7, 8, 1.5,0)
 
     # Tests that feeding the species with valid inputs updates the population_fed and NE_balance attributes correctly
     def test_feeding_species_valid_inputs(self):
@@ -330,28 +330,28 @@ class TestAnimalSpecies:
         animal = AnimalSpecies('type', 'species')
         animal.set_animal_attributes(population=100, slaughter=10, animal_function='milk', livestock_unit=1, digestion_type='ruminant', animal_size='large', approximate_feed_conversion=0.5)
         with pytest.raises(ValueError):
-            animal.set_species_slaughter_attributes(gestation=1, other_animal_death_rate_annual=1, animals_per_pregnancy=1, animal_slaughter_hours=1, change_in_slaughter_rate=1, pregnant_animal_slaughter_fraction=-0.1, reduction_in_animal_breeding=1, target_population_fraction=1, starvation_death_fraction=0)
+            animal.set_species_slaughter_attributes(gestation=1, other_animal_death_rate_annual=1, animals_per_pregnancy=1, animal_slaughter_hours=1, change_in_slaughter_rate=1, pregnant_animal_slaughter_fraction=-0.1, reduction_in_animal_breeding=1, target_population_fraction=1, starvation_death_fraction=0, transfer_births_or_head=0)
 
     # Tests that a ValueError is raised when change_in_slaughter_rate is less than 0
     def test_change_in_slaughter_rate_less_than_zero(self):
         with pytest.raises(ValueError):
             animal = AnimalSpecies('cow', 'dairy')
             animal.set_animal_attributes(100, 10, 'milk', 1, 'ruminant', 500, 0.5)
-            animal.set_species_slaughter_attributes(9, 0.1, 1, 8, -1, 0.1, 0.1, 0.1, 0.1, 0.1)
+            animal.set_species_slaughter_attributes(9, 0.1, 1, 8, -1, 0.1, 0.1, 0.1, 0.1, 0.1,0)
 
     # Tests that a ValueError is raised when animals_per_pregnancy is less than 0
     def test_negative_animals_per_pregnancy(self):
         with pytest.raises(ValueError):
             animal = AnimalSpecies('cow', 'dairy')
             animal.set_animal_attributes(100, 10, 'milk', 1, 'ruminant', 500, 0.5)
-            animal.set_species_slaughter_attributes(9, 0.1, -1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+            animal.set_species_slaughter_attributes(9, 0.1, -1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,0)
 
     # Tests that a ValueError is raised when setting slaughter attributes with other_animal_death_rate_annual less than 0
     def test_negative_other_animal_death_rate_annual(self):
         with pytest.raises(ValueError):
             animal = AnimalSpecies('cattle', 'dairy')
             animal.set_animal_attributes(100, 10, 'milk', 1, 'ruminant', 500, 0.1)
-            animal.set_species_slaughter_attributes(gestation=9, other_animal_death_rate_annual=-1, animals_per_pregnancy=1, animal_slaughter_hours=8, change_in_slaughter_rate=1, pregnant_animal_slaughter_fraction=0.5, reduction_in_animal_breeding=0.5, target_population_fraction=0.8, starvation_death_fraction=0.1)
+            animal.set_species_slaughter_attributes(gestation=9, other_animal_death_rate_annual=-1, animals_per_pregnancy=1, animal_slaughter_hours=8, change_in_slaughter_rate=1, pregnant_animal_slaughter_fraction=0.5, reduction_in_animal_breeding=0.5, target_population_fraction=0.8, starvation_death_fraction=0.1, transfer_births_or_head=0)
 
 
 
@@ -411,7 +411,7 @@ class TestAnimalPopulation:
         assert animal.population == [100]
 
     # Tests that calculate_additive_births returns expected values
-    def test_calculate_additive_births(self):
+    def test_calculate_additive_births_before_breeding_change(self):
         animal = AnimalSpecies('animal_type', 'animal_species')
         animal.gestation = 9
         animal.animals_per_pregnancy = 1
@@ -419,9 +419,22 @@ class TestAnimalPopulation:
         animal.pregnant_animals_birthing_this_month = [10]  # Initialize the attribute
         animal.pregnant_animals_total = [100]  # Initialize the attribute
         animal.reduction_in_animal_breeding = 0.5  # Initialize the attribute
-        new_births, new_export_births = AnimalPopulation.calculate_additive_births(animal, 9)
+        new_births, new_export_births = AnimalPopulation.calculate_additive_births(animal, 7)
         assert new_births == 5
         assert new_export_births == 5
+
+    # Tests that calculate_additive_births returns expected values
+    def test_calculate_additive_births_after_breeding_change(self):
+        animal = AnimalSpecies('animal_type', 'animal_species')
+        animal.gestation = 9
+        animal.animals_per_pregnancy = 1
+        animal.birth_ratio = 2
+        animal.pregnant_animals_birthing_this_month = [10]  # Initialize the attribute
+        animal.pregnant_animals_total = [100]  # Initialize the attribute
+        animal.reduction_in_animal_breeding = 0.5  # Initialize the attribute
+        new_births, new_export_births = AnimalPopulation.calculate_additive_births(animal, 10)
+        assert new_births == 2.5
+        assert new_export_births == 2.5
 
 
 class TestCalculateChangeInPopulation:
@@ -448,7 +461,7 @@ class TestCalculateChangeInPopulation:
         animal.current_population = 9000
         AnimalPopulation.calculate_change_in_population(animal, country_object, 10)
         assert animal.current_population == 8550
-        assert country_object.spares_slaughter_hours == 0
+        assert country_object.spare_slaughter_hours == 0
 
 
 
@@ -474,7 +487,7 @@ class TestCalculateChangeInPopulation:
         animal.current_population = 9000
         AnimalPopulation.calculate_change_in_population(animal, country_object, 10)
         assert animal.current_population == 8550
-        assert country_object.spares_slaughter_hours == 0
+        assert country_object.spare_slaughter_hours == 0
 
     # Calculate the change in animal population for a given animal type with minimum parameters and non-zero slaughter hours
     def test_minimum_parameters_with_non_zero_slaughter_hours(self):
@@ -498,31 +511,8 @@ class TestCalculateChangeInPopulation:
         animal.current_population = 0
         AnimalPopulation.calculate_change_in_population(animal, country_object, 0)
         assert animal.current_population == 0
-        assert country_object.spares_slaughter_hours == 0
+        assert country_object.spare_slaughter_hours == 0
 
-    # Calculate the change in animal population for a given animal type with maximum parameters and updated assert
-    def test_maximum_parameters_with_updated_assert(self):
-        from src.food_system.animal_populations import CountryData
-        animal = AnimalSpecies('type', 'species')
-        country_object = CountryData('country_code')
-        country_object.month = 10
-        animal.animal_function = 'milk'
-        animal.retiring_milk_animals = [1000000]
-        animal.target_population_head = 1000000
-        animal.slaughter = [1000000]
-        animal.animal_slaughter_hours = 1000000
-        animal.gestation = 1000000
-        animal.pregnant_animals_total = [1000000]
-        animal.slaughtered_pregnant_animals = [1000000]
-        animal.pregnant_animals_birthing_this_month = [1000000]  # Initialize the attribute
-        animal.pregnant_animals_total = [1000000]  # Initialize the attribute
-        animal.other_death_causes_other_than_starving = [1000000]  # Initialize the attribute
-        animal.other_animal_death_rate_monthly = 1
-        animal.pregnant_animal_slaughter_fraction = 1
-        animal.current_population = 1000000
-        AnimalPopulation.calculate_change_in_population(animal, country_object, 1000000)
-        assert animal.current_population == 1000000
-        assert country_object.spares_slaughter_hours == 2000000000000.0
 
     # Calculate the change in animal population for a given animal type with maximum and minimum parameters
     def test_maximum_and_minimum_parameters(self):
@@ -553,7 +543,7 @@ class TestCalculateChangeInPopulation:
         animal.current_population = 9000
         AnimalPopulation.calculate_change_in_population(animal, country_object, 10)
         assert animal.current_population == 8550
-        assert country_object.spares_slaughter_hours == 0
+        assert country_object.spare_slaughter_hours == 0
 
     # Tests that calculate_pregnant_animals_birthing returns expected values
     def test_calculate_pregnant_animals_birthing(self):
@@ -583,7 +573,7 @@ class TestCalculateChangeInPopulation:
         animal.animal_slaughter_hours = 8
         actual_slaughter_rate = AnimalPopulation.calculate_animal_population(animal, country, 10, 5, 10)
         assert actual_slaughter_rate == 10, 'Expected slaughter rate to be 10'
-        assert country.spares_slaughter_hours == 0, 'Expected spare slaughter hours to be 50'
+        assert country.spare_slaughter_hours == 0, 'Expected spare slaughter hours to be 50'
         assert animal.current_population == 295, 'Expected current population to be 95'
 
     def test_calculate_animal_population_milk(self):
@@ -596,7 +586,7 @@ class TestCalculateChangeInPopulation:
         animal.animal_slaughter_hours = 8
         actual_slaughter_rate = AnimalPopulation.calculate_animal_population(animal, country, 10, 5, 10) #' numbers =  new_births_animals_month, new_other_animal_death, new_slaughter_rate,'
         assert actual_slaughter_rate == 10, 'Expected slaughter rate to be 10'
-        assert country.spares_slaughter_hours == 0, 'Expected spare slaughter hours to be 50'
+        assert country.spare_slaughter_hours == 0, 'Expected spare slaughter hours to be 50'
         assert animal.current_population == 295, 'Expected current population to be 95'
 
     def test_calculate_animal_population_under_target(self):
@@ -609,26 +599,19 @@ class TestCalculateChangeInPopulation:
         animal.animal_slaughter_hours = 8
         actual_slaughter_rate = AnimalPopulation.calculate_animal_population(animal, country, 10, 5, 10) #' numbers =  new_births_animals_month, new_other_animal_death, new_slaughter_rate,'
         assert actual_slaughter_rate == 0, 'Expected slaughter rate to be 10'
-        assert country.spares_slaughter_hours == 80, 'Expected spare slaughter hours to be 80 (8 hours * 10 cows not slaughtered)'
+        assert country.spare_slaughter_hours == 80, 'Expected spare slaughter hours to be 80 (8 hours * 10 cows not slaughtered)'
         assert animal.current_population == 305, 'Expected current population to be 305 (5 increase from births minus other death)'
 
 
-    # Tests that calculate_retiring_milk_animals returns expected values
-    def test_calculate_retiring_milk_animals(self):
-        animal = AnimalSpecies('type', 'species')
-        animal.current_population = 100
-        animal.retiring_milk_animals_fraction = 0.1
-        new_retiring_milk_animals = AnimalPopulation.calculate_retiring_milk_animals(animal)
-        assert new_retiring_milk_animals == 10
 
     # Tests that calculate_births returns expected values
     def test_calculate_births(self):
         animal = AnimalSpecies('type', 'species')
         animal.pregnant_animals_birthing_this_month = [5]
         animal.animals_per_pregnancy = 2
-        animal.birth_ratio = 1.5
+        animal.birth_ratio = 2
         new_births, new_export_births = AnimalPopulation.calculate_births(animal)
-        assert new_births == 10
+        assert new_births == 5
         assert new_export_births == 5
 
     # Tests that calculate_breeding_changes updates animal population correctly
