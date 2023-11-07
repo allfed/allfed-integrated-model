@@ -36,7 +36,8 @@ class Greenhouses:
         self.ADD_GREENHOUSES = constants_for_params["ADD_GREENHOUSES"]
         self.NMONTHS = constants_for_params["NMONTHS"]
 
-        # If greenhouses are being added, set the greenhouse delay and greenhouse area multiplier based on the given constants.
+        # If greenhouses are being added, set the greenhouse delay and greenhouse
+        # area multiplier based on the given constants.
         if self.ADD_GREENHOUSES:
             # this is in addition to the 5 month delay till harvest
             self.greenhouse_delay = constants_for_params["DELAY"]["GREENHOUSE_MONTHS"]
@@ -103,7 +104,8 @@ class Greenhouses:
                     MONTHLY_KCALS * baseline_reduction**exponent
                 )
 
-        # Check if kcals grown per hectare before waste is greater than or equal to monthly kcals times all months reductions
+        # Check if kcals grown per hectare before waste is greater than or equal
+        # to monthly kcals times all months reductions
         assert (
             KCALS_GROWN_PER_HECTARE_BEFORE_WASTE
             >= MONTHLY_KCALS * all_months_reductions

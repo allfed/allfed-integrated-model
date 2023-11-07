@@ -217,7 +217,8 @@ def recalculate_plots():
             ]
         )
 
-    # Create a list of results by country for the worst-case scenario with simple adaptations, culling, storage, and all resilient foods
+    # Create a list of results by country for the worst-case scenario with
+    # simple adaptations, culling, storage, and all resilient foods
     for country_id, country in countries_dict.items():
         list_by_country.append(
             [

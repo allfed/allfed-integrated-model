@@ -342,9 +342,14 @@ def main(args):
     run_ARG_net_baseline()  # Run the baseline scenario for net food production
     run_ARG_gross_baseline()  # Run the baseline scenario for gross food production
     # run_ARG_net_nuclear_winter()  # Run the scenario for net food production during a nuclear winter
-    run_ARG_net_nuclear_winter_reduced_feed_waste()  # Run the scenario for net food production during a nuclear winter with reduced feed and waste
-    run_ARG_net_nuclear_winter_reduced_feed_waste_resilient()  # Run the scenario for net food production during a nuclear winter with reduced feed and waste and increased resilience
-    run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area()  # Run the scenario for net food production during a nuclear winter with reduced feed and waste, increased resilience, and more area
+    # Run the scenario for net food production during a nuclear winter with reduced feed and waste
+    run_ARG_net_nuclear_winter_reduced_feed_waste()
+    # Run the scenario for net food production during a nuclear winter with
+    # reduced feed and waste and increased resilience
+    run_ARG_net_nuclear_winter_reduced_feed_waste_resilient()
+    # Run the scenario for net food production during a nuclear winter with
+    # reduced feed and waste, increased resilience, and more area
+    run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area()
 
 
 if __name__ == "__main__":

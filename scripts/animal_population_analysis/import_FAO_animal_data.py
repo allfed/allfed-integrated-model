@@ -11,7 +11,7 @@ Created Early 2023 - Kevin
 """
 
 
-## function to get slaughterdataframe
+# function to get slaughterdataframe
 def get_slaughter_dataframe(df, new_col_name):
     """
     puts the slaughter count of animals into a dataframe
@@ -347,7 +347,7 @@ def add_alpha_codes_from_ISO(df, incol, outcol):
         try:
             country = pycountry.countries.get(numeric=str(input_country).zfill(3))
             alpha3 = country.alpha_3
-        except:
+        except BaseException:
             alpha3 = "NA"
             print("unable to match " + str(input_country))
         countries.append(alpha3)
@@ -390,7 +390,8 @@ def add_summary_columns(df_out_head, df_out_slaughter):
     ]  # , "mule", "horse", "asses"]
     # hardcode exclusion of horse like animals from meat (even though they are used for meat in some countries?)
     # it is difficult to distinguish between horse like animals used for meat and those used for work, so the slaiughter
-    # so the slaughter numbers are not a reliable indicator of meat production, and inclusion would skey the "large animal" category
+    # so the slaughter numbers are not a reliable indicator of meat
+    # production, and inclusion would skey the "large animal" category
     small_animal_keywords_slaughter = [
         "chicken",
         "rabbit",
@@ -482,7 +483,7 @@ def add_summary_columns(df_out_head, df_out_slaughter):
     return df_out_head, df_out_slaughter
 
 
-## function to get slaughterdataframe
+# function to get slaughterdataframe
 def get_landuse_dataframe(df, new_col_name):
     """
     puts the slaughter count of animals into a dataframe
@@ -583,7 +584,7 @@ def import_animal_data():
         )  # change this to the file you want to import
     )
 
-    ## OPTION, DO SUMMARY COLUMNS?
+    # OPTION, DO SUMMARY COLUMNS?
     summary_cols = False
 
     # Add alpha3 codes to dataframe
@@ -599,7 +600,9 @@ def import_animal_data():
     df_head = add_alpha_codes_from_ISO(df_importhead, iso_num_col, new_col_name)
     df_head = df_head.drop(df_head[df_head["Area Code (ISO3)"] == "NA"].index)
 
-    # find area code iso3 with no match and drop them, for this dataset it's just "China", which is instead split in to China Mainlaind, Hong kong etc.
+    # find area code iso3 with no match and drop them, for this dataset it's
+    # just "China", which is instead split in to China Mainlaind, Hong kong
+    # etc.
 
     # filter dataframe by elemenmt which conatins milking
     df_milking = df_slaughter[df_slaughter["Element"].str.contains("Milk")]

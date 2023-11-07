@@ -177,7 +177,8 @@ class Seaweed:
             numpy.ndarray: An array of the built area of seaweed over time.
 
         """
-        # Calculate the new area of seaweed per month based on the global value and the fraction provided in the constants
+        # Calculate the new area of seaweed per month based on the global value
+        # and the fraction provided in the constants
         SEAWEED_NEW_AREA_PER_MONTH = (
             self.SEAWEED_NEW_AREA_PER_MONTH_GLOBAL
             * constants_for_params["SEAWEED_NEW_AREA_FRACTION"]
@@ -202,7 +203,8 @@ class Seaweed:
             # Create an arbitrarily long list of months all at the constant initial area
             sd = [self.INITIAL_BUILT_SEAWEED_AREA] * 1000
 
-        # Create a long list of the built seaweed area over time, starting with the delay period and then increasing linearly
+        # Create a long list of the built seaweed area over time, starting with
+        # the delay period and then increasing linearly
         built_area_long = np.append(
             np.array(sd),
             np.linspace(

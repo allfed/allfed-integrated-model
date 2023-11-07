@@ -534,7 +534,8 @@ class Extractor:
         Returns:
             None
         """
-        # Calculate the difference between outdoor crops to humans and the sum of immediate outdoor crops and new stored outdoor crops
+        # Calculate the difference between outdoor crops to humans and the sum of
+        # immediate outdoor crops and new stored outdoor crops
         difference = self.outdoor_crops_to_humans - (
             self.immediate_outdoor_crops + self.new_stored_outdoor_crops
         )

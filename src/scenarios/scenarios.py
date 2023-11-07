@@ -1536,7 +1536,8 @@ class Scenarios:
         # Add a description of the scenario to the scenario_description attribute
         self.scenario_description += "\nreduced grazing"
 
-        # Check that the function is being called in the context of a global analysis and that the grasses have not been set yet
+        # Check that the function is being called in the context of a global
+        # analysis and that the grasses have not been set yet
         assert self.IS_GLOBAL_ANALYSIS
         assert not self.GRASSES_SET
 

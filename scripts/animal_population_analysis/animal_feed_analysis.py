@@ -35,7 +35,7 @@ def add_alpha_codes_from_ISO(
         try:
             country = pycountry.countries.get(numeric=str(int(input_country)).zfill(3))
             alpha3 = country.alpha_3
-        except:
+        except BaseException:
             alpha3 = unmatched_value
             if unmatched_alert:
                 print("unable to match " + str(input_country))
@@ -75,7 +75,7 @@ def add_alpha_codes_fuzzy(
         try:
             country = pycountry.countries.search_fuzzy(input_country)
             alpha3 = country[0].alpha_3
-        except:
+        except BaseException:
             alpha3 = "unk_" + input_country
         countries.append(alpha3)
     df["alpha3"] = countries
@@ -98,11 +98,11 @@ def read_csv_values(
         df = df[
             ~df.index.duplicated(keep="last")
         ]  # delete duplicate entries from countries, keep the most recent data
-    except:
+    except BaseException:
         print("no year column")
     try:
         df = df.drop(["Entity", year_col], axis=1)
-    except:
+    except BaseException:
         print("no entity or year column to drop")
 
     if value_col is not None:
@@ -117,7 +117,6 @@ def read_csv_values(
 def species_baseline_feed(
     total_net_energy_demand, feed_DI, roughages_DI, roughages_percentage=0.8
 ):
-
     """
     Eq1:
     DI_r * DM_r * GE/Kg_r + DI_f * DM_f * GE/Kg_f = NE_req
@@ -316,7 +315,7 @@ for country_code in df_animal_stock_info.index:
         df_feed.loc[country_code, animal_object.animal_type + "_grass"] = GE_roughage
         df_feed.loc[country_code, animal_object.animal_type + "_feed"] = GE_feed
 
-        ### NEXT TODO: deal with this grass and feed usage. Combine fed to compare to world average.
+        # NEXT TODO: deal with this grass and feed usage. Combine fed to compare to world average.
         # ALSO GO BACK AND DO THE REGIONAL VARIATION IN LSU
         # Thern MEssga emorgan and mike. Morgan re: merge. Mike re: data check.
 
@@ -377,7 +376,7 @@ df_merged = df_merged.sort_values(by="GDP per capita", ascending=True)
 
 ###### Start Correlation Section ######
 
-### NEXT DO CORR OF LOG OF FUDGE FACTOR
+# NEXT DO CORR OF LOG OF FUDGE FACTOR
 
 cols_of_interest = [
     "fudge_factor",
@@ -494,7 +493,7 @@ df_correlation = df_correlation[df_correlation["power"] >= 0.8]
 df_correlation
 
 
-#### Present day
+# Present day
 # break out each animal
 # how many cows
 # how much feed is going in

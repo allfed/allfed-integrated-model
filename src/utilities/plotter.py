@@ -2127,19 +2127,22 @@ class Plotter:
         else:
             legend = legend + [""]
 
-        # Add the legend for outdoor crops consumed immediately if ADD_OUTDOOR_GROWING is True, otherwise add an empty string
+        # Add the legend for outdoor crops consumed immediately if
+        # ADD_OUTDOOR_GROWING is True, otherwise add an empty string
         if interpreter.constants["ADD_OUTDOOR_GROWING"]:
             legend = legend + ["Outdoor Crops consumed immediately"]
         else:
             legend = legend + [""]
 
-        # Add the legend for crops consumed after simulation/nuclear winter onset if ADD_OUTDOOR_GROWING is True, otherwise add an empty string
+        # Add the legend for crops consumed after simulation/nuclear winter onset
+        # if ADD_OUTDOOR_GROWING is True, otherwise add an empty string
         if interpreter.constants["ADD_OUTDOOR_GROWING"]:
             legend = legend + [OG_stored_label]
         else:
             legend = legend + [""]
 
-        # Add the legend for stored food consumed before simulation/nuclear winter onset if ADD_STORED_FOOD is True, otherwise add an empty string
+        # Add the legend for stored food consumed before simulation/nuclear winter
+        # onset if ADD_STORED_FOOD is True, otherwise add an empty string
         if interpreter.constants["ADD_STORED_FOOD"]:
             legend = legend + [stored_food_label]
         else:

@@ -18,7 +18,8 @@ def extract_functions_and_classes(node, indent=""):
 
 
 if __name__ == "__main__":
-    file_path = "/Users/kevin/Documents/ProgrammingIsFun/ALLFED/Integrated/allfed-integrated-model/src/food_system/animal_populations.py"  # Replace with the path to your Python file
+    # Replace with the path to your Python file
+    file_path = "/Users/kevin/Documents/ProgrammingIsFun/ALLFED/Integrated/allfed-integrated-model/src/food_system/animal_populations.py"
 
     with open(file_path, "r") as file:
         file_contents = file.read()

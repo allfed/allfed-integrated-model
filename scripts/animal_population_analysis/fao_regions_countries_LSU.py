@@ -15,7 +15,7 @@ def add_alpha_codes(df, col):
         try:
             country = pycountry.countries.search_fuzzy(input_country)
             alpha3 = country[0].alpha_3
-        except:
+        except BaseException:
             alpha3 = "unk_" + input_country
         countries.append(alpha3)
     df["alpha3"] = countries

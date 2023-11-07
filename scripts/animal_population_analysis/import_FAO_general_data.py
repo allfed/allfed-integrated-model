@@ -25,7 +25,7 @@ def add_alpha_codes_from_ISO(df, incol, outcol):
         try:
             country = pycountry.countries.get(numeric=str(input_country).zfill(3))
             alpha3 = country.alpha_3
-        except:
+        except BaseException:
             alpha3 = "NA"
             print("unable to match " + str(input_country))
         countries.append(alpha3)
@@ -38,7 +38,7 @@ def import_FAO_general_data(path_to_csv, item_codes, element_codes, alpha3_col="
     # try latin-1 encoding first (For FAO data)
     try:
         df = pd.read_csv(path_to_csv, encoding="latin-1")
-    except:
+    except BaseException:
         # try ISO-8859-1
         df = pd.read_csv(path_to_csv)
 
@@ -63,7 +63,8 @@ def import_FAO_general_data(path_to_csv, item_codes, element_codes, alpha3_col="
         ]
     ]
 
-    # for each item code, grab the first row that matches and extract the "Item" and "element" strings and combine them to a new column name
+    # for each item code, grab the first row that matches and extract the
+    # "Item" and "element" strings and combine them to a new column name
     new_col_names = []
     for i in range(0, len(item_codes)):
         item_code = item_codes[i]
@@ -83,7 +84,7 @@ def import_FAO_general_data(path_to_csv, item_codes, element_codes, alpha3_col="
                     "Element",
                 ].values[0]
             )
-        except:
+        except BaseException:
             # print error message shwoing which codes didn't work
             print("unable to find " + str(item_code) + " " + str(element_code))
 
