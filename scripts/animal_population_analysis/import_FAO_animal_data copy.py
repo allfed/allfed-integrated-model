@@ -1,3 +1,4 @@
+import pathlib
 import pandas as pd
 import numpy as np
 import pycountry
@@ -33,10 +34,10 @@ def add_alpha_codes_from_ISO(df, incol, outcol):
     return df
 
 
-def import_FAO_general_data(path_to_csv, item_codes, element_codes, alpha3_col="iso3"):
+def import_FAO_general_data(path_to_csv, item_codes, element_codes, alpha3_col="iso3")
 
-    # try latin-1 encoding first (For FAO data)
-    try:
+   # try latin-1 encoding first (For FAO data)
+   try:
         df = pd.read_csv(path_to_csv, encoding="latin-1")
     except BaseException:
         # try ISO-8859-1
@@ -47,7 +48,7 @@ def import_FAO_general_data(path_to_csv, item_codes, element_codes, alpha3_col="
     # if the name contains an "F", remove it from the dataframe
     if "F" in check_for_flag_col:
         df = df.drop(columns=check_for_flag_col)
-    # get the name of the last column
+    # get the name of the last column Z
     value_col = df.columns[-1]
 
     # keepn only the columns we need, Area Code (M49)	,Item Code,	Item,	Element Code,	Element	Unit, value_col
@@ -62,6 +63,7 @@ def import_FAO_general_data(path_to_csv, item_codes, element_codes, alpha3_col="
             value_col,
         ]
     ]
+
 
     # for each item code, grab the first row that matches and extract the "Item" and "element" strings and combine them to a new column name
     new_col_names = []
@@ -117,11 +119,8 @@ def import_FAO_general_data(path_to_csv, item_codes, element_codes, alpha3_col="
     # remove any countries that don't have an alpha3 code (labelled as "NA")
     df_out = df_out[df_out[alpha3_col] != "NA"]
 
-    # set the index to the alpha3 codes
-    df_out.set_index(alpha3_col, inplace=True)
-
     # Output the resulting DataFrame
-    return df_out
+    print(df_out)
 
 
 if __name__ == "__main__":
@@ -139,4 +138,4 @@ if __name__ == "__main__":
     item_codes = [1058, 1058]
     element_codes = [71761, 723113]
 
-    df = import_FAO_general_data(csv_location, item_codes, element_codes)
+    import_FAO_general_data(csv_location, item_codes,element_codes)

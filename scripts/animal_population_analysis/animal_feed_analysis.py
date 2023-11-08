@@ -3,9 +3,7 @@ from src.food_system.animal_populations import AnimalDataReader
 from src.food_system.animal_populations import AnimalModelBuilder
 from src.food_system.animal_populations import CountryData
 from src.food_system.food import Food
-from scripts.animal_population_analysis.import_FAO_general_data import (
-    import_FAO_general_data,
-)
+from scripts.animal_population_analysis.import_FAO_general_data import import_FAO_general_data
 from scipy import stats
 import statsmodels.stats.power as smp
 import plotly.express as px
@@ -17,12 +15,7 @@ import pycountry
 
 
 def add_alpha_codes_from_ISO(
-    df,
-    incol,
-    outcol="iso3",
-    unmatched_value="NA",
-    keep_original=False,
-    unmatched_alert=False,
+    df, incol, outcol="iso3", unmatched_value="NA", keep_original=False, unmatched_alert=False
 ):
     """
     adds a column of alpha3 codes to a dataframe with country name in column 'col'
@@ -47,14 +40,7 @@ def add_alpha_codes_from_ISO(
     return df
 
 
-def add_alpha_codes_fuzzy(
-    df,
-    incol,
-    outcol="iso3",
-    unmatched_value="NA",
-    keep_original=False,
-    unmatched_alert=True,
-):
+def add_alpha_codes_fuzzy(df, incol, outcol="iso3", unmatched_value="NA", keep_original=False, unmatched_alert=True):
     """
     adds a column of alpha3 codes to a dataframe with country name in column 'col'
     uses fuzzy logic to match countries
@@ -84,9 +70,7 @@ def add_alpha_codes_fuzzy(
     return df
 
 
-def read_csv_values(
-    path, country_code_col="Code", year_col="Year", value_col=None, output_syntax="iso3"
-):
+def read_csv_values(path, country_code_col="Code", year_col="Year", value_col=None, output_syntax="iso3"):
     """
     reads csv files downloaded from our world in data, isolates the ISO alpga 3 country code, and keeps only the most recent data per country
     """
@@ -95,9 +79,7 @@ def read_csv_values(
     df = df.set_index(output_syntax)
     try:
         df = df.sort_values(by=year_col)  # sort ascending
-        df = df[
-            ~df.index.duplicated(keep="last")
-        ]  # delete duplicate entries from countries, keep the most recent data
+        df = df[~df.index.duplicated(keep="last")]  # delete duplicate entries from countries, keep the most recent data
     except BaseException:
         print("no year column")
     try:
@@ -114,9 +96,7 @@ def read_csv_values(
     AnimalDataReader.read_country_data()
 
 
-def species_baseline_feed(
-    total_net_energy_demand, feed_DI, roughages_DI, roughages_percentage=0.8
-):
+def species_baseline_feed(total_net_energy_demand, feed_DI, roughages_DI, roughages_percentage=0.8):
     """
     Eq1:
     DI_r * DM_r * GE/Kg_r + DI_f * DM_f * GE/Kg_f = NE_req
@@ -183,19 +163,11 @@ animal_pop_analysis_dir = Path(repo_root) / "scripts" / "animal_population_analy
 processed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "processed_data"
 
 
-country_gdp_data_location = Path.joinpath(
-    Path(animal_pop_analysis_dir), "gdp_owid_2018.csv"
-)
-country_feed_data_location = Path.joinpath(
-    Path(animal_pop_analysis_dir), "country_feed_data.csv"
-)
+country_gdp_data_location = Path.joinpath(Path(animal_pop_analysis_dir), "gdp_owid_2018.csv")
+country_feed_data_location = Path.joinpath(Path(animal_pop_analysis_dir), "country_feed_data.csv")
 pop_csv_location = Path.joinpath(Path(processed_data_dir), "population_csv.csv")
-ag_area_csv_location = Path.joinpath(
-    Path(animal_pop_analysis_dir), "total-agricultural-area-over-the-long-term.csv"
-)
-total_energy_csv_location = Path.joinpath(
-    Path(animal_pop_analysis_dir), "FAO_total_energy_use_in_ag.csv"
-)
+ag_area_csv_location = Path.joinpath(Path(animal_pop_analysis_dir), "total-agricultural-area-over-the-long-term.csv")
+total_energy_csv_location = Path.joinpath(Path(animal_pop_analysis_dir), "FAO_total_energy_use_in_ag.csv")
 
 
 df_energy = pd.read_csv(total_energy_csv_location)
@@ -204,10 +176,7 @@ df_energy = add_alpha_codes_from_ISO(df_energy, incol="Area Code (M49)", outcol=
 
 df_energy = df_energy[df_energy["iso3"] != "NA"]
 df_energy = df_energy.set_index("iso3")
-df_energy = df_energy.drop(
-    ["Area", "Element Code", "Element", "Unit", "Area Code", "Item Code", "Item"],
-    axis=1,
-)
+df_energy = df_energy.drop(["Area", "Element Code", "Element", "Unit", "Area Code", "Item Code", "Item"], axis=1)
 df_energy = df_energy.rename(columns={"Y2021": "total_energy_use_in_ag"})
 
 
@@ -216,21 +185,12 @@ df_pop_country = pd.read_csv(
     pop_csv_location,
     index_col="iso3",
 )
-df_gdp = read_csv_values(
-    country_gdp_data_location,
-    country_code_col="Iso3",
-    value_col="GDP",
-    output_syntax="iso3",
-)
+df_gdp = read_csv_values(country_gdp_data_location, country_code_col="Iso3", value_col="GDP", output_syntax="iso3")
 
 
 # merge the four dataframes above
-df_country_macro_indicators = pd.merge(
-    df_pop_country, df_feed_country, left_index=True, right_index=True
-)
-df_country_macro_indicators = pd.merge(
-    df_country_macro_indicators, df_gdp, left_index=True, right_index=True
-)
+df_country_macro_indicators = pd.merge(df_pop_country, df_feed_country, left_index=True, right_index=True)
+df_country_macro_indicators = pd.merge(df_country_macro_indicators, df_gdp, left_index=True, right_index=True)
 
 
 ### Create secondary attributes ####
@@ -239,22 +199,26 @@ df_country_macro_indicators["GDP per capita"] = (
     df_country_macro_indicators["GDP"] / df_country_macro_indicators["population"]
 )
 # create gdp rank
-df_country_macro_indicators["GDP per capita rank"] = df_country_macro_indicators[
-    "GDP per capita"
-].rank(ascending=False)
-df_country_macro_indicators["GDP rank"] = df_country_macro_indicators["GDP"].rank(
-    ascending=False
-)
+df_country_macro_indicators["GDP per capita rank"] = df_country_macro_indicators["GDP per capita"].rank(ascending=False)
+df_country_macro_indicators["GDP rank"] = df_country_macro_indicators["GDP"].rank(ascending=False)
 
 
 ## Populate animal objects ##
 # create animal objects
-df_animal_stock_info = AnimalDataReader.read_animal_population_data()
-df_animal_attributes = AnimalDataReader.read_animal_nutrition_data()
-df_animal_options = AnimalDataReader.read_animal_options()
+population_csv = "FAOSTAT_head_and_slaughter.csv"
+options_csv = "species_options.csv"
+attributes_csv = "species_attributes.csv"
+regional_csv = "regional_conversion_factors.csv"
+country_csv = "FAO_country_region_mappings.csv"
 
-df_regional_conversion_factors = AnimalDataReader.read_animal_regional_factors()
-df_country_info = AnimalDataReader.read_country_data()
+# read animal population data
+df_animal_stock_info = AnimalDataReader.read_animal_population_data(population_csv)
+
+# read animal nutrition data
+df_animal_attributes = AnimalDataReader.read_animal_nutrition_data(attributes_csv)
+df_animal_options = AnimalDataReader.read_animal_options(options_csv)
+df_regional_conversion_factors = AnimalDataReader.read_animal_regional_factors(regional_csv)
+df_country_info = AnimalDataReader.read_country_data(country_csv)
 
 # create date frame with the column names as the species (from df_animal_stock_info)
 # but remove the columns that have "salughter" in the name
@@ -274,13 +238,9 @@ df_feed = pd.DataFrame(columns=col_list, index=df_animal_stock_info.index)
 total_food_consumed = []
 
 for country_code in df_animal_stock_info.index:
-    animal_list = AnimalModelBuilder.create_animal_objects(
-        df_animal_stock_info.loc[country_code], df_animal_attributes
-    )
+    animal_list = AnimalModelBuilder.create_animal_objects(df_animal_stock_info.loc[country_code], df_animal_attributes)
     country_object = CountryData(country_code)
-    country_object.set_livestock_unit_factors(
-        df_country_info, df_regional_conversion_factors
-    )
+    country_object.set_livestock_unit_factors(df_country_info, df_regional_conversion_factors)
 
     # create empty list to store the food consumed by each animal
     calculated_feed_demand = Food(0, 0, 0)
@@ -303,10 +263,7 @@ for country_code in df_animal_stock_info.index:
         if animal_object.digestion_type == "ruminant":
             # input the roughage and feed digestion indeces and the percentage intake  of roughage
             GE_roughage, GE_feed = species_baseline_feed(
-                net_energy_demand,
-                ruminant_DI_feed,
-                ruminant_DI_grass,
-                ruminant_grass_fraction,
+                net_energy_demand, ruminant_DI_feed, ruminant_DI_grass, ruminant_grass_fraction
             )
         else:
             GE_roughage = 0
@@ -324,8 +281,7 @@ df_feed = df_feed.merge(df_country_macro_indicators, left_index=True, right_inde
 
 conversion_factor = 4000 / 12
 df_feed["Animal feed consumption Billion kcals"] = (
-    df_feed["Animal feed caloric consumption in 2020 (million dry caloric tons)"]
-    * conversion_factor
+    df_feed["Animal feed caloric consumption in 2020 (million dry caloric tons)"] * conversion_factor
 )
 
 # drop rows with zero values for feed consumption
@@ -334,15 +290,10 @@ df_feed = df_feed[df_feed["Animal feed consumption Billion kcals"] != 0]
 # calculate the total feed demand for each country, the sum of all columns with "_feed" in the name
 df_feed["feed_calculated_demand"] = df_feed.filter(regex="_feed").sum(axis=1)
 df_feed["grass_calculated_demand"] = df_feed.filter(regex="_grass").sum(axis=1)
-df_feed["difference"] = (
-    df_feed["feed_calculated_demand"] - df_feed["Animal feed consumption Billion kcals"]
-)
-df_feed["fudge_factor"] = (
-    df_feed["Animal feed consumption Billion kcals"] / df_feed["feed_calculated_demand"]
-)
+df_feed["difference"] = df_feed["feed_calculated_demand"] - df_feed["Animal feed consumption Billion kcals"]
+df_feed["fudge_factor"] = df_feed["Animal feed consumption Billion kcals"] / df_feed["feed_calculated_demand"]
 df_feed["fudge_difference"] = (
-    df_feed["feed_calculated_demand"] * df_feed["fudge_factor"]
-    - df_feed["Animal feed consumption Billion kcals"]
+    df_feed["feed_calculated_demand"] * df_feed["fudge_factor"] - df_feed["Animal feed consumption Billion kcals"]
 )
 
 # merge with the animal stock info dataframe
@@ -360,8 +311,7 @@ df_merged_sum = df_merged.sum(axis=0)
 df_merged_sum = pd.DataFrame(df_merged_sum).T
 
 df_merged_sum["fudge_factor"] = (
-    df_merged_sum["Animal feed consumption Billion kcals"]
-    / df_merged_sum["feed_calculated_demand"]
+    df_merged_sum["Animal feed consumption Billion kcals"] / df_merged_sum["feed_calculated_demand"]
 )
 
 # print results using f print
@@ -464,9 +414,7 @@ for column in columns_to_check:
     if non_null_percentage < 1.0:
         nobs1 = non_null_non_zero
         alpha = 0.05  # significance level
-        effect_size = correlation * np.sqrt(
-            (1 - correlation**2) / (1 - non_null_percentage)
-        )
+        effect_size = correlation * np.sqrt((1 - correlation**2) / (1 - non_null_percentage))
         power = smp.tt_ind_solve_power(effect_size, nobs1=nobs1, alpha=alpha)
     else:
         power = 1.0  # set power to 1 when there are no missing data points
@@ -477,15 +425,11 @@ for column in columns_to_check:
 
 # create a dataframe from the dictionary of correlations
 df_correlation = pd.DataFrame.from_dict(
-    correlations,
-    orient="index",
-    columns=["correlation", "non_null_percentage", "power"],
+    correlations, orient="index", columns=["correlation", "non_null_percentage", "power"]
 )
 
 # sort by abs(correlation)
-df_correlation = df_correlation.reindex(
-    df_correlation["correlation"].abs().sort_values(ascending=False).index
-)
+df_correlation = df_correlation.reindex(df_correlation["correlation"].abs().sort_values(ascending=False).index)
 
 # only show correlations with a power of 0.8 or higher
 df_correlation = df_correlation[df_correlation["power"] >= 0.8]
@@ -502,7 +446,6 @@ df_correlation
 figure_toggle = False
 
 if figure_toggle:
-
     fig = px.scatter(
         df_merged,
         x="Country",

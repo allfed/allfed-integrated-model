@@ -31,12 +31,12 @@ DATA_PATH = PATH.joinpath(".").resolve()
 # print(df)
 
 # Read the text file
-with open(DATA_PATH.joinpath("FAO Country List Regions.txt"), "r") as file:
+with open(DATA_PATH.joinpath("FAO Country List Regions.txt"), 'r') as file:
     text = file.read()
 
 
 # Split the text into lines
-lines = text.split("\n")
+lines = text.split('\n')
 
 # for each line, split by before the first colon, and define as the region
 regions = []
@@ -44,11 +44,11 @@ countries_list = []
 for line in lines:
     countries = []
     if len(line) > 0:
-        region = line.split(":")[0]
+        region = line.split(':')[0]
         regions.append(region)
 
         # now another loop to split by the comma, and define as the country
-        for country in line.split(":")[1].split(","):
+        for country in line.split(':')[1].split(','):
             countries.append(country.strip())
     # save the countries as a list
     countries_list.append(countries)
@@ -64,7 +64,7 @@ for region in regions:
 
 countries_list = [item for sublist in countries_list for item in sublist]
 
-df = pd.DataFrame({"region": regions_list, "country": countries_list})
+df = pd.DataFrame({'region': regions_list, 'country': countries_list})
 
 output_df = add_alpha_codes(df, "country")
 
