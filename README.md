@@ -54,6 +54,9 @@ https://zenodo.org/record/7039924
 # How the model works in general
 
 ![Flow Chart](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/overview.png)
+# more details
+![Flow Chart](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/repository_flowchart/flow.dot.svg)
+
 
 #### Dependency management with Anaconda
 The integrated model is written in python 3, ensure you have some version of python3, although it has only been tested with python 3.9 or later. Then, install the required packages using conda or miniconda:

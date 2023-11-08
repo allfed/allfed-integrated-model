@@ -22,115 +22,92 @@ class ScenarioRunner:
 
     def run_and_analyze_scenario(self, constants_for_params, scenarios_loader):
         """
-        This function runs a scenario by computing the necessary parameters, running the optimizer,
-        extracting data from the optimizer, interpreting the results, validating the results, and
-        optionally printing an output with people fed.
+        computes params, Runs the optimizer, extracts data from optimizer, interprets
+        the results, validates the results, and optionally prints an output with people
+        fed.
 
-        Args:
-            constants_for_params (dict): A dictionary containing constants for the scenario.
-            scenarios_loader (ScenarioLoader): An instance of the ScenarioLoader class.
+        arguments: constants from the scenario, scenario loader (to print the aspects
+        of the scenario and check no scenario parameter has been set twice or left
+        unset)
 
-        Returns:
-            dict: A dictionary containing the interpreted results.
-
+        returns: the interpreted results
         """
-        # Create instances of the Interpreter and Validator classes
         interpreter = Interpreter()
         validator = Validator()
+        # take the variables defining the scenario and compute the resulting needed
+        # values as inputs to the optimizer
+        (
+            single_valued_constants,
+            time_consts,
+            feed_biofuels,
+        ) = self.compute_parameters(constants_for_params, scenarios_loader)
 
-        # Compute the necessary parameters for the optimizer
-        single_valued_constants, time_consts, feed_biofuels = self.compute_parameters(
-            constants_for_params, scenarios_loader
-        )
+        interpreter.set_feed(feed_biofuels)
 
-        # Run the optimizer to optimize effective people fed based on all the constants we've determined
-        model, variables, single_valued_constants, time_consts = self.run_optimizer(
-            single_valued_constants, time_consts
-        )
+        # actually make PuLP optimize effective people fed based on all the constants
+        # we've determined
+        (
+            model,
+            variables,
+            percent_fed_from_model,
+            time_consts,
+        ) = self.run_optimizer(single_valued_constants, time_consts)
 
-        # Create an instance of the Extractor class
         extractor = Extractor(single_valued_constants)
-
-        # Extract values from the optimizer in list and integer formats
+        #  get values from all the optimizer in list and integer formats
         extracted_results = extractor.extract_results(model, variables, time_consts)
 
-        # TODO: eventually all the values not directly solved by the optimizer should be removed from extracted_results
+        # TODO: eventually all the values not directly solved by the optimizer should
+        # be removed from extracted_results
 
-        # Interpret the results, nicer for plotting, reporting, and printing results
-        interpreted_results = interpreter.interpret_results(
-            extracted_results, time_consts
+        #  interpret the results, nicer for plotting, reporting, and printing results
+        interpreted_results = interpreter.interpret_results(extracted_results)
+
+        # ensure no errors were made in the extraction and interpretation, or if the
+        # optimizer did not correctly satisfy constraints within a reasonable margin
+        # of error
+        validator.validate_results(
+            extracted_results, interpreted_results, percent_fed_from_model
         )
 
-        # Ensure no errors were made in the extraction and interpretation, or if the optimizer did not correctly satisfy
-        # constraints within a reasonable margin of error
-        validator.validate_results(model, extracted_results, interpreted_results)
-
-        # Print the kcals per capita per day if PRINT_NEEDS_RATIO is True
         PRINT_NEEDS_RATIO = False
         if PRINT_NEEDS_RATIO:
             interpreter.print_kcals_per_capita_per_day(interpreted_results)
 
-        # Return the interpreted results
         return interpreted_results
 
     def compute_parameters(self, constants_for_params, scenarios_loader):
         """
-        This function computes the parameters based on the constants and scenarios provided.
-        It returns the resulting constants.
-
-        Args:
-            constants_for_params (dict): A dictionary containing the constants for the parameters.
-            scenarios_loader (ScenariosLoader): An instance of the ScenariosLoader class.
-
-        Returns:
-            tuple: A tuple containing the single_valued_constants, time_consts, and feed_and_biofuels.
-
+        computes the parameters
+        returns the resulting constants
         """
 
-        # Create an instance of the Parameters class
         constants_loader = Parameters()
 
-        # Compute the parameters using the constants and scenarios provided
         (
             single_valued_constants,
             time_consts,
             feed_and_biofuels,
         ) = constants_loader.compute_parameters(constants_for_params, scenarios_loader)
 
-        # Return the resulting constants
-        return single_valued_constants, time_consts, feed_and_biofuels
+        return (single_valued_constants, time_consts, feed_and_biofuels)
 
     def run_optimizer(self, single_valued_constants, time_consts):
         """
         Runs the optimizer and returns the model, variables, and constants
-
-        Args:
-            single_valued_constants (dict): A dictionary of single-valued constants
-            time_consts (dict): A dictionary of time constants
-
-        Returns:
-            tuple: A tuple containing the model, variables, single_valued_constants, and time_consts
         """
-        # Create an instance of the Optimizer class
-        optimizer = Optimizer(single_valued_constants, time_consts)
-
-        # Create an instance of the Validator class
+        optimizer = Optimizer()
         validator = Validator()
 
-        # Call the optimize method of the optimizer instance to optimize the model
-        # and get the optimized model, variables, maximize_constraints, single_valued_constants, and time_consts
         (
             model,
             variables,
             maximize_constraints,
             single_valued_constants,
             time_consts,
-        ) = optimizer.optimize_to_humans(single_valued_constants, time_consts)
+        ) = optimizer.optimize(single_valued_constants, time_consts)
 
-        # Set CHECK_CONSTRAINTS to False to skip validation
         CHECK_CONSTRAINTS = False
-
-        # If CHECK_CONSTRAINTS is True, validate the model
         if CHECK_CONSTRAINTS:
             print("")
             print("VALIDATION")
@@ -144,7 +121,6 @@ class ScenarioRunner:
                 model.variables(),
             )
 
-        # Return the optimized model, variables, single_valued_constants, and time_consts
         return (model, variables, single_valued_constants, time_consts)
 
     def set_depending_on_option(self, country_data, scenario_option):
@@ -153,6 +129,7 @@ class ScenarioRunner:
 
         if scenario_option["scale"] == "global":
             constants_for_params = scenario_loader.init_global_food_system_properties()
+            constants_for_params["COUNTRY_CODE"] = "global"
         elif scenario_option["scale"] == "country":
             constants_for_params = scenario_loader.init_country_food_system_properties(
                 country_data
@@ -192,7 +169,6 @@ class ScenarioRunner:
             ), "You must specify 'buffer' key as zero, no_stored_food, or baseline"
 
         # SHUTOFF
-
         if scenario_option["shutoff"] == "immediate":
             constants_for_params = scenario_loader.set_immediate_shutoff(
                 constants_for_params
@@ -209,13 +185,11 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.set_continued_feed_biofuels(
                 constants_for_params
             )
-        elif scenario_option["shutoff"] == "reduce_breeding":
-            constants_for_params = scenario_loader.reduce_breeding(constants_for_params)
         else:
             scenario_is_correct = False
 
-            assert scenario_is_correct, """You must specify 'shutoff' key as immediate,short_delayed_shutoff,reduce_breeding,
-            long_delayed_shutoff,or continued"""
+            assert scenario_is_correct, """You must specify 'shutoff' key as immediate,short_delayed_shutoff,
+            long_delayed_shutoff, or continued"""
 
         # WASTE
 
@@ -298,7 +272,8 @@ class ScenarioRunner:
              baseline_globally,or nuclear_winter_globally"""
 
         # GRASSES
-
+        print("grasses")
+        print(scenario_option["grasses"])
         if scenario_option["grasses"] == "baseline":
             constants_for_params = scenario_loader.set_grasses_baseline(
                 constants_for_params
@@ -311,11 +286,15 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.set_country_grasses_nuclear_winter(
                 constants_for_params, country_data
             )
+        elif scenario_option["grasses"] == "all_crops_die_instantly":
+            constants_for_params = scenario_loader.set_country_grasses_to_zero(
+                constants_for_params
+            )
         else:
             scenario_is_correct = False
 
             assert scenario_is_correct, """You must specify 'grasses' key as baseline,
-            global_nuclear_winter,or country_nuclear_winter"""
+            global_nuclear_winter,all_crops_die_instantly, or country_nuclear_winter"""
 
         # FISH
 
@@ -352,11 +331,13 @@ class ScenarioRunner:
                     constants_for_params, country_data
                 )
             )
+        elif scenario_option["crop_disruption"] == "all_crops_die_instantly":
+            constants_for_params = scenario_loader.set_zero_crops(constants_for_params)
         else:
             scenario_is_correct = False
 
             assert scenario_is_correct, """You must specify 'crop_disruption' key as either zero,
-            global_nuclear_winter,or country_nuclear_winter"""
+            global_nuclear_winter, all_crops_die_instantly, or country_nuclear_winter"""
 
         # PROTEIN
 
@@ -439,6 +420,10 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.get_greenhouse_scenario(
                 constants_for_params
             )
+        elif scenario_option["scenario"] == "industrial_foods":
+            constants_for_params = scenario_loader.get_industrial_foods_scenario(
+                constants_for_params
+            )
         else:
             scenario_is_correct = False
 
@@ -446,24 +431,18 @@ class ScenarioRunner:
             all_resilient_foods,all_resilient_foods_and_more_area,no_resilient_foods,seaweed,methane_scp,
             cellulosic_sugar,relocated_crops or greenhouse"""
 
-        if scenario_option["meat_strategy"] == "efficient_meat_strategy":
-            constants_for_params = scenario_loader.set_efficient_feed_grazing_strategy(
+        if scenario_option["meat_strategy"] == "reduce_breeding_USA":
+            constants_for_params = scenario_loader.set_breeding_to_greatly_reduced(
                 constants_for_params
             )
-        elif scenario_option["meat_strategy"] == "inefficient_meat_strategy":
-            constants_for_params = (
-                scenario_loader.set_unchanged_proportions_feed_grazing(
-                    constants_for_params
-                )
-            )
-        elif scenario_option["meat_strategy"] == "reduce_breeding":
-            constants_for_params = scenario_loader.set_feed_based_on_livestock_levels(
+        elif scenario_option["meat_strategy"] == "baseline_breeding":
+            constants_for_params = scenario_loader.set_to_baseline_breeding(
                 constants_for_params
             )
         else:
             scenario_is_correct = False
 
-            assert scenario_is_correct, """You must specify 'meat_strategy' key as either efficient_meat_strategy,
-            or inefficient_meat_strategy"""
+            assert scenario_is_correct, """You must specify 'meat_strategy' key as either ,
+            reduce_breeding_USA or baseline_breeding"""
 
         return constants_for_params, scenario_loader

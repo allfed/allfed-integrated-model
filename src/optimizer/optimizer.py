@@ -179,6 +179,26 @@ class Optimizer:
         if ASSERT_SUCCESSFUL_OPTIMIZATION:
             assert status == 1, "ERROR: OPTIMIZATION FAILED!"
 
+        # The way the model works is that in the parameters.py file it first feeds animals as much feed as they need,
+        # constrained only by the number of months before feed shutoff, and further constrained by their population.
+        # If the animal feed model has all the animals slaughtered very quickly, then no feed would be used, and all
+        # feed would be allocated to humans.
+        # However, animal feed model does not determine *which* of the food resources are allocated for feed.
+        # That is the job of the optimizer.
+        # To determine the allocation of both biofuels and feed, the optimizer first does an optimization ignoring
+        # feed and biofuel usage entirely. This optimization does not at all subtract feed or biofuel usage.
+        # The result is a maximum on the number of people that could be fed before considering feed or biofuel.
+        # Note however that this also is using the meat production which required usage of the feed that was ignored.
+        # This is the point in the code we're at on this very line: we've allocated feed to humans but have not yet
+        # considered feed and biofuels
+
+        #
+        # So, passed to the optimizer to allocate to humans (ignoring waste).
+        # However, if breeding is
+        # At this stage, we have made an optimization for
+        # starvation that completely ignores feed and biofuels.
+        #
+
         # Constrain the next optimization to have the same minimum starvation as the previous optimization
         (
             model,
@@ -186,6 +206,7 @@ class Optimizer:
         ) = self.constrain_next_optimization_to_have_same_minimum_starvation(model, variables)
 
         # If the first optimization was successful, optimize the best food consumption that goes to humans
+        # best foods are hardcoded in the model as crops, greenhouse, and stored food.
         if status == 1:
             model, variables = self.optimize_best_food_consumption_to_go_to_humans(
                 model,
@@ -424,6 +445,7 @@ class Optimizer:
             ) / self.NMONTHS
 
         # Add the objective function to the model
+        # This means that the optimizer is trying to maximize the feed and biofuel coming from resilient foods.
         model_max_to_humans += (
             variables["objective_function_best_to_humans"] <= total_feed_biofuel_variable,
             maximizer_string,
@@ -543,6 +565,11 @@ class Optimizer:
         for month in range(0, self.NMONTHS):
             maximizer_string = "Old_Objective_Month_" + str(month) + "_Objective_Constraint"
 
+            # This means the optimizer is trying to maximize the calories consumed in the month (or months)
+            # with the least number of calories, within the bounds of the previous constraints enforced.
+            # (the right hand side is what is attempted to be maximized)
+            # (the left hand side is the minimum calories any month must have, meaning that this more constrained
+            # optimization must at least allow for satisfying the previous optimization's objectives)
             model += (
                 min_value <= variables["consumed_kcals"][month],
                 maximizer_string,

@@ -215,10 +215,23 @@ class Food(UnitConversions):
         Initializes the food with the given macronutrients, and set the default units.
         """
         super().__init__()
+        print(type(kcals))
+        print(type(fat))
+        print(type(protein))
 
-        assert isinstance(kcals, int) or isinstance(kcals, list) or isinstance(kcals, np.ndarray)
-        assert isinstance(fat, int) or isinstance(fat, list) or isinstance(fat, np.ndarray)
-        assert isinstance(protein, int) or isinstance(protein, list) or isinstance(protein, np.ndarray)
+        assert (
+            isinstance(kcals, float)
+            or isinstance(kcals, int)
+            or isinstance(kcals, list)
+            or isinstance(kcals, np.ndarray)
+        )
+        assert isinstance(fat, float) or isinstance(fat, int) or isinstance(fat, list) or isinstance(fat, np.ndarray)
+        assert (
+            isinstance(protein, float)
+            or isinstance(protein, int)
+            or isinstance(protein, list)
+            or isinstance(protein, np.ndarray)
+        )
 
         self.kcals = kcals
         self.fat = fat
