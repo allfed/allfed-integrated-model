@@ -117,8 +117,7 @@ Additional aspects:
 
 
 class TestAddAlphaCodesFuzzy:
-    # Tests that the function works correctly with a non-empty dataframe, a
-    # valid input column name, and a valid output column name
+    # Tests that the function works correctly with a non-empty dataframe, a valid input column name, and a valid output column name
     def test_happy_path(self):
         df = pd.DataFrame({"Country": ["United States", "Canada", "Mexico"]})
         expected_output = pd.DataFrame({"alpha3": ["USA", "CAN", "MEX"]})
