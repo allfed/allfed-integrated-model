@@ -46,6 +46,10 @@ class MakePowerpoint:
         subtitle = slide.placeholders[1]
         subtitle.text = "Generated on {:%m-%d-%Y}".format(date.today())
 
+        # Use the output from analyze_ppt to understand which layouts and placeholders
+        # to use
+        title.text = the_title
+
     def insert_slide(self, title_below, description, figure_save_loc):
         """
         Inserts a slide into the PowerPoint presentation with a title, description, and figure.
