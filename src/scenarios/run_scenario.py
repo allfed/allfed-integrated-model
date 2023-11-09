@@ -154,7 +154,7 @@ class ScenarioRunner:
                 constants_for_params
             )
         elif scenario_option["stored_food"] == "baseline":
-            constants_for_params = scenario_loader.set_stored_food_buffer_as_baseline(
+            constants_for_params = scenario_loader.set_baseline_stored_food(
                 constants_for_params
             )
         else:

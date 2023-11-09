@@ -1,0 +1,43 @@
+settings:
+  countries: USA
+
+simulations:
+
+  # USA Gross Food Production, if only methane scp were available 
+  USA_only_methane_scp:
+    title: United States Gross Food Production, Baseline Climate
+    scale: country
+    seasonality: country
+    grasses: all_crops_die_instantly
+    crop_disruption: all_crops_die_instantly
+    scenario: methane_scp
+    fish: zero
+    waste: zero
+    nutrition: baseline
+    stored_food: zero
+    end_simulation_stocks_ratio: zero
+    shutoff: immediate # note the immediate here!
+    cull: dont_eat_culled
+    fat: required
+    protein: required
+    meat_strategy: reduce_breeding_USA
+
+  
+  # USA Gross Food Production, if only methane scp were available 
+  USA_only_methane_scp:
+    title: United States Gross Food Production, Baseline Climate
+    scale: country
+    seasonality: country
+    grasses: all_crops_die_instantly
+    crop_disruption: all_crops_die_instantly
+    scenario: methane_scp
+    fish: zero
+    waste: zero
+    nutrition: baseline
+    stored_food: zero
+    end_simulation_stocks_ratio: zero
+    shutoff: immediate # note the immediate here!
+    cull: dont_eat_culled
+    fat: required
+    protein: required
+    meat_strategy: reduce_breeding_USA

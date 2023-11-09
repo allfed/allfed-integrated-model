@@ -1,0 +1,98 @@
+settings:
+  countries: USA
+
+simulations:
+  # USA Net Food Production, Baseline Climate 
+  USA_net_baseline:
+    title: United States Net Food Production, Baseline Climate
+    scale: country
+    seasonality: country
+    grasses: baseline
+    crop_disruption: zero
+    scenario: no_resilient_foods
+    fish: baseline
+    waste: baseline_in_country
+    nutrition: baseline 
+    stored_food: baseline
+    end_simulation_stocks_ratio: baseline
+    shutoff: continued # note the continued here!
+    cull: do_eat_culled
+    fat: required
+    protein: required
+    meat_strategy: baseline_breeding
+
+  # USA Gross Food Production, Baseline Climate 
+  USA_gross_baseline:
+    title: United States Gross Food Production, Baseline Climate
+    scale: country
+    seasonality: country
+    grasses: baseline
+    crop_disruption: zero
+    scenario: no_resilient_foods
+    fish: baseline
+    waste: zero
+    nutrition: baseline
+    stored_food: baseline
+    end_simulation_stocks_ratio: baseline
+    shutoff: immediate # note the immediate here!
+    cull: dont_eat_culled
+    fat: required
+    protein: required
+    meat_strategy: baseline_breeding
+
+  # USA Net Food Production, No Crops, SCP scaleup
+  USA_net_no_crops_no_adaptation:
+    title: United States Net Food Production, No Crops, SCP scaleup
+    scale: country
+    scenario: no_resilient_foods # no scp or cs
+    seasonality: country
+    grasses: all_crops_die_instantly
+    crop_disruption: all_crops_die_instantly
+    fish: baseline
+    waste: tripled_prices_in_country
+    fat: required
+    protein: required
+    nutrition: catastrophe
+    stored_food: baseline
+    end_simulation_stocks_ratio: zero
+    shutoff: long_delayed_shutoff
+    cull: do_eat_culled
+    meat_strategy: reduce_breeding_USA
+
+  # USA Net Food Production, No Crops, SCP scaleup
+  USA_net_no_crops_with_scp:
+    title: United States Net Food Production, No Crops, SCP scaleup
+    scale: country
+    scenario: methane_scp # only using SCP as a food source plus stored food and culled meat
+    seasonality: country
+    grasses: all_crops_die_instantly
+    crop_disruption: all_crops_die_instantly
+    fish: baseline
+    waste: tripled_prices_in_country
+    fat: required
+    protein: required
+    nutrition: catastrophe
+    stored_food: baseline
+    end_simulation_stocks_ratio: zero
+    shutoff: long_delayed_shutoff
+    cull: do_eat_culled
+    meat_strategy: reduce_breeding_USA
+
+  # # USA Net Food Production, No Crops, CS + SCP scaleup
+  USA_net_no_crops_with_scp_and_cs:
+    title: United States Net Food Production, No Crops, CS and SCP scaleup
+    scale: country
+    scenario: industrial_foods # using SCP and CS as food sources
+    seasonality: country
+    grasses: all_crops_die_instantly
+    crop_disruption: all_crops_die_instantly
+    fish: baseline
+    waste: tripled_prices_in_country
+    fat: required
+    protein: required
+    nutrition: catastrophe
+    stored_food: baseline
+    end_simulation_stocks_ratio: zero
+    shutoff: long_delayed_shutoff
+    cull: do_eat_culled
+    meat_strategy: reduce_breeding_USA

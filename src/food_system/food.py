@@ -225,7 +225,12 @@ class Food(UnitConversions):
             or isinstance(kcals, list)
             or isinstance(kcals, np.ndarray)
         )
-        assert isinstance(fat, float) or isinstance(fat, int) or isinstance(fat, list) or isinstance(fat, np.ndarray)
+        assert (
+            isinstance(fat, float)
+            or isinstance(fat, int)
+            or isinstance(fat, list)
+            or isinstance(fat, np.ndarray)
+        )
         assert (
             isinstance(protein, float)
             or isinstance(protein, int)
@@ -386,7 +391,9 @@ class Food(UnitConversions):
 
         # Calculate total energy in billion kcals
         total_energy_billion_kcals = (
-            self.protein * protein_kcal + self.fat * fat_kcal + self.kcals  # billion kcals  # billion kcals
+            self.protein * protein_kcal
+            + self.fat * fat_kcal
+            + self.kcals  # billion kcals  # billion kcals
         )  # billion kcals
 
         return total_energy_billion_kcals
@@ -431,7 +438,9 @@ class Food(UnitConversions):
             ), "ERROR: list type food must have same type of list for all nutrients"
 
             # Check if the list type food has more than one month
-            assert len(self.kcals) > 0, "ERROR: list type food must have more than one month"
+            assert (
+                len(self.kcals) > 0
+            ), "ERROR: list type food must have more than one month"
 
     def make_sure_not_a_list(self):
         """
@@ -442,11 +451,15 @@ class Food(UnitConversions):
             None
         """
         # Check if kcals is a list or numpy array
-        assert not isinstance(self.kcals, list) and not isinstance(self.kcals, np.ndarray)
+        assert not isinstance(self.kcals, list) and not isinstance(
+            self.kcals, np.ndarray
+        )
         # Check if fat is a list or numpy array
         assert not isinstance(self.fat, list) and not isinstance(self.fat, np.ndarray)
         # Check if protein is a list or numpy array
-        assert not isinstance(self.protein, list) and not isinstance(self.protein, np.ndarray)
+        assert not isinstance(self.protein, list) and not isinstance(
+            self.protein, np.ndarray
+        )
 
     def make_sure_is_a_list(self):
         """
@@ -621,7 +634,9 @@ class Food(UnitConversions):
             >>> food3.protein
             30
         """
-        assert self.units == other.units  # Check that the units of the two foods are the same
+        assert (
+            self.units == other.units
+        )  # Check that the units of the two foods are the same
 
         # Add the kcals, fat, and protein of the two foods
         kcals = self.kcals + other.kcals
@@ -629,7 +644,9 @@ class Food(UnitConversions):
         protein = self.protein + other.protein
 
         # Create a new Food object with the sum of the kcals, fat, and protein of the two foods
-        return Food(kcals, fat, protein, self.kcals_units, self.fat_units, self.protein_units)
+        return Food(
+            kcals, fat, protein, self.kcals_units, self.fat_units, self.protein_units
+        )
 
     def __sub__(self, other):
         """
@@ -663,10 +680,14 @@ class Food(UnitConversions):
         protein = self.protein - other.protein
 
         # Create a new Food object with the subtracted nutrient quantities
-        return Food(kcals, fat, protein, self.kcals_units, self.fat_units, self.protein_units)
+        return Food(
+            kcals, fat, protein, self.kcals_units, self.fat_units, self.protein_units
+        )
 
     @staticmethod
-    def get_remaining_food_needed_and_amount_used(demand, resource, max_fraction_of__demand_satisfied_by_resource):
+    def get_remaining_food_needed_and_amount_used(
+        demand, resource, max_fraction_of__demand_satisfied_by_resource
+    ):
         """
         Calculate the remaining food resource needed to satisfy a given food demand based on a certain resource.
 
@@ -680,8 +701,12 @@ class Food(UnitConversions):
             Food: Remaining food needed to meet the demand.
         """
         resource_for_demand = demand * max_fraction_of__demand_satisfied_by_resource
-        resources_used_for_demand_after_limit = Food.min_elementwise(resource_for_demand, resource)
-        resource_used_for_demand = Food.min_elementwise(resources_used_for_demand_after_limit, demand)
+        resources_used_for_demand_after_limit = Food.min_elementwise(
+            resource_for_demand, resource
+        )
+        resource_used_for_demand = Food.min_elementwise(
+            resources_used_for_demand_after_limit, demand
+        )
 
         remaining_food_needed_to_meet_demand = demand - resource_used_for_demand
         return remaining_food_needed_to_meet_demand, resource_used_for_demand
@@ -848,7 +873,9 @@ class Food(UnitConversions):
             self.fat[key] = value.fat
             self.protein[key] = value.protein
         else:
-            raise ValueError("Cannot assign value using index on a non-monthly Food object")
+            raise ValueError(
+                "Cannot assign value using index on a non-monthly Food object"
+            )
 
     def __mul__(self, other):
         """
@@ -1004,7 +1031,9 @@ class Food(UnitConversions):
                 return Food(
                     kcals=np.multiply(np.array(self.kcals), np.array(other.kcals)),
                     fat=np.multiply(np.array(self.fat), np.array(other.fat)),
-                    protein=np.multiply(np.array(self.protein), np.array(other.protein)),
+                    protein=np.multiply(
+                        np.array(self.protein), np.array(other.protein)
+                    ),
                     kcals_units=kcals_units,
                     fat_units=fat_units,
                     protein_units=protein_units,
@@ -1088,7 +1117,11 @@ class Food(UnitConversions):
             )
         else:
             # Compare non-monthly foods
-            return self.kcals == other.kcals and self.fat == other.fat and self.protein == other.protein
+            return (
+                self.kcals == other.kcals
+                and self.fat == other.fat
+                and self.protein == other.protein
+            )
 
     def __ne__(self, other):
         """
@@ -1121,7 +1154,11 @@ class Food(UnitConversions):
             )
         else:
             # Compare non-monthly foods
-            return self.kcals != other.kcals or self.fat != other.fat or self.protein != other.protein
+            return (
+                self.kcals != other.kcals
+                or self.fat != other.fat
+                or self.protein != other.protein
+            )
 
     def plot(self, title="generic food object over time"):
         """
@@ -1159,18 +1196,11 @@ class Food(UnitConversions):
         """
         # Initialize an empty string to hold the return value
         return_string = ""
-        print("to string.")
-        print("self.kcals_units")
-        print(self.kcals_units)
-        print("self.kcals")
-        print(self.kcals)
         # Create a string representation of the kcals and add it to the return string
         kcal_string = "    kcals: % s % s" % (
             np.round(self.kcals, 5),
             self.kcals_units,
         )
-        print("kcal_string")
-        print(kcal_string)
         return_string = return_string + kcal_string
 
         # If fat is included, create a string representation of it and add it to the return string
@@ -1249,7 +1279,10 @@ class Food(UnitConversions):
             return (
                 (np.array(self.kcals) >= 0).all()
                 and ((np.array(self.fat) >= 0).all() or self.conversions.exclude_fat)
-                and ((np.array(self.protein) >= 0).all() or self.conversions.exclude_protein)
+                and (
+                    (np.array(self.protein) >= 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
         # If the food is not a list, check if all macronutrients are non-negative
         return (
@@ -1291,8 +1324,14 @@ class Food(UnitConversions):
             # macronutrient values
             return (
                 (np.array(self.kcals - other.kcals) > 0).all()
-                and ((np.array(self.fat - other.fat) > 0).all() or self.conversions.exclude_fat)
-                and ((np.array(self.protein - other.protein) > 0).all() or self.conversions.exclude_protein)
+                and (
+                    (np.array(self.fat - other.fat) > 0).all()
+                    or self.conversions.exclude_fat
+                )
+                and (
+                    (np.array(self.protein - other.protein) > 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
         # Check if all macronutrient values of the current food object are greater than the other food object's
@@ -1333,8 +1372,14 @@ class Food(UnitConversions):
             # Compare the macronutrient values of the two food items using numpy arrays
             return (
                 (np.array(self.kcals - other.kcals) < 0).all()
-                and ((np.array(self.fat - other.fat) < 0).all() or self.conversions.exclude_fat)
-                and ((np.array(self.protein - other.protein) < 0).all() or self.conversions.exclude_protein)
+                and (
+                    (np.array(self.fat - other.fat) < 0).all()
+                    or self.conversions.exclude_fat
+                )
+                and (
+                    (np.array(self.protein - other.protein) < 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
         # Compare the macronutrient values of the two food items
@@ -1377,8 +1422,14 @@ class Food(UnitConversions):
             # object's
             return (
                 (np.array(self.kcals - other.kcals) > 0).any()
-                or ((np.array(self.fat - other.fat) > 0).any() and self.conversions.exclude_fat)
-                or ((np.array(self.protein - other.protein) > 0).any() and self.conversions.exclude_protein)
+                or (
+                    (np.array(self.fat - other.fat) > 0).any()
+                    and self.conversions.exclude_fat
+                )
+                or (
+                    (np.array(self.protein - other.protein) > 0).any()
+                    and self.conversions.exclude_protein
+                )
             )
 
         # If the current food object is not a list of monthly values, compare the macronutrient values
@@ -1417,8 +1468,14 @@ class Food(UnitConversions):
             # object's macronutrient values.
             return (
                 (np.array(self.kcals - other.kcals) < 0).any()
-                or ((np.array(self.fat - other.fat) < 0).any() and self.conversions.exclude_fat)
-                or ((np.array(self.protein - other.protein) < 0).any() and self.conversions.exclude_protein)
+                or (
+                    (np.array(self.fat - other.fat) < 0).any()
+                    and self.conversions.exclude_fat
+                )
+                or (
+                    (np.array(self.protein - other.protein) < 0).any()
+                    and self.conversions.exclude_protein
+                )
             )
 
         # If the current food object is not a monthly list, compare the macronutrient values.
@@ -1458,8 +1515,14 @@ class Food(UnitConversions):
             # Compare the macronutrient values of the two food items using numpy arrays
             return (
                 (np.array(self.kcals - other.kcals) >= 0).all()
-                and ((np.array(self.fat - other.fat) >= 0).all() or self.conversions.exclude_fat)
-                and ((np.array(self.protein - other.protein) >= 0).all() or self.conversions.exclude_protein)
+                and (
+                    (np.array(self.fat - other.fat) >= 0).all()
+                    or self.conversions.exclude_fat
+                )
+                and (
+                    (np.array(self.protein - other.protein) >= 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
         # If the current food item is not a list of monthly values, compare the macronutrient
@@ -1511,7 +1574,10 @@ class Food(UnitConversions):
         return (
             (self.kcals <= other.kcals).all()
             and ((self.fat <= other.fat).all() or self.conversions.exclude_fat)
-            and ((self.protein <= other.protein).all() or self.conversions.exclude_protein)
+            and (
+                (self.protein <= other.protein).all()
+                or self.conversions.exclude_protein
+            )
         )
 
     def any_greater_than_or_equal_to(self, other):
@@ -1538,8 +1604,14 @@ class Food(UnitConversions):
             # the corresponding macronutrient values of the other food object.
             return (
                 (np.array(self.kcals - other.kcals) >= 0).any()
-                or ((np.array(self.fat - other.fat) >= 0).any() and self.conversions.exclude_fat)
-                or ((np.array(self.protein - other.protein) >= 0).any() and self.conversions.exclude_protein)
+                or (
+                    (np.array(self.fat - other.fat) >= 0).any()
+                    and self.conversions.exclude_fat
+                )
+                or (
+                    (np.array(self.protein - other.protein) >= 0).any()
+                    and self.conversions.exclude_protein
+                )
             )
 
         # Check if any of the macronutrient values of the current food object are greater than or equal to
@@ -1583,7 +1655,11 @@ class Food(UnitConversions):
 
             # Check if any of the kcal values are less than or equal to the other food's kcal values,
             # or if any of the fat or protein values are less than or equal to the other food's fat or protein values
-            return (np.array(self.kcals - other.kcals) <= 0).any() or less_than_fat or less_than_protein
+            return (
+                (np.array(self.kcals - other.kcals) <= 0).any()
+                or less_than_fat
+                or less_than_protein
+            )
 
         # If the current food object is not a monthly list, assert that the units are the same
         assert self.units == other.units
@@ -1623,7 +1699,10 @@ class Food(UnitConversions):
             return (
                 (np.array(self.kcals) == 0).all()
                 and ((np.array(self.fat) == 0).all() or self.conversions.exclude_fat)
-                and ((np.array(self.protein) == 0).all() or self.conversions.exclude_protein)
+                and (
+                    (np.array(self.protein) == 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
         # Check if all macronutrients are equal to zero
@@ -1763,7 +1842,10 @@ class Food(UnitConversions):
             return (
                 (np.array(self.kcals) >= 0).all()
                 and ((np.array(self.fat) >= 0).all() or self.conversions.exclude_fat)
-                and ((np.array(self.protein) >= 0).all() or self.conversions.exclude_protein)
+                and (
+                    (np.array(self.protein) >= 0).all()
+                    or self.conversions.exclude_protein
+                )
             )
 
         # Check if all macronutrients are greater than or equal to zero
@@ -1830,14 +1912,19 @@ class Food(UnitConversions):
         # Using min() + list comprehension + values()
         # Finding min value keys in dictionary
         min_nutrient_val = min(nutrients_dict.values())
-        min_nutrient_name = [key for key in nutrients_dict if nutrients_dict[key] == min_nutrient_val][0]
+        min_nutrient_name = [
+            key for key in nutrients_dict if nutrients_dict[key] == min_nutrient_val
+        ][0]
 
         assert min_nutrient_val <= to_find_min_of.kcals
         # sometimes, this function causes an error for a single fat or protein
         # because the condition before the "or" is false, but doesn't find this for
         # the other because  the condition before the "or" is true
         assert min_nutrient_val <= to_find_min_of.fat or self.conversions.exclude_fat
-        assert min_nutrient_val <= to_find_min_of.protein or self.conversions.exclude_protein
+        assert (
+            min_nutrient_val <= to_find_min_of.protein
+            or self.conversions.exclude_protein
+        )
 
         return (min_nutrient_name, min_nutrient_val)
 
@@ -1887,7 +1974,9 @@ class Food(UnitConversions):
         # Using max() + list comprehension + values()
         # Finding max value keys in dictionary
         max_nutrient_val = max(nutrients_dict.values())
-        max_key = [key for key in nutrients_dict if nutrients_dict[key] == max_nutrient_val][0]
+        max_key = [
+            key for key in nutrients_dict if nutrients_dict[key] == max_nutrient_val
+        ][0]
 
         # Ensure that the maximum nutrient value is greater than or equal to the kcals value
         assert max_nutrient_val >= self.kcals
@@ -2055,7 +2144,9 @@ class Food(UnitConversions):
         # Loop through each month and calculate the amount of the other food consumed
         for i in range(self.NMONTHS):
             demand_this_month = self.get_month(i)
-            amount_consumed = self.get_consumed_amount(demand_this_month, used_nutrient_ratio)
+            amount_consumed = self.get_consumed_amount(
+                demand_this_month, used_nutrient_ratio
+            )
             amount_consumed_list.kcals[i] = amount_consumed.kcals
             amount_consumed_list.fat[i] = amount_consumed.fat
             amount_consumed_list.protein[i] = amount_consumed.protein

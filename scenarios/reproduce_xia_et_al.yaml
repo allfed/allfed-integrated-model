@@ -1,0 +1,85 @@
+# ALLOWED VALUES:
+
+# scale: 'global', 'country'
+# seasonality: 'no_seasonality', 'country', 'baseline_globally', 'nuclear_winter_globally'  
+# grasses: 'baseline', 'global_nuclear_winter', 'country_nuclear_winter', 'all_crops_die_instantly'
+# crop_disruption: 'zero', 'global_nuclear_winter', 'country_nuclear_winter', 'all_crops_die_instantly'
+# scenario: 'no_resilient_foods', 'all_resilient_foods', 'all_resilient_foods_and_more_area', 
+#           'no_resilient_foods', 'seaweed', 'methane_scp', 'cellulosic_sugar', 
+#           'relocated_crops', 'greenhouse'
+# fish: 'baseline', 'nuclear_winter'
+# waste: 'zero', 'tripled_prices_in_country', 'doubled_prices_in_country',
+#        'baseline_in_country', 'tripled_prices_globally', 'doubled_prices_globally', 
+#        'baseline_globally'  
+# nutrition: 'baseline', 'catastrophe'
+# buffer: 'zero', 'no_stored_between_years', 'baseline'
+# shutoff: 'immediate', 'short_delayed_shutoff', 'long_delayed_shutoff', 'continued', 
+#          'reduce_breeding_USA'
+# cull: 'do_eat_culled', 'dont_eat_culled'  
+# fat: 'required', 'not_required'
+# protein: 'required', 'not_required'
+# meat_strategy: 'efficient_meat_strategy', 'inefficient_meat_strategy'
+
+# DETAILED NOTES:
+
+# scale: 'global' runs simulation for entire world, 'country' for a specific country
+
+# seasonality: 'no_seasonality' uses average crop production throughout year, 
+#   'country' uses monthly crop data for that country, 'baseline_globally' uses 
+#   typical global monthly crop seasonality, 'nuclear_winter_globally' alters monthly
+#   seasonality to model nuclear winter conditions 
+
+# grasses: 'baseline' uses current grass/grazing production, 'global_nuclear_winter' 
+#   and 'country_nuclear_winter' reduce grass production, 'all_crops_die_instantly' 
+#   sets grass production to 0
+
+# crop_disruption: 'zero' uses current crop production, 'global_nuclear_winter' and 
+#   'country_nuclear_winter' reduce crop production over time, 
+#   'all_crops_die_instantly' sets crop production to 0
+  
+# scenario: selects which resilient foods to enable in simulation - 
+#   'no_resilient_foods' uses current production only, 'all_resilient_foods' enables
+#   scaled up seaweed, cellulosic sugar, methane SCP; 'all_resilient_foods_and_more_area'
+#   also expands cropland area; others enable individual resilient foods
+   
+# fish: 'baseline' uses current fish production, 'nuclear_winter' reduces over time
+
+# waste: sets % of food wasted at retail/consumption stage of system
+
+# nutrition: 'baseline' uses typical diet, 'catastrophe' uses minimum thresholds
+
+# buffer: amount of food stocks/buffers to assume at start 
+  
+# shutoff: when to reduce or eliminate animal feed and biofuel production
+
+# cull: 'do_eat_culled' includes meat from culled animals, 'dont_eat_culled' discards it
+
+# fat: whether to track and meet fat requirements  
+
+# protein: whether to track and meet protein requirements
+
+# meat_strategy: efficient directs feed to dairy cows first, 
+#   inefficient distributes feed proportionally to population
+
+
+settings:
+  countries: USA
+
+simulations:
+  # USA Food Production Scenario following Xia et al Results
+  USA_Xia_et_al_results:
+    title: Reproduce Xia et al Results
+    scale: country
+    seasonality: no_seasonality
+    grasses: country_nuclear_winter
+    crop_disruption: country_nuclear_winter
+    scenario: no_resilient_foods
+    fish: nuclear_winter
+    waste: tripled_prices_in_country
+    nutrition: catastrophe
+    buffer: no_stored_between_years
+    shutoff: long_delayed_shutoff
+    cull: dont_eat_culled
+    fat: not_required
+    protein: not_required
+    meat_strategy: inefficient_meat_strategy
