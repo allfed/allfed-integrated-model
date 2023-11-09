@@ -18,7 +18,8 @@ simulations:
     fish: baseline
     waste: baseline_in_country
     nutrition: baseline 
-    buffer: baseline
+    stored_food: baseline
+    end_simulation_stocks_ratio: baseline
     shutoff: continued
     cull: do_eat_culled
     fat: not_required
@@ -36,7 +37,8 @@ simulations:
     fish: baseline
     waste: zero
     nutrition: baseline
-    buffer: baseline
+    stored_food: baseline
+    end_simulation_stocks_ratio: baseline
     shutoff: immediate
     cull: dont_eat_culled
     fat: not_required
@@ -56,7 +58,8 @@ simulations:
     fat: not_required
     protein: not_required
     nutrition: catastrophe
-    buffer: zero
+    stored_food: baseline
+    end_simulation_stocks_ratio: zero
     shutoff: continued
     cull: do_eat_culled
     meat_strategy: reduce_breeding_USA
@@ -74,7 +77,8 @@ simulations:
     fat: not_required
     protein: not_required
     nutrition: catastrophe
-    buffer: zero
+    stored_food: baseline
+    end_simulation_stocks_ratio: zero
     shutoff: long_delayed_shutoff
     cull: do_eat_culled
     meat_strategy: reduce_breeding_USA
@@ -92,7 +96,8 @@ simulations:
     fat: not_required
     protein: not_required
     nutrition: catastrophe
-    buffer: zero
+    stored_food: baseline
+    end_simulation_stocks_ratio: zero
     shutoff: long_delayed_shutoff
     cull: do_eat_culled
     meat_strategy: reduce_breeding_USA
@@ -110,7 +115,8 @@ simulations:
     fat: not_required
     protein: not_required
     nutrition: catastrophe
-    buffer: zero
+    stored_food: baseline
+    end_simulation_stocks_ratio: zero
     shutoff: long_delayed_shutoff
     cull: do_eat_culled
     meat_strategy: reduce_breeding_USA
