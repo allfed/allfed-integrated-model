@@ -51,16 +51,25 @@ class MethaneSCP:
         self.NMONTHS = constants_for_params["NMONTHS"]
 
         # set the SCP_KCALS_PER_KG, SCP_FRAC_PROTEIN, and SCP_FRAC_FAT attributes
-        self.SCP_KCALS_PER_KG = 5350
-        self.SCP_FRAC_PROTEIN = 0.650
-        self.SCP_FRAC_FAT = 0.09
+        self.SCP_KCALS_PER_KG = 5350  # kcals per kg of scp
+        self.SCP_FRAC_PROTEIN = (
+            0.650  # fraction protein by mass (1kg is 650 grams protein)
+        )
+        self.SCP_FRAC_FAT = 0.09  # fraction fat by mass (1kg is 90 grams fat)
 
-        # calculate the SCP_KCALS_TO_FAT_CONVERSION and SCP_KCALS_TO_PROTEIN_CONVERSION attributes
+        # to arrive at units thousand tons each month of SCP from billion kcals of fat,
+        # we multiply the starting number of billion kcals of food by [units]:
+        # [billion kcals] * [1e9 kcals / 1 billion kcals] => [kcals of food]
+        # [kcals of food] / [kcals / kg] => [kg of food]
+        # [kg of food] * [kg fat / kg food] => [kg of fat]
+        # [kg of fat] * [1 thousand tons of fat / 1e6 kg fat] => [thousand tons of fat]
+        # therefore [billion kcals] * (1e9 / [kcals / kg] * [fraction fat by mass] / 1e6) => [thousand tons of fat]
+
         self.SCP_KCALS_TO_FAT_CONVERSION = (
-            1e9 * self.SCP_FRAC_FAT / self.SCP_KCALS_PER_KG / 1e6
+            1e9 / self.SCP_KCALS_PER_KG * self.SCP_FRAC_FAT / 1e6
         )
         self.SCP_KCALS_TO_PROTEIN_CONVERSION = (
-            1e9 * self.SCP_FRAC_PROTEIN / self.SCP_KCALS_PER_KG / 1e6
+            1e9 / self.SCP_KCALS_PER_KG * self.SCP_FRAC_PROTEIN / 1e6
         )
 
         # feed can't be more than this fraction in terms of calories in any month
@@ -84,7 +93,9 @@ class MethaneSCP:
         )
 
         # apply sugar waste also to methane scp, for lack of better baseline
-        self.SCP_WASTE = constants_for_params["WASTE"]["SUGAR"]
+        self.SCP_WASTE_DISTRIBUTION = constants_for_params["WASTE_DISTRIBUTION"][
+            "SUGAR"
+        ]
 
     def calculate_monthly_scp_caloric_production(self, constants_for_params):
         """
@@ -131,7 +142,7 @@ class MethaneSCP:
                     / 100
                     * self.GLOBAL_MONTHLY_NEEDS
                     * constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"]
-                    * (1 - self.SCP_WASTE / 100)
+                    * (1 - self.SCP_WASTE_DISTRIBUTION / 100)
                 )
             # set the production_kcals_scp_per_month_long attribute
             self.production_kcals_scp_per_month_long = (
@@ -149,36 +160,22 @@ class MethaneSCP:
         Attributes:
             production (Food): A Food object containing the production of SCP.
         """
-        # create a Food object for production
         self.production = Food()
 
         # set the kcals attribute of the production Food object
         self.production.kcals = np.array(
             self.production_kcals_scp_per_month_long[0 : self.NMONTHS]
         )
+        # calculate the fat attribute of the production Food object
+        # billions of kcals converted to 1000s of tons fat
+        self.production.fat = np.array(
+            list(np.array(self.production.kcals) * self.SCP_KCALS_TO_PROTEIN_CONVERSION)
+        )
 
         # calculate the protein attribute of the production Food object
         # billions of kcals converted to 1000s of tons protein
         self.production.protein = np.array(
-            list(
-                np.array(self.production.kcals)
-                * 1e9
-                * self.SCP_FRAC_PROTEIN
-                / self.SCP_KCALS_PER_KG
-                / 1e6
-            )
-        )
-
-        # calculate the fat attribute of the production Food object
-        # billions of kcals converted to 1000s of tons fat
-        self.production.fat = np.array(
-            list(
-                np.array(self.production.kcals)
-                * 1e9
-                * self.SCP_FRAC_FAT
-                / self.SCP_KCALS_PER_KG
-                / 1e6
-            )
+            list(np.array(self.production.kcals) * self.SCP_KCALS_TO_FAT_CONVERSION)
         )
 
         # set the units of the production Food object
@@ -187,5 +184,3 @@ class MethaneSCP:
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
-
-        # self.postwaste = self * (1 - self.SCP_WASTE / 100)
