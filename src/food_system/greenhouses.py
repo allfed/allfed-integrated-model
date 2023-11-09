@@ -127,7 +127,8 @@ class Greenhouses:
         Returns:
             numpy.ndarray: an array containing the area of greenhouses needed to grow crops
 
-        This function calculates the area of greenhouses needed to grow crops. It first checks if there is any crop area to
+        This function calculates the area of greenhouses needed to grow crops. It first checks if there is any crop
+        area to
         grow. If there is no crop area, it returns an array of zeros. If there is crop area, it calculates the area of
         greenhouses needed based on the greenhouse area multiplier and the total crop area. If the greenhouse area
         multiplier is not specified, it uses the greenhouse fraction from Australia to calculate the greenhouse area. It
@@ -312,7 +313,8 @@ class Greenhouses:
                 outdoor_crops.months_cycle,
                 outdoor_crops.all_months_reductions,
                 outdoor_crops.OG_KCAL_EXPONENT,
-                constants_for_params["WASTE"]["CROPS"],
+                constants_for_params["WASTE_DISTRIBUTION"]["CROPS"]
+                + constants_for_params["WASTE_RETAIL"],
             )
         else:
             self.GH_KCALS_GROWN_PER_HECTARE = [0] * self.NMONTHS
@@ -350,6 +352,7 @@ class Greenhouses:
         """
 
         # Constants for fat and protein ratios
+        KCAL_RATIO = outdoor_crops.KCAL_RATIO_ROTATION
         FAT_RATIO = outdoor_crops.FAT_RATIO_ROTATION
         PROTEIN_RATIO = outdoor_crops.PROTEIN_RATIO_ROTATION
 
@@ -370,8 +373,10 @@ class Greenhouses:
         relocation_protein_per_ha_long = []
 
         for kcals_per_month in self.GH_KCALS_GROWN_PER_HECTARE:
-            gh_kcals = kcals_per_month * (
-                1 + constants_for_params["GREENHOUSE_GAIN_PCT"] / 100
+            gh_kcals = (
+                kcals_per_month
+                * KCAL_RATIO
+                * (1 + constants_for_params["GREENHOUSE_GAIN_PCT"] / 100)
             )  # units: billion kcals per month
 
             relocation_kcals_per_ha_long.append(gh_kcals)

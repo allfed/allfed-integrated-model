@@ -54,7 +54,9 @@ class CellulosicSugar:
         )
 
         # percentage of sugar waste
-        self.SUGAR_WASTE = constants_for_params["WASTE"]["SUGAR"]
+        self.SUGAR_WASTE_DISTRIBUTION = constants_for_params["WASTE_DISTRIBUTION"][
+            "SUGAR"
+        ]
 
         # this all comes from one of Juan's recently published industrial foods
         # papers
@@ -98,7 +100,7 @@ class CellulosicSugar:
                     / 100
                     * self.GLOBAL_MONTHLY_NEEDS
                     * constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"]
-                    * (1 - self.SUGAR_WASTE / 100)
+                    * (1 - self.SUGAR_WASTE_DISTRIBUTION / 100)
                 )
         else:
             # if cellulosic sugar should not be added, set the production to zero

@@ -61,13 +61,29 @@ class CalculateFeedAndMeat:
         # exclude chicken from output list
         ignore_chicken_graph = 0
         if ignore_chicken_graph == 1:
-            animal_list = [animal for animal in self.all_animals if "chicken" not in animal.animal_type]
+            animal_list = [
+                animal
+                for animal in self.all_animals
+                if "chicken" not in animal.animal_type
+            ]
         else:
             animal_list = [animal for animal in self.all_animals]
 
         for animal in animal_list:
-            fig.add_trace(go.Scatter(y=animal.slaughter, mode="lines", name=animal.animal_type + " slaughter"))
-            fig.add_trace(go.Scatter(y=animal.population, mode="lines", name=animal.animal_type + " population"))
+            fig.add_trace(
+                go.Scatter(
+                    y=animal.slaughter,
+                    mode="lines",
+                    name=animal.animal_type + " slaughter",
+                )
+            )
+            fig.add_trace(
+                go.Scatter(
+                    y=animal.population,
+                    mode="lines",
+                    name=animal.animal_type + " population",
+                )
+            )
 
         # fig2 = go.Figure()
 
@@ -110,10 +126,7 @@ class CalculateFeedAndMeat:
         # add up all the numbers of animals slaughtered and feed
 
         # get the total slaughter by animal size from the all_animals list of animal objects
-        plt.figure()
-        plt.title("animal slaughter")
         for animal in self.all_animals:
-            plt.plot(animal.slaughter)
             if animal.animal_size == "small":
                 animals_killed_for_meat_small += np.array(
                     animal.slaughter
@@ -126,20 +139,35 @@ class CalculateFeedAndMeat:
                 animals_killed_for_meat_large += np.array(
                     animal.slaughter
                 )  # + np.array(animal.total_homekill_this_month))
-        plt.show()
-        plt.figure()
-        plt.title("animal pops ratio to beginning")
-        labels = []  # to collect labels for the legend
-        for animal in self.all_animals:
-            plt.plot(animal.population / animal.population[0])
-            # print("animal.animal_species")
-            # print(animal.animal_species)
-            # print("animal.animal_type")
-            # print(animal.animal_type)
-            labels.append(animal.animal_type)
 
-        plt.legend(labels)
-        plt.show()
+        SHOW_ANIMAL_SLAUGHTER_PLOT = False
+        if SHOW_ANIMAL_SLAUGHTER_PLOT:
+            plt.figure()
+            plt.title("animal slaughter")
+            labels = []  # to collect labels for the legend
+            for animal in self.all_animals:
+                plt.plot(animal.slaughter)
+                labels.append(animal.animal_type)
+            plt.legend(labels)
+            plt.show()
+
+            plt.figure()
+            plt.title("homekill")
+            labels = []  # to collect labels for the legend
+            for animal in self.all_animals:
+                plt.plot(animal.total_homekill_this_month)
+                labels.append(animal.animal_type)
+            plt.legend(labels)
+            plt.show()
+
+            plt.figure()
+            plt.title("animal pops ratio to beginning")
+            labels = []  # to collect labels for the legend
+            for animal in self.all_animals:
+                plt.plot(animal.population / animal.population[0])
+                labels.append(animal.animal_type)
+            plt.legend(labels)
+            plt.show()
         # convert the animals slaughtered list
         return (
             animals_killed_for_meat_small,
@@ -157,7 +185,9 @@ class CalculateFeedAndMeat:
             if animal.animal_type == "milk_cattle":
                 # print("MILK COW len(animal.population)")
                 # print(len(animal.population))
-                total_dairy_cows += np.array(animal.population)  # + np.array(animal.total_homekill_this_month))
+                total_dairy_cows += np.array(
+                    animal.population
+                )  # + np.array(animal.total_homekill_this_month))
         return total_dairy_cows
 
 
@@ -201,7 +231,9 @@ class CountryData:
         self.meat_output = []
         self.spare_slaughter_hours = 0
 
-    def set_livestock_unit_factors(self, df_country_info, df_regional_conversion_factors):
+    def set_livestock_unit_factors(
+        self, df_country_info, df_regional_conversion_factors
+    ):
         """Requires inputs of the country info dataframe, and the regional conversion factors dataframe
         df_regional_conversion_factors dataframe contains the conversion factors for the LSU for each animal type, based
         on ther region. And the other, df_country_info contains the mapping from the country to the region.
@@ -224,7 +256,9 @@ class CountryData:
 
         # get region from country info dataframe
         try:
-            self.EK_region = df_country_info[df_country_info.index == self.country_name]["FAO-region-EK"].values[0]
+            self.EK_region = df_country_info[
+                df_country_info.index == self.country_name
+            ]["FAO-region-EK"].values[0]
         except BaseException:
             self.EK_region = "Other"
 
@@ -233,15 +267,23 @@ class CountryData:
         # in this imnstance, the columns are the regions and the index is the animal type (so the index needs to be
         # saved in to the dict as the 'species')
         try:
-            conversion_factors = df_regional_conversion_factors[self.EK_region].to_dict()
-            self.LSU_conversion_factors = {key: value for key, value in conversion_factors.items()}
+            conversion_factors = df_regional_conversion_factors[
+                self.EK_region
+            ].to_dict()
+            self.LSU_conversion_factors = {
+                key: value for key, value in conversion_factors.items()
+            }
         except BaseException:
-            raise ValueError("Region not found in the regional conversion factors dataframe")
+            raise ValueError(
+                "Region not found in the regional conversion factors dataframe"
+            )
 
     def homekill_desperation_parameters(self):
         """"""
         self.other_death_homekill_rate = 0.5  #
-        self.homekill_fraction = 0.00  # fraction of population that is healthy that will be homekilled (max)
+        self.homekill_fraction = (
+            0.00  # fraction of population that is healthy that will be homekilled (max)
+        )
 
     def calculate_homekill_hours(self):
         """Function to calculate the number of hours required to slaughter the homekill animals."""
@@ -257,13 +299,19 @@ class CountryData:
         """
 
         # same for slaughter hours
-        slaughter_baseline = np.array([animal.baseline_slaughter for animal in all_animals])
+        slaughter_baseline = np.array(
+            [animal.baseline_slaughter for animal in all_animals]
+        )
 
         # multiply the slaughter baseline by the number of slaughter hours required per species (animal_slaughter_hours)
-        slaughter_hours = np.array([animal.animal_slaughter_hours for animal in all_animals])
+        slaughter_hours = np.array(
+            [animal.animal_slaughter_hours for animal in all_animals]
+        )
 
         # calculate the total slaughter hours by multiplying the animal population by the slaughter hours
-        total_slaughter_hours = sum(np.array(slaughter_baseline) * np.array(slaughter_hours))
+        total_slaughter_hours = sum(
+            np.array(slaughter_baseline) * np.array(slaughter_hours)
+        )
 
         # append the total slaughter hours to the country data
         return total_slaughter_hours
@@ -324,13 +372,17 @@ class AnimalSpecies:
             raise ValueError("livestock_unit input must be non-negative")
 
         self.population = []  # this is a list so that it can be appended to later
-        self.population_starving_pre_slaughter = []  # will be appended to, population - population fed each month.
+        self.population_starving_pre_slaughter = (
+            []
+        )  # will be appended to, population - population fed each month.
         self.population_starving_month = []
 
         self.animal_size = animal_size
         self.current_population = population
         self.initital_population = population
-        self.initial_slaughter = slaughter / 12  # static, initial value as it gets called to set other attributes.
+        self.initial_slaughter = (
+            slaughter / 12
+        )  # static, initial value as it gets called to set other attributes.
         self.animal_function = animal_function
         # other slauhter attributes are set in a different function
 
@@ -383,7 +435,9 @@ class AnimalSpecies:
 
     def set_LSU_attributes(self, country_object):
         self.LSU_factor = country_object.LSU_conversion_factors[self.animal_species]
-        self.NE_balance = self.reset_NE_balance()  # this is the feed required per month for the species
+        self.NE_balance = (
+            self.reset_NE_balance()
+        )  # this is the feed required per month for the species
 
     def set_species_milk_attributes(
         self,
@@ -394,7 +448,9 @@ class AnimalSpecies:
     ):
         # check that the population exists
         if not hasattr(self, "current_population"):
-            raise AttributeError("Population must be set before milk attributes can be set")
+            raise AttributeError(
+                "Population must be set before milk attributes can be set"
+            )
         if productive_milk_age_start < 0 or productive_milk_age_end < 0:
             raise ValueError("milk age input must be non-negative")
         if productive_milk_age_end < productive_milk_age_start:
@@ -409,7 +465,9 @@ class AnimalSpecies:
         self.population_proportion_productive_milk = (
             productive_milk_age_end - productive_milk_age_start
         ) / productive_milk_age_end
-        self.population_producing_milk = self.current_population * self.population_proportion_productive_milk
+        self.population_producing_milk = (
+            self.current_population * self.population_proportion_productive_milk
+        )
         self.milk_production_per_month_per_head = (
             milk_production_per_month_per_head  # update to include this in the csv file
         )
@@ -466,13 +524,20 @@ class AnimalSpecies:
         None
         """
         if not hasattr(self, "current_population"):
-            raise AttributeError("Population must be set before slaughter attributes can be set")
+            raise AttributeError(
+                "Population must be set before slaughter attributes can be set"
+            )
         if reduction_in_animal_breeding < 0 or reduction_in_animal_breeding > 1:
             raise ValueError("reduction in animal breeding must be between 0 and 1")
         if target_population_fraction < 0:
             raise ValueError("target population fraction must be non-negative")
-        if pregnant_animal_slaughter_fraction < 0 or pregnant_animal_slaughter_fraction > 1:
-            raise ValueError("pregnant animal slaughter fraction must be between 0 and 1")
+        if (
+            pregnant_animal_slaughter_fraction < 0
+            or pregnant_animal_slaughter_fraction > 1
+        ):
+            raise ValueError(
+                "pregnant animal slaughter fraction must be between 0 and 1"
+            )
         if change_in_slaughter_rate < 0:
             raise ValueError("change in slaughter rate must be non-negative")
         if other_animal_death_rate_annual < 0:
@@ -490,7 +555,9 @@ class AnimalSpecies:
         self.other_death_causes_other_than_starving = (
             []
         )  # this is calculated now, as it occurs BEFORE the first month (i.e is independent of feed)
-        self.other_death_starving = []  # this one starts empty because it is worked out AFTER the first month
+        self.other_death_starving = (
+            []
+        )  # this one starts empty because it is worked out AFTER the first month
         self.other_death_total = []
         self.slaughter = []  # is list
         self.births_animals_month = []
@@ -505,14 +572,22 @@ class AnimalSpecies:
 
         # attributes of the animal species
         self.gestation = gestation  # gestation period in months
-        self.other_animal_death_rate_annual = other_animal_death_rate_annual  # annual death rate of animals
-        self.animals_per_pregnancy = animals_per_pregnancy  # number of animals per pregnancy
+        self.other_animal_death_rate_annual = (
+            other_animal_death_rate_annual  # annual death rate of animals
+        )
+        self.animals_per_pregnancy = (
+            animals_per_pregnancy  # number of animals per pregnancy
+        )
 
         # attributes of the slaughterers/society
-        self.animal_slaughter_hours = animal_slaughter_hours  # hours per animal spent slaughtering
+        self.animal_slaughter_hours = (
+            animal_slaughter_hours  # hours per animal spent slaughtering
+        )
         # change in slaughter rate (a static value, given by assumptions of loss of industry etc...)
         self.change_in_slaughter_rate = change_in_slaughter_rate
-        self.baseline_slaughter = self.initial_slaughter * change_in_slaughter_rate  # is list
+        self.baseline_slaughter = (
+            self.initial_slaughter * change_in_slaughter_rate
+        )  # is list
 
         # options of the scenario
         # this is the fraction of pregnant animals that are attempted to be slaughtered each month
@@ -525,7 +600,9 @@ class AnimalSpecies:
         )  # this is the target population head, used to calculate the number of animals slaughtered per month
         # calculations based off of the above
         self.other_animal_death_rate_monthly = other_animal_death_rate_annual / 12
-        self.other_animal_death_basline_head_monthly = self.other_animal_death_rate_monthly * self.initital_population
+        self.other_animal_death_basline_head_monthly = (
+            self.other_animal_death_rate_monthly * self.initital_population
+        )
 
         if self.animal_function == "milk":
             # number of (total) animals born per milk animal. E.g as all milk animals are female,
@@ -538,14 +615,18 @@ class AnimalSpecies:
             # births_animals_month_baseline is the number of female milk animals born. NOT total births.
 
             self.births_animals_month_baseline = (
-                (1 / self.insemination_cycle_time_for_milk) * (self.population_producing_milk) * (1 / self.birth_ratio)
+                (1 / self.insemination_cycle_time_for_milk)
+                * (self.population_producing_milk)
+                * (1 / self.birth_ratio)
             )
         else:
             # number of animals born (total from population) per milk animal.
             # I.e all male milk animals are not considered milk anaimls and need to be moved over to meat
             self.birth_ratio = 1
             self.births_animals_month_baseline = (
-                self.other_animal_death_basline_head_monthly + self.initial_slaughter - transfer_births_or_head
+                self.other_animal_death_basline_head_monthly
+                + self.initial_slaughter
+                - transfer_births_or_head
             )
 
             # if a milk animla, this is JUST the milk animals born (meat transfer accounted for in pregnancy attrivute)
@@ -560,7 +641,9 @@ class AnimalSpecies:
                 - self.other_animal_death_basline_head_monthly
             )
             self.initial_slaughter += calf_slaughter
-            self.baseline_slaughter = self.initial_slaughter * change_in_slaughter_rate  # is list
+            self.baseline_slaughter = (
+                self.initial_slaughter * change_in_slaughter_rate
+            )  # is list
 
         # positive means animals transferred IN from, milk, negative means animals transferred OUT (i.e milk animals
         # should always have a negative IF treansfer population is only related to male dairy animals).
@@ -572,9 +655,14 @@ class AnimalSpecies:
         # vOPTIONAL TODO, update this to be more accurate and deal with seasonal births. Can be done by
         # changing the "gestation" to be a complicated value based on month/season
         self.pregnant_animals_total_baseline = (
-            self.birth_ratio * self.births_animals_month_baseline / self.animals_per_pregnancy * self.gestation
+            self.birth_ratio
+            * self.births_animals_month_baseline
+            / self.animals_per_pregnancy
+            * self.gestation
         )
-        self.pregnant_animals_birthing_this_month_baseline = self.pregnant_animals_total_baseline / self.gestation
+        self.pregnant_animals_birthing_this_month_baseline = (
+            self.pregnant_animals_total_baseline / self.gestation
+        )
 
         self.slaughtered_pregnant_animals_baseline = (
             self.births_animals_month_baseline * pregnant_animal_slaughter_fraction
@@ -605,7 +693,9 @@ class AnimalSpecies:
         )
 
     def set_initial_milk_transfer(self):
-        retiring_milk_first_month = self.retiring_milk_animals_fraction * self.initital_population
+        retiring_milk_first_month = (
+            self.retiring_milk_animals_fraction * self.initital_population
+        )
         transfer_pop = self.births_animals_month_baseline + retiring_milk_first_month
         return transfer_pop
 
@@ -667,7 +757,9 @@ class AnimalSpecies:
     def net_energy_required_per_month(self):
         """Function to calculate the total net energy required per month for the species."""
 
-        return self.livestock_unit * self.one_LSU_monthly_billion_kcal() * self.LSU_factor
+        return (
+            self.livestock_unit * self.one_LSU_monthly_billion_kcal() * self.LSU_factor
+        )
 
     def net_energy_required_per_species(self):
         """Function to calculate the total net energy required per month for the species."""
@@ -733,7 +825,9 @@ class AnimalSpecies:
             else:
                 # not enough food to feed the whole population
                 # calculate the number of animals that can be fed
-                self.population_fed = round(NE_in_food / NE_required * self.current_population)
+                self.population_fed = round(
+                    NE_in_food / NE_required * self.current_population
+                )
                 # update the food object
                 NE_required -= NE_in_food
                 food_input.kcals = 0
@@ -757,64 +851,104 @@ class AnimalSpecies:
         # check attributes are not empty
         # check if attributes exist
         if not hasattr(self, "current_population"):
-            raise AttributeError("current_population must be set before calling the append month zero")
+            raise AttributeError(
+                "current_population must be set before calling the append month zero"
+            )
         if not hasattr(self, "other_animal_death_basline_head_monthly"):
             raise AttributeError(
                 "other_animal_death_basline_head_monthly must be set before calling the append month zero"
             )
         if not hasattr(self, "births_animals_month_baseline"):
-            raise AttributeError("births_animals_month_baseline must be set before calling the append month zero")
+            raise AttributeError(
+                "births_animals_month_baseline must be set before calling the append month zero"
+            )
         if not hasattr(self, "initial_slaughter"):
-            raise AttributeError("initial_slaughter must be set before calling the append month zero")
+            raise AttributeError(
+                "initial_slaughter must be set before calling the append month zero"
+            )
         if not hasattr(self, "pregnant_animals_total_baseline"):
-            raise AttributeError("pregnant_animals_total_baseline must be set before calling the append month zero")
+            raise AttributeError(
+                "pregnant_animals_total_baseline must be set before calling the append month zero"
+            )
         if not hasattr(self, "pregnant_animals_birthing_this_month_baseline"):
             raise AttributeError(
                 "pregnant_animals_birthing_this_month_baseline must be set before calling the append month zero"
             )
         if not hasattr(self, "population"):
-            raise AttributeError("population must be set before calling the append month zero")
+            raise AttributeError(
+                "population must be set before calling the append month zero"
+            )
         if not hasattr(self, "other_death_causes_other_than_starving"):
             raise AttributeError(
                 "other_death_causes_other_than_starving must be set before calling the append month zero"
             )
         if not hasattr(self, "other_death_total"):
-            raise AttributeError("other_death_total must be set before calling the append month zero")
+            raise AttributeError(
+                "other_death_total must be set before calling the append month zero"
+            )
         if not hasattr(self, "births_animals_month"):
-            raise AttributeError("births_animals_month must be set before calling the append month zero")
+            raise AttributeError(
+                "births_animals_month must be set before calling the append month zero"
+            )
         if not hasattr(self, "slaughter"):
-            raise AttributeError("slaughter must be set before calling the append month zero")
+            raise AttributeError(
+                "slaughter must be set before calling the append month zero"
+            )
         if not hasattr(self, "pregnant_animals_total"):
-            raise AttributeError("pregnant_animals_total must be set before calling the append month zero")
+            raise AttributeError(
+                "pregnant_animals_total must be set before calling the append month zero"
+            )
         if not hasattr(self, "pregnant_animals_birthing_this_month"):
             raise AttributeError(
                 "pregnant_animals_birthing_this_month must be set before calling the append month zero"
             )
         if not hasattr(self, "transfer_population"):
-            raise AttributeError("transfer_population must be set before calling the append month zero")
+            raise AttributeError(
+                "transfer_population must be set before calling the append month zero"
+            )
         if not hasattr(self, "transfer_births"):
-            raise AttributeError("transfer_births must be set before calling the append month zero")
+            raise AttributeError(
+                "transfer_births must be set before calling the append month zero"
+            )
         if not hasattr(self, "slaughtered_pregnant_animals"):
-            raise AttributeError("slaughtered_pregnant_animals must be set before calling the append month zero")
+            raise AttributeError(
+                "slaughtered_pregnant_animals must be set before calling the append month zero"
+            )
         if not hasattr(self, "population_starving_pre_slaughter"):
-            raise AttributeError("population_starving_pre_slaughter must be set before calling the append month zero")
+            raise AttributeError(
+                "population_starving_pre_slaughter must be set before calling the append month zero"
+            )
         if not hasattr(self, "population_starving_month"):
-            raise AttributeError("population_starving_month must be set before calling the append month zero")
+            raise AttributeError(
+                "population_starving_month must be set before calling the append month zero"
+            )
         if not hasattr(self, "other_death_starving"):
-            raise AttributeError("other_death_starving must be set before calling the append month zero")
+            raise AttributeError(
+                "other_death_starving must be set before calling the append month zero"
+            )
         if not hasattr(self, "homekill_other_death_this_month"):
-            raise AttributeError("homekill_other_death_this_month must be set before calling the append month zero")
+            raise AttributeError(
+                "homekill_other_death_this_month must be set before calling the append month zero"
+            )
         if not hasattr(self, "homekill_healthy_this_month"):
-            raise AttributeError("homekill_healthy_this_month must be set before calling the append month zero")
+            raise AttributeError(
+                "homekill_healthy_this_month must be set before calling the append month zero"
+            )
         if not hasattr(self, "homekill_starving_this_month"):
-            raise AttributeError("homekill_starving_this_month must be set before calling the append month zero")
+            raise AttributeError(
+                "homekill_starving_this_month must be set before calling the append month zero"
+            )
         if not hasattr(self, "total_homekill_this_month"):
-            raise AttributeError("total_homekill_this_month must be set before calling the append month zero")
+            raise AttributeError(
+                "total_homekill_this_month must be set before calling the append month zero"
+            )
 
         # # FINISH ATTRIBUTE CHECKS HERE
 
         self.population += [self.current_population]
-        self.other_death_causes_other_than_starving += [self.other_animal_death_basline_head_monthly]
+        self.other_death_causes_other_than_starving += [
+            self.other_animal_death_basline_head_monthly
+        ]
         self.other_death_total += [self.other_animal_death_basline_head_monthly]
         # self.births_animals_month += [self.births_animals_month_baseline]
 
@@ -823,7 +957,9 @@ class AnimalSpecies:
         self.slaughter += [self.initial_slaughter]
 
         self.pregnant_animals_total += [self.pregnant_animals_total_baseline]
-        self.pregnant_animals_birthing_this_month += [self.pregnant_animals_birthing_this_month_baseline]
+        self.pregnant_animals_birthing_this_month += [
+            self.pregnant_animals_birthing_this_month_baseline
+        ]
 
         # set arbitrary zereo values to the transfer variables as it does not impact
         self.transfer_population += []
@@ -856,11 +992,15 @@ class AnimalPopulation:
         # Calculate the number of new animals born this month given the number of pregnant animals
         # (must run after calculate_breeding_changes)
         # MILK only half of new births will be milk animals (captured in export animals)
-        new_births_animals_month, new_export_births = AnimalPopulation.calculate_births(animal)
+        new_births_animals_month, new_export_births = AnimalPopulation.calculate_births(
+            animal
+        )
 
         return new_births_animals_month, new_export_births
 
-    def calculate_change_in_population(animal, country_object, new_additive_animals_month):
+    def calculate_change_in_population(
+        animal, country_object, new_additive_animals_month
+    ):
         """This function will calculate the change in animal population for a given animal type It will do so by
         calculating the number of new births, the number of deaths, and the number of animals slaughtered It will then
         update the animal object with the new population.
@@ -926,17 +1066,23 @@ class AnimalPopulation:
         (
             new_pregnant_animals_total,
             new_slaughtered_pregnant_animals,
-        ) = AnimalPopulation.calculate_pregnant_slaughter(animal, current_slaughter_rate)
+        ) = AnimalPopulation.calculate_pregnant_slaughter(
+            animal, current_slaughter_rate
+        )
 
         # Calculate the number of pregnant animals birthing this month, based on the number of pregnant animals
         # remaining
         # This is effectively the pregnant animals _next_ month
-        new_pregnant_animals_birthing = AnimalPopulation.calculate_pregnant_animals_birthing(
-            animal, new_pregnant_animals_total
+        new_pregnant_animals_birthing = (
+            AnimalPopulation.calculate_pregnant_animals_birthing(
+                animal, new_pregnant_animals_total
+            )
         )
 
         # quick check to fix any overshoots
-        if new_pregnant_animals_total < 0:  # this is to avoid negative numbers of pregnant animals
+        if (
+            new_pregnant_animals_total < 0
+        ):  # this is to avoid negative numbers of pregnant animals
             new_pregnant_animals_total = 0
 
         # don't need to return much as the animal object is passed by reference, so the changes are made to the object
@@ -945,7 +1091,9 @@ class AnimalPopulation:
         # don't append to population list, this is done after homekill in it's own fucntion
         animal.slaughter.append(current_slaughter_rate)
         animal.pregnant_animals_total.append(new_pregnant_animals_total)
-        animal.pregnant_animals_birthing_this_month.append(new_pregnant_animals_birthing)
+        animal.pregnant_animals_birthing_this_month.append(
+            new_pregnant_animals_birthing
+        )
         animal.other_death_causes_other_than_starving.append(new_other_animal_death)
         animal.slaughtered_pregnant_animals.append(new_slaughtered_pregnant_animals)
 
@@ -969,7 +1117,9 @@ class AnimalPopulation:
         new_pregnant_animals_birthing_this_month : int
             The number of pregnant animals birthing this month
         """
-        new_pregnant_animals_birthing_this_month = new_pregnant_animals_total / animal.gestation
+        new_pregnant_animals_birthing_this_month = (
+            new_pregnant_animals_total / animal.gestation
+        )
         return new_pregnant_animals_birthing_this_month
 
     def calculate_pregnant_slaughter(animal, new_slaughter_rate):
@@ -982,23 +1132,31 @@ class AnimalPopulation:
         # proceed as normal and reduce the number of pregnant animals by the slaughter farction
         if animal.pregnant_animal_slaughter_fraction == 0:
             new_slaughtered_pregnant_animals = 0
-        elif animal.pregnant_animal_slaughter_fraction * animal.pregnant_animals_total[-1] < new_slaughter_rate:
+        elif (
+            animal.pregnant_animal_slaughter_fraction
+            * animal.pregnant_animals_total[-1]
+            < new_slaughter_rate
+        ):
             new_slaughtered_pregnant_animals = (
-                animal.pregnant_animal_slaughter_fraction * animal.pregnant_animals_total[-1]
+                animal.pregnant_animal_slaughter_fraction
+                * animal.pregnant_animals_total[-1]
             )
 
             # subtract the number of slaughtered pregnant animals from the total number of pregnant animals
             # also subtract other_death
             new_pregnant_animals_total -= (
                 new_slaughtered_pregnant_animals
-                + animal.other_animal_death_rate_monthly * animal.pregnant_animals_total[-1]
+                + animal.other_animal_death_rate_monthly
+                * animal.pregnant_animals_total[-1]
             )
         else:
             new_slaughtered_pregnant_animals = new_slaughter_rate
             new_pregnant_animals_total -= new_slaughtered_pregnant_animals
 
         assert new_pregnant_animals_total >= 0, "new pregnant animals total is negative"
-        assert new_slaughtered_pregnant_animals >= 0, "new slaughtered pregnant animals is negative"
+        assert (
+            new_slaughtered_pregnant_animals >= 0
+        ), "new slaughtered pregnant animals is negative"
 
         return new_pregnant_animals_total, new_slaughtered_pregnant_animals
 
@@ -1010,7 +1168,9 @@ class AnimalPopulation:
         new_slaughter_rate,
     ):
         new_animal_population_pre_slaughter = (
-            animal.current_population - new_other_animal_death + new_additive_animals_month
+            animal.current_population
+            - new_other_animal_death
+            + new_additive_animals_month
         )
 
         # check if the slaughtering is greater than the target population, create a temporary 'actual' rate.
@@ -1020,9 +1180,14 @@ class AnimalPopulation:
         if new_animal_population_pre_slaughter < animal.target_population_head:
             # already below target, do no slaughtering
             actual_slaughter_rate = 0
-        elif new_animal_population_pre_slaughter - new_slaughter_rate < animal.target_population_head:
+        elif (
+            new_animal_population_pre_slaughter - new_slaughter_rate
+            < animal.target_population_head
+        ):
             # contiuning to slaughter as planned would drop below target, modify slaughtering rate
-            actual_slaughter_rate = new_animal_population_pre_slaughter - animal.target_population_head
+            actual_slaughter_rate = (
+                new_animal_population_pre_slaughter - animal.target_population_head
+            )
         else:
             # no change to slaughtering rate required, will not dip below target rate
             actual_slaughter_rate = new_slaughter_rate
@@ -1035,7 +1200,9 @@ class AnimalPopulation:
             new_slaughter_rate - actual_slaughter_rate
         ) * animal.animal_slaughter_hours
 
-        animal.current_population = new_animal_population_pre_slaughter - actual_slaughter_rate
+        animal.current_population = (
+            new_animal_population_pre_slaughter - actual_slaughter_rate
+        )
         # check if the population is below zero
         # BUG this might fix it, but will still overestimate the number of animals retiring (as they might be dead,
         # not retiring (milk only))
@@ -1067,10 +1234,14 @@ class AnimalPopulation:
 
         """
         new_births_animals_month = (
-            animal.pregnant_animals_birthing_this_month[-1] * animal.animals_per_pregnancy / animal.birth_ratio
+            animal.pregnant_animals_birthing_this_month[-1]
+            * animal.animals_per_pregnancy
+            / animal.birth_ratio
         )
 
-        new_export_births_animals_month = new_births_animals_month * (animal.birth_ratio - 1)
+        new_export_births_animals_month = new_births_animals_month * (
+            animal.birth_ratio - 1
+        )
         # new export births will be an optional return. Birth ratio is defined in the class
         # for milk animals "export births = new births" for meat animals "export births = 0"
         return new_births_animals_month, new_export_births_animals_month
@@ -1097,15 +1268,23 @@ class AnimalPopulation:
         animal.pregnant_animals_birthing_this_month[-1] *= (
             1 - animal.reduction_in_animal_breeding
         )  # consider doing this as a list?
-        animal.pregnant_animals_total[-1] *= 1 - animal.reduction_in_animal_breeding  # consider doing this as a list?
-        animal.pregnant_animal_slaughter_fraction = 0  # this seems a bit risky for the mode, it's simplistic
+        animal.pregnant_animals_total[-1] *= (
+            1 - animal.reduction_in_animal_breeding
+        )  # consider doing this as a list?
+        animal.pregnant_animal_slaughter_fraction = (
+            0  # this seems a bit risky for the mode, it's simplistic
+        )
         return
 
     def calculate_other_deaths(animal):
-        new_other_animal_death = animal.current_population * animal.other_animal_death_rate_monthly
+        new_other_animal_death = (
+            animal.current_population * animal.other_animal_death_rate_monthly
+        )
         return new_other_animal_death
 
-    def calculate_slaughter_rate(animal, country_object, new_births_animals_month, new_other_animal_death):
+    def calculate_slaughter_rate(
+        animal, country_object, new_births_animals_month, new_other_animal_death
+    ):
         """This function calculates the new slaughter rate based on the spare slaughter hours and the target animal
         population.
 
@@ -1143,7 +1322,8 @@ class AnimalPopulation:
             # if there are no spare slaughter hours, then set the slaughter rate to the previous slaughter rate, this
             # will happen becuase the numerator will be 0
             new_slaughter_rate = (
-                current_slaughter + country_object.spare_slaughter_hours / animal.animal_slaughter_hours
+                current_slaughter
+                + country_object.spare_slaughter_hours / animal.animal_slaughter_hours
             )
             country_object.spare_slaughter_hours = 0
 
@@ -1156,7 +1336,9 @@ class AnimalPopulation:
         # set this yo ZERO to not recover any grom other death. Could also scale with #desperation
         other_death = animal.other_death_causes_other_than_starving[-1]
         max_homekill_head = other_death * recoverable_meat_other_death_fraction
-        home_kill_capacity = country_object.homekill_hours_budget[-1] / animal.animal_slaughter_hours
+        home_kill_capacity = (
+            country_object.homekill_hours_budget[-1] / animal.animal_slaughter_hours
+        )
         actual_homekill_head = min(max_homekill_head, home_kill_capacity)
         # the above is the actual homemkill, based on the homekill capacity and the max homekill head
         # max homemkill head is how many animals that died due to other causes can be homekilled/butchered/recovered
@@ -1166,7 +1348,9 @@ class AnimalPopulation:
         # don't remove the actual homekill from this fucntion from the population, as they were already dead
 
         animal.homekill_other_death_this_month.append(actual_homekill_head)
-        country_object.homekill_hours_budget[-1] -= actual_homekill_head * animal.animal_slaughter_hours
+        country_object.homekill_hours_budget[-1] -= (
+            actual_homekill_head * animal.animal_slaughter_hours
+        )
 
     def calculate_healthy_homekill_head(animal, country_object):
         # population after slaughter
@@ -1176,7 +1360,9 @@ class AnimalPopulation:
         # this desperation metric could act on the homekill fraction variable
 
         # homekill max slauhter species head
-        home_kill_capacity = country_object.homekill_hours_budget[-1] / animal.animal_slaughter_hours
+        home_kill_capacity = (
+            country_object.homekill_hours_budget[-1] / animal.animal_slaughter_hours
+        )
 
         # TODO can be replaced by directly importing a 'head' number too
         homekill_demand = country_object.homekill_fraction * starting_population
@@ -1186,14 +1372,18 @@ class AnimalPopulation:
 
         # update animal object
         animal.homekill_healthy_this_month.append(actual_homekill_head)
-        country_object.homekill_hours_budget[-1] -= actual_homekill_head * animal.animal_slaughter_hours
+        country_object.homekill_hours_budget[-1] -= (
+            actual_homekill_head * animal.animal_slaughter_hours
+        )
 
         return
 
     def calculate_starving_pop_post_slaughter_healthy_homekill(animal):
         # get the new starving population:
         starving_head_post_slaughter_and_healthy_homekill = (
-            animal.population_starving_pre_slaughter[-1] - animal.slaughter[-1] - animal.homekill_healthy_this_month[-1]
+            animal.population_starving_pre_slaughter[-1]
+            - animal.slaughter[-1]
+            - animal.homekill_healthy_this_month[-1]
         )
 
         if starving_head_post_slaughter_and_healthy_homekill < 0:
@@ -1212,7 +1402,9 @@ class AnimalPopulation:
         # probably none here as if they are starving, you'll want to slaughter them
 
         # homekill max slaughter species head
-        home_kill_capacity = country_object.homekill_hours_budget[-1] / animal.animal_slaughter_hours
+        home_kill_capacity = (
+            country_object.homekill_hours_budget[-1] / animal.animal_slaughter_hours
+        )
         max_homekill_head = population_starving_post_slaughter_and_healthy_homekill
 
         # check homekill capacity is not negative
@@ -1233,7 +1425,9 @@ class AnimalPopulation:
         actual_homekill_head = min(max_homekill_head, home_kill_capacity)
 
         animal.homekill_starving_this_month.append(actual_homekill_head)
-        country_object.homekill_hours_budget[-1] -= actual_homekill_head * animal.animal_slaughter_hours
+        country_object.homekill_hours_budget[-1] -= (
+            actual_homekill_head * animal.animal_slaughter_hours
+        )
 
         return
 
@@ -1241,7 +1435,10 @@ class AnimalPopulation:
         animal, population_starving_post_slaughter_and_healthy_homekill
     ):
         # return zero if negative
-        pop_starving = population_starving_post_slaughter_and_healthy_homekill - animal.homekill_starving_this_month[-1]
+        pop_starving = (
+            population_starving_post_slaughter_and_healthy_homekill
+            - animal.homekill_starving_this_month[-1]
+        )
 
         return max(pop_starving, 0)
 
@@ -1274,7 +1471,9 @@ class AnimalPopulation:
 
         # update the number of pregnant animals that die from starvation
         animal.pregnant_animals_total[-1] -= pregnant_other_death
-        animal.pregnant_animals_birthing_this_month[-1] -= pregnant_birthing_this_month_other_death
+        animal.pregnant_animals_birthing_this_month[
+            -1
+        ] -= pregnant_birthing_this_month_other_death
 
         # check if the number of pregnant animals is below zero
         # if so, set the number of pregnant animals to zero
@@ -1285,7 +1484,9 @@ class AnimalPopulation:
 
         return
 
-    def calculate_starving_other_death_head(animal, population_starving_post_slaughter_and_all_homekill):
+    def calculate_starving_other_death_head(
+        animal, population_starving_post_slaughter_and_all_homekill
+    ):
         """This function calculates the number of animals that die from starvation in a month.
 
         It takes the population of animals that are starving after slaughter and homekill, and calculates the number
@@ -1309,7 +1510,10 @@ class AnimalPopulation:
             The number of animals that die from starvation in a month.
         """
 
-        return population_starving_post_slaughter_and_all_homekill * animal.starvation_death_fraction
+        return (
+            population_starving_post_slaughter_and_all_homekill
+            * animal.starvation_death_fraction
+        )
 
     def calculate_final_population(animal):
         """This function calculates the final population of the animal after all the slaughter and homekill has been
@@ -1370,9 +1574,12 @@ class AnimalPopulation:
 
     def calculate_starving_animals_after_feed(animal_list):
         """This function will calculate the number of animals that are starving after feeding It iterates through the
-        animal list and calculates the number of animals that are starving result is appended to the animal object."""
+        animal list and calculates the number of animals that are starving result is appended to the animal object.
+        """
         for animal in animal_list:
-            animal.population_starving_pre_slaughter.append(animal.current_population - animal.population_fed)
+            animal.population_starving_pre_slaughter.append(
+                animal.current_population - animal.population_fed
+            )
 
     def set_current_populations(animal_objects):
         """Sets the current population of each animal object This simply sets the current population to the value at the
@@ -1419,7 +1626,9 @@ class AnimalDataReader:
 
         repo_root = git.Repo(".", search_parent_directories=True).working_dir
         # Load data
-        animal_feed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
+        animal_feed_data_dir = (
+            Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
+        )
 
         FAO_data = Path.joinpath(Path(animal_feed_data_dir), filename)
 
@@ -1440,11 +1649,17 @@ class AnimalDataReader:
         """
         repo_root = git.Repo(".", search_parent_directories=True).working_dir
         # Load data
-        animal_feed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
+        animal_feed_data_dir = (
+            Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
+        )
 
-        animal_nutrition_data_location = Path.joinpath(Path(animal_feed_data_dir), filename)
+        animal_nutrition_data_location = Path.joinpath(
+            Path(animal_feed_data_dir), filename
+        )
 
-        df_animal_attributes = pd.read_csv(animal_nutrition_data_location, index_col="animal")
+        df_animal_attributes = pd.read_csv(
+            animal_nutrition_data_location, index_col="animal"
+        )
 
         return df_animal_attributes
 
@@ -1458,7 +1673,9 @@ class AnimalDataReader:
         """
         repo_root = git.Repo(".", search_parent_directories=True).working_dir
         # Load data
-        animal_feed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
+        animal_feed_data_dir = (
+            Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
+        )
 
         animal_options_location = Path.joinpath(Path(animal_feed_data_dir), filename)
 
@@ -1476,7 +1693,9 @@ class AnimalDataReader:
         """
         repo_root = git.Repo(".", search_parent_directories=True).working_dir
         # Load data
-        animal_feed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
+        animal_feed_data_dir = (
+            Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
+        )
 
         regional_coeffs_location = Path.joinpath(Path(animal_feed_data_dir), filename)
 
@@ -1494,7 +1713,9 @@ class AnimalDataReader:
         """
         repo_root = git.Repo(".", search_parent_directories=True).working_dir
         # Load data
-        animal_feed_data_dir = Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
+        animal_feed_data_dir = (
+            Path(repo_root) / "data" / "no_food_trade" / "animal_feed_data"
+        )
 
         country_info_location = Path.joinpath(Path(animal_feed_data_dir), filename)
 
@@ -1531,12 +1752,13 @@ class AnimalModelBuilder:
         # create assertion to check that the number of columns containing the word "head" is equal to the number of
         # columns containing the word "slaughter"
         assert (
-            ~(df_animal_stock_info.index.str.contains("milk")) * df_animal_stock_info.index.str.contains("head")
+            ~(df_animal_stock_info.index.str.contains("milk"))
+            * df_animal_stock_info.index.str.contains("head")
         ).sum() == df_animal_stock_info.index.str.contains("slaughter").sum()
         # create a list of the animal types (use index not columns, because it is a series that is passed in)
-        animal_types = df_animal_stock_info.index[df_animal_stock_info.index.str.contains("head")].str.replace(
-            "_head", ""
-        )
+        animal_types = df_animal_stock_info.index[
+            df_animal_stock_info.index.str.contains("head")
+        ].str.replace("_head", "")
 
         # create dict to store the animal objects
         animal_objects = {}
@@ -1549,7 +1771,9 @@ class AnimalModelBuilder:
                 animal_function = "milk"
             else:
                 # remove "meat_" from the animal type
-                slaughter_input = df_animal_stock_info.loc[animal_type.replace("meat_", "") + "_slaughter"]
+                slaughter_input = df_animal_stock_info.loc[
+                    animal_type.replace("meat_", "") + "_slaughter"
+                ]
                 animal_function = "meat"
 
             # create string of animal species (remove milk or meat from the animal type)
@@ -1558,16 +1782,22 @@ class AnimalModelBuilder:
             # only create an animal object if the number of animals is greater than 0
             if df_animal_stock_info.loc[animal_type + "_head"] > 0:
                 # initialise the animal object
-                animal = AnimalSpecies(animal_type=animal_type, animal_species=animal_species)
+                animal = AnimalSpecies(
+                    animal_type=animal_type, animal_species=animal_species
+                )
                 # set the animal attributes
                 animal.set_animal_attributes(
                     population=df_animal_stock_info.loc[animal_type + "_head"],
                     slaughter=slaughter_input,
                     animal_function=animal_function,
                     livestock_unit=df_animal_attributes.loc[animal_type]["LSU"],
-                    digestion_type=df_animal_attributes.loc[animal_type]["digestion type"],
+                    digestion_type=df_animal_attributes.loc[animal_type][
+                        "digestion type"
+                    ],
                     animal_size=df_animal_attributes.loc[animal_type]["animal size"],
-                    approximate_feed_conversion=df_animal_attributes.loc[animal_type]["approximate feed conversion"],
+                    approximate_feed_conversion=df_animal_attributes.loc[animal_type][
+                        "approximate feed conversion"
+                    ],
                 )
                 animal_objects[animal_type] = animal
             else:
@@ -1576,7 +1806,9 @@ class AnimalModelBuilder:
 
         return animal_objects
 
-    def update_animal_objects_with_slaughter(animal_list, df_animal_attributes, df_animal_options, scenario):
+    def update_animal_objects_with_slaughter(
+        animal_list, df_animal_attributes, df_animal_options, scenario
+    ):
         """
         This function updates the animal objects with the slaughter data
 
@@ -1608,29 +1840,45 @@ class AnimalModelBuilder:
         # order animal_list with milk first
         animal_list = sorted(animal_list, key=lambda x: x.animal_function, reverse=True)
 
-        selected_scenario = df_animal_options.loc[df_animal_options["scenario"] == scenario]
+        selected_scenario = df_animal_options.loc[
+            df_animal_options["scenario"] == scenario
+        ]
 
         # loop through the dict of animal objects
         for animal in animal_list:
             # this list of variables will be a csv file in the future
             gestation = df_animal_attributes.loc[animal.animal_type]["gestation"]
-            animal_slaughter_hours = df_animal_attributes.loc[animal.animal_type]["animal_slaughter_hours"]
-            other_animal_death_rate_annual = df_animal_attributes.loc[animal.animal_type][
-                "other_animal_death_rate_annual"
+            animal_slaughter_hours = df_animal_attributes.loc[animal.animal_type][
+                "animal_slaughter_hours"
             ]
-            animals_per_pregnancy = df_animal_attributes.loc[animal.animal_type]["animals_per_pregnancy"]
-            reduction_in_animal_breeding = selected_scenario.loc[animal.animal_type]["reduction_in_animal_breeding"]
-            change_in_slaughter_rate = selected_scenario.loc[animal.animal_type]["change_in_slaughter_rate"]
-            pregnant_animal_slaughter_fraction = selected_scenario.loc[animal.animal_type][
-                "pregnant_animal_slaughter_fraction"
+            other_animal_death_rate_annual = df_animal_attributes.loc[
+                animal.animal_type
+            ]["other_animal_death_rate_annual"]
+            animals_per_pregnancy = df_animal_attributes.loc[animal.animal_type][
+                "animals_per_pregnancy"
             ]
-            target_population_fraction = selected_scenario.loc[animal.animal_type]["target_population_fraction"]
-            starvation_death_fraction = selected_scenario.loc[animal.animal_type]["starvation_death_fraction"]
+            reduction_in_animal_breeding = selected_scenario.loc[animal.animal_type][
+                "reduction_in_animal_breeding"
+            ]
+            change_in_slaughter_rate = selected_scenario.loc[animal.animal_type][
+                "change_in_slaughter_rate"
+            ]
+            pregnant_animal_slaughter_fraction = selected_scenario.loc[
+                animal.animal_type
+            ]["pregnant_animal_slaughter_fraction"]
+            target_population_fraction = selected_scenario.loc[animal.animal_type][
+                "target_population_fraction"
+            ]
+            starvation_death_fraction = selected_scenario.loc[animal.animal_type][
+                "starvation_death_fraction"
+            ]
 
             # if milk animal, set the transfer population
             if animal.animal_function == "milk":
                 animal.set_milk_birth()
-                transfer_populations[animal.animal_species] = animal.set_initial_milk_transfer()
+                transfer_populations[
+                    animal.animal_species
+                ] = animal.set_initial_milk_transfer()
                 transfer_pop = -transfer_populations[animal.animal_species]
             else:
                 # is not milk, recieve the transfer population (if no correspiodning milk animal, this will be zero)
@@ -1677,14 +1925,18 @@ class AnimalModelBuilder:
         # loop through the dict of animal objects
         for animal in animal_list:
             # this list of variables will be a csv file in the future
-            productive_milk_age_start = df_animal_attributes.loc[animal.animal_type]["productive_milk_age_start"]
-            productive_milk_age_end = df_animal_attributes.loc[animal.animal_type]["productive_milk_age_end"]
-            insemination_cycle_time_for_milk = df_animal_attributes.loc[animal.animal_type][
-                "insemination_cycle_time_for_milk"
+            productive_milk_age_start = df_animal_attributes.loc[animal.animal_type][
+                "productive_milk_age_start"
             ]
-            milk_production_per_month_per_head = df_animal_attributes.loc[animal.animal_type][
-                "milk_production_per_month_per_head"
+            productive_milk_age_end = df_animal_attributes.loc[animal.animal_type][
+                "productive_milk_age_end"
             ]
+            insemination_cycle_time_for_milk = df_animal_attributes.loc[
+                animal.animal_type
+            ]["insemination_cycle_time_for_milk"]
+            milk_production_per_month_per_head = df_animal_attributes.loc[
+                animal.animal_type
+            ]["milk_production_per_month_per_head"]
             animal.set_species_milk_attributes(
                 productive_milk_age_start,
                 productive_milk_age_end,
@@ -1737,7 +1989,9 @@ class Debugging:
 
     # Import csv module for writing CSV files
 
-    def save_single_animal_data_to_csv(animal, output_path="animal_single_data_to_csv.csv"):
+    def save_single_animal_data_to_csv(
+        animal, output_path="animal_single_data_to_csv.csv"
+    ):
         # Initialize an empty list to store the rows for the CSV
         import csv
 
@@ -1752,7 +2006,9 @@ class Debugging:
         # Iterate through each attribute of the object
         for attr, value in vars(animal).items():
             # Check if the attribute's value is a list of numbers
-            if isinstance(value, list) and all(isinstance(x, (int, float)) for x in value):
+            if isinstance(value, list) and all(
+                isinstance(x, (int, float)) for x in value
+            ):
                 # Add attribute name to headers if not already present
                 headers.append(attr)
 
@@ -1769,7 +2025,11 @@ class Debugging:
         for i in range(max_len):
             final_row = {}
             for header in headers:
-                final_row[header] = row_data.get(header, ["N/A"])[i] if i < len(row_data.get(header, [])) else "N/A"
+                final_row[header] = (
+                    row_data.get(header, ["N/A"])[i]
+                    if i < len(row_data.get(header, []))
+                    else "N/A"
+                )
             final_rows.append(final_row)
 
         # Write the data to a CSV file
@@ -1814,7 +2074,9 @@ class Debugging:
             all_headers.update(current_headers)
 
             # Determine the maximum list length among all attributes for this animal
-            max_len = max(len(val) if isinstance(val, list) else 1 for val in row_data.values())
+            max_len = max(
+                len(val) if isinstance(val, list) else 1 for val in row_data.values()
+            )
 
             # Create rows by expanding lists into individual rows, and add them to the list of all rows
             for i in range(max_len):
@@ -1822,7 +2084,9 @@ class Debugging:
                 for attr in attributes:
                     header = f"{animal_type}_{attr}"
                     val = row_data[attr]
-                    row[header] = val[i] if isinstance(val, list) and i < len(val) else val
+                    row[header] = (
+                        val[i] if isinstance(val, list) and i < len(val) else val
+                    )
                 rows.append(row)
 
         # Sort headers for a more organized CSV
@@ -1922,18 +2186,24 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
     # read animal nutrition data
     df_animal_attributes = AnimalDataReader.read_animal_nutrition_data(attributes_csv)
     df_animal_options = AnimalDataReader.read_animal_options(options_csv)
-    df_regional_conversion_factors = AnimalDataReader.read_animal_regional_factors(regional_csv)
+    df_regional_conversion_factors = AnimalDataReader.read_animal_regional_factors(
+        regional_csv
+    )
     df_country_info = AnimalDataReader.read_country_data(country_csv)
 
     # months to run the model for
-    months_to_run = available_feed.NMONTHS  # will be inherited from the calling function
+    months_to_run = (
+        available_feed.NMONTHS
+    )  # will be inherited from the calling function
 
     # WHEN INTEGRATING, THESE CREATION OF OBJECTS SHOULD BE DONE OUTSIDE OF THE MAIN FUNCTION
     # AND ONLY ON THE FIRST RUN OF THE MODEL
 
     # # Populate animal objects ##
     # create animal objects
-    animal_list = AnimalModelBuilder.create_animal_objects(df_animal_stock_info.loc[country_code], df_animal_attributes)
+    animal_list = AnimalModelBuilder.create_animal_objects(
+        df_animal_stock_info.loc[country_code], df_animal_attributes
+    )
 
     # sort the animal objects by approximate feed conversion
     # ## TODO: look at my dual use of lists and dicts here, probably unneccesary ###
@@ -1946,9 +2216,13 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
     )
 
     # get list of milk animals,
-    milk_animals = [animal for animal in animal_dict.values() if "milk" in animal.animal_type]
+    milk_animals = [
+        animal for animal in animal_dict.values() if "milk" in animal.animal_type
+    ]
     # get list of non-milk animals
-    non_milk_animals = [animal for animal in animal_dict.values() if "milk" not in animal.animal_type]
+    non_milk_animals = [
+        animal for animal in animal_dict.values() if "milk" not in animal.animal_type
+    ]
     # non milk runminants
     non_milk_ruminants = [
         animal
@@ -1956,13 +2230,19 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
         if "milk" not in animal.animal_type and animal.digestion_type == "ruminant"
     ]
     # get list of all ruminants
-    ruminants = [animal for animal in animal_dict.values() if animal.digestion_type == "ruminant"]
+    ruminants = [
+        animal for animal in animal_dict.values() if animal.digestion_type == "ruminant"
+    ]
     # get list of non-ruminants
-    non_ruminants = [animal for animal in animal_dict.values() if animal.digestion_type != "ruminant"]
+    non_ruminants = [
+        animal for animal in animal_dict.values() if animal.digestion_type != "ruminant"
+    ]
     # all animals
     all_animals = [animal for animal in animal_dict.values()]
 
-    AnimalModelBuilder.update_animal_objects_with_milk(milk_animals, df_animal_attributes)
+    AnimalModelBuilder.update_animal_objects_with_milk(
+        milk_animals, df_animal_attributes
+    )
     AnimalModelBuilder.update_animal_objects_with_slaughter(
         all_animals, df_animal_attributes, df_animal_options, scenario
     )
@@ -1971,7 +2251,9 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
     country_object = CountryData(country_code)
     country_object.calculate_homekill_hours()
     country_object.homekill_desperation_parameters()
-    country_object.set_livestock_unit_factors(df_country_info, df_regional_conversion_factors)
+    country_object.set_livestock_unit_factors(
+        df_country_info, df_regional_conversion_factors
+    )
 
     # with the country object, update the animal objects with the LSU factors
     AnimalModelBuilder.update_animal_objects_LSU_factor(all_animals, country_object)
@@ -1993,9 +2275,6 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
         if month != 0:
             AnimalPopulation.set_current_populations(all_animals)
 
-        print("available_grass")
-        print(available_grass)
-        print(type(available_grass))
         # # THESE FEED OBJECTS WILL BE PASSED IN ####
         # create available feed object
         feed_available_this_month = available_feed[month]
@@ -2050,7 +2329,9 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
             animal.births_animals_month.append(new_births)
 
             if animal.animal_function == "milk":
-                transfer_populations[animal.animal_species] = animal.retiring_milk_head_monthly() + new_transfer_births
+                transfer_populations[animal.animal_species] = (
+                    animal.retiring_milk_head_monthly() + new_transfer_births
+                )
                 animal.retiring_milk_animals.append(animal.retiring_milk_head_monthly())
                 animal.transfer_births.append(new_transfer_births)
 
@@ -2071,18 +2352,29 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
                 # if not a milk animal add
                 # divide by two as the transfer population is split between meat and milk
 
-                new_additive_animals_month = births[animal.animal_type] + transfer_populations[animal.animal_species]
-                animal.transfer_population.append(transfer_populations[animal.animal_species])
+                new_additive_animals_month = (
+                    births[animal.animal_type]
+                    + transfer_populations[animal.animal_species]
+                )
+                animal.transfer_population.append(
+                    transfer_populations[animal.animal_species]
+                )
 
             else:
                 new_additive_animals_month = births[animal.animal_type]
-                animal.transfer_population.append(-transfer_populations[animal.animal_species])
+                animal.transfer_population.append(
+                    -transfer_populations[animal.animal_species]
+                )
 
-            AnimalPopulation.calculate_change_in_population(animal, country_object, new_additive_animals_month)
+            AnimalPopulation.calculate_change_in_population(
+                animal, country_object, new_additive_animals_month
+            )
 
         # then new loop... for homekill
         # reset the homekill hours for the coming month
-        country_object.homekill_hours_budget.append(country_object.homekill_hours_total_month[-1])
+        country_object.homekill_hours_budget.append(
+            country_object.homekill_hours_total_month[-1]
+        )
 
         for animal in all_animals:
             # NEXT DO POPULATIUON STARVING AFTER SLAUGHTER
@@ -2111,7 +2403,9 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
                 animal, country_object
             )  # no return, as updates animal object
             population_starving_post_slaughter_and_healthy_homekill = (
-                AnimalPopulation.calculate_starving_pop_post_slaughter_healthy_homekill(animal)
+                AnimalPopulation.calculate_starving_pop_post_slaughter_healthy_homekill(
+                    animal
+                )
             )
             # this could be a hard limit based on capacity of the homekill system. Could take in to account healthy
             # homekill (to see if there is capacity for more)
@@ -2138,7 +2432,8 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
             # might be zero if all of starving is dead
 
             animal.other_death_total.append(
-                animal.other_death_starving[-1] + animal.other_death_causes_other_than_starving[-1]
+                animal.other_death_starving[-1]
+                + animal.other_death_causes_other_than_starving[-1]
             )
             # reduce pregnant animals by the other death rate (proportional to the population)
             # only do this if not a baseline scenario
@@ -2271,32 +2566,78 @@ if __name__ == "__main__":
     # exclude chicken from output list
     ignore_chicken_graph = 0
     if ignore_chicken_graph == 1:
-        animal_list = [animal for animal in output_list if "chicken" not in animal.animal_type]
+        animal_list = [
+            animal for animal in output_list if "chicken" not in animal.animal_type
+        ]
     else:
         animal_list = [animal for animal in output_list]
 
     for animal in animal_list:
-        fig.add_trace(go.Scatter(y=animal.slaughter, mode="lines", name=animal.animal_type + " slaughter"))
-        fig.add_trace(go.Scatter(y=animal.population, mode="lines", name=animal.animal_type + " population"))
+        fig.add_trace(
+            go.Scatter(
+                y=animal.slaughter, mode="lines", name=animal.animal_type + " slaughter"
+            )
+        )
+        fig.add_trace(
+            go.Scatter(
+                y=animal.population,
+                mode="lines",
+                name=animal.animal_type + " population",
+            )
+        )
 
     fig2 = go.Figure()
 
     # Plot one animal
     k = 8
     # Add detailed lines to the plot
-    fig2.add_trace(go.Scatter(y=animal_list[k].births_animals_month, mode="lines", name="births"))
-    fig2.add_trace(go.Scatter(y=animal_list[k].slaughter, mode="lines", name="slaughter"))
-    fig2.add_trace(go.Scatter(y=animal_list[k].total_homekill_this_month, mode="lines", name="homekill"))
-    fig2.add_trace(go.Scatter(y=animal_list[k].other_death_total, mode="lines", name="other death total"))
-    fig2.add_trace(go.Scatter(y=animal_list[k].population, mode="lines", name="population"))
     fig2.add_trace(
-        go.Scatter(y=animal_list[k].pregnant_animals_birthing_this_month, mode="lines", name="preg this month")
+        go.Scatter(y=animal_list[k].births_animals_month, mode="lines", name="births")
     )
-    fig2.add_trace(go.Scatter(y=animal_list[k].pregnant_animals_total, mode="lines", name="preg total"))
-    fig2.add_trace(go.Scatter(y=animal_list[k].transfer_population, mode="lines", name="transfer pop"))
-    fig2.add_trace(go.Scatter(y=animal_list[k].transfer_births, mode="lines", name="transfer births"))
+    fig2.add_trace(
+        go.Scatter(y=animal_list[k].slaughter, mode="lines", name="slaughter")
+    )
+    fig2.add_trace(
+        go.Scatter(
+            y=animal_list[k].total_homekill_this_month, mode="lines", name="homekill"
+        )
+    )
+    fig2.add_trace(
+        go.Scatter(
+            y=animal_list[k].other_death_total, mode="lines", name="other death total"
+        )
+    )
+    fig2.add_trace(
+        go.Scatter(y=animal_list[k].population, mode="lines", name="population")
+    )
+    fig2.add_trace(
+        go.Scatter(
+            y=animal_list[k].pregnant_animals_birthing_this_month,
+            mode="lines",
+            name="preg this month",
+        )
+    )
+    fig2.add_trace(
+        go.Scatter(
+            y=animal_list[k].pregnant_animals_total, mode="lines", name="preg total"
+        )
+    )
+    fig2.add_trace(
+        go.Scatter(
+            y=animal_list[k].transfer_population, mode="lines", name="transfer pop"
+        )
+    )
+    fig2.add_trace(
+        go.Scatter(
+            y=animal_list[k].transfer_births, mode="lines", name="transfer births"
+        )
+    )
 
-    print("Baseline slaughter: ", animal_list[k].baseline_slaughter, animal_list[k].animal_type)
+    print(
+        "Baseline slaughter: ",
+        animal_list[k].baseline_slaughter,
+        animal_list[k].animal_type,
+    )
     print("Target population: ", animal_list[k].target_population_head)
     print(
         "Final population: ",
