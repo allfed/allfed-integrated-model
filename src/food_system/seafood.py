@@ -25,9 +25,10 @@ class Seafood:
         self.NMONTHS = constants_for_params["NMONTHS"]
         # additional fish to add
         self.ADD_FISH = constants_for_params["ADD_FISH"]
-
-        # percentage of fish waste
-        FISH_WASTE = constants_for_params["WASTE"]["SEAFOOD"]
+        FISH_WASTE = (
+            constants_for_params["WASTE_DISTRIBUTION"]["SEAFOOD"]
+            + constants_for_params["WASTE_RETAIL"]
+        )
 
         # fish kcals per month, billions
         self.FISH_KCALS = (
