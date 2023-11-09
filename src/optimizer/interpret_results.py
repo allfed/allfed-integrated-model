@@ -430,7 +430,7 @@ class Interpreter:
         # Return the total amount of nutrients that can be fed to humans
         return to_humans_fed_sum
 
-    def print_kcals_per_capita_per_day(self, interpreted_results):
+    def print_kcals_per_person_per_day(self, interpreted_results):
         """
         This function calculates and prints the expected kcals/capita/day for a given scenario result.
         Args:

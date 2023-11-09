@@ -11,28 +11,8 @@ import numpy as np
 
 
 class Validator:
-    def validate_results(results):
-        """
-        Validates the results of a simulation by checking if the output is within a certain range.
-        Args:
-            results (list): A list of floats representing the output of a simulation.
-        Returns:
-            bool: True if the output is within the range, False otherwise.
-        """
-        # Define the range of valid results
-        lower_bound = 0.0
-        upper_bound = 1.0
 
-        # Check if all results are within the valid range
-        for result in results:
-            if result < lower_bound or result > upper_bound:
-                # If any result is outside the range, return False
-                return False
-
-        # If all results are within the range, return True
-        return True
-
-    def validate_results(self, model, extracted_results, interpreted_results):
+    def validate_results(self, model, extracted_results, interpreted_results, percent_fed_from_model):
         """
         Validates the results of the model by ensuring that the optimizer returns the same as the sum of nutrients,
         that zero kcals have zero fat and protein, that there are no NaN values, and that all values are greater than or
@@ -49,6 +29,7 @@ class Validator:
 
         # Ensure optimizer returns same as sum of nutrients
         self.ensure_optimizer_returns_same_as_sum_nutrients(
+            percent_fed_from_model
             model,
             interpreted_results,
             extracted_results.constants["inputs"]["INCLUDE_FAT"],
@@ -152,50 +133,29 @@ class Validator:
         print(constraintlist[max_index])
 
     def ensure_optimizer_returns_same_as_sum_nutrients(
-        self, model, interpreted_results, INCLUDE_FAT, INCLUDE_PROTEIN
+        self, percent_fed_from_model, interpreted_results, INCLUDE_FAT, INCLUDE_PROTEIN
     ):
         """
-        Ensure that there was no major error in the optimizer or in analysis which caused
+        ensure there was no major error in the optimizer or in analysis which caused
         the sums reported to differ between adding up all the extracted variables and
-        just looking at the reported result of the objective of the optimizer.
-
-        Args:
-            model: The optimization model
-            interpreted_results: The interpreted results of the optimization model
-            INCLUDE_FAT: A boolean indicating whether to include fat in the results
-            INCLUDE_PROTEIN: A boolean indicating whether to include protein in the results
-
-        Returns:
-            None
-
-        Raises:
-            AssertionError: If the optimizer and the extracted results do not match
+        just look at the reported result of the objective of the optimizer
         """
 
-        pass
-        # TODO: FAILS OCCASIONALLY BELOW 1% precision...
+        decimals = 1
 
-        # decimals = 0
+        percent_people_fed_by_summing_all_foods = interpreted_results.percent_people_fed
+        difference = round(
+            percent_fed_from_model - percent_people_fed_by_summing_all_foods,
+            decimals,
+        )
 
-        # percent_people_fed_reported_directly_by_optimizer = model.objective.value()
-        # percent_people_fed_by_summing_all_foods = interpreted_results.percent_people_fed
-        # difference = round(
-        #     percent_people_fed_reported_directly_by_optimizer
-        #     - percent_people_fed_by_summing_all_foods,
-        #     decimals,
-        # )
-
-        # TODO: reinstate this as working when protein or fat are excluded
-        # if INCLUDE_FAT or INCLUDE_PROTEIN:
-        #     return
-
-        # assert difference == 0, (
-        #     """ERROR: The optimizer and the extracted results do not match.
-        # optimizer: """
-        #     + str(percent_people_fed_reported_directly_by_optimizer)
-        #     + "\n      summing each food source extracted: "
-        #     + str(percent_people_fed_by_summing_all_foods)
-        # )
+        assert difference == 0, (
+            """ERROR: The optimizer and the extracted results do not match.
+        optimizer: """
+            + str(percent_fed_from_model)
+            + "\n      summing each food source extracted: "
+            + str(percent_people_fed_by_summing_all_foods)
+        )
 
     def ensure_zero_kcals_have_zero_fat_and_protein(self, interpreted_results):
         """
