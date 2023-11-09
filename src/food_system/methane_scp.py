@@ -169,13 +169,13 @@ class MethaneSCP:
         # calculate the fat attribute of the production Food object
         # billions of kcals converted to 1000s of tons fat
         self.production.fat = np.array(
-            list(np.array(self.production.kcals) * self.SCP_KCALS_TO_PROTEIN_CONVERSION)
+            list(np.array(self.production.kcals) * self.SCP_KCALS_TO_FAT_CONVERSION)
         )
 
         # calculate the protein attribute of the production Food object
         # billions of kcals converted to 1000s of tons protein
         self.production.protein = np.array(
-            list(np.array(self.production.kcals) * self.SCP_KCALS_TO_FAT_CONVERSION)
+            list(np.array(self.production.kcals) * self.SCP_KCALS_TO_PROTEIN_CONVERSION)
         )
 
         # set the units of the production Food object

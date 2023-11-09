@@ -155,14 +155,6 @@ class Plotter:
                     linestyle="solid",
                 )
 
-                if interpreter.include_protein:
-                    ax.plot(
-                        interpreter.time_months_middle,
-                        interpreter.nonhuman_consumption.in_units_percent_fed().protein,
-                        color="red",
-                        linestyle="dotted",
-                    )
-
                 if interpreter.include_fat:
                     # 1 gram of fat is 9 kcals.
                     ax.plot(
@@ -170,6 +162,13 @@ class Plotter:
                         interpreter.nonhuman_consumption.in_units_percent_fed().fat,
                         color="green",
                         linestyle="dashed",
+                    )
+                if interpreter.include_protein:
+                    ax.plot(
+                        interpreter.time_months_middle,
+                        interpreter.nonhuman_consumption.in_units_percent_fed().protein,
+                        color="red",
+                        linestyle="dotted",
                     )
 
                 ax.set_ylabel("Percent of minimum recommendation")
@@ -389,14 +388,6 @@ class Plotter:
                     linestyle="solid",
                 )
 
-                if interpreter.include_protein:
-                    ax.plot(
-                        interpreter.time_months_middle,
-                        interpreter.feed_and_biofuels.nonhuman_consumption.in_units_percent_fed().protein,
-                        color="red",
-                        linestyle="dotted",
-                    )
-
                 if interpreter.include_fat:
                     ax.plot(
                         interpreter.time_months_middle,
@@ -405,6 +396,13 @@ class Plotter:
                         linestyle="dashed",
                     )
 
+                if interpreter.include_protein:
+                    ax.plot(
+                        interpreter.time_months_middle,
+                        interpreter.feed_and_biofuels.nonhuman_consumption.in_units_percent_fed().protein,
+                        color="red",
+                        linestyle="dotted",
+                    )
                 ax.set_ylabel("Percent of minimum human recommendation as feed")
                 # ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
@@ -645,14 +643,6 @@ class Plotter:
                     linestyle="solid",
                 )
 
-                if interpreter.include_protein:
-                    ax.plot(
-                        interpreter.time_months_middle,
-                        interpreter.protein_fed,
-                        color="red",
-                        linestyle="dotted",
-                    )
-
                 if interpreter.include_fat:
                     # 1 gram of fat is 9 kcals.
                     ax.plot(
@@ -660,6 +650,13 @@ class Plotter:
                         interpreter.fat_fed,
                         color="green",
                         linestyle="dashed",
+                    )
+                if interpreter.include_protein:
+                    ax.plot(
+                        interpreter.time_months_middle,
+                        interpreter.protein_fed,
+                        color="red",
+                        linestyle="dotted",
                     )
                 if max_y_percent != -1:
                     ax.set_ylim([0, max_y_percent])
