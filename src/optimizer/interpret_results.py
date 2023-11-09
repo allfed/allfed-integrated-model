@@ -30,9 +30,15 @@ class Interpreter:
     """
 
     def __init__(self):
-        pass
+        self.show_feed_biofuels = (
+            False  # until set to true, this will not show the feed or biofuels
+        )
 
-    def interpret_results(self, extracted_results, time_consts):
+    def set_feed(self, feed_and_biofuels):
+        self.show_feed_biofuels = True
+        self.feed_and_biofuels = feed_and_biofuels
+
+    def interpret_results(self, extracted_results):
         """
         This function takes the raw output of the optimizer food categories and total
         people fed in list form, and converts the naive people fed which includes
@@ -341,38 +347,42 @@ class Interpreter:
             self.constraining_nutrient,
         ) = self.get_percent_people_fed(humans_fed_sum)
 
-        # Set the excess feed property.
+        # rounding errors can be introduced by the optimizer. We correct them here.
+        # ... at least the ones that we can identify.
+        # We also round everything to within 0.1% of its value,
+        # in terms of % people fed.
+        (
+            self.stored_food,
+            self.outdoor_crops,
+            self.immediate_outdoor_crops,
+            self.new_stored_outdoor_crops,
+            self.seaweed_rounded,
+        ) = self.correct_and_validate_rounding_errors()
+
         self.excess_feed = extracted_results.excess_feed
 
-        # Set the kcals, fat, and protein fed properties.
         self.kcals_fed = humans_fed_sum.kcals
         self.fat_fed = humans_fed_sum.fat
         self.protein_fed = humans_fed_sum.protein
 
     def get_mean_min_nutrient(self):
         """
-        Calculates the mean number of people fed in all months by finding the minimum of any nutrient in any month.
-        This is useful for assessing what would have happened if stored food were not a constraint on the number of people fed.
+        for finding the minimum of any nutrient in any month
+        and then getting the mean people fed in all the months
+        This is useful for assessing what would have happened if stored food were not
+        a constraint on number of people fed
 
-        Args:
-            self (Interpreter): An instance of the Interpreter class.
-
-        Returns:
-            float: The mean number of people fed in all months.
-
-        Example:
-            >>> interpreter = Interpreter()
-            >>> interpreter.get_mean_min_nutrient()
-            2.0
+        returns: the mean people fed in all months
         """
-        # Find the minimum of kcals_fed, fat_fed, and protein_fed for each month
-        # and store the resulting array in min_fed.
+        # this is what the command below does
+        # >>> a = np.array([3,2,1])
+        # >>> b = np.array([2,2,6])
+        # >>> c = np.array([100,100,0])
+        # >>> np.min([a,b,c],axis=0)
+        # array([2, 2, 0])
         min_fed = np.min([self.kcals_fed, self.fat_fed, self.protein_fed], axis=0)
 
-        # Calculate the mean of the min_fed array and store the result in mean_fed.
         mean_fed = np.mean(min_fed)
-
-        # Return the mean_fed value.
         return mean_fed
 
     def get_sum_by_adding_to_humans(self):
@@ -430,34 +440,26 @@ class Interpreter:
         Returns:
             None
 
-        Example:
-            >>> interpreted_results = Interpreter.interpret(scenario)
-            >>> Interpreter.print_kcals_per_capita_per_day(interpreted_results)
-
         """
         # Calculate the ratio of people fed to total population
         needs_ratio = interpreted_results.percent_people_fed / 100
 
-        # Calculate and print the expected kcals/capita/day
-        print("Expected kcals/capita/day")
+        print("Expected kcals/person/day")
         print(needs_ratio * 2100)
         print("")
 
     def get_percent_people_fed(self, humans_fed_sum):
         """
-        Calculates the estimated percentage of people fed based on the minimum nutrients required to meet the needs of the population in any month, for kcals, fat, and protein.
+        Calculates the estimated percentage of people fed based on the minimum nutrients required to meet the
+        needs of the population in any month, for kcals, fat, and protein.
 
         Args:
-            humans_fed_sum (HumanFedSum): An instance of the HumanFedSum class representing the total amount of nutrients available for the population.
+            humans_fed_sum (HumanFedSum): An instance of the HumanFedSum class representing the total amount of
+            nutrients available for the population.
 
         Returns:
-            list: A list containing the estimated percentage of people fed and the minimum nutrients required to meet their needs.
-
-        Example:
-            >>> humans_fed_sum = HumanFedSum(1000, 50, 20)
-            >>> interpreter = Interpreter()
-            >>> interpreter.get_percent_people_fed(humans_fed_sum)
-            [50.0, {'kcal': 1000, 'fat': 50, 'protein': 20}]
+            list: A list containing the estimated percentage of people fed and the minimum nutrients required to
+            meet their needs.
         """
         assert humans_fed_sum.is_units_percent()
 
@@ -480,18 +482,17 @@ class Interpreter:
     def correct_and_validate_rounding_errors(self):
         """
         This function corrects any rounding errors that might have occurred during the optimization process.
-        It ensures that the values are rounded to the nearest 3 decimal places and that they are greater than or equal to zero.
-        The function returns the corrected values for stored_food, outdoor_crops, immediate_outdoor_crops, new_stored_outdoor_crops, and seaweed.
+        It ensures that the values are rounded to the nearest 3 decimal places and that they are greater than or equal
+        to zero.
+        The function returns the corrected values for stored_food, outdoor_crops,
+        immediate_outdoor_crops, new_stored_outdoor_crops, and seaweed.
 
         Args:
             None
 
         Returns:
-            tuple: A tuple containing the corrected values for stored_food, outdoor_crops, immediate_outdoor_crops, new_stored_outdoor_crops, and seaweed.
-
-        Example:
-            >>> interpreter = Interpreter()
-            >>> stored_food, outdoor_crops, immediate_outdoor_crops, new_stored_outdoor_crops, seaweed = interpreter.correct_and_validate_rounding_errors()
+            tuple: A tuple containing the corrected values for stored_food, outdoor_crops, immediate_outdoor_crops,
+            new_stored_outdoor_crops, and seaweed.
         """
         # Ensure that all the outputs have the same number of months
         assert (
@@ -608,56 +609,6 @@ class Interpreter:
         )
 
         return excess_per_month
-
-    def correct_and_validate_rounding_errors(self):
-        """
-        any round error we might expect to be very small and easily fixable is corrected
-        here. "small" is with respect to percent people fed
-
-        Note: outdoor_crops_to_humans, stored_food, and seaweed are the only actual outputs of
-              the optimizer!
-        """
-        assert (
-            self.stored_food.NMONTHS
-            == self.outdoor_crops.NMONTHS
-            == self.immediate_outdoor_crops.NMONTHS
-            == self.new_stored_outdoor_crops.NMONTHS
-            == self.seaweed.NMONTHS
-        )
-
-        assert self.stored_food.is_units_percent()
-        assert self.outdoor_crops.is_units_percent()
-        assert self.immediate_outdoor_crops.is_units_percent()
-        assert self.new_stored_outdoor_crops.is_units_percent()
-        assert self.seaweed.is_units_percent()
-
-        stored_food_rounded = self.stored_food.get_rounded_to_decimal(3)
-        outdoor_crops_rounded = self.outdoor_crops.get_rounded_to_decimal(3)
-        seaweed_rounded = self.seaweed.get_rounded_to_decimal(3)
-
-        immediate_outdoor_crops_rounded = (
-            self.immediate_outdoor_crops.get_rounded_to_decimal(3)
-        )
-        new_stored_outdoor_crops_rounded = (
-            self.new_stored_outdoor_crops.get_rounded_to_decimal(3)
-        )
-
-        # if the value was a little less than zero, when rounded it would no longer be
-        # less than zero.
-
-        assert stored_food_rounded.all_greater_than_or_equal_to_zero()
-        assert seaweed_rounded.all_greater_than_or_equal_to_zero()
-        assert outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
-        assert immediate_outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
-        assert new_stored_outdoor_crops_rounded.all_greater_than_or_equal_to_zero()
-
-        return (
-            stored_food_rounded,
-            outdoor_crops_rounded,
-            immediate_outdoor_crops_rounded,
-            new_stored_outdoor_crops_rounded,
-            seaweed_rounded,
-        )
 
     def set_feed_and_biofuels(
         self,
