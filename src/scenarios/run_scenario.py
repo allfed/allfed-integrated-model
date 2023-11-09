@@ -147,17 +147,13 @@ class ScenarioRunner:
         # EXCESS
         constants_for_params = scenario_loader.set_excess_to_zero(constants_for_params)
 
-        # BUFFER
+        # STORED FOOD
 
-        if scenario_option["buffer"] == "zero":
-            constants_for_params = scenario_loader.set_stored_food_buffer_zero(
-                constants_for_params
-            )
-        elif scenario_option["buffer"] == "no_stored_between_years":
+        if scenario_option["stored_food"] == "zero":
             constants_for_params = scenario_loader.set_no_stored_food(
                 constants_for_params
             )
-        elif scenario_option["buffer"] == "baseline":
+        elif scenario_option["stored_food"] == "baseline":
             constants_for_params = scenario_loader.set_stored_food_buffer_as_baseline(
                 constants_for_params
             )
@@ -166,7 +162,31 @@ class ScenarioRunner:
 
             assert (
                 scenario_is_correct
-            ), "You must specify 'buffer' key as zero, no_stored_food, or baseline"
+            ), "You must specify 'stored_food_at_start' key as zero, or baseline"
+
+        # END_SIMULATION_STOCKS_RATIO
+
+        if scenario_option["end_simulation_stocks_ratio"] == "zero":
+            constants_for_params = scenario_loader.set_stored_food_buffer_zero(
+                constants_for_params
+            )
+        elif (
+            scenario_option["end_simulation_stocks_ratio"]
+            == "no_stored_food_between_years"
+        ):
+            constants_for_params = scenario_loader.set_no_stored_food_between_years(
+                constants_for_params
+            )
+        elif scenario_option["end_simulation_stocks_ratio"] == "baseline":
+            constants_for_params = scenario_loader.set_stored_food_buffer_as_baseline(
+                constants_for_params
+            )
+        else:
+            scenario_is_correct = False
+
+            assert (
+                scenario_is_correct
+            ), "You must specify 'end_simulation_stocks_ratio' key as zero, no_stored_between_years, or baseline"
 
         # SHUTOFF
         if scenario_option["shutoff"] == "immediate":
@@ -298,7 +318,9 @@ class ScenarioRunner:
 
         # FISH
 
-        if scenario_option["fish"] == "nuclear_winter":
+        if scenario_option["fish"] == "zero":
+            constants_for_params = scenario_loader.set_fish_zero(constants_for_params)
+        elif scenario_option["fish"] == "nuclear_winter":
             constants_for_params = scenario_loader.set_fish_nuclear_winter_reduction(
                 constants_for_params
             )
@@ -311,7 +333,7 @@ class ScenarioRunner:
 
             assert (
                 scenario_is_correct
-            ), "You must specify 'fish' key as either nuclear_winter,or baseline"
+            ), "You must specify 'fish' key as either zero, nuclear_winter,or baseline"
 
         # CROPS
 
