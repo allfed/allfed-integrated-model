@@ -188,7 +188,7 @@ def get_headcount_dataframe(df, new_col_name):
         buffalo_head = get_max_from_species(pop_head_for_country, Buffalo)
         mule_head = get_max_from_species(pop_head_for_country, Mules_and_hinnies)
         horse_head = get_max_from_species(pop_head_for_country, Horses)
-        asses_head = get_max_from_species(pop_head_for_country, Asses)
+        asses_head = get_max_from_species(pop_head_for_country, Asses) 
 
         # add to list
         d.append(
@@ -354,7 +354,7 @@ def add_summary_columns(df_out_head, df_out_slaughter):
         "milk_camel",
         "milk_buffalo"]  # , "mule", "horse", "asses"]
     # hardcode exclusion of horse like animals from meat (even though they are used for meat in some countries?)
-    # it is difficult to distinguish between horse like animals used for meat and those used for work, so the slaiughter
+    # it is difficult to distinguish between horse like animals used for meat and those used for work, so the slaiughter 
     # so the slaughter numbers are not a reliable indicator of meat
     # production, and inclusion would skey the "large animal" category
     small_animal_keywords_slaughter = ["chicken", "rabbit", "duck", "goose", "turkey", "other_rodents"]
@@ -561,7 +561,7 @@ def import_livetsock_units():
     # imports data from FAO on licvestock units and clean it up.
 
 
-# do main
+# do main 
 if __name__ == "__main__":
     # import_animal_data()
     import_livetsock_units()

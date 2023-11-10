@@ -493,8 +493,7 @@ class Optimizer:
         # Add the objective function to the model
         # This means that the optimizer is trying to maximize the feed and biofuel coming from resilient foods.
         # That is because the model is constrained to still feed the most humans possible, and all food resources
-        # are used by the optimizer in the first optimization run [IS THIS THE
-        # CASE?? IF SO, THEN WE MIGHT HAVE A PROBLEM ].
+        # are used by the optimizer in the first optimization run.
         model_max_to_humans += (
             variables["objective_function_best_to_humans"]
             <= total_feed_biofuel_variable,

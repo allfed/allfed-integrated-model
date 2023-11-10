@@ -3,16 +3,16 @@
 Scenario Analysis for Food Production System
 -------------------------------------------------------------------------------
 
-This script evaluates the impact of various scenarios on a country's food
-production system, focusing on the effects of factors such as climate change,
-waste reduction, and adoption of resilient foods. Each scenario is a combination
+This script evaluates the impact of various scenarios on a country's food 
+production system, focusing on the effects of factors such as climate change, 
+waste reduction, and adoption of resilient foods. Each scenario is a combination 
 of several parameters, including scale, seasonality, grasses, crop disruption,
-fishing conditions, waste, nutrition, buffer, shutoff, culling, fat, protein, and
+fishing conditions, waste, nutrition, buffer, shutoff, culling, fat, protein, and 
 meat strategy.
 
-Instead of hardcoding the scenario parameters, this version of the script reads
-them from a YAML configuration file, providing flexibility and scalability.
-This makes it easier to update or add new scenarios without modifying the core
+Instead of hardcoding the scenario parameters, this version of the script reads 
+them from a YAML configuration file, providing flexibility and scalability. 
+This makes it easier to update or add new scenarios without modifying the core 
 script.
 
 - Created on: Tue Oct 17
@@ -22,12 +22,12 @@ Usage:
 To run the script, two optional command line arguments can be provided:
 1. To show country-specific figures (True/False)
 2. To display colored maps (True/False)
-If not provided, the default values are True for the first argument and False
+If not provided, the default values are True for the first argument and False 
 for the second.
 
 YAML Configuration:
-The scenarios and their respective parameters are defined in a YAML file. Each
-scenario is a named dictionary with parameter-value pairs. This makes it easy
+The scenarios and their respective parameters are defined in a YAML file. Each 
+scenario is a named dictionary with parameter-value pairs. This makes it easy 
 to visualize, edit, and manage various scenarios.
 
 """
