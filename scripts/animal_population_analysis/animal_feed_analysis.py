@@ -156,7 +156,7 @@ def bulk_correlation_analysis(df, target_column):
         fig.show()
 
 
-## import data
+# import data
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 animal_pop_analysis_dir = Path(repo_root) / "scripts" / "animal_population_analysis"

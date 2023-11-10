@@ -98,30 +98,57 @@ class MethaneSCP:
         ]
 
     def calculate_monthly_scp_caloric_production(self, constants_for_params):
-        """
-        Calculates the monthly caloric production of SCP.
-
-        Args:
-            constants_for_params (dict): A dictionary containing the constants needed
-            for the calculation.
-
-        Attributes:
-            production_kcals_scp_per_month_long (list): A list containing the monthly caloric
-            production of SCP.
-
-        """
-        # check if methane SCP should be added
         if constants_for_params["ADD_METHANE_SCP"]:
-            # create a list of industrial delay months
             industrial_delay_months = [0] * constants_for_params["DELAY"][
                 "INDUSTRIAL_FOODS_MONTHS"
             ]
 
-            # create a list of methane SCP percentage of kcals
-            METHANE_SCP_PERCENT_KCALS = list(
-                np.array(
-                    industrial_delay_months
-                    + [0] * 12
+            KEEP_INCREASING_SCP = True
+
+            if KEEP_INCREASING_SCP:
+                global_values_percent_fed_just_scp_after12pct_waste = (
+                    [0] * 12
+                    + [2] * 5
+                    + [4]  # +2 after 5
+                    + [7] * 5  # +2 after 1
+                    + [9]  # +2 after 5
+                    + [11] * 6  # +2 after 1
+                    + [13]  # +2 after 6
+                    + [15] * 6  # + 2 after 1
+                    + [17]  # + 2 after 6
+                    + [19] * 6  # + 2 after 1
+                    + [21]  # + 2 after 6
+                    + [23] * 6  # + 2 after 1
+                    + [25]  # + 2 after 6
+                    + [27] * 6  # + 2 after 1
+                    + [29]  # + 2 after 6
+                    + [31] * 6  # + 2 after 1
+                    + [33]  # + 2 after 6
+                    + [35] * 6  # + 2 after 1
+                    + [37]  # + 2 after 6
+                    + [39] * 6  # + 2 after 1
+                    + [41]  # + 2 after 6
+                    + [43] * 6  # + 2 after 1
+                    + [45]  # + 2 after 6
+                    + [47] * 6  # + 2 after 1
+                    + [49]  # + 2 after 6
+                    + [51] * 6  # + 2 after 1
+                    + [53]  # + 2 after 6
+                    + [55] * 6  # + 2 after 1
+                    + [57]  # + 2 after 6
+                    + [59] * 6  # + 2 after 1
+                    + [61]  # + 2 after 6
+                    + [63] * 6  # + 2 after 1
+                    + [65]  # + 2 after 6
+                    + [67] * 6  # + 2 after 1
+                    + [69]  # + 2 after 6
+                    + [71] * 6  # + 2 after 1
+                    + [73]  # + 2 after 6
+                    + [75] * 210  # + 2 after 1
+                )
+            else:
+                global_values_percent_fed_just_scp_after12pct_waste = (
+                    [0] * 12
                     + [2] * 5
                     + [4]
                     + [7] * 5
@@ -130,11 +157,16 @@ class MethaneSCP:
                     + [13]
                     + [15] * 210
                 )
+
+            METHANE_SCP_PERCENT_KCALS = list(
+                np.array(
+                    industrial_delay_months
+                    + global_values_percent_fed_just_scp_after12pct_waste
+                )
                 / (1 - 0.12)
                 * self.INDUSTRIAL_FOODS_SLOPE_MULTIPLIER
             )
 
-            # create a list of monthly caloric production of SCP
             production_kcals_scp_per_month_long = []
             for global_percent_kcals_scp in METHANE_SCP_PERCENT_KCALS:
                 production_kcals_scp_per_month_long.append(
@@ -144,13 +176,10 @@ class MethaneSCP:
                     * constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"]
                     * (1 - self.SCP_WASTE_DISTRIBUTION / 100)
                 )
-            # set the production_kcals_scp_per_month_long attribute
             self.production_kcals_scp_per_month_long = (
                 production_kcals_scp_per_month_long
             )
         else:
-            # if methane SCP should not be added, set the production_kcals_scp_per_month_long
-            # attribute to a list of zeros
             self.production_kcals_scp_per_month_long = [0] * self.NMONTHS
 
     def calculate_scp_fat_and_protein_production(self):

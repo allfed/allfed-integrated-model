@@ -279,7 +279,8 @@ class TestAnimalSpecies:
         with pytest.raises(ValueError):
             animal.set_species_milk_attributes(1, -2, 3, 4)
 
-    # Tests that an error is raised when trying to set milk attributes with a productive milk age end less than productive milk age start
+    # Tests that an error is raised when trying to set milk attributes with a
+    # productive milk age end less than productive milk age start
     def test_set_milk_attributes_productive_milk_age_end_less_than_start(self):
         animal = AnimalSpecies("type", "species")
         animal.set_animal_attributes(100, 50, "function", 1, "type", "size", 0.5)
@@ -294,14 +295,16 @@ class TestAnimalSpecies:
                 1, 2, 3, 4, 5, 6, 7, 8, 0.5, 0
             )  # Added the missing argument 'starvation_death_fraction'
 
-    # Tests that an error is raised when trying to set slaughter attributes with a reduction in animal breeding greater than 1
+    # Tests that an error is raised when trying to set slaughter attributes
+    # with a reduction in animal breeding greater than 1
     def test_set_slaughter_attributes_reduction_in_animal_breeding_greater_than_1(self):
         animal = AnimalSpecies("type", "species")
         animal.set_animal_attributes(100, 50, "function", 1, "type", "size", 0.5)
         with pytest.raises(ValueError):
             animal.set_species_slaughter_attributes(1, 2, 3, 4, 5, 6, 7, 8, 2, 0)
 
-    # Tests that an error is raised when trying to set slaughter attributes with a target population fraction less than 0
+    # Tests that an error is raised when trying to set slaughter attributes
+    # with a target population fraction less than 0
     def test_set_slaughter_attributes_target_population_fraction_less_than_0(self):
         animal = AnimalSpecies("type", "species")
         animal.set_animal_attributes(100, 50, "function", 1, "type", "size", 0.5)
@@ -310,7 +313,8 @@ class TestAnimalSpecies:
                 1, 2, 3, 4, 5, 6, -1, 8, 0.2, 0
             )  # Added missing argument 'starvation_death_fraction'
 
-    # Tests that an error is raised when trying to set slaughter attributes with a pregnant animal slaughter fraction greater than 1
+    # Tests that an error is raised when trying to set slaughter attributes
+    # with a pregnant animal slaughter fraction greater than 1
     def test_set_slaughter_attributes_pregnant_animal_slaughter_fraction_greater_than_1(self):
         animal = AnimalSpecies("type", "species")
         animal.set_animal_attributes(100, 50, "function", 1, "type", "size", 0.5)
@@ -330,7 +334,8 @@ class TestAnimalSpecies:
         assert animal.population_fed == 100  # all population is fed
         assert animal.NE_balance.kcals == 0  # no leftover kcals needed
 
-    # Tests that a ValueError is raised when setting slaughter attributes with pregnant_animal_slaughter_fraction less than 0
+    # Tests that a ValueError is raised when setting slaughter attributes with
+    # pregnant_animal_slaughter_fraction less than 0
     def test_pregnant_animal_slaughter_fraction_less_than_zero(self):
         animal = AnimalSpecies("type", "species")
         animal.set_animal_attributes(
@@ -370,7 +375,8 @@ class TestAnimalSpecies:
             animal.set_animal_attributes(100, 10, "milk", 1, "ruminant", 500, 0.5)
             animal.set_species_slaughter_attributes(9, 0.1, -1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0)
 
-    # Tests that a ValueError is raised when setting slaughter attributes with other_animal_death_rate_annual less than 0
+    # Tests that a ValueError is raised when setting slaughter attributes with
+    # other_animal_death_rate_annual less than 0
     def test_negative_other_animal_death_rate_annual(self):
         with pytest.raises(ValueError):
             animal = AnimalSpecies("cattle", "dairy")
@@ -509,7 +515,8 @@ class TestCalculateChangeInPopulation:
         assert animal.current_population == 8550
         assert country_object.spare_slaughter_hours == 0
 
-    # Calculate the change in animal population for a given animal type with minimum parameters and non-zero slaughter hours
+    # Calculate the change in animal population for a given animal type with
+    # minimum parameters and non-zero slaughter hours
     def test_minimum_parameters_with_non_zero_slaughter_hours(self):
         from src.food_system.animal_populations import CountryData
 
@@ -542,7 +549,9 @@ class TestCalculateChangeInPopulation:
         animal = AnimalPopulation
         # Assertions here
 
-    # Test that checks the function doesn't incorreclty return large positive changes in population, interogates target population head as a risky variable
+    # Test that checks the function doesn't incorreclty return large positive
+    # changes in population, interogates target population head as a risky
+    # variable
     def test_does_not_return_large_positive_changes(self):
         from src.food_system.animal_populations import CountryData
 
@@ -726,7 +735,9 @@ class TestCalculateChangeInPopulation:
         assert result == 0  # = 100 pop before slaughter, - 10 slaughtered, - 5 homekill, = 85
 
     # insert calculate_starving_pop_post_all_slaughter_homekill
-    # Returns the correct value when population_starving_post_slaughter_and_healthy_homekill is greater than homekill_starving_this_month[-1]
+    # Returns the correct value when
+    # population_starving_post_slaughter_and_healthy_homekill is greater than
+    # homekill_starving_this_month[-1]
     def test_greater_than_homekill(self):
         animal = AnimalSpecies("type1", "species1")
         animal.homekill_starving_this_month = [10]
@@ -736,7 +747,8 @@ class TestCalculateChangeInPopulation:
         )
         assert result == 70
 
-        # Returns 0 when population_starving_post_slaughter_and_healthy_homekill is equal to homekill_starving_this_month[-1]
+        # Returns 0 when population_starving_post_slaughter_and_healthy_homekill
+        # is equal to homekill_starving_this_month[-1]
 
     def test_equal_to_homekill(self):
         animal = AnimalSpecies("type1", "species1")

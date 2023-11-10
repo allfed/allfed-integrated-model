@@ -192,12 +192,18 @@ class Plotter:
                 )
 
             if label == "b":
+                labels = ["Calories"]
+                if interpreter.include_fat:
+                    labels += ("Fat",)
+                if interpreter.include_protein:
+                    labels += ("Protein",)
+
                 ax.legend(
                     loc="center left",
                     frameon=False,
                     bbox_to_anchor=(-0.05, -0.3),
                     shadow=False,
-                    labels=["Calories", "Fat", "Protein"],
+                    labels=labels,
                 )
 
             if label == "a":
@@ -423,12 +429,18 @@ class Plotter:
                 )
 
             if label == "b":
+                labels = ["Calories"]
+                if interpreter.include_fat:
+                    labels += ("Fat",)
+                if interpreter.include_protein:
+                    labels += ("Protein",)
+
                 ax.legend(
                     loc="center left",
                     frameon=False,
                     bbox_to_anchor=(-0.05, -0.3),
                     shadow=False,
-                    labels=["Calories", "Fat", "Protein"],
+                    labels=labels,
                 )
 
             if label == "a":
@@ -681,12 +693,18 @@ class Plotter:
 
             if label == "b":
                 if row == 3:
+                    labels = ["Calories"]
+                    if interpreter.include_fat:
+                        labels += ("Fat",)
+                    if interpreter.include_protein:
+                        labels += ("Protein",)
+
                     ax.legend(
                         loc="center left",
                         frameon=False,
-                        bbox_to_anchor=(-0.05, -0.6),
+                        bbox_to_anchor=(-0.05, -0.3),
                         shadow=False,
-                        labels=["Calories", "Fat", "Protein"],
+                        labels=labels,
                     )
                 if row == 1:
                     plt.title(
@@ -1139,12 +1157,18 @@ class Plotter:
                 )
 
             if label == "d":
+                labels = ["Calories"]
+                if interpreter.include_fat:
+                    labels += ("Fat",)
+                if interpreter.include_protein:
+                    labels += ("Protein",)
+
                 ax.legend(
                     loc="center left",
                     frameon=False,
                     bbox_to_anchor=(-0.05, -0.3),
                     shadow=False,
-                    labels=["Calories", "Fat", "Protein"],
+                    labels=labels,
                 )
                 ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
@@ -1480,12 +1504,18 @@ class Plotter:
                 )
 
             if label == "d":
+                labels = ["Calories"]
+                if interpreter.include_fat:
+                    labels += ("Fat",)
+                if interpreter.include_protein:
+                    labels += ("Protein",)
+
                 ax.legend(
                     loc="center left",
                     frameon=False,
                     bbox_to_anchor=(-0.05, -0.3),
                     shadow=False,
-                    labels=["Calories", "Fat", "Protein"],
+                    labels=labels,
                 )
                 ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
@@ -1643,12 +1673,18 @@ class Plotter:
                 )
 
             if label == "d":
+                labels = ["Calories"]
+                if interpreter.include_fat:
+                    labels += ("Fat",)
+                if interpreter.include_protein:
+                    labels += ("Protein",)
+
                 ax.legend(
                     loc="center left",
                     frameon=False,
                     bbox_to_anchor=(-0.05, -0.3),
                     shadow=False,
-                    labels=["Calories", "Fat", "Protein"],
+                    labels=labels,
                 )
                 ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 

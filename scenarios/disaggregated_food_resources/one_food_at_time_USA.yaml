@@ -24,7 +24,7 @@ simulations:
 
   
   # USA Gross Food Production, if only methane scp were available 
-  USA_only_methane_scp:
+  USA_only_cellulosic_sugar:
     title: United States Gross Food Production, Baseline Climate
     scale: country
     seasonality: country

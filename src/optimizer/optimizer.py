@@ -93,12 +93,14 @@ class Optimizer:
         # Run optimizations to maximize food production for humans
         self.run_optimizations_to_humans(model, variables, single_valued_constants)
 
+        percent_fed_from_model = model.objective.value()
+
         # Return the model, variables, maximize_constraints, single_valued_constants, and time_consts
         return (
             model,
             variables,
             maximize_constraints,
-            single_valued_constants,
+            percent_fed_from_model,
             time_consts,
         )
 
@@ -475,6 +477,8 @@ class Optimizer:
         maximizer_string = "Crops_And_Stored_Food_Optimization_Averaged"
 
         # Calculate the total feed and biofuel variable
+        # NOTE: this does not include stored food or outdoor growing! Therefore stored food and outdoor growing
+        # will be going to humans instead where possible.
         total_feed_biofuel_variable = 0
         for month in range(0, self.NMONTHS):
             total_feed_biofuel_variable += (
@@ -488,6 +492,9 @@ class Optimizer:
 
         # Add the objective function to the model
         # This means that the optimizer is trying to maximize the feed and biofuel coming from resilient foods.
+        # That is because the model is constrained to still feed the most humans possible, and all food resources
+        # are used by the optimizer in the first optimization run [IS THIS THE
+        # CASE?? IF SO, THEN WE MIGHT HAVE A PROBLEM ].
         model_max_to_humans += (
             variables["objective_function_best_to_humans"]
             <= total_feed_biofuel_variable,

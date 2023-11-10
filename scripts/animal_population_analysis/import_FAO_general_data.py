@@ -63,7 +63,8 @@ def import_FAO_general_data(path_to_csv, item_codes, element_codes, alpha3_col="
         ]
     ]
 
-    # for each item code, grab the first row that matches and extract the "Item" and "element" strings and combine them to a new column name
+    # for each item code, grab the first row that matches and extract the
+    # "Item" and "element" strings and combine them to a new column name
     new_col_names = []
     for i in range(0, len(item_codes)):
         item_code = item_codes[i]
@@ -126,7 +127,7 @@ def import_FAO_general_data(path_to_csv, item_codes, element_codes, alpha3_col="
 
 if __name__ == "__main__":
 
-    ## import data
+    # import data
     repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
     animal_pop_analysis_dir = Path(repo_root) / "scripts" / "animal_population_analysis"

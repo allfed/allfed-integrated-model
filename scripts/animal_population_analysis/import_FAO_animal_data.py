@@ -188,7 +188,7 @@ def get_headcount_dataframe(df, new_col_name):
         buffalo_head = get_max_from_species(pop_head_for_country, Buffalo)
         mule_head = get_max_from_species(pop_head_for_country, Mules_and_hinnies)
         horse_head = get_max_from_species(pop_head_for_country, Horses)
-        asses_head = get_max_from_species(pop_head_for_country, Asses) 
+        asses_head = get_max_from_species(pop_head_for_country, Asses)
 
         # add to list
         d.append(
@@ -346,10 +346,17 @@ def add_summary_columns(df_out_head, df_out_slaughter):
     # if you remove the meat animals, it will break the code
     small_animal_keywords = ["chicken", "rabbit", "duck", "goose", "turkey", "other_rodents"]
     medium_animal_keywords = ["pig", "meat_goat", "meat_sheep", "camelids", "milk_goat", "milk_sheep"]
-    large_animal_keywords = ["meat_cattle", "meat_camel", "meat_buffalo", "milk_cattle", "milk_camel", "milk_buffalo"]  # , "mule", "horse", "asses"]
+    large_animal_keywords = [
+        "meat_cattle",
+        "meat_camel",
+        "meat_buffalo",
+        "milk_cattle",
+        "milk_camel",
+        "milk_buffalo"]  # , "mule", "horse", "asses"]
     # hardcode exclusion of horse like animals from meat (even though they are used for meat in some countries?)
-    # it is difficult to distinguish between horse like animals used for meat and those used for work, so the slaiughter 
-    # so the slaughter numbers are not a reliable indicator of meat production, and inclusion would skey the "large animal" category
+    # it is difficult to distinguish between horse like animals used for meat and those used for work, so the slaiughter
+    # so the slaughter numbers are not a reliable indicator of meat
+    # production, and inclusion would skey the "large animal" category
     small_animal_keywords_slaughter = ["chicken", "rabbit", "duck", "goose", "turkey", "other_rodents"]
     medium_animal_keywords_slaughter = ["pig", "goat", "sheep", "camelids"]
     large_animal_keywords_slaughter = ["cattle", "camel", "buffalo"]  # , "mule", "horse", "asses"]
@@ -501,7 +508,9 @@ def import_animal_data():
     df_head = add_alpha_codes_from_ISO(df_importhead, iso_num_col, new_col_name)
     df_head = df_head.drop(df_head[df_head["Area Code (ISO3)"] == "NA"].index)
 
-    # find area code iso3 with no match and drop them, for this dataset it's just "China", which is instead split in to China Mainlaind, Hong kong etc.
+    # find area code iso3 with no match and drop them, for this dataset it's
+    # just "China", which is instead split in to China Mainlaind, Hong kong
+    # etc.
 
     # filter dataframe by elemenmt which conatins milking
     df_milking = df_slaughter[df_slaughter["Element"].str.contains("Milk")]
@@ -552,7 +561,7 @@ def import_livetsock_units():
     # imports data from FAO on licvestock units and clean it up.
 
 
-# do main 
+# do main
 if __name__ == "__main__":
     # import_animal_data()
     import_livetsock_units()
