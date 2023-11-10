@@ -19,7 +19,7 @@ simulations:
     waste: baseline_in_country
     nutrition: baseline 
     stored_food: baseline
-    end_simulation_stocks_ratio: baseline
+    end_simulation_stocks_ratio: zero # TODO: BUG: Fix this so "baseline" works
     shutoff: continued
     cull: do_eat_culled
     fat: not_required

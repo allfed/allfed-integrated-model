@@ -44,6 +44,9 @@ class ScenarioRunner:
 
         interpreter.set_feed(feed_biofuels)
 
+        # print("single_valued_constants")
+        # print(single_valued_constants["DELAY"])
+
         # actually make PuLP optimize effective people fed based on all the constants
         # we've determined
         (
@@ -96,7 +99,7 @@ class ScenarioRunner:
         """
         Runs the optimizer and returns the model, variables, and constants
         """
-        optimizer = Optimizer()
+        optimizer = Optimizer(single_valued_constants, time_consts)
         validator = Validator()
 
         (
@@ -105,7 +108,7 @@ class ScenarioRunner:
             maximize_constraints,
             single_valued_constants,
             time_consts,
-        ) = optimizer.optimize(single_valued_constants, time_consts)
+        ) = optimizer.optimize_to_humans(single_valued_constants, time_consts)
 
         CHECK_CONSTRAINTS = False
         if CHECK_CONSTRAINTS:
@@ -292,8 +295,6 @@ class ScenarioRunner:
              baseline_globally,or nuclear_winter_globally"""
 
         # GRASSES
-        print("grasses")
-        print(scenario_option["grasses"])
         if scenario_option["grasses"] == "baseline":
             constants_for_params = scenario_loader.set_grasses_baseline(
                 constants_for_params

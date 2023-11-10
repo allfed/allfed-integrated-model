@@ -28,7 +28,9 @@ class Parameters:
         to set the starting point of the model to the months specified in parameters.py.
         """
         self.FIRST_TIME_RUN = True  # Flag to indicate if this is the first time the simulation is being run
-        self.SIMULATION_STARTING_MONTH = "MAY"  # Default starting month for the simulation
+        self.SIMULATION_STARTING_MONTH = (
+            "MAY"  # Default starting month for the simulation
+        )
         # Dictionary of the months to set the starting point of the model to
         months_dict = {
             "JAN": 1,
@@ -84,7 +86,8 @@ class Parameters:
 
         # Ensure every parameter has been initialized for the scenarios_loader
         scenarios_loader.check_all_set()
-
+        print("scenarios_loader")
+        print(scenarios_loader)
         # Time dependent constants_out as inputs to the optimizer
         time_consts = {}
         constants_out = {}
@@ -96,7 +99,9 @@ class Parameters:
         constants_out = self.set_nutrition_per_month(constants_out, constants_inputs)
 
         # Set seaweed parameters
-        constants_out, built_area, growth_rates, seaweed = self.set_seaweed_params(constants_out, constants_inputs)
+        constants_out, built_area, growth_rates, seaweed = self.set_seaweed_params(
+            constants_out, constants_inputs
+        )
 
         time_consts["built_area"] = built_area
         time_consts["growth_rates_monthly"] = growth_rates
@@ -105,19 +110,29 @@ class Parameters:
         time_consts = self.init_fish_params(time_consts, constants_inputs)
 
         # Initialize methane single cell protein constants
-        constants_out, time_consts, methane_scp = self.init_scp_params(constants_out, time_consts, constants_inputs)
+        constants_out, time_consts, methane_scp = self.init_scp_params(
+            constants_out, time_consts, constants_inputs
+        )
 
         # Initialize cellulose sugar constants
-        constants_out, time_consts, cellulosic_sugar = self.init_cs_params(constants_out, time_consts, constants_inputs)
+        constants_out, time_consts, cellulosic_sugar = self.init_cs_params(
+            constants_out, time_consts, constants_inputs
+        )
 
         # Initialize outdoor crop production variables
-        constants_out, outdoor_crops = self.init_outdoor_crops(constants_out, constants_inputs)
+        constants_out, outdoor_crops = self.init_outdoor_crops(
+            constants_out, constants_inputs
+        )
 
         # Initialize greenhouse constants
-        time_consts = self.init_greenhouse_params(time_consts, constants_inputs, outdoor_crops)
+        time_consts = self.init_greenhouse_params(
+            time_consts, constants_inputs, outdoor_crops
+        )
 
         # Initialize stored food variables
-        constants_out, stored_food = self.init_stored_food(constants_out, constants_inputs, outdoor_crops)
+        constants_out, stored_food = self.init_stored_food(
+            constants_out, constants_inputs, outdoor_crops
+        )
 
         # Initialize meat and dairy, feed and biofuels from breeding and subtract feed biofuels
         (
@@ -178,20 +193,13 @@ class Parameters:
             biofuels,
             feed,
             excess_feed,
-        ) = feed_and_biofuels.get_biofuels_and_feed_from_delayed_shutoff(constants_inputs)
+        ) = feed_and_biofuels.get_biofuels_and_feed_from_delayed_shutoff(
+            constants_inputs
+        )
 
         meat_and_dairy = MeatAndDairy(constants_inputs)
 
-        grasses_for_animals = Food(
-            kcals=meat_and_dairy.human_inedible_feed * 1e6,
-            fat=np.zeros(constants_inputs["NMONTHS"]),
-            protein=np.zeros(constants_inputs["NMONTHS"]),
-            kcals_units="million dry caloric tons each month",
-            fat_units="thousand tons each month",
-            protein_units="thousand tons each month",
-        )
-        print("grasses_for_animals")
-        print(grasses_for_animals)
+        grasses_for_animals = meat_and_dairy.human_inedible_feed
 
         if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
             feed_meat_object = CalculateFeedAndMeat(
@@ -209,7 +217,9 @@ class Parameters:
             )
 
         # this is just to make sure you know you're running a diet calculation
-        assert excess_feed.all_equals_zero(), "if you're running a diet calculation, delete this assert"
+        assert (
+            excess_feed.all_equals_zero()
+        ), "if you're running a diet calculation, delete this assert"
 
         # MEAT AND DAIRY from breeding reduction strategy
 
@@ -251,7 +261,9 @@ class Parameters:
         time_consts["nonhuman_consumption"] = nonhuman_consumption
         time_consts["feed"] = feed_and_biofuels.feed
         time_consts["biofuel"] = feed_and_biofuels.biofuel
-        time_consts["excess_feed"] = feed_and_biofuels.get_excess_food_usage_from_percents(
+        time_consts[
+            "excess_feed"
+        ] = feed_and_biofuels.get_excess_food_usage_from_percents(
             constants_inputs["EXCESS_FEED_PERCENT"]
         )
 
@@ -307,7 +319,11 @@ class Parameters:
             return
 
         # All non-integers should be Food types, and must have the following function
-        if isinstance(value, int) or isinstance(value, float) or isinstance(value, bool):
+        if (
+            isinstance(value, int)
+            or isinstance(value, float)
+            or isinstance(value, bool)
+        ):
             assert not (value != value), "Dictionary has NaN at key " + key
             return
 
@@ -347,7 +363,9 @@ class Parameters:
         constants_out["ADD_CELLULOSIC_SUGAR"] = constants_inputs["ADD_CELLULOSIC_SUGAR"]
         constants_out["ADD_GREENHOUSES"] = constants_inputs["ADD_GREENHOUSES"]
         constants_out["ADD_OUTDOOR_GROWING"] = constants_inputs["ADD_OUTDOOR_GROWING"]
-        constants_out["STORE_FOOD_BETWEEN_YEARS"] = constants_inputs["STORE_FOOD_BETWEEN_YEARS"]
+        constants_out["STORE_FOOD_BETWEEN_YEARS"] = constants_inputs[
+            "STORE_FOOD_BETWEEN_YEARS"
+        ]
 
         return constants_out
 
@@ -392,7 +410,9 @@ class Parameters:
         # set the nutrition constants in the output dictionary
         constants_out["BILLION_KCALS_NEEDED"] = Food.conversions.billion_kcals_needed
         constants_out["THOU_TONS_FAT_NEEDED"] = Food.conversions.thou_tons_fat_needed
-        constants_out["THOU_TONS_PROTEIN_NEEDED"] = Food.conversions.thou_tons_protein_needed
+        constants_out[
+            "THOU_TONS_PROTEIN_NEEDED"
+        ] = Food.conversions.thou_tons_protein_needed
         constants_out["KCALS_MONTHLY"] = Food.conversions.kcals_monthly
         constants_out["PROTEIN_MONTHLY"] = Food.conversions.protein_monthly
         constants_out["FAT_MONTHLY"] = Food.conversions.fat_monthly
@@ -446,9 +466,12 @@ class Parameters:
         constants_out["MAXIMUM_DENSITY"] = seaweed.MAXIMUM_DENSITY
         constants_out["MAXIMUM_SEAWEED_AREA"] = seaweed.MAXIMUM_SEAWEED_AREA
         constants_out["INITIAL_BUILT_SEAWEED_AREA"] = seaweed.INITIAL_BUILT_SEAWEED_AREA
-        constants_out["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_FEED
-        constants_out["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL
-        constants_out["MAX_SEAWEED_HUMANS_CAN_CONSUME_MONTHLY"] = seaweed.MAX_SEAWEED_HUMANS_CAN_CONSUME_MONTHLY
+        constants_out[
+            "MAX_SEAWEED_AS_PERCENT_KCALS_FEED"
+        ] = seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_FEED
+        constants_out[
+            "MAX_SEAWEED_HUMANS_CAN_CONSUME_MONTHLY"
+        ] = seaweed.MAX_SEAWEED_HUMANS_CAN_CONSUME_MONTHLY
 
         # return the constants_out dictionary, built_area, growth_rates, and the Seaweed object
         return constants_out, built_area, growth_rates, seaweed
@@ -490,10 +513,18 @@ class Parameters:
 
         # Update the constants_out dictionary with the outdoor crops' rotation fraction fat, and protein and harvest
         # duration in months
-        constants_out["OG_ROTATION_FRACTION_FAT"] = outdoor_crops.OG_ROTATION_FRACTION_FAT
-        constants_out["OG_ROTATION_FRACTION_PROTEIN"] = outdoor_crops.OG_ROTATION_FRACTION_PROTEIN
+        constants_out[
+            "OG_ROTATION_FRACTION_FAT"
+        ] = outdoor_crops.OG_ROTATION_FRACTION_FAT
+        constants_out[
+            "OG_ROTATION_FRACTION_PROTEIN"
+        ] = outdoor_crops.OG_ROTATION_FRACTION_PROTEIN
 
-        constants_out["INITIAL_HARVEST_DURATION_IN_MONTHS"] = constants_inputs["INITIAL_HARVEST_DURATION_IN_MONTHS"]
+        constants_out["INITIAL_HARVEST_DURATION_IN_MONTHS"] = constants_inputs[
+            "INITIAL_HARVEST_DURATION_IN_MONTHS"
+        ]
+        print("DELAY in parameters")
+        print(constants_inputs["DELAY"])
         constants_out["DELAY"] = constants_inputs["DELAY"]
 
         # Return the updated constants_out dictionary and the outdoor_crops object
@@ -579,7 +610,9 @@ class Parameters:
         greenhouses = Greenhouses(constants_inputs)
 
         # Calculate the greenhouse area
-        greenhouse_area = greenhouses.get_greenhouse_area(constants_inputs, outdoor_crops)
+        greenhouse_area = greenhouses.get_greenhouse_area(
+            constants_inputs, outdoor_crops
+        )
         time_consts["greenhouse_area"] = greenhouse_area
 
         # Calculate the greenhouse yield per hectare
@@ -595,7 +628,9 @@ class Parameters:
             ) = greenhouses.get_greenhouse_yield_per_ha(constants_inputs, outdoor_crops)
 
         # Update the outdoor crops instance with the post-waste crops food produced
-        outdoor_crops.set_crop_production_minus_greenhouse_area(constants_inputs, greenhouses.greenhouse_fraction_area)
+        outdoor_crops.set_crop_production_minus_greenhouse_area(
+            constants_inputs, greenhouses.greenhouse_fraction_area
+        )
 
         # Update the time constants dictionary with the calculated values
         time_consts["outdoor_crops"] = outdoor_crops
@@ -675,11 +710,19 @@ class Parameters:
         constants_out[
             "MAX_METHANE_SCP_HUMANS_CAN_CONSUME_MONTHLY"
         ] = methane_scp.MAX_METHANE_SCP_HUMANS_CAN_CONSUME_MONTHLY
-        constants_out["MAX_METHANE_SCP_AS_PERCENT_KCALS_FEED"] = methane_scp.MAX_METHANE_SCP_AS_PERCENT_KCALS_FEED
-        constants_out["MAX_METHANE_SCP_AS_PERCENT_KCALS_BIOFUEL"] = methane_scp.MAX_METHANE_SCP_AS_PERCENT_KCALS_BIOFUEL
+        constants_out[
+            "MAX_METHANE_SCP_AS_PERCENT_KCALS_FEED"
+        ] = methane_scp.MAX_METHANE_SCP_AS_PERCENT_KCALS_FEED
+        constants_out[
+            "MAX_METHANE_SCP_AS_PERCENT_KCALS_BIOFUEL"
+        ] = methane_scp.MAX_METHANE_SCP_AS_PERCENT_KCALS_BIOFUEL
 
-        constants_out["SCP_KCALS_TO_FAT_CONVERSION"] = methane_scp.SCP_KCALS_TO_FAT_CONVERSION
-        constants_out["SCP_KCALS_TO_PROTEIN_CONVERSION"] = methane_scp.SCP_KCALS_TO_PROTEIN_CONVERSION
+        constants_out[
+            "SCP_KCALS_TO_FAT_CONVERSION"
+        ] = methane_scp.SCP_KCALS_TO_FAT_CONVERSION
+        constants_out[
+            "SCP_KCALS_TO_PROTEIN_CONVERSION"
+        ] = methane_scp.SCP_KCALS_TO_PROTEIN_CONVERSION
 
         return constants_out, time_consts, methane_scp
 
@@ -709,7 +752,9 @@ class Parameters:
             meat_and_dairy,
         )
 
-        feed_used_with_nutrients = feed_and_biofuels.create_feed_food_from_kcals(feed_meat_object.feed_used)
+        feed_used_with_nutrients = feed_and_biofuels.create_feed_food_from_kcals(
+            feed_meat_object.feed_used
+        )
 
         return (
             feed_used_with_nutrients,
@@ -717,7 +762,9 @@ class Parameters:
             constants_out,
         )
 
-    def calculate_culled_meat_from_feed_results(self, constants_out, time_consts, meat_and_dairy, feed_meat_object):
+    def calculate_culled_meat_from_feed_results(
+        self, constants_out, time_consts, meat_and_dairy, feed_meat_object
+    ):
         """
         Calculates the amount of culled meat from feed results and updates the constants_out and time_consts
         dictionaries.
@@ -801,7 +848,9 @@ class Parameters:
         PRINT_ANNUAL_POUNDS_MILK = False
         if PRINT_ANNUAL_POUNDS_MILK:
             print("annual pounds milk")  # ton to kg, kg to pounds, monthly to annual
-            print(monthly_milk_tons * 1000 * 2.2046 * 12)  # ton to kg, kg to pounds, monthly to annual
+            print(
+                monthly_milk_tons * 1000 * 2.2046 * 12
+            )  # ton to kg, kg to pounds, monthly to annual
 
         # Get grazing milk produced postwaste
         (
@@ -816,9 +865,15 @@ class Parameters:
         time_consts["grazing_milk_protein"] = grazing_milk_protein
 
         # Set cattle grazing constants in time_consts
-        time_consts["cattle_grazing_maintained_kcals"] = np.zeros(constants_inputs["NMONTHS"])
-        time_consts["cattle_grazing_maintained_fat"] = np.zeros(constants_inputs["NMONTHS"])
-        time_consts["cattle_grazing_maintained_protein"] = np.zeros(constants_inputs["NMONTHS"])
+        time_consts["cattle_grazing_maintained_kcals"] = np.zeros(
+            constants_inputs["NMONTHS"]
+        )
+        time_consts["cattle_grazing_maintained_fat"] = np.zeros(
+            constants_inputs["NMONTHS"]
+        )
+        time_consts["cattle_grazing_maintained_protein"] = np.zeros(
+            constants_inputs["NMONTHS"]
+        )
 
         # Get meat nutrition constants
         (
@@ -874,7 +929,9 @@ class Parameters:
         meat_and_dairy.calculate_meat_nutrition()
 
         # Initialize grazing parameters
-        time_consts, meat_and_dairy = self.init_grazing_params(constants_inputs, time_consts, meat_and_dairy)
+        time_consts, meat_and_dairy = self.init_grazing_params(
+            constants_inputs, time_consts, meat_and_dairy
+        )
 
         # Initialize grain-fed meat parameters
         time_consts, meat_and_dairy = self.init_grain_fed_meat_params(
@@ -890,7 +947,9 @@ class Parameters:
             constants_out,
             time_consts,
             meat_and_dairy,
-        ) = self.init_culled_meat_params(constants_inputs, constants_out, time_consts, meat_and_dairy)
+        ) = self.init_culled_meat_params(
+            constants_inputs, constants_out, time_consts, meat_and_dairy
+        )
 
         # Return tuple containing meat and dairy object, constants_out dictionary, and time_consts dictionary
         return meat_and_dairy, constants_out, time_consts
@@ -910,17 +969,23 @@ class Parameters:
         """
         # Calculate meat and milk production from human inedible feed if efficient feed strategy is used
         if constants_inputs["USE_EFFICIENT_FEED_STRATEGY"]:
-            meat_and_dairy.calculate_meat_milk_from_human_inedible_feed(constants_inputs)
+            meat_and_dairy.calculate_meat_milk_from_human_inedible_feed(
+                constants_inputs
+            )
         # Otherwise, calculate continued ratios of meat and dairy production from grazing
         else:
-            meat_and_dairy.calculate_continued_ratios_meat_dairy_grazing(constants_inputs)
+            meat_and_dairy.calculate_continued_ratios_meat_dairy_grazing(
+                constants_inputs
+            )
 
         # Get grazing milk produced post-waste
         (
             grazing_milk_kcals,
             grazing_milk_fat,
             grazing_milk_protein,
-        ) = meat_and_dairy.get_grazing_milk_produced_postwaste(meat_and_dairy.grazing_milk_produced_prewaste)
+        ) = meat_and_dairy.get_grazing_milk_produced_postwaste(
+            meat_and_dairy.grazing_milk_produced_prewaste
+        )
 
         # Update time constants with grazing milk production values
         time_consts["grazing_milk_kcals"] = grazing_milk_kcals
@@ -937,7 +1002,9 @@ class Parameters:
         # Update time constants with cattle grazing production values
         time_consts["cattle_grazing_maintained_kcals"] = cattle_grazing_maintained_kcals
         time_consts["cattle_grazing_maintained_fat"] = cattle_grazing_maintained_fat
-        time_consts["cattle_grazing_maintained_protein"] = cattle_grazing_maintained_protein
+        time_consts[
+            "cattle_grazing_maintained_protein"
+        ] = cattle_grazing_maintained_protein
 
         # Return updated time constants and meat_and_dairy instance
         return time_consts, meat_and_dairy
@@ -967,9 +1034,13 @@ class Parameters:
         """
 
         if constants_inputs["USE_EFFICIENT_FEED_STRATEGY"]:
-            meat_and_dairy.calculate_meat_and_dairy_from_grain(feed_and_biofuels.fed_to_animals)
+            meat_and_dairy.calculate_meat_and_dairy_from_grain(
+                feed_and_biofuels.fed_to_animals
+            )
         else:
-            meat_and_dairy.calculate_continued_ratios_meat_dairy_grain(feed_and_biofuels.fed_to_animals, outdoor_crops)
+            meat_and_dairy.calculate_continued_ratios_meat_dairy_grain(
+                feed_and_biofuels.fed_to_animals, outdoor_crops
+            )
 
         # no waste is applied for the grasses.
         # the milk has had waste applied
@@ -1022,7 +1093,9 @@ class Parameters:
 
         return time_consts, meat_and_dairy
 
-    def init_culled_meat_params(self, constants_inputs, constants_out, time_consts, meat_and_dairy):
+    def init_culled_meat_params(
+        self, constants_inputs, constants_out, time_consts, meat_and_dairy
+    ):
         """
         Initializes the parameters for culled meat, which is based on the amount that wouldn't be maintained
         (excluding maintained cattle as well as maintained chicken and pork). This calculation is pre-waste for
@@ -1041,7 +1114,7 @@ class Parameters:
 
         # Calculate the number of animals culled
         meat_and_dairy.calculate_animals_culled(constants_inputs)
-        asdf
+
         # Calculate the initial culled meat pre-waste, as well as the fraction of fat and protein
         (
             meat_and_dairy.initial_culled_meat_prewaste,
@@ -1054,7 +1127,9 @@ class Parameters:
         )
 
         # Get the maximum ratio of culled slaughter to baseline
-        MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE = constants_inputs["MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE"]
+        MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE = constants_inputs[
+            "MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE"
+        ]
 
         # Get the culled meat post-waste
         culled_meat = meat_and_dairy.get_culled_meat_post_waste(constants_inputs)

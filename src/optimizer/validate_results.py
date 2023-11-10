@@ -11,8 +11,9 @@ import numpy as np
 
 
 class Validator:
-
-    def validate_results(self, model, extracted_results, interpreted_results, percent_fed_from_model):
+    def validate_results(
+        self, extracted_results, interpreted_results, percent_fed_from_model
+    ):
         """
         Validates the results of the model by ensuring that the optimizer returns the same as the sum of nutrients,
         that zero kcals have zero fat and protein, that there are no NaN values, and that all values are greater than or
@@ -29,8 +30,7 @@ class Validator:
 
         # Ensure optimizer returns same as sum of nutrients
         self.ensure_optimizer_returns_same_as_sum_nutrients(
-            percent_fed_from_model
-            model,
+            percent_fed_from_model,
             interpreted_results,
             extracted_results.constants["inputs"]["INCLUDE_FAT"],
             extracted_results.constants["inputs"]["INCLUDE_PROTEIN"],
