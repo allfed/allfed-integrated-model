@@ -106,7 +106,7 @@ class ScenarioRunner:
             model,
             variables,
             maximize_constraints,
-            single_valued_constants,
+            percent_fed_from_model,
             time_consts,
         ) = optimizer.optimize_to_humans(single_valued_constants, time_consts)
 
@@ -124,7 +124,7 @@ class ScenarioRunner:
                 model.variables(),
             )
 
-        return (model, variables, single_valued_constants, time_consts)
+        return (model, variables, percent_fed_from_model, time_consts)
 
     def set_depending_on_option(self, country_data, scenario_option):
         scenario_loader = Scenarios()

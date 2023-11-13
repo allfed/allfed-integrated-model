@@ -86,15 +86,12 @@ class Parameters:
 
         # Ensure every parameter has been initialized for the scenarios_loader
         scenarios_loader.check_all_set()
-        print("scenarios_loader")
-        print(scenarios_loader)
         # Time dependent constants_out as inputs to the optimizer
         time_consts = {}
         constants_out = {}
 
         # Initialize scenario constants
         constants_out = self.init_scenario(constants_out, constants_inputs)
-
         # Set nutrition per month
         constants_out = self.set_nutrition_per_month(constants_out, constants_inputs)
 
@@ -469,6 +466,9 @@ class Parameters:
         constants_out[
             "MAX_SEAWEED_AS_PERCENT_KCALS_FEED"
         ] = seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_FEED
+        constants_out[
+            "MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"
+        ] = seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL
         constants_out[
             "MAX_SEAWEED_HUMANS_CAN_CONSUME_MONTHLY"
         ] = seaweed.MAX_SEAWEED_HUMANS_CAN_CONSUME_MONTHLY

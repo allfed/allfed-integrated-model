@@ -41,6 +41,9 @@ class Seaweed:
         self.MAX_SEAWEED_AS_PERCENT_KCALS_FEED = constants_for_params[
             "MAX_SEAWEED_AS_PERCENT_KCALS_FEED"
         ]
+        self.MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL = constants_for_params[
+            "MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"
+        ]
 
         # 1000s of tons wet global (trading blocs multiply this by some fraction)
         INITIAL_SEAWEED_GLOBAL = 1

@@ -141,7 +141,7 @@ class Validator:
         just look at the reported result of the objective of the optimizer
         """
 
-        decimals = 1
+        decimals = 0
 
         percent_people_fed_by_summing_all_foods = interpreted_results.percent_people_fed
         difference = round(

@@ -2477,11 +2477,7 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
         # and for cleanliness, the population is appended here right at the end
         AnimalPopulation.appened_current_populations(all_animals)
 
-    print("animal")
-    print(animal)
     # remove first month (as it's just the initial population)
-    print("remove_first_month")
-    print(remove_first_month)
     if remove_first_month == 1:
         for animal in all_animals:
             AnimalModelBuilder.remove_first_month(animal)

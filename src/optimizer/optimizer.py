@@ -91,9 +91,9 @@ class Optimizer:
         )
 
         # Run optimizations to maximize food production for humans
-        self.run_optimizations_to_humans(model, variables, single_valued_constants)
-
-        percent_fed_from_model = model.objective.value()
+        percent_fed_from_model = self.run_optimizations_to_humans(
+            model, variables, single_valued_constants
+        )
 
         # Return the model, variables, maximize_constraints, single_valued_constants, and time_consts
         return (
@@ -201,6 +201,7 @@ class Optimizer:
         if ASSERT_SUCCESSFUL_OPTIMIZATION:
             assert status == 1, "ERROR: OPTIMIZATION FAILED!"
 
+        percent_fed_from_first_optimization = model.objective.value()
         # The way the model works is that in the parameters.py file it first feeds
         # animals as much feed as they need,  constrained only by the number of months
         # before feed shutoff, and further constrained by their population.  If the
@@ -263,6 +264,7 @@ class Optimizer:
                 ASSERT_SUCCESSFUL_OPTIMIZATION,
                 single_valued_constants,
             )
+        return percent_fed_from_first_optimization
 
     def constrain_next_optimization_to_have_same_total_resilient_foods_in_feed(
         self, model_max_to_humans, variables

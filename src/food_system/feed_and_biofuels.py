@@ -60,7 +60,9 @@ class FeedAndBiofuels:
 
     def create_feed_food_from_kcals(self, food_kcals):
         production_fat = np.array(food_kcals.kcals) * self.fat_to_kcal_ratio_feed
-        production_protein = np.array(food_kcals.kcals) * self.protein_to_kcal_ratio_feed
+        production_protein = (
+            np.array(food_kcals.kcals) * self.protein_to_kcal_ratio_feed
+        )
 
         return Food(
             kcals=food_kcals.kcals,
@@ -115,40 +117,76 @@ class FeedAndBiofuels:
         """
 
         # Set the biofuel and feed usage for each source
-        self.cell_sugar_biofuels = Food(cellulosic_sugar_used_for_biofuel).in_units_percent_fed()
-        self.cell_sugar_feed = Food(cellulosic_sugar_used_for_feed).in_units_percent_fed()
+        self.cell_sugar_biofuels = Food(
+            cellulosic_sugar_used_for_biofuel
+        ).in_units_percent_fed()
+        self.cell_sugar_feed = Food(
+            cellulosic_sugar_used_for_feed
+        ).in_units_percent_fed()
         self.scp_biofuels = Food(methane_scp_used_for_biofuel).in_units_percent_fed()
         self.scp_feed = Food(methane_scp_used_for_feed).in_units_percent_fed()
 
         # TODO: add seaweed as a feed source
-        self.seaweed_biofuels = Food(np.zeros(len(outdoor_crops_used_for_biofuel))).in_units_percent_fed()
+        self.seaweed_biofuels = Food(
+            np.zeros(len(outdoor_crops_used_for_biofuel))
+        ).in_units_percent_fed()
         # TODO: add seaweed as a feed source
-        self.seaweed_feed = Food(np.zeros(len(outdoor_crops_used_for_biofuel))).in_units_percent_fed()
+        self.seaweed_feed = Food(
+            np.zeros(len(outdoor_crops_used_for_biofuel))
+        ).in_units_percent_fed()
 
-        self.outdoor_crops_biofuels = Food(outdoor_crops_used_for_biofuel).in_units_percent_fed()
-        self.outdoor_crops_feed = Food(outdoor_crops_used_for_feed).in_units_percent_fed()
-        self.stored_food_biofuels = remaining_biofuel_needed_from_stored_food.in_units_percent_fed()
+        self.outdoor_crops_biofuels = Food(
+            outdoor_crops_used_for_biofuel
+        ).in_units_percent_fed()
+        self.outdoor_crops_feed = Food(
+            outdoor_crops_used_for_feed
+        ).in_units_percent_fed()
+        self.stored_food_biofuels = (
+            remaining_biofuel_needed_from_stored_food.in_units_percent_fed()
+        )
 
-        self.stored_food_feed = remaining_feed_needed_from_stored_food.in_units_percent_fed()
+        self.stored_food_feed = (
+            remaining_feed_needed_from_stored_food.in_units_percent_fed()
+        )
 
         # Convert the feed and biofuel usage to kcal equivalents
-        self.cell_sugar_biofuels_kcals_equivalent = self.cell_sugar_biofuels.in_units_kcals_equivalent()
-        self.cell_sugar_feed_kcals_equivalent = self.cell_sugar_feed.in_units_kcals_equivalent()
-        self.scp_biofuels_kcals_equivalent = self.scp_biofuels.in_units_kcals_equivalent()
+        self.cell_sugar_biofuels_kcals_equivalent = (
+            self.cell_sugar_biofuels.in_units_kcals_equivalent()
+        )
+        self.cell_sugar_feed_kcals_equivalent = (
+            self.cell_sugar_feed.in_units_kcals_equivalent()
+        )
+        self.scp_biofuels_kcals_equivalent = (
+            self.scp_biofuels.in_units_kcals_equivalent()
+        )
         self.scp_feed_kcals_equivalent = self.scp_feed.in_units_kcals_equivalent()
-        self.seaweed_biofuels_kcals_equivalent = self.seaweed_biofuels.in_units_kcals_equivalent()
-        self.seaweed_feed_kcals_equivalent = self.seaweed_feed.in_units_kcals_equivalent()
-        self.outdoor_crops_biofuels_kcals_equivalent = self.outdoor_crops_biofuels.in_units_kcals_equivalent()
-        self.outdoor_crops_feed_kcals_equivalent = self.outdoor_crops_feed.in_units_kcals_equivalent()
-        self.stored_food_biofuels_kcals_equivalent = self.stored_food_biofuels.in_units_kcals_equivalent()
-        self.stored_food_feed_kcals_equivalent = self.stored_food_feed.in_units_kcals_equivalent()
+        self.seaweed_biofuels_kcals_equivalent = (
+            self.seaweed_biofuels.in_units_kcals_equivalent()
+        )
+        self.seaweed_feed_kcals_equivalent = (
+            self.seaweed_feed.in_units_kcals_equivalent()
+        )
+        self.outdoor_crops_biofuels_kcals_equivalent = (
+            self.outdoor_crops_biofuels.in_units_kcals_equivalent()
+        )
+        self.outdoor_crops_feed_kcals_equivalent = (
+            self.outdoor_crops_feed.in_units_kcals_equivalent()
+        )
+        self.stored_food_biofuels_kcals_equivalent = (
+            self.stored_food_biofuels.in_units_kcals_equivalent()
+        )
+        self.stored_food_feed_kcals_equivalent = (
+            self.stored_food_feed.in_units_kcals_equivalent()
+        )
 
     def get_biofuels_and_feed_from_delayed_shutoff(self, constants_for_params):
         biofuel_duration = constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"]
         biofuels = self.get_biofuel_usage(biofuel_duration)
         # excess feed is just using human levels of fat and protein. May need to be
         # altered to reflect more accurate usage.
-        excess_feed = self.get_excess_food_usage_from_percents(constants_for_params["EXCESS_FEED_PERCENT"])
+        excess_feed = self.get_excess_food_usage_from_percents(
+            constants_for_params["EXCESS_FEED_PERCENT"]
+        )
         feed_duration = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
         feed = self.get_feed_usage(feed_duration, excess_feed)
         return (
@@ -193,13 +231,16 @@ class FeedAndBiofuels:
         assert self.feed_monthly_usage.all_greater_than_or_equal_to_zero()
 
         baseline_feed_kcals = np.array(
-            [self.feed_monthly_usage.kcals] * feed_duration + [0] * (self.NMONTHS - feed_duration)
+            [self.feed_monthly_usage.kcals] * feed_duration
+            + [0] * (self.NMONTHS - feed_duration)
         )
         baseline_feed_fat = np.array(
-            [self.feed_monthly_usage.fat] * feed_duration + [0] * (self.NMONTHS - feed_duration)
+            [self.feed_monthly_usage.fat] * feed_duration
+            + [0] * (self.NMONTHS - feed_duration)
         )
         baseline_feed_protein = np.array(
-            [self.feed_monthly_usage.protein] * feed_duration + [0] * (self.NMONTHS - feed_duration)
+            [self.feed_monthly_usage.protein] * feed_duration
+            + [0] * (self.NMONTHS - feed_duration)
         )
 
         baseline_feed = Food(
@@ -210,9 +251,9 @@ class FeedAndBiofuels:
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
-        excess_feed_units_billion_kcals = excess_feed.in_units_bil_kcals_thou_tons_thou_tons_per_month()
-        print("excess_feed_units_billion_kcals")
-        print(excess_feed_units_billion_kcals)
+        excess_feed_units_billion_kcals = (
+            excess_feed.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+        )
         return baseline_feed + excess_feed_units_billion_kcals
 
     def get_biofuel_usage(self, biofuel_duration):
@@ -229,9 +270,15 @@ class FeedAndBiofuels:
         """
 
         # Calculate the monthly biofuel usage
-        biofuel_monthly_usage_kcals = self.biofuel_per_year.kcals / 12 * 4e6 / 1e9  # billions kcals
-        biofuel_monthly_usage_fat = self.biofuel_per_year.fat / 12 / 1e3  # thousand tons
-        biofuel_monthly_usage_protein = self.biofuel_per_year.protein / 12 / 1e3  # thousand tons
+        biofuel_monthly_usage_kcals = (
+            self.biofuel_per_year.kcals / 12 * 4e6 / 1e9
+        )  # billions kcals
+        biofuel_monthly_usage_fat = (
+            self.biofuel_per_year.fat / 12 / 1e3
+        )  # thousand tons
+        biofuel_monthly_usage_protein = (
+            self.biofuel_per_year.protein / 12 / 1e3
+        )  # thousand tons
 
         # Create a Food object representing the monthly biofuel usage
         self.biofuel_monthly_usage = Food(
@@ -247,13 +294,17 @@ class FeedAndBiofuels:
         assert self.biofuel_monthly_usage.all_greater_than_or_equal_to_zero()
 
         # Create lists representing the monthly biofuel usage
-        biofuels_kcals = [self.biofuel_monthly_usage.kcals] * biofuel_duration + [0] * (self.NMONTHS - biofuel_duration)
-
-        biofuels_fat = [self.biofuel_monthly_usage.fat] * biofuel_duration + [0] * (self.NMONTHS - biofuel_duration)
-
-        biofuels_protein = [self.biofuel_monthly_usage.protein] * biofuel_duration + [0] * (
+        biofuels_kcals = [self.biofuel_monthly_usage.kcals] * biofuel_duration + [0] * (
             self.NMONTHS - biofuel_duration
         )
+
+        biofuels_fat = [self.biofuel_monthly_usage.fat] * biofuel_duration + [0] * (
+            self.NMONTHS - biofuel_duration
+        )
+
+        biofuels_protein = [self.biofuel_monthly_usage.protein] * biofuel_duration + [
+            0
+        ] * (self.NMONTHS - biofuel_duration)
 
         # Create a Food object representing the total biofuel usage
         biofuels = Food(

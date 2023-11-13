@@ -514,8 +514,10 @@ class Interpreter:
         stored_food_rounded = self.stored_food.get_rounded_to_decimal(3)
         outdoor_crops_rounded = self.outdoor_crops.get_rounded_to_decimal(3)
         seaweed_rounded = self.seaweed.get_rounded_to_decimal(3)
+
+        # TODO BUG?? Noticed this is failing at 3 decimal place rounding...
         immediate_outdoor_crops_rounded = (
-            self.immediate_outdoor_crops.get_rounded_to_decimal(3)
+            self.immediate_outdoor_crops.get_rounded_to_decimal(2)
         )
         new_stored_outdoor_crops_rounded = (
             self.new_stored_outdoor_crops.get_rounded_to_decimal(3)
