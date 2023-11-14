@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-11-14T20:16:27.132Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="Z3ic5T0DsvQXBUN9BucQ" version="22.1.1" type="github">
+<mxfile host="app.diagrams.net" modified="2023-11-14T20:29:59.118Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="08eX2Wb5gVKJSKwZGCtq" version="22.1.1" type="github">
   <diagram name="Page-1" id="jVV0RAuZTFDPRcbFIyok">
     <mxGraphModel dx="1021" dy="537" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
@@ -110,51 +110,54 @@
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-53" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="320" y="560" as="sourcePoint" />
-            <mxPoint x="320" y="380" as="targetPoint" />
+            <mxPoint x="284" y="560" as="sourcePoint" />
+            <mxPoint x="284" y="380" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-56" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="320" y="520" as="sourcePoint" />
-            <mxPoint x="590" y="520" as="targetPoint" />
+            <mxPoint x="284" y="520" as="sourcePoint" />
+            <mxPoint x="554" y="520" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-57" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="320" y="483" as="sourcePoint" />
-            <mxPoint x="590" y="483" as="targetPoint" />
+            <mxPoint x="284" y="483" as="sourcePoint" />
+            <mxPoint x="554" y="483" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-58" value="human minimum needs" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="142" y="505" width="176" height="30" as="geometry" />
+          <mxGeometry x="106" y="505" width="176" height="30" as="geometry" />
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-59" value="animal feed" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="185" y="470" width="90" height="30" as="geometry" />
+          <mxGeometry x="149" y="470" width="90" height="30" as="geometry" />
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-60" value="biofuel" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="200" y="430" width="60" height="30" as="geometry" />
+          <mxGeometry x="164" y="430" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-61" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="320" y="444.64" as="sourcePoint" />
-            <mxPoint x="590" y="444.64" as="targetPoint" />
+            <mxPoint x="284" y="444.64" as="sourcePoint" />
+            <mxPoint x="554" y="444.64" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-62" value="human overconsumption" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="146" y="390" width="160" height="30" as="geometry" />
+          <mxGeometry x="110" y="390" width="160" height="30" as="geometry" />
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-63" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="320" y="559" as="sourcePoint" />
-            <mxPoint x="590" y="559" as="targetPoint" />
+            <mxPoint x="284" y="559" as="sourcePoint" />
+            <mxPoint x="554" y="559" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-64" value="0" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="260" y="544" width="100" height="30" as="geometry" />
+          <mxGeometry x="224" y="544" width="100" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="iWHlyYUsSo8P8iGn-lNc-65" value="Priority of fulfilling types of demand in the model.&lt;br&gt;Higher up is lower priority.&lt;br&gt;Human minimum needs is first priority.&lt;br&gt;Human overconsumption is not considered limited." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="130" y="260" width="310" height="100" as="geometry" />
+        <mxCell id="iWHlyYUsSo8P8iGn-lNc-65" value="Priority of fulfilling types of demand in the model:&lt;br&gt;- Higher up is lower priority.&lt;br&gt;- Human minimum needs is first priority.&lt;br&gt;- Human overconsumption is not considered limited to any caloric value in the model currently." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="170" y="270" width="310" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="iWHlyYUsSo8P8iGn-lNc-66" value="This is an attempt at a simple model. There are lots of ways to improve realism here at the cost of complexity.&lt;br&gt;&lt;br&gt;&lt;div&gt;For example, it may be the case that biofuel may lead to animal or even human starvation if it&#39;s not shut off in the first month or two. (The next step in improved accuracy may be to enforce a certain delay in biofuel shutoff as long as it doesn&#39;t reduce animal starvation by X% or human starvation by Y%, and a similiar delay in feed, as long as it doesn&#39;t reduce human starvation by Z%)&lt;/div&gt;&lt;br&gt;&lt;div&gt;Similiarly, some animal feed may be prioritized over humans.&lt;br&gt;&lt;br&gt;Human overconsumption obviously has its limits. Realistically, in a case with disrupted trade, countries with excess are likely to trade their excess away after a certain amount of human overconsumption occurs. Trade may even take the place of biofuel or animal feed. (In the great chinese famine, trade  place even when available food in China was below human minimum needs).&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="170" y="641" width="210" height="370" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
