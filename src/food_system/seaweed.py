@@ -81,10 +81,10 @@ class Seaweed:
             * constants_for_params["SEAWEED_NEW_AREA_FRACTION"]
         )
 
-        self.SEAWEED_WASTE = (
-            constants_for_params["WASTE_DISTRIBUTION"]["SEAWEED"]
-            + constants_for_params["WASTE_RETAIL"]
-        )
+        self.SEAWEED_WASTE_DISTRIBUTION = constants_for_params["WASTE_DISTRIBUTION"][
+            "SEAWEED"
+        ]
+        self.SEAWEED_WASTE_RETAIL = constants_for_params["WASTE_RETAIL"]
 
         # seaweed billion kcals per 1000 tons wet
         # convert 1000 tons to kg
@@ -96,20 +96,20 @@ class Seaweed:
             * self.KCALS_PER_KG
             / 1e9
             * self.WET_TO_DRY_MASS_CONVERSION
-            * (1 - self.SEAWEED_WASTE / 100)
+            * (1 - self.SEAWEED_WASTE_DISTRIBUTION / 100)
         )
         # seaweed fraction digestible protein per 1000 ton wet
         self.SEAWEED_PROTEIN = (
             self.MASS_FRACTION_PROTEIN_DRY
             * self.WET_TO_DRY_MASS_CONVERSION
-            * (1 - self.SEAWEED_WASTE / 100)
+            * (1 - self.SEAWEED_WASTE_DISTRIBUTION / 100)
         )
 
         # seaweed fraction fat per 1000 tons wet
         self.SEAWEED_FAT = (
             self.MASS_FRACTION_FAT_DRY
             * self.WET_TO_DRY_MASS_CONVERSION
-            * (1 - self.SEAWEED_WASTE / 100)
+            * (1 - self.SEAWEED_WASTE_DISTRIBUTION / 100)
         )
 
     def get_growth_rates(self, constants_for_params):

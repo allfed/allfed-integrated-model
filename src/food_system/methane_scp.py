@@ -73,9 +73,9 @@ class MethaneSCP:
         )
 
         # feed can't be more than this fraction in terms of calories in any month
-        self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP = 0.3
+        self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP = 0.5
 
-        self.MAX_METHANE_SCP_AS_PERCENT_KCALS_FEED = 30
+        self.MAX_METHANE_SCP_AS_PERCENT_KCALS_FEED = 100
         self.MAX_METHANE_SCP_AS_PERCENT_KCALS_BIOFUEL = 100
 
         # billion kcals a month for country in question

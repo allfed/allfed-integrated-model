@@ -50,9 +50,11 @@ class Parameters:
             self.SIMULATION_STARTING_MONTH
         ]  # Starting month number for the simulation
 
-    def compute_parameters(self, constants_inputs, scenarios_loader):
+    def compute_parameters_first_round(self, constants_inputs, scenarios_loader):
         """
         Computes the parameters for the model based on the inputs and scenarios provided.
+        This is relevant for the first round of optimization, with no feed assumed.
+
 
         Args:
             constants_inputs (dict): A dictionary containing the constant inputs for the model.
@@ -80,7 +82,7 @@ class Parameters:
         self.FIRST_TIME_RUN = False
 
         # Print scenario properties
-        PRINT_SCENARIO_PROPERTIES = True
+        PRINT_SCENARIO_PROPERTIES = False
         if PRINT_SCENARIO_PROPERTIES:
             print(scenarios_loader.scenario_description)
 
@@ -135,7 +137,7 @@ class Parameters:
         (
             constants_out,
             time_consts,
-            feed_and_biofuels,
+            feed_and_biofuels_class,
         ) = self.init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels(
             constants_out,
             constants_inputs,
@@ -150,7 +152,7 @@ class Parameters:
         # Set inputs in constants_out
         constants_out["inputs"] = constants_inputs
 
-        return (constants_out, time_consts, feed_and_biofuels)
+        return (constants_out, time_consts, feed_and_biofuels_class)
 
     def init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels(
         self,
@@ -180,18 +182,37 @@ class Parameters:
             stored_food (dict): dictionary containing stored food constants
 
         Returns:
-            tuple: tuple containing constants_out, time_consts, and feed_and_biofuels
+            tuple: tuple containing constants_out, time_consts, and feed_and_biofuels_class
         """
 
         # Initialize FeedAndBiofuels and MeatAndDairy objects
-        feed_and_biofuels = FeedAndBiofuels(constants_inputs)
+        feed_and_biofuels_class = FeedAndBiofuels(constants_inputs)
 
         (
             biofuels,
             feed,
             excess_feed,
-        ) = feed_and_biofuels.get_biofuels_and_feed_from_delayed_shutoff(
+        ) = feed_and_biofuels_class.get_biofuels_and_feed_from_delayed_shutoff(
             constants_inputs
+        )
+
+        # This is the first round of optimization, so we don't assume feed or biofuels are used.
+        zero_feed = Food(
+            kcals=np.zeros(constants_inputs["NMONTHS"]),
+            fat=np.zeros(constants_inputs["NMONTHS"]),
+            protein=np.zeros(constants_inputs["NMONTHS"]),
+            kcals_units=feed.kcals_units,
+            fat_units=feed.fat_units,
+            protein_units=feed.protein_units,
+        )
+
+        zero_biofuels = Food(
+            kcals=np.zeros(constants_inputs["NMONTHS"]),
+            fat=np.zeros(constants_inputs["NMONTHS"]),
+            protein=np.zeros(constants_inputs["NMONTHS"]),
+            kcals_units=biofuels.kcals_units,
+            fat_units=biofuels.fat_units,
+            protein_units=biofuels.protein_units,
         )
 
         meat_and_dairy = MeatAndDairy(constants_inputs)
@@ -201,14 +222,14 @@ class Parameters:
         if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
             feed_meat_object = CalculateFeedAndMeat(
                 country_code=constants_inputs["COUNTRY_CODE"],
-                available_feed=feed,
+                available_feed=zero_feed,
                 available_grass=grasses_for_animals,
                 scenario="reduced",  # tries to reduce breeding
             )
         else:
             feed_meat_object = CalculateFeedAndMeat(
                 country_code=constants_inputs["COUNTRY_CODE"],
-                available_feed=feed,
+                available_feed=zero_feed,
                 available_grass=grasses_for_animals,
                 scenario="baseline",  # doesn't try to reduce breeding, baseline animal pops
             )
@@ -228,7 +249,7 @@ class Parameters:
         ) = self.init_meat_and_dairy_and_feed_from_breeding(
             constants_inputs,
             feed_meat_object,
-            feed_and_biofuels,
+            feed_and_biofuels_class,
             meat_and_dairy,
             constants_out,
             time_consts,
@@ -240,7 +261,9 @@ class Parameters:
             feed_used_with_nutrients
         ), "Error: Animals ate more feed than was available!"
 
-        feed_and_biofuels.nonhuman_consumption = biofuels + feed_used_with_nutrients
+        feed_and_biofuels_class.nonhuman_consumption = (
+            zero_biofuels + feed_used_with_nutrients
+        )
 
         PLOT_FEED = False
 
@@ -249,26 +272,26 @@ class Parameters:
 
         time_consts["excess_feed"] = excess_feed
 
-        # Update feed_and_biofuels object with their values
-        feed_and_biofuels.biofuel = biofuels
-        feed_and_biofuels.feed = feed_used_with_nutrients
-        nonhuman_consumption = feed_and_biofuels.nonhuman_consumption
+        # Update feed_and_biofuels_class object with their values
+        feed_and_biofuels_class.biofuel = zero_biofuels
+        feed_and_biofuels_class.feed = feed_used_with_nutrients
+        nonhuman_consumption = feed_and_biofuels_class.nonhuman_consumption
 
         # Update time_consts dictionary
         time_consts["nonhuman_consumption"] = nonhuman_consumption
-        time_consts["feed"] = feed_and_biofuels.feed
-        time_consts["biofuel"] = feed_and_biofuels.biofuel
+        time_consts["feed"] = feed_and_biofuels_class.feed
+        time_consts["biofuel"] = feed_and_biofuels_class.biofuel
         time_consts[
             "excess_feed"
-        ] = feed_and_biofuels.get_excess_food_usage_from_percents(
+        ] = feed_and_biofuels_class.get_excess_food_usage_from_percents(
             constants_inputs["EXCESS_FEED_PERCENT"]
         )
 
-        # Return tuple containing constants_out, time_consts, and feed_and_biofuels
+        # Return tuple containing constants_out, time_consts, and feed_and_biofuels_class
         return (
             constants_out,
             time_consts,
-            feed_and_biofuels,
+            feed_and_biofuels_class,
         )
 
     def assert_constants_not_nan(self, single_valued_constants, time_consts):
@@ -730,7 +753,7 @@ class Parameters:
         self,
         constants_inputs,
         feed_meat_object,
-        feed_and_biofuels,
+        feed_and_biofuels_class,
         meat_and_dairy,
         constants_out,
         time_consts,
@@ -752,7 +775,7 @@ class Parameters:
             meat_and_dairy,
         )
 
-        feed_used_with_nutrients = feed_and_biofuels.create_feed_food_from_kcals(
+        feed_used_with_nutrients = feed_and_biofuels_class.create_feed_food_from_kcals(
             feed_meat_object.feed_used
         )
 
@@ -907,7 +930,7 @@ class Parameters:
         constants_inputs,
         constants_out,
         time_consts,
-        feed_and_biofuels,
+        feed_and_biofuels_class,
         outdoor_crops,
     ):
         """
@@ -917,7 +940,7 @@ class Parameters:
             constants_inputs (dict): dictionary of input constants
             constants_out (dict): dictionary of output constants
             time_consts (dict): dictionary of time constants
-            feed_and_biofuels (dict): dictionary of feed and biofuel constants
+            feed_and_biofuels_class (dict): dictionary of feed and biofuel constants
             outdoor_crops (dict): dictionary of outdoor crop constants
 
         Returns:
@@ -937,7 +960,7 @@ class Parameters:
         time_consts, meat_and_dairy = self.init_grain_fed_meat_params(
             time_consts,
             meat_and_dairy,
-            feed_and_biofuels,
+            feed_and_biofuels_class,
             constants_inputs,
             outdoor_crops,
         )
@@ -1013,7 +1036,7 @@ class Parameters:
         self,
         time_consts,
         meat_and_dairy,
-        feed_and_biofuels,
+        feed_and_biofuels_class,
         constants_inputs,
         outdoor_crops,
     ):
@@ -1025,7 +1048,7 @@ class Parameters:
             self: instance of the class
             time_consts (dict): dictionary containing time constants
             meat_and_dairy (MeatAndDairy): instance of MeatAndDairy class
-            feed_and_biofuels (FeedAndBiofuels): instance of FeedAndBiofuels class
+            feed_and_biofuels_class (FeedAndBiofuels): instance of FeedAndBiofuels class
             constants_inputs (dict): dictionary containing constant inputs
             outdoor_crops (OutdoorCrops): instance of OutdoorCrops class
 
@@ -1035,11 +1058,11 @@ class Parameters:
 
         if constants_inputs["USE_EFFICIENT_FEED_STRATEGY"]:
             meat_and_dairy.calculate_meat_and_dairy_from_grain(
-                feed_and_biofuels.fed_to_animals
+                feed_and_biofuels_class.fed_to_animals
             )
         else:
             meat_and_dairy.calculate_continued_ratios_meat_dairy_grain(
-                feed_and_biofuels.fed_to_animals, outdoor_crops
+                feed_and_biofuels_class.fed_to_animals, outdoor_crops
             )
 
         # no waste is applied for the grasses.
@@ -1071,7 +1094,7 @@ class Parameters:
         time_consts["grain_fed_created_fat"] = grain_fed_created_fat
         time_consts["grain_fed_created_protein"] = grain_fed_created_protein
 
-        feed = feed_and_biofuels.feed
+        feed = feed_and_biofuels_class.feed
 
         if (grain_fed_created_kcals <= 0).any():
             grain_fed_created_kcals = grain_fed_created_kcals.round(8)
@@ -1155,3 +1178,298 @@ class Parameters:
         ) = meat_and_dairy.get_meat_nutrition()
 
         return (constants_out, time_consts, meat_and_dairy)
+
+    # ################ SECOND ROUND: AFTER FIRST OPTIMIZATION ##########################
+    def compute_parameters_second_round(
+        self,
+        constants_inputs,
+        time_consts,
+        consumption_first_optimization,
+        percent_fed_from_model,
+    ):
+        """
+        Compute the parameters for the second round of optimizations, where we now know the amount of feed
+        available for animals after humans have used all they need for their minimum nutritional needs.
+
+        """
+
+        # first round results had no feed or biofuels!
+        # TODO: we need to remove these variables. They're old and are all zero in the model now.
+        assert (
+            consumption_first_optimization.grain_fed_meat_kcals_equivalent.all_equals_zero()
+        )
+        assert (
+            consumption_first_optimization.grain_fed_milk_kcals_equivalent.all_equals_zero()
+        )
+
+        assert (
+            consumption_first_optimization.cell_sugar_biofuels_kcals_equivalent.all_equals_zero()
+        )
+        assert (
+            consumption_first_optimization.outdoor_crops_biofuels_kcals_equivalent.all_equals_zero()
+        )
+        assert (
+            consumption_first_optimization.scp_biofuels_kcals_equivalent.all_equals_zero()
+        )
+        assert (
+            consumption_first_optimization.seaweed_biofuels_kcals_equivalent.all_equals_zero()
+        )
+        assert (
+            consumption_first_optimization.stored_food_biofuels_kcals_equivalent.all_equals_zero()
+        )
+        assert (
+            consumption_first_optimization.cell_sugar_feed_kcals_equivalent.all_equals_zero()
+        )
+        assert (
+            consumption_first_optimization.outdoor_crops_feed_kcals_equivalent.all_equals_zero()
+        )
+        assert (
+            consumption_first_optimization.scp_feed_kcals_equivalent.all_equals_zero()
+        )
+        assert (
+            consumption_first_optimization.seaweed_feed_kcals_equivalent.all_equals_zero()
+        )
+        assert (
+            consumption_first_optimization.stored_food_feed_kcals_equivalent.all_equals_zero()
+        )
+        min_human_food_consumption = self.calculate_human_consumption_for_min_needs(
+            constants_inputs, consumption_first_optimization, percent_fed_from_model
+        )
+        return min_human_food_consumption
+        # return single_valued_constants, time_consts, feed_and_biofuels
+
+    def calculate_human_consumption_for_min_needs(
+        self, constants_inputs, consumption_first_optimization, percent_fed_from_model
+    ):
+        """
+        We run through each month and determine the amount consumed each month of all foods.
+        However, any human consumption which exceeds the starvation percentage is ignored.
+        To determine when to start ignoring human consumption, we loop through the different foods
+        in the following order of priority for humans to consume:
+          First fish, then meat, then dairy, then greenhouse crops, then outdoor crops, then stored food,
+          then scp, then cs, then seaweed.
+        """
+
+        # We need to determine the limit of minimum human needs, so the rest is available for feed and biofuel.
+        # This is equal to calories consumed by the percent of humans fed
+        #   (which is the minimum humans fed of any month).
+        # The next round of optimization, we will then have the food humans don't eat be fed to animals.
+        # This in turn increases meat and dairy to humans. However, the feed used by animals will no longer
+        # go to humans.
+        if percent_fed_from_model > 100:
+            kcals_daily_maximum = constants_inputs["NUTRITION"]["KCALS_DAILY"]
+        else:
+            kcals_daily_maximum = constants_inputs["NUTRITION"]["KCALS_DAILY"] * (
+                percent_fed_from_model / 100
+            )
+
+        # As a Food object with nutrients:
+        food_daily_maximum = Food(
+            kcals=kcals_daily_maximum,
+            fat=kcals_daily_maximum,
+            protein=kcals_daily_maximum,
+            kcals_units="kcals per person per day",
+            fat_units="effective kcals per person per day",
+            protein_units="effective kcals per person per day",
+        )
+
+        # Initialize arrays to store the monthly consumption for each type of food
+        fish_consumption = []
+        meat_consumption = []
+        dairy_consumption = []
+        greenhouse_consumption = []
+        outdoor_crops_consumption = []
+        stored_food_consumption = []
+        scp_consumption = []
+        cs_consumption = []
+        seaweed_consumption = []
+
+        # TODO: make this function work with fat and protein minimums...
+        #       In that case, we would need to consider the amount of food needed to meet human minimum needs, even if
+        #       kcals were more than 2100 per day, if fat or protein were still below the minimum.
+        for month_index in range(0, constants_inputs["NMONTHS"]):
+            remaining_kcals = food_daily_maximum.kcals
+
+            # Function to calculate consumption for each food type
+            def consume(food_kcals):
+                nonlocal remaining_kcals
+                consumed = min(food_kcals, remaining_kcals)
+                remaining_kcals -= consumed
+                return consumed
+
+            # Calculate consumption for each food type following the order of preference
+            fish_consumption.append(
+                consume(
+                    consumption_first_optimization.fish_kcals_equivalent[
+                        month_index
+                    ].kcals
+                )
+            )
+            meat_consumption.append(
+                consume(
+                    consumption_first_optimization.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent[
+                        month_index
+                    ].kcals
+                )
+            )
+            dairy_consumption.append(
+                consume(
+                    consumption_first_optimization.grazing_milk_kcals_equivalent[
+                        month_index
+                    ].kcals
+                )
+            )
+            greenhouse_consumption.append(
+                consume(
+                    consumption_first_optimization.greenhouse_kcals_equivalent[
+                        month_index
+                    ].kcals
+                )
+            )
+            outdoor_crops_consumption.append(
+                consume(
+                    consumption_first_optimization.immediate_outdoor_crops_kcals_equivalent[
+                        month_index
+                    ].kcals
+                    + consumption_first_optimization.new_stored_outdoor_crops_kcals_equivalent[
+                        month_index
+                    ].kcals
+                )
+            )
+            stored_food_consumption.append(
+                consume(
+                    consumption_first_optimization.stored_food_kcals_equivalent[
+                        month_index
+                    ].kcals
+                )
+            )
+            scp_consumption.append(
+                consume(
+                    consumption_first_optimization.scp_kcals_equivalent[
+                        month_index
+                    ].kcals
+                )
+            )
+            cs_consumption.append(
+                consume(
+                    consumption_first_optimization.cell_sugar_kcals_equivalent[
+                        month_index
+                    ].kcals
+                )
+            )
+            seaweed_consumption.append(
+                consume(
+                    consumption_first_optimization.seaweed_kcals_equivalent[
+                        month_index
+                    ].kcals
+                )
+            )
+
+        # Convert lists to numpy arrays and create the dictionary
+        human_food_consumption = {
+            "fish": Food(
+                kcals=fish_consumption,
+                fat=np.zeros_like(fish_consumption),
+                protein=np.zeros_like(fish_consumption),
+                kcals_units="kcals per person per day",
+                fat_units="effective kcals per person per day",
+                protein_units="effective kcals per person per day",
+            ),
+            "meat": Food(
+                kcals=meat_consumption,
+                fat=np.zeros_like(meat_consumption),
+                protein=np.zeros_like(meat_consumption),
+                kcals_units="kcals per person per day",
+                fat_units="effective kcals per person per day",
+                protein_units="effective kcals per person per day",
+            ),
+            "dairy": Food(
+                kcals=dairy_consumption,
+                fat=np.zeros_like(dairy_consumption),
+                protein=np.zeros_like(dairy_consumption),
+                kcals_units="kcals per person per day",
+                fat_units="effective kcals per person per day",
+                protein_units="effective kcals per person per day",
+            ),
+            "greenhouse": Food(
+                kcals=greenhouse_consumption,
+                fat=np.zeros_like(greenhouse_consumption),
+                protein=np.zeros_like(greenhouse_consumption),
+                kcals_units="kcals per person per day",
+                fat_units="effective kcals per person per day",
+                protein_units="effective kcals per person per day",
+            ),
+            "outdoor_crops": Food(
+                kcals=outdoor_crops_consumption,
+                fat=np.zeros_like(outdoor_crops_consumption),
+                protein=np.zeros_like(outdoor_crops_consumption),
+                kcals_units="kcals per person per day",
+                fat_units="effective kcals per person per day",
+                protein_units="effective kcals per person per day",
+            ),
+            "stored_food": Food(
+                kcals=stored_food_consumption,
+                fat=np.zeros_like(stored_food_consumption),
+                protein=np.zeros_like(stored_food_consumption),
+                kcals_units="kcals per person per day",
+                fat_units="effective kcals per person per day",
+                protein_units="effective kcals per person per day",
+            ),
+            "scp": Food(
+                kcals=scp_consumption,
+                fat=np.zeros_like(scp_consumption),
+                protein=np.zeros_like(scp_consumption),
+                kcals_units="kcals per person per day",
+                fat_units="effective kcals per person per day",
+                protein_units="effective kcals per person per day",
+            ),
+            "cell_sugar": Food(
+                kcals=cs_consumption,
+                fat=np.zeros_like(cs_consumption),
+                protein=np.zeros_like(cs_consumption),
+                kcals_units="kcals per person per day",
+                fat_units="effective kcals per person per day",
+                protein_units="effective kcals per person per day",
+            ),
+            "seaweed": Food(
+                kcals=seaweed_consumption,
+                fat=np.zeros_like(seaweed_consumption),
+                protein=np.zeros_like(seaweed_consumption),
+                kcals_units="kcals per person per day",
+                fat_units="effective kcals per person per day",
+                protein_units="effective kcals per person per day",
+            ),
+        }
+        human_food_consumption["outdoor_crops"].plot("shoudl be 2100 outdoor crops")
+
+        self.assert_consumption_within_limits(
+            human_food_consumption, kcals_daily_maximum
+        )
+
+        return human_food_consumption
+
+    def assert_consumption_within_limits(
+        self, human_food_consumption, kcals_daily_maximum
+    ):
+        """
+        Asserts that each Food object in the human_food_consumption dictionary is less than
+        or equal to kcals_daily_maximum for all months.
+        """
+        # Create a Food object representing the maximum daily kcals
+        max_food_daily = Food(
+            kcals=[kcals_daily_maximum]
+            * len(
+                human_food_consumption["fish"].kcals
+            ),  # Assuming the same length for all food types
+            fat=[kcals_daily_maximum] * len(human_food_consumption["fish"].kcals),
+            protein=[kcals_daily_maximum] * len(human_food_consumption["fish"].kcals),
+            kcals_units="kcals per person per day",
+            fat_units="effective kcals per person per day",
+            protein_units="effective kcals per person per day",
+        )
+
+        # Iterate over each food type and assert consumption is within limits
+        for food_type, food_consumption in human_food_consumption.items():
+            assert food_consumption.all_less_than_or_equal_to(
+                max_food_daily
+            ), f"Consumption of {food_type} exceeds maximum allowed in some months."

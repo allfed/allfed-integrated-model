@@ -1371,7 +1371,7 @@ class Scenarios:
     def seaweed(self, constants_for_params):
         constants_for_params["ADD_SEAWEED"] = True
         constants_for_params["DELAY"]["SEAWEED_MONTHS"] = 1
-        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 30
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 10
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 10
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = 10
 

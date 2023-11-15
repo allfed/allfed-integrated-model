@@ -33,19 +33,19 @@ class ScenarioRunner:
         returns: the interpreted results
         """
         interpreter = Interpreter()
-        validator = Validator()
         # take the variables defining the scenario and compute the resulting needed
         # values as inputs to the optimizer
+
+        constants_loader = Parameters()
+
         (
             single_valued_constants,
             time_consts,
-            feed_biofuels,
-        ) = self.compute_parameters(constants_for_params, scenarios_loader)
-
-        interpreter.set_feed(feed_biofuels)
-
-        # print("single_valued_constants")
-        # print(single_valued_constants["DELAY"])
+            feed_and_biofuels,
+        ) = constants_loader.compute_parameters_first_round(
+            constants_for_params, scenarios_loader
+        )
+        interpreter.set_feed(feed_and_biofuels)
 
         # actually make PuLP optimize effective people fed based on all the constants
         # we've determined
@@ -55,6 +55,73 @@ class ScenarioRunner:
             percent_fed_from_model,
             time_consts,
         ) = self.run_optimizer(single_valued_constants, time_consts)
+
+        interpreted_results = self.interpret_optimizer_results(
+            single_valued_constants,
+            model,
+            variables,
+            time_consts,
+            interpreter,
+            percent_fed_from_model,
+        )
+
+        # (
+        #     # single_valued_constants,
+        #     # time_consts,
+        #     # feed_and_biofuels,
+        # ) =
+        human_food_consumption = constants_loader.compute_parameters_second_round(
+            constants_for_params,
+            time_consts,
+            interpreted_results,
+            percent_fed_from_model,
+        )
+        # interpreter.set_feed(feed_and_biofuels)
+        interpreted_results.fish_kcals_equivalent = human_food_consumption["fish"]
+        interpreted_results.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent = human_food_consumption[
+            "meat"
+        ]
+        interpreted_results.grazing_milk_kcals_equivalent = human_food_consumption[
+            "dairy"
+        ]
+        interpreted_results.greenhouse_kcals_equivalent = human_food_consumption[
+            "greenhouse"
+        ]
+        interpreted_results.immediate_outdoor_crops_kcals_equivalent = (
+            human_food_consumption["outdoor_crops"]
+        )
+        interpreted_results.new_stored_outdoor_crops_kcals_equivalent = (
+            interpreted_results.grain_fed_meat_kcals_equivalent
+        )  # zero!
+        interpreted_results.stored_food_kcals_equivalent = human_food_consumption[
+            "stored_food"
+        ]
+        interpreted_results.scp_kcals_equivalent = human_food_consumption["scp"]
+        interpreted_results.cell_sugar_kcals_equivalent = human_food_consumption[
+            "cell_sugar"
+        ]
+        interpreted_results.seaweed_kcals_equivalent = human_food_consumption["seaweed"]
+        # print("interpreted_results")
+        # print(interpreted_results)
+        # breakpoint()
+        # quit()
+
+        PRINT_NEEDS_RATIO = False
+        if PRINT_NEEDS_RATIO:
+            interpreter.print_kcals_per_capita_per_day(interpreted_results)
+
+        return interpreted_results
+
+    def interpret_optimizer_results(
+        self,
+        single_valued_constants,
+        model,
+        variables,
+        time_consts,
+        interpreter,
+        percent_fed_from_model,
+    ):
+        validator = Validator()
 
         extractor = Extractor(single_valued_constants)
         #  get values from all the optimizer in list and integer formats
@@ -73,27 +140,7 @@ class ScenarioRunner:
             extracted_results, interpreted_results, percent_fed_from_model
         )
 
-        PRINT_NEEDS_RATIO = False
-        if PRINT_NEEDS_RATIO:
-            interpreter.print_kcals_per_capita_per_day(interpreted_results)
-
         return interpreted_results
-
-    def compute_parameters(self, constants_for_params, scenarios_loader):
-        """
-        computes the parameters
-        returns the resulting constants
-        """
-
-        constants_loader = Parameters()
-
-        (
-            single_valued_constants,
-            time_consts,
-            feed_and_biofuels,
-        ) = constants_loader.compute_parameters(constants_for_params, scenarios_loader)
-
-        return (single_valued_constants, time_consts, feed_and_biofuels)
 
     def run_optimizer(self, single_valued_constants, time_consts):
         """
@@ -365,6 +412,9 @@ class ScenarioRunner:
         # PROTEIN
 
         if scenario_option["protein"] == "required":
+            print("ERROR: fat and protein not working in this version of the model")
+            print("(compute parameters in the second round would need to be modified)")
+            quit()
             constants_for_params = scenario_loader.include_protein(constants_for_params)
         elif scenario_option["protein"] == "not_required":
             constants_for_params = scenario_loader.dont_include_protein(
@@ -380,6 +430,9 @@ class ScenarioRunner:
         # FAT
 
         if scenario_option["fat"] == "required":
+            print("ERROR: fat and protein not working in this version of the model")
+            print("(compute parameters in the second round would need to be modified)")
+            quit()
             constants_for_params = scenario_loader.include_fat(constants_for_params)
         elif scenario_option["fat"] == "not_required":
             constants_for_params = scenario_loader.dont_include_fat(
