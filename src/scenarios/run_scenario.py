@@ -8,6 +8,9 @@ Created on Tue Jul 19
 
 @author: morgan
 """
+
+import sys
+
 from src.optimizer.optimizer import Optimizer
 from src.optimizer.interpret_results import Interpreter
 from src.optimizer.extract_results import Extractor
@@ -70,37 +73,24 @@ class ScenarioRunner:
         #     # time_consts,
         #     # feed_and_biofuels,
         # ) =
-        human_food_consumption = constants_loader.compute_parameters_second_round(
+        min_human_food_consumption = constants_loader.compute_parameters_second_round(
             constants_for_params,
             time_consts,
             interpreted_results,
             percent_fed_from_model,
         )
-        # interpreter.set_feed(feed_and_biofuels)
-        interpreted_results.fish_kcals_equivalent = human_food_consumption["fish"]
-        interpreted_results.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent = human_food_consumption[
-            "meat"
-        ]
-        interpreted_results.grazing_milk_kcals_equivalent = human_food_consumption[
-            "dairy"
-        ]
-        interpreted_results.greenhouse_kcals_equivalent = human_food_consumption[
-            "greenhouse"
-        ]
-        interpreted_results.immediate_outdoor_crops_kcals_equivalent = (
-            human_food_consumption["outdoor_crops"]
+
+        optimizer = Optimizer(single_valued_constants, time_consts)
+
+        (
+            model,
+            variables,
+            # percent_fed_from_model_round2,
+            time_consts,
+        ) = optimizer.optimize_feed_to_animals(
+            single_valued_constants, time_consts, min_human_food_consumption
         )
-        interpreted_results.new_stored_outdoor_crops_kcals_equivalent = (
-            interpreted_results.grain_fed_meat_kcals_equivalent
-        )  # zero!
-        interpreted_results.stored_food_kcals_equivalent = human_food_consumption[
-            "stored_food"
-        ]
-        interpreted_results.scp_kcals_equivalent = human_food_consumption["scp"]
-        interpreted_results.cell_sugar_kcals_equivalent = human_food_consumption[
-            "cell_sugar"
-        ]
-        interpreted_results.seaweed_kcals_equivalent = human_food_consumption["seaweed"]
+
         # print("interpreted_results")
         # print(interpreted_results)
         # breakpoint()
@@ -414,7 +404,7 @@ class ScenarioRunner:
         if scenario_option["protein"] == "required":
             print("ERROR: fat and protein not working in this version of the model")
             print("(compute parameters in the second round would need to be modified)")
-            quit()
+            sys.exit()
             constants_for_params = scenario_loader.include_protein(constants_for_params)
         elif scenario_option["protein"] == "not_required":
             constants_for_params = scenario_loader.dont_include_protein(
@@ -432,7 +422,7 @@ class ScenarioRunner:
         if scenario_option["fat"] == "required":
             print("ERROR: fat and protein not working in this version of the model")
             print("(compute parameters in the second round would need to be modified)")
-            quit()
+            sys.exit()
             constants_for_params = scenario_loader.include_fat(constants_for_params)
         elif scenario_option["fat"] == "not_required":
             constants_for_params = scenario_loader.dont_include_fat(

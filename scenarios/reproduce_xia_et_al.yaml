@@ -67,6 +67,8 @@ settings:
 
 simulations:
   # USA Food Production Scenario following Xia et al Results
+  # TODO Check what values I should use for stored_food and end_simulation_stocks_ratio
+  # TODO CHeck meat_strategy assertion error
   USA_Xia_et_al_results:
     title: Reproduce Xia et al Results
     scale: country
@@ -82,4 +84,6 @@ simulations:
     cull: dont_eat_culled
     fat: not_required
     protein: not_required
-    meat_strategy: inefficient_meat_strategy
+    meat_strategy: baseline_breeding
+    stored_food: baseline
+    end_simulation_stocks_ratio: baseline

@@ -8,6 +8,7 @@
 from src.food_system.food import Food
 
 import numpy as np
+import sys
 
 
 class MeatAndDairy:
@@ -164,14 +165,12 @@ class MeatAndDairy:
             - INITIAL_MILK_CATTLE
         )
 
-        self.MEAT_WASTE = (
-            constants_for_params["WASTE_DISTRIBUTION"]["MEAT"]
-            + constants_for_params["WASTE_RETAIL"]
-        )
-        self.MILK_WASTE = (
-            constants_for_params["WASTE_DISTRIBUTION"]["MILK"]
-            + constants_for_params["WASTE_RETAIL"]
-        )
+        self.MEAT_WASTE_DISTRIBUTION = constants_for_params["WASTE_DISTRIBUTION"][
+            "MEAT"
+        ]
+        self.MILK_WASTE_DISTRIBUTION = constants_for_params["WASTE_DISTRIBUTION"][
+            "MILK"
+        ]
 
     def calculate_meat_nutrition(self):
         """
@@ -259,42 +258,6 @@ class MeatAndDairy:
             self.MEDIUM_ANIMAL_KCALS_PER_KG,
             self.SMALL_ANIMAL_KCALS_PER_KG,
         )
-
-    def calculate_meat_limits(
-        self, MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE, culled_meat_initial
-    ):
-        """
-        Calculate the baseline levels of meat production, indicating slaughter capacity.
-
-        There's no limit on the actual amount eaten, but the amount produced and
-        then preserved after culling is assumed to be some multiple of current slaughter
-        capacity. This just means that the limit each month on the amount that could be eaten is
-        the sum of the max estimated slaughter capacity each month.
-
-        Args:
-            MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE (float): The maximum ratio of culled meat to baseline meat.
-            culled_meat_initial (float): The initial amount of culled meat.
-
-        Returns:
-            numpy.ndarray: An array of cumulative meat limits for each month.
-
-        """
-
-        per_month_increase = (
-            self.CHICKEN_PORK_LIMIT_FOOD_USAGE_PREWASTE * 4e6 / 1e9
-            + self.BEEF_LIMIT_FOOD_USAGE_PREWASTE * 4e6 / 1e9
-        )
-
-        meat_limit = 0
-        cumulative_meat_limit = np.zeros(self.NMONTHS)
-        for m in range(0, self.NMONTHS):
-            # converting to billions of kcals
-            meat_limit = (
-                meat_limit + per_month_increase * MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE
-            )
-
-            cumulative_meat_limit[m] = min(meat_limit, culled_meat_initial)
-        return cumulative_meat_limit
 
     # CALCULATIONS FOR MEAT AND DAIRY PRODUCTION USING GRAIN AND GRAZING
 
@@ -494,7 +457,7 @@ class MeatAndDairy:
                 population.
                 \nQuitting."""
             )
-            quit()
+            sys.exit()
 
         # Check if all the calculated values are non-negative
         assert np.array(excess_dry_cal_tons >= 0).all()
@@ -863,7 +826,7 @@ class MeatAndDairy:
                 * 1000
                 * self.LARGE_ANIMAL_KCALS_PER_KG
                 / 1e9
-                * (1 - self.MEAT_WASTE / 100)
+                * (1 - self.MEAT_WASTE_DISTRIBUTION / 100)
             )
 
             # 1000s tons fat
@@ -904,67 +867,53 @@ class MeatAndDairy:
 
     # CULLED MEAT
 
-    def get_max_slaughter_monthly(
+    def get_max_slaughter_monthly_after_distribution_waste(
         self, small_animals_culled, medium_animals_culled, large_animals_culled
     ):
         """
         Get the maximum number of animals that can be culled in a month and return the
         resulting array for max total calories slaughtered that month.
-
-        Args:
-            self (object): instance of the class
-            small_animals_culled (list): list of integers representing the number of small animals culled each month
-            medium_animals_culled (list): list of integers representing the number of medium animals culled each month
-            large_animals_culled (list): list of integers representing the number of large animals culled each month
-
-        Returns:
-            list: list of integers representing the maximum total calories that can be slaughtered each month
-
-        Raises:
-            None
-
         """
-        # initialize an empty list to store the maximum total calories that can be slaughtered each month
-        calories_max_monthly = []
-        # iterate over the range of the length of small_animals_culled
+
+        slaughtered_meat_monthly = Food(
+            kcals=np.zeros(len(small_animals_culled)),
+            fat=np.zeros(len(small_animals_culled)),
+            protein=np.zeros(len(small_animals_culled)),
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
+        )
+
         for m in range(0, len(small_animals_culled)):
-            # calculate the calories, fat, and protein for the culled meat using the calculate_culled_meat method
-            (calories, fat, protein) = self.calculate_culled_meat(
+            (
+                calories,
+                fat_ratio,
+                protein_ratio,
+            ) = self.calculate_culled_meat_after_distribution_waste(
                 small_animals_culled[m],
                 medium_animals_culled[m],
                 large_animals_culled[m],
             )
-            # add the maximum of calories and 0 to the calories_max_monthly list to avoid negative values
+            meat_slaughtered_this_month = Food(
+                kcals=calories,
+                fat=calories * fat_ratio,
+                protein=calories * protein_ratio,
+                kcals_units="billion kcals",
+                fat_units="thousand tons",
+                protein_units="thousand tons",
+            )
+            slaughtered_meat_monthly[m] = meat_slaughtered_this_month
             # no negative slaughter rates (addresses rounding errors)
-            calories_max_monthly.append(max(calories, 0))
-        # return the list of maximum total calories that can be slaughtered each month
-        return calories_max_monthly
+        return slaughtered_meat_monthly
 
-    def calculate_culled_meat(
+    def calculate_culled_meat_after_distribution_waste(
         self,
         init_small_animals_culled,
         init_medium_animals_culled,
         init_large_animals_culled,
     ):
-        """
-        Calculates the amount of culled meat in billion kcals, thousand tons of fat, and thousand tons of protein
-        based on the number of small, medium, and large animals culled.
-
-        Args:
-            self (object): instance of the class
-            init_small_animals_culled (int): number of small animals culled
-            init_medium_animals_culled (int): number of medium animals culled
-            init_large_animals_culled (int): number of large animals culled
-
-        Returns:
-            tuple: a tuple containing the initial culled meat pre-waste in billion kcals,
-            the fraction of culled meat that is fat, and the fraction of culled meat that is protein
-        """
-
-        # Conversion factor from kg to thousand tons
         KG_TO_1000_TONS = self.KG_TO_1000_TONS
 
-        # Calculate kcals, fat, and protein per small animal
         KCALS_PER_SMALL_ANIMAL = (
             self.SMALL_ANIMAL_KCALS_PER_KG * self.KG_PER_SMALL_ANIMAL / 1e9
         )
@@ -975,7 +924,6 @@ class MeatAndDairy:
             self.SMALL_ANIMAL_PROTEIN_RATIO * self.KG_PER_SMALL_ANIMAL * KG_TO_1000_TONS
         )
 
-        # Calculate kcals, fat, and protein per medium animal
         KCALS_PER_MEDIUM_ANIMAL = (
             self.MEDIUM_ANIMAL_KCALS_PER_KG * self.KG_PER_MEDIUM_ANIMAL / 1e9
         )
@@ -988,7 +936,6 @@ class MeatAndDairy:
             * KG_TO_1000_TONS
         )
 
-        # Calculate kcals, fat, and protein per large animal
         KCALS_PER_LARGE_ANIMAL = (
             self.LARGE_ANIMAL_KCALS_PER_KG * self.KG_PER_LARGE_ANIMAL / 1e9
         )
@@ -999,8 +946,6 @@ class MeatAndDairy:
             self.LARGE_ANIMAL_PROTEIN_RATIO * self.KG_PER_LARGE_ANIMAL * KG_TO_1000_TONS
         )
 
-        # Calculate the initial culled meat pre-waste in billion kcals, thousand
-        # tons of fat, and thousand tons of protein
         # billion kcals
         init_culled_meat_prewaste_kcals = (
             init_small_animals_culled * KCALS_PER_SMALL_ANIMAL
@@ -1020,10 +965,8 @@ class MeatAndDairy:
             + init_large_animals_culled * PROTEIN_PER_LARGE_ANIMAL
         )
 
-        # Set the initial culled meat pre-waste to the kcals value
         initial_culled_meat_prewaste = init_culled_meat_prewaste_kcals
 
-        # Calculate the fraction of culled meat that is fat and protein
         if initial_culled_meat_prewaste > 0:
             culled_meat_fraction_fat = (
                 init_culled_meat_prewaste_fat / init_culled_meat_prewaste_kcals
@@ -1035,63 +978,8 @@ class MeatAndDairy:
             culled_meat_fraction_fat = 0
             culled_meat_fraction_protein = 0
 
-        # Return the initial culled meat pre-waste, fraction of culled meat that
-        # is fat, and fraction of culled meat that is protein
         return (
-            initial_culled_meat_prewaste,
+            initial_culled_meat_prewaste * (1 - self.MEAT_WASTE_DISTRIBUTION / 100),
             culled_meat_fraction_fat,
             culled_meat_fraction_protein,
         )
-
-    def get_culled_meat_post_waste(self, constants_for_params):
-        """
-        Calculates the amount of culled meat post-waste based on the initial amount of culled meat pre-waste and the
-        percentage of meat waste.
-
-        Args:
-            self: instance of the class containing the function
-            constants_for_params: dictionary containing the constants used in the calculation
-
-        Returns:
-            float: the amount of culled meat post-waste
-
-        """
-        # Check if culled meat should be added to the calculation
-        if self.ADD_CULLED_MEAT:
-            culled_meat_prewaste = self.initial_culled_meat_prewaste
-        else:
-            culled_meat_prewaste = 0
-
-        return culled_meat_prewaste * (1 - self.MEAT_WASTE / 100)
-
-    def calculate_animals_culled(self, constants_for_params):
-        """
-        Calculates the number of animals culled based on the given constants and parameters.
-
-        Args:
-            self: instance of the class
-            constants_for_params: dictionary containing the constants and parameters
-
-        Returns:
-            None
-
-        The function calculates the number of animals culled based on the given constants and parameters.
-        If ADD_CULLED_MEAT is True, the function calculates the number of small, medium, and large animals culled
-        based on the ratio of maintained chicken and pork and the ratio of not maintained cattle.
-        If ADD_CULLED_MEAT is False, the function sets the number of culled animals to 0.
-
-        """
-        if self.ADD_CULLED_MEAT:
-            self.init_small_animals_culled = self.INIT_SMALL_ANIMALS * (
-                1 - np.min(self.ratio_maintained_chicken_pork)
-            )
-            self.init_medium_animals_culled = self.INIT_MEDIUM_ANIMALS * (
-                1 - np.min(self.ratio_maintained_chicken_pork)
-            )
-            self.init_large_animals_culled = self.INIT_LARGE_ANIMALS * np.max(
-                self.ratio_not_maintained_cattle
-            )
-        else:
-            self.init_small_animals_culled = 0
-            self.init_medium_animals_culled = 0
-            self.init_large_animals_culled = 0

@@ -57,7 +57,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         if "buffer" not in this_simulation.keys():
             this_simulation["buffer"] = "baseline"
         if "shutoff" not in this_simulation.keys():
-            this_simulation["shutoff"] = "continued"  # this_simulation["shutoff"] = "immediate"
+            this_simulation[
+                "shutoff"
+            ] = "continued"  # this_simulation["shutoff"] = "immediate"
         if "cull" not in this_simulation.keys():
             this_simulation["cull"] = "do_eat_culled"
 
@@ -121,7 +123,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         figure_save_postfix="",
     ):
         country_name = country_data["country"]
-        constants_for_params, scenario_loader = self.set_depending_on_option(country_data, scenario_option)
+        constants_for_params, scenario_loader = self.set_depending_on_option(
+            country_data, scenario_option
+        )
 
         # No excess calories
         constants_for_params["EXCESS_FEED"] = Food(
@@ -151,7 +155,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             try:
                 print("running scenario")
                 scenario_runner = ScenarioRunner()
-                interpreted_results = scenario_runner.run_and_analyze_scenario(constants_for_params, scenario_loader)
+                interpreted_results = scenario_runner.run_and_analyze_scenario(
+                    constants_for_params, scenario_loader
+                )
                 percent_people_fed = interpreted_results.percent_people_fed
             except Exception as e:
                 print("exception:")
@@ -159,19 +165,24 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 percent_people_fed = np.nan
         else:
             scenario_runner = ScenarioRunner()
-            interpreted_results = scenario_runner.run_and_analyze_scenario(constants_for_params, scenario_loader)
+            interpreted_results = scenario_runner.run_and_analyze_scenario(
+                constants_for_params, scenario_loader
+            )
             percent_people_fed = interpreted_results.percent_people_fed
         print("percent_people_fed")
         print(percent_people_fed)
         if not np.isnan(percent_people_fed):
-            Plotter.plot_feed(
-                interpreted_results,
-                constants_for_params["NMONTHS"],
-                country_data["country"] + figure_save_postfix,
-                show_country_figures,
-                create_pptx_with_all_countries,
-                scenario_loader.scenario_description,
-            )
+            if (
+                not interpreted_results.feed_and_biofuels.nonhuman_consumption.all_equals_zero()
+            ):
+                Plotter.plot_feed(
+                    interpreted_results,
+                    constants_for_params["NMONTHS"],
+                    country_data["country"] + figure_save_postfix,
+                    show_country_figures,
+                    create_pptx_with_all_countries,
+                    scenario_loader.scenario_description,
+                )
             Plotter.plot_fig_1ab(
                 interpreted_results,
                 constants_for_params["NMONTHS"],
@@ -243,7 +254,12 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         """
         # country codes for UK + EU 27 countries (used for plotting map)
 
-        NO_TRADE_CSV = Path(repo_root) / "data" / "no_food_trade" / "computer_readable_combined.csv"
+        NO_TRADE_CSV = (
+            Path(repo_root)
+            / "data"
+            / "no_food_trade"
+            / "computer_readable_combined.csv"
+        )
 
         no_trade_table = pd.read_csv(NO_TRADE_CSV)
 
@@ -432,12 +448,31 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             day = str(date.today().day)
             hour = str(datetime.datetime.now().hour)
             minute = str(datetime.datetime.now().minute)
-            path_string = str(Path(repo_root) / "results" / "large_reports" / "various_scenario_options_")
+            path_string = str(
+                Path(repo_root)
+                / "results"
+                / "large_reports"
+                / "various_scenario_options_"
+            )
             Plotter.end_pptx(
-                saveloc=path_string + title + "." + year + "." + month + "." + day + "." + hour + "." + minute + ".pptx"
+                saveloc=path_string
+                + title
+                + "."
+                + year
+                + "."
+                + month
+                + "."
+                + day
+                + "."
+                + hour
+                + "."
+                + minute
+                + ".pptx"
             )
 
-    def create_several_maps_with_different_assumptions(self, this_simulation, show_map_figures=False):
+    def create_several_maps_with_different_assumptions(
+        self, this_simulation, show_map_figures=False
+    ):
         # initializing lists
         this_simulation_combinations = {}
 
@@ -546,7 +581,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
 
         CREATE_SEVERAL_MAPS_PPTX = single_or_various == "multi"
         if CREATE_SEVERAL_MAPS_PPTX:
-            self.create_several_maps_with_different_assumptions(this_simulation, show_map_figures=(plot_figs == "plot"))
+            self.create_several_maps_with_different_assumptions(
+                this_simulation, show_map_figures=(plot_figs == "plot")
+            )
 
         CREATE_PPTX_EACH_COUNTRY = single_or_various == "single"
         if CREATE_PPTX_EACH_COUNTRY:

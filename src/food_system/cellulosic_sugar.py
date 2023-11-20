@@ -34,7 +34,7 @@ class CellulosicSugar:
         # maximum fraction of human food that can be consumed as cellulosic sugar
         self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_CS = 0.4
         # maximum percentage of kcals in feed that can come from cellulosic sugar
-        self.MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_FEED = 40
+        self.MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_FEED = 0.05
         # maximum percentage of kcals in biofuel that can come from cellulosic sugar
         self.MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_BIOFUEL = (
             100  # All of biofuel can beBIOFUEL

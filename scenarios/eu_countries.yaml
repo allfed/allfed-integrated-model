@@ -1,14 +1,48 @@
+#TODO: fix list of EU countries not working
+# Not working list: BGR, CYP, HUN, ITA, LVA, MLT, NLD, ROU, SVK
+# NB: France includes French Guiana!
+# Check plots - some countries like Belgium seem to have no crops. Accompanied by unrealistic assumptions WARNING
+
 
 settings:
-  countries: ARG
+ 
+  countries: 
+  # List of EU countries
+   - AUT
+   - BEL
+   - BGR
+   - HRV
+   - CYP
+   - CZE
+   - DNK
+   - EST
+   - FIN
+   - FRA
+   - DEU
+   - GRC
+   - HUN
+   - IRL  
+   - ITA
+   - LVA
+   - LTU
+   - LUX
+   - MLT
+   - NLD
+   - POL
+   - PRT
+   - ROU
+   - SVK
+   - SVN
+   - ESP
+   - SWE
 
 simulations:
 
 # SET YOUR DESIRED SIMULATIONS BELOW
 
   # Baseline net production 
-  argentina_net_baseline:
-    title: Argentina Net Food Production
+  net_baseline:
+    title: Net Food Production
     scale: country
     seasonality: country
     # seasonality: no_seasonality
@@ -27,8 +61,8 @@ simulations:
     meat_strategy: baseline_breeding
 
   # Baseline gross production
-  argentina_gross_baseline:
-    title: Argentina Net Food Production
+  gross_baseline:
+    title: Gross Food Production
     scale: country
     seasonality: country
     grasses: baseline
@@ -46,8 +80,8 @@ simulations:
     meat_strategy: baseline_breeding
 
   # Nuclear winter net production
-  argentina_net_nuclear_winter:
-    title: Argentina Net Food Production, Nuclear Winter
+  net_nuclear_winter:
+    title: Net Food Production, Nuclear Winter
     scale: country
     scenario: no_resilient_foods
     seasonality: country
@@ -65,8 +99,8 @@ simulations:
     meat_strategy: reduce_breeding_USA
     
   # Nuclear winter with reduced feed/waste  
-  argentina_net_nuclear_winter_reduced:
-    title: Argentina Net Food Production, Nuclear Winter, Reduced Waste
+  net_nuclear_winter_reduced:
+    title: Net Food Production, Nuclear Winter, Reduced Waste
     scale: country
     scenario: no_resilient_foods
     seasonality: country
@@ -84,8 +118,8 @@ simulations:
     meat_strategy: reduce_breeding_USA
     
   # Nuclear winter with resilient foods
-  argentina_net_nuclear_resilient:
-    title: Argentina Net Food Production, Resilient Foods
+  net_nuclear_resilient:
+    title: Net Food Production, Resilient Foods
     scale: country
     scenario: all_resilient_foods
     seasonality: country
@@ -103,8 +137,8 @@ simulations:
     meat_strategy: reduce_breeding_USA
     
   # Nuclear winter with resilient foods & more area
-  argentina_net_nuclear_resilient_more_area:
-    title: Argentina Net Food Production, Resilient Foods
+  net_nuclear_resilient_more_area:
+    title: Net Food Production, Resilient Foods
     scale: country
     scenario: all_resilient_foods_and_more_area
     seasonality: country

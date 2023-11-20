@@ -18,3 +18,5 @@ simulations:
     fat: not_required
     protein: not_required
     meat_strategy: baseline_breeding
+    stored_food: baseline
+    end_simulation_stocks_ratio: baseline

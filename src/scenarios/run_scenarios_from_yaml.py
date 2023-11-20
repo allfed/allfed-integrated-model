@@ -39,6 +39,10 @@ from pathlib import Path
 
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 
+import src.scenarios.run_scenarios_from_yaml as runner
+
+runner.main()
+
 
 def run_scenarios_from_yaml(config_data, show_country_figures, show_map_figures):
     """
