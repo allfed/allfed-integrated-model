@@ -1,5 +1,6 @@
 settings:
   countries: USA
+  NMONTHS: 120
 
 simulations:
 
@@ -14,6 +15,7 @@ simulations:
     fish: zero
     waste: zero
     nutrition: baseline
+    intake_constraints: enabled
     stored_food: zero
     end_simulation_stocks_ratio: zero
     shutoff: immediate # note the immediate here!
@@ -34,6 +36,7 @@ simulations:
     fish: zero
     waste: zero
     nutrition: baseline
+    intake_constraints: enabled
     stored_food: zero
     end_simulation_stocks_ratio: zero
     shutoff: immediate # note the immediate here!
@@ -53,6 +56,7 @@ simulations:
     fish: zero
     waste: zero
     nutrition: baseline
+    intake_constraints: enabled
     stored_food: baseline
     end_simulation_stocks_ratio: zero
     shutoff: immediate # note the immediate here!
@@ -72,6 +76,7 @@ simulations:
     fish: zero
     waste: zero
     nutrition: baseline
+    intake_constraints: enabled
     stored_food: baseline
     end_simulation_stocks_ratio: zero
     shutoff: immediate # note the immediate here!
