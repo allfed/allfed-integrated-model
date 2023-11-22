@@ -54,7 +54,6 @@ class Plotter:
 
         ADD_THE_NUTRITION_PLOT = interpreter.include_protein or interpreter.include_fat
 
-        xlim = min(xlim, len(interpreter.time_months_middle))
         legend = Plotter.get_people_fed_legend(interpreter, True)
         fig = plt.figure()
         pal = [
@@ -76,8 +75,6 @@ class Plotter:
                 if label == "b":
                     continue
                 ax = fig.add_subplot(1, 1, 1)
-
-            ax.set_xlim([0.5, xlim])
 
             ykcals = []
             ykcals.append(interpreter.fish_kcals_equivalent.kcals)
@@ -119,6 +116,13 @@ class Plotter:
                     labels=legend,
                     colors=pal,
                 )
+                if xlim == "earliest_month_zero":
+                    xlim = interpreter.get_month_after_which_is_all_zero(
+                        ykcals, interpreter.constants["NMONTHS"]
+                    )
+
+                ax.set_xlim([0.25, xlim])
+
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
                 # maxy = max(sum([x[0:xlim] for x in ykcals]))
@@ -136,16 +140,23 @@ class Plotter:
                 if not ADD_THE_NUTRITION_PLOT:
                     continue
 
-                    ax.text(
-                        -0.06,
-                        1.1,
-                        label,
-                        transform=ax.transAxes,
-                        fontsize=11,
-                        fontweight="bold",
-                        va="top",
-                        ha="right",
+                ax.text(
+                    -0.06,
+                    1.1,
+                    label,
+                    transform=ax.transAxes,
+                    fontsize=11,
+                    fontweight="bold",
+                    va="top",
+                    ha="right",
+                )
+                if xlim == "earliest_month_zero":
+                    xlim = interpreter.get_month_after_which_is_all_zero(
+                        [interpreter.feed_and_biofuels.nonhuman_consumption],
+                        interpreter.constants["NMONTHS"],
                     )
+                ax.set_xlim([0.25, xlim])
+
                 plt.xlabel("Months since May nuclear winter onset")
 
                 ax.plot(
@@ -228,6 +239,8 @@ class Plotter:
         path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
 
         saveloc = path_string + newtitle + ".png"
+        print("saveloc")
+        print(saveloc)
         feed_saveloc = path_string + newtitle + "_feed.png"
         plt.savefig(
             saveloc,
@@ -275,7 +288,6 @@ class Plotter:
 
         ADD_THE_NUTRITION_PLOT = interpreter.include_protein or interpreter.include_fat
 
-        xlim = min(xlim, len(interpreter.time_months_middle))
         legend = Plotter.get_feed_biofuels_legend(interpreter)
         fig = plt.figure()
         pal = [
@@ -351,6 +363,11 @@ class Plotter:
                 # Add hatches to the biofuel patches
                 for stack_plot, hatch in zip(stack_plots, hatches_list):
                     stack_plot.set_hatch(hatch)
+                if xlim == "earliest_month_zero":
+                    xlim = interpreter.get_month_after_which_is_all_zero(
+                        ykcals, interpreter.constants["NMONTHS"]
+                    )
+                ax.set_xlim([0.25, xlim])
 
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
@@ -464,6 +481,171 @@ class Plotter:
         path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
 
         saveloc = path_string + newtitle + "_feed.png"
+        print("saveloc")
+        print(saveloc)
+        plt.savefig(
+            saveloc,
+            dpi=300,
+        )
+        if plot_figure:
+            plt.show()
+        # else:
+        # plt.close()
+
+    @classmethod
+    def plot_slaughter(
+        crs,
+        interpreter,
+        xlim,
+        newtitle="",
+        plot_figure=True,
+        add_slide_with_fig=True,
+        description="",
+    ):
+        if (not plot_figure) and (not add_slide_with_fig):
+            return
+
+        fig = plt.figure()
+
+        # Define a list of hatch patterns
+        hatches = ["/", "\\", "|", "-", "+", "x", "o", "O", ".", "*"]
+
+        # Define a list of line styles
+        line_styles = ["-", "--", "-.", ":"]
+
+        # Define a list of marker styles
+        markers = ["o", "s", "D", "^", "v", "<", ">", "p", "*", "+", "x"]
+
+        for i, label in enumerate(("a", "b")):
+            ax = fig.add_subplot(1, 2, i + 1)
+
+            if label == "a":
+                ax.text(
+                    -0.06,
+                    1.1,
+                    label,
+                    transform=ax.transAxes,
+                    fontsize=11,
+                    fontweight="bold",
+                    va="top",
+                    ha="right",
+                )
+                plt.ylabel("Kcals / person / day")
+            if label == "b":
+                ax.text(
+                    -0.06,
+                    1.1,
+                    label,
+                    transform=ax.transAxes,
+                    fontsize=11,
+                    fontweight="bold",
+                    va="top",
+                    ha="right",
+                )
+                plt.xlabel("Months since May nuclear winter onset")
+
+            if label == "a":
+                # Plot for Meat production
+                meat_list = []
+                meat_labels = []
+                for (
+                    animal_label,
+                    animal_meat,
+                ) in interpreter.meat_dictionary.items():
+                    meat_labels.append(animal_label)
+                    meat_list.append(animal_meat[:-1])
+
+                if xlim == "earliest_month_zero":
+                    xlim = interpreter.get_month_after_which_is_all_zero(
+                        meat_list, interpreter.constants["NMONTHS"]
+                    )
+                ax.set_xlim([0.25, xlim])
+
+                # Use the hatches when calling stackplot
+                stacks = ax.stackplot(
+                    interpreter.time_months_middle,
+                    meat_list,
+                    labels=meat_labels,
+                )
+                # Apply hatches to each stack
+                for stack, hatch in zip(stacks, hatches):
+                    stack.set_hatch(hatch)
+                ax.set_title("Meat Production and Animal populations over Simulation")
+                ax.set_ylabel("Kcals per person per day of meat slaughtered each month")
+                # Add legend and any other necessary plot formatting
+                plt.title("Meat slaughtered over time")
+                # Add a legend underneath this subplot
+                ax.legend(
+                    loc="upper center", bbox_to_anchor=(0.5, -0.15), shadow=True, ncol=2
+                )
+            if label == "b":
+                labels = []  # to collect labels for the legend
+                line_objects = []
+
+                if xlim == "earliest_month_zero":
+                    xlim = interpreter.get_month_after_which_is_all_zero(
+                        interpreter.animal_population_dictionary,
+                        interpreter.constants["NMONTHS"],
+                    )
+                ax.set_xlim([0.25, xlim])
+
+                for index, (
+                    animal_label,
+                    animal_population,
+                ) in enumerate(interpreter.animal_population_dictionary.items()):
+                    population_ratio = animal_population / animal_population[0]
+                    ax.plot(interpreter.time_months_middle, population_ratio)
+                    labels.append(animal_label)
+                    line_style = line_styles[index % len(line_styles)]
+                    marker = markers[index % len(markers)]
+                    # Set the markevery parameter to a higher value to spread out the markers
+                    markevery = 2  # Adjust this value as needed
+
+                    (line,) = ax.plot(
+                        interpreter.time_months_middle,
+                        animal_population / animal_population[0],
+                        line_style,
+                        marker=marker,
+                        markevery=markevery,
+                        label=animal_label,
+                    )
+                    # (line,) = ax.plot(
+                    #     interpreter.time_months_middle,
+                    #     animal_population / animal_population[0],
+                    #     line_style,
+                    #     marker=marker,
+                    #     label=animal_label,
+                    # )
+                    labels.append(animal_label)
+                    line_objects.append(line)
+                # Add a legend with custom handles
+                ax.legend(
+                    handles=line_objects,
+                    loc="upper center",
+                    bbox_to_anchor=(0.5, -0.15),
+                    shadow=True,
+                    ncol=2,
+                )
+                # ax.legend(labels, loc="lower left")
+
+                ax.set_title("Change in Animal Populations")
+                # Add legend with labels for each animal type
+                # ax.legend(
+                #     loc="upper center", bbox_to_anchor=(0.5, -0.15), shadow=True, ncol=2
+                # )
+                plt.title("Population relative to beginning population")
+
+            plt.xlabel("Months since May simulation onset")
+
+        fig.set_figheight(8)
+        fig.set_figwidth(8)
+        plt.tight_layout()
+        fig.suptitle(newtitle)
+        path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
+
+        saveloc = path_string + newtitle + "_slaughter.png"
+        print("saveloc")
+        print(saveloc)
         plt.savefig(
             saveloc,
             dpi=300,
@@ -575,7 +757,6 @@ class Plotter:
         plt.show()
 
     def helper_for_plotting_fig_3abcde(interpreter, xlim, gs, row, fig, max_y_percent):
-        xlim = min(xlim, len(interpreter.time_months_middle))
         legend = Plotter.get_people_fed_legend(interpreter, True)
         pal = [
             "#1e7ecd",  # fish
@@ -733,7 +914,6 @@ class Plotter:
         add_xlabel=True,
         ylim_constraint=100000,
     ):
-        xlim = min(xlim, len(interpreter.time_months_middle))
         legend = Plotter.get_people_fed_legend(interpreter, True)
         pal = [
             "#1e7ecd",
@@ -1695,6 +1875,8 @@ class Plotter:
         plt.tight_layout(w_pad=1, h_pad=1)
         # if not showplot:
         saveloc = Path(repo_root) / "results" / "fig_s1abcd.png"
+        print("saveloc")
+        print(saveloc)
         plt.savefig(
             saveloc,
             dpi=300,
@@ -1981,6 +2163,8 @@ class Plotter:
         fig.suptitle(title)
 
         saveloc = Path(repo_root) / "results" / "large_reports" / (title + ".png")
+        print("saveloc")
+        print(saveloc)
 
         plt.savefig(
             saveloc,
@@ -2039,6 +2223,8 @@ class Plotter:
         fig.suptitle(title)
 
         saveloc = Path(repo_root) / "results" / "large_reports" / "" + title + ".png"
+        print("saveloc")
+        print(saveloc)
 
         plt.savefig(
             saveloc,
@@ -2079,6 +2265,8 @@ class Plotter:
             Path(repo_root) / "results" / "large_reports" / "map_ratio_fed_"
         )
         saveloc = path_string + ratio_fed + ".png"
+        print("saveloc")
+        print(saveloc)
         fig.savefig(
             saveloc,
             dpi=300,

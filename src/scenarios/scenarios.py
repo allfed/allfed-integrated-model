@@ -1482,7 +1482,8 @@ class Scenarios:
         return constants_for_params
 
     def methane_scp(self, constants_for_params):
-        constants_for_params["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = 3
+        # (one month delay built into industrial food numbers)
+        constants_for_params["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = 2
         constants_for_params[
             "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
         ] = 1  # default values from CS and SCP papers
@@ -1493,7 +1494,8 @@ class Scenarios:
         return constants_for_params
 
     def cellulosic_sugar(self, constants_for_params):
-        constants_for_params["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = 3
+        # (one month delay built into industrial food numbers)
+        constants_for_params["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = 2
         constants_for_params[
             "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
         ] = 1  # default values from CS and SCP papers
