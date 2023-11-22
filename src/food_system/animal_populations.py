@@ -1063,6 +1063,10 @@ class AnimalPopulation:
         # this month
         # If so, proceed to calculate the number of pregnant animals slaughtered
         # Otherwise, set the number of pregnant animals slaughtered to the number of animals slaughtered this month
+
+        # TODO BUG animal.pregnant_animals_total[-1] is being calculated (and coming up negative) somewhere other than .calculate_pregnant_slaughter()
+        # I've currently addressed this with the quick fix in calculate_pregnant_slaughter, but a more robust solution should be found.
+
         (
             new_pregnant_animals_total,
             new_slaughtered_pregnant_animals,
@@ -1078,12 +1082,6 @@ class AnimalPopulation:
                 animal, new_pregnant_animals_total
             )
         )
-
-        # quick check to fix any overshoots
-        if (
-            new_pregnant_animals_total < 0
-        ):  # this is to avoid negative numbers of pregnant animals
-            new_pregnant_animals_total = 0
 
         # don't need to return much as the animal object is passed by reference, so the changes are made to the object
         # itself
@@ -1127,7 +1125,13 @@ class AnimalPopulation:
         pregnant animals set for slaughter is less than the number of animals slaughtered this month If so, proceed to
         calculate the number of pregnant animals slaughtered Otherwise, set the number of pregnant animals slaughtered
         to the number of animals slaughtered this month."""
+
+        # Make sure the number of pregnant animals is not negative.
+        if animal.pregnant_animals_total[-1] < 0:
+            animal.pregnant_animals_total[-1] = 0
+
         new_pregnant_animals_total = animal.pregnant_animals_total[-1]
+
         # if the fraction of preg * total preg is less than the slaughter rate,
         # proceed as normal and reduce the number of pregnant animals by the slaughter farction
         if animal.pregnant_animal_slaughter_fraction == 0:
@@ -1153,6 +1157,15 @@ class AnimalPopulation:
             new_slaughtered_pregnant_animals = new_slaughter_rate
             new_pregnant_animals_total -= new_slaughtered_pregnant_animals
 
+        # quick check to fix any overshoots
+        if (
+            new_pregnant_animals_total < 0
+        ):  # this is to avoid negative numbers of pregnant animals
+            new_pregnant_animals_total = 0
+
+        assert (
+            animal.pregnant_animal_slaughter_fraction >= 0
+        ), "pregnant animal slaughter fraction is negative"
         assert new_pregnant_animals_total >= 0, "new pregnant animals total is negative"
         assert (
             new_slaughtered_pregnant_animals >= 0
@@ -1274,6 +1287,11 @@ class AnimalPopulation:
         animal.pregnant_animal_slaughter_fraction = (
             0  # this seems a bit risky for the mode, it's simplistic
         )
+
+        assert (
+            animal.pregnant_animals_total[-1] >= 0
+        ), "pregnant animal total is negative"
+
         return
 
     def calculate_other_deaths(animal):

@@ -694,33 +694,50 @@ class Optimizer:
         # Add the smoothing objective function to the variables dictionary
         variables["objective_function_smoothing"] = smoothing_obj
 
-        # Add constraints for culled meat eaten
-        for month in range(self.NMONTHS):
+        PENALTY_COST = 100  # Adjust as needed, this is the weight of the penalty
+        for month in range(1, self.NMONTHS):
+            # Variables to capture the absolute difference
+            culled_meat_change = LpVariable(f"Culled_Meat_Change_{month}", lowBound=0)
+            stored_food_change = LpVariable(f"Stored_Food_Change_{month}", lowBound=0)
+
             if single_valued_constants["ADD_CULLED_MEAT"]:
-                constraint_name = f"Smoothing_Culled_{month}_Objective_Constraint"
-
-                # Add positive constraint for culled meat eaten
+                # Constraints to calculate the absolute difference
                 model_smoothing += (
-                    smoothing_obj >= variables["culled_meat_eaten"][month] * 0.9999,
-                    constraint_name + "_Pos",
+                    culled_meat_change
+                    >= (
+                        variables["culled_meat_eaten"][month]
+                        - variables["culled_meat_eaten"][month - 1]
+                    ),
+                    f"Culled_Meat_Increase_{month}",
+                )
+                model_smoothing += (
+                    culled_meat_change
+                    >= -(
+                        variables["culled_meat_eaten"][month]
+                        - variables["culled_meat_eaten"][month - 1]
+                    ),
+                    f"Culled_Meat_Decrease_{month}",
                 )
 
-                # Add negative constraint for culled meat eaten
-                model_smoothing += (
-                    smoothing_obj >= -variables["culled_meat_eaten"][month] * 0.9999,
-                    constraint_name + "_Neg",
-                )
-
-        # Add constraints for stored food to humans
-        for month in range(3, self.NMONTHS):
             if single_valued_constants["ADD_STORED_FOOD"]:
-                constraint_name = f"Smoothing_Stored_{month}_Objective_Constraint"
-
-                # Add positive constraint for stored food to humans
                 model_smoothing += (
-                    smoothing_obj >= variables["stored_food_to_humans"][month] * 0.9999,
-                    constraint_name + "_Pos",
+                    stored_food_change
+                    >= (
+                        variables["stored_food_eaten"][month]
+                        - variables["stored_food_eaten"][month - 1]
+                    ),
+                    f"Stored_Food_Increase_{month}",
                 )
+                model_smoothing += (
+                    stored_food_change
+                    >= -(
+                        variables["stored_food_eaten"][month]
+                        - variables["stored_food_eaten"][month - 1]
+                    ),
+                    f"Stored_Food_Decrease_{month}",
+                )
+            # Add the absolute differences to the objective function
+            smoothing_obj += PENALTY_COST * (culled_meat_change + stored_food_change)
 
         # Set the objective of the model to the smoothing objective function
         model_smoothing.setObjective(smoothing_obj)
@@ -1365,6 +1382,11 @@ def add_stored_food_to_model(self, month, variables):
 def add_culled_meat_to_model(self, month, variables):
     """
     This function adds culled meat to the model based on the month and variables passed in.
+
+    It just makes sure the sum total culled meat consumed never exceeds the sum total allowed consumption.
+    The maximum per month constraint is responsible for making sure culled meat eaten each month does not
+    exceed the amount culled in that month and the months prior.
+
     Args:
         month (int): The month for which the culled meat is being added
         variables (dict): A dictionary containing variables related to culled meat
@@ -1388,7 +1410,7 @@ def add_culled_meat_to_model(self, month, variables):
         # Check if the culled meat start value is equal to the constant value
         conditions["Culled_Meat_Start"] = (
             variables["culled_meat_start"][0]
-            == self.single_valued_constants["culled_meat"]
+            == self.single_valued_constants["culled_meat_summed_consumption"].kcals
         )
     else:
         # Check if the culled meat start value is equal to the culled meat end value of the previous month
@@ -1401,6 +1423,12 @@ def add_culled_meat_to_model(self, month, variables):
     conditions["Culled_Meat_Eaten"] = (
         variables["culled_meat_end"][month]
         == variables["culled_meat_start"][month] - variables["culled_meat_eaten"][month]
+    )
+
+    # Add in the constraint that culled meat eaten is less than the maximum consumed that month.
+    conditions["Culled_Meat_Eaten_Maximum"] = (
+        variables["culled_meat_eaten"][month]
+        <= self.time_consts["max_consumed_culled_kcals_each_month"][month]
     )
 
     return conditions

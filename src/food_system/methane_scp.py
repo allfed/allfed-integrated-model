@@ -8,7 +8,6 @@
 
 import numpy as np
 from src.food_system.food import Food
-import sys
 
 
 class MethaneSCP:
@@ -73,11 +72,15 @@ class MethaneSCP:
             1e9 / self.SCP_KCALS_PER_KG * self.SCP_FRAC_PROTEIN / 1e6
         )
 
-        # feed can't be more than this fraction in terms of calories in any month
-        self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP = 0.5
-
-        self.MAX_METHANE_SCP_AS_PERCENT_KCALS_FEED = 43
-        self.MAX_METHANE_SCP_AS_PERCENT_KCALS_BIOFUEL = 100
+        self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP = constants_for_params[
+            "MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP"
+        ]
+        self.MAX_FRACTION_FEED_CONSUMED_AS_SCP = constants_for_params[
+            "MAX_FRACTION_FEED_CONSUMED_AS_SCP"
+        ]
+        self.MAX_FRACTION_BIOFUEL_CONSUMED_AS_SCP = constants_for_params[
+            "MAX_FRACTION_BIOFUEL_CONSUMED_AS_SCP"
+        ]
 
         # billion kcals a month for country in question
         self.COUNTRY_MONTHLY_NEEDS = (
@@ -104,110 +107,32 @@ class MethaneSCP:
                 "INDUSTRIAL_FOODS_MONTHS"
             ]
 
-            SCENARIO = "247_construction_scp_USA"
-            if SCENARIO == "expected_scp_production_nuclear_winter":
-                global_values_percent_fed_just_scp = np.array(
-                    industrial_delay_months
-                    + [0] * 12
-                    + [2] * 5
-                    + [4]
-                    + [7] * 5
-                    + [9]
-                    + [11] * 6
-                    + [13]
-                    + [15] * 210
-                )
-                METHANE_SCP_PERCENT_KCALS = list(
-                    np.array(
-                        industrial_delay_months + global_values_percent_fed_just_scp
-                    )
-                    / (1 - 0.12)
-                    * self.INDUSTRIAL_FOODS_SLOPE_MULTIPLIER
-                )
-                production_kcals_scp_per_month_long = []
-                for global_percent_kcals_scp in METHANE_SCP_PERCENT_KCALS:
-                    production_kcals_scp_per_month_long.append(
-                        global_percent_kcals_scp
-                        / 100
-                        * self.GLOBAL_MONTHLY_NEEDS
-                        * constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"]
-                        * (1 - self.SCP_WASTE_DISTRIBUTION / 100)
-                    )
-
-            elif SCENARIO == "regular_construction_scp_USA":
-                assert (
-                    constants_for_params["COUNTRY_CODE"] == "USA"
-                ), "ERROR: 247 construction only supported for the US, not other countries."
-
-                country_values_percent_fed_just_scp = (
-                    [0.0] * 21,
-                    [20.95] * 1,
-                    [41.9] * 4,
-                    [62.85] * 1,
-                    [83.8] * 16,
-                    [125.7] * 5,
-                    [150.84] * 1,
-                    [167.6] * 16,
-                    [209.5] * 5,
-                    [251.5] * 200,
-                )
-                METHANE_SCP_PERCENT_KCALS = list(
-                    np.array(
-                        industrial_delay_months + country_values_percent_fed_just_scp
-                    )
-                    # / (1 - 0.12)
-                    * self.INDUSTRIAL_FOODS_SLOPE_MULTIPLIER
-                )
-                production_kcals_scp_per_month_long = []
-                for country_percent_kcals_scp in METHANE_SCP_PERCENT_KCALS:
-                    production_kcals_scp_per_month_long.append(
-                        country_percent_kcals_scp
-                        / 100
-                        * self.COUNTRY_MONTHLY_NEEDS
-                        * (1 - self.SCP_WASTE_DISTRIBUTION / 100)
-                    )
-
-            elif SCENARIO == "247_construction_scp_USA":
-                assert (
-                    constants_for_params["COUNTRY_CODE"] == "USA"
-                ), "ERROR: 247 construction only supported for the US, not other countries."
-
-                # these values are before waste
-                country_values_percent_fed_just_scp = (
-                    [0.0] * 8
-                    + [9.2] * 5
-                    + [18.4] * 1
-                    + [27.6] * 6
-                    + [36.7] * 1
-                    + [45.9] * 5
-                    + [55.1] * 2
-                    + [64.3] * 5
-                    + [73.5] * 1
-                    + [82.7] * 6
-                    + [91.9] * 1
-                    + [101.0] * 5
-                    + [110.2] * 7
-                    + [128.6] * 200
+            global_values_percent_fed_just_scp = np.array(
+                industrial_delay_months
+                + [0] * 12
+                + [2] * 5
+                + [4]
+                + [7] * 5
+                + [9]
+                + [11] * 6
+                + [13]
+                + [15] * 210
+            )
+            METHANE_SCP_PERCENT_KCALS = list(
+                np.array(industrial_delay_months + global_values_percent_fed_just_scp)
+                / (1 - 0.12)
+                * self.INDUSTRIAL_FOODS_SLOPE_MULTIPLIER
+            )
+            production_kcals_scp_per_month_long = []
+            for global_percent_kcals_scp in METHANE_SCP_PERCENT_KCALS:
+                production_kcals_scp_per_month_long.append(
+                    global_percent_kcals_scp
+                    / 100
+                    * self.GLOBAL_MONTHLY_NEEDS
+                    * constants_for_params["SCP_GLOBAL_PRODUCTION_FRACTION"]
+                    * (1 - self.SCP_WASTE_DISTRIBUTION / 100)
                 )
 
-                METHANE_SCP_PERCENT_KCALS = list(
-                    np.array(
-                        industrial_delay_months + country_values_percent_fed_just_scp
-                    )
-                    * self.INDUSTRIAL_FOODS_SLOPE_MULTIPLIER
-                )
-                production_kcals_scp_per_month_long = []
-                for country_percent_kcals_scp in METHANE_SCP_PERCENT_KCALS:
-                    production_kcals_scp_per_month_long.append(
-                        country_percent_kcals_scp
-                        / 100
-                        * self.COUNTRY_MONTHLY_NEEDS
-                        * (1 - self.SCP_WASTE_DISTRIBUTION / 100)
-                    )
-
-            else:
-                print("ERROR! Scenario for scp is invalid")
-                sys.exit()
             self.production_kcals_scp_per_month = production_kcals_scp_per_month_long[
                 0 : self.NMONTHS
             ]

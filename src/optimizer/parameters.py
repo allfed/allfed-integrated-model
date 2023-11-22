@@ -18,7 +18,7 @@ from src.food_system.methane_scp import MethaneSCP
 from src.food_system.seaweed import Seaweed
 from src.food_system.feed_and_biofuels import FeedAndBiofuels
 from src.food_system.food import Food
-from src.food_system.animal_populations import CalculateFeedAndMeat
+from src.food_system.animal_populations import AnimalPopulation, CalculateFeedAndMeat
 
 
 class Parameters:
@@ -139,6 +139,7 @@ class Parameters:
             time_consts,
             feed_and_biofuels_class,
             max_feed_that_could_be_used,
+            meat_dictionary,
         ) = self.init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels(
             constants_out,
             constants_inputs,
@@ -269,6 +270,7 @@ class Parameters:
         # Initialize variables using the init_meat_and_dairy_and_feed_from_breeding function
         (
             zero_feed_used,
+            animal_meat_dictionary
             time_consts,
             constants_out,
         ) = self.init_meat_and_dairy_and_feed_from_breeding(
@@ -322,6 +324,7 @@ class Parameters:
             time_consts,
             feed_and_biofuels_class,
             max_feed_that_could_be_used,
+            meat_dictionary,
         )
 
     def assert_constants_not_nan(self, single_valued_constants, time_consts):
@@ -809,12 +812,64 @@ class Parameters:
             feed_meat_object.feed_used
         )
 
+        # only used for plotting
+        animal_meat_dictionary = self.get_animal_meat_dictionary(
+            feed_meat_object, meat_and_dairy
+        )
+
         return (
             feed_used_with_nutrients,
+            animal_meat_dictionary,
             time_consts,
             constants_out,
         )
 
+    def get_animal_meat_dictionary(self, feed_meat_object, meat_and_dairy):
+        # get the total slaughter by animal size from the all_animals list of animal objects
+        animal_meat_dictionary = {}
+        for animal in feed_meat_object.all_animals:
+            if animal.animal_size == "small":
+                this_animal_meat = (
+                    meat_and_dairy.get_slaughter_monthly_after_distribution_waste(
+                        small_animals_culled=np.array(animal.slaughter),
+                        medium_animals_culled=np.zeros_like(animal.slaughter),
+                        large_animals_culled=np.zeros_like(animal.slaughter),
+                    )
+                )
+            elif animal.animal_size == "medium":
+                this_animal_meat = (
+                    meat_and_dairy.get_slaughter_monthly_after_distribution_waste(
+                        small_animals_culled=np.zeros_like(animal.slaughter),
+                        medium_animals_culled=np.array(animal.slaughter),
+                        large_animals_culled=np.zeros_like(animal.slaughter),
+                    )
+                )
+            elif animal.animal_size == "large":
+                this_animal_meat = (
+                    meat_and_dairy.get_slaughter_monthly_after_distribution_waste(
+                        small_animals_culled=np.zeros_like(animal.slaughter),
+                        medium_animals_culled=np.zeros_like(animal.slaughter),
+                        large_animals_culled=np.array(animal.slaughter),
+                    )
+                )
+
+            animal_meat_dictionary[
+                animal.animal_type
+            ] = this_animal_meat.in_units_kcals_equivalent().kcals
+            animal_meat_dictionary[
+                animal.animal_type + "_population"
+            ] = animal.population
+
+        return animal_meat_dictionary
+
+    # THIS MEAT CONSUMPTION PART IS KINDA TRICKY CONCEPTUALLY:
+    #   I set two constraints on the meat consumed in the optimizer:
+    #     1. culled meat consumed in sum total cannot be greater than the sum total of meat produced
+    #     2. culled meat consumed each month cannot be greater than the sum of total meat produced in prior months
+    # This allows us to store meat for later consumption, but we can never eat more meat in any month than has
+    # been produced thus far.
+
+    # To implement the above, first we take the sum total and set it to "culled meat", a single food constant
     def calculate_culled_meat_from_feed_results(
         self, constants_out, time_consts, meat_and_dairy, feed_meat_object
     ):
@@ -841,28 +896,31 @@ class Parameters:
 
         meat_and_dairy.calculate_meat_nutrition()
 
-        time_consts["max_culled_kcals"] = meat_and_dairy.get_max_slaughter_monthly(
-            small_animals_culled=animals_killed_for_meat_small,
-            medium_animals_culled=animals_killed_for_meat_medium,
-            large_animals_culled=animals_killed_for_meat_large,
+        # Second we simply determine the meat slaughtered in each month
+        each_month_meat_slaughtered = (
+            meat_and_dairy.get_slaughter_monthly_after_distribution_waste(
+                small_animals_culled=animals_killed_for_meat_small,
+                medium_animals_culled=animals_killed_for_meat_medium,
+                large_animals_culled=animals_killed_for_meat_large,
+            )
         )
+
+        # Finally we take the running sum of meat slaughtered over time and set it to the monthly time constant
+        # called "max_consumed_culled_kcals"
+        time_consts[
+            "max_consumed_culled_kcals_each_month"
+        ] = each_month_meat_slaughtered.get_running_total_nutrients_sum().kcals
+
 
         # Calculate the amount of culled meat and update constants_out dictionary
         (
-            constants_out["culled_meat"],
+            constants_out["culled_meat_summed_consumption"],
             constants_out["CULLED_MEAT_FRACTION_FAT"],
             constants_out["CULLED_MEAT_FRACTION_PROTEIN"],
         ) = meat_and_dairy.calculate_culled_meat(
             np.sum(animals_killed_for_meat_small),
             np.sum(animals_killed_for_meat_medium),
             np.sum(animals_killed_for_meat_large),
-        )
-
-        # Calculate the maximum amount of culled meat in kcals and update time_consts dictionary
-        time_consts["max_culled_kcals"] = meat_and_dairy.get_max_slaughter_monthly(
-            animals_killed_for_meat_small,
-            animals_killed_for_meat_medium,
-            animals_killed_for_meat_large,
         )
 
         return constants_out, time_consts

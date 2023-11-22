@@ -50,6 +50,8 @@ def run_scenarios_from_yaml(config_data, show_country_figures, show_map_figures)
     """
 
     countries = config_data["settings"]["countries"]
+    nmonths = config_data["settings"]["NMONTHS"]
+
     if isinstance(countries, str):  # In case only one country is provided
         countries = [countries]
 

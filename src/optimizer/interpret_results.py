@@ -19,6 +19,7 @@ from datetime import date
 
 import git
 from pathlib import Path
+import sys
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -37,6 +38,18 @@ class Interpreter:
     def set_feed(self, feed_and_biofuels):
         self.show_feed_biofuels = True
         self.feed_and_biofuels = feed_and_biofuels
+
+    def set_meat_dictionary(self, meat_dictionary):
+        self.meat_dictionary = {}
+        self.animal_population_dictionary = {}
+        # Populate your meat production data here, similar to ykcals
+        for animal_label, value in meat_dictionary.items():
+            if max(value) == 0:
+                continue  # don't show zero slaughter or population on the plots
+            if "_population" in animal_label:
+                self.animal_population_dictionary[animal_label] = value
+            else:
+                self.meat_dictionary[animal_label] = value
 
     def interpret_results(self, extracted_results):
         """
@@ -611,6 +624,42 @@ class Interpreter:
         )
 
         return excess_per_month
+
+    def get_month_after_which_is_all_zero(self, variables, nmonths):
+        first_month = None  # This will hold the earliest month where all subsequent months are zero
+
+        def check_zeros(array):
+            # Find the first index where all subsequent values are zero
+            for idx in range(len(array)):
+                if np.all(array[idx:] == 0):
+                    return idx
+            return len(array)  # Return the length of the array if no zeros found
+
+        # Check if variables is a dict or list and iterate accordingly
+        iter_vars = variables.values() if isinstance(variables, dict) else variables
+
+        for value in iter_vars:
+            if isinstance(value, Food):
+                # Check all three arrays in the Food object
+                months = [
+                    check_zeros(value.kcals),
+                    check_zeros(value.fat),
+                    check_zeros(value.protein),
+                ]
+                min_month = min(months)  # Get the earliest month for this Food object
+            elif isinstance(value, np.ndarray):
+                # Assume it's a numpy array
+                min_month = check_zeros(value)
+            else:
+                print("ERROR! Expected ndarray for this plotting feature.")
+                sys.exit()
+            # Update first_month if this is the latest month found so far
+            if first_month is None or min_month > first_month:
+                first_month = min_month
+        if first_month == nmonths:
+            return first_month
+        else:
+            return first_month + 1
 
     def set_feed_and_biofuels(
         self,

@@ -45,10 +45,12 @@ class ScenarioRunner:
             single_valued_constants,
             time_consts,
             feed_and_biofuels,
+            meat_dictionary,
         ) = constants_loader.compute_parameters_first_round(
             constants_for_params, scenarios_loader
         )
         interpreter.set_feed(feed_and_biofuels)
+        interpreter.set_meat_dictionary(meat_dictionary)
 
         # actually make PuLP optimize effective people fed based on all the constants
         # we've determined
@@ -184,6 +186,8 @@ class ScenarioRunner:
                 scenario_is_correct
             ), "You must specify 'scale' key as global,or country"
 
+        constants_for_params["NMONTHS"] = scenario_option["NMONTHS"]
+
         # EXCESS
         constants_for_params = scenario_loader.set_excess_to_zero(constants_for_params)
 
@@ -233,6 +237,11 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.set_immediate_shutoff(
                 constants_for_params
             )
+        elif scenario_option["shutoff"] == "one_month_delayed_shutoff":
+            constants_for_params = scenario_loader.set_one_month_delayed_shutoff(
+                constants_for_params
+            )
+
         elif scenario_option["shutoff"] == "short_delayed_shutoff":
             constants_for_params = scenario_loader.set_short_delayed_shutoff(
                 constants_for_params
@@ -248,7 +257,7 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert scenario_is_correct, """You must specify 'shutoff' key as immediate,short_delayed_shutoff,
+            assert scenario_is_correct, """You must specify 'shutoff' key as immediate,short_delayed_shutoff,one_month_delayed_shutoff,
             long_delayed_shutoff, or continued"""
 
         # WASTE
@@ -304,6 +313,27 @@ class ScenarioRunner:
             assert (
                 scenario_is_correct
             ), "You must specify 'nutrition' key as baseline, or catastrophe"
+
+        # INTAKE CONSTRAINTS
+
+        if scenario_option["intake_constraints"] == "enabled":
+            constants_for_params = scenario_loader.set_intake_constraints_to_enabled(
+                constants_for_params
+            )
+        elif scenario_option["intake_constraints"] == "disabled_for_humans":
+            constants_for_params = (
+                scenario_loader.set_intake_constraints_to_disabled_for_humans(
+                    constants_for_params
+                )
+            )
+        else:
+            scenario_is_correct = False
+
+            assert (
+                scenario_is_correct
+            ), "You must specify 'intake_constraints' key as enabled, or disabled_for_humans"
+
+        # SEASONALITY
 
         # SEASONALITY
 

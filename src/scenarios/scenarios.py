@@ -15,6 +15,7 @@ class Scenarios:
         self.NONHUMAN_CONSUMPTION_SET = False
         self.EXCESS_SET = False
         self.WASTE_SET = False
+        self.INTAKE_CONSTRAINTS_SET = False
         self.NUTRITION_PROFILE_SET = False
         self.STORED_FOOD_SET = False
         self.STORED_FOOD_END_SIM_SET = False
@@ -40,6 +41,7 @@ class Scenarios:
         assert self.NONHUMAN_CONSUMPTION_SET
         assert self.EXCESS_SET
         assert self.WASTE_SET
+        assert self.INTAKE_CONSTRAINTS_SET
         assert self.NUTRITION_PROFILE_SET
         assert self.STORED_FOOD_SET
         assert self.STORED_FOOD_END_SIM_SET
@@ -62,7 +64,6 @@ class Scenarios:
         constants_for_params = {}
 
         # the following are used for all scenarios
-        constants_for_params["NMONTHS"] = 120
         constants_for_params["GLOBAL_POP"] = 7723713182  # (about 7.8 billion)
 
         # not used unless smoothing true
@@ -72,7 +73,6 @@ class Scenarios:
 
         constants_for_params["ADD_MILK"] = True
         constants_for_params["ADD_FISH"] = True
-        constants_for_params["ADD_OUTDOOR_GROWING"] = True
         constants_for_params["ADD_STORED_FOOD"] = True
         constants_for_params["ADD_MAINTAINED_MEAT"] = True
 
@@ -529,6 +529,15 @@ class Scenarios:
         self.NONHUMAN_CONSUMPTION_SET = True
         return constants_for_params
 
+    def set_one_month_delayed_shutoff(self, constants_for_params):
+        self.scenario_description += "\n1month feed, 1month biofuel"
+        assert not self.NONHUMAN_CONSUMPTION_SET
+        constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 1
+        constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 1
+
+        self.NONHUMAN_CONSUMPTION_SET = True
+        return constants_for_params
+
     def set_short_delayed_shutoff(self, constants_for_params):
         self.scenario_description += "\n2month feed, 1month biofuel"
         assert not self.NONHUMAN_CONSUMPTION_SET
@@ -815,6 +824,47 @@ class Scenarios:
         constants_for_params["NUTRITION"]["PROTEIN_DAILY"] = 51
 
         self.NUTRITION_PROFILE_SET = True
+        return constants_for_params
+
+    # INTAKE CONSTRAINTS
+
+    def set_intake_constraints_to_enabled(self, constants_for_params):
+        self.scenario_description += "\nbaseline nutrition"
+        assert not self.INTAKE_CONSTRAINTS_SET
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 10
+        constants_for_params["MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_CS"] = 0.4
+        constants_for_params["MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP"] = 0.5
+
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 10
+        constants_for_params["MAX_FRACTION_FEED_CONSUMED_AS_CELLULOSIC_SUGAR"] = 0.05
+        constants_for_params["MAX_FRACTION_FEED_CONSUMED_AS_SCP"] = 0.43
+
+        constants_for_params[
+            "MAX_FRACTION_BIOFUEL_CONSUMED_AS_CELLULOSIC_SUGAR"
+        ] = 1  # All of biofuel can be CS
+        constants_for_params["MAX_FRACTION_BIOFUEL_CONSUMED_AS_SCP"] = 1
+        constants_for_params["MAX_FRACTION_BIOFUEL_CONSUMED_AS_SEAWEED"] = 0.1
+        self.INTAKE_CONSTRAINTS_SET = True
+        return constants_for_params
+
+    def set_intake_constraints_to_disabled_for_humans(self, constants_for_params):
+        self.scenario_description += "\nminimum sufficient nutrition"
+        assert not self.INTAKE_CONSTRAINTS_SET
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 100
+        constants_for_params["MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_CS"] = 1
+        constants_for_params["MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP"] = 1
+
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 10
+        constants_for_params["MAX_FRACTION_FEED_CONSUMED_AS_CELLULOSIC_SUGAR"] = 0.05
+        constants_for_params["MAX_FRACTION_FEED_CONSUMED_AS_SCP"] = 0.43
+
+        constants_for_params[
+            "MAX_FRACTION_BIOFUEL_CONSUMED_AS_CELLULOSIC_SUGAR"
+        ] = 1  # All of biofuel can be CS
+        constants_for_params["MAX_FRACTION_BIOFUEL_CONSUMED_AS_SCP"] = 1
+        constants_for_params["MAX_FRACTION_BIOFUEL_CONSUMED_AS_SEAWEED"] = 0.1
+
+        self.INTAKE_CONSTRAINTS_SET = True
         return constants_for_params
 
     # STORED FOOD
@@ -1222,6 +1272,7 @@ class Scenarios:
     def set_disruption_to_crops_to_zero(self, constants_for_params):
         self.scenario_description += "\nno crop disruption"
         assert not self.DISRUPTION_SET
+        constants_for_params["ADD_OUTDOOR_GROWING"] = True
 
         for i in range(1, int(constants_for_params["NMONTHS"] / 12 + 1)):
             constants_for_params["RATIO_CROPS_YEAR" + str(i)] = 1
@@ -1233,6 +1284,7 @@ class Scenarios:
         assert self.IS_GLOBAL_ANALYSIS
         self.scenario_description += "\nnuclear winter crops"
         assert not self.DISRUPTION_SET
+        constants_for_params["ADD_OUTDOOR_GROWING"] = True
 
         constants_for_params["RATIO_CROPS_YEAR1"] = 1 - 0.53
         constants_for_params["RATIO_CROPS_YEAR2"] = 1 - 0.82
@@ -1254,6 +1306,7 @@ class Scenarios:
     ):
         assert not self.IS_GLOBAL_ANALYSIS
         assert not self.DISRUPTION_SET
+        constants_for_params["ADD_OUTDOOR_GROWING"] = True
 
         self.scenario_description += "\nnuclear winter crops"
 
@@ -1296,6 +1349,7 @@ class Scenarios:
 
     def set_zero_crops(self, constants_for_params):
         assert not self.DISRUPTION_SET
+        constants_for_params["ADD_OUTDOOR_GROWING"] = False
 
         self.scenario_description += "\ninstant crop failure"
 

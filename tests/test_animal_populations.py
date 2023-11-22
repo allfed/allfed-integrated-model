@@ -70,24 +70,37 @@ class TestCountryData:
     # Tests that livestock unit factors can be set with valid dataframes
     # Tests that livestock unit factors can be set with valid dataframes
     def test_valid_livestock_unit_factors(self):
-        df_country_info = pd.DataFrame({"alpha3": ["CAN"], "FAO-region-EK": ["North America"]})
+        df_country_info = pd.DataFrame(
+            {"alpha3": ["CAN"], "FAO-region-EK": ["North America"]}
+        )
         df_country_info.set_index("alpha3", inplace=True)
         df_regional_conversion_factors = pd.DataFrame(
-            {"North America": {"Cattle": 1.23, "Sheep": 0.45}, "Other": {"Cattle": 1.0, "Sheep": 1.0}}
+            {
+                "North America": {"Cattle": 1.23, "Sheep": 0.45},
+                "Other": {"Cattle": 1.0, "Sheep": 1.0},
+            }
         )
         country_data = CountryData("CAN")
-        country_data.set_livestock_unit_factors(df_country_info, df_regional_conversion_factors)
+        country_data.set_livestock_unit_factors(
+            df_country_info, df_regional_conversion_factors
+        )
         assert country_data.EK_region == "North America"
         assert country_data.LSU_conversion_factors == {"Cattle": 1.23, "Sheep": 0.45}
 
     # Tests that livestock unit factors cannot be set with invalid dataframes
     # Tests that livestock unit factors cannot be set with invalid dataframes
     def test_invalid_livestock_unit_factors(self):
-        df_country_info = pd.DataFrame({"country": ["Canada"], "FAO-region-EK": ["North America"]}).set_index("country")
-        df_regional_conversion_factors = pd.DataFrame({"North America": {"Cattle": 1.23, "Sheep": "invalid"}})
+        df_country_info = pd.DataFrame(
+            {"country": ["Canada"], "FAO-region-EK": ["North America"]}
+        ).set_index("country")
+        df_regional_conversion_factors = pd.DataFrame(
+            {"North America": {"Cattle": 1.23, "Sheep": "invalid"}}
+        )
         country_data = CountryData("Canada")
         with pytest.raises(ValueError):
-            country_data.set_livestock_unit_factors(df_country_info, df_regional_conversion_factors)
+            country_data.set_livestock_unit_factors(
+                df_country_info, df_regional_conversion_factors
+            )
 
     # Tests that homekill hours can be calculated with valid input data
     def test_valid_homekill_hours(self):
@@ -128,7 +141,9 @@ class TestCountryData:
         animal2 = AnimalSpecies("chicken", "chicken")
         animal3 = AnimalSpecies("milk_cattle", "cattle")
         animal1.update_attributes(animal_slaughter_hours=8, baseline_slaughter=100)
-        animal2.update_attributes(animal_slaughter_hours=0.1, baseline_slaughter=10000000)
+        animal2.update_attributes(
+            animal_slaughter_hours=0.1, baseline_slaughter=10000000
+        )
         animal3.update_attributes(animal_slaughter_hours=8, baseline_slaughter=10000)
 
         all_animals = [animal1, animal2, animal3]
@@ -142,17 +157,27 @@ class TestCountryData:
     # Tests that the set_livestock_unit_factors function handles missing data in the country info dataframe correctly
     def test_missing_data_handling(self):
         # Create a mock dataframe with missing data
-        df_country_info = pd.DataFrame({"country_name": ["ARG", "AUS"], "FAO-region-EK": ["Region A", None]})
+        df_country_info = pd.DataFrame(
+            {"country_name": ["ARG", "AUS"], "FAO-region-EK": ["Region A", None]}
+        )
         df_regional_conversion_factors = pd.DataFrame(
-            {"Region A": {"Animal A": 1.0, "Animal B": 2.0}, "Region B": {"Animal A": 3.0, "Animal B": 4.0}}
+            {
+                "Region A": {"Animal A": 1.0, "Animal B": 2.0},
+                "Region B": {"Animal A": 3.0, "Animal B": 4.0},
+            }
         )
 
         # Create CountryData object and call set_livestock_unit_factors with a country name of exactly 3 letters
         country_data = CountryData("USA")
         try:
-            country_data.set_livestock_unit_factors(df_country_info, df_regional_conversion_factors)
+            country_data.set_livestock_unit_factors(
+                df_country_info, df_regional_conversion_factors
+            )
         except ValueError as e:
-            assert str(e) == "Region not found in the regional conversion factors dataframe"
+            assert (
+                str(e)
+                == "Region not found in the regional conversion factors dataframe"
+            )
         else:
             raise AssertionError("Expected ValueError")
 
@@ -315,7 +340,9 @@ class TestAnimalSpecies:
 
     # Tests that an error is raised when trying to set slaughter attributes
     # with a pregnant animal slaughter fraction greater than 1
-    def test_set_slaughter_attributes_pregnant_animal_slaughter_fraction_greater_than_1(self):
+    def test_set_slaughter_attributes_pregnant_animal_slaughter_fraction_greater_than_1(
+        self,
+    ):
         animal = AnimalSpecies("type", "species")
         animal.set_animal_attributes(100, 50, "function", 1, "type", "size", 0.5)
         with pytest.raises(ValueError):
@@ -366,14 +393,18 @@ class TestAnimalSpecies:
         with pytest.raises(ValueError):
             animal = AnimalSpecies("cow", "dairy")
             animal.set_animal_attributes(100, 10, "milk", 1, "ruminant", 500, 0.5)
-            animal.set_species_slaughter_attributes(9, 0.1, 1, 8, -1, 0.1, 0.1, 0.1, 0.1, 0)
+            animal.set_species_slaughter_attributes(
+                9, 0.1, 1, 8, -1, 0.1, 0.1, 0.1, 0.1, 0
+            )
 
     # Tests that a ValueError is raised when animals_per_pregnancy is less than 0
     def test_negative_animals_per_pregnancy(self):
         with pytest.raises(ValueError):
             animal = AnimalSpecies("cow", "dairy")
             animal.set_animal_attributes(100, 10, "milk", 1, "ruminant", 500, 0.5)
-            animal.set_species_slaughter_attributes(9, 0.1, -1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0)
+            animal.set_species_slaughter_attributes(
+                9, 0.1, -1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0
+            )
 
     # Tests that a ValueError is raised when setting slaughter attributes with
     # other_animal_death_rate_annual less than 0
@@ -446,12 +477,15 @@ class TestAnimalPopulation:
         animal.pregnant_animals_birthing_this_month = [10]  # Initialize the attribute
         animal.pregnant_animals_total = [100]  # Initialize the attribute
         animal.reduction_in_animal_breeding = 0.5  # Initialize the attribute
-        new_births, new_export_births = AnimalPopulation.calculate_additive_births(animal, 7)
+        new_births, new_export_births = AnimalPopulation.calculate_additive_births(
+            animal, 7
+        )
         assert new_births == 5
         assert new_export_births == 5
 
     # Tests that calculate_additive_births returns expected values
     def test_calculate_additive_births_after_breeding_change(self):
+        # TODO consider implications of halving dairy cow breeding
         animal = AnimalSpecies("animal_type", "animal_species")
         animal.gestation = 9
         animal.animals_per_pregnancy = 1
@@ -459,7 +493,9 @@ class TestAnimalPopulation:
         animal.pregnant_animals_birthing_this_month = [10]  # Initialize the attribute
         animal.pregnant_animals_total = [100]  # Initialize the attribute
         animal.reduction_in_animal_breeding = 0.5  # Initialize the attribute
-        new_births, new_export_births = AnimalPopulation.calculate_additive_births(animal, 10)
+        new_births, new_export_births = AnimalPopulation.calculate_additive_births(
+            animal, 9
+        )
         assert new_births == 2.5
         assert new_export_births == 2.5
 
@@ -482,7 +518,9 @@ class TestCalculateChangeInPopulation:
         animal.slaughtered_pregnant_animals = [3]
         animal.pregnant_animals_birthing_this_month = [10]  # Initialize the attribute
         animal.pregnant_animals_total = [100]  # Initialize the attribute
-        animal.other_death_causes_other_than_starving = [100]  # Initialize the attribute
+        animal.other_death_causes_other_than_starving = [
+            100
+        ]  # Initialize the attribute
         animal.other_animal_death_rate_monthly = 0.05
         animal.pregnant_animal_slaughter_fraction = 0.2
         animal.current_population = 9000
@@ -507,7 +545,9 @@ class TestCalculateChangeInPopulation:
         animal.slaughtered_pregnant_animals = [3]
         animal.pregnant_animals_birthing_this_month = [10]  # Initialize the attribute
         animal.pregnant_animals_total = [100]  # Initialize the attribute
-        animal.other_death_causes_other_than_starving = [100]  # Initialize the attribute
+        animal.other_death_causes_other_than_starving = [
+            100
+        ]  # Initialize the attribute
         animal.other_animal_death_rate_monthly = 0.05
         animal.pregnant_animal_slaughter_fraction = 0.2
         animal.current_population = 9000
@@ -527,7 +567,9 @@ class TestCalculateChangeInPopulation:
         animal.retiring_milk_animals = [0]
         animal.target_population_head = 0
         animal.slaughter = [0]
-        animal.animal_slaughter_hours = 1  # Set non-zero value for animal_slaughter_hours
+        animal.animal_slaughter_hours = (
+            1  # Set non-zero value for animal_slaughter_hours
+        )
         animal.gestation = 1  # Set non-zero value for gestation
         animal.pregnant_animals_total = [0]
         animal.slaughtered_pregnant_animals = [0]
@@ -568,7 +610,9 @@ class TestCalculateChangeInPopulation:
         animal.slaughtered_pregnant_animals = [3]
         animal.pregnant_animals_birthing_this_month = [10]  # Initialize the attribute
         animal.pregnant_animals_total = [100]  # Initialize the attribute
-        animal.other_death_causes_other_than_starving = [100]  # Initialize the attribute
+        animal.other_death_causes_other_than_starving = [
+            100
+        ]  # Initialize the attribute
         animal.other_animal_death_rate_monthly = 0.05
         animal.pregnant_animal_slaughter_fraction = 0.2
         animal.current_population = 9000
@@ -581,7 +625,9 @@ class TestCalculateChangeInPopulation:
         animal = AnimalSpecies("type", "species")
         animal.gestation = 9
         animal.pregnant_animals_total = [20]
-        new_pregnant_animals_birthing = AnimalPopulation.calculate_pregnant_animals_birthing(animal, 20)
+        new_pregnant_animals_birthing = (
+            AnimalPopulation.calculate_pregnant_animals_birthing(animal, 20)
+        )
         assert new_pregnant_animals_birthing == 2.2222222222222223
 
     # Tests that calculate_pregnant_slaughter returns expected values
@@ -589,9 +635,10 @@ class TestCalculateChangeInPopulation:
         animal = AnimalSpecies("cow", "Holstein")
         animal.pregnant_animal_slaughter_fraction = 0.2
         animal.pregnant_animals_total = [30]
-        new_pregnant_animals_total, new_slaughtered_pregnant_animals = AnimalPopulation.calculate_pregnant_slaughter(
-            animal, 5
-        )
+        (
+            new_pregnant_animals_total,
+            new_slaughtered_pregnant_animals,
+        ) = AnimalPopulation.calculate_pregnant_slaughter(animal, 5)
         assert new_pregnant_animals_total == 25
 
     # Tests that calculate_animal_population returns expected values
@@ -604,9 +651,13 @@ class TestCalculateChangeInPopulation:
         animal.target_population_head = 150
         animal.other_animal_death_rate_monthly = 5
         animal.animal_slaughter_hours = 8
-        actual_slaughter_rate = AnimalPopulation.calculate_animal_population(animal, country, 10, 5, 10)
+        actual_slaughter_rate = AnimalPopulation.calculate_animal_population(
+            animal, country, 10, 5, 10
+        )
         assert actual_slaughter_rate == 10, "Expected slaughter rate to be 10"
-        assert country.spare_slaughter_hours == 0, "Expected spare slaughter hours to be 50"
+        assert (
+            country.spare_slaughter_hours == 0
+        ), "Expected spare slaughter hours to be 50"
         assert animal.current_population == 295, "Expected current population to be 95"
 
     def test_calculate_animal_population_milk(self):
@@ -622,7 +673,9 @@ class TestCalculateChangeInPopulation:
             animal, country, 10, 5, 10
         )  # ' numbers =  new_births_animals_month, new_other_animal_death, new_slaughter_rate,'
         assert actual_slaughter_rate == 10, "Expected slaughter rate to be 10"
-        assert country.spare_slaughter_hours == 0, "Expected spare slaughter hours to be 50"
+        assert (
+            country.spare_slaughter_hours == 0
+        ), "Expected spare slaughter hours to be 50"
         assert animal.current_population == 295, "Expected current population to be 95"
 
     def test_calculate_animal_population_under_target(self):
@@ -688,11 +741,15 @@ class TestCalculateChangeInPopulation:
         # animal.target_population_head = 500
         # animal.other_animal_death_rate_monthly = 5
         animal.animal_slaughter_hours = 8
-        new_slaughter_rate = AnimalPopulation.calculate_slaughter_rate(animal, country, 10, 5)
+        new_slaughter_rate = AnimalPopulation.calculate_slaughter_rate(
+            animal, country, 10, 5
+        )
         assert (
             new_slaughter_rate == 13
         ), "Expected slaughter rate to be 13 (10 baseline, plus 3 from spare laughter hours)"
-        assert country.spare_slaughter_hours == 0, "Expected spare slaughter hours to be 0"
+        assert (
+            country.spare_slaughter_hours == 0
+        ), "Expected spare slaughter hours to be 0"
 
     # Tests that calculate_final_population updates animal population correctly
     def test_calculate_final_population(self):
@@ -715,9 +772,15 @@ class TestCalculateChangeInPopulation:
         animal_object.homekill_healthy_this_month = [5]
         animal_object.population_starving_pre_slaughter = [100]
         # call function
-        result = AnimalPopulation.calculate_starving_pop_post_slaughter_healthy_homekill(animal_object)
+        result = (
+            AnimalPopulation.calculate_starving_pop_post_slaughter_healthy_homekill(
+                animal_object
+            )
+        )
         # assert expected result
-        assert result == 85  # = 100 pop before slaughter, - 10 slaughtered, - 5 homekill, = 85
+        assert (
+            result == 85
+        )  # = 100 pop before slaughter, - 10 slaughtered, - 5 homekill, = 85
 
     # Tests that calculate_starving_pop_post_slaughter_healthy_homekill returns the expected value
     def test_calculate_starving_pop_post_slaughter_healthy_homekill_no_starving(self):
@@ -730,9 +793,15 @@ class TestCalculateChangeInPopulation:
         animal_object.homekill_healthy_this_month = [5]
         animal_object.population_starving_pre_slaughter = [0]
         # call function
-        result = AnimalPopulation.calculate_starving_pop_post_slaughter_healthy_homekill(animal_object)
+        result = (
+            AnimalPopulation.calculate_starving_pop_post_slaughter_healthy_homekill(
+                animal_object
+            )
+        )
         # assert expected result
-        assert result == 0  # = 100 pop before slaughter, - 10 slaughtered, - 5 homekill, = 85
+        assert (
+            result == 0
+        )  # = 100 pop before slaughter, - 10 slaughtered, - 5 homekill, = 85
 
     # insert calculate_starving_pop_post_all_slaughter_homekill
     # Returns the correct value when
@@ -808,14 +877,21 @@ class TestCalculateChangeInPopulation:
         ), "Expected homekill_healthy_this_month to be 50 (100 animals * 50% homekill, lots of hours available)"
 
     # Tests that calculate_starving_animals_after_feed updates population_starving_pre_slaughter correctly
-    def test_calculate_starving_animals_after_feed_updates_population_starving_pre_slaughter_correctly(self):
+    def test_calculate_starving_animals_after_feed_updates_population_starving_pre_slaughter_correctly(
+        self,
+    ):
         animal_object = AnimalSpecies("type1", "species1")
         animal_object.current_population = 100
         # animal_object.population_fed = 100 #
-        animal_object.population_starving_pre_slaughter = []  # will be appended to in test
+        animal_object.population_starving_pre_slaughter = (
+            []
+        )  # will be appended to in test
         animal_object.livestock_unit = 1  # required for feed_animals function
         animal_object.LSU_factor = 1  # required for feed_animals function
-        animal_object.digestion_efficiency = {"grass": 0.3, "feed": 0.3}  # required for feed_animals function
+        animal_object.digestion_efficiency = {
+            "grass": 0.3,
+            "feed": 0.3,
+        }  # required for feed_animals function
         # feed params
         available_feed = Debugging.available_feed_function(100)
         available_grass = Debugging.available_grass_function(100)
@@ -877,8 +953,11 @@ class TestCalculateChangeInPopulation:
         animal_object.population_fed = 80
 
         # call function
-        starving_other_death_head = AnimalPopulation.calculate_starving_other_death_head(
-            animal_object, animal_object.current_population - animal_object.population_fed
+        starving_other_death_head = (
+            AnimalPopulation.calculate_starving_other_death_head(
+                animal_object,
+                animal_object.current_population - animal_object.population_fed,
+            )
         )
         # assert expected result
         assert (
@@ -902,7 +981,9 @@ class TestCalculateChangeInPopulation:
         population_starving_post_slaughter_and_healthy_homekill = 30
         # calculate other death homekill head
         AnimalPopulation.calculate_starving_homekill_head(
-            animal_object, country, population_starving_post_slaughter_and_healthy_homekill
+            animal_object,
+            country,
+            population_starving_post_slaughter_and_healthy_homekill,
         )
         # check that the value is as expected
         assert animal_object.homekill_starving_this_month[-1] == 10
@@ -921,10 +1002,15 @@ class TestCalculateChangeInPopulation:
         animal_object = AnimalSpecies("type1", "species1")
         animal_object.current_population = 1000
         # animal_object.population_fed = 100 #
-        animal_object.population_starving_pre_slaughter = []  # will be appended to in test
+        animal_object.population_starving_pre_slaughter = (
+            []
+        )  # will be appended to in test
         animal_object.livestock_unit = 1  # required for feed_animals function
         animal_object.LSU_factor = 1  # required for feed_animals function
-        animal_object.digestion_efficiency = {"grass": 0.3, "feed": 0.3}  # required for feed_animals function
+        animal_object.digestion_efficiency = {
+            "grass": 0.3,
+            "feed": 0.3,
+        }  # required for feed_animals function
         # feed params
         available_feed = Debugging.available_feed_function(100)
         available_grass = Debugging.available_grass_function(100)
@@ -947,7 +1033,10 @@ class TestCalculateChangeInPopulation:
 
         # calculate animal feed runminants grass only
         (available_feed, available_grass) = AnimalPopulation.feed_animals(
-            [animal_object], [animal_object], feed_available_this_month, grass_available_this_month
+            [animal_object],
+            [animal_object],
+            feed_available_this_month,
+            grass_available_this_month,
         )
         assert available_grass.kcals == actual_value, "Unexpected available grass kcals"
 
@@ -959,7 +1048,10 @@ class TestCalculateChangeInPopulation:
 
         # calculate animal feed runminants grass only
         (available_feed, available_grass) = AnimalPopulation.feed_animals(
-            [animal_object], [animal_object], feed_available_this_month, grass_available_this_month
+            [animal_object],
+            [animal_object],
+            feed_available_this_month,
+            grass_available_this_month,
         )
         assert (
             available_grass.kcals == 0
@@ -969,6 +1061,10 @@ class TestCalculateChangeInPopulation:
         ), "For mixture of grass and feed, expected available feed kcals to be > 1 after feeding"
 
         # assert availoble feed is food type
-        assert isinstance(available_feed, Food), "Expected available feed to be Food type"
+        assert isinstance(
+            available_feed, Food
+        ), "Expected available feed to be Food type"
         # assert available grass is food type
-        assert isinstance(available_grass, Food), "Expected available grass to be Food type"
+        assert isinstance(
+            available_grass, Food
+        ), "Expected available grass to be Food type"

@@ -2180,7 +2180,20 @@ class Food(UnitConversions):
 
         # Ensure both Food objects are in list format
         if not (food1.is_list_monthly() and food2.is_list_monthly()):
-            raise ValueError("Both Food objects should be in monthly list format.")
+            # Compute minimum for each nutrient
+            min_kcals = min(food1.kcals, food2.kcals)
+            min_fat = min(food1.fat, food2.fat)
+            min_protein = min(food1.protein, food2.protein)
+
+            # Return the new Food object with minimum nutrient values
+            return Food(
+                min_kcals,
+                min_fat,
+                min_protein,
+                food1.kcals_units,
+                food1.fat_units,
+                food1.protein_units,
+            )
 
         # Compute element-wise minimum for each nutrient
         min_kcals = np.minimum(food1.kcals, food2.kcals)

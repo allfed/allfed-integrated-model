@@ -177,12 +177,21 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             ):
                 Plotter.plot_feed(
                     interpreted_results,
-                    constants_for_params["NMONTHS"],
+                    "earliest_month_zero",
                     country_data["country"] + figure_save_postfix,
                     show_country_figures,
                     create_pptx_with_all_countries,
                     scenario_loader.scenario_description,
                 )
+                Plotter.plot_slaughter(
+                    interpreted_results,
+                    "earliest_month_zero",
+                    country_data["country"] + figure_save_postfix,
+                    show_country_figures,
+                    create_pptx_with_all_countries,
+                    scenario_loader.scenario_description,
+                )
+
             Plotter.plot_fig_1ab(
                 interpreted_results,
                 constants_for_params["NMONTHS"],
