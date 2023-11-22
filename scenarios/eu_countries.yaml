@@ -36,6 +36,8 @@ settings:
    - ESP
    - SWE
 
+  NMONTHS: 120
+
 simulations:
 
 # SET YOUR DESIRED SIMULATIONS BELOW
@@ -52,6 +54,7 @@ simulations:
     fish: baseline
     waste: baseline_in_country
     nutrition: baseline 
+    intake_constraints: enabled
     stored_food: baseline
     end_simulation_stocks_ratio: baseline
     shutoff: continued
@@ -71,6 +74,7 @@ simulations:
     fish: baseline
     waste: zero
     nutrition: baseline
+    intake_constraints: enabled
     stored_food: baseline
     end_simulation_stocks_ratio: baseline
     shutoff: immediate
@@ -92,6 +96,7 @@ simulations:
     fat: not_required
     protein: not_required
     nutrition: catastrophe
+    intake_constraints: enabled
     stored_food: baseline
     end_simulation_stocks_ratio: zero
     shutoff: continued
@@ -111,6 +116,7 @@ simulations:
     fat: not_required
     protein: not_required
     nutrition: catastrophe
+    intake_constraints: enabled
     stored_food: baseline
     end_simulation_stocks_ratio: zero
     shutoff: long_delayed_shutoff
@@ -130,6 +136,7 @@ simulations:
     fat: not_required
     protein: not_required
     nutrition: catastrophe
+    intake_constraints: enabled
     stored_food: baseline
     end_simulation_stocks_ratio: zero
     shutoff: long_delayed_shutoff
@@ -149,6 +156,7 @@ simulations:
     fat: not_required
     protein: not_required
     nutrition: catastrophe
+    intake_constraints: enabled
     stored_food: baseline
     end_simulation_stocks_ratio: zero
     shutoff: long_delayed_shutoff

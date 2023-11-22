@@ -877,38 +877,43 @@ class Optimizer:
         """
 
         # Dictionary containing nutrient ratios for different resources
-        nutrient_ratios = {
+        resilient_food_ratios = {
             "Seaweed": self.single_valued_constants["SEAWEED_KCALS"],
             "Methane_SCP": 1,
             "Cellulosic_Sugar": 1,
         }
 
         # Loop through each nutrient and add constraints based on its usage
-        for nutrient, nutrient_kcal_ratio in nutrient_ratios.items():
-            if self.single_valued_constants["ADD_" + nutrient.upper()]:
+        for food, nutrient_kcal_ratio in resilient_food_ratios.items():
+            if self.single_valued_constants["ADD_" + food.upper()]:
                 constraints_data = [
                     (
                         "HUMANS",
-                        "MAX_" + nutrient.upper() + "_HUMANS_CAN_CONSUME_MONTHLY",
+                        "MAX_" + food.upper() + "_HUMANS_CAN_CONSUME_MONTHLY",
                         "to_humans",
                     ),
                     (
                         "FEED",
-                        "MAX_" + nutrient.upper() + "_AS_PERCENT_KCALS_FEED",
+                        "MAX_" + food.upper() + "_AS_PERCENT_KCALS_FEED",
                         "feed",
                     ),
                     (
                         "BIOFUEL",
-                        "MAX_" + nutrient.upper() + "_AS_PERCENT_KCALS_BIOFUEL",
+                        "MAX_" + food.upper() + "_AS_PERCENT_KCALS_BIOFUEL",
                         "biofuel",
                     ),
                 ]
                 for constraint_type, limit_key, usage in constraints_data:
                     # Calculate the condition for the constraint
-                    condition = variables[nutrient.lower() + "_" + usage][
+                    # Note: this actually multiplies by consumption in the given month if we're talking about humans.
+                    # By doing this, we can limit based on the actual population level rather than the initial
+                    # population. The reason it works, is that kcals are in units "percent people fed".
+                    condition = variables[food.lower() + "_" + usage][
                         month
                     ] * nutrient_kcal_ratio <= (
-                        self.single_valued_constants[limit_key]
+                        variables["consumed_kcals"][month]
+                        * self.single_valued_constants[limit_key]
+                        / 100
                         if constraint_type == "HUMANS"
                         else self.single_valued_constants[limit_key]
                         / 100

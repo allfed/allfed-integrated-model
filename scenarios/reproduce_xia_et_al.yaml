@@ -64,6 +64,7 @@
 
 settings:
   countries: USA
+  NMONTHS: 120
 
 simulations:
   # USA Food Production Scenario following Xia et al Results
@@ -79,6 +80,7 @@ simulations:
     fish: nuclear_winter
     waste: tripled_prices_in_country
     nutrition: catastrophe
+    intake_constraints: enabled
     buffer: no_stored_between_years
     shutoff: long_delayed_shutoff
     cull: dont_eat_culled

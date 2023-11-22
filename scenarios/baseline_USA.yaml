@@ -1,5 +1,6 @@
 settings:
   countries: USA
+  NMONTHS: 120
 simulations:  
   # Baseline Model By Country (converted from the provided code)
   baseline_model_by_country:
@@ -12,6 +13,7 @@ simulations:
     fish: baseline
     waste: baseline_in_country
     nutrition: baseline
+    intake_constraints: enabled
     buffer: baseline
     shutoff: continued
     cull: do_eat_culled
