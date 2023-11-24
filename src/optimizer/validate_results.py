@@ -206,8 +206,6 @@ class Validator:
         interpreted_results.fish.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.culled_meat_plus_grazing_cattle_maintained.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.grazing_milk.make_sure_fat_protein_zero_if_kcals_is_zero()
-        interpreted_results.grain_fed_meat.make_sure_fat_protein_zero_if_kcals_is_zero()
-        interpreted_results.grain_fed_milk.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.immediate_outdoor_crops.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.new_stored_outdoor_crops.make_sure_fat_protein_zero_if_kcals_is_zero()
 
@@ -255,8 +253,6 @@ class Validator:
         interpreted_results.fish.make_sure_not_nan()
         interpreted_results.culled_meat_plus_grazing_cattle_maintained.make_sure_not_nan()
         interpreted_results.grazing_milk.make_sure_not_nan()
-        interpreted_results.grain_fed_meat.make_sure_not_nan()
-        interpreted_results.grain_fed_milk.make_sure_not_nan()
         interpreted_results.immediate_outdoor_crops.make_sure_not_nan()
         interpreted_results.new_stored_outdoor_crops.make_sure_not_nan()
 
@@ -291,11 +287,6 @@ class Validator:
         # Check that the grazing_milk variable is greater than or equal to zero
         assert interpreted_results.grazing_milk.all_greater_than_or_equal_to_zero()
 
-        # Check that the grain_fed_meat variable is greater than or equal to zero
-        assert interpreted_results.grain_fed_meat.all_greater_than_or_equal_to_zero()
-
-        # Check that the grain_fed_milk variable is greater than or equal to zero
-        assert interpreted_results.grain_fed_milk.all_greater_than_or_equal_to_zero()
         # Check that the immediate_outdoor_crops variable is greater than or equal to zero
 
         # interpreted_results.immediate_outdoor_crops.plot("imm crops")

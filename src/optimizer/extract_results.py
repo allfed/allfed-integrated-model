@@ -137,12 +137,6 @@ class Extractor:
             time_consts["cattle_grazing_maintained_kcals"],
             time_consts["cattle_grazing_maintained_fat"],
             time_consts["cattle_grazing_maintained_protein"],
-            time_consts["grain_fed_meat_kcals"],
-            time_consts["grain_fed_meat_fat"],
-            time_consts["grain_fed_meat_protein"],
-            time_consts["grain_fed_milk_kcals"],
-            time_consts["grain_fed_milk_fat"],
-            time_consts["grain_fed_milk_protein"],
         )
 
         return self
@@ -566,12 +560,6 @@ class Extractor:
         cattle_grazing_maintained_kcals,
         cattle_grazing_maintained_fat,
         cattle_grazing_maintained_protein,
-        grain_fed_meat_kcals,
-        grain_fed_meat_fat,
-        grain_fed_meat_protein,
-        grain_fed_milk_kcals,
-        grain_fed_milk_fat,
-        grain_fed_milk_protein,
     ):
         """
         Extracts the results of meat and milk production from various sources and calculates the amount of food
@@ -585,12 +573,6 @@ class Extractor:
             cattle_grazing_maintained_kcals (list): List of the amount of cattle grazing maintained in kcal per year
             cattle_grazing_maintained_fat (list): List of the amount of cattle grazing maintained in fat per year
             cattle_grazing_maintained_protein (list): List of the amount of cattle grazing maintained in protein per year
-            grain_fed_meat_kcals (float): Amount of grain-fed meat produced in kcal per year
-            grain_fed_meat_fat (float): Amount of grain-fed meat produced in fat per year
-            grain_fed_meat_protein (float): Amount of grain-fed meat produced in protein per year
-            grain_fed_milk_kcals (float): Amount of grain-fed milk produced in kcal per year
-            grain_fed_milk_fat (float): Amount of grain-fed milk produced in fat per year
-            grain_fed_milk_protein (float): Amount of grain-fed milk produced in protein per year
 
         Returns:
             None
@@ -606,12 +588,6 @@ class Extractor:
             >>>     cattle_grazing_maintained_kcals=[1000, 2000, 3000],
             >>>     cattle_grazing_maintained_fat=[100, 200, 300],
             >>>     cattle_grazing_maintained_protein=[50, 100, 150],
-            >>>     grain_fed_meat_kcals=1000,
-            >>>     grain_fed_meat_fat=100,
-            >>>     grain_fed_meat_protein=50,
-            >>>     grain_fed_milk_kcals=1000,
-            >>>     grain_fed_milk_fat=100,
-            >>>     grain_fed_milk_protein=50,
             >>> )
         """
 
@@ -693,56 +669,6 @@ class Extractor:
             kcals=billions_fed_grazing_milk_kcals,
             fat=billions_fed_grazing_milk_fat,
             protein=billions_fed_grazing_milk_protein,
-            kcals_units="billion people fed each month",
-            fat_units="billion people fed each month",
-            protein_units="billion people fed each month",
-        )
-
-        # Calculate the amount of grain-fed meat in billions of people fed each month
-        billions_fed_grain_fed_meat_kcals = (
-            grain_fed_meat_kcals / self.constants["KCALS_MONTHLY"]
-        )
-
-        # Calculate the amount of fat in grain-fed meat in billions of people fed each month
-        billions_fed_grain_fed_meat_fat = (
-            grain_fed_meat_fat / self.constants["FAT_MONTHLY"] / 1e9
-        )
-
-        # Calculate the amount of protein in grain-fed meat in billions of people fed each month
-        billions_fed_grain_fed_meat_protein = (
-            grain_fed_meat_protein / self.constants["PROTEIN_MONTHLY"] / 1e9
-        )
-
-        # Create a Food object for grain-fed meat
-        self.grain_fed_meat = Food(
-            kcals=billions_fed_grain_fed_meat_kcals,
-            fat=billions_fed_grain_fed_meat_fat,
-            protein=billions_fed_grain_fed_meat_protein,
-            kcals_units="billion people fed each month",
-            fat_units="billion people fed each month",
-            protein_units="billion people fed each month",
-        )
-
-        # Calculate the amount of grain-fed milk in billions of people fed each month
-        billions_fed_grain_fed_milk_kcals = (
-            grain_fed_milk_kcals / self.constants["KCALS_MONTHLY"]
-        )
-
-        # Calculate the amount of fat in grain-fed milk in billions of people fed each month
-        billions_fed_grain_fed_milk_fat = (
-            grain_fed_milk_fat / self.constants["FAT_MONTHLY"] / 1e9
-        )
-
-        # Calculate the amount of protein in grain-fed milk in billions of people fed each month
-        billions_fed_grain_fed_milk_protein = (
-            grain_fed_milk_protein / self.constants["PROTEIN_MONTHLY"] / 1e9
-        )
-
-        # Create a Food object for grain-fed milk
-        self.grain_fed_milk = Food(
-            kcals=billions_fed_grain_fed_milk_kcals,
-            fat=billions_fed_grain_fed_milk_fat,
-            protein=billions_fed_grain_fed_milk_protein,
             kcals_units="billion people fed each month",
             fat_units="billion people fed each month",
             protein_units="billion people fed each month",

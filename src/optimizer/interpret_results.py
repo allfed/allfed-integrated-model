@@ -115,12 +115,10 @@ class Interpreter:
                 "scp": np.array(self.scp_kcals_equivalent.kcals),
                 "greenhouse": np.array(self.greenhouse_kcals_equivalent.kcals),
                 "seaweed": np.array(self.seaweed_kcals_equivalent.kcals),
-                "milk": np.array(self.grazing_milk_kcals_equivalent.kcals)
-                + np.array(self.grain_fed_milk_kcals_equivalent.kcals),
+                "milk": np.array(self.grazing_milk_kcals_equivalent.kcals),
                 "meat": np.array(
                     self.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
-                )
-                + np.array(self.grain_fed_meat_kcals_equivalent.kcals),
+                ),
                 "immediate_outdoor_crops": np.array(
                     self.immediate_outdoor_crops_kcals_equivalent.kcals
                 ),
@@ -203,12 +201,6 @@ class Interpreter:
         # Assign the percentage of grazing milk fed to humans
         self.grazing_milk = extracted_results.grazing_milk.in_units_percent_fed()
 
-        # Assign the percentage of grain-fed meat fed to humans
-        self.grain_fed_meat = extracted_results.grain_fed_meat.in_units_percent_fed()
-
-        # Assign the percentage of grain-fed milk fed to humans
-        self.grain_fed_milk = extracted_results.grain_fed_milk.in_units_percent_fed()
-
         # Assign the percentage of immediate outdoor crops fed to humans
         self.immediate_outdoor_crops = (
             extracted_results.immediate_outdoor_crops.in_units_percent_fed()
@@ -263,16 +255,6 @@ class Interpreter:
         # Assign kcals equivalent of grazing milk to its attribute
         self.grazing_milk_kcals_equivalent = (
             extracted_results.grazing_milk.in_units_kcals_equivalent()
-        )
-
-        # Assign kcals equivalent of grain fed meat to its attribute
-        self.grain_fed_meat_kcals_equivalent = (
-            extracted_results.grain_fed_meat.in_units_kcals_equivalent()
-        )
-
-        # Assign kcals equivalent of grain fed milk to its attribute
-        self.grain_fed_milk_kcals_equivalent = (
-            extracted_results.grain_fed_milk.in_units_kcals_equivalent()
         )
 
         # Assign kcals equivalent of immediate outdoor crops to its attribute
@@ -417,8 +399,6 @@ class Interpreter:
             >>> interpreter.fish = 100
             >>> interpreter.culled_meat_plus_grazing_cattle_maintained = 50
             >>> interpreter.grazing_milk = 25
-            >>> interpreter.grain_fed_meat = 75
-            >>> interpreter.grain_fed_milk = 50
             >>> interpreter.get_sum_by_adding_to_humans()
             1025.0
         """
@@ -434,8 +414,6 @@ class Interpreter:
             + self.fish
             + self.culled_meat_plus_grazing_cattle_maintained
             + self.grazing_milk
-            + self.grain_fed_meat
-            + self.grain_fed_milk
         )
 
         # Return the total amount of nutrients that can be fed to humans
@@ -710,15 +688,9 @@ class Interpreter:
             grazing_milk = (
                 interpreter.grazing_milk.in_units_bil_kcals_thou_tons_thou_tons_per_month()
             )
-            grain_fed_milk = (
-                interpreter.grain_fed_milk.in_units_bil_kcals_thou_tons_thou_tons_per_month()
-            )
             cmpgcm = interpreter.culled_meat_plus_grazing_cattle_maintained
             culled_meat_plus_grazing_cattle_maintained = (
                 cmpgcm.in_units_bil_kcals_thou_tons_thou_tons_per_month()
-            )
-            grain_fed_meat = (
-                interpreter.grain_fed_meat.in_units_bil_kcals_thou_tons_thou_tons_per_month()
             )
 
             immediate_outdoor_crops = (
@@ -746,12 +718,10 @@ class Interpreter:
                 greenhouse = greenhouse * ratio_so_adds_to_100_percent
                 seaweed = seaweed * ratio_so_adds_to_100_percent
                 grazing_milk = grazing_milk * ratio_so_adds_to_100_percent
-                grain_fed_milk = grain_fed_milk * ratio_so_adds_to_100_percent
                 culled_meat_plus_grazing_cattle_maintained = (
                     culled_meat_plus_grazing_cattle_maintained
                     * ratio_so_adds_to_100_percent
                 )
-                grain_fed_meat = grain_fed_meat * ratio_so_adds_to_100_percent
                 immediate_outdoor_crops = (
                     immediate_outdoor_crops * ratio_so_adds_to_100_percent
                 )
@@ -767,11 +737,9 @@ class Interpreter:
                 greenhouse_cumulative = greenhouse
                 seaweed_cumulative = seaweed
                 grazing_milk_cumulative = grazing_milk
-                grain_fed_milk_cumulative = grain_fed_milk
                 culled_meat_plus_grazing_cattle_maintained_cumulative = (
                     culled_meat_plus_grazing_cattle_maintained
                 )
-                grain_fed_meat_cumulative = grain_fed_meat
                 immediate_outdoor_crops_cumulative = immediate_outdoor_crops
                 new_stored_outdoor_crops_cumulative = new_stored_outdoor_crops
                 stored_food_cumulative = stored_food
@@ -829,12 +797,10 @@ class Interpreter:
                 greenhouse_cumulative = greenhouse_cumulative + greenhouse
                 seaweed_cumulative = seaweed_cumulative + seaweed
                 grazing_milk_cumulative = grazing_milk_cumulative + grazing_milk
-                grain_fed_milk_cumulative = grain_fed_milk_cumulative + grain_fed_milk
                 culled_meat_plus_grazing_cattle_maintained_cumulative = (
                     culled_meat_plus_grazing_cattle_maintained_cumulative
                     + culled_meat_plus_grazing_cattle_maintained
                 )
-                grain_fed_meat_cumulative = grain_fed_meat_cumulative + grain_fed_meat
                 immediate_outdoor_crops_cumulative = (
                     immediate_outdoor_crops_cumulative + immediate_outdoor_crops
                 )
@@ -873,9 +839,7 @@ class Interpreter:
             + greenhouse_cumulative.in_units_percent_fed()
             + seaweed_cumulative.in_units_percent_fed()
             + grazing_milk_cumulative.in_units_percent_fed()
-            + grain_fed_milk_cumulative.in_units_percent_fed()
             + culled_meat_plus_grazing_cattle_maintained_cumulative.in_units_percent_fed()
-            + grain_fed_meat_cumulative.in_units_percent_fed()
             + immediate_outdoor_crops_cumulative.in_units_percent_fed()
             + new_stored_outdoor_crops_cumulative.in_units_percent_fed()
             + stored_food_cumulative.in_units_percent_fed()
@@ -923,14 +887,8 @@ class Interpreter:
         global_results.grazing_milk_kcals_equivalent = (
             grazing_milk_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
         )
-        global_results.grain_fed_milk_kcals_equivalent = (
-            grain_fed_milk_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
-        )
         global_results.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent = (
             culled_meat_plus_grazing_cattle_maintained_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
-        )
-        global_results.grain_fed_meat_kcals_equivalent = (
-            grain_fed_meat_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
         )
         global_results.immediate_outdoor_crops_to_humans_kcals_equivalent = (
             immediate_outdoor_crops_cumulative.in_units_percent_fed().in_units_kcals_equivalent()

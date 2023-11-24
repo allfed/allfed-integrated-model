@@ -549,57 +549,6 @@ class MeatAndDairy:
         self.cattle_grain_fed_maintained_prewaste = cattle_grain_fed_maintained_prewaste
         self.chicken_pork_maintained_prewaste = chicken_pork_maintained_prewaste
 
-    def calculate_meat_milk_from_human_inedible_feed(self, constants_for_params):
-        """
-        Calculates the amount of milk and meat that can be produced from human inedible feed.
-        Args:
-            self: instance of the class
-            constants_for_params: dictionary containing constants used in the calculations
-        Returns:
-            None
-        """
-        # Initialize empty lists to store the results
-        self.grazing_milk_produced_prewaste = []  # tons
-        self.cattle_grazing_maintained_prewaste = []  # tons
-
-        # Loop through each month
-        for m in range(self.NMONTHS):
-            # Calculate the maximum amount of milk that can be produced from the inedible feed
-            if self.ADD_MILK:
-                max_milk = (
-                    self.human_inedible_feed[m] / self.INEDIBLE_TO_MILK_CONVERSION
-                )
-                # If the maximum amount of milk is less than or equal to the pre-waste limit, add it to the list
-                if max_milk <= self.MILK_LIMIT_PREWASTE:
-                    self.grazing_milk_produced_prewaste.append(max_milk)
-                    self.cattle_grazing_maintained_prewaste.append(0)
-                    continue
-                # If the maximum amount of milk is greater than the pre-waste limit, add the pre-waste limit to the list
-                self.grazing_milk_produced_prewaste.append(self.MILK_LIMIT_PREWASTE)
-                # Calculate the amount of inedible feed that can be used for cattle
-                inedible_for_cattle = (
-                    self.human_inedible_feed[m] - self.MILK_LIMIT_FEED_USAGE
-                )
-            else:
-                # If milk is not being added, set the milk produced to 0
-                self.grazing_milk_produced_prewaste.append(0)
-                # Use all of the inedible feed for cattle
-                inedible_for_cattle = self.human_inedible_feed[m]
-
-            # Calculate the amount of meat that can be produced from the inedible feed
-            if self.ADD_MAINTAINED_MEAT:
-                self.cattle_grazing_maintained_prewaste.append(
-                    inedible_for_cattle / self.INEDIBLE_TO_CATTLE_CONVERSION
-                )
-            else:
-                # If meat is not being added, set the meat produced to 0
-                self.cattle_grazing_maintained_prewaste.append(0)
-
-        # Calculate the remaining limit of milk that can be produced from inedible sources
-        self.grain_fed_milk_limit_prewaste = self.MILK_LIMIT_PREWASTE - np.array(
-            self.grazing_milk_produced_prewaste
-        )
-
     def get_milk_from_human_edible_feed(self, constants_for_params):
         """
         Calculates the amount of milk produced from human-edible feed, taking into account
@@ -806,64 +755,6 @@ class MeatAndDairy:
 
         # Return the calculated values as a tuple
         return (grazing_milk_kcals, grazing_milk_fat, grazing_milk_protein)
-
-    def get_cattle_grazing_maintained(self):
-        """
-        Calculates the kcals, fat, and protein from cattle grazing that is maintained for meat production.
-        If ADD_MAINTAINED_MEAT is True, the function calculates the kcals, fat, and protein from cattle grazing that
-        is maintained for meat production.
-        If ADD_MAINTAINED_MEAT is False, the function returns 0 for kcals, fat, and protein.
-        Args:
-            self: instance of the class
-        Returns:
-            tuple: a tuple containing the kcals, fat, and protein from cattle grazing that is maintained for
-            meat production.
-        """
-        if self.ADD_MAINTAINED_MEAT:
-            # billions kcals
-            cattle_grazing_maintained_kcals = (
-                np.array(self.cattle_grazing_maintained_prewaste)
-                * 1000
-                * self.LARGE_ANIMAL_KCALS_PER_KG
-                / 1e9
-                * (1 - self.MEAT_WASTE_DISTRIBUTION / 100)
-            )
-
-            # 1000s tons fat
-            cattle_grazing_maintained_fat = (
-                cattle_grazing_maintained_kcals
-                * 1e9
-                * self.LARGE_ANIMAL_FAT_RATIO
-                / self.LARGE_ANIMAL_KCALS_PER_KG
-                / 1e6
-            )
-
-            # 1000s tons protein
-            cattle_grazing_maintained_protein = (
-                cattle_grazing_maintained_kcals
-                * 1e9
-                * self.LARGE_ANIMAL_PROTEIN_RATIO
-                / self.LARGE_ANIMAL_KCALS_PER_KG
-                / 1e6
-            )
-
-        else:
-            # If ADD_MAINTAINED_MEAT is False, return 0 for kcals, fat, and protein.
-            cattle_grazing_maintained_kcals = [0] * len(
-                self.cattle_grazing_maintained_prewaste
-            )
-            cattle_grazing_maintained_fat = [0] * len(
-                self.cattle_grazing_maintained_prewaste
-            )
-            cattle_grazing_maintained_protein = [0] * len(
-                self.cattle_grazing_maintained_prewaste
-            )
-
-        return (
-            cattle_grazing_maintained_kcals,
-            cattle_grazing_maintained_fat,
-            cattle_grazing_maintained_protein,
-        )
 
     # CULLED MEAT
 

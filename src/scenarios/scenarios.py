@@ -73,7 +73,6 @@ class Scenarios:
 
         constants_for_params["ADD_MILK"] = True
         constants_for_params["ADD_FISH"] = True
-        constants_for_params["ADD_STORED_FOOD"] = True
         constants_for_params["ADD_MAINTAINED_MEAT"] = True
 
         self.GENERIC_INITIALIZED_SET = True
@@ -874,6 +873,7 @@ class Scenarios:
         assert not self.STORED_FOOD_SET
         constants_for_params["STORE_FOOD_BETWEEN_YEARS"] = True
         constants_for_params["PERCENT_STORED_FOOD_TO_USE"] = 0
+        constants_for_params["ADD_STORED_FOOD"] = False
         self.STORED_FOOD_SET = True
         return constants_for_params
 
@@ -886,6 +886,7 @@ class Scenarios:
         assert not self.STORED_FOOD_SET
         constants_for_params["STORE_FOOD_BETWEEN_YEARS"] = True
         constants_for_params["PERCENT_STORED_FOOD_TO_USE"] = 100
+        constants_for_params["ADD_STORED_FOOD"] = True
         self.STORED_FOOD_SET = True
         return constants_for_params
 

@@ -68,15 +68,6 @@ class Parameters:
             run for the first time.
 
         """
-        # Check if maintained meat needs to be added for continued feed usage
-        if (
-            constants_inputs["DELAY"]["FEED_SHUTOFF_MONTHS"] > 0
-            or constants_inputs["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] > 0
-        ):
-            assert (
-                constants_inputs["ADD_MAINTAINED_MEAT"] is True
-            ), "Maintained meat needs to be added for continued feed usage"
-
         # Check if function is run for the first time
         assert self.FIRST_TIME_RUN
         self.FIRST_TIME_RUN = False
@@ -959,159 +950,7 @@ class Parameters:
             constants_out["SMALL_ANIMAL_KCALS_PER_KG"],
         ) = meat_and_dairy.get_meat_nutrition()
 
-        # Set grain fed meat and milk constants in time_consts
-        time_consts["grain_fed_meat_kcals"] = np.zeros(constants_inputs["NMONTHS"])
-        time_consts["grain_fed_meat_fat"] = np.zeros(constants_inputs["NMONTHS"])
-        time_consts["grain_fed_meat_protein"] = np.zeros(constants_inputs["NMONTHS"])
-        time_consts["grain_fed_milk_kcals"] = np.zeros(constants_inputs["NMONTHS"])
-        time_consts["grain_fed_milk_fat"] = np.zeros(constants_inputs["NMONTHS"])
-        time_consts["grain_fed_milk_protein"] = np.zeros(constants_inputs["NMONTHS"])
-
-        # Set grain fed created constants in time_consts
-        time_consts["grain_fed_created_kcals"] = np.zeros(constants_inputs["NMONTHS"])
-        time_consts["grain_fed_created_fat"] = np.zeros(constants_inputs["NMONTHS"])
-        time_consts["grain_fed_created_protein"] = np.zeros(constants_inputs["NMONTHS"])
-
         return constants_out, time_consts
-
-    def init_grazing_params(self, constants_inputs, time_consts, meat_and_dairy):
-        """
-        Initializes grazing parameters for the simulation.
-
-        Args:
-            constants_inputs (dict): A dictionary containing constant inputs for the simulation.
-            time_consts (dict): A dictionary containing time constants for the simulation.
-            meat_and_dairy (MeatAndDairy): An instance of the MeatAndDairy class.
-
-        Returns:
-            tuple: A tuple containing the updated time constants and the updated meat_and_dairy instance.
-
-        """
-        # Calculate meat and milk production from human inedible feed if efficient feed strategy is used
-        if constants_inputs["USE_EFFICIENT_FEED_STRATEGY"]:
-            meat_and_dairy.calculate_meat_milk_from_human_inedible_feed(
-                constants_inputs
-            )
-        # Otherwise, calculate continued ratios of meat and dairy production from grazing
-        else:
-            meat_and_dairy.calculate_continued_ratios_meat_dairy_grazing(
-                constants_inputs
-            )
-
-        # Get grazing milk produced post-waste
-        (
-            grazing_milk_kcals,
-            grazing_milk_fat,
-            grazing_milk_protein,
-        ) = meat_and_dairy.get_grazing_milk_produced_postwaste(
-            meat_and_dairy.grazing_milk_produced_prewaste
-        )
-
-        # Update time constants with grazing milk production values
-        time_consts["grazing_milk_kcals"] = grazing_milk_kcals
-        time_consts["grazing_milk_fat"] = grazing_milk_fat
-        time_consts["grazing_milk_protein"] = grazing_milk_protein
-
-        # Get post-waste cattle ongoing meat production from grazing
-        (
-            cattle_grazing_maintained_kcals,
-            cattle_grazing_maintained_fat,
-            cattle_grazing_maintained_protein,
-        ) = meat_and_dairy.get_cattle_grazing_maintained()
-
-        # Update time constants with cattle grazing production values
-        time_consts["cattle_grazing_maintained_kcals"] = cattle_grazing_maintained_kcals
-        time_consts["cattle_grazing_maintained_fat"] = cattle_grazing_maintained_fat
-        time_consts[
-            "cattle_grazing_maintained_protein"
-        ] = cattle_grazing_maintained_protein
-
-        # Return updated time constants and meat_and_dairy instance
-        return time_consts, meat_and_dairy
-
-    def init_grain_fed_meat_params(
-        self,
-        time_consts,
-        meat_and_dairy,
-        feed_and_biofuels_class,
-        constants_inputs,
-        outdoor_crops,
-    ):
-        """
-        Initializes grain-fed meat parameters by calculating the amount of grain-fed meat and milk
-        produced from human-edible feed, and updating the time constants dictionary with the results.
-
-        Args:
-            self: instance of the class
-            time_consts (dict): dictionary containing time constants
-            meat_and_dairy (MeatAndDairy): instance of MeatAndDairy class
-            feed_and_biofuels_class (FeedAndBiofuels): instance of FeedAndBiofuels class
-            constants_inputs (dict): dictionary containing constant inputs
-            outdoor_crops (OutdoorCrops): instance of OutdoorCrops class
-
-        Returns:
-            tuple: updated time constants dictionary and instance of MeatAndDairy class
-        """
-
-        if constants_inputs["USE_EFFICIENT_FEED_STRATEGY"]:
-            meat_and_dairy.calculate_meat_and_dairy_from_grain(
-                feed_and_biofuels_class.fed_to_animals
-            )
-        else:
-            meat_and_dairy.calculate_continued_ratios_meat_dairy_grain(
-                feed_and_biofuels_class.fed_to_animals, outdoor_crops
-            )
-
-        # no waste is applied for the grasses.
-        # the milk has had waste applied
-        (
-            grain_fed_milk_kcals,
-            grain_fed_milk_fat,
-            grain_fed_milk_protein,
-        ) = meat_and_dairy.get_milk_from_human_edible_feed(constants_inputs)
-
-        # post waste
-        (
-            grain_fed_meat_kcals,
-            grain_fed_meat_fat,
-            grain_fed_meat_protein,
-        ) = meat_and_dairy.get_meat_from_human_edible_feed()
-
-        time_consts["grain_fed_meat_kcals"] = grain_fed_meat_kcals
-        time_consts["grain_fed_meat_fat"] = grain_fed_meat_fat
-        time_consts["grain_fed_meat_protein"] = grain_fed_meat_protein
-        time_consts["grain_fed_milk_kcals"] = grain_fed_milk_kcals
-        time_consts["grain_fed_milk_fat"] = grain_fed_milk_fat
-        time_consts["grain_fed_milk_protein"] = grain_fed_milk_protein
-
-        grain_fed_created_kcals = grain_fed_meat_kcals + grain_fed_milk_kcals
-        grain_fed_created_fat = grain_fed_meat_fat + grain_fed_milk_fat
-        grain_fed_created_protein = grain_fed_meat_protein + grain_fed_milk_protein
-        time_consts["grain_fed_created_kcals"] = grain_fed_created_kcals
-        time_consts["grain_fed_created_fat"] = grain_fed_created_fat
-        time_consts["grain_fed_created_protein"] = grain_fed_created_protein
-
-        feed = feed_and_biofuels_class.feed
-
-        if (grain_fed_created_kcals <= 0).any():
-            grain_fed_created_kcals = grain_fed_created_kcals.round(8)
-        assert (grain_fed_created_kcals >= 0).all()
-
-        if (grain_fed_created_fat <= 0).any():
-            grain_fed_created_fat = grain_fed_created_fat.round(8)
-        assert (grain_fed_created_fat >= 0).all()
-
-        if (grain_fed_created_protein <= 0).any():
-            grain_fed_created_protein = grain_fed_created_protein.round(8)
-        assert (grain_fed_created_protein >= 0).all()
-
-        # True if reproducing xia et al results when directly subtracting feed from
-        # produced crops
-        SUBTRACTING_FEED_DIRECTLY_FROM_PRODUCTION = False
-        if not SUBTRACTING_FEED_DIRECTLY_FROM_PRODUCTION:
-            assert (feed.kcals >= grain_fed_created_kcals).all()
-
-        return time_consts, meat_and_dairy
 
     # ################ SECOND ROUND: AFTER FIRST OPTIMIZATION ##########################
     def compute_parameters_second_round(
@@ -1128,13 +967,6 @@ class Parameters:
         """
 
         # first round results had no feed or biofuels!
-        # TODO: we need to remove these variables. They're old and are all zero in the model now.
-        assert (
-            consumption_first_optimization.grain_fed_meat_kcals_equivalent.all_equals_zero()
-        )
-        assert (
-            consumption_first_optimization.grain_fed_milk_kcals_equivalent.all_equals_zero()
-        )
 
         assert (
             consumption_first_optimization.cell_sugar_biofuels_kcals_equivalent.all_equals_zero()
