@@ -372,8 +372,6 @@ class Interpreter:
             self.seaweed_rounded,
         ) = self.correct_and_validate_rounding_errors()
 
-        self.excess_feed = extracted_results.excess_feed
-
         self.kcals_fed = humans_fed_sum.kcals
         self.fat_fed = humans_fed_sum.fat
         self.protein_fed = humans_fed_sum.protein
@@ -551,79 +549,6 @@ class Interpreter:
             new_stored_outdoor_crops_rounded,
             seaweed_rounded,
         )
-
-    def get_increased_excess_to_feed(
-        self,
-        feed_delay,
-        percent_fed,
-    ):
-        """
-        Calculates the excess feed to be added to the diet at a consistent percentage
-        in the months of interest (months to calculate diet).
-
-        Args:
-            feed_delay (int): the number of months before the shutoff
-            percent_fed (float): the percentage of the baseline feed to be fed to the population
-
-        Returns:
-            excess_per_month (numpy.ndarray): kcals per month, units percent
-
-        Raises:
-            AssertionError: if the length of additional_excess_to_add_percent is not equal to after_shutoff_feed
-
-        """
-        # these months are used to estimate the diet before the full scale-up of
-        # resilient foods makes there be way too much food to make sense economically
-        N_MONTHS_TO_CALCULATE_DIET = 49
-
-        # rapidly feed more to people until it's close to 2100 kcals, then
-        # slowly feed more to people
-        SMALL_INCREASE_IN_EXCESS = 0.1
-        LARGE_INCREASE_IN_EXCESS = 1.0
-
-        # get excess feed per month
-        excess_per_month_percent = self.excess_feed.kcals
-
-        # get baseline feed
-        baseline_feed = excess_per_month_percent[:feed_delay]
-
-        # get the part at the end to leave unchanged
-        part_at_end_to_leave_unchanged = excess_per_month_percent[
-            N_MONTHS_TO_CALCULATE_DIET:
-        ]
-
-        # get the feed after the shutoff
-        after_shutoff_feed = excess_per_month_percent[
-            feed_delay:N_MONTHS_TO_CALCULATE_DIET
-        ]
-
-        # determine the additional excess to add based on the percentage fed
-        if percent_fed < 106 and percent_fed > 100:
-            additional_excess_to_add_percent = np.linspace(
-                SMALL_INCREASE_IN_EXCESS,
-                SMALL_INCREASE_IN_EXCESS,
-                N_MONTHS_TO_CALCULATE_DIET - feed_delay,
-            )
-        else:
-            additional_excess_to_add_percent = np.linspace(
-                LARGE_INCREASE_IN_EXCESS,
-                LARGE_INCREASE_IN_EXCESS,
-                N_MONTHS_TO_CALCULATE_DIET - feed_delay,
-            )
-
-        # check that the length of additional_excess_to_add_percent is equal to after_shutoff_feed
-        assert len(additional_excess_to_add_percent) == len(after_shutoff_feed)
-
-        # add the additional excess to the feed after the shutoff
-        new_excess_kcals = after_shutoff_feed + additional_excess_to_add_percent
-
-        # combine the baseline feed, new excess, and part at the end to leave unchanged
-        excess_per_month = np.append(
-            np.append(baseline_feed, new_excess_kcals),
-            part_at_end_to_leave_unchanged,
-        )
-
-        return excess_per_month
 
     def get_month_after_which_is_all_zero(self, variables, nmonths):
         first_month = None  # This will hold the earliest month where all subsequent months are zero

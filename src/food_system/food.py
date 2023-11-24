@@ -220,6 +220,7 @@ class Food(UnitConversions):
             isinstance(kcals, float)
             or isinstance(kcals, int)
             or isinstance(kcals, list)
+            or isinstance(kcals, np.number)
             or isinstance(kcals, np.ndarray)
         ), (
             "Type must be ndarray, list, float or int."
@@ -229,6 +230,7 @@ class Food(UnitConversions):
             isinstance(fat, float)
             or isinstance(fat, int)
             or isinstance(fat, list)
+            or isinstance(fat, np.number)
             or isinstance(fat, np.ndarray)
         ), (
             "Type must be ndarray, list, float or int."
@@ -238,6 +240,7 @@ class Food(UnitConversions):
             isinstance(protein, float)
             or isinstance(protein, int)
             or isinstance(protein, list)
+            or isinstance(protein, np.number)
             or isinstance(protein, np.ndarray)
         ), (
             "Type must be ndarray, list, float or int."

@@ -8,11 +8,16 @@
 ###############################################################################
 """
 import numpy as np
+from src.food_system.food import Food
 
 
 class Validator:
     def validate_results(
-        self, extracted_results, interpreted_results, percent_fed_from_model
+        self,
+        extracted_results,
+        interpreted_results,
+        time_consts,
+        percent_fed_from_model,
     ):
         """
         Validates the results of the model by ensuring that the optimizer returns the same as the sum of nutrients,
@@ -44,6 +49,23 @@ class Validator:
 
         # Ensure all values are greater than or equal to zero
         self.ensure_all_greater_than_or_equal_to_zero(interpreted_results)
+
+        # check if all Food objects in the dictionary have the same units list
+        self.ensure_all_time_constants_units_are_billion_kcals(time_consts)
+
+    # Function to check if all Food objects in the dictionary have the same units list
+    def ensure_all_time_constants_units_are_billion_kcals(self, time_consts):
+        for key, value in time_consts.items():
+            if isinstance(value, Food):
+                print("FOOD!")
+                print("food key")
+                print(key)
+                print(value.units)
+                assert value.units == [
+                    "billion kcals each month",
+                    "thousand tons each month",
+                    "thousand tons each month",
+                ], "ERROR: All the units for foods passed to optimizer don't match expected units"
 
     def check_constraints_satisfied(self, model, maximize_constraints, variables):
         """

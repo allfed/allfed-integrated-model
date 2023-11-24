@@ -46,7 +46,6 @@ class Optimizer:
                 - maximize_constraints (list): A list of constraints to maximize
 
         """
-
         # Create the model to optimize
         model = LpProblem(name="optimization_nutrition", sense=LpMaximize)
 
@@ -95,7 +94,7 @@ class Optimizer:
         )
 
         # Run optimizations to maximize food production for humans
-        percent_fed_from_model = self.run_optimizations_to_humans(
+        percent_fed_from_model = self.run_optimizations_on_constraints(
             model, variables, single_valued_constants
         )
 
@@ -158,6 +157,17 @@ class Optimizer:
             },
         }
 
+        print("adding variables to animals.")
+        print("variables")
+        print(variables)
+
+        (
+            model,
+            variables,
+        ) = self.assign_predetermined_human_consumption_of_foods(
+            model, variables, min_human_food_consumption
+        )
+
         # Add variables and constraints to the model
         (
             model,
@@ -171,16 +181,8 @@ class Optimizer:
             optimization_type="to_animals",
         )
 
-        (
-            model,
-            variables,
-            maximize_constraints,
-        ) = self.assign_human_consumption_of_foods(
-            model, variables, min_human_food_consumption
-        )
-
         # Run optimizations to maximize food production for humans
-        percent_fed_from_model = self.run_optimizations_to_humans(
+        percent_fed_from_model = self.run_optimizations_on_constraints(
             model, variables, single_valued_constants
         )
 
@@ -193,51 +195,106 @@ class Optimizer:
             time_consts,
         )
 
-    def assign_human_consumption_of_foods(
+    def assign_predetermined_human_consumption_of_foods(
         self, model, variables, min_human_food_consumption
     ):
         for month in range(0, self.NMONTHS):
             # Define the conditions for the pre-assigned to_human variables
             # skipping fish, because it's just a constant and always goes to humans
+            print("")
+            print("")
+            print("")
+            print("type(variables[culled_meat_eaten][month]")
+            print(type(variables["culled_meat_eaten"][month]))
+            print("variables[culled_meat_eaten][month]")
+            print(variables["culled_meat_eaten"][month])
+            print(
+                "min_human_food_consumption[meat].in_units_bil_kcals_thou_tons_thou_tons_per_month()[month].kcals"
+            )
+            print(
+                type(
+                    min_human_food_consumption["meat"]
+                    .in_units_bil_kcals_thou_tons_thou_tons_per_month()[month]
+                    .kcals
+                )
+            )
+            print(
+                "min_human_food_consumption[meat].in_units_bil_kcals_thou_tons_thou_tons_per_month()[month].kcals)"
+            )
+            print(
+                min_human_food_consumption["meat"]
+                .in_units_bil_kcals_thou_tons_thou_tons_per_month()[month]
+                .kcals
+            )
+
+            # print("methane_scp_to_humans number?")
+            # print(variables["methane_scp_to_humans"][month])
+            # print(
+            #     min_human_food_consumption["scp"]
+            #     .in_units_bil_kcals_thou_tons_thou_tons_per_month()[month]
+            #     .kcals
+            # )
             conditions = {
                 "Meat_Min_Requirement": (
-                    min_human_food_consumption["meat"][month]
+                    min_human_food_consumption["meat"]
+                    .in_units_bil_kcals_thou_tons_thou_tons_per_month()[month]
+                    .kcals
                     == variables["culled_meat_eaten"][month]
                 ),
                 "Dairy_Min_Requirement": (
-                    min_human_food_consumption["dairy"][month]
+                    min_human_food_consumption["dairy"]
+                    .in_units_bil_kcals_thou_tons_thou_tons_per_month()[month]
+                    .kcals
                     == self.time_consts["grazing_milk_kcals"][month]
                 ),
                 "Greenhouse_Min_Requirement": (
-                    min_human_food_consumption["greenhouse"][month]
+                    min_human_food_consumption["greenhouse"]
+                    .in_units_bil_kcals_thou_tons_thou_tons_per_month()[month]
+                    .kcals
                     == self.time_consts["greenhouse_area"][month]
                     * self.time_consts["greenhouse_kcals_per_ha"][month]
                 ),
                 "Outdoor_crops_Min_Requirement": (
-                    min_human_food_consumption["outdoor_crops"][month]
+                    min_human_food_consumption["outdoor_crops"]
+                    .in_units_bil_kcals_thou_tons_thou_tons_per_month()[month]
+                    .kcals
                     == variables["crops_food_to_humans"][month]
                 ),
                 "Stored_food_Min_Requirement": (
-                    min_human_food_consumption["stored_food"][month]
+                    min_human_food_consumption["stored_food"]
+                    .in_units_bil_kcals_thou_tons_thou_tons_per_month()[month]
+                    .kcals
                     == variables["stored_food_to_humans"][month]
                 ),
                 "Scp_Min_Requirement": (
-                    min_human_food_consumption["scp"][month]
+                    min_human_food_consumption["scp"]
+                    .in_units_bil_kcals_thou_tons_thou_tons_per_month()[month]
+                    .kcals
                     == variables["methane_scp_to_humans"][month]
                 ),
                 "Cell_sugar_Min_Requirement": (
-                    min_human_food_consumption["cell_sugar"][month]
+                    min_human_food_consumption["cell_sugar"]
+                    .in_units_bil_kcals_thou_tons_thou_tons_per_month()[month]
+                    .kcals
                     == variables["cellulosic_sugar_to_humans"][month]
                 ),
                 "Seaweed_Min_Requirement": (
-                    min_human_food_consumption["seaweed"][month]
+                    min_human_food_consumption["seaweed"]
+                    .in_units_bil_kcals_thou_tons_thou_tons_per_month()[month]
+                    .kcals
                     == variables["seaweed_to_humans"][month]
                     * self.single_valued_constants["SEAWEED_KCALS"]
                 ),
             }
+            # print("conditions not work")
+            # print(conditions)
+            # Add the conditions to the model for the given month
+            model = self.add_conditions_to_model(model, month, conditions)
 
-        # Add the conditions to the model for the given month
-        model = self.add_conditions_to_model(model, month, conditions)
+        return (
+            model,
+            variables,
+        )
 
     def add_variables_and_constraints_to_model(
         self,
@@ -289,29 +346,64 @@ class Optimizer:
             if single_valued_constants[key]:  # if ADD_[resource name] is true...
                 prefixes = resource["prefixes"]
                 func = resource["function"]
+                # print("\nadd_variable_from_prefixes v p")
+                # print(variables)
+                # print(prefixes)
                 variables = self.add_variable_from_prefixes(variables, prefixes)
                 for month in range(0, self.NMONTHS):
                     # Add the conditions returned from the functions defined in "resource_constants"
                     conditions = func(month, variables)
+                    # print("conditions work")
+                    # print(conditions)
                     model = self.add_conditions_to_model(model, month, conditions)
 
         maximize_constraints = []  # used only for validation
         for month in range(0, self.NMONTHS):
             # other than the
-            [
+            (
+                model,
+                variables,
+            ) = self.add_total_human_consumption_to_model(
+                model, variables, month, optimization_type
+            )
+
+        if optimization_type == "to_humans":
+            for month in range(0, self.NMONTHS):
+                (
+                    model,
+                    variables,
+                    maximize_constraints,
+                ) = self.add_maximize_min_month_objective_to_model(
+                    model, variables, month, maximize_constraints
+                )
+        elif optimization_type == "to_animals":
+            (
                 model,
                 variables,
                 maximize_constraints,
-            ] = self.add_other_conditions_to_model(
-                model, variables, month, maximize_constraints, optimization_type
+            ) = self.add_maximize_sum_total_feed_used_by_animals(
+                model, variables, self.NMONTHS
             )
+        else:
+            print("error!! only to humans or to animals allowed to optimize")
+            sys.exit()
         model += variables["objective_function"]
 
         return model, variables, maximize_constraints
 
-    def run_optimizations_to_humans(self, model, variables, single_valued_constants):
+    def run_optimizations_on_constraints(
+        self, model, variables, single_valued_constants
+    ):
         """
-        This function is part of a resource allocation system aiming to model systems which minimize starvation.
+        This function is part of a resource allocation system aiming to model systems which
+            1. minimizes human starvation
+            2. maximizes animal starvation assuming minimal nutrition for humans are met
+            3. attempts to maintain biofuel assuming minimal nutrition for humans and animals are met
+            4. reduces unnecessary fluctuations in the predicted food consumption.
+
+        This function specifically takes the series of constraints which either involve a maximization of the minimum
+        to_human food, OR a maximization of the number of months where to_animals feed demand is fully met, starting at
+        the first month of the simulation.
 
         The function executes a series of optimization steps. After solving the initial model, it performs several more
         rounds of optimization, each with added constraints based on the results of the previous round.
@@ -494,8 +586,15 @@ class Optimizer:
         """
         # Iterate over the conditions and add them to the model
         for prefix, condition in conditions.items():
+            print("type(condition)")
+            print(type(condition))
+            print("prefix, condition")
+            print(prefix, condition)
             # Create a constraint with the given condition and a name based on the prefix and month
             constraint = (condition, f"{prefix}_{month}_Constraint")
+            print("constraint")
+            print(constraint)
+            assert isinstance(condition, pulp.pulp.LpConstraint)
             # Add the constraint to the model
             model += constraint
 
@@ -723,16 +822,16 @@ class Optimizer:
                 model_smoothing += (
                     stored_food_change
                     >= (
-                        variables["stored_food_eaten"][month]
-                        - variables["stored_food_eaten"][month - 1]
+                        variables["stored_food_to_humans"][month]
+                        - variables["stored_food_to_humans"][month - 1]
                     ),
                     f"Stored_Food_Increase_{month}",
                 )
                 model_smoothing += (
                     stored_food_change
                     >= -(
-                        variables["stored_food_eaten"][month]
-                        - variables["stored_food_eaten"][month - 1]
+                        variables["stored_food_to_humans"][month]
+                        - variables["stored_food_to_humans"][month - 1]
                     ),
                     f"Stored_Food_Decrease_{month}",
                 )
@@ -881,8 +980,9 @@ class Optimizer:
 
     def add_percentage_intake_constraints(self, model, variables, month):
         """
-        Adds constraints to the optimization model based on the percentage intake of the nonhuman and human diets,
-        and the ratio of these resources used as biofuel.
+        Adds constraints to the optimization model based on the percentage intake of the nonhuman and human diets.
+
+
 
         Args:
             model (object): The optimization model object
@@ -900,50 +1000,102 @@ class Optimizer:
             "Cellulosic_Sugar": 1,
         }
 
+        initial_population_minimum_needs = (
+            self.single_valued_constants["POP"]
+            * self.single_valued_constants["KCALS_MONTHLY"]
+            / 1e9
+        )  # Billion kcals
+
         # Loop through each nutrient and add constraints based on its usage
-        for food, nutrient_kcal_ratio in resilient_food_ratios.items():
-            if self.single_valued_constants["ADD_" + food.upper()]:
+        for food_name, kcal_to_nutrient_ratio in resilient_food_ratios.items():
+            if self.single_valued_constants["ADD_" + food_name.upper()]:
                 constraints_data = [
                     (
                         "HUMANS",
-                        "MAX_" + food.upper() + "_HUMANS_CAN_CONSUME_MONTHLY",
+                        "MAX_" + food_name.upper() + "_AS_PERCENT_KCALS_HUMANS",
                         "to_humans",
                     ),
                     (
                         "FEED",
-                        "MAX_" + food.upper() + "_AS_PERCENT_KCALS_FEED",
+                        "MAX_" + food_name.upper() + "_AS_PERCENT_KCALS_FEED",
                         "feed",
                     ),
                     (
                         "BIOFUEL",
-                        "MAX_" + food.upper() + "_AS_PERCENT_KCALS_BIOFUEL",
+                        "MAX_" + food_name.upper() + "_AS_PERCENT_KCALS_BIOFUEL",
                         "biofuel",
                     ),
                 ]
-                for constraint_type, limit_key, usage in constraints_data:
-                    # Calculate the condition for the constraint
-                    # Note: this actually multiplies by consumption in the given month if we're talking about humans.
-                    # By doing this, we can limit based on the actual population level rather than the initial
-                    # population. The reason it works, is that kcals are in units "percent people fed".
-                    condition = variables[food.lower() + "_" + usage][
-                        month
-                    ] * nutrient_kcal_ratio <= (
-                        variables["consumed_kcals"][month]
-                        * self.single_valued_constants[limit_key]
-                        / 100
-                        if constraint_type == "HUMANS"
-                        else self.single_valued_constants[limit_key]
-                        / 100
-                        * self.time_consts[usage.lower()].kcals[month]
+                for constraint_type, limit_key, variable_tag in constraints_data:
+                    food_consumption_to_limit = variables[
+                        food_name.lower() + "_" + variable_tag
+                    ][month]
+                    max_fraction_of_consumption = (
+                        self.single_valued_constants["inputs"][limit_key] / 100
                     )
 
-                    # Add the constraint to the model
-                    model = self.add_constraints(
-                        model,
-                        month,
-                        condition,
-                        nutrient + "_Limit_" + constraint_type,
-                    )
+                    if constraint_type == "HUMANS":
+                        # This condition is just saying that even if variables["consumed_kcals"] is greater than the
+                        # minimum needs of the initialpopulation in a given month, don't allow consumption above the
+                        # original population's max_fraction_of_consumption for this food.
+                        condition = (
+                            food_consumption_to_limit * kcal_to_nutrient_ratio
+                            <= (
+                                max_fraction_of_consumption
+                                * initial_population_minimum_needs
+                            )
+                        )
+                        # Add the constraint to the model
+                        model = self.add_constraints(
+                            model,
+                            month,
+                            condition,
+                            food_name + "_Limit_" + constraint_type,
+                        )
+
+                        # This multiplies the fractional intake limit by the actual to_human consumption in the
+                        # given month. We limit this food based on the reduced population level rather
+                        # than the initial population (it's assumed the reduced population is determined by the percent
+                        # people fed in the month).
+                        condition = (
+                            food_consumption_to_limit * kcal_to_nutrient_ratio
+                            <= (
+                                max_fraction_of_consumption
+                                * variables["consumed_kcals"][month]
+                            )
+                        )
+                        # Add the constraint to the model
+                        model = self.add_constraints(
+                            model,
+                            month,
+                            condition,
+                            food_name + "_Limit_Reduced_Population_" + constraint_type,
+                        )
+                    elif constraint_type == "FEED" or constraint_type == "BIOFUEL":
+                        # limit the feed or biofuel
+                        kcals_feed_or_biofuel_used = self.time_consts[
+                            variable_tag.lower()
+                        ].kcals[month]
+
+                        condition = (
+                            food_consumption_to_limit * kcal_to_nutrient_ratio
+                            <= (
+                                max_fraction_of_consumption * kcals_feed_or_biofuel_used
+                            )
+                        )
+
+                        # Add the constraint to the model
+                        model = self.add_constraints(
+                            model,
+                            month,
+                            condition,
+                            food_name + "_Limit_" + constraint_type,
+                        )
+                    else:
+                        print(
+                            "ERROR: can only constrain feed, biofuel, or human usage in optimizer"
+                        )
+                        sys.exit()
 
         return model
 
@@ -1021,6 +1173,11 @@ class Optimizer:
                     biofuel_sum <= self.time_consts["biofuel"].kcals[month]
                 ),
             }
+            if month > 0:
+                conditions["Feed_Used_Less_Than_Month_Prior"] = (
+                    (feed_sum <= self.get_feed_sum(variables, month - 1)),
+                )
+
         else:
             print(
                 'ERROR: incorrect optimization type. Only "to_humans" or "to_animals" defined'
@@ -1031,10 +1188,8 @@ class Optimizer:
 
         return model
 
-    # OBJECTIVE FUNCTIONS  #
-
-    def add_other_conditions_to_model(
-        self, model, variables, month, maximize_constraints, optimization_type
+    def add_total_human_consumption_to_model(
+        self, model, variables, month, optimization_type
     ):
         """
         Adds conditions that are not specific to a specific food (not defined in a function for that food)
@@ -1156,181 +1311,212 @@ class Optimizer:
 
         # Add constraint for no feeding human edible maintained meat or milk to animals or biofuels
 
+        return model, variables
+
+    def add_maximize_min_month_objective_to_model(
+        self, model, variables, month, maximize_constraints
+    ):
         # Maximize the minimum objective_function value
         # We maximize the minimum humans fed from any month
         # We therefore maximize the minimum ratio of fat per human requirement,
         # protein per human requirement, or kcals per human requirement
         # for all months
-        if optimization_type == "to_humans":
-            maximizer_string = "Kcals_Fed_Month_" + str(month) + "_Objective_Constraint"
-            maximize_constraints.append(maximizer_string)
+        maximizer_string = "Kcals_Fed_Month_" + str(month) + "_Objective_Constraint"
+        maximize_constraints.append(maximizer_string)
 
-            # this tells the model to maximize the minimum month of consumed_kcals
+        # this tells the model to maximize the minimum month of consumed_kcals
+        model += (
+            variables["objective_function"] <= variables["consumed_kcals"][month],
+            maximizer_string,
+        )
+
+        if self.single_valued_constants["inputs"]["INCLUDE_FAT"]:
+            maximizer_string = "Fat_Fed_Month_" + str(month) + "_Objective_Constraint"
+            maximize_constraints.append(maximizer_string)
             model += (
-                variables["objective_function"] <= variables["consumed_kcals"][month],
+                variables["objective_function"] <= variables["consumed_fat"][month],
                 maximizer_string,
             )
 
-            if self.single_valued_constants["inputs"]["INCLUDE_FAT"]:
-                maximizer_string = (
-                    "Fat_Fed_Month_" + str(month) + "_Objective_Constraint"
-                )
-                maximize_constraints.append(maximizer_string)
-                model += (
-                    variables["objective_function"] <= variables["consumed_fat"][month],
-                    maximizer_string,
-                )
-
-            if self.single_valued_constants["inputs"]["INCLUDE_PROTEIN"]:
-                maximizer_string = (
-                    "Protein_Fed_Month_" + str(month) + "_Objective_Constraint"
-                )
-                maximize_constraints.append(maximizer_string)
-                model += (
-                    variables["objective_function"]
-                    <= variables["consumed_protein"][month],
-                    maximizer_string,
-                )
-
-        elif optimization_type == "to_animals":
-            # to satisfy animal feed demand:
-            #   - each month must be less than or equal to the last.
-            #   - maximize minimum month
-
-            feed_sum = self.get_feed_sum(variables, month)
-
+        if self.single_valued_constants["inputs"]["INCLUDE_PROTEIN"]:
             maximizer_string = (
-                "Kcals_Fed_Animals_Month_" + str(month) + "_Objective_Constraint"
+                "Protein_Fed_Month_" + str(month) + "_Objective_Constraint"
             )
             maximize_constraints.append(maximizer_string)
-
-            # this tells the model to maximize the minimum month of feed_sum
             model += (
-                variables["objective_function"] <= feed_sum,
+                variables["objective_function"] <= variables["consumed_protein"][month],
                 maximizer_string,
             )
-            # TODO: ADD FAT AND PROTEIN
-        else:
-            print(
-                'ERROR: incorrect optimization type. Only "to_humans" or "to_animals" defined'
+        return model, variables, maximize_constraints
+
+    def add_maximize_sum_total_feed_used_by_animals(self, model, variables, nmonths):
+        # to satisfy animal feed demand:
+        #   - each month must be less than or equal to the last.
+        #   - maximize minimum month
+        feed_sum = 0
+        for month in range(nmonths):
+            feed_sum += self.get_feed_sum(variables, month)
+
+        maximizer_string = "Kcals_Fed_Animals_All_Months_Objective_Constraint"
+        maximize_constraints = [maximizer_string]
+
+        # this tells the model to maximize the total feed_sum over all months
+        model += (
+            variables["objective_function"] <= feed_sum,
+            maximizer_string,
+        )
+        # TODO: ADD FAT AND PROTEIN
+
+        return model, variables, maximize_constraints
+
+    # RESOURCE CONSTANTS FUNCTIONS BELOW
+
+    def add_seaweed_to_model(self, month, variables):
+        """
+        Adds seaweed to the model by setting conditions for the seaweed wet on farm, used area, and other variables.
+        Args:
+            month (int): the current month of the simulation
+            variables (dict): a dictionary containing the current values of the variables in the simulation
+        Returns:
+            dict: a dictionary containing the conditions for the seaweed wet on farm, used area, and other variables
+        """
+
+        # Initialize the conditions dictionary
+        conditions = {}
+
+        # Get the initial seaweed, maximum density, built area, and initial built seaweed area
+        initial_seaweed = self.single_valued_constants["INITIAL_SEAWEED"]
+        max_density = self.single_valued_constants["MAXIMUM_DENSITY"]
+        built_area = self.time_consts["built_area"][month]
+        initial_built_area = self.single_valued_constants["INITIAL_BUILT_SEAWEED_AREA"]
+
+        # Set the conditions for the seaweed wet on farm, used area, and other variables
+        conditions["Seaweed_Wet_On_Farm_Lowerbound"] = (
+            initial_seaweed <= variables["seaweed_wet_on_farm"][month]
+        )
+        conditions["Seaweed_Wet_On_Farm_Upperbound"] = (
+            variables["seaweed_wet_on_farm"][month] <= max_density * built_area
+        )
+        conditions["Used_Area_Lowerbound"] = (
+            variables["used_area"][month] >= initial_built_area
+        )
+        conditions["Used_Area_Upperbound"] = variables["used_area"][month] <= built_area
+
+        # Additional conditions for the first month and later months
+        if month == 0:
+            conditions["Seaweed_Wet_On_Farm"] = (
+                variables["seaweed_wet_on_farm"][0] == initial_seaweed
             )
-            sys.exit()
+            conditions["Used_Area"] = variables["used_area"][0] == initial_built_area
+            conditions["Seaweed_To_Humans"] = variables["seaweed_to_humans"][0] == 0
+            conditions["Seaweed_Feed"] = variables["seaweed_feed"][0] == 0
+            conditions["Seaweed_Biofuel"] = variables["seaweed_biofuel"][0] == 0
 
-        return [model, variables, maximize_constraints]
+        else:
+            # Calculate intermediate values to simplify the condition
+            prev_seaweed = variables["seaweed_wet_on_farm"][month - 1]
+            growth_rate = self.time_consts["growth_rates_monthly"][month] / 100.0
+            humans_consumed = variables["seaweed_to_humans"][month]
+            feed_consumed = variables["seaweed_feed"][month]
+            biofuel_consumed = variables["seaweed_biofuel"][month]
+            prev_used_area = variables["used_area"][month - 1]
+            curr_used_area = variables["used_area"][month]
+            harvest_loss = self.single_valued_constants["HARVEST_LOSS"] / 100.0
+            min_density = self.single_valued_constants["MINIMUM_DENSITY"]
 
+            # Set the condition for the seaweed wet on farm
+            conditions["Seaweed_Wet_On_Farm"] = (
+                variables["seaweed_wet_on_farm"][month]
+                == prev_seaweed * (1 + growth_rate)
+                - humans_consumed
+                - feed_consumed
+                - biofuel_consumed
+                - (curr_used_area - prev_used_area) * min_density * harvest_loss
+            )
 
-# RESOURCE CONSTANTS FUNCTIONS BELOW
+        # Return the conditions dictionary
+        return conditions
 
+    def add_stored_food_to_model_only_first_year(self, month, variables):
+        """
+        Adds stored food to the model for the first year only.
+        Args:
+            month (int): the current month of the simulation
+            variables (dict): a dictionary containing the variables of the simulation
+        Returns:
+            dict: a dictionary containing the conditions for the simulation
+        """
+        # Initialize an empty dictionary to store the conditions
+        conditions = {}
 
-def add_seaweed_to_model(self, month, variables):
-    """
-    Adds seaweed to the model by setting conditions for the seaweed wet on farm, used area, and other variables.
-    Args:
-        month (int): the current month of the simulation
-        variables (dict): a dictionary containing the current values of the variables in the simulation
-    Returns:
-        dict: a dictionary containing the conditions for the seaweed wet on farm, used area, and other variables
-    """
+        # Get the maximum number of kcals of stored food available
+        max_kcals = self.single_valued_constants["stored_food"].initial_available.kcals
 
-    # Initialize the conditions dictionary
-    conditions = {}
+        # If it's the first month of the simulation
+        if month == 0:
+            # Add the condition that the stored food at the start of the simulation is
+            # equal to the maximum kcals available
+            conditions["Stored_Food_Start"] = (
+                variables["stored_food_start"][0] == max_kcals
+            )
+            # Add the condition that the stored food eaten in the first month is equal
+            # to the difference between the stored food at the start of the month and
+            # the food used for humans, feed, and biofuel
+            conditions["Stored_Food_Eaten"] = (
+                variables["stored_food_end"][0]
+                == variables["stored_food_start"][0]
+                - variables["stored_food_to_humans"][0]
+                - variables["stored_food_feed"][0]
+                - variables["stored_food_biofuel"][0]
+            )
 
-    # Get the initial seaweed, maximum density, built area, and initial built seaweed area
-    initial_seaweed = self.single_valued_constants["INITIAL_SEAWEED"]
-    max_density = self.single_valued_constants["MAXIMUM_DENSITY"]
-    built_area = self.time_consts["built_area"][month]
-    initial_built_area = self.single_valued_constants["INITIAL_BUILT_SEAWEED_AREA"]
+        # If it's after the first year of the simulation
+        elif month > 12:
+            # Add the condition that all stored food prefixes after the second one are equal to 0
+            for prefix in self.stored_food_prefixes[2:]:
+                conditions[prefix] = variables[prefix][month] == 0
 
-    # Set the conditions for the seaweed wet on farm, used area, and other variables
-    conditions["Seaweed_Wet_On_Farm_Lowerbound"] = (
-        initial_seaweed <= variables["seaweed_wet_on_farm"][month]
-    )
-    conditions["Seaweed_Wet_On_Farm_Upperbound"] = (
-        variables["seaweed_wet_on_farm"][month] <= max_density * built_area
-    )
-    conditions["Used_Area_Lowerbound"] = (
-        variables["used_area"][month] >= initial_built_area
-    )
-    conditions["Used_Area_Upperbound"] = variables["used_area"][month] <= built_area
+        # If it's within the first year of the simulation
+        else:
+            # Add the condition that the stored food eaten in the current month is
+            # equal to the difference between the stored food at the start of the
+            # month and the food used for humans, feed, and biofuel
+            conditions["Stored_Food_Eaten"] = (
+                variables["stored_food_end"][month]
+                == variables["stored_food_start"][month]
+                - variables["stored_food_to_humans"][month]
+                - variables["stored_food_feed"][month]
+                - variables["stored_food_biofuel"][month]
+            )
 
-    # Additional conditions for the first month and later months
-    if month == 0:
-        conditions["Seaweed_Wet_On_Farm"] = (
-            variables["seaweed_wet_on_farm"][0] == initial_seaweed
-        )
-        conditions["Used_Area"] = variables["used_area"][0] == initial_built_area
-        conditions["Seaweed_To_Humans"] = variables["seaweed_to_humans"][0] == 0
-        conditions["Seaweed_Feed"] = variables["seaweed_feed"][0] == 0
-        conditions["Seaweed_Biofuel"] = variables["seaweed_biofuel"][0] == 0
+        # Return the dictionary containing the conditions
+        return conditions
 
-    else:
-        # Calculate intermediate values to simplify the condition
-        prev_seaweed = variables["seaweed_wet_on_farm"][month - 1]
-        growth_rate = self.time_consts["growth_rates_monthly"][month] / 100.0
-        humans_consumed = variables["seaweed_to_humans"][month]
-        feed_consumed = variables["seaweed_feed"][month]
-        biofuel_consumed = variables["seaweed_biofuel"][month]
-        prev_used_area = variables["used_area"][month - 1]
-        curr_used_area = variables["used_area"][month]
-        harvest_loss = self.single_valued_constants["HARVEST_LOSS"] / 100.0
-        min_density = self.single_valued_constants["MINIMUM_DENSITY"]
+    def add_stored_food_to_model(self, month, variables):
+        if not self.single_valued_constants["STORE_FOOD_BETWEEN_YEARS"]:
+            return self.add_stored_food_to_model_only_first_year(month, variables)
 
-        # Set the condition for the seaweed wet on farm
-        conditions["Seaweed_Wet_On_Farm"] = (
-            variables["seaweed_wet_on_farm"][month]
-            == prev_seaweed * (1 + growth_rate)
-            - humans_consumed
-            - feed_consumed
-            - biofuel_consumed
-            - (curr_used_area - prev_used_area) * min_density * harvest_loss
-        )
+        conditions = {}
 
-    # Return the conditions dictionary
-    return conditions
+        if month == 0:  # first Month
+            conditions["Stored_Food_Start"] = (
+                variables["stored_food_start"][0]
+                == self.single_valued_constants["stored_food"].initial_available.kcals
+            )
 
+        elif month == self.NMONTHS - 1:  # last month
+            conditions["Stored_Food_End"] = variables["stored_food_end"][month] == 0
+            conditions["Stored_Food_Start"] = (
+                variables["stored_food_start"][month]
+                == variables["stored_food_end"][month - 1]
+            )
 
-def add_stored_food_to_model_only_first_year(self, month, variables):
-    """
-    Adds stored food to the model for the first year only.
-    Args:
-        month (int): the current month of the simulation
-        variables (dict): a dictionary containing the variables of the simulation
-    Returns:
-        dict: a dictionary containing the conditions for the simulation
-    """
-    # Initialize an empty dictionary to store the conditions
-    conditions = {}
+        else:
+            conditions["Stored_Food_Start"] = (
+                variables["stored_food_start"][month]
+                == variables["stored_food_end"][month - 1]
+            )
 
-    # Get the maximum number of kcals of stored food available
-    max_kcals = self.single_valued_constants["stored_food"].initial_available.kcals
-
-    # If it's the first month of the simulation
-    if month == 0:
-        # Add the condition that the stored food at the start of the simulation is
-        # equal to the maximum kcals available
-        conditions["Stored_Food_Start"] = variables["stored_food_start"][0] == max_kcals
-        # Add the condition that the stored food eaten in the first month is equal
-        # to the difference between the stored food at the start of the month and
-        # the food used for humans, feed, and biofuel
-        conditions["Stored_Food_Eaten"] = (
-            variables["stored_food_end"][0]
-            == variables["stored_food_start"][0]
-            - variables["stored_food_to_humans"][0]
-            - variables["stored_food_feed"][0]
-            - variables["stored_food_biofuel"][0]
-        )
-
-    # If it's after the first year of the simulation
-    elif month > 12:
-        # Add the condition that all stored food prefixes after the second one are equal to 0
-        for prefix in self.stored_food_prefixes[2:]:
-            conditions[prefix] = variables[prefix][month] == 0
-
-    # If it's within the first year of the simulation
-    else:
-        # Add the condition that the stored food eaten in the current month is
-        # equal to the difference between the stored food at the start of the
-        # month and the food used for humans, feed, and biofuel
         conditions["Stored_Food_Eaten"] = (
             variables["stored_food_end"][month]
             == variables["stored_food_start"][month]
@@ -1339,429 +1525,384 @@ def add_stored_food_to_model_only_first_year(self, month, variables):
             - variables["stored_food_biofuel"][month]
         )
 
-    # Return the dictionary containing the conditions
-    return conditions
+        return conditions
 
+    def add_culled_meat_to_model(self, month, variables):
+        """
+        This function adds culled meat to the model based on the month and variables passed in.
 
-def add_stored_food_to_model(self, month, variables):
-    if not self.single_valued_constants["STORE_FOOD_BETWEEN_YEARS"]:
-        return self.add_stored_food_to_model_only_first_year(month, variables)
+        It just makes sure the sum total culled meat consumed never exceeds the sum total allowed consumption.
+        The maximum per month constraint is responsible for making sure culled meat eaten each month does not
+        exceed the amount culled in that month and the months prior.
 
-    conditions = {}
+        Args:
+            month (int): The month for which the culled meat is being added
+            variables (dict): A dictionary containing variables related to culled meat
 
-    if month == 0:  # first Month
-        conditions["Stored_Food_Start"] = (
-            variables["stored_food_start"][0]
-            == self.single_valued_constants["stored_food"].initial_available.kcals
+        Returns:
+            dict: A dictionary containing conditions related to culled meat
+
+        Example:
+            >>> optimizer = Optimizer()
+            >>> variables = {
+            ...     "culled_meat_start": [10, 20, 30],
+            ...     "culled_meat_end": [20, 30, 40],
+            ...     "culled_meat_eaten": [5, 10, 15]
+            ... }
+            >>> optimizer.add_culled_meat_to_model(1, variables)
+            {'Culled_Meat_Start': True, 'Culled_Meat_Eaten': 10}
+        """
+        conditions = {}
+
+        if month == 0:  # first Month
+            # Check if the culled meat start value is equal to the constant value
+            conditions["Culled_Meat_Start"] = (
+                variables["culled_meat_start"][0]
+                == self.single_valued_constants["culled_meat_summed_consumption"].kcals
+            )
+        else:
+            # Check if the culled meat start value is equal to the culled meat end value of the previous month
+            conditions["Culled_Meat_Start"] = (
+                variables["culled_meat_start"][month]
+                == variables["culled_meat_end"][month - 1]
+            )
+
+        # Calculate the amount of culled meat eaten in the month
+        conditions["Culled_Meat_Eaten"] = (
+            variables["culled_meat_end"][month]
+            == variables["culled_meat_start"][month]
+            - variables["culled_meat_eaten"][month]
         )
 
-    elif month == self.NMONTHS - 1:  # last month
-        conditions["Stored_Food_End"] = variables["stored_food_end"][month] == 0
-        conditions["Stored_Food_Start"] = (
-            variables["stored_food_start"][month]
-            == variables["stored_food_end"][month - 1]
+        # Add in the constraint that culled meat eaten is less than the maximum consumed that month.
+        conditions["Culled_Meat_Eaten_Maximum"] = (
+            variables["culled_meat_eaten"][month]
+            <= self.time_consts["max_consumed_culled_kcals_each_month"][month]
         )
 
-    else:
-        conditions["Stored_Food_Start"] = (
-            variables["stored_food_start"][month]
-            == variables["stored_food_end"][month - 1]
-        )
+        return conditions
 
-    conditions["Stored_Food_Eaten"] = (
-        variables["stored_food_end"][month]
-        == variables["stored_food_start"][month]
-        - variables["stored_food_to_humans"][month]
-        - variables["stored_food_feed"][month]
-        - variables["stored_food_biofuel"][month]
-    )
+    def add_outdoor_crops_to_model_no_storage(self, month, variables):
+        """
+        Adds a condition to the model that checks if the crops food storage is zero for a given month.
+        Args:
+            month (int): The month to check the crops food storage for.
+            variables (dict): A dictionary containing the variables used in the model.
 
-    return conditions
+        Returns:
+            dict: A dictionary containing the condition to be added to the model.
 
+        Example:
+            >>> variables = {"crops_food_storage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+            >>> add_outdoor_crops_to_model_no_storage(3, variables)
+            {'Crops_Food_Storage_Zero': True}
+        """
+        # Create a dictionary containing the condition to be added to the model
+        conditions = {
+            "Crops_Food_Storage_Zero": variables["crops_food_storage"][month] == 0
+        }
+        # Return the dictionary containing the condition
+        return conditions
 
-def add_culled_meat_to_model(self, month, variables):
-    """
-    This function adds culled meat to the model based on the month and variables passed in.
+    def handle_first_month(self, variables, month):
+        """
+        This function handles the first month of the simulation. It checks if the crops food storage is equal to the
+        outdoor crops production minus the crops food eaten. If this condition is met, it returns a dictionary with the
+        condition as a key and True as a value.
+        Args:
+            self (Optimizer): the instance of the Optimizer class
+            variables (dict): a dictionary containing the variables used in the simulation
+            month (int): the current month of the simulation
+        Returns:
+            dict: a dictionary containing the condition as a key and True as a value if the condition is met
+        """
+        # Define the condition to check
+        conditions = {
+            "Crops_Food_Storage": (
+                variables["crops_food_storage"][month]
+                == self.time_consts["outdoor_crops"].production.kcals[month]
+                - variables["crops_food_eaten"][month]
+            )
+        }
+        # Return the dictionary with the condition and its value
+        return conditions
 
-    It just makes sure the sum total culled meat consumed never exceeds the sum total allowed consumption.
-    The maximum per month constraint is responsible for making sure culled meat eaten each month does not
-    exceed the amount culled in that month and the months prior.
+    def handle_last_month(
+        self, variables, month, use_relocated_crops, initial_harvest_duration
+    ):
+        if use_relocated_crops:
+            assert (
+                month > initial_harvest_duration
+            ), """ERROR: In relocated case, you need to have a scenario at least 1 harvest duration long,
+                right now it is this many months for harvest duration:""" + str(
+                initial_harvest_duration
+            )
 
-    Args:
-        month (int): The month for which the culled meat is being added
-        variables (dict): A dictionary containing variables related to culled meat
+        conditions = {
+            "Crops_Food_None_Left": variables["crops_food_storage"][month] == 0,
+            "Crops_Food_Storage": (
+                variables["crops_food_storage"][month]
+                == self.time_consts["outdoor_crops"].production.kcals[month]
+                + variables["crops_food_storage"][month - 1]
+                - variables["crops_food_eaten"][month]
+            ),
+        }
+        return conditions
 
-    Returns:
-        dict: A dictionary containing conditions related to culled meat
+    def handle_other_months(self, variables, month, use_relocated_crops):
+        """
+        This function handles months that are not January or July. It calculates the conditions for the month based on
+        the variables passed in and returns them.
 
-    Example:
-        >>> optimizer = Optimizer()
-        >>> variables = {
-        ...     "culled_meat_start": [10, 20, 30],
-        ...     "culled_meat_end": [20, 30, 40],
-        ...     "culled_meat_eaten": [5, 10, 15]
-        ... }
-        >>> optimizer.add_culled_meat_to_model(1, variables)
-        {'Culled_Meat_Start': True, 'Culled_Meat_Eaten': 10}
-    """
-    conditions = {}
+        Args:
+            variables (dict): A dictionary containing variables for the simulation
+            month (int): The current month of the simulation
+            use_relocated_crops (bool): A boolean indicating whether or not to use relocated crops
 
-    if month == 0:  # first Month
-        # Check if the culled meat start value is equal to the constant value
-        conditions["Culled_Meat_Start"] = (
-            variables["culled_meat_start"][0]
-            == self.single_valued_constants["culled_meat_summed_consumption"].kcals
-        )
-    else:
-        # Check if the culled meat start value is equal to the culled meat end value of the previous month
-        conditions["Culled_Meat_Start"] = (
-            variables["culled_meat_start"][month]
-            == variables["culled_meat_end"][month - 1]
-        )
+        Returns:
+            dict: A dictionary containing the conditions for the month
 
-    # Calculate the amount of culled meat eaten in the month
-    conditions["Culled_Meat_Eaten"] = (
-        variables["culled_meat_end"][month]
-        == variables["culled_meat_start"][month] - variables["culled_meat_eaten"][month]
-    )
+        Example:
+            >>> variables = {
+            ...     "crops_food_storage": [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200],
+            ...     "crops_food_eaten": [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
+            ... }
+            >>> month = 2
+            >>> use_relocated_crops = False
+            >>> optimizer = Optimizer()
+            >>> optimizer.handle_other_months(variables, month, use_relocated_crops)
+            {'Crops_Food_Storage': True}
+        """
+        # Calculate the conditions for the month
+        conditions = {
+            "Crops_Food_Storage": (
+                variables["crops_food_storage"][month]
+                == self.time_consts["outdoor_crops"].production.kcals[month]
+                + variables["crops_food_storage"][month - 1]
+                - variables["crops_food_eaten"][month]
+            )
+        }
+        # Return the conditions
+        return conditions
 
-    # Add in the constraint that culled meat eaten is less than the maximum consumed that month.
-    conditions["Culled_Meat_Eaten_Maximum"] = (
-        variables["culled_meat_eaten"][month]
-        <= self.time_consts["max_consumed_culled_kcals_each_month"][month]
-    )
+    def add_crops_food_eaten_with_nutrient_name(
+        self, variables, month, nutrient, lowercase_nutrient
+    ):
+        conditions = {
+            "Crops_Food_Eaten"
+            + nutrient: (
+                variables["crops_food_eaten" + lowercase_nutrient][month]
+                == variables["crops_food_to_humans" + lowercase_nutrient][month]
+                + variables["crops_food_biofuel" + lowercase_nutrient][month]
+                + variables["crops_food_feed" + lowercase_nutrient][month]
+            )
+        }
+        return conditions
 
-    return conditions
+    def create_linear_constraints_for_fat_and_protein_crops_food(
+        self, month, variables, fat_multiplier, protein_multiplier
+    ):
+        """
+        This function creates linear constraints for fat and protein crops food.
+        Args:
+            month (int): The month for which the constraints are being created
+            variables (dict): A dictionary containing variables used in the constraints
+            fat_multiplier (float): The multiplier for fat
+            protein_multiplier (float): The multiplier for protein
+        Returns:
+            dict: A dictionary containing the created constraints
+        """
+        # Create an empty dictionary to store the conditions
+        conditions = {}
 
-
-def add_outdoor_crops_to_model_no_storage(self, month, variables):
-    """
-    Adds a condition to the model that checks if the crops food storage is zero for a given month.
-    Args:
-        month (int): The month to check the crops food storage for.
-        variables (dict): A dictionary containing the variables used in the model.
-
-    Returns:
-        dict: A dictionary containing the condition to be added to the model.
-
-    Example:
-        >>> variables = {"crops_food_storage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
-        >>> add_outdoor_crops_to_model_no_storage(3, variables)
-        {'Crops_Food_Storage_Zero': True}
-    """
-    # Create a dictionary containing the condition to be added to the model
-    conditions = {
-        "Crops_Food_Storage_Zero": variables["crops_food_storage"][month] == 0
-    }
-    # Return the dictionary containing the condition
-    return conditions
-
-
-def handle_first_month(self, variables, month):
-    """
-    This function handles the first month of the simulation. It checks if the crops food storage is equal to the
-    outdoor crops production minus the crops food eaten. If this condition is met, it returns a dictionary with the
-    condition as a key and True as a value.
-    Args:
-        self (Optimizer): the instance of the Optimizer class
-        variables (dict): a dictionary containing the variables used in the simulation
-        month (int): the current month of the simulation
-    Returns:
-        dict: a dictionary containing the condition as a key and True as a value if the condition is met
-    """
-    # Define the condition to check
-    conditions = {
-        "Crops_Food_Storage": (
-            variables["crops_food_storage"][month]
-            == self.time_consts["outdoor_crops"].production.kcals[month]
-            - variables["crops_food_eaten"][month]
-        )
-    }
-    # Return the dictionary with the condition and its value
-    return conditions
-
-
-def handle_last_month(
-    self, variables, month, use_relocated_crops, initial_harvest_duration
-):
-    if use_relocated_crops:
-        assert (
-            month > initial_harvest_duration
-        ), """ERROR: In relocated case, you need to have a scenario at least 1 harvest duration long,
-            right now it is this many months for harvest duration:""" + str(
-            initial_harvest_duration
-        )
-
-    conditions = {
-        "Crops_Food_None_Left": variables["crops_food_storage"][month] == 0,
-        "Crops_Food_Storage": (
-            variables["crops_food_storage"][month]
-            == self.time_consts["outdoor_crops"].production.kcals[month]
-            + variables["crops_food_storage"][month - 1]
-            - variables["crops_food_eaten"][month]
-        ),
-    }
-    return conditions
-
-
-def handle_other_months(self, variables, month, use_relocated_crops):
-    """
-    This function handles months that are not January or July. It calculates the conditions for the month based on
-    the variables passed in and returns them.
-
-    Args:
-        variables (dict): A dictionary containing variables for the simulation
-        month (int): The current month of the simulation
-        use_relocated_crops (bool): A boolean indicating whether or not to use relocated crops
-
-    Returns:
-        dict: A dictionary containing the conditions for the month
-
-    Example:
-        >>> variables = {
-        ...     "crops_food_storage": [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200],
-        ...     "crops_food_eaten": [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
-        ... }
-        >>> month = 2
-        >>> use_relocated_crops = False
-        >>> optimizer = Optimizer()
-        >>> optimizer.handle_other_months(variables, month, use_relocated_crops)
-        {'Crops_Food_Storage': True}
-    """
-    # Calculate the conditions for the month
-    conditions = {
-        "Crops_Food_Storage": (
-            variables["crops_food_storage"][month]
-            == self.time_consts["outdoor_crops"].production.kcals[month]
-            + variables["crops_food_storage"][month - 1]
-            - variables["crops_food_eaten"][month]
-        )
-    }
-    # Return the conditions
-    return conditions
-
-
-def add_crops_food_eaten_with_nutrient_name(
-    self, variables, month, nutrient, lowercase_nutrient
-):
-    conditions = {
-        "Crops_Food_Eaten"
-        + nutrient: (
-            variables["crops_food_eaten" + lowercase_nutrient][month]
-            == variables["crops_food_to_humans" + lowercase_nutrient][month]
-            + variables["crops_food_biofuel" + lowercase_nutrient][month]
-            + variables["crops_food_feed" + lowercase_nutrient][month]
-        )
-    }
-    return conditions
-
-
-def create_linear_constraints_for_fat_and_protein_crops_food(
-    self, month, variables, fat_multiplier, protein_multiplier
-):
-    """
-    This function creates linear constraints for fat and protein crops food.
-    Args:
-        month (int): The month for which the constraints are being created
-        variables (dict): A dictionary containing variables used in the constraints
-        fat_multiplier (float): The multiplier for fat
-        protein_multiplier (float): The multiplier for protein
-    Returns:
-        dict: A dictionary containing the created constraints
-    """
-    # Create an empty dictionary to store the conditions
-    conditions = {}
-
-    # Add constraints for crops food eaten without specifying a nutrient name
-    conditions.update(
-        self.add_crops_food_eaten_with_nutrient_name(variables, month, "", "")
-    )
-
-    # Create a dictionary to store the nutrient multipliers
-    nutrient_multiplier_dictionary = {
-        fat_multiplier: "_Fat",
-        protein_multiplier: "_Protein",
-    }
-
-    # Loop through the nutrient multiplier dictionary
-    for multiplier, nutrient in nutrient_multiplier_dictionary.items():
-        # Convert the nutrient name to lowercase
-        lowercase_nutrient = nutrient.lower()
-
-        # Add constraints for crops food eaten with a specified nutrient name
+        # Add constraints for crops food eaten without specifying a nutrient name
         conditions.update(
-            self.add_crops_food_eaten_with_nutrient_name(
-                variables, month, nutrient, lowercase_nutrient
-            )
+            self.add_crops_food_eaten_with_nutrient_name(variables, month, "", "")
         )
 
-        # Loop through the usage types
-        for usage_type in ["_Feed", "_Biofuel"]:
-            # Convert the usage type to lowercase
-            lowercase_usage_type = usage_type.lower()
+        # Create a dictionary to store the nutrient multipliers
+        nutrient_multiplier_dictionary = {
+            fat_multiplier: "_Fat",
+            protein_multiplier: "_Protein",
+        }
 
-            # Add a constraint for the crops food eaten conversion
-            conditions["Crops_Food_Eaten_Conversion" + usage_type + nutrient] = (
-                variables["crops_food" + lowercase_usage_type + lowercase_nutrient][
-                    month
-                ]
-                == variables["crops_food" + lowercase_usage_type][month] * multiplier
+        # Loop through the nutrient multiplier dictionary
+        for multiplier, nutrient in nutrient_multiplier_dictionary.items():
+            # Convert the nutrient name to lowercase
+            lowercase_nutrient = nutrient.lower()
+
+            # Add constraints for crops food eaten with a specified nutrient name
+            conditions.update(
+                self.add_crops_food_eaten_with_nutrient_name(
+                    variables, month, nutrient, lowercase_nutrient
+                )
             )
 
-    # Return the created conditions
-    return conditions
+            # Loop through the usage types
+            for usage_type in ["_Feed", "_Biofuel"]:
+                # Convert the usage type to lowercase
+                lowercase_usage_type = usage_type.lower()
 
+                # Add a constraint for the crops food eaten conversion
+                conditions["Crops_Food_Eaten_Conversion" + usage_type + nutrient] = (
+                    variables["crops_food" + lowercase_usage_type + lowercase_nutrient][
+                        month
+                    ]
+                    == variables["crops_food" + lowercase_usage_type][month]
+                    * multiplier
+                )
 
-def get_outdoor_crops_month_constants(self, use_relocated_crops, month):
-    """
-    Calculates the constants for outdoor crops based on the month and whether or not
-    relocated crops are being used. Returns a tuple of the initial harvest duration,
-    fat multiplier, and protein multiplier.
+        # Return the created conditions
+        return conditions
 
-    Args:
-        use_relocated_crops (bool): Whether or not relocated crops are being used.
-        month (int): The current month.
+    def get_outdoor_crops_month_constants(self, use_relocated_crops, month):
+        """
+        Calculates the constants for outdoor crops based on the month and whether or not
+        relocated crops are being used. Returns a tuple of the initial harvest duration,
+        fat multiplier, and protein multiplier.
 
-    Returns:
-        tuple: A tuple containing the initial harvest duration, fat multiplier, and
-        protein multiplier.
+        Args:
+            use_relocated_crops (bool): Whether or not relocated crops are being used.
+            month (int): The current month.
 
-    Example:
-        >>> get_outdoor_crops_month_constants(True, 5)
-        (7, 0.4, 0.3)
-    """
-    # Calculate the initial harvest duration based on constants
-    initial_harvest_duration = (
-        self.single_valued_constants["INITIAL_HARVEST_DURATION_IN_MONTHS"]
-        + self.single_valued_constants["DELAY"]["ROTATION_CHANGE_IN_MONTHS"]
-    )
+        Returns:
+            tuple: A tuple containing the initial harvest duration, fat multiplier, and
+            protein multiplier.
 
-    # Check if relocated crops are being used and if the month is greater than or equal
-    # to the initial harvest duration
-    if use_relocated_crops and month >= initial_harvest_duration:
-        # If so, use the rotation fraction constants for fat and protein
-        fat_multiplier = self.single_valued_constants["OG_ROTATION_FRACTION_FAT"]
-        protein_multiplier = self.single_valued_constants[
-            "OG_ROTATION_FRACTION_PROTEIN"
+        Example:
+            >>> get_outdoor_crops_month_constants(True, 5)
+            (7, 0.4, 0.3)
+        """
+        # Calculate the initial harvest duration based on constants
+        initial_harvest_duration = (
+            self.single_valued_constants["INITIAL_HARVEST_DURATION_IN_MONTHS"]
+            + self.single_valued_constants["DELAY"]["ROTATION_CHANGE_IN_MONTHS"]
+        )
+
+        # Check if relocated crops are being used and if the month is greater than or equal
+        # to the initial harvest duration
+        if use_relocated_crops and month >= initial_harvest_duration:
+            # If so, use the rotation fraction constants for fat and protein
+            fat_multiplier = self.single_valued_constants["OG_ROTATION_FRACTION_FAT"]
+            protein_multiplier = self.single_valued_constants[
+                "OG_ROTATION_FRACTION_PROTEIN"
+            ]
+        else:
+            # Otherwise, use the original fraction constants for fat and protein
+            fat_multiplier = self.single_valued_constants["OG_FRACTION_FAT"]
+            protein_multiplier = self.single_valued_constants["OG_FRACTION_PROTEIN"]
+
+        # Return the calculated constants as a tuple
+        return (initial_harvest_duration, fat_multiplier, protein_multiplier)
+
+    def add_outdoor_crops_to_model(self, month, variables):
+        conditions = {}
+
+        use_relocated_crops = self.single_valued_constants["inputs"][
+            "OG_USE_BETTER_ROTATION"
         ]
-    else:
-        # Otherwise, use the original fraction constants for fat and protein
-        fat_multiplier = self.single_valued_constants["OG_FRACTION_FAT"]
-        protein_multiplier = self.single_valued_constants["OG_FRACTION_PROTEIN"]
+        (
+            initial_harvest_duration,
+            fat_multiplier,
+            protein_multiplier,
+        ) = self.get_outdoor_crops_month_constants(use_relocated_crops, month)
 
-    # Return the calculated constants as a tuple
-    return (initial_harvest_duration, fat_multiplier, protein_multiplier)
-
-
-def add_outdoor_crops_to_model(self, month, variables):
-    conditions = {}
-
-    use_relocated_crops = self.single_valued_constants["inputs"][
-        "OG_USE_BETTER_ROTATION"
-    ]
-    (
-        initial_harvest_duration,
-        fat_multiplier,
-        protein_multiplier,
-    ) = self.get_outdoor_crops_month_constants(use_relocated_crops, month)
-
-    conditions.update(
-        self.create_linear_constraints_for_fat_and_protein_crops_food(
-            month, variables, fat_multiplier, protein_multiplier
-        )
-    )
-
-    if month == 0:
-        conditions.update(self.handle_first_month(variables, month))
-    elif month == self.NMONTHS - 1:
         conditions.update(
-            self.handle_last_month(
-                variables, month, use_relocated_crops, initial_harvest_duration
+            self.create_linear_constraints_for_fat_and_protein_crops_food(
+                month, variables, fat_multiplier, protein_multiplier
             )
         )
-    else:
-        conditions.update(
-            self.handle_other_months(variables, month, initial_harvest_duration)
+
+        if month == 0:
+            conditions.update(self.handle_first_month(variables, month))
+        elif month == self.NMONTHS - 1:
+            conditions.update(
+                self.handle_last_month(
+                    variables, month, use_relocated_crops, initial_harvest_duration
+                )
+            )
+        else:
+            conditions.update(
+                self.handle_other_months(variables, month, initial_harvest_duration)
+            )
+
+        return conditions
+
+    def add_methane_scp_to_model(self, month, variables):
+        """
+        Adds the methane SCP (Substrate Coefficient of Production) constraint to the model for a given month.
+        The constraint ensures that the total amount of methane SCP from all sources is less than or equal to the
+        maximum amount of methane SCP allowed for that month.
+
+        Args:
+            month (int): The month for which the constraint is being added.
+            variables (dict): A dictionary containing the variables used in the constraint.
+
+        Returns:
+            dict: A dictionary containing the methane SCP constraint.
+
+        Example:
+            >>> variables = {
+            ...     "methane_scp_to_humans": [10, 20, 30],
+            ...     "methane_scp_feed": [5, 10, 15],
+            ...     "methane_scp_biofuel": [2, 4, 6]
+            ... }
+            >>> optimizer = Optimizer()
+            >>> constraint = optimizer.add_methane_scp_to_model(1, variables)
+            >>> print(constraint)
+            {'Methane_SCP': True}
+        """
+        # Calculate the total amount of methane SCP from all sources for the given month
+        total_methane_scp = (
+            variables["methane_scp_to_humans"][month]
+            + variables["methane_scp_feed"][month]
+            + variables["methane_scp_biofuel"][month]
         )
 
-    return conditions
+        # Create a dictionary containing the methane SCP constraint
+        conditions = {
+            "Methane_SCP": (
+                total_methane_scp <= self.time_consts["methane_scp"].kcals[month]
+            )
+        }
 
+        return conditions
 
-def add_methane_scp_to_model(self, month, variables):
-    """
-    Adds the methane SCP (Substrate Coefficient of Production) constraint to the model for a given month.
-    The constraint ensures that the total amount of methane SCP from all sources is less than or equal to the
-    maximum amount of methane SCP allowed for that month.
+    def add_cellulosic_sugar_to_model(self, month, variables):
+        """
+        Adds the amount of cellulosic sugar available in a given month to the model and checks if it is within the
+        limit of available kcals for that month.
 
-    Args:
-        month (int): The month for which the constraint is being added.
-        variables (dict): A dictionary containing the variables used in the constraint.
+        Args:
+            month (int): The month for which the cellulosic sugar is being added to the model.
+            variables (dict): A dictionary containing the variables for the model.
 
-    Returns:
-        dict: A dictionary containing the methane SCP constraint.
+        Returns:
+            dict: A dictionary containing the conditions for the model.
 
-    Example:
-        >>> variables = {
-        ...     "methane_scp_to_humans": [10, 20, 30],
-        ...     "methane_scp_feed": [5, 10, 15],
-        ...     "methane_scp_biofuel": [2, 4, 6]
-        ... }
-        >>> optimizer = Optimizer()
-        >>> constraint = optimizer.add_methane_scp_to_model(1, variables)
-        >>> print(constraint)
-        {'Methane_SCP': True}
-    """
-    # Calculate the total amount of methane SCP from all sources for the given month
-    total_methane_scp = (
-        variables["methane_scp_to_humans"][month]
-        + variables["methane_scp_feed"][month]
-        + variables["methane_scp_biofuel"][month]
-    )
-
-    # Create a dictionary containing the methane SCP constraint
-    conditions = {
-        "Methane_SCP": (
-            total_methane_scp <= self.time_consts["methane_scp"].kcals[month]
+        Example:
+            >>> variables = {
+            ...     "cellulosic_sugar_to_humans": [100, 200, 300],
+            ...     "cellulosic_sugar_feed": [50, 100, 150],
+            ...     "cellulosic_sugar_biofuel": [25, 50, 75]
+            ... }
+            >>> optimizer = Optimizer()
+            >>> optimizer.add_cellulosic_sugar_to_model(1, variables)
+            {'Cellulosic_Sugar': True}
+        """
+        # Calculate the total amount of cellulosic sugar available in the given month
+        total_cellulosic_sugar = (
+            variables["cellulosic_sugar_to_humans"][month]
+            + variables["cellulosic_sugar_feed"][month]
+            + variables["cellulosic_sugar_biofuel"][month]
         )
-    }
 
-    return conditions
+        # Check if the total amount of cellulosic sugar is within the limit of available kcals for that month
+        conditions = {
+            "Cellulosic_Sugar": (
+                total_cellulosic_sugar
+                <= self.time_consts["cellulosic_sugar"].kcals[month]
+            )
+        }
 
-
-def add_cellulosic_sugar_to_model(self, month, variables):
-    """
-    Adds the amount of cellulosic sugar available in a given month to the model and checks if it is within the
-    limit of available kcals for that month.
-
-    Args:
-        month (int): The month for which the cellulosic sugar is being added to the model.
-        variables (dict): A dictionary containing the variables for the model.
-
-    Returns:
-        dict: A dictionary containing the conditions for the model.
-
-    Example:
-        >>> variables = {
-        ...     "cellulosic_sugar_to_humans": [100, 200, 300],
-        ...     "cellulosic_sugar_feed": [50, 100, 150],
-        ...     "cellulosic_sugar_biofuel": [25, 50, 75]
-        ... }
-        >>> optimizer = Optimizer()
-        >>> optimizer.add_cellulosic_sugar_to_model(1, variables)
-        {'Cellulosic_Sugar': True}
-    """
-    # Calculate the total amount of cellulosic sugar available in the given month
-    total_cellulosic_sugar = (
-        variables["cellulosic_sugar_to_humans"][month]
-        + variables["cellulosic_sugar_feed"][month]
-        + variables["cellulosic_sugar_biofuel"][month]
-    )
-
-    # Check if the total amount of cellulosic sugar is within the limit of available kcals for that month
-    conditions = {
-        "Cellulosic_Sugar": (
-            total_cellulosic_sugar <= self.time_consts["cellulosic_sugar"].kcals[month]
-        )
-    }
-
-    return conditions
+        return conditions

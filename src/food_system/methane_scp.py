@@ -72,16 +72,6 @@ class MethaneSCP:
             1e9 / self.SCP_KCALS_PER_KG * self.SCP_FRAC_PROTEIN / 1e6
         )
 
-        self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP = constants_for_params[
-            "MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP"
-        ]
-        self.MAX_FRACTION_FEED_CONSUMED_AS_SCP = constants_for_params[
-            "MAX_FRACTION_FEED_CONSUMED_AS_SCP"
-        ]
-        self.MAX_FRACTION_BIOFUEL_CONSUMED_AS_SCP = constants_for_params[
-            "MAX_FRACTION_BIOFUEL_CONSUMED_AS_SCP"
-        ]
-
         # billion kcals a month for country in question
         self.COUNTRY_MONTHLY_NEEDS = (
             constants_for_params["POP"] * Food.conversions.kcals_monthly / 1e9
@@ -90,10 +80,6 @@ class MethaneSCP:
         # billion kcals a month for 100% population (7.8 billion people).
         self.GLOBAL_MONTHLY_NEEDS = (
             constants_for_params["GLOBAL_POP"] * Food.conversions.kcals_monthly / 1e9
-        )
-
-        self.MAX_METHANE_SCP_HUMANS_CAN_CONSUME_MONTHLY = (
-            self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP * self.COUNTRY_MONTHLY_NEEDS
         )
 
         # apply sugar waste also to methane scp, for lack of better baseline
@@ -107,7 +93,7 @@ class MethaneSCP:
                 "INDUSTRIAL_FOODS_MONTHS"
             ]
 
-            global_values_percent_fed_just_scp = np.array(
+            global_values_percent_fed_just_scp = (
                 industrial_delay_months
                 + [0] * 12
                 + [2] * 5
@@ -116,7 +102,7 @@ class MethaneSCP:
                 + [9]
                 + [11] * 6
                 + [13]
-                + [15] * 210
+                + [15] * 1000
             )
             METHANE_SCP_PERCENT_KCALS = list(
                 np.array(industrial_delay_months + global_values_percent_fed_just_scp)
@@ -139,32 +125,26 @@ class MethaneSCP:
         else:
             self.production_kcals_scp_per_month = [0] * self.NMONTHS
 
-    def calculate_scp_fat_and_protein_production(self):
-        """
-        Calculates the fat and protein production of SCP.
-
-        Attributes:
-            production (Food): A Food object containing the production of SCP.
-        """
-        self.production = Food()
-
-        # set the kcals attribute of the production Food object
-        self.production.kcals = np.array(self.production_kcals_scp_per_month)
-        # calculate the fat attribute of the production Food object
+    def create_scp_food_from_kcals(self, kcals):
         # billions of kcals converted to 1000s of tons fat
-        self.production.fat = np.array(
-            list(np.array(self.production.kcals) * self.SCP_KCALS_TO_FAT_CONVERSION)
-        )
 
-        # calculate the protein attribute of the production Food object
+        production_fat = np.array(
+            list(np.array(kcals) * self.SCP_KCALS_TO_FAT_CONVERSION)
+        )
         # billions of kcals converted to 1000s of tons protein
-        self.production.protein = np.array(
-            list(np.array(self.production.kcals) * self.SCP_KCALS_TO_PROTEIN_CONVERSION)
+        production_protein = np.array(
+            list(np.array(kcals) * self.SCP_KCALS_TO_PROTEIN_CONVERSION)
         )
-
-        # set the units of the production Food object
-        self.production.set_units(
+        return Food(
+            kcals=kcals,
+            fat=production_fat,
+            protein=production_protein,
             kcals_units="billion kcals each month",
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
+
+    def calculate_scp_fat_and_protein_production(self):
+        kcals = self.production_kcals_scp_per_month
+
+        self.production = self.create_scp_food_from_kcals(kcals)

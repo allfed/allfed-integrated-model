@@ -129,7 +129,10 @@ class ScenarioRunner:
         # optimizer did not correctly satisfy constraints within a reasonable margin
         # of error
         validator.validate_results(
-            extracted_results, interpreted_results, percent_fed_from_model
+            extracted_results,
+            interpreted_results,
+            time_consts,
+            percent_fed_from_model,
         )
 
         return interpreted_results

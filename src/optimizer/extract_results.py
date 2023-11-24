@@ -110,7 +110,8 @@ class Extractor:
             time_consts["greenhouse_protein_per_ha"],
             time_consts["greenhouse_area"],
         )
-
+        print("crops_food_to_humans")
+        print(variables["crops_food_to_humans"])
         # if no outdoor food, plot shows zero
         # extract outdoor crops results in terms of people fed and raw tons
         self.extract_outdoor_crops_results(
@@ -143,9 +144,6 @@ class Extractor:
             time_consts["grain_fed_milk_fat"],
             time_consts["grain_fed_milk_protein"],
         )
-
-        # extract excess feed time constant
-        self.excess_feed = time_consts["excess_feed"]
 
         return self
 
@@ -354,36 +352,30 @@ class Extractor:
         Calculates and assigns immediate outdoor crops values.
         Validates if the total outdoor growing production has not changed.
 
-        Args:
-            crops_food_to_humans (float): amount of outdoor crops produced for human consumption
-            crops_food_to_humans_fat (float): amount of fat in outdoor crops produced for human consumption
-            crops_food_to_humans_protein (float): amount of protein in outdoor crops produced for human consumption
-            crops_food_biofuel (float): amount of outdoor crops produced for biofuel
-            crops_food_biofuel_fat (float): amount of fat in outdoor crops produced for biofuel
-            crops_food_biofuel_protein (float): amount of protein in outdoor crops produced for biofuel
-            crops_food_feed (float): amount of outdoor crops produced for animal feed
-            crops_food_feed_fat (float): amount of fat in outdoor crops produced for animal feed
-            crops_food_feed_protein (float): amount of protein in outdoor crops produced for animal feed
-            outdoor_crops_production (Food): food object representing the total outdoor crop production
-
         Returns:
             None
 
-        Example:
-            >>> extractor = Extractor()
-            >>> extractor.extract_outdoor_crops_results(
-            ...     100, 10, 20, 50, 5, 10, 30, 30, 3, 6, Food(1000, 200, 100, 50)
-            ... )
         """
 
-        # create the food object for to_humans outdoor crops
-        self.outdoor_crops_to_humans = (
-            self.create_food_object_from_fat_protein_variables(
-                crops_food_to_humans,
-                crops_food_to_humans_fat,
-                crops_food_to_humans_protein,
+        if isinstance(crops_food_to_humans, list) and sum(crops_food_to_humans) == 0:
+            # if ADD_OUTDOOR_CROPS is false, handle this edgecase
+            self.outdoor_crops_to_humans = Food(
+                kcals=np.zeros_like(crops_food_to_humans),
+                fat=np.zeros_like(crops_food_to_humans),
+                protein=np.zeros_like(crops_food_to_humans),
+                kcals_units="billion people fed each month",
+                fat_units="billion people fed each month",
+                protein_units="billion people fed each month",
             )
-        )
+        else:
+            # create the food object for to_humans outdoor crops
+            self.outdoor_crops_to_humans = (
+                self.create_food_object_from_fat_protein_variables(
+                    crops_food_to_humans,
+                    crops_food_to_humans_fat,
+                    crops_food_to_humans_protein,
+                )
+            )
 
         # create the food object for biofuel outdoor crops
         self.outdoor_crops_biofuel = self.create_food_object_from_fat_protein_variables(
@@ -408,13 +400,35 @@ class Extractor:
             self.outdoor_crops_biofuel.kcals,
         )
 
-        # Calculate the amount of outdoor crops that can be fed immediately and the amount that needs to be stored
-        [
-            billions_fed_immediate_outdoor_crops_kcals,
-            billions_fed_new_stored_outdoor_crops_kcals,
-        ] = self.calculate_outdoor_crops_kcals(
-            crops_food_to_humans, to_humans_outdoor_crop_production
-        )
+        if isinstance(crops_food_to_humans, list) and sum(crops_food_to_humans) == 0:
+            # if ADD_OUTDOOR_CROPS is false, handle this edgecase
+            self.outdoor_crops_to_humans = Food(
+                kcals=np.zeros_like(crops_food_to_humans),
+                fat=np.zeros_like(crops_food_to_humans),
+                protein=np.zeros_like(crops_food_to_humans),
+                kcals_units="billion people fed each month",
+                fat_units="billion people fed each month",
+                protein_units="billion people fed each month",
+            )
+        if (
+            isinstance(crops_food_to_humans, list)
+            and sum(crops_food_to_humans) == 0
+            and np.sum(to_humans_outdoor_crop_production) == 0
+        ):
+            billions_fed_immediate_outdoor_crops_kcals = np.zeros_like(
+                crops_food_to_humans
+            )
+            billions_fed_new_stored_outdoor_crops_kcals = np.zeros_like(
+                crops_food_to_humans
+            )
+        else:
+            # Calculate the amount of outdoor crops that can be fed immediately and the amount that needs to be stored
+            [
+                billions_fed_immediate_outdoor_crops_kcals,
+                billions_fed_new_stored_outdoor_crops_kcals,
+            ] = self.calculate_outdoor_crops_kcals(
+                crops_food_to_humans, to_humans_outdoor_crop_production
+            )
 
         # Validate if immediate and new stored sources add up correctly
         self.validate_sources_add_up(

@@ -184,18 +184,14 @@ class FeedAndBiofuels:
         biofuels = self.get_biofuel_usage(biofuel_duration)
         # excess feed is just using human levels of fat and protein. May need to be
         # altered to reflect more accurate usage.
-        excess_feed = self.get_excess_food_usage_from_percents(
-            constants_for_params["EXCESS_FEED_PERCENT"]
-        )
         feed_duration = constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"]
-        feed = self.get_feed_usage(feed_duration, excess_feed)
+        feed = self.get_feed_usage(feed_duration)
         return (
             biofuels,
             feed,
-            excess_feed,
         )
 
-    def get_feed_usage(self, feed_duration, excess_feed):
+    def get_feed_usage(self, feed_duration):
         """
         This function is used to get the feed usage before the cap is applied.
         The total number of months before shutoff is the duration, representing the
@@ -251,10 +247,7 @@ class FeedAndBiofuels:
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
-        excess_feed_units_billion_kcals = (
-            excess_feed.in_units_bil_kcals_thou_tons_thou_tons_per_month()
-        )
-        return baseline_feed + excess_feed_units_billion_kcals
+        return baseline_feed
 
     def get_biofuel_usage(self, biofuel_duration):
         """
@@ -317,31 +310,6 @@ class FeedAndBiofuels:
         )
 
         return biofuels
-
-    def get_excess_food_usage_from_percents(self, excess_feed_percent):
-        """
-        Calculates the excess food usage based on the percentage of excess feed.
-        Args:
-            excess_feed_percent (float): The percentage of excess feed.
-
-        Returns:
-            Food: A Food object representing the excess food usage.
-        """
-        # TODO: ALTER BASED ON THE EXPECTED FEED FAT AND PROTEIN RATIOS
-        # (CURRENTLY IS JUST USING HUMAN NEEDS)
-
-        # This function is no longer used in the paper, but it may be useful for future work.
-        # For now, it simply returns a Food object with the same percentage values for kcals, fat, and protein.
-
-        # No excess calories
-        return Food(
-            kcals=excess_feed_percent,
-            fat=excess_feed_percent,
-            protein=excess_feed_percent,
-            kcals_units="percent people fed each month",
-            fat_units="percent people fed each month",
-            protein_units="percent people fed each month",
-        )
 
     def convert_kcal_to_tons(self, kcals):
         """

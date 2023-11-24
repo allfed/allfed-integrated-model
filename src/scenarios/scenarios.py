@@ -832,18 +832,16 @@ class Scenarios:
         self.scenario_description += "\nbaseline nutrition"
         assert not self.INTAKE_CONSTRAINTS_SET
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 10
-        constants_for_params["MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_CS"] = 0.4
-        constants_for_params["MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP"] = 0.5
+        constants_for_params["MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_HUMANS"] = 40
+        constants_for_params["MAX_METHANE_SCP_AS_PERCENT_KCALS_HUMANS"] = 50
 
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 10
-        constants_for_params["MAX_FRACTION_FEED_CONSUMED_AS_CELLULOSIC_SUGAR"] = 0.05
-        constants_for_params["MAX_FRACTION_FEED_CONSUMED_AS_SCP"] = 0.43
+        constants_for_params["MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_FEED"] = 5
+        constants_for_params["MAX_METHANE_SCP_AS_PERCENT_KCALS_FEED"] = 43
 
-        constants_for_params[
-            "MAX_FRACTION_BIOFUEL_CONSUMED_AS_CELLULOSIC_SUGAR"
-        ] = 1  # All of biofuel can be CS
-        constants_for_params["MAX_FRACTION_BIOFUEL_CONSUMED_AS_SCP"] = 1
-        constants_for_params["MAX_FRACTION_BIOFUEL_CONSUMED_AS_SEAWEED"] = 0.1
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = 10
+        constants_for_params["MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_BIOFUEL"] = 100
+        constants_for_params["MAX_METHANE_SCP_AS_PERCENT_KCALS_BIOFUEL"] = 100
         self.INTAKE_CONSTRAINTS_SET = True
         return constants_for_params
 
@@ -851,18 +849,16 @@ class Scenarios:
         self.scenario_description += "\nminimum sufficient nutrition"
         assert not self.INTAKE_CONSTRAINTS_SET
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 100
-        constants_for_params["MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_CS"] = 1
-        constants_for_params["MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_SCP"] = 1
+        constants_for_params["MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_HUMANS"] = 100
+        constants_for_params["MAX_METHANE_SCP_AS_PERCENT_KCALS_HUMANS"] = 100
 
-        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 10
-        constants_for_params["MAX_FRACTION_FEED_CONSUMED_AS_CELLULOSIC_SUGAR"] = 0.05
-        constants_for_params["MAX_FRACTION_FEED_CONSUMED_AS_SCP"] = 0.43
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_KCALS_FEED"] = 10
+        constants_for_params["MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_FEED"] = 5
+        constants_for_params["MAX_METHANE_SCP_AS_PERCENT_KCALS_FEED"] = 43
 
-        constants_for_params[
-            "MAX_FRACTION_BIOFUEL_CONSUMED_AS_CELLULOSIC_SUGAR"
-        ] = 1  # All of biofuel can be CS
-        constants_for_params["MAX_FRACTION_BIOFUEL_CONSUMED_AS_SCP"] = 1
-        constants_for_params["MAX_FRACTION_BIOFUEL_CONSUMED_AS_SEAWEED"] = 0.1
+        constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = 10
+        constants_for_params["MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_BIOFUEL"] = 100
+        constants_for_params["MAX_METHANE_SCP_AS_PERCENT_KCALS_BIOFUEL"] = 100
 
         self.INTAKE_CONSTRAINTS_SET = True
         return constants_for_params

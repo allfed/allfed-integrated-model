@@ -31,30 +31,11 @@ class CellulosicSugar:
         self.INDUSTRIAL_FOODS_SLOPE_MULTIPLIER = constants_for_params[
             "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
         ]
-        # maximum fraction of human food that can be consumed as cellulosic sugar
-        self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_CS = constants_for_params[
-            "MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_CS"
-        ]
-        # maximum fraction of kcals in feed that can come from cellulosic sugar
-        self.MAX_FRACTION_FEED_CONSUMED_AS_CELLULOSIC_SUGAR = constants_for_params[
-            "MAX_FRACTION_FEED_CONSUMED_AS_CELLULOSIC_SUGAR"
-        ]
-        # maximum fraction of kcals in biofuel that can come from cellulosic sugar
-        self.MAX_FRACTION_BIOFUEL_CONSUMED_AS_CELLULOSIC_SUGAR = constants_for_params[
-            "MAX_FRACTION_BIOFUEL_CONSUMED_AS_CELLULOSIC_SUGAR"
-        ]
+
         # billion kcals a month for country in question
+
         self.COUNTRY_MONTHLY_NEEDS = (
             constants_for_params["POP"] * Food.conversions.kcals_monthly / 1e9
-        )
-
-        self.MAX_CELLULOSIC_SUGAR_HUMANS_CAN_CONSUME_MONTHLY = (
-            self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_CS * self.COUNTRY_MONTHLY_NEEDS
-        )
-
-        # maximum amount of cellulosic sugar that humans can consume monthly
-        self.MAX_CELLULOSIC_SUGAR_HUMANS_CAN_CONSUME_MONTHLY = (
-            self.MAX_FRACTION_HUMAN_FOOD_CONSUMED_AS_CS * self.COUNTRY_MONTHLY_NEEDS
         )
 
         # percentage of sugar waste

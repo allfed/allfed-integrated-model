@@ -622,7 +622,7 @@ class MeatAndDairy:
                 * 1e3
                 * self.MILK_KCALS
                 / 1e9
-                * (1 - self.MILK_WASTE / 100)
+                * (1 - self.MILK_WASTE_DISTRIBUTION / 100)
             )
 
             # Calculate fat produced from grain-fed milk
@@ -630,7 +630,7 @@ class MeatAndDairy:
                 np.array(self.grain_fed_milk_produced_prewaste)
                 / 1e3
                 * self.MILK_FAT
-                * (1 - self.MILK_WASTE / 100)
+                * (1 - self.MILK_WASTE_DISTRIBUTION / 100)
             )
 
             # Calculate protein produced from grain-fed milk
@@ -638,7 +638,7 @@ class MeatAndDairy:
                 np.array(self.grain_fed_milk_produced_prewaste)
                 / 1e3
                 * self.MILK_PROTEIN
-                * (1 - self.MILK_WASTE / 100)
+                * (1 - self.MILK_WASTE_DISTRIBUTION / 100)
             )
 
         else:
@@ -783,7 +783,7 @@ class MeatAndDairy:
             * 1e3
             * self.MILK_KCALS
             / 1e9
-            * (1 - self.MILK_WASTE / 100)
+            * (1 - self.MILK_WASTE_DISTRIBUTION / 100)
         )
 
         # Calculate the amount of fat in grazing milk produced post-waste in thousands of tons
@@ -792,7 +792,7 @@ class MeatAndDairy:
             np.array(grazing_milk_produced_prewaste)
             / 1e3
             * self.MILK_FAT
-            * (1 - self.MILK_WASTE / 100)
+            * (1 - self.MILK_WASTE_DISTRIBUTION / 100)
         )
 
         # Calculate the amount of protein in grazing milk produced post-waste in thousands of tons
@@ -801,7 +801,7 @@ class MeatAndDairy:
             np.array(grazing_milk_produced_prewaste)
             / 1e3
             * self.MILK_PROTEIN
-            * (1 - self.MILK_WASTE / 100)
+            * (1 - self.MILK_WASTE_DISTRIBUTION / 100)
         )
 
         # Return the calculated values as a tuple
