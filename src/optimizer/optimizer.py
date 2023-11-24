@@ -253,7 +253,7 @@ class Optimizer:
                     min_human_food_consumption["dairy"]
                     .in_units_bil_kcals_thou_tons_thou_tons_per_month()[month]
                     .kcals
-                    == self.time_consts["grazing_milk_kcals"][month]
+                    == self.time_consts["milk_kcals"][month]
                 ),
                 "Greenhouse_Min_Requirement": (
                     min_human_food_consumption["greenhouse"]
@@ -1245,8 +1245,7 @@ class Optimizer:
                 + variables["crops_food_to_humans"][month]
                 + variables["seaweed_to_humans"][month]
                 * self.single_valued_constants["SEAWEED_KCALS"]
-                + self.time_consts["grazing_milk_kcals"][month]
-                + self.time_consts["cattle_grazing_maintained_kcals"][month]
+                + self.time_consts["milk_kcals"][month]
                 + variables["culled_meat_eaten"][month]
                 + variables["cellulosic_sugar_to_humans"][month]
                 + variables["methane_scp_to_humans"][month]
@@ -1273,7 +1272,7 @@ class Optimizer:
         #             * self.single_valued_constants["SEAWEED_FAT"]
         #             + variables["seaweed_feed"][month]
         #             * self.single_valued_constants["SEAWEED_FAT"]
-        #             + self.time_consts["grazing_milk_fat"][month]
+        #             + self.time_consts["milk_fat"][month]
         #             + self.time_consts["cattle_grazing_maintained_fat"][month]
         #             + variables["culled_meat_eaten"][month]
         #             * self.single_valued_constants["CULLED_MEAT_FRACTION_FAT"]
@@ -1302,7 +1301,7 @@ class Optimizer:
         #             * self.single_valued_constants["SEAWEED_PROTEIN"]
         #             + variables["seaweed_feed"][month]
         #             * self.single_valued_constants["SEAWEED_PROTEIN"]
-        #             + self.time_consts["grazing_milk_protein"][month]
+        #             + self.time_consts["milk_protein"][month]
         #             + self.time_consts["cattle_grazing_maintained_protein"][month]
         #             + variables["methane_scp_to_humans"][month]
         #             * self.single_valued_constants["SCP_KCALS_TO_PROTEIN_CONVERSION"]

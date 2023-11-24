@@ -204,8 +204,8 @@ class Validator:
         interpreted_results.scp.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.greenhouse.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.fish.make_sure_fat_protein_zero_if_kcals_is_zero()
-        interpreted_results.culled_meat_plus_grazing_cattle_maintained.make_sure_fat_protein_zero_if_kcals_is_zero()
-        interpreted_results.grazing_milk.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.culled_meat.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.milk.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.immediate_outdoor_crops.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.new_stored_outdoor_crops.make_sure_fat_protein_zero_if_kcals_is_zero()
 
@@ -251,8 +251,8 @@ class Validator:
         interpreted_results.scp.make_sure_not_nan()
         interpreted_results.greenhouse.make_sure_not_nan()
         interpreted_results.fish.make_sure_not_nan()
-        interpreted_results.culled_meat_plus_grazing_cattle_maintained.make_sure_not_nan()
-        interpreted_results.grazing_milk.make_sure_not_nan()
+        interpreted_results.culled_meat.make_sure_not_nan()
+        interpreted_results.milk.make_sure_not_nan()
         interpreted_results.immediate_outdoor_crops.make_sure_not_nan()
         interpreted_results.new_stored_outdoor_crops.make_sure_not_nan()
 
@@ -279,13 +279,13 @@ class Validator:
         # Check that the fish variable is greater than or equal to zero
         assert interpreted_results.fish.all_greater_than_or_equal_to_zero()
 
-        # Check that the culled_meat_plus_grazing_cattle_maintained variable is greater than or equal to zero
-        assert interpreted_results.culled_meat_plus_grazing_cattle_maintained.get_rounded_to_decimal(
+        # Check that the culled_meat variable is greater than or equal to zero
+        assert interpreted_results.culled_meat.get_rounded_to_decimal(
             6
         ).all_greater_than_or_equal_to_zero()
 
-        # Check that the grazing_milk variable is greater than or equal to zero
-        assert interpreted_results.grazing_milk.all_greater_than_or_equal_to_zero()
+        # Check that the milk variable is greater than or equal to zero
+        assert interpreted_results.milk.all_greater_than_or_equal_to_zero()
 
         # Check that the immediate_outdoor_crops variable is greater than or equal to zero
 

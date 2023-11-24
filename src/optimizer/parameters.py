@@ -916,26 +916,15 @@ class Parameters:
 
         # Get grazing milk produced postwaste
         (
-            grazing_milk_kcals,
-            grazing_milk_fat,
-            grazing_milk_protein,
-        ) = meat_and_dairy.get_grazing_milk_produced_postwaste(monthly_milk_tons)
+            milk_kcals,
+            milk_fat,
+            milk_protein,
+        ) = meat_and_dairy.get_milk_produced_postwaste(monthly_milk_tons)
 
         # Set grazing milk constants in time_consts
-        time_consts["grazing_milk_kcals"] = grazing_milk_kcals
-        time_consts["grazing_milk_fat"] = grazing_milk_fat
-        time_consts["grazing_milk_protein"] = grazing_milk_protein
-
-        # Set cattle grazing constants in time_consts
-        time_consts["cattle_grazing_maintained_kcals"] = np.zeros(
-            constants_inputs["NMONTHS"]
-        )
-        time_consts["cattle_grazing_maintained_fat"] = np.zeros(
-            constants_inputs["NMONTHS"]
-        )
-        time_consts["cattle_grazing_maintained_protein"] = np.zeros(
-            constants_inputs["NMONTHS"]
-        )
+        time_consts["milk_kcals"] = milk_kcals
+        time_consts["milk_fat"] = milk_fat
+        time_consts["milk_protein"] = milk_protein
 
         # Get meat nutrition constants
         (
@@ -1072,14 +1061,14 @@ class Parameters:
             )
             meat_consumption.append(
                 consume(
-                    consumption_first_optimization.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent[
+                    consumption_first_optimization.culled_meat_kcals_equivalent[
                         month_index
                     ].kcals
                 )
             )
             dairy_consumption.append(
                 consume(
-                    consumption_first_optimization.grazing_milk_kcals_equivalent[
+                    consumption_first_optimization.milk_kcals_equivalent[
                         month_index
                     ].kcals
                 )

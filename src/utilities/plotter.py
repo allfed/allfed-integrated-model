@@ -82,10 +82,8 @@ class Plotter:
             ykcals.append(interpreter.scp_kcals_equivalent.kcals)
             ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
             ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
-            ykcals.append(interpreter.grazing_milk_kcals_equivalent.kcals)
-            ykcals.append(
-                interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
-            )
+            ykcals.append(interpreter.milk_kcals_equivalent.kcals)
+            ykcals.append(interpreter.culled_meat_kcals_equivalent.kcals)
             ykcals.append(interpreter.immediate_outdoor_crops_kcals_equivalent.kcals)
             ykcals.append(interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals)
             ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
@@ -769,10 +767,8 @@ class Plotter:
             ykcals.append(interpreter.scp_kcals_equivalent.kcals)
             ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
             ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
-            ykcals.append(interpreter.grazing_milk_kcals_equivalent.kcals)
-            ykcals.append(
-                interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
-            )
+            ykcals.append(interpreter.milk_kcals_equivalent.kcals)
+            ykcals.append(interpreter.culled_meat_kcals_equivalent.kcals)
             ykcals.append(interpreter.immediate_outdoor_crops_kcals_equivalent.kcals)
             ykcals.append(interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals)
             ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
@@ -917,10 +913,8 @@ class Plotter:
         ykcals.append(interpreter.scp_kcals_equivalent.kcals)
         ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
         ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
-        ykcals.append(interpreter.grazing_milk_kcals_equivalent.kcals)
-        ykcals.append(
-            interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
-        )
+        ykcals.append(interpreter.milk_kcals_equivalent.kcals)
+        ykcals.append(interpreter.culled_meat_kcals_equivalent.kcals)
         ykcals.append(interpreter.immediate_outdoor_crops_kcals_equivalent.kcals)
         ykcals.append(interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals)
         ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
@@ -1217,10 +1211,8 @@ class Plotter:
                 ykcals.append(interpreter.scp_kcals_equivalent.kcals)
                 ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
                 ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
-                ykcals.append(interpreter.grazing_milk_kcals_equivalent.kcals)
-                ykcals.append(
-                    interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
-                )
+                ykcals.append(interpreter.milk_kcals_equivalent.kcals)
+                ykcals.append(interpreter.culled_meat_kcals_equivalent.kcals)
                 ykcals.append(
                     interpreter.immediate_outdoor_crops_kcals_equivalent.kcals
                 )
@@ -1562,10 +1554,8 @@ class Plotter:
 
                 ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
                 ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
-                ykcals.append(interpreter.grazing_milk_kcals_equivalent.kcals)
-                ykcals.append(
-                    interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
-                )
+                ykcals.append(interpreter.milk_kcals_equivalent.kcals)
+                ykcals.append(interpreter.culled_meat_kcals_equivalent.kcals)
                 ykcals.append(
                     interpreter.immediate_outdoor_crops_kcals_equivalent.kcals
                 )
@@ -1718,10 +1708,8 @@ class Plotter:
                 ykcals.append(interpreter.scp_kcals_equivalent.kcals)
                 ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
                 ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
-                ykcals.append(interpreter.grazing_milk_kcals_equivalent.kcals)
-                ykcals.append(
-                    interpreter.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
-                )
+                ykcals.append(interpreter.milk_kcals_equivalent.kcals)
+                ykcals.append(interpreter.culled_meat_kcals_equivalent.kcals)
                 ykcals.append(
                     interpreter.immediate_outdoor_crops_kcals_equivalent.kcals
                 )

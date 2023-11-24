@@ -115,10 +115,8 @@ class Interpreter:
                 "scp": np.array(self.scp_kcals_equivalent.kcals),
                 "greenhouse": np.array(self.greenhouse_kcals_equivalent.kcals),
                 "seaweed": np.array(self.seaweed_kcals_equivalent.kcals),
-                "milk": np.array(self.grazing_milk_kcals_equivalent.kcals),
-                "meat": np.array(
-                    self.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent.kcals
-                ),
+                "milk": np.array(self.milk_kcals_equivalent.kcals),
+                "meat": np.array(self.culled_meat_kcals_equivalent.kcals),
                 "immediate_outdoor_crops": np.array(
                     self.immediate_outdoor_crops_kcals_equivalent.kcals
                 ),
@@ -194,12 +192,10 @@ class Interpreter:
         self.fish = extracted_results.fish.in_units_percent_fed()
 
         # Assign the percentage of culled meat plus grazing cattle maintained fed to humans
-        self.culled_meat_plus_grazing_cattle_maintained = (
-            extracted_results.culled_meat_plus_grazing_cattle_maintained.in_units_percent_fed()
-        )
+        self.culled_meat = extracted_results.culled_meat.in_units_percent_fed()
 
         # Assign the percentage of grazing milk fed to humans
-        self.grazing_milk = extracted_results.grazing_milk.in_units_percent_fed()
+        self.milk = extracted_results.milk.in_units_percent_fed()
 
         # Assign the percentage of immediate outdoor crops fed to humans
         self.immediate_outdoor_crops = (
@@ -248,14 +244,12 @@ class Interpreter:
         self.fish_kcals_equivalent = extracted_results.fish.in_units_kcals_equivalent()
 
         # Assign kcals equivalent of culled meat plus grazing cattle maintained to its attribute
-        self.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent = (
+        self.culled_meat_kcals_equivalent = (
             extracted_results.culled_meat_plus_grazing_cattle_maintained.in_units_kcals_equivalent()
         )
 
         # Assign kcals equivalent of grazing milk to its attribute
-        self.grazing_milk_kcals_equivalent = (
-            extracted_results.grazing_milk.in_units_kcals_equivalent()
-        )
+        self.milk_kcals_equivalent = extracted_results.milk.in_units_kcals_equivalent()
 
         # Assign kcals equivalent of immediate outdoor crops to its attribute
         self.immediate_outdoor_crops_kcals_equivalent = (
@@ -398,7 +392,7 @@ class Interpreter:
             >>> interpreter.greenhouse = 300
             >>> interpreter.fish = 100
             >>> interpreter.culled_meat_plus_grazing_cattle_maintained = 50
-            >>> interpreter.grazing_milk = 25
+            >>> interpreter.milk = 25
             >>> interpreter.get_sum_by_adding_to_humans()
             1025.0
         """
@@ -413,7 +407,7 @@ class Interpreter:
             + self.greenhouse
             + self.fish
             + self.culled_meat_plus_grazing_cattle_maintained
-            + self.grazing_milk
+            + self.milk
         )
 
         # Return the total amount of nutrients that can be fed to humans
@@ -684,9 +678,7 @@ class Interpreter:
             seaweed = (
                 interpreter.seaweed.in_units_bil_kcals_thou_tons_thou_tons_per_month()
             )
-            grazing_milk = (
-                interpreter.grazing_milk.in_units_bil_kcals_thou_tons_thou_tons_per_month()
-            )
+            milk = interpreter.milk.in_units_bil_kcals_thou_tons_thou_tons_per_month()
             cmpgcm = interpreter.culled_meat_plus_grazing_cattle_maintained
             culled_meat_plus_grazing_cattle_maintained = (
                 cmpgcm.in_units_bil_kcals_thou_tons_thou_tons_per_month()
@@ -716,7 +708,7 @@ class Interpreter:
                 scp = scp * ratio_so_adds_to_100_percent
                 greenhouse = greenhouse * ratio_so_adds_to_100_percent
                 seaweed = seaweed * ratio_so_adds_to_100_percent
-                grazing_milk = grazing_milk * ratio_so_adds_to_100_percent
+                milk = milk * ratio_so_adds_to_100_percent
                 culled_meat_plus_grazing_cattle_maintained = (
                     culled_meat_plus_grazing_cattle_maintained
                     * ratio_so_adds_to_100_percent
@@ -735,10 +727,8 @@ class Interpreter:
                 scp_cumulative = scp
                 greenhouse_cumulative = greenhouse
                 seaweed_cumulative = seaweed
-                grazing_milk_cumulative = grazing_milk
-                culled_meat_plus_grazing_cattle_maintained_cumulative = (
-                    culled_meat_plus_grazing_cattle_maintained
-                )
+                milk_cumulative = milk
+                culled_meat_cumulative = culled_meat_plus_grazing_cattle_maintained
                 immediate_outdoor_crops_cumulative = immediate_outdoor_crops
                 new_stored_outdoor_crops_cumulative = new_stored_outdoor_crops
                 stored_food_cumulative = stored_food
@@ -790,10 +780,9 @@ class Interpreter:
                 scp_cumulative = scp_cumulative + scp
                 greenhouse_cumulative = greenhouse_cumulative + greenhouse
                 seaweed_cumulative = seaweed_cumulative + seaweed
-                grazing_milk_cumulative = grazing_milk_cumulative + grazing_milk
-                culled_meat_plus_grazing_cattle_maintained_cumulative = (
-                    culled_meat_plus_grazing_cattle_maintained_cumulative
-                    + culled_meat_plus_grazing_cattle_maintained
+                milk_cumulative = milk_cumulative + milk
+                culled_meat_cumulative = (
+                    culled_meat_cumulative + culled_meat_plus_grazing_cattle_maintained
                 )
                 immediate_outdoor_crops_cumulative = (
                     immediate_outdoor_crops_cumulative + immediate_outdoor_crops
@@ -832,8 +821,8 @@ class Interpreter:
             + scp_cumulative.in_units_percent_fed()
             + greenhouse_cumulative.in_units_percent_fed()
             + seaweed_cumulative.in_units_percent_fed()
-            + grazing_milk_cumulative.in_units_percent_fed()
-            + culled_meat_plus_grazing_cattle_maintained_cumulative.in_units_percent_fed()
+            + milk_cumulative.in_units_percent_fed()
+            + culled_meat_cumulative.in_units_percent_fed()
             + immediate_outdoor_crops_cumulative.in_units_percent_fed()
             + new_stored_outdoor_crops_cumulative.in_units_percent_fed()
             + stored_food_cumulative.in_units_percent_fed()
@@ -877,11 +866,11 @@ class Interpreter:
         global_results.seaweed_kcals_equivalent = (
             seaweed_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
         )
-        global_results.grazing_milk_kcals_equivalent = (
-            grazing_milk_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+        global_results.milk_kcals_equivalent = (
+            milk_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
         )
-        global_results.culled_meat_plus_grazing_cattle_maintained_kcals_equivalent = (
-            culled_meat_plus_grazing_cattle_maintained_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+        global_results.culled_meat_kcals_equivalent = (
+            culled_meat_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
         )
         global_results.immediate_outdoor_crops_to_humans_kcals_equivalent = (
             immediate_outdoor_crops_cumulative.in_units_percent_fed().in_units_kcals_equivalent()

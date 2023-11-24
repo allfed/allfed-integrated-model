@@ -261,12 +261,12 @@ class MeatAndDairy:
 
     # the following two functions are less efficient alternatives for bad adaptation
 
-    def get_grazing_milk_produced_postwaste(self, grazing_milk_produced_prewaste):
+    def get_milk_produced_postwaste(self, milk_produced_prewaste):
         """
         Calculates the amount of grazing milk produced post-waste, given the amount of grazing milk produced pre-waste.
 
         Args:
-            grazing_milk_produced_prewaste (list): A list of the amount of grazing milk produced pre-waste.
+            milk_produced_prewaste (list): A list of the amount of grazing milk produced pre-waste.
 
         Returns:
             tuple: A tuple containing the amount of grazing milk produced post-waste in billions of kcals, thousands
@@ -275,8 +275,8 @@ class MeatAndDairy:
         """
         # Calculate the amount of kcals in grazing milk produced post-waste in billions
         # billions kcals
-        grazing_milk_kcals = (
-            np.array(grazing_milk_produced_prewaste)
+        milk_kcals = (
+            np.array(milk_produced_prewaste)
             * 1e3
             * self.MILK_KCALS
             / 1e9
@@ -285,8 +285,8 @@ class MeatAndDairy:
 
         # Calculate the amount of fat in grazing milk produced post-waste in thousands of tons
         # thousands tons
-        grazing_milk_fat = (
-            np.array(grazing_milk_produced_prewaste)
+        milk_fat = (
+            np.array(milk_produced_prewaste)
             / 1e3
             * self.MILK_FAT
             * (1 - self.MILK_WASTE_DISTRIBUTION / 100)
@@ -294,15 +294,15 @@ class MeatAndDairy:
 
         # Calculate the amount of protein in grazing milk produced post-waste in thousands of tons
         # thousands tons
-        grazing_milk_protein = (
-            np.array(grazing_milk_produced_prewaste)
+        milk_protein = (
+            np.array(milk_produced_prewaste)
             / 1e3
             * self.MILK_PROTEIN
             * (1 - self.MILK_WASTE_DISTRIBUTION / 100)
         )
 
         # Return the calculated values as a tuple
-        return (grazing_milk_kcals, grazing_milk_fat, grazing_milk_protein)
+        return (milk_kcals, milk_fat, milk_protein)
 
     # CULLED MEAT
 

@@ -131,12 +131,9 @@ class Extractor:
         # extract meat and milk results in terms of people fed and raw tons
         self.extract_meat_milk_results(
             variables["culled_meat_eaten"],
-            time_consts["grazing_milk_kcals"],
-            time_consts["grazing_milk_fat"],
-            time_consts["grazing_milk_protein"],
-            time_consts["cattle_grazing_maintained_kcals"],
-            time_consts["cattle_grazing_maintained_fat"],
-            time_consts["cattle_grazing_maintained_protein"],
+            time_consts["milk_kcals"],
+            time_consts["milk_fat"],
+            time_consts["milk_protein"],
         )
 
         return self
@@ -554,12 +551,9 @@ class Extractor:
     def extract_meat_milk_results(
         self,
         culled_meat_eaten,
-        grazing_milk_kcals,
-        grazing_milk_fat,
-        grazing_milk_protein,
-        cattle_grazing_maintained_kcals,
-        cattle_grazing_maintained_fat,
-        cattle_grazing_maintained_protein,
+        milk_kcals,
+        milk_fat,
+        milk_protein,
     ):
         """
         Extracts the results of meat and milk production from various sources and calculates the amount of food
@@ -567,12 +561,9 @@ class Extractor:
 
         Args:
             culled_meat_eaten (list): List of the amount of culled meat eaten in kg per year
-            grazing_milk_kcals (list): List of the amount of grazing milk produced in kcal per year
-            grazing_milk_fat (list): List of the amount of grazing milk produced in fat per year
-            grazing_milk_protein (list): List of the amount of grazing milk produced in protein per year
-            cattle_grazing_maintained_kcals (list): List of the amount of cattle grazing maintained in kcal per year
-            cattle_grazing_maintained_fat (list): List of the amount of cattle grazing maintained in fat per year
-            cattle_grazing_maintained_protein (list): List of the amount of cattle grazing maintained in protein per year
+            milk_kcals (list): List of the amount of grazing milk produced in kcal per year
+            milk_fat (list): List of the amount of grazing milk produced in fat per year
+            milk_protein (list): List of the amount of grazing milk produced in protein per year
 
         Returns:
             None
@@ -582,19 +573,11 @@ class Extractor:
             >>> extractor = Extractor()
             >>> extractor.extract_meat_milk_results(
             >>>     culled_meat_eaten=[1000, 2000, 3000],
-            >>>     grazing_milk_kcals=[1000, 2000, 3000],
-            >>>     grazing_milk_fat=[100, 200, 300],
-            >>>     grazing_milk_protein=[50, 100, 150],
-            >>>     cattle_grazing_maintained_kcals=[1000, 2000, 3000],
-            >>>     cattle_grazing_maintained_fat=[100, 200, 300],
-            >>>     cattle_grazing_maintained_protein=[50, 100, 150],
+            >>>     milk_kcals=[1000, 2000, 3000],
+            >>>     milk_fat=[100, 200, 300],
+            >>>     milk_protein=[50, 100, 150],
             >>> )
         """
-
-        # Calculate the amount of cattle grazing maintained in billions of people fed each month
-        billions_fed_cattle_grazing_maintained = (
-            np.array(cattle_grazing_maintained_kcals) / self.constants["KCALS_MONTHLY"]
-        )
 
         # Calculate the amount of culled meat eaten in billions of people fed each month
         billions_fed_culled_meat_kcals = self.to_monthly_list(
@@ -603,9 +586,7 @@ class Extractor:
         )
 
         # Calculate the amount of culled meat grazing in billions of people fed each month
-        billions_fed_culled_meat_grazing_kcals = (
-            billions_fed_culled_meat_kcals + billions_fed_cattle_grazing_maintained
-        )
+        billions_fed_culled_meat_grazing_kcals = billions_fed_culled_meat_kcals
 
         # Calculate the amount of fat in culled meat in billions of people fed each month
         billions_fed_culled_meat_fat = self.to_monthly_list(
@@ -623,52 +604,32 @@ class Extractor:
             / 1e9,
         )
 
-        # Calculate the amount of fat in culled meat grazing in billions of people fed each month
-        billions_fed_culled_meat_grazing_fat = (
-            billions_fed_culled_meat_fat
-            + np.array(cattle_grazing_maintained_fat)
-            / self.constants["FAT_MONTHLY"]
-            / 1e9
-        )
-
-        # Calculate the amount of protein in culled meat grazing in billions of people fed each month
-        billions_fed_culled_meat_grazing_protein = (
-            billions_fed_culled_meat_protein
-            + np.array(cattle_grazing_maintained_protein)
-            / self.constants["PROTEIN_MONTHLY"]
-            / 1e9
-        )
-
         # Create a Food object for culled meat plus grazing cattle maintained
-        self.culled_meat_plus_grazing_cattle_maintained = Food(
-            kcals=billions_fed_culled_meat_grazing_kcals,
-            fat=billions_fed_culled_meat_grazing_fat,
-            protein=billions_fed_culled_meat_grazing_protein,
+        self.culled_meat = Food(
+            kcals=billions_fed_culled_meat_kcals,
+            fat=billions_fed_culled_meat_fat,
+            protein=billions_fed_culled_meat_protein,
             kcals_units="billion people fed each month",
             fat_units="billion people fed each month",
             protein_units="billion people fed each month",
         )
 
         # Calculate the amount of grazing milk in billions of people fed each month
-        billions_fed_grazing_milk_kcals = (
-            np.array(grazing_milk_kcals) / self.constants["KCALS_MONTHLY"]
-        )
+        billions_fed_milk_kcals = np.array(milk_kcals) / self.constants["KCALS_MONTHLY"]
 
         # Calculate the amount of fat in grazing milk in billions of people fed each month
-        billions_fed_grazing_milk_fat = (
-            np.array(grazing_milk_fat) / self.constants["FAT_MONTHLY"] / 1e9
-        )
+        billions_fed_milk_fat = np.array(milk_fat) / self.constants["FAT_MONTHLY"] / 1e9
 
         # Calculate the amount of protein in grazing milk in billions of people fed each month
-        billions_fed_grazing_milk_protein = (
-            np.array(grazing_milk_protein) / self.constants["PROTEIN_MONTHLY"] / 1e9
+        billions_fed_milk_protein = (
+            np.array(milk_protein) / self.constants["PROTEIN_MONTHLY"] / 1e9
         )
 
         # Create a Food object for grazing milk
-        self.grazing_milk = Food(
-            kcals=billions_fed_grazing_milk_kcals,
-            fat=billions_fed_grazing_milk_fat,
-            protein=billions_fed_grazing_milk_protein,
+        self.milk = Food(
+            kcals=billions_fed_milk_kcals,
+            fat=billions_fed_milk_fat,
+            protein=billions_fed_milk_protein,
             kcals_units="billion people fed each month",
             fat_units="billion people fed each month",
             protein_units="billion people fed each month",
