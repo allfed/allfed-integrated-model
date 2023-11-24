@@ -1961,10 +1961,7 @@ class Plotter:
         else:
             legend = legend + [""]
 
-        if (
-            interpreter.constants["ADD_CULLED_MEAT"]
-            or interpreter.constants["ADD_MAINTAINED_MEAT"]
-        ):
+        if interpreter.constants["ADD_CULLED_MEAT"]:
             legend = legend + ["Meat"]
         else:
             legend = legend + [""]

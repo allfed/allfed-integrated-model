@@ -382,7 +382,6 @@ class Parameters:
         constants_out["NMONTHS"] = constants_inputs["NMONTHS"]
         constants_out["ADD_FISH"] = constants_inputs["ADD_FISH"]
         constants_out["ADD_SEAWEED"] = constants_inputs["ADD_SEAWEED"]
-        constants_out["ADD_MAINTAINED_MEAT"] = constants_inputs["ADD_MAINTAINED_MEAT"]
         constants_out["ADD_CULLED_MEAT"] = constants_inputs["ADD_CULLED_MEAT"]
         constants_out["ADD_MILK"] = constants_inputs["ADD_MILK"]
         constants_out["ADD_STORED_FOOD"] = constants_inputs["ADD_STORED_FOOD"]

@@ -655,7 +655,6 @@ class Interpreter:
             ADD_SEAWEED = interpreter.constants["ADD_SEAWEED"]
             ADD_MILK = interpreter.constants["ADD_MILK"]
             ADD_CULLED_MEAT = interpreter.constants["ADD_CULLED_MEAT"]
-            ADD_MAINTAINED_MEAT = interpreter.constants["ADD_MAINTAINED_MEAT"]
             ADD_OUTDOOR_GROWING = interpreter.constants["ADD_OUTDOOR_GROWING"]
             ADD_STORED_FOOD = interpreter.constants["ADD_STORED_FOOD"]
 
@@ -773,11 +772,6 @@ class Interpreter:
                 )
 
                 assert (
-                    ADD_MAINTAINED_MEAT
-                    == previous_interpreter.constants["ADD_MAINTAINED_MEAT"]
-                )
-
-                assert (
                     ADD_OUTDOOR_GROWING
                     == previous_interpreter.constants["ADD_OUTDOOR_GROWING"]
                 )
@@ -860,7 +854,6 @@ class Interpreter:
         global_results.constants["ADD_SEAWEED"] = ADD_SEAWEED
         global_results.constants["ADD_MILK"] = ADD_MILK
         global_results.constants["ADD_CULLED_MEAT"] = ADD_CULLED_MEAT
-        global_results.constants["ADD_MAINTAINED_MEAT"] = ADD_MAINTAINED_MEAT
         global_results.constants["ADD_OUTDOOR_GROWING"] = ADD_OUTDOOR_GROWING
         global_results.constants["ADD_OUTDOOR_GROWING"] = ADD_OUTDOOR_GROWING
         global_results.constants["ADD_STORED_FOOD"] = ADD_STORED_FOOD

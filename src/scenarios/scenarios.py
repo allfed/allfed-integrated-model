@@ -73,7 +73,6 @@ class Scenarios:
 
         constants_for_params["ADD_MILK"] = True
         constants_for_params["ADD_FISH"] = True
-        constants_for_params["ADD_MAINTAINED_MEAT"] = True
 
         self.GENERIC_INITIALIZED_SET = True
         return constants_for_params
