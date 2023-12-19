@@ -310,14 +310,3 @@ class FeedAndBiofuels:
         )
 
         return biofuels
-
-    def convert_kcal_to_tons(self, kcals):
-        """
-        Converts a given number of kcals to tons of feed or biofuel.
-        Args:
-            kcals (float): number of kcals to convert to tons
-        Returns:
-            float: number of tons equivalent to the given number of kcals
-        """
-        tons = kcals / self.KCAL_PER_TON  # calculate the number of tons
-        return tons

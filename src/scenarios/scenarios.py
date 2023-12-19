@@ -1496,6 +1496,8 @@ class Scenarios:
             "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
         ] = 1  # default values from CS and SCP papers
 
+        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
+
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = True
         return constants_for_params
 
@@ -1662,7 +1664,7 @@ class Scenarios:
     def cull_animals(self, constants_for_params):
         assert not self.CULLING_PARAM_SET
         self.scenario_description += "\ncull animals"
-        constants_for_params["ADD_CULLED_MEAT"] = True
+        constants_for_params["ADD_MEAT"] = True
         self.CULLING_PARAM_SET = True
 
         return constants_for_params
@@ -1670,6 +1672,6 @@ class Scenarios:
     def dont_cull_animals(self, constants_for_params):
         assert not self.CULLING_PARAM_SET
         self.scenario_description += "\nno culled animals"
-        constants_for_params["ADD_CULLED_MEAT"] = False
+        constants_for_params["ADD_MEAT"] = False
         self.CULLING_PARAM_SET = True
         return constants_for_params

@@ -8,7 +8,6 @@
 from src.food_system.food import Food
 
 import numpy as np
-import sys
 
 
 class MeatAndDairy:
@@ -23,7 +22,7 @@ class MeatAndDairy:
             KG_TO_1000_TONS (float): Conversion factor from kilograms to 1000 tons.
             ADD_MILK (bool): Whether to add milk or not.
             NMONTHS (int): Number of months.
-            ADD_CULLED_MEAT (float): Edible meat, organs, and fat added for culling.
+            ADD_MEAT (float): Edible meat, organs, and fat added for culling.
             KG_PER_SMALL_ANIMAL (float): Kilograms per small animal.
             KG_PER_MEDIUM_ANIMAL (float): Kilograms per medium animal.
             KG_PER_LARGE_ANIMAL (float): Kilograms per large animal.
@@ -64,7 +63,7 @@ class MeatAndDairy:
         self.NMONTHS = constants_for_params["NMONTHS"]
 
         # edible meat, organs, and fat added
-        self.ADD_CULLED_MEAT = constants_for_params["ADD_CULLED_MEAT"]
+        self.ADD_MEAT = constants_for_params["ADD_MEAT"]
 
         self.KG_PER_SMALL_ANIMAL = 2.36
         self.KG_PER_MEDIUM_ANIMAL = 24.6
@@ -328,7 +327,7 @@ class MeatAndDairy:
                 calories,
                 fat_ratio,
                 protein_ratio,
-            ) = self.calculate_culled_meat_after_distribution_waste(
+            ) = self.calculate_meat_after_distribution_waste(
                 small_animals_culled[m],
                 medium_animals_culled[m],
                 large_animals_culled[m],
@@ -345,7 +344,7 @@ class MeatAndDairy:
             # no negative slaughter rates (addresses rounding errors)
         return slaughtered_meat_monthly
 
-    def calculate_culled_meat_after_distribution_waste(
+    def calculate_meat_after_distribution_waste(
         self,
         init_small_animals_culled,
         init_medium_animals_culled,
@@ -386,39 +385,37 @@ class MeatAndDairy:
         )
 
         # billion kcals
-        init_culled_meat_prewaste_kcals = (
+        init_meat_prewaste_kcals = (
             init_small_animals_culled * KCALS_PER_SMALL_ANIMAL
             + init_medium_animals_culled * KCALS_PER_MEDIUM_ANIMAL
             + init_large_animals_culled * KCALS_PER_LARGE_ANIMAL
         )
         # thousand tons
-        init_culled_meat_prewaste_fat = (
+        init_meat_prewaste_fat = (
             init_small_animals_culled * FAT_PER_SMALL_ANIMAL
             + init_medium_animals_culled * FAT_PER_MEDIUM_ANIMAL
             + init_large_animals_culled * FAT_PER_LARGE_ANIMAL
         )
         # thousand tons
-        init_culled_meat_prewaste_protein = (
+        init_meat_prewaste_protein = (
             init_small_animals_culled * PROTEIN_PER_SMALL_ANIMAL
             + init_medium_animals_culled * PROTEIN_MEDIUM_ANIMAL
             + init_large_animals_culled * PROTEIN_PER_LARGE_ANIMAL
         )
 
-        initial_culled_meat_prewaste = init_culled_meat_prewaste_kcals
+        initial_meat_prewaste = init_meat_prewaste_kcals
 
-        if initial_culled_meat_prewaste > 0:
-            culled_meat_fraction_fat = (
-                init_culled_meat_prewaste_fat / init_culled_meat_prewaste_kcals
-            )
-            culled_meat_fraction_protein = (
-                init_culled_meat_prewaste_protein / init_culled_meat_prewaste_kcals
+        if initial_meat_prewaste > 0:
+            meat_fraction_fat = init_meat_prewaste_fat / init_meat_prewaste_kcals
+            meat_fraction_protein = (
+                init_meat_prewaste_protein / init_meat_prewaste_kcals
             )
         else:
-            culled_meat_fraction_fat = 0
-            culled_meat_fraction_protein = 0
+            meat_fraction_fat = 0
+            meat_fraction_protein = 0
 
         return (
-            initial_culled_meat_prewaste * (1 - self.MEAT_WASTE_DISTRIBUTION / 100),
-            culled_meat_fraction_fat,
-            culled_meat_fraction_protein,
+            initial_meat_prewaste * (1 - self.MEAT_WASTE_DISTRIBUTION / 100),
+            meat_fraction_fat,
+            meat_fraction_protein,
         )

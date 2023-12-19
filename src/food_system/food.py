@@ -1699,27 +1699,35 @@ class Food(UnitConversions):
         Returns:
             bool: True if the food's macronutrients are equal to zero, False otherwise.
         """
+
+        # Define a rounding function
+        def round_to_precision(value):
+            return round(value, 10)
+
         # Check if the food is monthly
         if self.is_list_monthly():
             # Validate the food list
             self.validate_if_list()
 
-            # Check if all macronutrients are equal to zero
-            return (
-                (np.array(self.kcals) == 0).all()
-                and ((np.array(self.fat) == 0).all() or self.conversions.exclude_fat)
-                and (
-                    (np.array(self.protein) == 0).all()
-                    or self.conversions.exclude_protein
-                )
+            # Check if all macronutrients are effectively zero
+            kcals_zero = all(round_to_precision(kcal) == 0 for kcal in self.kcals)
+            fat_zero = self.conversions.exclude_fat or all(
+                round_to_precision(fat) == 0 for fat in self.fat
+            )
+            protein_zero = self.conversions.exclude_protein or all(
+                round_to_precision(protein) == 0 for protein in self.protein
             )
 
-        # Check if all macronutrients are equal to zero
-        return (
-            self.kcals == 0
-            and (self.fat == 0 or self.conversions.exclude_fat)
-            and (self.protein == 0 or self.conversions.exclude_protein)
+            return kcals_zero and fat_zero and protein_zero
+
+        # Check if all macronutrients are effectively zero
+        kcals_zero = round_to_precision(self.kcals) == 0
+        fat_zero = self.conversions.exclude_fat or round_to_precision(self.fat) == 0
+        protein_zero = (
+            self.conversions.exclude_protein or round_to_precision(self.protein) == 0
         )
+
+        return kcals_zero and fat_zero and protein_zero
 
     def any_equals_zero(self):
         """

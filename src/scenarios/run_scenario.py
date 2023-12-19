@@ -42,67 +42,105 @@ class ScenarioRunner:
         constants_loader = Parameters()
 
         (
-            single_valued_constants,
-            time_consts,
-            feed_and_biofuels,
-            meat_dictionary,
+            single_valued_constants_round1,
+            time_consts_round1,
+            feed_and_biofuels_round1,
+            meat_dictionary_zero_feed_biofuels,  # Meat if no feed used. Might be useful for something later?
         ) = constants_loader.compute_parameters_first_round(
             constants_for_params, scenarios_loader
         )
-        interpreter.set_feed(feed_and_biofuels)
-        interpreter.set_meat_dictionary(meat_dictionary)
+        validator = Validator()
+        validator.ensure_all_time_constants_units_are_billion_kcals(time_consts_round1)
+
+        # FIRST ROUND: ENSURE HUMANS GET MINIMUM NEEDS
+        print("ROUND1")
 
         # actually make PuLP optimize effective people fed based on all the constants
         # we've determined
         (
-            model,
-            variables,
-            percent_fed_from_model,
-            time_consts,
-        ) = self.run_optimizer(single_valued_constants, time_consts)
+            model_round1,
+            variables_round1,
+            percent_fed_from_model_round1,
+        ) = self.run_optimizer(single_valued_constants_round1, time_consts_round1)
 
-        interpreted_results = self.interpret_optimizer_results(
-            single_valued_constants,
-            model,
-            variables,
-            time_consts,
+        interpreted_results_round1 = self.interpret_optimizer_results(
+            single_valued_constants_round1,
+            model_round1,
+            variables_round1,
+            time_consts_round1,
             interpreter,
-            percent_fed_from_model,
+            percent_fed_from_model_round1,
+            optimization_type="to_humans",
         )
 
-        # (
-        #     # single_valued_constants,
-        #     # time_consts,
-        #     # feed_and_biofuels,
-        # ) =
+        # SECOND ROUND: REMAINING FEED-APPROPRIATE FOOD TO ANIMALS AND BIOFUELS UP TO THE AMOUNT THEY CAN BE USED
+        print("ROUND2")
         min_human_food_consumption = constants_loader.compute_parameters_second_round(
             constants_for_params,
-            time_consts,
-            interpreted_results,
-            percent_fed_from_model,
+            interpreted_results_round1,
+            percent_fed_from_model_round1,
         )
 
-        optimizer = Optimizer(single_valued_constants, time_consts)
+        optimizer_to_animals = Optimizer(
+            single_valued_constants_round1, time_consts_round1
+        )
+
+        (
+            model_round2,
+            variables_round2,
+            maximize_constraints_round2,
+            percent_fed_from_model_round2,
+        ) = optimizer_to_animals.optimize_feed_to_animals(
+            single_valued_constants_round1,
+            time_consts_round1,
+            min_human_food_consumption,
+        )
+
+        interpreted_results_round2 = self.interpret_optimizer_results(
+            single_valued_constants_round1,  # these don't get updated in the second round
+            model_round2,
+            variables_round2,
+            time_consts_round1,  # these don't get updated in the second round
+            interpreter,
+            percent_fed_from_model_round2,
+            optimization_type="to_animals",
+        )
+
+        # THIRD ROUND: NOW THAT THE AMOUNT OF FEED AND BIOFUEL CONSUMED IS KNOWN, ALLOCATE THE REST TO HUMANS
+        print("ROUND3")
+
+        (
+            single_valued_constants_round3,
+            time_consts_round3,
+            feed_and_biofuels_round3,
+            meat_dictionary_round3,
+        ) = constants_loader.compute_parameters_third_round(
+            constants_for_params,
+            single_valued_constants_round1,
+            time_consts_round1,
+            interpreted_results_round2,
+            feed_and_biofuels_round1,
+        )
 
         (
             model,
             variables,
-            # percent_fed_from_model_round2,
-            time_consts,
-        ) = optimizer.optimize_feed_to_animals(
-            single_valued_constants, time_consts, min_human_food_consumption
+            percent_fed_from_model_round3,
+        ) = self.run_optimizer(single_valued_constants_round3, time_consts_round3)
+
+        interpreted_results_round3 = self.interpret_optimizer_results(
+            single_valued_constants_round3,
+            model,
+            variables,
+            time_consts_round3,
+            interpreter,
+            percent_fed_from_model_round3,
+            optimization_type="to_humans",
         )
+        interpreter.set_feed(feed_and_biofuels_round3)
+        interpreter.set_meat_dictionary(meat_dictionary_round3)
 
-        # print("interpreted_results")
-        # print(interpreted_results)
-        # breakpoint()
-        # quit()
-
-        PRINT_NEEDS_RATIO = False
-        if PRINT_NEEDS_RATIO:
-            interpreter.print_kcals_per_capita_per_day(interpreted_results)
-
-        return interpreted_results
+        return interpreted_results_round3
 
     def interpret_optimizer_results(
         self,
@@ -112,6 +150,7 @@ class ScenarioRunner:
         time_consts,
         interpreter,
         percent_fed_from_model,
+        optimization_type,
     ):
         validator = Validator()
 
@@ -133,6 +172,7 @@ class ScenarioRunner:
             interpreted_results,
             time_consts,
             percent_fed_from_model,
+            optimization_type,
         )
 
         return interpreted_results
@@ -149,7 +189,6 @@ class ScenarioRunner:
             variables,
             maximize_constraints,
             percent_fed_from_model,
-            time_consts,
         ) = optimizer.optimize_to_humans(single_valued_constants, time_consts)
 
         CHECK_CONSTRAINTS = False
@@ -166,7 +205,7 @@ class ScenarioRunner:
                 model.variables(),
             )
 
-        return (model, variables, percent_fed_from_model, time_consts)
+        return (model, variables, percent_fed_from_model)
 
     def set_depending_on_option(self, country_data, scenario_option):
         scenario_loader = Scenarios()
@@ -528,7 +567,7 @@ class ScenarioRunner:
 
             assert scenario_is_correct, """You must specify 'scenario' key as either baseline_climate,
             all_resilient_foods,all_resilient_foods_and_more_area,no_resilient_foods,seaweed,methane_scp,
-            cellulosic_sugar,relocated_crops or greenhouse"""
+            cellulosic_sugar,industrial_foods,relocated_crops or greenhouse"""
 
         if scenario_option["meat_strategy"] == "reduce_breeding_USA":
             constants_for_params = scenario_loader.set_breeding_to_greatly_reduced(

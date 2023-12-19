@@ -171,6 +171,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             percent_people_fed = interpreted_results.percent_people_fed
         print("percent_people_fed")
         print(round(percent_people_fed, 2))
+        print("interpreted_results.feed_and_biofuels.nonhuman_consumption")
+        print(interpreted_results.feed_and_biofuels.nonhuman_consumption)
         if not np.isnan(percent_people_fed):
             if (
                 not interpreted_results.feed_and_biofuels.nonhuman_consumption.all_equals_zero()

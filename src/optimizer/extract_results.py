@@ -7,6 +7,7 @@ Created on Tue Jul 22
 """
 import numpy as np
 from src.food_system.food import Food
+import pulp
 
 
 class Extractor:
@@ -110,8 +111,6 @@ class Extractor:
             time_consts["greenhouse_protein_per_ha"],
             time_consts["greenhouse_area"],
         )
-        print("crops_food_to_humans")
-        print(variables["crops_food_to_humans"])
         # if no outdoor food, plot shows zero
         # extract outdoor crops results in terms of people fed and raw tons
         self.extract_outdoor_crops_results(
@@ -130,7 +129,7 @@ class Extractor:
         # if nonegg nonmilk meat isn't included, these results plot shows zero
         # extract meat and milk results in terms of people fed and raw tons
         self.extract_meat_milk_results(
-            variables["culled_meat_eaten"],
+            variables["meat_eaten"],
             time_consts["milk_kcals"],
             time_consts["milk_fat"],
             time_consts["milk_protein"],
@@ -202,8 +201,12 @@ class Extractor:
         for month in range(0, self.constants["NMONTHS"]):
             cf_produced = crops_kcals_produced[month]
             cf_produced_output.append(cf_produced)
-
+            # print("")
+            # print("cf_produced")
+            # print(cf_produced)
             cf_eaten = crops_food_eaten[month].varValue
+            # print("cf_eaten")
+            # print(cf_eaten)
 
             if cf_produced <= cf_eaten:
                 immediately_eaten = cf_produced
@@ -211,9 +214,20 @@ class Extractor:
             else:
                 immediately_eaten = cf_eaten
                 new_stored_crops_eaten = 0
-
+            # print("immediately_eaten")
+            # print(immediately_eaten)
+            # print("new_stored_crops_eaten")
+            # print(new_stored_crops_eaten)
             immediately_eaten_output.append(immediately_eaten * conversion)
             new_stored_eaten_output.append(new_stored_crops_eaten * conversion)
+
+        # import matplotlib.pyplot as plt
+
+        # plt.figure()
+        # plt.plot(self.outdoor_crops_to_humans.in_units_billions_fed().kcals)
+        # plt.plot(immediately_eaten_output)
+        # plt.plot(new_stored_eaten_output)
+        # plt.show()
 
         return [immediately_eaten_output, new_stored_eaten_output]
 
@@ -347,8 +361,10 @@ class Extractor:
             None
 
         """
-
-        if isinstance(crops_food_to_humans, list) and sum(crops_food_to_humans) == 0:
+        if (
+            not isinstance(crops_food_to_humans[0], pulp.pulp.LpVariable)
+            and sum(crops_food_to_humans) == 0
+        ):
             # if ADD_OUTDOOR_CROPS is false, handle this edgecase
             self.outdoor_crops_to_humans = Food(
                 kcals=np.zeros_like(crops_food_to_humans),
@@ -391,7 +407,10 @@ class Extractor:
             self.outdoor_crops_biofuel.kcals,
         )
 
-        if isinstance(crops_food_to_humans, list) and sum(crops_food_to_humans) == 0:
+        if (
+            not isinstance(crops_food_to_humans[0], pulp.pulp.LpVariable)
+            and sum(crops_food_to_humans) == 0
+        ):
             # if ADD_OUTDOOR_CROPS is false, handle this edgecase
             self.outdoor_crops_to_humans = Food(
                 kcals=np.zeros_like(crops_food_to_humans),
@@ -402,7 +421,7 @@ class Extractor:
                 protein_units="billion people fed each month",
             )
         if (
-            isinstance(crops_food_to_humans, list)
+            not isinstance(crops_food_to_humans[0], pulp.pulp.LpVariable)
             and sum(crops_food_to_humans) == 0
             and np.sum(to_humans_outdoor_crop_production) == 0
         ):
@@ -482,10 +501,10 @@ class Extractor:
             + np.array(billions_fed_new_stored_outdoor_crops_kcals)
             - np.array(self.outdoor_crops_to_humans.kcals)
         )
-        decimals = 3
-        assert (
-            np.round(difference, decimals) == 0
-        ).all(), """ERROR: Immediate and new stored sources do not add up to the input of outdoor crop for humans"""
+        for element in difference:
+            assert np.isclose(
+                element, 0, atol=1e-3
+            ), """ERROR: Immediate and new stored sources do not add up to the input of outdoor crop for humans"""
 
     def set_new_stored_outdoor_crops_values(
         self, billions_fed_new_stored_outdoor_crops_kcals
@@ -550,7 +569,7 @@ class Extractor:
     # if stored food isn't included, these results will be zero
     def extract_meat_milk_results(
         self,
-        culled_meat_eaten,
+        meat_eaten,
         milk_kcals,
         milk_fat,
         milk_protein,
@@ -560,7 +579,7 @@ class Extractor:
         produced in billions of people fed each month.
 
         Args:
-            culled_meat_eaten (list): List of the amount of culled meat eaten in kg per year
+            meat_eaten (list): List of the amount of culled meat eaten in kg per year
             milk_kcals (list): List of the amount of grazing milk produced in kcal per year
             milk_fat (list): List of the amount of grazing milk produced in fat per year
             milk_protein (list): List of the amount of grazing milk produced in protein per year
@@ -572,7 +591,7 @@ class Extractor:
             >>>
             >>> extractor = Extractor()
             >>> extractor.extract_meat_milk_results(
-            >>>     culled_meat_eaten=[1000, 2000, 3000],
+            >>>     meat_eaten=[1000, 2000, 3000],
             >>>     milk_kcals=[1000, 2000, 3000],
             >>>     milk_fat=[100, 200, 300],
             >>>     milk_protein=[50, 100, 150],
@@ -580,35 +599,33 @@ class Extractor:
         """
 
         # Calculate the amount of culled meat eaten in billions of people fed each month
-        billions_fed_culled_meat_kcals = self.to_monthly_list(
-            culled_meat_eaten,
+        billions_fed_meat_kcals = self.to_monthly_list(
+            meat_eaten,
             1 / self.constants["KCALS_MONTHLY"],
         )
 
         # Calculate the amount of culled meat grazing in billions of people fed each month
-        billions_fed_culled_meat_grazing_kcals = billions_fed_culled_meat_kcals
+        billions_fed_meat_grazing_kcals = billions_fed_meat_kcals
 
         # Calculate the amount of fat in culled meat in billions of people fed each month
-        billions_fed_culled_meat_fat = self.to_monthly_list(
-            culled_meat_eaten,
-            self.constants["CULLED_MEAT_FRACTION_FAT"]
-            / self.constants["FAT_MONTHLY"]
-            / 1e9,
+        billions_fed_meat_fat = self.to_monthly_list(
+            meat_eaten,
+            self.constants["MEAT_FRACTION_FAT"] / self.constants["FAT_MONTHLY"] / 1e9,
         )
 
         # Calculate the amount of protein in culled meat in billions of people fed each month
-        billions_fed_culled_meat_protein = self.to_monthly_list(
-            culled_meat_eaten,
-            self.constants["CULLED_MEAT_FRACTION_PROTEIN"]
+        billions_fed_meat_protein = self.to_monthly_list(
+            meat_eaten,
+            self.constants["MEAT_FRACTION_PROTEIN"]
             / self.constants["PROTEIN_MONTHLY"]
             / 1e9,
         )
 
         # Create a Food object for culled meat plus grazing cattle maintained
-        self.culled_meat = Food(
-            kcals=billions_fed_culled_meat_kcals,
-            fat=billions_fed_culled_meat_fat,
-            protein=billions_fed_culled_meat_protein,
+        self.meat = Food(
+            kcals=billions_fed_meat_kcals,
+            fat=billions_fed_meat_fat,
+            protein=billions_fed_meat_protein,
             kcals_units="billion people fed each month",
             fat_units="billion people fed each month",
             protein_units="billion people fed each month",
@@ -702,28 +719,28 @@ class Extractor:
         # Loop through all variables in the model
         for var in model.variables():
             # Check if the variable is related to consumed kcals
-            if "Consumed_Kcals_" in var.name:
+            if "Humans_Fed_Kcals_" in var.name:
                 # Append the optimization result to the consumed_kcals list
                 consumed_kcals.append(var.value() / 100 * self.constants["POP"] / 1e9)
                 # Extract the order of the variable and append it to the order_kcals list
                 order_kcals.append(
-                    int(var.name[len("Consumed_Kcals_") :].split("_")[0])
+                    int(var.name[len("Humans_Fed_Kcals_") :].split("_")[0])
                 )
 
             # Check if the variable is related to consumed fat
-            if "Consumed_Fat_" in var.name:
+            if "Humans_Fed_Fat_" in var.name:
                 # Append the optimization result to the consumed_fat list
                 consumed_fat.append(var.value() / 100 * self.constants["POP"] / 1e9)
                 # Extract the order of the variable and append it to the order_fat list
-                order_fat.append(int(var.name[len("Consumed_Fat_") :].split("_")[0]))
+                order_fat.append(int(var.name[len("Humans_Fed_Fat_") :].split("_")[0]))
 
             # Check if the variable is related to consumed protein
-            if "Consumed_Protein_" in var.name:
+            if "Humans_Fed_Protein_" in var.name:
                 # Append the optimization result to the consumed_protein list
                 consumed_protein.append(var.value() / 100 * self.constants["POP"] / 1e9)
                 # Extract the order of the variable and append it to the order_protein list
                 order_protein.append(
-                    int(var.name[len("Consumed_Protein_") :].split("_")[0])
+                    int(var.name[len("Humans_Fed_Protein_") :].split("_")[0])
                 )
 
         # Sort the lists based on the order of the variables

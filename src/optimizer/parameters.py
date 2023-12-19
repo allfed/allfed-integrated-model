@@ -79,8 +79,11 @@ class Parameters:
 
         # Ensure every parameter has been initialized for the scenarios_loader
         scenarios_loader.check_all_set()
+
         # Time dependent constants_out as inputs to the optimizer
         time_consts = {}
+
+        # Single valued constants (not time dependent) given to optimizer
         constants_out = {}
 
         # Initialize scenario constants
@@ -184,8 +187,8 @@ class Parameters:
         feed_and_biofuels_class = FeedAndBiofuels(constants_inputs)
 
         (
-            biofuels,
-            feed,
+            biofuels_demand,
+            feed_demand,
         ) = feed_and_biofuels_class.get_biofuels_and_feed_from_delayed_shutoff(
             constants_inputs
         )
@@ -199,56 +202,55 @@ class Parameters:
             kcals=np.zeros(constants_inputs["NMONTHS"]),
             fat=np.zeros(constants_inputs["NMONTHS"]),
             protein=np.zeros(constants_inputs["NMONTHS"]),
-            kcals_units=feed.kcals_units,
-            fat_units=feed.fat_units,
-            protein_units=feed.protein_units,
+            kcals_units=feed_demand.kcals_units,
+            fat_units=feed_demand.fat_units,
+            protein_units=feed_demand.protein_units,
         )
 
         zero_biofuels = Food(
             kcals=np.zeros(constants_inputs["NMONTHS"]),
             fat=np.zeros(constants_inputs["NMONTHS"]),
             protein=np.zeros(constants_inputs["NMONTHS"]),
-            kcals_units=biofuels.kcals_units,
-            fat_units=biofuels.fat_units,
-            protein_units=biofuels.protein_units,
+            kcals_units=biofuels_demand.kcals_units,
+            fat_units=biofuels_demand.fat_units,
+            protein_units=biofuels_demand.protein_units,
         )
 
         meat_and_dairy = MeatAndDairy(constants_inputs)
 
         grasses_for_animals = meat_and_dairy.human_inedible_feed
-
         if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
-            feed_meat_object = CalculateFeedAndMeat(
+            feed_meat_object_first_round = CalculateFeedAndMeat(
                 country_code=constants_inputs["COUNTRY_CODE"],
-                available_feed=feed,
+                available_feed=zero_feed,
                 available_grass=grasses_for_animals,
                 scenario="reduced",  # tries to reduce breeding
             )
 
-            object_to_determine_feed_usage = CalculateFeedAndMeat(
+            feed_meat_object_second_round = CalculateFeedAndMeat(
                 country_code=constants_inputs["COUNTRY_CODE"],
-                available_feed=zero_feed,
+                available_feed=feed_demand,
                 available_grass=grasses_for_animals,
                 scenario="reduced",  # tries to reduce breeding
             )
 
         else:
-            feed_meat_object = CalculateFeedAndMeat(
+            feed_meat_object_first_round = CalculateFeedAndMeat(
                 country_code=constants_inputs["COUNTRY_CODE"],
                 available_feed=zero_feed,
                 available_grass=grasses_for_animals,
                 scenario="baseline",  # doesn't try to reduce breeding, baseline animal pops
             )
-            object_to_determine_feed_usage = CalculateFeedAndMeat(
+            feed_meat_object_second_round = CalculateFeedAndMeat(
                 country_code=constants_inputs["COUNTRY_CODE"],
-                available_feed=feed,
+                available_feed=feed_demand,
                 available_grass=grasses_for_animals,
                 scenario="baseline",  # doesn't try to reduce breeding, baseline animal pops
             )
 
         # MEAT AND DAIRY from breeding reduction strategy
 
-        # Initialize variables using the init_meat_and_dairy_and_feed_from_breeding function
+        # for first round (zero feed available to animals)
         (
             zero_feed_used,
             meat_dictionary,
@@ -256,48 +258,66 @@ class Parameters:
             constants_out,
         ) = self.init_meat_and_dairy_and_feed_from_breeding(
             constants_inputs,
-            feed_meat_object,
+            feed_meat_object_first_round,
             feed_and_biofuels_class,
             meat_and_dairy,
             constants_out,
             time_consts,
         )
 
-        max_feed_that_could_be_used = (
-            feed_and_biofuels_class.create_feed_food_from_kcals(
-                object_to_determine_feed_usage.feed_used
-            )
-        )
+        assert (
+            zero_feed_used.all_equals_zero()
+        ), "Error: first round of optimization has no feed used (just maximize to humans)"
 
+        # for second round (all feed available to animals)
+        (
+            max_feed_that_could_be_used_second_round,
+            meat_dictionary_if_all_feed_were_satisfied,
+            time_consts,
+            constants_out,
+        ) = self.init_meat_and_dairy_and_feed_from_breeding(
+            constants_inputs,
+            feed_meat_object_second_round,
+            feed_and_biofuels_class,
+            meat_and_dairy,
+            constants_out,
+            time_consts,
+        )
         # FEED AND BIOFUELS from breeding reduction strategy
 
-        assert feed.all_greater_than_or_equal_to(
-            max_feed_that_could_be_used
+        assert feed_demand.all_greater_than_or_equal_to(
+            max_feed_that_could_be_used_second_round
         ), "Error: Animals ate more feed than was available!"
 
+        # TODO: eventually set this value in another way... to the final result from the optimizer
         feed_and_biofuels_class.nonhuman_consumption = zero_biofuels + zero_feed_used
-
+        # (
+        #     biofuels + max_feed_that_could_be_used_second_round
+        # )
         PLOT_FEED = False
 
         if PLOT_FEED:
             feed.in_units_percent_fed().plot("feed")
 
-        # Update feed_and_biofuels_class object with their values
-        feed_and_biofuels_class.biofuel = zero_biofuels
-        feed_and_biofuels_class.feed = zero_feed_used
-        nonhuman_consumption = feed_and_biofuels_class.nonhuman_consumption
+        assert (
+            zero_biofuels.all_equals_zero()
+        ), "Error: first round of optimization has no biofuels used (just maximize to humans)"
 
-        # Update time_consts dictionary
-        time_consts["nonhuman_consumption"] = nonhuman_consumption
-        time_consts["feed"] = feed_and_biofuels_class.feed
-        time_consts["biofuel"] = feed_and_biofuels_class.biofuel
+        # Update feed_and_biofuels_class object with zero of either every month
+        feed_and_biofuels_class.feed_demand = zero_feed_used
+        feed_and_biofuels_class.biofuel_demand = zero_biofuels
+
+        # Update time_consts dictionary with zero feed or biofuels every month
+        time_consts["feed"] = zero_feed_used
+        time_consts["biofuel"] = zero_biofuels
+        time_consts["nonhuman_consumption"] = zero_feed_used + zero_biofuels
 
         # Return tuple containing constants_out, time_consts, and feed_and_biofuels_class
         return (
             constants_out,
             time_consts,
             feed_and_biofuels_class,
-            max_feed_that_could_be_used,
+            max_feed_that_could_be_used_second_round,
             meat_dictionary,
         )
 
@@ -382,7 +402,7 @@ class Parameters:
         constants_out["NMONTHS"] = constants_inputs["NMONTHS"]
         constants_out["ADD_FISH"] = constants_inputs["ADD_FISH"]
         constants_out["ADD_SEAWEED"] = constants_inputs["ADD_SEAWEED"]
-        constants_out["ADD_CULLED_MEAT"] = constants_inputs["ADD_CULLED_MEAT"]
+        constants_out["ADD_MEAT"] = constants_inputs["ADD_MEAT"]
         constants_out["ADD_MILK"] = constants_inputs["ADD_MILK"]
         constants_out["ADD_STORED_FOOD"] = constants_inputs["ADD_STORED_FOOD"]
         constants_out["ADD_METHANE_SCP"] = constants_inputs["ADD_METHANE_SCP"]
@@ -552,8 +572,6 @@ class Parameters:
         constants_out["INITIAL_HARVEST_DURATION_IN_MONTHS"] = constants_inputs[
             "INITIAL_HARVEST_DURATION_IN_MONTHS"
         ]
-        print("DELAY in parameters")
-        print(constants_inputs["DELAY"])
         constants_out["DELAY"] = constants_inputs["DELAY"]
 
         # Return the updated constants_out dictionary and the outdoor_crops object
@@ -743,7 +761,7 @@ class Parameters:
         constants_out,
         time_consts,
     ):
-        constants_out, time_consts = self.calculate_culled_meat_from_feed_results(
+        constants_out, time_consts = self.calculate_meat_from_feed_results(
             constants_out, time_consts, meat_and_dairy, feed_meat_object
         )
 
@@ -752,7 +770,7 @@ class Parameters:
         (
             constants_out,
             time_consts,
-        ) = self.calculate_non_culled_meat_and_dairy_from_feed_results(
+        ) = self.calculate_non_meat_and_dairy_from_feed_results(
             constants_inputs,
             constants_out,
             time_consts,
@@ -822,7 +840,7 @@ class Parameters:
     # been produced thus far.
 
     # To implement the above, first we take the sum total and set it to "culled meat", a single food constant
-    def calculate_culled_meat_from_feed_results(
+    def calculate_meat_from_feed_results(
         self, constants_out, time_consts, meat_and_dairy, feed_meat_object
     ):
         """
@@ -865,10 +883,10 @@ class Parameters:
 
         # Calculate the amount of culled meat and update constants_out dictionary
         (
-            constants_out["culled_meat_summed_consumption"],
-            constants_out["CULLED_MEAT_FRACTION_FAT"],
-            constants_out["CULLED_MEAT_FRACTION_PROTEIN"],
-        ) = meat_and_dairy.calculate_culled_meat_after_distribution_waste(
+            constants_out["meat_summed_consumption"],
+            constants_out["MEAT_FRACTION_FAT"],
+            constants_out["MEAT_FRACTION_PROTEIN"],
+        ) = meat_and_dairy.calculate_meat_after_distribution_waste(
             np.sum(animals_killed_for_meat_small),
             np.sum(animals_killed_for_meat_medium),
             np.sum(animals_killed_for_meat_large),
@@ -876,7 +894,7 @@ class Parameters:
 
         return constants_out, time_consts
 
-    def calculate_non_culled_meat_and_dairy_from_feed_results(
+    def calculate_non_meat_and_dairy_from_feed_results(
         self,
         constants_inputs,
         constants_out,
@@ -944,8 +962,7 @@ class Parameters:
     def compute_parameters_second_round(
         self,
         constants_inputs,
-        time_consts,
-        consumption_first_optimization,
+        interpreted_results_round1,
         percent_fed_from_model,
     ):
         """
@@ -957,43 +974,40 @@ class Parameters:
         # first round results had no feed or biofuels!
 
         assert (
-            consumption_first_optimization.cell_sugar_biofuels_kcals_equivalent.all_equals_zero()
+            interpreted_results_round1.cell_sugar_biofuels_kcals_equivalent.all_equals_zero()
         )
         assert (
-            consumption_first_optimization.outdoor_crops_biofuels_kcals_equivalent.all_equals_zero()
+            interpreted_results_round1.outdoor_crops_biofuels_kcals_equivalent.all_equals_zero()
         )
         assert (
-            consumption_first_optimization.scp_biofuels_kcals_equivalent.all_equals_zero()
+            interpreted_results_round1.scp_biofuels_kcals_equivalent.all_equals_zero()
         )
         assert (
-            consumption_first_optimization.seaweed_biofuels_kcals_equivalent.all_equals_zero()
+            interpreted_results_round1.seaweed_biofuels_kcals_equivalent.all_equals_zero()
         )
         assert (
-            consumption_first_optimization.stored_food_biofuels_kcals_equivalent.all_equals_zero()
+            interpreted_results_round1.stored_food_biofuels_kcals_equivalent.all_equals_zero()
         )
         assert (
-            consumption_first_optimization.cell_sugar_feed_kcals_equivalent.all_equals_zero()
+            interpreted_results_round1.cell_sugar_feed_kcals_equivalent.all_equals_zero()
         )
         assert (
-            consumption_first_optimization.outdoor_crops_feed_kcals_equivalent.all_equals_zero()
+            interpreted_results_round1.outdoor_crops_feed_kcals_equivalent.all_equals_zero()
+        )
+        assert interpreted_results_round1.scp_feed_kcals_equivalent.all_equals_zero()
+        assert (
+            interpreted_results_round1.seaweed_feed_kcals_equivalent.all_equals_zero()
         )
         assert (
-            consumption_first_optimization.scp_feed_kcals_equivalent.all_equals_zero()
-        )
-        assert (
-            consumption_first_optimization.seaweed_feed_kcals_equivalent.all_equals_zero()
-        )
-        assert (
-            consumption_first_optimization.stored_food_feed_kcals_equivalent.all_equals_zero()
+            interpreted_results_round1.stored_food_feed_kcals_equivalent.all_equals_zero()
         )
         min_human_food_consumption = self.calculate_human_consumption_for_min_needs(
-            constants_inputs, consumption_first_optimization, percent_fed_from_model
+            constants_inputs, interpreted_results_round1, percent_fed_from_model
         )
         return min_human_food_consumption
-        # return single_valued_constants, time_consts, feed_and_biofuels
 
     def calculate_human_consumption_for_min_needs(
-        self, constants_inputs, consumption_first_optimization, percent_fed_from_model
+        self, constants_inputs, interpreted_results_round1, percent_fed_from_model
     ):
         """
         We run through each month and determine the amount consumed each month of all foods.
@@ -1002,6 +1016,13 @@ class Parameters:
         in the following order of priority for humans to consume:
           First fish, then meat, then dairy, then greenhouse crops, then outdoor crops, then stored food,
           then scp, then cs, then seaweed.
+
+        NOTE: We only use variables set here in the optimizer that are NOT  greenhouses or dairy or fish, because
+        greenhouses and dairy and fish are not actually added as variables in the model (they are added as monthly
+        constants to sum of human consumption) and they cannot be optimized.
+        Furthermore, these foods always go to humans anyway.
+        We only add these variables for the purposes of validation in the case
+        that they sum up to human caloric minimum needs.
         """
 
         # We need to determine the limit of minimum human needs, so the rest is available for feed and biofuel.
@@ -1054,66 +1075,58 @@ class Parameters:
             # Calculate consumption for each food type following the order of preference
             fish_consumption.append(
                 consume(
-                    consumption_first_optimization.fish_kcals_equivalent[
-                        month_index
-                    ].kcals
+                    interpreted_results_round1.fish_kcals_equivalent[month_index].kcals
                 )
             )
             meat_consumption.append(
                 consume(
-                    consumption_first_optimization.culled_meat_kcals_equivalent[
-                        month_index
-                    ].kcals
+                    interpreted_results_round1.meat_kcals_equivalent[month_index].kcals
                 )
             )
             dairy_consumption.append(
                 consume(
-                    consumption_first_optimization.milk_kcals_equivalent[
-                        month_index
-                    ].kcals
+                    interpreted_results_round1.milk_kcals_equivalent[month_index].kcals
                 )
             )
             greenhouse_consumption.append(
                 consume(
-                    consumption_first_optimization.greenhouse_kcals_equivalent[
+                    interpreted_results_round1.greenhouse_kcals_equivalent[
                         month_index
                     ].kcals
                 )
             )
             outdoor_crops_consumption.append(
                 consume(
-                    consumption_first_optimization.immediate_outdoor_crops_kcals_equivalent[
+                    interpreted_results_round1.immediate_outdoor_crops_kcals_equivalent[
                         month_index
                     ].kcals
-                    + consumption_first_optimization.new_stored_outdoor_crops_kcals_equivalent[
+                    + interpreted_results_round1.new_stored_outdoor_crops_kcals_equivalent[
                         month_index
                     ].kcals
                 )
             )
             stored_food_consumption.append(
                 consume(
-                    consumption_first_optimization.stored_food_kcals_equivalent[
+                    interpreted_results_round1.stored_food_kcals_equivalent[
                         month_index
                     ].kcals
                 )
             )
             scp_consumption.append(
                 consume(
-                    consumption_first_optimization.scp_kcals_equivalent[
-                        month_index
-                    ].kcals
+                    interpreted_results_round1.scp_kcals_equivalent[month_index].kcals
                 )
             )
             cs_consumption.append(
                 consume(
-                    consumption_first_optimization.cell_sugar_kcals_equivalent[
+                    interpreted_results_round1.cell_sugar_kcals_equivalent[
                         month_index
                     ].kcals
                 )
             )
             seaweed_consumption.append(
                 consume(
-                    consumption_first_optimization.seaweed_kcals_equivalent[
+                    interpreted_results_round1.seaweed_kcals_equivalent[
                         month_index
                     ].kcals
                 )
@@ -1169,7 +1182,7 @@ class Parameters:
                 fat_units="effective kcals per person per day",
                 protein_units="effective kcals per person per day",
             ),
-            "scp": Food(
+            "methane_scp": Food(
                 kcals=scp_consumption,
                 fat=np.zeros_like(scp_consumption),
                 protein=np.zeros_like(scp_consumption),
@@ -1177,7 +1190,7 @@ class Parameters:
                 fat_units="effective kcals per person per day",
                 protein_units="effective kcals per person per day",
             ),
-            "cell_sugar": Food(
+            "cellulosic_sugar": Food(
                 kcals=cs_consumption,
                 fat=np.zeros_like(cs_consumption),
                 protein=np.zeros_like(cs_consumption),
@@ -1227,3 +1240,80 @@ class Parameters:
             assert food_consumption.all_less_than_or_equal_to(
                 max_food_daily
             ), f"Consumption of {food_type} exceeds maximum allowed in some months."
+
+    # ################ THIRD ROUND: FINAL TO HUMANS CALCULATION ##########################
+    def compute_parameters_third_round(
+        self,
+        constants_inputs,
+        constants_out,
+        time_consts,
+        interpreted_round2,
+        feed_and_biofuels_class,
+    ):
+        # TODO: make this function work with fat and protein minimums...
+
+        # the constants_out output is what we modify and return
+
+        meat_and_dairy = MeatAndDairy(constants_inputs)
+
+        feed_sum_billion_kcals = (
+            interpreted_round2.feed_sum_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+        )
+        biofuel_sum_billion_kcals = (
+            interpreted_round2.biofuels_sum_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+        )
+
+        grasses_for_animals = meat_and_dairy.human_inedible_feed
+        if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
+            feed_meat_object_third_round = CalculateFeedAndMeat(
+                country_code=constants_inputs["COUNTRY_CODE"],
+                available_feed=feed_sum_billion_kcals,
+                available_grass=grasses_for_animals,
+                scenario="reduced",  # tries to reduce breeding
+            )
+
+        else:
+            feed_meat_object_third_round = CalculateFeedAndMeat(
+                country_code=constants_inputs["COUNTRY_CODE"],
+                available_feed=feed_sum_billion_kcals,
+                available_grass=grasses_for_animals,
+                scenario="baseline",  # doesn't try to reduce breeding, baseline animal pops
+            )
+
+        # final answer as to meat produced from feed
+        (
+            max_feed_that_could_be_used_round3,
+            meat_dictionary_round3,
+            time_consts,
+            constants_out,
+        ) = self.init_meat_and_dairy_and_feed_from_breeding(
+            constants_inputs,
+            feed_meat_object_third_round,
+            feed_and_biofuels_class,
+            meat_and_dairy,
+            constants_out,
+            time_consts,
+        )
+
+        # Update feed_and_biofuels_class_round3 object with their values
+        feed_and_biofuels_class.feed_demand = max_feed_that_could_be_used_round3
+        feed_and_biofuels_class.biofuel_demand = biofuel_sum_billion_kcals
+        feed_and_biofuels_class.nonhuman_consumption = (
+            max_feed_that_could_be_used_round3 + biofuel_sum_billion_kcals
+        )
+
+        # Update time_consts dictionary
+        # TODO... need to set this to final actual result.
+        time_consts["nonhuman_consumption"] = (
+            max_feed_that_could_be_used_round3 + biofuel_sum_billion_kcals
+        )
+        time_consts["feed"] = max_feed_that_could_be_used_round3
+        time_consts["biofuel"] = biofuel_sum_billion_kcals
+        time_consts["max_feed_that_could_be_used"] = max_feed_that_could_be_used_round3
+
+        return (
+            constants_out,
+            time_consts,
+            feed_and_biofuels_class,
+            meat_dictionary_round3,
+        )

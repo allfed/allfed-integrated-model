@@ -83,7 +83,7 @@ class Plotter:
             ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
             ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
             ykcals.append(interpreter.milk_kcals_equivalent.kcals)
-            ykcals.append(interpreter.culled_meat_kcals_equivalent.kcals)
+            ykcals.append(interpreter.meat_kcals_equivalent.kcals)
             ykcals.append(interpreter.immediate_outdoor_crops_kcals_equivalent.kcals)
             ykcals.append(interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals)
             ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
@@ -316,7 +316,6 @@ class Plotter:
                 if label == "b":
                     continue
                 ax = fig.add_subplot(1, 1, 1)
-            ax.set_xlim([0.5, xlim])
 
             ykcals = []
 
@@ -330,7 +329,6 @@ class Plotter:
             ykcals.append(interpreter.seaweed_biofuels_kcals_equivalent.kcals)
             ykcals.append(interpreter.outdoor_crops_biofuels_kcals_equivalent.kcals)
             ykcals.append(interpreter.stored_food_biofuels_kcals_equivalent.kcals)
-
             if label == "a":
                 if ADD_THE_NUTRITION_PLOT:
                     ax.text(
@@ -393,7 +391,8 @@ class Plotter:
 
                 # note: nonhuman consumption is pre-waste, because it is assumed to occur
                 # before the waste happens
-
+                print("feed_and_biofuels.nonhuman_consumption")
+                print(feed_and_biofuels.nonhuman_consumption)
                 ax.plot(
                     interpreter.time_months_middle,
                     interpreter.feed_and_biofuels.nonhuman_consumption.in_units_percent_fed().kcals,
@@ -768,7 +767,7 @@ class Plotter:
             ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
             ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
             ykcals.append(interpreter.milk_kcals_equivalent.kcals)
-            ykcals.append(interpreter.culled_meat_kcals_equivalent.kcals)
+            ykcals.append(interpreter.meat_kcals_equivalent.kcals)
             ykcals.append(interpreter.immediate_outdoor_crops_kcals_equivalent.kcals)
             ykcals.append(interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals)
             ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
@@ -914,7 +913,7 @@ class Plotter:
         ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
         ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
         ykcals.append(interpreter.milk_kcals_equivalent.kcals)
-        ykcals.append(interpreter.culled_meat_kcals_equivalent.kcals)
+        ykcals.append(interpreter.meat_kcals_equivalent.kcals)
         ykcals.append(interpreter.immediate_outdoor_crops_kcals_equivalent.kcals)
         ykcals.append(interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals)
         ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
@@ -1212,7 +1211,7 @@ class Plotter:
                 ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
                 ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
                 ykcals.append(interpreter.milk_kcals_equivalent.kcals)
-                ykcals.append(interpreter.culled_meat_kcals_equivalent.kcals)
+                ykcals.append(interpreter.meat_kcals_equivalent.kcals)
                 ykcals.append(
                     interpreter.immediate_outdoor_crops_kcals_equivalent.kcals
                 )
@@ -1555,7 +1554,7 @@ class Plotter:
                 ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
                 ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
                 ykcals.append(interpreter.milk_kcals_equivalent.kcals)
-                ykcals.append(interpreter.culled_meat_kcals_equivalent.kcals)
+                ykcals.append(interpreter.meat_kcals_equivalent.kcals)
                 ykcals.append(
                     interpreter.immediate_outdoor_crops_kcals_equivalent.kcals
                 )
@@ -1709,7 +1708,7 @@ class Plotter:
                 ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
                 ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
                 ykcals.append(interpreter.milk_kcals_equivalent.kcals)
-                ykcals.append(interpreter.culled_meat_kcals_equivalent.kcals)
+                ykcals.append(interpreter.meat_kcals_equivalent.kcals)
                 ykcals.append(
                     interpreter.immediate_outdoor_crops_kcals_equivalent.kcals
                 )
@@ -1949,7 +1948,7 @@ class Plotter:
         else:
             legend = legend + [""]
 
-        if interpreter.constants["ADD_CULLED_MEAT"]:
+        if interpreter.constants["ADD_MEAT"]:
             legend = legend + ["Meat"]
         else:
             legend = legend + [""]

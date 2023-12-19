@@ -18,6 +18,7 @@ class Validator:
         interpreted_results,
         time_consts,
         percent_fed_from_model,
+        optimization_type,
     ):
         """
         Validates the results of the model by ensuring that the optimizer returns the same as the sum of nutrients,
@@ -32,14 +33,14 @@ class Validator:
         Returns:
             None
         """
-
-        # Ensure optimizer returns same as sum of nutrients
-        self.ensure_optimizer_returns_same_as_sum_nutrients(
-            percent_fed_from_model,
-            interpreted_results,
-            extracted_results.constants["inputs"]["INCLUDE_FAT"],
-            extracted_results.constants["inputs"]["INCLUDE_PROTEIN"],
-        )
+        if optimization_type != "to_animals":
+            # Ensure optimizer returns same as sum of nutrients
+            self.ensure_optimizer_returns_same_as_sum_nutrients(
+                percent_fed_from_model,
+                interpreted_results,
+                extracted_results.constants["inputs"]["INCLUDE_FAT"],
+                extracted_results.constants["inputs"]["INCLUDE_PROTEIN"],
+            )
 
         # Ensure zero kcals have zero fat and protein
         self.ensure_zero_kcals_have_zero_fat_and_protein(interpreted_results)
@@ -56,16 +57,27 @@ class Validator:
     # Function to check if all Food objects in the dictionary have the same units list
     def ensure_all_time_constants_units_are_billion_kcals(self, time_consts):
         for key, value in time_consts.items():
+            # print("")
+            # print("key")
+            # print(key)
+            # print("value")
+            # print(value)
+            # print("type")
+            # print(type(value))
             if isinstance(value, Food):
-                print("FOOD!")
-                print("food key")
-                print(key)
-                print(value.units)
+                # print("FOOD!")
+                # print("food key")
+                # print(key)
+                # print(value.units)
                 assert value.units == [
                     "billion kcals each month",
                     "thousand tons each month",
                     "thousand tons each month",
-                ], "ERROR: All the units for foods passed to optimizer don't match expected units"
+                ], (
+                    "ERROR: All the units for foods passed to optimizer don't match expected units."
+                    "Expected 'billion kcals each month' for kcals and 'thousand tons each month' for fat "
+                    f"and protein but got\n {str(value.units)} for food {key}"
+                )
 
     def check_constraints_satisfied(self, model, maximize_constraints, variables):
         """
@@ -204,7 +216,7 @@ class Validator:
         interpreted_results.scp.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.greenhouse.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.fish.make_sure_fat_protein_zero_if_kcals_is_zero()
-        interpreted_results.culled_meat.make_sure_fat_protein_zero_if_kcals_is_zero()
+        interpreted_results.meat.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.milk.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.immediate_outdoor_crops.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.new_stored_outdoor_crops.make_sure_fat_protein_zero_if_kcals_is_zero()
@@ -251,7 +263,7 @@ class Validator:
         interpreted_results.scp.make_sure_not_nan()
         interpreted_results.greenhouse.make_sure_not_nan()
         interpreted_results.fish.make_sure_not_nan()
-        interpreted_results.culled_meat.make_sure_not_nan()
+        interpreted_results.meat.make_sure_not_nan()
         interpreted_results.milk.make_sure_not_nan()
         interpreted_results.immediate_outdoor_crops.make_sure_not_nan()
         interpreted_results.new_stored_outdoor_crops.make_sure_not_nan()
@@ -279,8 +291,8 @@ class Validator:
         # Check that the fish variable is greater than or equal to zero
         assert interpreted_results.fish.all_greater_than_or_equal_to_zero()
 
-        # Check that the culled_meat variable is greater than or equal to zero
-        assert interpreted_results.culled_meat.get_rounded_to_decimal(
+        # Check that the meat variable is greater than or equal to zero
+        assert interpreted_results.meat.get_rounded_to_decimal(
             6
         ).all_greater_than_or_equal_to_zero()
 
