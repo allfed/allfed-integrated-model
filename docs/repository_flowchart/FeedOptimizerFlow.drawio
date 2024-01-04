@@ -1,13 +1,13 @@
-<mxfile host="app.diagrams.net" modified="2023-11-16T15:48:05.484Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="B2xaWwVInK04i7U_cSLd" version="22.1.2" type="github">
+<mxfile host="app.diagrams.net" modified="2024-01-04T15:04:04.313Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="uxw-j9LbNagD-f0npUji" version="22.1.16" type="github">
   <diagram name="Page-1" id="jVV0RAuZTFDPRcbFIyok">
-    <mxGraphModel dx="1362" dy="3052" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+    <mxGraphModel dx="1670" dy="3119" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="fFBPuynCDvpoVIscwh-X-29" value="" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=none;dashed=1;" vertex="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-29" value="" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=none;dashed=1;" parent="1" vertex="1">
           <mxGeometry x="741" y="980" width="419" height="230" as="geometry" />
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-30" value="" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=none;dashed=1;" vertex="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-30" value="" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=none;dashed=1;" parent="1" vertex="1">
           <mxGeometry x="790" y="679" width="666" height="262" as="geometry" />
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-51" value="" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=none;dashed=1;" parent="1" vertex="1">
@@ -36,11 +36,11 @@
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-5" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Run the animal feed model again, allowing animals the feed determined from the optimizer after humans consume their minimum requirement.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="796.25" y="1269" width="200" height="130" as="geometry" />
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="iWHlyYUsSo8P8iGn-lNc-12" target="fFBPuynCDvpoVIscwh-X-25">
+        <mxCell id="5b77aljqS2cWQifpjOui-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="iWHlyYUsSo8P8iGn-lNc-12" target="5b77aljqS2cWQifpjOui-1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="iWHlyYUsSo8P8iGn-lNc-12" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Run a first optimization to see how many people could be fed from just the meat from animals (that are fed no animal feed) and the input food with no feed used. This first optimization finds the minimum starvation if we don&#39;t care about prioritizing outdoor crops and stored food to humans. &lt;br&gt;&lt;br&gt;Run a second optimization. The second optimization enforces the same starvation level, but tries to maximize outdoor crops and stored food going to humans rather than animals.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="790" y="215" width="200" height="330" as="geometry" />
+        <mxCell id="iWHlyYUsSo8P8iGn-lNc-12" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Run a first optimization to see how many people could be fed from just the meat from animals (that are fed no animal feed) and the input food with no feed used. This first optimization finds the minimum starvation if we don&#39;t care about prioritizing outdoor crops and stored food to humans. &lt;br&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="790" y="215" width="200" height="195" as="geometry" />
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="iWHlyYUsSo8P8iGn-lNc-14" target="iWHlyYUsSo8P8iGn-lNc-18" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -65,7 +65,7 @@
             <mxPoint x="144" y="-1" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="iWHlyYUsSo8P8iGn-lNc-18" value="R&lt;font style=&quot;font-size: 14px;&quot;&gt;un one more &quot;smoothing&quot; optimization to reduce variation in food usage if possible, and finally returns the percent humans fed and allocations over time to the interpreter.&lt;br&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="iWHlyYUsSo8P8iGn-lNc-18" value="R&lt;font style=&quot;font-size: 14px;&quot;&gt;un one more &quot;smoothing&quot; optimization to reduce variation in meat and stored food food usage if possible, and finally returns the percent humans fed and allocations over time to the interpreter.&lt;br&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="796.25" y="2098" width="200" height="130" as="geometry" />
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-29" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;If any food is left after human minimum needs and animals consume the human edible feed, biofuel demand is attempted to be satisfied (maximizing the minimum biofuel up to the level of biofuel demand per month).&lt;/font&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt; Food unused as animal feed or biofuel goes back to humans in the form of overconsumption beyond minimum dietary requirements&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -134,99 +134,108 @@
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-66" value="This is an attempt at a simple model. There are lots of ways to improve realism here at the cost of complexity.&lt;br&gt;&lt;br&gt;&lt;div&gt;For example, it may be the case that biofuel may lead to animal or even human starvation if it&#39;s not shut off in the first month or two. (The next step in improved accuracy may be to enforce a certain delay in biofuel shutoff as long as it doesn&#39;t reduce animal starvation by X% or human starvation by Y%, and a similiar delay in feed, as long as it doesn&#39;t reduce human starvation by Z%, rather than completely ignoring biofuel delays in shutoff if they cause starvation in higher priority demand types.)&lt;/div&gt;&lt;br&gt;&lt;div&gt;Human overconsumption obviously has its limits. Realistically, in a case with disrupted trade, countries with excess are likely to trade their excess away after a certain amount of human overconsumption occurs. Trade may even take the place of biofuel or animal feed. (In the great chinese famine, trade  place even when available food in China was below human minimum needs).&lt;br&gt;&lt;br&gt;Another improvement may be that N kcals of human overconsumption may be prioritized over animal feed if more than M% of calories are met by meat in the model.&amp;nbsp; &lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;Fat and protein requirements may be prioritized lower than kcal requirements in the model. So it may make sense to add a coefficient on the fat or protein, where the fat or protein demand is a function of the amount of kcals that are available. So 50% of kcals may imply only10% minimum fat or protein is constraining, whereas 90% kcals may imply, say, 40% minimum fat or protein is constraining. When people are starving, it&#39;s more important to maximize calories than nutrition of the food itself, if there is such a tradeoff.&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="161" y="688" width="210" height="740" as="geometry" />
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-1" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Run the animal feed model with the assumption that all feed is available as passed in from user. (Constant level until shutoff time)&lt;br&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-1" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Run the animal feed model with the assumption that all feed is available as passed in from user. (Constant level until shutoff time)&lt;br&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1041" y="769" width="200" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="fFBPuynCDvpoVIscwh-X-3" target="iWHlyYUsSo8P8iGn-lNc-5">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="fFBPuynCDvpoVIscwh-X-3" target="iWHlyYUsSo8P8iGn-lNc-5" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-3" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Run the optimizer a 3rd time, where minimum human needs are enforced, and the feed and biofuel for each month is maximized, at most to the level of the previous month, up to the level of feed used by the animals.&lt;br&gt;The earlier months are prioritized.&lt;br&gt;&lt;/font&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-3" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Run the optimizer a 3rd time, where minimum human needs are enforced, and the feed and biofuel for each month is maximized, at most to the level of the previous month, up to the level of feed used by the animals.&lt;br&gt;The earlier months are prioritized.&lt;br&gt;&lt;/font&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
           <mxGeometry x="787" y="1008" width="190" height="190" as="geometry" />
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-5" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="fFBPuynCDvpoVIscwh-X-1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-5" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="fFBPuynCDvpoVIscwh-X-1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="1278" y="1070" as="sourcePoint" />
             <mxPoint x="980" y="1070" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-27" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Feed that could be used by animals&lt;/font&gt;&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="fFBPuynCDvpoVIscwh-X-5">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-27" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Feed that could be used by animals&lt;/font&gt;&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="fFBPuynCDvpoVIscwh-X-5" vertex="1" connectable="0">
           <mxGeometry x="-0.2365" y="-1" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-7" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-7" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="571" y="950" as="sourcePoint" />
             <mxPoint x="671" y="950" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-8" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-8" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="571" y="949" as="sourcePoint" />
             <mxPoint x="571" y="829" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-10" value="" style="shape=link;html=1;rounded=0;labelBorderColor=default;labelBackgroundColor=#050505;" edge="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-10" value="" style="shape=link;html=1;rounded=0;labelBorderColor=default;labelBackgroundColor=#050505;" parent="1" edge="1">
           <mxGeometry width="100" relative="1" as="geometry">
             <mxPoint x="577" y="950" as="sourcePoint" />
             <mxPoint x="577" y="860" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-11" value="" style="shape=link;html=1;rounded=0;labelBorderColor=default;labelBackgroundColor=#050505;fillColor=#fff2cc;strokeColor=#000000;" edge="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-11" value="" style="shape=link;html=1;rounded=0;labelBorderColor=default;labelBackgroundColor=#050505;fillColor=#fff2cc;strokeColor=#000000;" parent="1" edge="1">
           <mxGeometry width="100" relative="1" as="geometry">
             <mxPoint x="588" y="950" as="sourcePoint" />
             <mxPoint x="588" y="860" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-12" value="" style="shape=link;html=1;rounded=0;labelBorderColor=default;labelBackgroundColor=#050505;" edge="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-12" value="" style="shape=link;html=1;rounded=0;labelBorderColor=default;labelBackgroundColor=#050505;" parent="1" edge="1">
           <mxGeometry width="100" relative="1" as="geometry">
             <mxPoint x="599" y="950" as="sourcePoint" />
             <mxPoint x="599" y="889" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-13" value="" style="shape=link;html=1;rounded=0;labelBorderColor=default;labelBackgroundColor=#050505;" edge="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-13" value="" style="shape=link;html=1;rounded=0;labelBorderColor=default;labelBackgroundColor=#050505;" parent="1" edge="1">
           <mxGeometry width="100" relative="1" as="geometry">
             <mxPoint x="610" y="950" as="sourcePoint" />
             <mxPoint x="610" y="930" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-17" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-17" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="572" y="899" width="10" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-19" value="" style="rounded=0;whiteSpace=wrap;html=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" vertex="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-19" value="" style="rounded=0;whiteSpace=wrap;html=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" parent="1" vertex="1">
           <mxGeometry x="583" y="939" width="10" height="10" as="geometry" />
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-20" value="" style="rounded=0;whiteSpace=wrap;html=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" vertex="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-20" value="" style="rounded=0;whiteSpace=wrap;html=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" parent="1" vertex="1">
           <mxGeometry x="594" y="939" width="10" height="10" as="geometry" />
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-21" value="" style="shape=link;html=1;rounded=0;labelBorderColor=default;labelBackgroundColor=#050505;" edge="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-21" value="" style="shape=link;html=1;rounded=0;labelBorderColor=default;labelBackgroundColor=#050505;" parent="1" edge="1">
           <mxGeometry width="100" relative="1" as="geometry">
             <mxPoint x="618" y="819" as="sourcePoint" />
             <mxPoint x="618" y="809" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-22" value="&lt;div align=&quot;left&quot;&gt;= feed used&amp;nbsp; (passed in feed)&amp;nbsp; &lt;br&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;= optimizer allocated feed&lt;br&gt;&lt;/div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; based on availability" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-22" value="&lt;div align=&quot;left&quot;&gt;= feed used&amp;nbsp; (passed in feed)&amp;nbsp; &lt;br&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;= optimizer allocated feed&lt;br&gt;&lt;/div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; based on availability" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="632" y="801" width="180" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-23" value="" style="rounded=0;whiteSpace=wrap;html=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" vertex="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-23" value="" style="rounded=0;whiteSpace=wrap;html=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" parent="1" vertex="1">
           <mxGeometry x="617" y="838" width="10" height="10" as="geometry" />
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-24" value="&lt;div&gt;The last month cannot be &lt;br&gt;&lt;/div&gt;&lt;div&gt;below the level of month before.&lt;/div&gt;&amp;nbsp;It cannot be greater than the used feed either." style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-24" value="&lt;div&gt;The last month cannot be &lt;br&gt;&lt;/div&gt;&lt;div&gt;below the level of month before.&lt;/div&gt;&amp;nbsp;It cannot be greater than the used feed either." style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="456" y="948" width="270" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="fFBPuynCDvpoVIscwh-X-25" target="fFBPuynCDvpoVIscwh-X-3">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="fFBPuynCDvpoVIscwh-X-25" target="fFBPuynCDvpoVIscwh-X-3" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-25" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Run through the foods in order of priority, and assign them to meet human minimum demand, or up to the level of human starvation.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-25" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Run through the foods in order of priority, and assign them to meet human minimum demand, or up to the level of human starvation.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="812" y="769" width="200" height="101" as="geometry" />
         </mxCell>
         <UserObject label="PARAMETERS.PY" link="PARAMETERS.PY" id="fFBPuynCDvpoVIscwh-X-35">
-          <mxCell style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxCell style="text;whiteSpace=wrap;html=1;" parent="1" vertex="1">
             <mxGeometry x="1331" y="679" width="130" height="40" as="geometry" />
           </mxCell>
         </UserObject>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-36" value="OPTIMIZER.PY" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-36" value="OPTIMIZER.PY" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="1060" y="1060" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="5b77aljqS2cWQifpjOui-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="5b77aljqS2cWQifpjOui-1" target="5b77aljqS2cWQifpjOui-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5b77aljqS2cWQifpjOui-1" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Run a second optimization. The second &#xa;optimization enforces the same starvation level, but tries to maximize &#xa;outdoor crops and stored food going to humans rather than animals.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="380" width="250" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="5b77aljqS2cWQifpjOui-3" value="R&lt;font style=&quot;font-size: 14px;&quot;&gt;un one more &quot;smoothing&quot; optimization to reduce variation in meat and stored food food usage if possible, &lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="510" width="260" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
