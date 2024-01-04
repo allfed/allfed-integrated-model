@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-01-04T16:39:34.331Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="E6FdBozKGU0ly37wcd3t" version="22.1.16" type="github">
+<mxfile host="app.diagrams.net" modified="2024-01-04T16:40:43.266Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="iHWtar-vZl-wjUe916zI" version="22.1.16" type="github">
   <diagram name="Page-1" id="jVV0RAuZTFDPRcbFIyok">
     <mxGraphModel dx="1670" dy="3119" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
@@ -134,7 +134,7 @@
         <mxCell id="fFBPuynCDvpoVIscwh-X-3" value="Round 2, optimization #1&lt;br&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Run the optimizer where minimum human needs are enforced, and the feed and biofuel for each month is maximized, at most to the level of the previous month.&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;The maximization does not maximize feed or biofuels above the following caps:&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Cap 1: Feed cannot be optimized above the level of feed that could be used by the animals if there were no feed limitation (the expected consumption per animal serves as a cap on feed usage).&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Cap 2:&amp;nbsp; Feed and biofuel are capped at zero after they are shut off (if a shutoff duration for feed or biofuel had been assigned by the user).&lt;/font&gt;&lt;/div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Cap 3: Neither Feed or biofuel cannot be assigned to a usage level higher than in a previous month, so feed usage and biofuel usage must either decline or stay steady over time&lt;br&gt;&lt;/font&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
           <mxGeometry x="787" y="1008" width="333" height="333" as="geometry" />
         </mxCell>
-        <mxCell id="fFBPuynCDvpoVIscwh-X-5" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="fFBPuynCDvpoVIscwh-X-1" edge="1">
+        <mxCell id="fFBPuynCDvpoVIscwh-X-5" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="fFBPuynCDvpoVIscwh-X-1" edge="1" target="fFBPuynCDvpoVIscwh-X-3">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="1278" y="1070" as="sourcePoint" />
             <mxPoint x="980" y="1070" as="targetPoint" />
@@ -142,7 +142,7 @@
         </mxCell>
         <mxCell id="fFBPuynCDvpoVIscwh-X-27" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Feed that could be used by animals&lt;/font&gt;&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="fFBPuynCDvpoVIscwh-X-5" vertex="1" connectable="0">
           <mxGeometry x="-0.2365" y="-1" relative="1" as="geometry">
-            <mxPoint as="offset" />
+            <mxPoint x="19" y="-17" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="fFBPuynCDvpoVIscwh-X-7" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
