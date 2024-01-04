@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-01-04T15:12:28.018Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="bhvtL85M-Re7e95XHAyx" version="22.1.16" type="github">
+<mxfile host="app.diagrams.net" modified="2024-01-04T15:15:35.592Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="YHV5W6NkuYR9RUHtznaB" version="22.1.16" type="github">
   <diagram name="Page-1" id="jVV0RAuZTFDPRcbFIyok">
     <mxGraphModel dx="1670" dy="3119" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
@@ -17,21 +17,15 @@
           <mxGeometry x="661" y="-34" width="790" height="210" as="geometry" />
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-35" value="" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=none;dashed=1;" parent="1" vertex="1">
-          <mxGeometry x="560" y="1520" width="660" height="420" as="geometry" />
+          <mxGeometry x="560" y="1520" width="660" height="230" as="geometry" />
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-37" value="" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=none;dashed=1;" parent="1" vertex="1">
-          <mxGeometry x="560" y="1956" width="660" height="604" as="geometry" />
+          <mxGeometry x="560" y="1760" width="660" height="800" as="geometry" />
         </mxCell>
-        <mxCell id="iWHlyYUsSo8P8iGn-lNc-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="iWHlyYUsSo8P8iGn-lNc-29" target="iWHlyYUsSo8P8iGn-lNc-14" edge="1">
-          <mxGeometry x="0.0732" y="254" relative="1" as="geometry">
-            <mxPoint x="890" y="1860" as="sourcePoint" />
-            <mxPoint x="896.4999999999995" y="1980" as="targetPoint" />
-            <Array as="points" />
-            <mxPoint as="offset" />
+        <mxCell id="iWHlyYUsSo8P8iGn-lNc-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="iWHlyYUsSo8P8iGn-lNc-5" target="iWHlyYUsSo8P8iGn-lNc-14" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="896.25" y="1699" as="targetPoint" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="iWHlyYUsSo8P8iGn-lNc-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="iWHlyYUsSo8P8iGn-lNc-5" target="iWHlyYUsSo8P8iGn-lNc-29" edge="1">
-          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-5" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Run the animal feed model again, allowing animals the feed determined from the optimizer after humans consume their minimum requirement.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="796.25" y="1549" width="200" height="130" as="geometry" />
@@ -45,8 +39,8 @@
         <mxCell id="5b77aljqS2cWQifpjOui-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="iWHlyYUsSo8P8iGn-lNc-14" target="5b77aljqS2cWQifpjOui-14">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="iWHlyYUsSo8P8iGn-lNc-14" value="&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Round 3, Optimization #1&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Run another optimization, using the new values for feed to humans and to animals determined above&lt;/font&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;. This&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt; optimization finds the minimum starvation if we don&#39;t care about &lt;br&gt;prioritizing outdoor crops and stored food to humans. &lt;br&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="720" y="1964" width="276.25" height="176" as="geometry" />
+        <mxCell id="iWHlyYUsSo8P8iGn-lNc-14" value="&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Round 3, Optimization #1&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;&amp;nbsp;In this optimization, food unused as animal feed or biofuel is allocated to humans in the form of overconsumption beyond minimum dietary requirements.&lt;br&gt;&lt;br&gt;&lt;/font&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Run another optimization, using the new values for feed and biofuels as a fixed value&lt;/font&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;. &lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;This&lt;/font&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt; optimization maximizes the minimum starvation levels, with the minimum human needs already met as determined in the first round, and with the feed and biofuels determined in the second round. &lt;/font&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="1820" width="276.25" height="320" as="geometry" />
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="iWHlyYUsSo8P8iGn-lNc-15" target="iWHlyYUsSo8P8iGn-lNc-12" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -67,9 +61,6 @@
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-18" value="Round 3 optimization #3&lt;br&gt;R&lt;font style=&quot;font-size: 14px;&quot;&gt;un one more &quot;smoothing&quot; optimization to reduce variation in meat and stored food food usage if possible, and finally returns the percent humans fed and allocations over time to the interpreter.&lt;br&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="800" y="2400" width="227" height="130" as="geometry" />
-        </mxCell>
-        <mxCell id="iWHlyYUsSo8P8iGn-lNc-29" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;If any food is left after human minimum needs and animals consume the human edible feed, biofuel demand is attempted to be satisfied (maximizing the minimum biofuel up to the level of biofuel demand per month).&lt;/font&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt; Food unused as animal feed or biofuel goes back to humans in the form of overconsumption beyond minimum dietary requirements&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="796.25" y="1699" width="200" height="230" as="geometry" />
         </mxCell>
         <mxCell id="iWHlyYUsSo8P8iGn-lNc-39" value="OPTIMIZER.PY" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="1050" y="1980" width="60" height="30" as="geometry" />
