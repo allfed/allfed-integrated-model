@@ -35,7 +35,7 @@ class Interpreter:
             False  # until set to true, this will not show the feed or biofuels
         )
 
-    def set_feed(self, feed_and_biofuels):
+    def set_feed_and_biofuels(self, feed_and_biofuels):
         self.show_feed_biofuels = True
         self.feed_and_biofuels = feed_and_biofuels
 
@@ -85,7 +85,7 @@ class Interpreter:
         # Assign nonhuman consumption
         self.nonhuman_consumption = extracted_results.nonhuman_consumption
         # Set feed and biofuels
-        self.set_feed_and_biofuels(
+        self.calculate_feed_and_biofuels(
             extracted_results.seaweed_biofuel,
             extracted_results.scp_biofuel,
             extracted_results.cell_sugar_biofuel,
@@ -556,7 +556,7 @@ class Interpreter:
         else:
             return first_month + 1
 
-    def set_feed_and_biofuels(
+    def calculate_feed_and_biofuels(
         self,
         seaweed_used_for_biofuel,
         methane_scp_used_for_biofuel,

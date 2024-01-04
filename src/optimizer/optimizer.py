@@ -261,7 +261,7 @@ class Optimizer:
         - `variables`: The updated dictionary of variables after the function has added new variables.
         - `maximize_constraints`: A list of the objective functions added to the model, used for validation purposes.
         """
-
+        self.optimization_type = optimization_type  # stored food isn't forced to be entirely consumed in to_animals
         for key, resource in self.resource_constants.items():
             if single_valued_constants[key]:  # if ADD_[resource name] is true...
                 prefixes = resource["prefixes"]
@@ -347,9 +347,8 @@ class Optimizer:
         """
         This function is part of a resource allocation system aiming to model systems which
             1. minimizes human starvation
-            2. maximizes animal starvation assuming minimal nutrition for humans are met
-            3. attempts to maintain biofuel assuming minimal nutrition for humans and animals are met
-            4. reduces unnecessary fluctuations in the predicted food consumption.
+            2. maximizes feed going to animals, and secondarily biofuel, assuming minimal nutrition for humans are met
+            3. reduces unnecessary fluctuations in the predicted food consumption.
 
         This function specifically takes the series of constraints which either involve a maximization of the minimum
         to_human food, OR a maximization of the number of months where to_animals feed demand is fully met, starting at
@@ -376,9 +375,15 @@ class Optimizer:
             process.
 
         """
+
+        print("")
+        print("2")
+        print("")
         # Set this to True to print PULP messages
         PRINT_PULP_MESSAGES = False
-
+        # if optimization_type == "to_animals":
+        # print("model")
+        # print(model)
         # Solve the initial model
         status = model.solve(
             pulp.PULP_CBC_CMD(gapRel=0.0001, msg=PRINT_PULP_MESSAGES, fracGap=0.001)
@@ -390,14 +395,6 @@ class Optimizer:
             assert status == 1, "ERROR: OPTIMIZATION FAILED!"
 
         percent_fed_from_first_optimization = model.objective.value()
-        # The way the model works is that in the parameters.py file it first feeds
-        # animals as much feed as they need,  constrained only by the number of months
-        # before feed shutoff, and further constrained by their population.  If the
-        # animal feed model has all the animals slaughtered very quickly, then no feed
-        # would be used, and all  feed would be allocated to humans.  However, animal
-        # feed model does not determine *which* of the food resources are allocated for
-        # feed.  That is the job of the optimizer.
-
         # To determine the allocation of
         # both biofuels and feed, the optimizer first does an optimization ignoring
         # feed and biofuel usage entirely. This optimization does not at all subtract
@@ -405,18 +402,18 @@ class Optimizer:
         # could be fed before considering feed or biofuel.  Note however that this
         # also is using the meat production which required usage of the feed that was
         # ignored.  This is the point in the code we're at on this very line: we've
-        # allocated all food to humans, preferencing outdoor crops and stored food,
+        # allocated all food to humans,
         # but have not yet considered how feed and biofuels will be satisfied.
         # So, passed to the optimizer to allocate to humans (ignoring waste).
-
         # At this stage, we have made an optimization for
-        # starvation that completely ignores feed and biofuels.
+        # minimizing human starvation that completely ignores feed and biofuels.
 
         if optimization_type == "to_humans":
             # Constrain the next optimization to have the same minimum starvation as the previous optimization
-            # the previous optimization is just allocating all the food to humans, and using this to determine the month
-            # with the minimum starvation
-            # the next optimization is then attempting to allocate as much of the remaining resources
+            # the previous optimization is just allocating all the food to humans, and using this to determine the
+            # month with the minimum starvation
+            # the next optimization is arranging the scenario so that the outdoor crops, greenhouse, and stored food
+            # preferentially go to humans rather than to animals
             (
                 model,
                 variables,
@@ -424,6 +421,8 @@ class Optimizer:
                 model, variables
             )
         else:
+            # Constrain the next optimization to have the same allocation of feed and biofuel as the previous
+            # optimization
             (
                 model,
                 variables,
@@ -432,7 +431,7 @@ class Optimizer:
             )
 
         # If the first optimization was successful, optimize the best food consumption that goes to humans
-        # best foods are hardcoded in the model as crops, greenhouse, and stored food.
+        # best foods are hardcoded in the model as outdoor crops, greenhouse, and stored food.
         if status == 1:
             model, variables = self.optimize_best_food_consumption_to_go_to_humans(
                 model,
@@ -513,7 +512,7 @@ class Optimizer:
                 + variables["seaweed_biofuel"][month]
             ) / self.NMONTHS >= (
                 scp_sum + cell_sugar_sum + seaweed_sum
-            ) / self.NMONTHS * 0.9999  # TODO: can this just be equal to 1?
+            ) / self.NMONTHS * 0.9999  # TODO: can this just be equal to 1? # NOTE: seems to fail if I set it to 1...
 
         # Add the constraint to the model
         # TODO: can this just be set to "equals?"
@@ -571,7 +570,7 @@ class Optimizer:
 
         # Add objective function variable to the dictionary
         variables["objective_function"] = LpVariable(
-            name="Least_Humans_Fed_Any_Month", lowBound=0
+            name="Objective_To_Optimize", lowBound=0
         )
 
         # Initialize prefixes for different types of variables
@@ -900,7 +899,7 @@ class Optimizer:
             ...     self, model, variables
             ... )
         """
-
+        # (previous optimization value is the minimum humans fed in any month).
         # Set min_value to the previous optimization value and make sure consumed_kcals meets this value each month
         min_value = (
             model.objective.value() * 0.9999
@@ -913,7 +912,8 @@ class Optimizer:
         maximizer_string = "Old_Objective_Constraint"
 
         # This means the optimizer is trying to maximize the sum calories consumed in the scenario
-        # within the bounds of the previous constraints enforced.
+        # within the bounds of the previous constraints enforced (previous constraint is the minimum humans fed in
+        # any month).
         # (the right hand side is what is attempted to be maximized)
         # (the left hand side is the minimum calories any month must have, meaning that this more constrained
         # optimization must at least allow for satisfying the previous optimization's objectives)
@@ -1164,8 +1164,8 @@ class Optimizer:
 
         # Calculate the sum of all biofuel variables for the given month
         biofuel_sum = self.get_biofuel_sum(variables, month)
-        print("self.time_consts[biofuel].kcals[month]")
-        print(self.time_consts["biofuel"].kcals[month])
+        # print("self.time_consts[biofuel].kcals[month]")
+        # print(self.time_consts["biofuel"].kcals[month])
         if optimization_type == "to_humans":
             # Define the conditions for the feed and biofuel variables
             conditions = {
@@ -1188,12 +1188,25 @@ class Optimizer:
                 ),
             }
 
+            # TODO: CHECK THIS WORKS!
+            if month > 0:
+                feed_sum_previous_month = self.get_feed_sum(variables, month - 1)
+                conditions["Feed_Decreases"] = (
+                    feed_sum_previous_month >= feed_sum  # * 0.9999
+                )
+
+            #     # always decrease feed used month to month
+            #     conditions["Feed_Decreases"] = feed_sum_previous_month >= feed_sum
+            #     # "Biofuel_Decreases": (
+            #     #     biofuel_sum <= self.time_consts["biofuel"].kcals[month]
+            #     # ),
+            model = self.add_conditions_to_model(model, month, conditions)
+
         else:
             print(
                 'ERROR: incorrect optimization type. Only "to_humans" or "to_animals" defined'
             )
             sys.exit()
-        # Add the conditions to the model for the given month
 
         return model
 
@@ -1512,7 +1525,10 @@ class Optimizer:
             )
 
         elif month == self.NMONTHS - 1:  # last month
-            conditions["Stored_Food_End"] = variables["stored_food_end"][month] == 0
+            # be sure to eat all the stored food by the end, unless you are optimizing to animals
+            if self.optimization_type != "to_animals":
+                conditions["Stored_Food_End"] = variables["stored_food_end"][month] == 0
+
             conditions["Stored_Food_Start"] = (
                 variables["stored_food_start"][month]
                 == variables["stored_food_end"][month - 1]
@@ -1644,7 +1660,6 @@ class Optimizer:
             )
 
         conditions = {
-            "Crops_Food_None_Left": variables["crops_food_storage"][month] == 0,
             "Crops_Food_Storage": (
                 variables["crops_food_storage"][month]
                 == self.time_consts["outdoor_crops"].production.kcals[month]
@@ -1652,6 +1667,12 @@ class Optimizer:
                 - variables["crops_food_eaten"][month]
             ),
         }
+
+        # if we're not optimizing to maximize animal feed, then make sure all stored crop food is used
+        if self.optimization_type != "to_animals":
+            conditions["Crops_Food_None_Left"] = (
+                variables["crops_food_storage"][month] == 0,
+            )
         return conditions
 
     def handle_other_months(self, variables, month, use_relocated_crops):

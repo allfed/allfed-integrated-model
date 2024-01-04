@@ -11,47 +11,85 @@ Created on Tue Jul 19
 
 import sys
 
+import numpy as np
+import copy
+
 from src.optimizer.optimizer import Optimizer
 from src.optimizer.interpret_results import Interpreter
 from src.optimizer.extract_results import Extractor
 from src.scenarios.scenarios import Scenarios
 from src.optimizer.validate_results import Validator
 from src.optimizer.parameters import Parameters
+from src.utilities.plotter import Plotter
 
 
 class ScenarioRunner:
     def __init__(self):
         pass
 
-    def run_and_analyze_scenario(self, constants_for_params, scenarios_loader):
-        """
-        computes params, Runs the optimizer, extracts data from optimizer, interprets
-        the results, validates the results, and optionally prints an output with people
-        fed.
+    def display_results_of_optimizer_round(
+        self,
+        interpreted_results,
+        country_data,
+        show_country_figures,
+        create_pptx_with_all_countries,
+        scenario_loader,
+        figure_save_postfix,
+        slaughter_title="",
+        feed_title="",
+        to_humans_title="",
+    ):
+        print("")
+        print("percent_people_fed")
+        print(round(interpreted_results.percent_people_fed, 2))
+        if not np.isnan(interpreted_results.percent_people_fed):
+            if (
+                interpreted_results.feed_and_biofuels.nonhuman_consumption.all_equals_zero()
+            ):
+                print("")
+                print("No feed or biofuels used!")
+                print("")
+            else:
+                Plotter.plot_feed(
+                    interpreted_results,
+                    "earliest_month_zero",
+                    (feed_title + " " if feed_title is not "" else "")
+                    + country_data["country"]
+                    + figure_save_postfix,
+                    show_country_figures,
+                    create_pptx_with_all_countries,
+                    scenario_loader.scenario_description,
+                )
+            Plotter.plot_slaughter(
+                interpreted_results,
+                "earliest_month_zero",
+                (slaughter_title + " " if slaughter_title is not "" else "")
+                + country_data["country"]
+                + figure_save_postfix,
+                show_country_figures,
+                create_pptx_with_all_countries,
+                scenario_loader.scenario_description,
+            )
 
-        arguments: constants from the scenario, scenario loader (to print the aspects
-        of the scenario and check no scenario parameter has been set twice or left
-        unset)
+            Plotter.plot_fig_1ab(
+                interpreted_results,
+                interpreted_results.constants["NMONTHS"],
+                (to_humans_title + " " if to_humans_title is not "" else "")
+                + country_data["country"]
+                + figure_save_postfix,
+                show_country_figures,
+                create_pptx_with_all_countries,
+                scenario_loader.scenario_description,
+            )
 
-        returns: the interpreted results
-        """
-        interpreter = Interpreter()
-        # take the variables defining the scenario and compute the resulting needed
-        # values as inputs to the optimizer
-
-        constants_loader = Parameters()
-
-        (
-            single_valued_constants_round1,
-            time_consts_round1,
-            feed_and_biofuels_round1,
-            meat_dictionary_zero_feed_biofuels,  # Meat if no feed used. Might be useful for something later?
-        ) = constants_loader.compute_parameters_first_round(
-            constants_for_params, scenarios_loader
-        )
-        validator = Validator()
-        validator.ensure_all_time_constants_units_are_billion_kcals(time_consts_round1)
-
+    def run_round_1(
+        self,
+        single_valued_constants_round1,
+        time_consts_round1,
+        interpreter,
+        feed_and_biofuels_round1,
+        meat_dictionary_zero_feed_biofuels,
+    ):
         # FIRST ROUND: ENSURE HUMANS GET MINIMUM NEEDS
         print("ROUND1")
 
@@ -72,7 +110,31 @@ class ScenarioRunner:
             percent_fed_from_model_round1,
             optimization_type="to_humans",
         )
+        interpreted_results_round1.set_feed_and_biofuels(feed_and_biofuels_round1)
+        interpreted_results_round1.set_meat_dictionary(
+            meat_dictionary_zero_feed_biofuels
+        )
 
+        return (
+            interpreted_results_round1,
+            percent_fed_from_model_round1,
+            single_valued_constants_round1,
+        )
+
+    def run_round_2(
+        self,
+        constants_loader,
+        constants_for_params,
+        interpreted_results_round1,
+        percent_fed_from_model_round1,
+        single_valued_constants_round1,
+        time_consts_round1,
+        interpreter,
+        feed_and_biofuels_round1,
+        max_feed_that_could_be_used_second_round,
+        biofuels_demand,
+        meat_dictionary_second_round,
+    ):
         # SECOND ROUND: REMAINING FEED-APPROPRIATE FOOD TO ANIMALS AND BIOFUELS UP TO THE AMOUNT THEY CAN BE USED
         print("ROUND2")
         min_human_food_consumption = constants_loader.compute_parameters_second_round(
@@ -106,6 +168,30 @@ class ScenarioRunner:
             optimization_type="to_animals",
         )
 
+        # because the third round is where we view the feed and biofuel results of the second round,
+        # just consider the feed used
+        # this is for the purposes of debugging and understanding the scenario and doesn't affect starvation
+        feed_and_biofuels_round2 = copy.deepcopy(feed_and_biofuels_round1)
+        feed_and_biofuels_round2.nonhuman_consumption = (
+            max_feed_that_could_be_used_second_round + biofuels_demand
+        )
+        feed_and_biofuels_round2.feed_demand = max_feed_that_could_be_used_second_round
+        feed_and_biofuels_round2.biofuel_demand = biofuels_demand
+
+        interpreted_results_round2.set_feed_and_biofuels(feed_and_biofuels_round2)
+        interpreted_results_round2.set_meat_dictionary(meat_dictionary_second_round)
+        return interpreted_results_round2
+
+    def run_round_3(
+        self,
+        constants_loader,
+        constants_for_params,
+        single_valued_constants_round1,
+        time_consts_round1,
+        interpreted_results_round2,
+        feed_and_biofuels_round1,
+        interpreter,
+    ):
         # THIRD ROUND: NOW THAT THE AMOUNT OF FEED AND BIOFUEL CONSUMED IS KNOWN, ALLOCATE THE REST TO HUMANS
         print("ROUND3")
 
@@ -127,7 +213,6 @@ class ScenarioRunner:
             variables,
             percent_fed_from_model_round3,
         ) = self.run_optimizer(single_valued_constants_round3, time_consts_round3)
-
         interpreted_results_round3 = self.interpret_optimizer_results(
             single_valued_constants_round3,
             model,
@@ -137,8 +222,123 @@ class ScenarioRunner:
             percent_fed_from_model_round3,
             optimization_type="to_humans",
         )
-        interpreter.set_feed(feed_and_biofuels_round3)
-        interpreter.set_meat_dictionary(meat_dictionary_round3)
+        # interpreter.set_feed_and_biofuels(feed_and_biofuels_round3)
+        # interpreter.set_meat_dictionary(meat_dictionary_round3)
+        interpreted_results_round3.set_feed_and_biofuels(feed_and_biofuels_round3)
+        interpreted_results_round3.set_meat_dictionary(meat_dictionary_round3)
+
+        return interpreted_results_round3
+
+    def run_and_analyze_scenario(
+        self,
+        constants_for_params,
+        scenario_loader,
+        create_pptx_with_all_countries,
+        show_country_figures,
+        figure_save_postfix,
+        country_data,
+    ):
+        """
+        computes params, Runs the optimizer, extracts data from optimizer, interprets
+        the results, validates the results, and optionally prints an output with people
+        fed.
+
+        arguments: constants from the scenario, scenario loader (to print the aspects
+        of the scenario and check no scenario parameter has been set twice or left
+        unset)
+
+        returns: the interpreted results
+        """
+        interpreter = Interpreter()
+        # take the variables defining the scenario and compute the resulting needed
+        # values as inputs to the optimizer
+
+        constants_loader = Parameters()
+
+        (
+            single_valued_constants_round1,
+            time_consts_round1,
+            biofuels_demand,  # biofuels requested by the user
+            feed_and_biofuels_round1,  # zero feed and biofuels
+            max_feed_that_could_be_used_second_round,  # Max feed used if no limitation before shutoff
+            meat_dictionary_zero_feed_biofuels,  # Meat if no feed used. Might be useful for something later?
+            meat_dictionary_second_round,  # Meat if all feed used.
+        ) = constants_loader.compute_parameters_first_round(
+            constants_for_params, scenario_loader
+        )
+        validator = Validator()
+        validator.ensure_all_time_constants_units_are_billion_kcals(time_consts_round1)
+
+        (
+            interpreted_results_round1,
+            percent_fed_from_model_round1,
+            single_valued_constants_round1,
+        ) = self.run_round_1(
+            single_valued_constants_round1,
+            time_consts_round1,
+            interpreter,
+            feed_and_biofuels_round1,
+            meat_dictionary_zero_feed_biofuels,
+        )
+        DISPLAY_MEAT_PRODUCED_IF_NO_FEED = True
+        if DISPLAY_MEAT_PRODUCED_IF_NO_FEED:
+            # because feed and biofuel are zero, most likely to be skipped unless there's some issue
+            self.display_results_of_optimizer_round(
+                interpreted_results_round1,
+                country_data,
+                show_country_figures,
+                create_pptx_with_all_countries,
+                scenario_loader,
+                figure_save_postfix,
+                slaughter_title="Meat produced first round (no feed given to animals)",
+                feed_title="Feed first round (no feed given to animals)",
+                to_humans_title="Food to humans maximized, first round (no feed given to animals)",
+            )
+
+        interpreted_results_round2 = self.run_round_2(
+            constants_loader,
+            constants_for_params,
+            interpreted_results_round1,
+            percent_fed_from_model_round1,
+            single_valued_constants_round1,
+            time_consts_round1,
+            interpreter,
+            feed_and_biofuels_round1,
+            max_feed_that_could_be_used_second_round,
+            biofuels_demand,
+            meat_dictionary_second_round,
+        )
+
+        self.display_results_of_optimizer_round(
+            interpreted_results_round2,
+            country_data,
+            show_country_figures,
+            create_pptx_with_all_countries,
+            scenario_loader,
+            figure_save_postfix,
+            slaughter_title="Max meat produced from second round calculation (no restriction on feed before shutoff)",
+            feed_title="Feed for second round optimization, no restriction to animals before shutoff",
+            to_humans_title="Humans fed only up to minimum needs",
+        )
+
+        interpreted_results_round3 = self.run_round_3(
+            constants_loader,
+            constants_for_params,
+            single_valued_constants_round1,
+            time_consts_round1,
+            interpreted_results_round2,
+            feed_and_biofuels_round1,
+            interpreter,
+        )
+
+        self.display_results_of_optimizer_round(
+            interpreted_results_round3,
+            country_data,
+            show_country_figures,
+            create_pptx_with_all_countries,
+            scenario_loader,
+            figure_save_postfix,
+        )
 
         return interpreted_results_round3
 

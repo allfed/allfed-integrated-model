@@ -90,10 +90,18 @@ class MeatAndDairy:
         # Human Inedible Produced Primary Dairy and Cattle Meat #########
         self.human_inedible_feed_dry_caloric_tons_list = np.array([])
         self.ratio_human_inedible_feed = np.array([])
-        for i in range(1, int(self.NMONTHS / 12) + 1):
+        n_years = self.NMONTHS / 12  # in a really short one, just make meat a year
+        # n_years = 1
+        for i in range(1, int(n_years) + 1):
             ratio_human_inedible_feed = constants_for_params[
                 "RATIO_GRASSES_YEAR" + str(i)
             ]
+            # TO IGNORE MEAT ENTIRELY FOR DEBUGGING PURPOSES AND TO ALLOW SHORTER THAN ONE YEAR:
+            #    1. UNCOMMENT THE n_years = 1 ASSIGNMENT ABOVE
+            #    2. COMMENT THE ratio_human_inedible_feed ASSIGNMENT ABOVE
+            #    3. UNCOMMENT LINE BELOW
+            # ratio_human_inedible_feed = 0
+
             self.ratio_human_inedible_feed = np.append(
                 self.ratio_human_inedible_feed, [ratio_human_inedible_feed] * 12
             )

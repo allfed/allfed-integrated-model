@@ -156,7 +156,12 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 print("running scenario")
                 scenario_runner = ScenarioRunner()
                 interpreted_results = scenario_runner.run_and_analyze_scenario(
-                    constants_for_params, scenario_loader
+                    constants_for_params,
+                    scenario_loader,
+                    create_pptx_with_all_countries,
+                    show_country_figures,
+                    figure_save_postfix,
+                    country_data,
                 )
                 percent_people_fed = interpreted_results.percent_people_fed
             except Exception as e:
@@ -166,43 +171,14 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         else:
             scenario_runner = ScenarioRunner()
             interpreted_results = scenario_runner.run_and_analyze_scenario(
-                constants_for_params, scenario_loader
+                constants_for_params,
+                scenario_loader,
+                create_pptx_with_all_countries,
+                show_country_figures,
+                figure_save_postfix,
+                country_data,
             )
             percent_people_fed = interpreted_results.percent_people_fed
-        print("percent_people_fed")
-        print(round(percent_people_fed, 2))
-        print("interpreted_results.feed_and_biofuels.nonhuman_consumption")
-        print(interpreted_results.feed_and_biofuels.nonhuman_consumption)
-        if not np.isnan(percent_people_fed):
-            if (
-                not interpreted_results.feed_and_biofuels.nonhuman_consumption.all_equals_zero()
-            ):
-                Plotter.plot_feed(
-                    interpreted_results,
-                    "earliest_month_zero",
-                    country_data["country"] + figure_save_postfix,
-                    show_country_figures,
-                    create_pptx_with_all_countries,
-                    scenario_loader.scenario_description,
-                )
-                Plotter.plot_slaughter(
-                    interpreted_results,
-                    "earliest_month_zero",
-                    country_data["country"] + figure_save_postfix,
-                    show_country_figures,
-                    create_pptx_with_all_countries,
-                    scenario_loader.scenario_description,
-                )
-
-            Plotter.plot_fig_1ab(
-                interpreted_results,
-                constants_for_params["NMONTHS"],
-                country_data["country"] + figure_save_postfix,
-                show_country_figures,
-                create_pptx_with_all_countries,
-                scenario_loader.scenario_description,
-            )
-
         return (
             percent_people_fed / 100,
             scenario_loader.scenario_description,
