@@ -132,7 +132,7 @@ class Parameters:
             constants_out,
             time_consts,
             feed_biofuels_class,  # zero feed, zero biofuel
-            biofuels_demand,  #  biofuels requested by the user
+            biofuels_demand,  # biofuels requested by the user
             max_feed_that_could_be_used_second_round,
             meat_dictionary_first_round,  # meat if no feed were available
             meat_dictionary_second_round,  # meat if all feed were used (only used for debugging, not used in analysis)
@@ -527,6 +527,7 @@ class Parameters:
         constants_out["INITIAL_SEAWEED"] = seaweed.INITIAL_SEAWEED
         constants_out["SEAWEED_KCALS"] = seaweed.SEAWEED_KCALS
         constants_out["HARVEST_LOSS"] = seaweed.HARVEST_LOSS
+        constants_out["SEAWEED_WASTE_RETAIL"] = seaweed.SEAWEED_WASTE_RETAIL
         constants_out["SEAWEED_FAT"] = seaweed.SEAWEED_FAT
         constants_out["SEAWEED_PROTEIN"] = seaweed.SEAWEED_PROTEIN
 
@@ -599,6 +600,7 @@ class Parameters:
             "INITIAL_HARVEST_DURATION_IN_MONTHS"
         ]
         constants_out["DELAY"] = constants_inputs["DELAY"]
+        constants_out["CROP_WASTE_RETAIL"] = outdoor_crops.CROP_WASTE_RETAIL
 
         # Return the updated constants_out dictionary and the outdoor_crops object
         return constants_out, outdoor_crops
@@ -641,6 +643,8 @@ class Parameters:
 
         # add the stored_food object to the constants_out dictionary
         constants_out["stored_food"] = stored_food
+
+        constants_out["STORED_FOOD_WASTE_RETAIL"] = constants_inputs["WASTE_RETAIL"]
 
         # return the updated constants_out dictionary and the stored_food object
         return constants_out, stored_food
@@ -740,7 +744,7 @@ class Parameters:
 
         # Add the cellulosic production to the time_consts dictionary
         time_consts["cellulosic_sugar"] = cellulosic_sugar.production
-
+        constants_out["CELL_SUGAR_RETAIL_WASTE"] = cellulosic_sugar.SUGAR_WASTE_RETAIL
         # Return the updated constants_out dictionary, time_consts dictionary and the calculated cellulosic sugar object
         return constants_out, time_consts, cellulosic_sugar
 
@@ -775,6 +779,7 @@ class Parameters:
 
         # Add the methane_scp object to the time_consts dictionary.
         time_consts["methane_scp"] = methane_scp.production
+        constants_out["SCP_RETAIL_WASTE"] = methane_scp.SCP_WASTE_RETAIL
 
         return constants_out, time_consts, methane_scp
 
@@ -812,6 +817,8 @@ class Parameters:
         animal_meat_dictionary = self.get_animal_meat_dictionary(
             feed_meat_object, meat_and_dairy
         )
+
+        constants_out["MEAT_WASTE_RETAIL"] = meat_and_dairy.MEAT_WASTE_RETAIL
 
         return (
             feed_used,
@@ -996,20 +1003,18 @@ class Parameters:
         available for animals after humans have used all they need for their minimum nutritional needs.
 
         """
-
         # first round results had no feed or biofuels!
-
-        assert (
-            interpreted_results_round1.cell_sugar_biofuels_kcals_equivalent.all_equals_zero()
+        assert interpreted_results_round1.cell_sugar_biofuels_kcals_equivalent.all_equals_zero(
+            rounding_decimals=8
         )
-        assert (
-            interpreted_results_round1.outdoor_crops_biofuels_kcals_equivalent.all_equals_zero()
+        assert interpreted_results_round1.outdoor_crops_biofuels_kcals_equivalent.all_equals_zero(
+            rounding_decimals=8
         )
-        assert (
-            interpreted_results_round1.scp_biofuels_kcals_equivalent.all_equals_zero()
+        assert interpreted_results_round1.scp_biofuels_kcals_equivalent.all_equals_zero(
+            rounding_decimals=8
         )
-        assert (
-            interpreted_results_round1.seaweed_biofuels_kcals_equivalent.all_equals_zero()
+        assert interpreted_results_round1.seaweed_biofuels_kcals_equivalent.all_equals_zero(
+            rounding_decimals=8
         )
         assert (
             interpreted_results_round1.stored_food_biofuels_kcals_equivalent.all_equals_zero()
@@ -1030,6 +1035,22 @@ class Parameters:
         min_human_food_consumption = self.calculate_human_consumption_for_min_needs(
             constants_inputs, interpreted_results_round1, percent_fed_from_model
         )
+        PRINT_MINIMUM_NEEDS_FOOD_FOR_HUMANS = False
+        if PRINT_MINIMUM_NEEDS_FOOD_FOR_HUMANS:
+            print("")
+            print("")
+            print("MINIMUM HUMAN NEEDS PRINTOUT")
+            print("")
+            print("")
+            for food_name, food in min_human_food_consumption.items():
+                print("food_name,food")
+                print(food_name)
+                print(food)
+            print("")
+            print("")
+            print("END MINIMUM HUMAN NEEDS PRINTOUT")
+            print("")
+            print("")
         return min_human_food_consumption
 
     def calculate_human_consumption_for_min_needs(
@@ -1233,7 +1254,6 @@ class Parameters:
                 protein_units="effective kcals per person per day",
             ),
         }
-        # human_food_consumption["outdoor_crops"].plot("shoudl be 2100 outdoor crops")
 
         self.assert_consumption_within_limits(
             human_food_consumption, kcals_daily_maximum

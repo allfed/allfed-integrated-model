@@ -86,6 +86,7 @@ class MethaneSCP:
         self.SCP_WASTE_DISTRIBUTION = constants_for_params["WASTE_DISTRIBUTION"][
             "SUGAR"
         ]
+        self.SCP_WASTE_RETAIL = constants_for_params["WASTE_RETAIL"]
 
     def calculate_monthly_scp_caloric_production(self, constants_for_params):
         if constants_for_params["ADD_METHANE_SCP"]:

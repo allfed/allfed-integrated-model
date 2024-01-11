@@ -91,16 +91,25 @@ class MeatAndDairy:
         self.human_inedible_feed_dry_caloric_tons_list = np.array([])
         self.ratio_human_inedible_feed = np.array([])
         n_years = self.NMONTHS / 12  # in a really short one, just make meat a year
-        # n_years = 1
+        TESTING_FEW_MONTHS = False
+        if TESTING_FEW_MONTHS:
+            print(
+                "WARNING! THE CODE IS IN A TESTING/DEBUGGING CONTEXT AND SHOULD NOT BE USED FOR OBTAINING RESULTS!!!"
+            )
+            print(
+                "WARNING! THE CODE IS IN A TESTING/DEBUGGING CONTEXT AND SHOULD NOT BE USED FOR OBTAINING RESULTS!!!"
+            )
+            print(
+                "WARNING! THE CODE IS IN A TESTING/DEBUGGING CONTEXT AND SHOULD NOT BE USED FOR OBTAINING RESULTS!!!"
+            )
+            n_years = 1  # COMMENT THIS BACK OUT ONCE DONE DOING FEW MONTHS!!!
         for i in range(1, int(n_years) + 1):
-            ratio_human_inedible_feed = constants_for_params[
-                "RATIO_GRASSES_YEAR" + str(i)
-            ]
-            # TO IGNORE MEAT ENTIRELY FOR DEBUGGING PURPOSES AND TO ALLOW SHORTER THAN ONE YEAR:
-            #    1. UNCOMMENT THE n_years = 1 ASSIGNMENT ABOVE
-            #    2. COMMENT THE ratio_human_inedible_feed ASSIGNMENT ABOVE
-            #    3. UNCOMMENT LINE BELOW
-            # ratio_human_inedible_feed = 0
+            if not TESTING_FEW_MONTHS:
+                ratio_human_inedible_feed = constants_for_params[
+                    "RATIO_GRASSES_YEAR" + str(i)
+                ]
+            else:
+                ratio_human_inedible_feed = 0
 
             self.ratio_human_inedible_feed = np.append(
                 self.ratio_human_inedible_feed, [ratio_human_inedible_feed] * 12
@@ -176,6 +185,8 @@ class MeatAndDairy:
         self.MILK_WASTE_DISTRIBUTION = constants_for_params["WASTE_DISTRIBUTION"][
             "MILK"
         ]
+        self.MILK_WASTE_RETAIL = constants_for_params["WASTE_RETAIL"]
+        self.MEAT_WASTE_RETAIL = constants_for_params["WASTE_RETAIL"]
 
     def calculate_meat_nutrition(self):
         """
@@ -288,6 +299,7 @@ class MeatAndDairy:
             * self.MILK_KCALS
             / 1e9
             * (1 - self.MILK_WASTE_DISTRIBUTION / 100)
+            * (1 - self.MILK_WASTE_RETAIL / 100)
         )
 
         # Calculate the amount of fat in grazing milk produced post-waste in thousands of tons
@@ -297,6 +309,7 @@ class MeatAndDairy:
             / 1e3
             * self.MILK_FAT
             * (1 - self.MILK_WASTE_DISTRIBUTION / 100)
+            * (1 - self.MILK_WASTE_RETAIL / 100)
         )
 
         # Calculate the amount of protein in grazing milk produced post-waste in thousands of tons
@@ -306,6 +319,7 @@ class MeatAndDairy:
             / 1e3
             * self.MILK_PROTEIN
             * (1 - self.MILK_WASTE_DISTRIBUTION / 100)
+            * (1 - self.MILK_WASTE_RETAIL / 100)
         )
 
         # Return the calculated values as a tuple

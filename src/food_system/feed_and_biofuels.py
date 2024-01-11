@@ -197,7 +197,6 @@ class FeedAndBiofuels:
         The total number of months before shutoff is the duration, representing the
         number of nonzero feed months for feeds to be used.
         """
-
         self.feed_monthly_usage = Food(
             # thousand tons annually to billion kcals per month
             kcals=self.feed_per_year.kcals / 12 * 4e6 / 1e9,
@@ -212,17 +211,19 @@ class FeedAndBiofuels:
 
         # Calculate fat-to-kcal and protein-to-kcal ratios for the first month
         # if zero kcals at any month, then set the ratio to zero as well that month
-        self.fat_to_kcal_ratio_feed = np.where(
-            self.feed_monthly_usage.kcals == 0,
-            0,
-            self.feed_monthly_usage.fat / self.feed_monthly_usage.kcals,
-        )
+        if self.feed_monthly_usage.kcals == 0:
+            self.fat_to_kcal_ratio_feed = 0
+        else:
+            self.fat_to_kcal_ratio_feed = (
+                self.feed_monthly_usage.fat / self.feed_monthly_usage.kcals
+            )
 
-        self.protein_to_kcal_ratio_feed = np.where(
-            self.feed_monthly_usage.kcals == 0,
-            0,
-            self.feed_monthly_usage.protein / self.feed_monthly_usage.kcals,
-        )
+        if self.feed_monthly_usage.kcals == 0:
+            self.protein_to_kcal_ratio_feed = 0
+        else:
+            self.protein_to_kcal_ratio_feed = (
+                self.feed_monthly_usage.protein / self.feed_monthly_usage.kcals
+            )
 
         assert self.feed_monthly_usage.all_greater_than_or_equal_to_zero()
 

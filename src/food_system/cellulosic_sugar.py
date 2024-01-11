@@ -42,6 +42,7 @@ class CellulosicSugar:
         self.SUGAR_WASTE_DISTRIBUTION = constants_for_params["WASTE_DISTRIBUTION"][
             "SUGAR"
         ]
+        self.SUGAR_WASTE_RETAIL = constants_for_params["WASTE_RETAIL"]
 
         # this all comes from one of Juan's recently published industrial foods
         # papers

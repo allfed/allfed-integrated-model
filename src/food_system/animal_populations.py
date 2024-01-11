@@ -2219,6 +2219,9 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
 
     # # Populate animal objects ##
     # create animal objects
+    if country_code == "SWT":
+        # this indicates swaziland, which is "SWZ" in non-cleaned-up FAOSTAT data
+        country_code = "SWZ"
     animal_list = AnimalModelBuilder.create_animal_objects(
         df_animal_stock_info.loc[country_code], df_animal_attributes
     )

@@ -1220,7 +1220,7 @@ def test_abs_values():
     )
 
     # Get the Food object with absolute values using abs_values method
-    abs_food = food.abs_values()
+    abs_food = food.get_abs_values()
 
     # Check the values of the resulting Food object
     assert np.array_equal(

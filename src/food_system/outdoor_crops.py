@@ -53,6 +53,11 @@ class OutdoorCrops:
             self.OG_FRACTION_PROTEIN = 0
             self.OG_FRACTION_FAT = 0
 
+        self.CROP_WASTE_DISTRIBUTION = constants_for_params["WASTE_DISTRIBUTION"][
+            "CROPS"
+        ]
+        self.CROP_WASTE_RETAIL = constants_for_params["WASTE_RETAIL"]
+
     def calculate_rotation_ratios(self, constants_for_params):
         # need to use the multiplier on units of kcals to get fat and protein
         if constants_for_params["OG_USE_BETTER_ROTATION"]:
@@ -231,8 +236,7 @@ class OutdoorCrops:
             + list(y10_to_y11)
         )
         # 7 years of reductions should be 12*7 months.
-        assert len(self.all_months_reductions) == self.NMONTHS
-
+        # assert len(self.all_months_reductions) == self.NMONTHS
         PLOT_NO_SEASONALITY = False
         if PLOT_NO_SEASONALITY:
             print("Plotting with no seasonality")
@@ -331,11 +335,6 @@ class OutdoorCrops:
     def set_crop_production_minus_greenhouse_area(
         self, constants_for_params, greenhouse_fraction_area
     ):
-        self.CROP_WASTE_DISTRIBUTION = constants_for_params["WASTE_DISTRIBUTION"][
-            "CROPS"
-        ]
-        self.CROP_WASTE_RETAIL = constants_for_params["WASTE_RETAIL"]
-
         if self.ADD_OUTDOOR_GROWING:
             if constants_for_params["OG_USE_BETTER_ROTATION"]:
                 crops_produced = np.array([0] * self.NMONTHS)

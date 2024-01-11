@@ -664,7 +664,7 @@ class Scenarios:
 
         constants_for_params["WASTE_DISTRIBUTION"] = distribution_waste
 
-        RETAIL_WASTE = 6.08
+        RETAIL_WASTE = 6.08  # retail waste in units percent
         constants_for_params["WASTE_RETAIL"] = RETAIL_WASTE
         self.WASTE_SET = True
         return constants_for_params
@@ -681,7 +681,7 @@ class Scenarios:
         distribution_waste = self.get_global_distribution_waste()
         constants_for_params["WASTE_DISTRIBUTION"] = distribution_waste
 
-        RETAIL_WASTE = 10.6
+        RETAIL_WASTE = 10.6  # retail waste in units percent
         constants_for_params["WASTE_RETAIL"] = RETAIL_WASTE
 
         self.WASTE_SET = True
@@ -700,7 +700,7 @@ class Scenarios:
 
         constants_for_params["WASTE_DISTRIBUTION"] = distribution_waste
 
-        RETAIL_WASTE = 24.98
+        RETAIL_WASTE = 24.98  # retail waste in units percent
         constants_for_params["WASTE_RETAIL"] = RETAIL_WASTE
 
         self.WASTE_SET = True
@@ -778,11 +778,6 @@ class Scenarios:
 
         RETAIL_WASTE = country_data["retail_waste_baseline"] * 100
         constants_for_params["WASTE_RETAIL"] = RETAIL_WASTE
-        print("WASTE BASELINE!")
-        print("WASTE_RETAIL")
-        print(constants_for_params["WASTE_RETAIL"])
-        print("WASTE_DISTRIBUTION")
-        print(constants_for_params["WASTE_DISTRIBUTION"]["CROPS"])
         self.WASTE_SET = True
         return constants_for_params
 
@@ -1484,8 +1479,6 @@ class Scenarios:
             "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
         ] = 1  # default values from CS and SCP papers
 
-        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
-
         constants_for_params["ADD_METHANE_SCP"] = True
         return constants_for_params
 
@@ -1495,8 +1488,6 @@ class Scenarios:
         constants_for_params[
             "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
         ] = 1  # default values from CS and SCP papers
-
-        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
 
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = True
         return constants_for_params
@@ -1541,6 +1532,8 @@ class Scenarios:
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
         constants_for_params["ADD_GREENHOUSES"] = False
         constants_for_params["ADD_METHANE_SCP"] = False
+        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
+        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 0
 
         constants_for_params = self.seaweed(constants_for_params)
 
@@ -1561,6 +1554,8 @@ class Scenarios:
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
         constants_for_params["ADD_GREENHOUSES"] = False
         constants_for_params["ADD_SEAWEED"] = False
+        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
+        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 0
 
         constants_for_params = self.methane_scp(constants_for_params)
 
@@ -1581,6 +1576,8 @@ class Scenarios:
         constants_for_params["ADD_METHANE_SCP"] = False
         constants_for_params["ADD_GREENHOUSES"] = False
         constants_for_params["ADD_SEAWEED"] = False
+        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
+        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 0
 
         constants_for_params = self.cellulosic_sugar(constants_for_params)
 
@@ -1601,6 +1598,7 @@ class Scenarios:
         constants_for_params["ADD_GREENHOUSES"] = False
         constants_for_params["ADD_SEAWEED"] = False
         constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
+        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 0
 
         constants_for_params = self.methane_scp(constants_for_params)
         constants_for_params = self.cellulosic_sugar(constants_for_params)
@@ -1639,6 +1637,8 @@ class Scenarios:
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = 0
 
         constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
+        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 0
+        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
 
         constants_for_params["OG_USE_BETTER_ROTATION"] = False
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = False

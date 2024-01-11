@@ -47,8 +47,10 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         Set a few options to set on top of the specific options for the given simulation
         These could easily change if another scenario was of more interest.
         """
-        this_simulation["fat"] = "not_required"
-        this_simulation["protein"] = "not_required"
+        if "fat" not in this_simulation.keys():
+            this_simulation["fat"] = "not_required"
+        if "protein" not in this_simulation.keys():
+            this_simulation["fat"] = "not_required"
 
         if "waste" not in this_simulation.keys():
             this_simulation["waste"] = "zero"
@@ -62,17 +64,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             ] = "continued"  # this_simulation["shutoff"] = "immediate"
         if "cull" not in this_simulation.keys():
             this_simulation["cull"] = "do_eat_culled"
-
-        # this_simulation["waste"] = "zero"
-        # this_simulation["nutrition"] = "baseline"
-        # this_simulation["buffer"] = "baseline"
-        # this_simulation["shutoff"] = "immediate"
-        # this_simulation["cull"] = "dont_eat_culled"
-
-        # this_simulation["fat"] = "not_required"
-        # this_simulation["protein"] = "not_required"
-        print("meat_strategy")
-        print(this_simulation["meat_strategy"])
 
         self.run_model_no_trade(
             title=this_simulation["scenario"] + "_" + this_simulation["fish"],

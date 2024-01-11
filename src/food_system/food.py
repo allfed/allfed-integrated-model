@@ -1691,7 +1691,7 @@ class Food(UnitConversions):
         # or if the current food's fat or protein value is less than or equal to the other food's fat or protein value
         return self.kcals <= other.kcals or less_than_fat or less_than_protein
 
-    def all_equals_zero(self):
+    def all_equals_zero(self, rounding_decimals=9):
         """
         Check if all macronutrients of the food are equal to zero.
         Args:
@@ -1702,7 +1702,7 @@ class Food(UnitConversions):
 
         # Define a rounding function
         def round_to_precision(value):
-            return round(value, 10)
+            return round(value, rounding_decimals)
 
         # Check if the food is monthly
         if self.is_list_monthly():
@@ -1842,7 +1842,7 @@ class Food(UnitConversions):
         # Check if any of the kcals, fat, or protein are greater than zero
         return self.kcals > 0 or zero_fat or zero_protein
 
-    def all_greater_than_or_equal_to_zero(self):
+    def all_greater_than_or_equal_to_zero(self, threshold=0):
         """
         Checks if all macronutrients of the food are greater than or equal to zero.
         Args:
@@ -1857,10 +1857,13 @@ class Food(UnitConversions):
 
             # Check if all macronutrients are greater than or equal to zero
             return (
-                (np.array(self.kcals) >= 0).all()
-                and ((np.array(self.fat) >= 0).all() or self.conversions.exclude_fat)
+                (np.array(self.kcals) >= -threshold).all()
                 and (
-                    (np.array(self.protein) >= 0).all()
+                    (np.array(self.fat) >= -threshold).all()
+                    or self.conversions.exclude_fat
+                )
+                and (
+                    (np.array(self.protein) >= -threshold).all()
                     or self.conversions.exclude_protein
                 )
             )

@@ -1,0 +1,111 @@
+# The purpose of the simulations in this folder are to view the percent people fed for each food, one food type one at a time.
+
+# This helps us identify issues with any given food source, especially with regard to the number of people's needs for fat and protein they satify.
+
+
+settings:
+  countries: USA
+  NMONTHS: 120
+
+simulations:
+
+  # # # USA Gross Food Production, if only methane scp were available 
+  # USA_only_methane_scp:
+  #   title: United States Gross Food Production, ONLY SCP
+  #   scale: country
+  #   seasonality: country
+  #   grasses: all_crops_die_instantly
+  #   crop_disruption: all_crops_die_instantly
+  #   scenario: methane_scp
+  #   fish: zero
+  #   waste: zero
+  #   nutrition: baseline
+  #   intake_constraints: enabled
+  #   stored_food: zero
+  #   end_simulation_stocks_ratio: zero
+  #   shutoff: immediate # note the immediate here!
+  #   cull: do_eat_culled
+  #   fat: not_required
+  #   protein: not_required
+  #   meat_strategy: reduce_breeding_USA
+
+  
+  # # # USA Gross Food Production, if only cell sugar were available 
+  # USA_only_cellulosic_sugar:
+  #   title: United States Gross Food Production, ONLY CELLULOSIC_SUGAR
+  #   scale: country
+  #   seasonality: country
+  #   grasses: all_crops_die_instantly
+  #   crop_disruption: all_crops_die_instantly
+  #   scenario: cellulosic_sugar
+  #   fish: zero
+  #   waste: zero
+  #   nutrition: baseline
+  #   intake_constraints: disabled_for_humans
+  #   stored_food: zero
+  #   end_simulation_stocks_ratio: zero
+  #   shutoff: immediate # note the immediate here!
+  #   cull: dont_eat_culled
+  #   fat: not_required
+  #   protein: not_required
+  #   meat_strategy: reduce_breeding_USA
+
+  # # # USA Gross Food Production, if only stored_food were available 
+  # USA_only_stored_food:
+  #   title: United States Gross Food Production, ONLY STORED FOOD
+  #   scale: country
+  #   seasonality: country
+  #   grasses: all_crops_die_instantly
+  #   crop_disruption: all_crops_die_instantly
+  #   scenario: no_resilient_foods
+  #   fish: zero
+  #   waste: zero
+  #   nutrition: baseline
+  #   intake_constraints: disabled_for_humans
+  #   stored_food: baseline
+  #   end_simulation_stocks_ratio: zero
+  #   shutoff: immediate # note the immediate here!
+  #   cull: dont_eat_culled
+  #   fat: not_required
+  #   protein: not_required
+  #   meat_strategy: reduce_breeding_USA
+
+  # # USA Gross Food Production, if only stored_food were available 
+  # USA_only_stored_food_and_meat:
+  #   title: United States Gross Food Production, ONLY STORED FOOD AND MEAT
+  #   scale: country
+  #   seasonality: country
+  #   grasses: all_crops_die_instantly
+  #   crop_disruption: all_crops_die_instantly
+  #   scenario: no_resilient_foods
+  #   fish: zero
+  #   waste: zero
+  #   nutrition: baseline
+  #   intake_constraints: disabled_for_humans
+  #   stored_food: baseline
+  #   end_simulation_stocks_ratio: zero
+  #   shutoff: immediate # note the immediate here!
+  #   cull: do_eat_culled
+  #   fat: not_required
+  #   protein: not_required
+  #   meat_strategy: reduce_breeding_USA
+
+    # USA Gross Food Production, if only greenhouses were available 
+    USA_only_greenhouses:
+      title: United States Gross Food Production, ONLY STORED FOOD AND MEAT
+      scale: country
+      seasonality: country
+      grasses: all_crops_die_instantly
+      crop_disruption: all_crops_die_instantly
+      scenario: greenhouse
+      fish: zero
+      waste: zero
+      nutrition: baseline
+      intake_constraints: disabled_for_humans
+      stored_food: baseline
+      end_simulation_stocks_ratio: zero
+      shutoff: immediate # note the immediate here!
+      cull: do_eat_culled
+      fat: not_required
+      protein: not_required
+      meat_strategy: reduce_breeding_USA

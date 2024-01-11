@@ -48,7 +48,7 @@ class Greenhouses:
             self.GREENHOUSE_AREA_MULTIPLIER = 0
 
     def assign_productivity_reduction_from_climate_impact(
-        self, months_cycle, all_months_reductions, exponent, CROP_WASTE
+        self, months_cycle, all_months_reductions, exponent, CROP_WASTE_COEFFICIENT
     ):
         """
         Assigns productivity reduction from climate impact to greenhouses.
@@ -57,7 +57,7 @@ class Greenhouses:
             months_cycle (list): list of monthly cycles
             all_months_reductions (list): list of all months reductions
             exponent (float): exponent value
-            CROP_WASTE (float): crop waste value
+            CROP_WASTE_COEFFICIENT (float): crop waste value
 
         Returns:
             None
@@ -104,6 +104,11 @@ class Greenhouses:
                     MONTHLY_KCALS * baseline_reduction**exponent
                 )
 
+        # this shortens the used duration of the nuclear winter reductions up to the number of modelled months
+        all_months_reductions = all_months_reductions[
+            0 : len(KCALS_GROWN_PER_HECTARE_BEFORE_WASTE)
+        ]
+
         # Check if kcals grown per hectare before waste is greater than or equal
         # to monthly kcals times all months reductions
         assert (
@@ -112,7 +117,7 @@ class Greenhouses:
         ).all(), "ERROR: Relocation has somehow decreased crop production!"
 
         # Calculate kcals grown per hectare after waste
-        self.GH_KCALS_GROWN_PER_HECTARE = (1 - CROP_WASTE / 100) * np.array(
+        self.GH_KCALS_GROWN_PER_HECTARE = CROP_WASTE_COEFFICIENT * np.array(
             KCALS_GROWN_PER_HECTARE_BEFORE_WASTE
         )
 
@@ -308,13 +313,14 @@ class Greenhouses:
                 )
 
             greenhouse_area = np.array(greenhouse_area_long[0 : self.NMONTHS])
-
+            CROP_WASTE_COEFFICIENT = (
+                1 - constants_for_params["WASTE_DISTRIBUTION"]["CROPS"] / 100
+            ) * (1 - constants_for_params["WASTE_RETAIL"] / 100)
             self.assign_productivity_reduction_from_climate_impact(
                 outdoor_crops.months_cycle,
                 outdoor_crops.all_months_reductions,
                 outdoor_crops.OG_KCAL_EXPONENT,
-                constants_for_params["WASTE_DISTRIBUTION"]["CROPS"]
-                + constants_for_params["WASTE_RETAIL"],
+                CROP_WASTE_COEFFICIENT,
             )
         else:
             self.GH_KCALS_GROWN_PER_HECTARE = [0] * self.NMONTHS

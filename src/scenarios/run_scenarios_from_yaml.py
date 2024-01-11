@@ -44,8 +44,10 @@ def run_scenarios_from_yaml(config_data, show_country_figures, show_map_figures)
     """
     Run the scenario in a loop, for each scenario specified, and using all data defined from the scenarios config file
     """
-
-    countries = config_data["settings"]["countries"]
+    if "countries" in config_data["settings"]:
+        countries = config_data["settings"]["countries"]
+    else:
+        countries = []  # runs all countries!
     nmonths = config_data["settings"]["NMONTHS"]
 
     if isinstance(countries, str):  # In case only one country is provided

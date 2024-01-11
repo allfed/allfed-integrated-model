@@ -1,0 +1,69 @@
+
+settings:
+  # countries: # when countries are not added or are commented out, all countries are run
+  NMONTHS: 120
+
+simulations:
+
+# SET YOUR DESIRED SIMULATIONS BELOW
+
+  # Baseline net production 
+  net_baseline:
+    title: Net Food Production
+    scale: country
+    seasonality: country
+    grasses: baseline
+    crop_disruption: zero
+    scenario: no_resilient_foods
+    fish: baseline
+    waste: baseline_in_country
+    nutrition: baseline 
+    intake_constraints: enabled
+    stored_food: baseline
+    end_simulation_stocks_ratio: baseline
+    shutoff: continued
+    cull: do_eat_culled
+    fat: not_required
+    protein: not_required
+    meat_strategy: baseline_breeding
+
+  # Nuclear winter with reduced feed/waste  
+  net_nuclear_winter_reduced:
+    title: Net Food Production, Nuclear Winter, Reduced Waste
+    scale: country
+    scenario: no_resilient_foods
+    seasonality: country
+    grasses: country_nuclear_winter
+    crop_disruption: country_nuclear_winter
+    fish: nuclear_winter
+    waste: doubled_prices_in_country
+    fat: not_required
+    protein: not_required
+    nutrition: catastrophe
+    intake_constraints: enabled
+    stored_food: baseline
+    end_simulation_stocks_ratio: zero
+    shutoff: long_delayed_shutoff
+    cull: do_eat_culled
+    meat_strategy: reduce_breeding_USA
+    
+  # Nuclear winter with resilient foods
+  net_nuclear_resilient:
+    title: Net Food Production, Resilient Foods
+    scale: country
+    scenario: all_resilient_foods
+    seasonality: country
+    grasses: country_nuclear_winter
+    crop_disruption: country_nuclear_winter
+    fish: nuclear_winter
+    waste: doubled_prices_in_country
+    fat: not_required
+    protein: not_required
+    nutrition: catastrophe
+    intake_constraints: enabled
+    stored_food: baseline
+    end_simulation_stocks_ratio: zero
+    shutoff: long_delayed_shutoff
+    cull: do_eat_culled
+    meat_strategy: reduce_breeding_USA
+    

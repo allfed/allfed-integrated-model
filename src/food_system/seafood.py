@@ -25,15 +25,14 @@ class Seafood:
         self.NMONTHS = constants_for_params["NMONTHS"]
         # additional fish to add
         self.ADD_FISH = constants_for_params["ADD_FISH"]
-        FISH_WASTE = (
-            constants_for_params["WASTE_DISTRIBUTION"]["SEAFOOD"]
-            + constants_for_params["WASTE_RETAIL"]
-        )
+        FISH_WASTE_COEFFICIENT = (
+            1 - constants_for_params["WASTE_DISTRIBUTION"]["SEAFOOD"] / 100
+        ) * (1 - constants_for_params["WASTE_RETAIL"] / 100)
 
         # fish kcals per month, billions
         self.FISH_KCALS = (
             constants_for_params["FISH_DRY_CALORIC_ANNUAL"]
-            * (1 - FISH_WASTE / 100)
+            * FISH_WASTE_COEFFICIENT
             * 4e6
             / 1e9
             / 12
@@ -44,7 +43,7 @@ class Seafood:
             constants_for_params["FISH_PROTEIN_TONS_ANNUAL"]
             / 1e3
             / 12
-            * (1 - FISH_WASTE / 100)
+            * FISH_WASTE_COEFFICIENT
         )
 
         # units of 1000s tons fat
@@ -53,7 +52,7 @@ class Seafood:
             constants_for_params["FISH_FAT_TONS_ANNUAL"]
             / 1e3
             / 12
-            * (1 - FISH_WASTE / 100)
+            * FISH_WASTE_COEFFICIENT
         )
 
     # includes all seafood (except seaweed), not just fish
