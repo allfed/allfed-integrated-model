@@ -188,7 +188,7 @@ def test_get_remaining_food_needed_and_amount_used():
     ), f"Satisfied demand: \nExpected: \n{expected_satisfied}\nBut got: \n{demand_satisfied_by_resource}\n"
     assert (
         remaining == expected_remaining
-    ), f"Remaining resource: \nExpected: \n{expected_result}\nBut got: \n{result}\n"
+    ), f"Remaining resource: \nExpected: \n{expected_remaining}\nBut got: \n{remaining}\n"
 
 
 def test_make_sure_not_nan_monthly_food():
