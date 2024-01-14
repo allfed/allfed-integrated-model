@@ -59,97 +59,128 @@ def run_all_combinations():
     Yields:
         list: A list of dicts, each containing the parameters and results for a single run
     """
-    # These are the base parameters for the scenario, which we will change one at a time
-    base_config_data = {
-        "settings": {"countries": "ARG", "NMONTHS": 120},
-        "simulations": {
-            test_scenario_key: {
-                "title": "Argentina Net Food Production, Nuclear Winter",
-                "scale": "country",
-                "scenario": "no_resilient_foods",
-                "seasonality": "country",
-                "grasses": "country_nuclear_winter",
-                "crop_disruption": "country_nuclear_winter",
-                "fish": "nuclear_winter",
-                "waste": "baseline_in_country",
-                "fat": "not_required",
-                "protein": "not_required",
-                "nutrition": "catastrophe",
-                "intake_constraints": "enabled",
-                "stored_food": "baseline",
-                "end_simulation_stocks_ratio": "zero",
-                "shutoff": "continued",
-                "cull": "do_eat_culled",
-                "meat_strategy": "reduce_breeding_USA",
-            }
-        },
-    }
-
-    # The parameters to vary. All combinations of these parameters will be tested
-    scenario_options = [
-        "no_resilient_foods",
-        "all_resilient_foods",
-        "all_resilient_foods_and_more_area",
-        "seaweed",
-        "methane_scp",
-        "cellulosic_sugar",
-        "relocated_crops",
-        "greenhouse",
-        "industrial_foods",
-    ]
-    crop_disruption_options = ["country_nuclear_winter", "zero"]
-    intake_constraints_options = ["enabled", "disabled_for_humans"]
-    stored_food_options = ["zero", "baseline"]
-    waste_options = [
-        "baseline_in_country",
-        "doubled_prices_in_country",
-        "tripled_prices_in_country",
-    ]
-
-    number_of_runs = (
-        len(scenario_options)
-        * len(crop_disruption_options)
-        * len(intake_constraints_options)
-        * len(stored_food_options)
-        * len(waste_options)
-    )
-    print(f"Running {number_of_runs} scenarios")
-
     # List to store the results
     results = []
 
-    # Loop over all combinations of parameters
-    for combination in itertools.product(
-        scenario_options,
-        crop_disruption_options,
-        intake_constraints_options,
-        stored_food_options,
-        waste_options,
-    ):
-        # Create a new config data for this combination
-        config_data = base_config_data.copy()
-        config_data["simulations"][test_scenario_key]["scenario"] = combination[0]
-        config_data["simulations"][test_scenario_key]["crop_disruption"] = combination[
-            1
-        ]
-        config_data["simulations"][test_scenario_key][
-            "intake_constraints"
-        ] = combination[2]
-        config_data["simulations"][test_scenario_key]["stored_food"] = combination[3]
-        config_data["simulations"][test_scenario_key]["waste"] = combination[4]
-        # Run the model
-        percent_people_fed = runner(config_data)
-        # Store the results as a dict
-        results.append(
-            {
-                "scenario": combination[0],
-                "crop_disruption": combination[1],
-                "intake_constraints": combination[2],
-                "stored_food": combination[3],
-                "waste": combination[4],
-                "percent_people_fed": percent_people_fed,
+    # The number of possible combinations of parameters is very large so we cannot test
+    # all of them. Similarly, a direct Monte Carlo approach would not be feasible because
+    # it would be very rare for all parameters to remain constant except one. Perhaps
+    # we could implement a Monte Carlo where only one parameter is varied at a time, which
+    # solve this problem, but then the issue becomes that we would not know ahead of time
+    # which parameters we are really testing, making the tests more opaque.
+    # Instead, we will test all combinations of a few important parameters (the parameters
+    # for which we know ahead of time in whuch direction the results should change), and
+    # repeat this complete search of the sub-space for a few combinations of the other
+    # parameters.
+    #
+    # The list below gives the sets of parameters that will remain constant for each
+    # complete search of the sub-space.
+    base_config_data_list = [
+        {
+            "settings": {"countries": "ARG", "NMONTHS": 120},
+            "simulations": {
+                test_scenario_key: {
+                    "title": "Argentina Net Food Production, Nuclear Winter",
+                    "scale": "country",
+                    "seasonality": "country",
+                    "grasses": "country_nuclear_winter",
+                    "fish": "nuclear_winter",
+                    "fat": "not_required",
+                    "protein": "not_required",
+                    "nutrition": "catastrophe",
+                    "end_simulation_stocks_ratio": "zero",
+                    "shutoff": "continued",
+                    "cull": "do_eat_culled",
+                    "meat_strategy": "reduce_breeding_USA",
+                }
             }
+        },
+        {
+            "settings": {"countries": "ARG", "NMONTHS": 120},
+            "simulations": {
+                test_scenario_key: {
+                    "title": "Argentina Net Food Production, Nuclear Winter",
+                    "scale": "country",
+                    "seasonality": "country",
+                    "grasses": "baseline",
+                    "fish": "baseline",
+                    "fat": "not_required",
+                    "protein": "not_required",
+                    "nutrition": "baseline",
+                    "end_simulation_stocks_ratio": "zero",
+                    "shutoff": "short_delayed_shutoff",
+                    "cull": "dont_eat_culled",
+                    "meat_strategy": "baseline_breeding",
+                }
+            }
+        }
+    ]
+    for i_base_config_data, base_config_data in enumerate(base_config_data_list):
+        # The parameters to vary. All combinations of these parameters will be tested
+        scenario_options = [
+            "no_resilient_foods",
+            "all_resilient_foods",
+            "all_resilient_foods_and_more_area",
+            "seaweed",
+            "methane_scp",
+            "cellulosic_sugar",
+            "relocated_crops",
+            "greenhouse",
+            "industrial_foods",
+        ]
+        crop_disruption_options = ["country_nuclear_winter", "zero"]
+        intake_constraints_options = ["enabled", "disabled_for_humans"]
+        stored_food_options = ["zero", "baseline"]
+        waste_options = [
+            "baseline_in_country",
+            "doubled_prices_in_country",
+            "tripled_prices_in_country",
+        ]
+
+        number_of_runs = (
+            len(scenario_options)
+            * len(crop_disruption_options)
+            * len(intake_constraints_options)
+            * len(stored_food_options)
+            * len(waste_options)
         )
+        print(f"Running {number_of_runs} scenarios")
+
+        # Loop over all combinations of parameters
+        for combination in itertools.product(
+            scenario_options,
+            crop_disruption_options,
+            intake_constraints_options,
+            stored_food_options,
+            waste_options,
+        ):
+            # Create a new config data for this combination
+            config_data = base_config_data.copy()
+            config_data["simulations"][test_scenario_key]["scenario"] = combination[0]
+            config_data["simulations"][test_scenario_key][
+                "crop_disruption"
+            ] = combination[1]
+            config_data["simulations"][test_scenario_key][
+                "intake_constraints"
+            ] = combination[2]
+            config_data["simulations"][test_scenario_key]["stored_food"] = combination[
+                3
+            ]
+            config_data["simulations"][test_scenario_key]["waste"] = combination[4]
+            # Run the model
+            percent_people_fed = runner(config_data)
+            # Store the results as a dict
+            results.append(
+                {
+                    "scenario": combination[0],
+                    "crop_disruption": combination[1],
+                    "intake_constraints": combination[2],
+                    "stored_food": combination[3],
+                    "waste": combination[4],
+                    "percent_people_fed": percent_people_fed,
+                    "base_config_data": i_base_config_data,
+                }
+            )
     return results
 
 
@@ -198,6 +229,7 @@ def test_resilient_foods(run_all_combinations):
     This is repeated for all available combinations of the other parameters
     """
     select_runs_results = select_runs(run_all_combinations, "scenario")
+    print(select_runs_results)
     for key, runs in select_runs_results.items():
         no_resilient_food_result = None
         seaweed_only_result = None
