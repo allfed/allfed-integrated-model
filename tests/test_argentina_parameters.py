@@ -1,43 +1,17 @@
 """
-This file runs the Argentina scenario many times, each time changing the value of
+This file runs the Argentina no-trade scenario many times, each time changing the value of
 a single parameter in the yaml file. Tests are run to ensure that the change in the
 output is as expected.
 """
+import itertools
+import pytest
+
 from src.scenarios import run_scenarios_from_yaml
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 
-# The name of the scenario to test
+test_tolerance = 0.1  # The percent difference between two results that is considered a real difference
 test_scenario_key = "argentina_test"
-
-# The scenario runner
 scenario_runner = ScenarioRunnerNoTrade()
-
-# The base configuration data
-# These are the base parameters for the scenario, which we will change one at a time
-base_config_data = {
-    "settings": {"countries": "ARG", "NMONTHS": 120},
-    "simulations": {
-        test_scenario_key: {
-            "title": "Argentina Net Food Production, Nuclear Winter",
-            "scale": "country",
-            "scenario": "no_resilient_foods",
-            "seasonality": "country",
-            "grasses": "country_nuclear_winter",
-            "crop_disruption": "country_nuclear_winter",
-            "fish": "nuclear_winter",
-            "waste": "baseline_in_country",
-            "fat": "not_required",
-            "protein": "not_required",
-            "nutrition": "catastrophe",
-            "intake_constraints": "enabled",
-            "stored_food": "baseline",
-            "end_simulation_stocks_ratio": "zero",
-            "shutoff": "continued",
-            "cull": "do_eat_culled",
-            "meat_strategy": "reduce_breeding_USA",
-        }
-    },
-}
 
 
 def runner(config_data):
@@ -77,11 +51,153 @@ def runner(config_data):
     return percent_people_fed
 
 
-def test_resilient_foods():
+@pytest.fixture(scope="module")
+def run_all_combinations():
     """
-    This test compares results assuming different resilient foods are available.
-    The test passes if more resilient foods result in more people fed.
-    More specifically, we verify that:
+    This runs the model for many combinations of parameters, and returns the results
+
+    Yields:
+        list: A list of dicts, each containing the parameters and results for a single run
+    """
+    # These are the base parameters for the scenario, which we will change one at a time
+    base_config_data = {
+        "settings": {"countries": "ARG", "NMONTHS": 120},
+        "simulations": {
+            test_scenario_key: {
+                "title": "Argentina Net Food Production, Nuclear Winter",
+                "scale": "country",
+                "scenario": "no_resilient_foods",
+                "seasonality": "country",
+                "grasses": "country_nuclear_winter",
+                "crop_disruption": "country_nuclear_winter",
+                "fish": "nuclear_winter",
+                "waste": "baseline_in_country",
+                "fat": "not_required",
+                "protein": "not_required",
+                "nutrition": "catastrophe",
+                "intake_constraints": "enabled",
+                "stored_food": "baseline",
+                "end_simulation_stocks_ratio": "zero",
+                "shutoff": "continued",
+                "cull": "do_eat_culled",
+                "meat_strategy": "reduce_breeding_USA",
+            }
+        },
+    }
+
+    # The parameters to vary. All combinations of these parameters will be tested
+    scenario_options = [
+        "no_resilient_foods",
+        "all_resilient_foods",
+        "all_resilient_foods_and_more_area",
+        "seaweed",
+        "methane_scp",
+        "cellulosic_sugar",
+        "relocated_crops",
+        "greenhouse",
+        "industrial_foods",
+    ]
+    crop_disruption_options = ["country_nuclear_winter", "zero"]
+    intake_constraints_options = ["enabled", "disabled_for_humans"]
+    stored_food_options = ["zero", "baseline"]
+    waste_options = [
+        "baseline_in_country",
+        "doubled_prices_in_country",
+        "tripled_prices_in_country",
+    ]
+
+    number_of_runs = (
+        len(scenario_options)
+        * len(crop_disruption_options)
+        * len(intake_constraints_options)
+        * len(stored_food_options)
+        * len(waste_options)
+    )
+    print(f"Running {number_of_runs} scenarios")
+
+    # List to store the results
+    results = []
+
+    # Loop over all combinations of parameters
+    for combination in itertools.product(
+        scenario_options,
+        crop_disruption_options,
+        intake_constraints_options,
+        stored_food_options,
+        waste_options,
+    ):
+        # Create a new config data for this combination
+        config_data = base_config_data.copy()
+        config_data["simulations"][test_scenario_key]["scenario"] = combination[0]
+        config_data["simulations"][test_scenario_key]["crop_disruption"] = combination[
+            1
+        ]
+        config_data["simulations"][test_scenario_key][
+            "intake_constraints"
+        ] = combination[2]
+        config_data["simulations"][test_scenario_key]["stored_food"] = combination[3]
+        config_data["simulations"][test_scenario_key]["waste"] = combination[4]
+        # Run the model
+        percent_people_fed = runner(config_data)
+        # Store the results as a dict
+        results.append(
+            {
+                "scenario": combination[0],
+                "crop_disruption": combination[1],
+                "intake_constraints": combination[2],
+                "stored_food": combination[3],
+                "waste": combination[4],
+                "percent_people_fed": percent_people_fed,
+            }
+        )
+    # temporary debugging
+    import csv
+
+    filename = "results.csv"
+    with open(filename, "w", newline="") as csvfile:
+        fieldnames = results[0].keys()
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in results:
+            writer.writerow(row)
+    yield results
+
+
+def select_runs(results, independent_parameter):
+    """
+    Takes the results list created by run_all_combinations, and returns a dictionary
+    of lists, where each list contains the results for a single combination of parameters,
+    excluding the independent_parameter
+
+    For example, if the independent_parameter is "scenario", then all items in a given
+    list will have the same values for "crop_disruption", "nutrition", and "waste", etc.
+    but different values for "scenario"
+    """
+    grouped_elements = {}
+
+    # Iterate through each dictionary in the list
+    for item in results:
+        # Create a key based on the values excluding 'scenario' and 'percent_people_fed'
+        key = tuple(
+            item[k]
+            for k in item
+            if k not in [independent_parameter, "percent_people_fed"]
+        )
+
+        # Group the dictionaries by this key
+        if key not in grouped_elements:
+            grouped_elements[key] = [item]
+        else:
+            grouped_elements[key].append(item)
+
+    # Select and return the groups with more than one element
+    return grouped_elements
+
+
+def test_resilient_foods(run_all_combinations):
+    """
+    This test compares results assuming different resilient foods are available. The test passes if more
+    resilient foods result in more people fed. More specifically, we verify that:
         "no_resilient_foods"
         <= ("seaweed","methane_scp","cellulosic_sugar","relocated_crops","greenhouse","industrial_foods")
         <= "all_resilient_foods"
@@ -89,115 +205,164 @@ def test_resilient_foods():
         and that
         "methane_scp" <= "industrial_foods"
         "cellulosic_sugar" <= "industrial_foods"
+    This is repeated for all available combinations of the other parameters
     """
-    # (1) No resilient foods
-    no_resilient_food_config_data = base_config_data.copy()
-    assert (
-        no_resilient_food_config_data["simulations"][test_scenario_key]["scenario"]
-        == "no_resilient_foods"
+    select_runs_results = select_runs(run_all_combinations, "scenario")
+    for key, runs in select_runs_results.items():
+        no_resilient_food_result = None
+        seaweed_only_result = None
+        methane_scp_only_result = None
+        cellulosic_sugar_only_result = None
+        relocated_crops_only_result = None
+        greenhouse_only_result = None
+        industrial_foods_only_result = None
+        all_resilient_food_result = None
+        all_resilient_food_and_more_area_result = None
+        for run in runs:
+            if run["scenario"] == "no_resilient_foods":
+                no_resilient_food_result = run["percent_people_fed"]
+            elif run["scenario"] == "seaweed":
+                seaweed_only_result = run["percent_people_fed"]
+            elif run["scenario"] == "methane_scp":
+                methane_scp_only_result = run["percent_people_fed"]
+            elif run["scenario"] == "cellulosic_sugar":
+                cellulosic_sugar_only_result = run["percent_people_fed"]
+            elif run["scenario"] == "relocated_crops":
+                relocated_crops_only_result = run["percent_people_fed"]
+            elif run["scenario"] == "greenhouse":
+                greenhouse_only_result = run["percent_people_fed"]
+            elif run["scenario"] == "industrial_foods":
+                industrial_foods_only_result = run["percent_people_fed"]
+            elif run["scenario"] == "all_resilient_foods":
+                all_resilient_food_result = run["percent_people_fed"]
+            elif run["scenario"] == "all_resilient_foods_and_more_area":
+                all_resilient_food_and_more_area_result = run["percent_people_fed"]
+            else:
+                raise ValueError("Unexpected scenario")
+        # Now we check if all conditions are met
+        assert (
+            no_resilient_food_result <= seaweed_only_result + test_tolerance
+        ), "Including seaweed cannot decrease the number of people fed"
+        assert (
+            no_resilient_food_result <= methane_scp_only_result + test_tolerance
+        ), "Including methane SCP cannot decrease the number of people fed"
+        assert (
+            no_resilient_food_result <= cellulosic_sugar_only_result + test_tolerance
+        ), "Including cellulosic sugar cannot decrease the number of people fed"
+        assert (
+            no_resilient_food_result <= relocated_crops_only_result + test_tolerance
+        ), "Including relocated crops cannot decrease the number of people fed"
+        assert (
+            no_resilient_food_result <= greenhouse_only_result + test_tolerance
+        ), "Including greenhouse cannot decrease the number of people fed"
+        assert (
+            no_resilient_food_result <= industrial_foods_only_result + test_tolerance
+        ), "Including industrial foods cannot decrease the number of people fed"
+        assert (
+            methane_scp_only_result <= industrial_foods_only_result + test_tolerance
+        ), "Adding cellulosic sugar cannot decrease the number of people fed compared to having just methane SCP"
+        assert (
+            cellulosic_sugar_only_result
+            <= industrial_foods_only_result + test_tolerance
+        ), "Adding methane SCP cannot decrease the number of people fed compared to having just cellulosic sugar"
+        assert (
+            seaweed_only_result <= all_resilient_food_result + test_tolerance
+        ), "Adding all resilient foods cannot decrease the number of people fed compared to having just seaweed"
+        assert (
+            methane_scp_only_result <= all_resilient_food_result + test_tolerance
+        ), "Adding all resilient foods cannot decrease the number of people fed compared to having just methane SCP"
+        assert (
+            cellulosic_sugar_only_result <= all_resilient_food_result + test_tolerance
+        ), "Adding all resilient foods cannot decrease the number of people fed compared to having just cellulosic sugar"
+        assert (
+            relocated_crops_only_result <= all_resilient_food_result + test_tolerance
+        ), "Adding all resilient foods cannot decrease the number of people fed compared to having just relocated crops"
+        #test disabled due to all_resilient_foods assuming low_area_greenhouse
+        #assert (
+        #    greenhouse_only_result <= all_resilient_food_result + test_tolerance
+        #), "Adding all resilient foods cannot decrease the number of people fed compared to having just greenhouse"
+        assert (
+            industrial_foods_only_result <= all_resilient_food_result + test_tolerance
+        ), "Adding all resilient foods cannot decrease the number of people fed compared to having just industrial foods"
+        assert (
+            all_resilient_food_result
+            <= all_resilient_food_and_more_area_result + test_tolerance
+        ), "Adding more area cannot decrease the number of people fed compared to having just resilient foods"
+
+
+def test_intake_constraints(run_all_combinations):
+    """
+    Verifies that using intake_constraints enabled results in more people fed than using
+    disabled_for_humans
+    """
+    select_runs_results = select_runs(
+        run_all_combinations, "intake_constraints"
     )
-    no_resilient_food_result = runner(no_resilient_food_config_data)
+    for key, runs in select_runs_results.items():
+        enabled_result = None
+        disabled_result = None
+        for run in runs:
+            if run["intake_constraints"] == "enabled":
+                enabled_result = run["percent_people_fed"]
+            elif run["intake_constraints"] == "disabled_for_humans":
+                disabled_result = run["percent_people_fed"]
+            else:
+                raise ValueError("Unexpected intake_constraints")
+        assert (
+            enabled_result >= disabled_result - test_tolerance
+        ), "Using intake_constraints enabled must result in more people fed than using disabled_for_humans"
 
-    # (2) All resilient foods
-    all_resilient_food_config_data = base_config_data.copy()
-    all_resilient_food_config_data["simulations"][test_scenario_key][
-        "scenario"
-    ] = "all_resilient_foods"
-    all_resilient_food_result = runner(all_resilient_food_config_data)
 
-    # (3) All resilient foods and more area
-    all_resilient_food_and_more_area_config_data = base_config_data.copy()
-    all_resilient_food_and_more_area_config_data["simulations"][test_scenario_key][
-        "scenario"
-    ] = "all_resilient_foods_and_more_area"
-    all_resilient_food_and_more_area_result = runner(
-        all_resilient_food_and_more_area_config_data
-    )
+def test_stored_food(run_all_combinations):
+    """
+    Verifies that storing no food results in fewer people fed than storing food
+    """
+    select_runs_results = select_runs(run_all_combinations, "stored_food")
+    for key, runs in select_runs_results.items():
+        zero_result = None
+        baseline_result = None
+        for run in runs:
+            if run["stored_food"] == "zero":
+                zero_result = run["percent_people_fed"]
+            elif run["stored_food"] == "baseline":
+                baseline_result = run["percent_people_fed"]
+            else:
+                raise ValueError("Unexpected stored_food")
+        assert (
+            zero_result <= baseline_result + test_tolerance
+        ), "Storing no food must result in fewer people fed than storing food"
 
-    # (4) Seaweed only
-    seaweed_only_config_data = base_config_data.copy()
-    seaweed_only_config_data["simulations"][test_scenario_key]["scenario"] = "seaweed"
-    seaweed_only_result = runner(seaweed_only_config_data)
 
-    # (5) Methane SCP only
-    methane_scp_only_config_data = base_config_data.copy()
-    methane_scp_only_config_data["simulations"][test_scenario_key][
-        "scenario"
-    ] = "methane_scp"
-    methane_scp_only_result = runner(methane_scp_only_config_data)
+def test_waste(run_all_combinations):
+    """
+    Verifies that wasting more food results in fewer people fed
+    """
+    select_runs_results = select_runs(run_all_combinations, "waste")
+    for key, runs in select_runs_results.items():
+        baseline_result = None
+        doubled_prices_result = None
+        tripled_prices_result = None
+        for run in runs:
+            if run["waste"] == "baseline_in_country":
+                baseline_result = run["percent_people_fed"]
+            elif run["waste"] == "doubled_prices_in_country":
+                doubled_prices_result = run["percent_people_fed"]
+            elif run["waste"] == "tripled_prices_in_country":
+                tripled_prices_result = run["percent_people_fed"]
+            else:
+                raise ValueError("Unexpected waste")
+        assert (
+            baseline_result <= doubled_prices_result + test_tolerance
+        ), "Wasting more food must result in fewer people fed"
+        assert (
+            doubled_prices_result <= tripled_prices_result + test_tolerance
+        ), "Wasting more food must result in fewer people fed"
 
-    # (6) Cellulosic sugar only
-    cellulosic_sugar_only_config_data = base_config_data.copy()
-    cellulosic_sugar_only_config_data["simulations"][test_scenario_key][
-        "scenario"
-    ] = "cellulosic_sugar"
-    cellulosic_sugar_only_result = runner(cellulosic_sugar_only_config_data)
 
-    # (7) Relocated crops only
-    relocated_crops_only_config_data = base_config_data.copy()
-    relocated_crops_only_config_data["simulations"][test_scenario_key][
-        "scenario"
-    ] = "relocated_crops"
-    relocated_crops_only_result = runner(relocated_crops_only_config_data)
+# todo:
+        # understand that other test Morgan is talking about
+        # confirm the bug via manual tests
+        # uncover all bugs
+        # then move on to other validation, see Morgan's email
 
-    # (8) Greenhouse only
-    greenhouse_only_config_data = base_config_data.copy()
-    greenhouse_only_config_data["simulations"][test_scenario_key][
-        "scenario"
-    ] = "greenhouse"
-    greenhouse_only_result = runner(greenhouse_only_config_data)
-
-    # (9) Industrial foods only
-    industrial_foods_only_config_data = base_config_data.copy()
-    industrial_foods_only_config_data["simulations"][test_scenario_key][
-        "scenario"
-    ] = "industrial_foods"
-    industrial_foods_only_result = runner(industrial_foods_only_config_data)
-
-    # Now we check if all conditions are met
-    assert (
-        no_resilient_food_result <= seaweed_only_result
-    ), "Including seaweed cannot decrease the number of people fed"
-    assert (
-        no_resilient_food_result <= methane_scp_only_result
-    ), "Including methane SCP cannot decrease the number of people fed"
-    assert (
-        no_resilient_food_result <= cellulosic_sugar_only_result
-    ), "Including cellulosic sugar cannot decrease the number of people fed"
-    assert (
-        no_resilient_food_result <= relocated_crops_only_result
-    ), "Inclding relocated crops cannot decrease the number of people fed"
-    assert (
-        no_resilient_food_result <= greenhouse_only_result
-    ), "Including greenhouse cannot decrease the number of people fed"
-    assert (
-        no_resilient_food_result <= industrial_foods_only_result
-    ), "Including industrial foods cannot decrease the number of people fed"
-    assert (
-        methane_scp_only_result <= industrial_foods_only_result
-    ), "Adding cellulosic sugar cannot decrease the number of people fed compared to having just methane SCP"
-    assert (
-        cellulosic_sugar_only_result <= industrial_foods_only_result
-    ), "Adding methane SCP cannot decrease the number of people fed compared to having just cellulosic sugar"
-    assert (
-        seaweed_only_result <= all_resilient_food_result
-    ), "Adding all resilient foods cannot decrease the number of people fed compared to having just seaweed"
-    assert (
-        methane_scp_only_result <= all_resilient_food_result
-    ), "Adding all resilient foods cannot decrease the number of people fed compared to having just methane SCP"
-    assert (
-        cellulosic_sugar_only_result <= all_resilient_food_result
-    ), "Adding all resilient foods cannot decrease the number of people fed compared to having just cellulosic sugar"
-    assert (
-        relocated_crops_only_result <= all_resilient_food_result
-    ), "Adding all resilient foods cannot decrease the number of people fed compared to having just relocated crops"
-    assert (
-        greenhouse_only_result <= all_resilient_food_result
-    ), "Adding all resilient foods cannot decrease the number of people fed compared to having just greenhouse"
-    assert (
-        industrial_foods_only_result <= all_resilient_food_result
-    ), "Adding all resilient foods cannot decrease the number of people fed compared to having just industrial foods"
-    assert (
-        all_resilient_food_result <= all_resilient_food_and_more_area_result
-    ), "Adding more area cannot decrease the number of people fed compared to having just resilient foods"
-
+# - if the crops grown for all months a nuclear winter is less than or equal to the crops grown for all months in the baseline scenario, then when you run both the nuclear winter scenario and the baseline scenario the percent people fed for nuclear winter must be less than or equal to the baseline percent people fed
