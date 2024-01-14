@@ -150,17 +150,7 @@ def run_all_combinations():
                 "percent_people_fed": percent_people_fed,
             }
         )
-    # temporary debugging
-    import csv
-
-    filename = "results.csv"
-    with open(filename, "w", newline="") as csvfile:
-        fieldnames = results[0].keys()
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        for row in results:
-            writer.writerow(row)
-    yield results
+    return results
 
 
 def select_runs(results, independent_parameter):
@@ -277,10 +267,10 @@ def test_resilient_foods(run_all_combinations):
         assert (
             relocated_crops_only_result <= all_resilient_food_result + test_tolerance
         ), "Adding all resilient foods cannot decrease the number of people fed compared to having just relocated crops"
-        #test disabled due to all_resilient_foods assuming low_area_greenhouse
-        #assert (
+        # test disabled due to all_resilient_foods assuming low_area_greenhouse
+        # assert (
         #    greenhouse_only_result <= all_resilient_food_result + test_tolerance
-        #), "Adding all resilient foods cannot decrease the number of people fed compared to having just greenhouse"
+        # ), "Adding all resilient foods cannot decrease the number of people fed compared to having just greenhouse"
         assert (
             industrial_foods_only_result <= all_resilient_food_result + test_tolerance
         ), "Adding all resilient foods cannot decrease the number of people fed compared to having just industrial foods"
@@ -295,9 +285,7 @@ def test_intake_constraints(run_all_combinations):
     Verifies that using intake_constraints enabled results in more people fed than using
     disabled_for_humans
     """
-    select_runs_results = select_runs(
-        run_all_combinations, "intake_constraints"
-    )
+    select_runs_results = select_runs(run_all_combinations, "intake_constraints")
     for key, runs in select_runs_results.items():
         enabled_result = None
         disabled_result = None
@@ -359,10 +347,23 @@ def test_waste(run_all_combinations):
         ), "Wasting more food must result in fewer people fed"
 
 
-# todo:
-        # understand that other test Morgan is talking about
-        # confirm the bug via manual tests
-        # uncover all bugs
-        # then move on to other validation, see Morgan's email
-
-# - if the crops grown for all months a nuclear winter is less than or equal to the crops grown for all months in the baseline scenario, then when you run both the nuclear winter scenario and the baseline scenario the percent people fed for nuclear winter must be less than or equal to the baseline percent people fed
+def test_nuclear_crop_reduction(run_all_combinations):
+    """
+    Verifies that reducing crop production due to nuclear winter results in fewer people fed
+    Note that this test assumes that nuclear winter reduces crop production, which is not
+    necessarily the case for all countries (but it is true for Argentina)
+    """
+    select_runs_results = select_runs(run_all_combinations, "crop_disruption")
+    for key, runs in select_runs_results.items():
+        nuclear_winter_result = None
+        zero_result = None
+        for run in runs:
+            if run["crop_disruption"] == "country_nuclear_winter":
+                nuclear_winter_result = run["percent_people_fed"]
+            elif run["crop_disruption"] == "zero":
+                zero_result = run["percent_people_fed"]
+            else:
+                raise ValueError("Unexpected crop_disruption")
+        assert (
+            nuclear_winter_result <= zero_result + test_tolerance
+        ), "Reducing crop production due to nuclear winter must result in fewer people fed"
