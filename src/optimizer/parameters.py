@@ -297,6 +297,19 @@ class Parameters:
             constants_out,
             time_consts,
         )
+
+        # Check that the meat and population in the second round of optimization are greater than the first round
+        self.assert_round2_meat_and_population_greater_than_round1(
+            meat_dictionary_first_round, meat_dictionary_second_round
+        )
+        # Check that the animal populations are never increasing with time
+        self.assert_population_not_increasing(
+            meat_dictionary_first_round, epsilon=0.001, round=1
+        )
+        self.assert_population_not_increasing(
+            meat_dictionary_second_round, epsilon=0.001, round=2
+        )
+
         # FEED AND BIOFUELS from breeding reduction strategy
 
         assert feed_demand.all_greater_than_or_equal_to(
@@ -343,6 +356,72 @@ class Parameters:
             meat_dictionary_first_round,
             meat_dictionary_second_round,
         )
+
+    def assert_round2_meat_and_population_greater_than_round1(
+        self, meat_dictionary_first_round, meat_dictionary_second_round
+    ):
+        """
+        Asserts that the total meat produced over the simulation timespan and the average animal population
+        in the second round of optimization are greater than the first round. This test is repeated for each
+        animal type.
+
+        Args:
+            meat_dictionary_first_round (dict): dictionary containing meat constants for the first round
+            meat_dictionary_second_round (dict): dictionary containing meat constants for the second round
+
+        Returns:
+            None
+        """
+        for key in meat_dictionary_first_round:
+            first_round_sum = np.sum(meat_dictionary_first_round[key])
+            second_round_sum = np.sum(meat_dictionary_second_round[key])
+            if "population" in key:
+                assert second_round_sum >= first_round_sum, (
+                    "Error: second round of optimization has a smaller "
+                    + key
+                    + " average than first round over the course of the simulation"
+                )
+            elif ("population" not in key) and ("milk" not in key):
+                assert second_round_sum >= first_round_sum, (
+                    "Error: second round of optimization has less "
+                    + key
+                    + " produced over the course of the simulation than first round"
+                )
+
+    def assert_population_not_increasing(
+        self, meat_dictionary, epsilon=0.001, round=None
+    ):
+        """
+        Checks that the animal populations are never increasing with time (currently
+        the condition is considered satisfied if it is met to within 0.1%, but
+        a warning is printed if it is not perfectly satisfied)
+
+        Args:
+            meat_dictionary (dict): dictionary containing meat constants
+            epsilon (float): threshold for the relative change in population
+            round (int): round of optimization (optional, just for printing purposes)
+
+        Returns:
+            None
+        """
+        for key in meat_dictionary:
+            if "population" in key:
+                first_round_previous_month = np.array(meat_dictionary[key][:-1])
+                first_round_previous_month[
+                    first_round_previous_month == 0
+                ] = epsilon  # this is to avoid division by zero
+                relative_changes_first_round = (
+                    np.diff(meat_dictionary[key]) / first_round_previous_month
+                )
+                assert np.all(relative_changes_first_round <= epsilon), (
+                    f"Error: round {round} of optimization has increasing {key} with time"
+                    + f"beyond the allowed {epsilon*100}% threshold"
+                )
+                if not np.all(relative_changes_first_round <= 0):
+                    print(
+                        f"Warning: round {round} of optimization has increasing {key} with time at the"
+                        + f" {100*np.max(relative_changes_first_round)}% level"
+                    )
 
     def assert_constants_not_nan(self, single_valued_constants, time_consts):
         """

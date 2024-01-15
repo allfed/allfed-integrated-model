@@ -69,7 +69,7 @@ def run_all_combinations():
     # solve this problem, but then the issue becomes that we would not know ahead of time
     # which parameters we are really testing, making the tests more opaque.
     # Instead, we will test all combinations of a few important parameters (the parameters
-    # for which we know ahead of time in whuch direction the results should change), and
+    # for which we know ahead of time in which direction the results should change), and
     # repeat this complete search of the sub-space for a few combinations of the other
     # parameters.
     #
