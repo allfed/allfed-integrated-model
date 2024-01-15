@@ -1014,6 +1014,14 @@ class Scenarios:
             + country_data["country"]
         )
 
+        # check that each month is between 0 and 1
+        for i in range(12):
+            assert (
+                0 <= constants_for_params["SEASONALITY"][i] <= 1
+            ), "ERROR: Seasonality is not between 0 and 1 for country: " + country_data[
+                "country"
+            ]
+
         self.SEASONALITY_SET = True
         return constants_for_params
 
