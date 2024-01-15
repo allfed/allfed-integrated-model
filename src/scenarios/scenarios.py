@@ -3,8 +3,10 @@ Scenarios.py: Provides numbers and methods to set the specific scenario to be op
 Also makes sure values are never set twice.
 """
 
-import numpy as np
 import git
+import numpy as np
+import pytest
+
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -1005,6 +1007,12 @@ class Scenarios:
         constants_for_params["SEASONALITY"] = [
             country_data["seasonality_m" + str(i)] for i in range(1, 13)
         ]
+
+        # check that the seasonality sums to one using pytest approx
+        assert np.sum(constants_for_params["SEASONALITY"]) == pytest.approx(1.0), (
+            "ERROR: Seasonality does not sum to one for country: "
+            + country_data["country"]
+        )
 
         self.SEASONALITY_SET = True
         return constants_for_params
