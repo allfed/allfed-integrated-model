@@ -350,9 +350,7 @@ class Validator:
         )
 
     @staticmethod
-    def assert_population_not_increasing(
-        meat_dictionary, epsilon=0.001, round=None
-    ):
+    def assert_population_not_increasing(meat_dictionary, epsilon=0.001, round=None):
         """
         Checks that the animal populations are never increasing with time (currently
         the condition is considered satisfied if it is met to within 0.1%, but
@@ -416,3 +414,37 @@ class Validator:
                     + key
                     + " produced over the course of the simulation than first round"
                 )
+
+    @staticmethod
+    def assert_meat_consumption_increased_during_minimum_months(interpreted_results):
+        """
+        For the third round of optimization, asserts that the meat consumption in a "minimum month"
+        is greater or equal to the meat consumption in the previous month. A "minimum month" is defined as
+        a month where the optimizer reports that it is at the minimum value for kcals.
+        This is only relevant if only kcals is required in the optimization.
+
+
+        """
+        # check that only kcals is included in the optimization
+        if (not interpreted_results.include_protein) and (
+            not interpreted_results.include_fat
+        ):
+            # identify minimum months
+            total_calories = (
+                interpreted_results.get_sum_by_adding_to_humans()
+                .in_units_kcals_equivalent()
+                .kcals
+            )
+            total_calories = np.round(total_calories)  # rounds to the nearest calorie
+            minimum_total_calories = np.min(total_calories)
+            minimum_month_indices = np.where(total_calories == minimum_total_calories)[
+                0
+            ]
+
+            # check that meat consumption increases or stays constant in minimum months
+            meat_calories = interpreted_results.meat_kcals_equivalent.kcals
+            meat_calories_in_minimum_months = meat_calories[minimum_month_indices]
+            meat_calories_difference = np.diff(meat_calories_in_minimum_months)
+            assert np.all(
+                meat_calories_difference >= 0
+            ), "Error: meat consumption decreased in a month where total calories were at a minimum"
