@@ -109,6 +109,9 @@ class ScenarioRunner:
             meat_dictionary_zero_feed_biofuels
         )
 
+        Validator.assert_feed_used_below_feed_demand(interpreted_results_round1, round=1)
+        Validator.assert_biofuels_used_below_biofuels_demand(interpreted_results_round1, round=1)
+
         return (
             interpreted_results_round1,
             percent_fed_from_model_round1,
@@ -173,6 +176,9 @@ class ScenarioRunner:
         interpreted_results_round2.set_feed_and_biofuels(feed_and_biofuels_round2)
         interpreted_results_round2.set_meat_dictionary(meat_dictionary_second_round)
 
+        Validator.assert_feed_used_below_feed_demand(interpreted_results_round2, round=2)
+        Validator.assert_biofuels_used_below_biofuels_demand(interpreted_results_round2, round=2)
+
         return interpreted_results_round2
 
     def run_round_3(
@@ -226,6 +232,9 @@ class ScenarioRunner:
         Validator.assert_fewer_calories_round2_than_round3(
             interpreted_results_round2, interpreted_results_round3
         )
+
+        Validator.assert_feed_used_below_feed_demand(interpreted_results_round3, round=3)
+        Validator.assert_biofuels_used_below_biofuels_demand(interpreted_results_round3, round=3)
 
         return interpreted_results_round3
 
