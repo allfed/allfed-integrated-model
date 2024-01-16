@@ -1273,7 +1273,11 @@ class Parameters:
             human_food_consumption, kcals_daily_maximum
         )
 
-        Validator.verify_minimum_food_consumption_sum(
+        Validator.verify_minimum_food_consumption_sum_round2(
+            interpreted_results_round1, human_food_consumption
+        )
+
+        Validator.verify_food_usage_priorities_round2(
             interpreted_results_round1, human_food_consumption
         )
 

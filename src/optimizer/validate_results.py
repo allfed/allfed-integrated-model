@@ -449,11 +449,13 @@ class Validator:
         meat_calories_in_minimum_months = meat_calories[minimum_month_indices]
         meat_calories_difference = np.diff(meat_calories_in_minimum_months)
         assert np.all(
-            meat_calories_difference >= 0
+            np.logical_or(
+                meat_calories_difference > 0, np.isclose(meat_calories_difference, 0)
+            )
         ), "Error: meat consumption decreased in a month where total calories were at a minimum"
 
     @staticmethod
-    def verify_minimum_food_consumption_sum(
+    def verify_minimum_food_consumption_sum_round2(
         interpreted_results_round1, min_human_food_consumption, epsilon=0.001
     ):
         """
@@ -465,7 +467,8 @@ class Validator:
 
         Args:
             interpreted_results_round1 (InterpretedResults): interpreted results from round 1 of optimization
-            min_human_food_consumption (dict): dictionary containing the minimum food consumption targeted
+            min_human_food_consumption (dict): dictionary containing the minimum food consumption from
+                calculate_human_consumption_for_min_needs
             epsilon (float): tolerance threshold for the sum of all foods (set to 0.1% by default)
 
         Returns:
@@ -489,8 +492,85 @@ class Validator:
         # verify that the sum is lower or equal to the minimum food consumption for each month
         target_calories = min_human_food_consumption[key].conversions.kcals_daily
         for i, total_that_month in enumerate(sum_of_all_foods.kcals):
-            assert total_that_month <= target_calories*(1+epsilon), (
+            assert total_that_month <= target_calories * (1 + epsilon), (
                 "Error: sum of all foods is greater than the minimum food consumption in round 2"
                 + f" for month {i}"
             )
-        
+
+    @staticmethod
+    def verify_food_usage_priorities_round2(
+        interpreted_results_round1, min_human_food_consumption, epsilon=0.001
+    ):
+        """
+        Verify that the percentage of each food used (compared to the total amount of that food availabe)
+        decreases when looking at foods in this order: fish, meat, dairy, greenhouse, outdoor crops, stored food,
+        methane scp, cellulosic sugar, seaweed.
+        Only relevant if only kcals is required in the optimization.
+
+        Args:
+            interpreted_results_round1 (InterpretedResults): interpreted results from round 1 of optimization
+            min_human_food_consumption (dict): dictionary containing the minimum food consumption from
+                calculate_human_consumption_for_min_needs
+            epsilon (float): tolerance threshold for comparisons (set to 0.1% by default)
+
+        Returns:
+            None
+        """
+        # do nothing if fat and protein are included in the optimization
+        if (
+            interpreted_results_round1.include_protein
+            or interpreted_results_round1.include_fat
+        ):
+            return
+
+        previous_food_usage_percentages = 100.0 * np.ones(
+            len(min_human_food_consumption["fish"].kcals)
+        )
+        previous_food_name = "none"
+        for food_name, interpreted_food_name in zip(
+            [
+                "fish",
+                "meat",
+                "dairy",
+                "greenhouse",
+                "outdoor_crops",
+                "stored_food",
+                "methane_scp",
+                "cellulosic_sugar",
+                "seaweed",
+            ],
+            [
+                "fish_kcals_equivalent",
+                "meat_kcals_equivalent",
+                "milk_kcals_equivalent",
+                "greenhouse_kcals_equivalent",
+                "immediate_outdoor_crops_kcals_equivalent",
+                "stored_food_kcals_equivalent",
+                "scp_kcals_equivalent",
+                "cell_sugar_kcals_equivalent",
+                "seaweed_kcals_equivalent",
+            ],
+        ):
+            # calculate the percentage of each food used
+            available_food = getattr(
+                interpreted_results_round1, interpreted_food_name
+            ).kcals
+            if food_name == "outdoor_crops":
+                available_food = (
+                    interpreted_results_round1.immediate_outdoor_crops_kcals_equivalent.kcals
+                    + interpreted_results_round1.new_stored_outdoor_crops_kcals_equivalent.kcals
+                )
+            food_usage_percentages = (
+                100.0 * min_human_food_consumption[food_name].kcals / available_food
+            )
+            for month, percentage in enumerate(food_usage_percentages):
+                # if that food is not available that month, then skip
+                if available_food[month] == 0:
+                    continue
+                # if that food is available that month, then check that the percentage
+                # used is less than or equal to the previous food
+                assert percentage <= previous_food_usage_percentages[month] * (
+                    1 + epsilon
+                ), f"Error: {food_name} usage % is greater than {previous_food_name} in month {month}"
+                previous_food_usage_percentages[month] = percentage
+            previous_food_name = food_name
