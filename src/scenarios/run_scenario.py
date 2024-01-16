@@ -172,7 +172,7 @@ class ScenarioRunner:
 
         interpreted_results_round2.set_feed_and_biofuels(feed_and_biofuels_round2)
         interpreted_results_round2.set_meat_dictionary(meat_dictionary_second_round)
-        
+
         return interpreted_results_round2
 
     def run_round_3(
@@ -221,6 +221,10 @@ class ScenarioRunner:
 
         Validator.assert_meat_consumption_increased_during_minimum_months(
             interpreted_results_round3
+        )
+
+        Validator.assert_fewer_calories_round2_than_round3(
+            interpreted_results_round2, interpreted_results_round3
         )
 
         return interpreted_results_round3

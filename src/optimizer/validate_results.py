@@ -354,8 +354,7 @@ class Validator:
     def assert_population_not_increasing(meat_dictionary, epsilon=0.001, round=None):
         """
         Checks that the animal populations are never increasing with time (currently
-        the condition is considered satisfied if it is met to within 0.1%, but
-        a warning is printed if it is not perfectly satisfied)
+        the condition is considered satisfied if it is met to within 0.1%)
 
         Args:
             meat_dictionary (dict): dictionary containing meat constants
@@ -378,11 +377,11 @@ class Validator:
                     f"Error: round {round} of optimization has increasing {key} with time"
                     + f"beyond the allowed {epsilon*100}% threshold"
                 )
-                if not np.all(relative_changes_first_round <= 0):
-                    print(
-                        f"Warning: round {round} of optimization has increasing {key} with time at the"
-                        + f" {100*np.max(relative_changes_first_round)}% level"
-                    )
+                #if not np.all(relative_changes_first_round <= 0):
+                #    print(
+                #        f"Warning: round {round} of optimization has increasing {key} with time at the"
+                #        + f" {100*np.max(relative_changes_first_round)}% level"
+                #    )
 
     @staticmethod
     def assert_round2_meat_and_population_greater_than_round1(
@@ -449,9 +448,9 @@ class Validator:
         meat_calories_in_minimum_months = meat_calories[minimum_month_indices]
         meat_calories_difference = np.diff(meat_calories_in_minimum_months)
         assert np.all(
-            np.logical_or(
-                meat_calories_difference > 0, np.isclose(meat_calories_difference, 0)
-            )
+           np.logical_or(
+               meat_calories_difference > 0, np.isclose(meat_calories_difference, 0)
+           )
         ), "Error: meat consumption decreased in a month where total calories were at a minimum"
 
     @staticmethod
@@ -574,3 +573,68 @@ class Validator:
                 ), f"Error: {food_name} usage % is greater than {previous_food_name} in month {month}"
                 previous_food_usage_percentages[month] = percentage
             previous_food_name = food_name
+
+    @staticmethod
+    def assert_fewer_calories_round2_than_round3(
+        interpreted_results_round2, interpreted_results_round3
+    ):
+        """
+        Asserts that the total calories consumed in round 2 is less than or equal to round 3, for
+        all months.
+        This is only relevant if only kcals is required in the optimization.
+
+        Args:
+            interpreted_results_round2 (InterpretedResults): interpreted results from round 2 of optimization
+            interpreted_results_round3 (InterpretedResults): interpreted results from round 3 of optimization
+
+        Returns:
+            None
+        """
+        # do nothing if fat and protein are included in the optimization
+        if (
+            interpreted_results_round3.include_protein
+            or interpreted_results_round3.include_fat
+        ):
+            return
+
+        # do nothing if no feed or biofuels are included in the optimization
+        # (presumably because rounds 1 and 2 were skipped due to no feed or biofuels options)
+        if np.all(
+            interpreted_results_round2.feed_sum_kcals_equivalent.kcals == 0
+        ) and np.all(
+            interpreted_results_round2.biofuels_sum_kcals_equivalent.kcals == 0
+        ):
+            return
+
+        total_calories_round2 = (
+            interpreted_results_round2.fish_kcals_equivalent.kcals
+            + interpreted_results_round2.cell_sugar_kcals_equivalent.kcals
+            + interpreted_results_round2.scp_kcals_equivalent.kcals
+            + interpreted_results_round2.greenhouse_kcals_equivalent.kcals
+            + interpreted_results_round2.seaweed_kcals_equivalent.kcals
+            + interpreted_results_round2.milk_kcals_equivalent.kcals
+            + interpreted_results_round2.meat_kcals_equivalent.kcals
+            + interpreted_results_round2.immediate_outdoor_crops_kcals_equivalent.kcals
+            + interpreted_results_round2.new_stored_outdoor_crops_kcals_equivalent.kcals
+            + interpreted_results_round2.stored_food_kcals_equivalent.kcals
+        )
+
+        total_calories_round3 = (
+            interpreted_results_round3.fish_kcals_equivalent.kcals
+            + interpreted_results_round3.cell_sugar_kcals_equivalent.kcals
+            + interpreted_results_round3.scp_kcals_equivalent.kcals
+            + interpreted_results_round3.greenhouse_kcals_equivalent.kcals
+            + interpreted_results_round3.seaweed_kcals_equivalent.kcals
+            + interpreted_results_round3.milk_kcals_equivalent.kcals
+            + interpreted_results_round3.meat_kcals_equivalent.kcals
+            + interpreted_results_round3.immediate_outdoor_crops_kcals_equivalent.kcals
+            + interpreted_results_round3.new_stored_outdoor_crops_kcals_equivalent.kcals
+            + interpreted_results_round3.stored_food_kcals_equivalent.kcals
+        )
+
+        # verify that the sum is lower or equal to the minimum food consumption for each month
+        for i, total_that_month in enumerate(total_calories_round3):
+            assert total_that_month >= total_calories_round2[i], (
+                "Error: total calories consumed in round 2 is greater than round 3"
+                + f" for month {i}"
+            )
