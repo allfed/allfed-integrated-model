@@ -8,6 +8,7 @@
 ###############################################################################
 """
 import numpy as np
+import pytest
 from src.food_system.food import Food
 
 
@@ -423,28 +424,73 @@ class Validator:
         a month where the optimizer reports that it is at the minimum value for kcals.
         This is only relevant if only kcals is required in the optimization.
 
+        Args:
+            interpreted_results (InterpretedResults): interpreted results from round 3 of optimization
 
+        Returns:
+            None
         """
-        # check that only kcals is included in the optimization
-        if (not interpreted_results.include_protein) and (
-            not interpreted_results.include_fat
-        ):
-            # identify minimum months
-            total_calories = (
-                interpreted_results.get_sum_by_adding_to_humans()
-                .in_units_kcals_equivalent()
-                .kcals
-            )
-            total_calories = np.round(total_calories)  # rounds to the nearest calorie
-            minimum_total_calories = np.min(total_calories)
-            minimum_month_indices = np.where(total_calories == minimum_total_calories)[
-                0
-            ]
+        # do nothing if fat and protein are included in the optimization
+        if interpreted_results.include_protein or interpreted_results.include_fat:
+            return
 
-            # check that meat consumption increases or stays constant in minimum months
-            meat_calories = interpreted_results.meat_kcals_equivalent.kcals
-            meat_calories_in_minimum_months = meat_calories[minimum_month_indices]
-            meat_calories_difference = np.diff(meat_calories_in_minimum_months)
-            assert np.all(
-                meat_calories_difference >= 0
-            ), "Error: meat consumption decreased in a month where total calories were at a minimum"
+        # identify minimum months
+        total_calories = (
+            interpreted_results.get_sum_by_adding_to_humans()
+            .in_units_kcals_equivalent()
+            .kcals
+        )
+        total_calories = np.round(total_calories)  # rounds to the nearest calorie
+        minimum_total_calories = np.min(total_calories)
+        minimum_month_indices = np.where(total_calories == minimum_total_calories)[0]
+
+        # check that meat consumption increases or stays constant in minimum months
+        meat_calories = interpreted_results.meat_kcals_equivalent.kcals
+        meat_calories_in_minimum_months = meat_calories[minimum_month_indices]
+        meat_calories_difference = np.diff(meat_calories_in_minimum_months)
+        assert np.all(
+            meat_calories_difference >= 0
+        ), "Error: meat consumption decreased in a month where total calories were at a minimum"
+
+    @staticmethod
+    def verify_minimum_food_consumption_sum(
+        interpreted_results_round1, min_human_food_consumption, epsilon=0.001
+    ):
+        """
+        Verify that the sum of all foods for every month is always smaller or equal
+        to the minimum food consumption targeted during round 2.
+        This is only relevant if only kcals is required in the optimization, otherwise
+        it is possible that more calories are consumed than the minimum targeted in order
+        to meet the fat and protein requirements.
+
+        Args:
+            interpreted_results_round1 (InterpretedResults): interpreted results from round 1 of optimization
+            min_human_food_consumption (dict): dictionary containing the minimum food consumption targeted
+            epsilon (float): tolerance threshold for the sum of all foods (set to 0.1% by default)
+
+        Returns:
+            None
+        """
+        # do nothing if fat and protein are included in the optimization
+        if (
+            interpreted_results_round1.include_protein
+            or interpreted_results_round1.include_fat
+        ):
+            return
+
+        # sum all foods
+        for i, key in enumerate(min_human_food_consumption):
+            min_human_food_consumption[key]
+            if i == 0:
+                sum_of_all_foods = min_human_food_consumption[key]
+            else:
+                sum_of_all_foods = sum_of_all_foods + min_human_food_consumption[key]
+
+        # verify that the sum is lower or equal to the minimum food consumption for each month
+        target_calories = min_human_food_consumption[key].conversions.kcals_daily
+        for i, total_that_month in enumerate(sum_of_all_foods.kcals):
+            assert total_that_month <= target_calories*(1+epsilon), (
+                "Error: sum of all foods is greater than the minimum food consumption in round 2"
+                + f" for month {i}"
+            )
+        

@@ -21,6 +21,7 @@ from src.food_system.food import Food
 from src.food_system.animal_populations import AnimalPopulation, CalculateFeedAndMeat
 from src.optimizer.validate_results import Validator
 
+
 class Parameters:
     def __init__(self):
         """
@@ -1270,6 +1271,10 @@ class Parameters:
 
         self.assert_consumption_within_limits(
             human_food_consumption, kcals_daily_maximum
+        )
+
+        Validator.verify_minimum_food_consumption_sum(
+            interpreted_results_round1, human_food_consumption
         )
 
         return human_food_consumption
