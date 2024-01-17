@@ -385,7 +385,10 @@ class Validator:
 
     @staticmethod
     def assert_round2_meat_and_population_greater_than_round1(
-        meat_dictionary_first_round, meat_dictionary_second_round, epsilon=1e-2, small_number=10
+        meat_dictionary_first_round,
+        meat_dictionary_second_round,
+        epsilon=1e-2,
+        small_number=10,
     ):
         """
         Asserts that the total meat produced over the simulation timespan and the average animal population
@@ -408,7 +411,7 @@ class Validator:
             second_round_sum = np.sum(meat_dictionary_second_round[key])
             if "population" in key:
                 # if the population if very small, than any deviation is most likely due to rounding errors
-                if second_round_sum<small_number:
+                if second_round_sum < small_number:
                     continue
                 assert second_round_sum >= first_round_sum * (1 - epsilon), (
                     "Error: second round of optimization has a smaller "
@@ -417,7 +420,7 @@ class Validator:
                 )
             elif ("population" not in key) and ("milk" not in key):
                 # if the ammout of meat if very small, than any deviation is most likely due to rounding errors
-                if second_round_sum<small_number:
+                if second_round_sum < small_number:
                     continue
                 assert second_round_sum >= first_round_sum * (1 - epsilon), (
                     "Error: second round of optimization has less "
@@ -695,8 +698,10 @@ class Validator:
         if interpreted_results.include_protein or interpreted_results.include_fat:
             return
 
-        biofuels_demand = interpreted_results.feed_and_biofuels.biofuel_demand
-        biofuels_used = interpreted_results.biofuels_sum_kcals_equivalent
+        biofuels_demand = interpreted_results.feed_and_biofuels.biofuel_demand.kcals
+        biofuels_used = interpreted_results.biofuels_sum_kcals_equivalent.kcals
+        biofuels_demand[(biofuels_demand < 0) & (biofuels_demand > -epsilon)] = 0
+        biofuels_used[(biofuels_used < 0) & (biofuels_used > -epsilon)] = 0
         assert np.all(
-            biofuels_used.kcals <= biofuels_demand.kcals * (1 + epsilon)
+            biofuels_used <= biofuels_demand * (1 + epsilon)
         ), f"Error: biofuels used is greater than biofuels demand in round {round}"
