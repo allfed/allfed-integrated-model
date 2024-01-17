@@ -301,14 +301,15 @@ class Parameters:
 
         # Check that the meat and population in the second round of optimization are greater than the first round
         Validator.assert_round2_meat_and_population_greater_than_round1(
-            meat_dictionary_first_round, meat_dictionary_second_round
+           meat_dictionary_first_round, meat_dictionary_second_round
         )
+
         # Check that the animal populations are never increasing with time
         Validator.assert_population_not_increasing(
-            meat_dictionary_first_round, epsilon=0.001, round=1
+           meat_dictionary_first_round, round=1
         )
         Validator.assert_population_not_increasing(
-            meat_dictionary_second_round, epsilon=0.001, round=2
+           meat_dictionary_second_round, round=2
         )
 
         # FEED AND BIOFUELS from breeding reduction strategy

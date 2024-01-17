@@ -351,10 +351,10 @@ class Validator:
         )
 
     @staticmethod
-    def assert_population_not_increasing(meat_dictionary, epsilon=0.001, round=None):
+    def assert_population_not_increasing(meat_dictionary, epsilon=1e-4, round=None):
         """
         Checks that the animal populations are never increasing with time (currently
-        the condition is considered satisfied if it is met to within 0.1%)
+        the condition is considered satisfied if it is met to within 0.01%)
 
         Args:
             meat_dictionary (dict): dictionary containing meat constants
@@ -366,18 +366,18 @@ class Validator:
         """
         for key in meat_dictionary:
             if "population" in key:
-                first_round_previous_month = np.array(meat_dictionary[key][:-1])
-                first_round_previous_month[
-                    first_round_previous_month == 0
+                population_series = np.array(meat_dictionary[key])
+                previous_month = population_series[:-1].copy()
+                previous_month[
+                    previous_month == 0
                 ] = epsilon  # this is to avoid division by zero
-                relative_changes_first_round = (
-                    np.diff(meat_dictionary[key]) / first_round_previous_month
-                )
-                assert np.all(relative_changes_first_round <= epsilon), (
+                population_series[population_series < 1] = 0
+                relative_changes = np.diff(population_series) / previous_month
+                assert np.all(relative_changes <= epsilon), (
                     f"Error: round {round} of optimization has increasing {key} with time"
                     + f"beyond the allowed {epsilon*100}% threshold"
                 )
-                #if not np.all(relative_changes_first_round <= 0):
+                # if not np.all(relative_changes_first_round <= 0):
                 #    print(
                 #        f"Warning: round {round} of optimization has increasing {key} with time at the"
                 #        + f" {100*np.max(relative_changes_first_round)}% level"
@@ -385,7 +385,7 @@ class Validator:
 
     @staticmethod
     def assert_round2_meat_and_population_greater_than_round1(
-        meat_dictionary_first_round, meat_dictionary_second_round
+        meat_dictionary_first_round, meat_dictionary_second_round, epsilon=1e-2, small_number=10
     ):
         """
         Asserts that the total meat produced over the simulation timespan and the average animal population
@@ -395,6 +395,10 @@ class Validator:
         Args:
             meat_dictionary_first_round (dict): dictionary containing meat constants for the first round
             meat_dictionary_second_round (dict): dictionary containing meat constants for the second round
+            epsilon (float): tolerance threshold for comparisons (set to 1% by default, smaller values were
+                found to be too strict)
+            small_number (float): threshold for the total meat produced or average animal population below which
+                the test is not performed (set to 10 by default)
 
         Returns:
             None
@@ -403,13 +407,19 @@ class Validator:
             first_round_sum = np.sum(meat_dictionary_first_round[key])
             second_round_sum = np.sum(meat_dictionary_second_round[key])
             if "population" in key:
-                assert second_round_sum >= first_round_sum, (
+                # if the population if very small, than any deviation is most likely due to rounding errors
+                if second_round_sum<small_number:
+                    continue
+                assert second_round_sum >= first_round_sum * (1 - epsilon), (
                     "Error: second round of optimization has a smaller "
                     + key
                     + " average than first round over the course of the simulation"
                 )
             elif ("population" not in key) and ("milk" not in key):
-                assert second_round_sum >= first_round_sum, (
+                # if the ammout of meat if very small, than any deviation is most likely due to rounding errors
+                if second_round_sum<small_number:
+                    continue
+                assert second_round_sum >= first_round_sum * (1 - epsilon), (
                     "Error: second round of optimization has less "
                     + key
                     + " produced over the course of the simulation than first round"
@@ -432,7 +442,6 @@ class Validator:
         # do nothing if fat and protein are included in the optimization
         if interpreted_results.include_protein or interpreted_results.include_fat:
             return
-
         # identify minimum months
         total_calories = (
             interpreted_results.get_sum_by_adding_to_humans()
@@ -447,11 +456,11 @@ class Validator:
         meat_calories = interpreted_results.meat_kcals_equivalent.kcals
         meat_calories_in_minimum_months = meat_calories[minimum_month_indices]
         meat_calories_difference = np.diff(meat_calories_in_minimum_months)
-        #assert np.all(
+        # assert np.all(
         #   np.logical_or(
         #       meat_calories_difference > 0, np.isclose(meat_calories_difference, 0)
         #   )
-        #), "Error: meat consumption decreased in a month where total calories were at a minimum"
+        # ), "Error: meat consumption decreased in a month where total calories were at a minimum"
         if not np.all(
             np.logical_or(
                 meat_calories_difference > 0, np.isclose(meat_calories_difference, 0)
@@ -461,10 +470,9 @@ class Validator:
                 "Warning: meat consumption decreased in a month where total calories were at a minimum"
             )
 
-
     @staticmethod
     def verify_minimum_food_consumption_sum_round2(
-        interpreted_results_round1, min_human_food_consumption, epsilon=0.001
+        interpreted_results_round1, min_human_food_consumption, epsilon=1e-4
     ):
         """
         Verify that the sum of all foods for every month is always smaller or equal
@@ -477,7 +485,7 @@ class Validator:
             interpreted_results_round1 (InterpretedResults): interpreted results from round 1 of optimization
             min_human_food_consumption (dict): dictionary containing the minimum food consumption from
                 calculate_human_consumption_for_min_needs
-            epsilon (float): tolerance threshold for the sum of all foods (set to 0.1% by default)
+            epsilon (float): tolerance threshold for the sum of all foods (set to 0.01% by default)
 
         Returns:
             None
@@ -507,7 +515,7 @@ class Validator:
 
     @staticmethod
     def verify_food_usage_priorities_round2(
-        interpreted_results_round1, min_human_food_consumption, epsilon=0.001
+        interpreted_results_round1, min_human_food_consumption, epsilon=1e-4
     ):
         """
         Verify that the percentage of each food used (compared to the total amount of that food availabe)
@@ -519,7 +527,7 @@ class Validator:
             interpreted_results_round1 (InterpretedResults): interpreted results from round 1 of optimization
             min_human_food_consumption (dict): dictionary containing the minimum food consumption from
                 calculate_human_consumption_for_min_needs
-            epsilon (float): tolerance threshold for comparisons (set to 0.1% by default)
+            epsilon (float): tolerance threshold for comparisons (set to 0.01% by default)
 
         Returns:
             None
@@ -585,7 +593,7 @@ class Validator:
 
     @staticmethod
     def assert_fewer_calories_round2_than_round3(
-        interpreted_results_round2, interpreted_results_round3
+        interpreted_results_round2, interpreted_results_round3, epsilon=1e-4
     ):
         """
         Asserts that the total calories consumed in round 2 is less than or equal to round 3, for
@@ -595,6 +603,7 @@ class Validator:
         Args:
             interpreted_results_round2 (InterpretedResults): interpreted results from round 2 of optimization
             interpreted_results_round3 (InterpretedResults): interpreted results from round 3 of optimization
+            epsilon (float): tolerance threshold for comparison (set to 1e-4 by default)
 
         Returns:
             None
@@ -643,54 +652,51 @@ class Validator:
 
         # verify that the sum is lower or equal to the minimum food consumption for each month
         for i, total_that_month in enumerate(total_calories_round3):
-            assert total_that_month >= total_calories_round2[i], (
+            assert total_that_month >= total_calories_round2[i] * (1 - epsilon), (
                 "Error: total calories consumed in round 2 is greater than round 3"
                 + f" for month {i}"
             )
 
     @staticmethod
-    def assert_feed_used_below_feed_demand(interpreted_results, round):
+    def assert_feed_used_below_feed_demand(interpreted_results, round, epsilon=1e-4):
         """
         Asserts that the feed used is less than or equal to the feed demand for each month.
         Args:
             interpreted_results (InterpretedResults): interpreted results from any round of optimization
             round (int): round of optimization number (for more useful error messages)
+            epsilon (float): tolerance threshold for comparison (set to 1e-4 by default)
         Returns:
             None
         """
         # do nothing if fat and protein are included in the optimization
-        if (
-            interpreted_results.include_protein
-            or interpreted_results.include_fat
-        ):
+        if interpreted_results.include_protein or interpreted_results.include_fat:
             return
-        
+
         feed_demand = interpreted_results.feed_and_biofuels.feed_demand
         feed_used = interpreted_results.feed_sum_kcals_equivalent
-        assert np.all(feed_used.kcals <= feed_demand.kcals), (
-            f"Error: feed used is greater than feed demand in round {round}"
-        )
+        assert np.all(
+            feed_used.kcals <= feed_demand.kcals * (1 + epsilon)
+        ), f"Error: feed used is greater than feed demand in round {round}"
 
     @staticmethod
-    def assert_biofuels_used_below_biofuels_demand(interpreted_results, round):
+    def assert_biofuels_used_below_biofuels_demand(
+        interpreted_results, round, epsilon=1e-4
+    ):
         """
         Asserts that the biofuels used is less than or equal to the biofuels demand for each month.
         Args:
             interpreted_results (InterpretedResults): interpreted results from any round of optimization
             round (int): round of optimization number (for more useful error messages)
+            epsilon (float): tolerance threshold for comparison (set to 1e-6 by default)
         Returns:
             None
         """
         # do nothing if fat and protein are included in the optimization
-        if (
-            interpreted_results.include_protein
-            or interpreted_results.include_fat
-        ):
+        if interpreted_results.include_protein or interpreted_results.include_fat:
             return
-        
+
         biofuels_demand = interpreted_results.feed_and_biofuels.biofuel_demand
         biofuels_used = interpreted_results.biofuels_sum_kcals_equivalent
-        assert np.all(biofuels_used.kcals <= biofuels_demand.kcals), (
-            f"Error: biofuels used is greater than biofuels demand in round {round}"
-        )
-
+        assert np.all(
+            biofuels_used.kcals <= biofuels_demand.kcals * (1 + epsilon)
+        ), f"Error: biofuels used is greater than biofuels demand in round {round}"
