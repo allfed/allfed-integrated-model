@@ -168,7 +168,7 @@ def run_all_combinations():
             ]
             config_data["simulations"][test_scenario_key]["waste"] = combination[4]
             # Run the model
-            print(config_data["simulations"][test_scenario_key])
+            # print(config_data["simulations"][test_scenario_key])
             percent_people_fed = runner(config_data)
             # Store the results as a dict
             results.append(

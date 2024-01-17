@@ -584,7 +584,7 @@ class Validator:
             )
             for month, percentage in enumerate(food_usage_percentages):
                 # if that food is not available that month, then skip
-                if available_food[month] == 0:
+                if available_food[month] <= epsilon or food_usage_percentages[month] <= epsilon:
                     continue
                 # if that food is available that month, then check that the percentage
                 # used is less than or equal to the previous food
