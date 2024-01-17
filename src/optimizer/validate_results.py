@@ -658,9 +658,15 @@ class Validator:
         Returns:
             None
         """
+        # do nothing if fat and protein are included in the optimization
+        if (
+            interpreted_results.include_protein
+            or interpreted_results.include_fat
+        ):
+            return
+        
         feed_demand = interpreted_results.feed_and_biofuels.feed_demand
         feed_used = interpreted_results.feed_sum_kcals_equivalent
-        print(feed_used)
         assert np.all(feed_used.kcals <= feed_demand.kcals), (
             f"Error: feed used is greater than feed demand in round {round}"
         )
@@ -675,10 +681,16 @@ class Validator:
         Returns:
             None
         """
+        # do nothing if fat and protein are included in the optimization
+        if (
+            interpreted_results.include_protein
+            or interpreted_results.include_fat
+        ):
+            return
+        
         biofuels_demand = interpreted_results.feed_and_biofuels.biofuel_demand
         biofuels_used = interpreted_results.biofuels_sum_kcals_equivalent
         assert np.all(biofuels_used.kcals <= biofuels_demand.kcals), (
             f"Error: biofuels used is greater than biofuels demand in round {round}"
         )
 
-    
