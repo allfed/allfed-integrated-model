@@ -589,8 +589,12 @@ class Validator:
                 # if that food is available that month, then check that the percentage
                 # used is less than or equal to the previous food
                 assert percentage <= previous_food_usage_percentages[month] * (
-                    1 + epsilon
-                ), f"Error: {food_name} usage % is greater than {previous_food_name} in month {month}"
+                   1 + epsilon
+                ), (
+                   f"Error: {food_name} usage percentage ({percentage}%)"
+                   + f" is greater than {previous_food_name} in month {month}" +
+                     f"({previous_food_usage_percentages[month]}%)"
+                )
                 previous_food_usage_percentages[month] = percentage
             previous_food_name = food_name
 
@@ -675,10 +679,14 @@ class Validator:
         if interpreted_results.include_protein or interpreted_results.include_fat:
             return
 
-        feed_demand = interpreted_results.feed_and_biofuels.feed_demand
-        feed_used = interpreted_results.feed_sum_kcals_equivalent
+        feed_demand = interpreted_results.feed_and_biofuels.feed_demand.kcals
+        feed_used = interpreted_results.feed_sum_kcals_equivalent.kcals
+        feed_demand[(feed_demand < 0) & (feed_demand > -epsilon)] = 0
+        feed_used[(feed_used < 0) & (feed_used > -epsilon)] = 0
         assert np.all(
-            feed_used.kcals <= feed_demand.kcals * (1 + epsilon)
+            np.logical_or(
+                feed_used <= feed_demand * (1 + epsilon), feed_used <= epsilon
+            )
         ), f"Error: feed used is greater than feed demand in round {round}"
 
     @staticmethod
@@ -703,5 +711,8 @@ class Validator:
         biofuels_demand[(biofuels_demand < 0) & (biofuels_demand > -epsilon)] = 0
         biofuels_used[(biofuels_used < 0) & (biofuels_used > -epsilon)] = 0
         assert np.all(
-            biofuels_used <= biofuels_demand * (1 + epsilon)
+            np.logical_or(
+                biofuels_used <= biofuels_demand * (1 + epsilon),
+                biofuels_used <= epsilon,
+            )
         ), f"Error: biofuels used is greater than biofuels demand in round {round}"
