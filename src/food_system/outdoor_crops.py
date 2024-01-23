@@ -97,6 +97,67 @@ class OutdoorCrops:
             self.FAT_RATIO_ROTATION = self.OG_FRACTION_FAT
             self.PROTEIN_RATIO_ROTATION = self.OG_FRACTION_PROTEIN
 
+    def get_year_1_ratio_using_fraction_harvest_before_may(
+        self, first_year_xia_et_al_reduction, seasonality_values, country_iso3
+    ):
+        """
+        This function subtracts off the estimated harvest for the first year for countries where
+        """
+        if country_iso3 == "ZAF":
+            harvest_before_may_this_country = 1
+        elif country_iso3 == "JPN":
+            harvest_before_may_this_country = 0
+        elif country_iso3 == "PRK":
+            harvest_before_may_this_country = 0
+        elif country_iso3 == "KOR":
+            harvest_before_may_this_country = 0
+        else:
+            harvest_before_may_this_country = sum(seasonality_values[:4])
+
+        fraction_harvest_after_may_nuclear_winter = (
+            first_year_xia_et_al_reduction - harvest_before_may_this_country
+        )
+        if first_year_xia_et_al_reduction < 0:
+            first_year_xia_et_al_reduction = 0
+        assert (
+            first_year_xia_et_al_reduction < 101
+        )  # the improvement can't be that much...
+
+        if fraction_harvest_after_may_nuclear_winter < 0:
+            print(f"correction for iso3 went below 0: {country_iso3}")
+            fraction_harvest_after_may_nuclear_winter = 0
+
+        if fraction_harvest_after_may_nuclear_winter > 0:
+            # if the expected yield for the remaining months is nonzero
+
+            fraction_harvest_after_may = 1 - harvest_before_may_this_country
+
+            assert fraction_harvest_after_may >= 0
+            assert fraction_harvest_after_may <= 1
+
+            if fraction_harvest_after_may < 0.25:
+                # in this case, we simply don't have much data about the yield in nuclear winter from xia et al
+                # year 1 data, and it doesn't make more than a 25% difference in the total yield over a 12 month
+                # period, so the yield in these months is assumed to be the same.
+                fraction_continued_yields = 1
+
+            else:
+                # We have significant harvest during the months May, June, July, August, September, October,
+                # November, and December. The ratio of yield to expected in nuclear winter during those months
+                # is calculated as the fraction_harvest_after_may_nuclear_winter divided by the
+                # fraction_harvest_after_may.
+
+                ratio_yields_nw = fraction_harvest_after_may_nuclear_winter
+
+                fraction_continued_yields = ratio_yields_nw / fraction_harvest_after_may
+
+        else:
+            # The fraction of the normal harvest is zero after subtracting yield from normal months.
+            # Therefore, the total harvest will be zero.
+            fraction_continued_yields = 0
+
+        return fraction_continued_yields
+
     def calculate_monthly_production(self, constants_for_params):
         # assumption: outdoor crop production is very similar in nutritional
         # profile to stored food
@@ -183,42 +244,53 @@ class OutdoorCrops:
             RATIO_OF_CROP_YIELDS_FROM_VERY_BEGINNING = constants_for_params[
                 "RATIO_OF_CROP_YIELDS_FROM_VERY_BEGINNING"
             ]
+        print("RATIO_KCALS_POSTDISASTER_1Y")
+        print(RATIO_KCALS_POSTDISASTER_1Y)
+        print("constants_for_params[SEASONALITY]")
+        print(constants_for_params["SEASONALITY"])
+        MAY_UNTIL_DECEMBER_FIRST_YEAR_REDUCTION = (
+            self.get_year_1_ratio_using_fraction_harvest_before_may(
+                RATIO_KCALS_POSTDISASTER_1Y,
+                constants_for_params["SEASONALITY"],
+                constants_for_params["COUNTRY_CODE"],
+            )
+        )
         # We then  end up at the month reduction appropriate for
         # the month before the next 12 month cycle. That means there are 13 total
         # values and we only keep the first 12 (the 13th index would have been the
         # reduction value we were interpolating towards, but instead we add that in
         # the next array of 12 months)
         y1_to_y2 = np.linspace(
-            RATIO_OF_CROP_YIELDS_FROM_VERY_BEGINNING,
-            RATIO_KCALS_POSTDISASTER_1Y,
-            13,
-        )[:-1]
+            MAY_UNTIL_DECEMBER_FIRST_YEAR_REDUCTION,
+            MAY_UNTIL_DECEMBER_FIRST_YEAR_REDUCTION,
+            8,
+        )
         y2_to_y3 = np.linspace(
-            RATIO_KCALS_POSTDISASTER_1Y, RATIO_KCALS_POSTDISASTER_2Y, 13
+            RATIO_KCALS_POSTDISASTER_2Y, RATIO_KCALS_POSTDISASTER_2Y, 13
         )[:-1]
         y3_to_y4 = np.linspace(
-            RATIO_KCALS_POSTDISASTER_2Y, RATIO_KCALS_POSTDISASTER_3Y, 13
+            RATIO_KCALS_POSTDISASTER_3Y, RATIO_KCALS_POSTDISASTER_3Y, 13
         )[:-1]
         y4_to_y5 = np.linspace(
-            RATIO_KCALS_POSTDISASTER_3Y, RATIO_KCALS_POSTDISASTER_4Y, 13
+            RATIO_KCALS_POSTDISASTER_4Y, RATIO_KCALS_POSTDISASTER_4Y, 13
         )[:-1]
         y5_to_y6 = np.linspace(
-            RATIO_KCALS_POSTDISASTER_4Y, RATIO_KCALS_POSTDISASTER_5Y, 13
+            RATIO_KCALS_POSTDISASTER_5Y, RATIO_KCALS_POSTDISASTER_5Y, 13
         )[:-1]
         y6_to_y7 = np.linspace(
-            RATIO_KCALS_POSTDISASTER_5Y, RATIO_KCALS_POSTDISASTER_6Y, 13
+            RATIO_KCALS_POSTDISASTER_6Y, RATIO_KCALS_POSTDISASTER_6Y, 13
         )[:-1]
         y7_to_y8 = np.linspace(
-            RATIO_KCALS_POSTDISASTER_6Y, RATIO_KCALS_POSTDISASTER_7Y, 13
+            RATIO_KCALS_POSTDISASTER_7Y, RATIO_KCALS_POSTDISASTER_7Y, 13
         )[:-1]
         y8_to_y9 = np.linspace(
-            RATIO_KCALS_POSTDISASTER_7Y, RATIO_KCALS_POSTDISASTER_8Y, 13
+            RATIO_KCALS_POSTDISASTER_8Y, RATIO_KCALS_POSTDISASTER_8Y, 13
         )[:-1]
         y9_to_y10 = np.linspace(
-            RATIO_KCALS_POSTDISASTER_8Y, RATIO_KCALS_POSTDISASTER_9Y, 13
+            RATIO_KCALS_POSTDISASTER_9Y, RATIO_KCALS_POSTDISASTER_9Y, 13
         )[:-1]
         y10_to_y11 = np.linspace(
-            RATIO_KCALS_POSTDISASTER_9Y, RATIO_KCALS_POSTDISASTER_10Y, 13
+            RATIO_KCALS_POSTDISASTER_10Y, RATIO_KCALS_POSTDISASTER_10Y, 13 + 4
         )[:-1]
 
         # this just appends all the reduction lists together
@@ -237,7 +309,7 @@ class OutdoorCrops:
         )
         # 7 years of reductions should be 12*7 months.
         # assert len(self.all_months_reductions) == self.NMONTHS
-        PLOT_NO_SEASONALITY = False
+        PLOT_NO_SEASONALITY = True
         if PLOT_NO_SEASONALITY:
             print("Plotting with no seasonality")
             Plotter.plot_monthly_reductions_no_seasonality(self.all_months_reductions)
