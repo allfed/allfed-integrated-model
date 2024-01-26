@@ -1061,11 +1061,13 @@ class Scenarios:
 
     # FISH
 
-    def set_fish_zero(self, time_consts):
+    def set_fish_zero(self, constants_for_params, time_consts):
         self.scenario_description += "\nno fish"
         assert not self.FISH_SET
         # 0% of fishing remains in baseline
-        time_consts["FISH_PERCENT_MONTHLY"] = np.array([0] * time_consts["NMONTHS"])
+        time_consts["FISH_PERCENT_MONTHLY"] = np.array(
+            [0] * constants_for_params["NMONTHS"]
+        )
 
         self.FISH_SET = True
         return time_consts
@@ -1240,11 +1242,13 @@ class Scenarios:
         self.FISH_SET = True
         return time_consts
 
-    def set_fish_baseline(self, time_consts):
+    def set_fish_baseline(self, constants_for_params, time_consts):
         self.scenario_description += "\nbaseline fish"
         assert not self.FISH_SET
         # 100% of fishing remains in baseline
-        time_consts["FISH_PERCENT_MONTHLY"] = np.array([100] * time_consts["NMONTHS"])
+        time_consts["FISH_PERCENT_MONTHLY"] = np.array(
+            [100] * constants_for_params["NMONTHS"]
+        )
 
         self.FISH_SET = True
         return time_consts

@@ -720,14 +720,16 @@ class ScenarioRunner:
         # FISH
 
         if scenario_option["fish"] == "zero":
-            constants_for_params = scenario_loader.set_fish_zero(time_consts_for_params)
+            constants_for_params = scenario_loader.set_fish_zero(
+                constants_for_params, time_consts_for_params
+            )
         elif scenario_option["fish"] == "nuclear_winter":
             time_consts_for_params = scenario_loader.set_fish_nuclear_winter_reduction(
                 time_consts_for_params
             )
         elif scenario_option["fish"] == "baseline":
             time_consts_for_params = scenario_loader.set_fish_baseline(
-                time_consts_for_params
+                constants_for_params, time_consts_for_params
             )
         else:
             scenario_is_correct = False
