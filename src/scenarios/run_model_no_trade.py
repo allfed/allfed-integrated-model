@@ -114,19 +114,11 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         figure_save_postfix="",
     ):
         country_name = country_data["country"]
-        constants_for_params, scenario_loader = self.set_depending_on_option(
-            country_data, scenario_option
-        )
-
-        # No excess calories
-        constants_for_params["EXCESS_FEED"] = Food(
-            kcals=[0] * constants_for_params["NMONTHS"],
-            fat=[0] * constants_for_params["NMONTHS"],
-            protein=[0] * constants_for_params["NMONTHS"],
-            kcals_units="billion kcals each month",
-            fat_units="thousand tons each month",
-            protein_units="thousand tons each month",
-        )
+        (
+            constants_for_params,
+            time_consts_for_params,
+            scenario_loader,
+        ) = self.set_depending_on_option(country_data, scenario_option)
 
         PRINT_COUNTRY = True
         if PRINT_COUNTRY:
@@ -148,6 +140,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 scenario_runner = ScenarioRunner()
                 interpreted_results = scenario_runner.run_and_analyze_scenario(
                     constants_for_params,
+                    time_consts_for_params,
                     scenario_loader,
                     create_pptx_with_all_countries,
                     show_country_figures,
@@ -163,6 +156,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             scenario_runner = ScenarioRunner()
             interpreted_results = scenario_runner.run_and_analyze_scenario(
                 constants_for_params,
+                time_consts_for_params,
                 scenario_loader,
                 create_pptx_with_all_countries,
                 show_country_figures,

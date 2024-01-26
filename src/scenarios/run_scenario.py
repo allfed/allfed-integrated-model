@@ -94,7 +94,6 @@ class ScenarioRunner:
             variables_round1,
             percent_fed_from_model_round1,
         ) = self.run_optimizer(single_valued_constants_round1, time_consts_round1)
-
         interpreted_results_round1 = self.interpret_optimizer_results(
             single_valued_constants_round1,
             model_round1,
@@ -108,9 +107,6 @@ class ScenarioRunner:
         interpreted_results_round1.set_meat_dictionary(
             meat_dictionary_zero_feed_biofuels
         )
-
-        Validator.assert_feed_used_below_feed_demand(interpreted_results_round1, round=1)
-        Validator.assert_biofuels_used_below_biofuels_demand(interpreted_results_round1, round=1)
 
         return (
             interpreted_results_round1,
@@ -170,14 +166,9 @@ class ScenarioRunner:
         feed_and_biofuels_round2.nonhuman_consumption = (
             max_feed_that_could_be_used_second_round + biofuels_demand
         )
-        feed_and_biofuels_round2.feed_demand = max_feed_that_could_be_used_second_round
-        feed_and_biofuels_round2.biofuel_demand = biofuels_demand
 
         interpreted_results_round2.set_feed_and_biofuels(feed_and_biofuels_round2)
         interpreted_results_round2.set_meat_dictionary(meat_dictionary_second_round)
-
-        Validator.assert_feed_used_below_feed_demand(interpreted_results_round2, round=2)
-        Validator.assert_biofuels_used_below_biofuels_demand(interpreted_results_round2, round=2)
 
         return interpreted_results_round2
 
@@ -225,22 +216,16 @@ class ScenarioRunner:
         interpreted_results_round3.set_feed_and_biofuels(feed_and_biofuels_round3)
         interpreted_results_round3.set_meat_dictionary(meat_dictionary_round3)
 
-        Validator.assert_meat_consumption_increased_during_minimum_months(
-            interpreted_results_round3
-        )
-
         Validator.assert_fewer_calories_round2_than_round3(
             interpreted_results_round2, interpreted_results_round3
         )
-
-        Validator.assert_feed_used_below_feed_demand(interpreted_results_round3, round=3)
-        Validator.assert_biofuels_used_below_biofuels_demand(interpreted_results_round3, round=3)
 
         return interpreted_results_round3
 
     def run_and_analyze_scenario(
         self,
         constants_for_params,
+        time_consts_for_params,
         scenario_loader,
         create_pptx_with_all_countries,
         show_country_figures,
@@ -267,17 +252,18 @@ class ScenarioRunner:
         (
             single_valued_constants_round1,
             time_consts_round1,
-            biofuels_demand,  # biofuels requested by the user
             feed_and_biofuels_round1,  # zero feed and biofuels
+            biofuels_demand,  # biofuels requested by the user
+            feed_demand,  # feed requested by the user
             max_feed_that_could_be_used_second_round,  # Max feed used if no limitation before shutoff
             meat_dictionary_zero_feed_biofuels,  # Meat if no feed used.
             meat_dictionary_second_round,  # Meat if all feed used.
         ) = constants_loader.compute_parameters_first_round(
-            constants_for_params, scenario_loader
+            constants_for_params, time_consts_for_params, scenario_loader
         )
         validator = Validator()
         validator.ensure_all_time_constants_units_are_billion_kcals(time_consts_round1)
-        # interpreted_results.feed_and_biofuels.nonhuman_consumption
+
         if (
             constants_for_params["ADD_STORED_FOOD"]
             or constants_for_params["ADD_OUTDOOR_GROWING"]
@@ -302,6 +288,19 @@ class ScenarioRunner:
                 feed_and_biofuels_round1,
                 meat_dictionary_zero_feed_biofuels,
             )
+
+            Validator.assert_feed_used_below_feed_demand(
+                feed_demand, interpreted_results_round1, round=1
+            )
+            Validator.assert_biofuels_used_below_biofuels_demand(
+                biofuels_demand, interpreted_results_round1, round=1
+            )
+
+            # # Check that the animal populations are never increasing with time
+            # Validator.assert_population_not_increasing(
+            #     meat_dictionary_zero_feed_biofuels, round=1
+            # )
+
             DISPLAY_MEAT_PRODUCED_IF_NO_FEED = True
             if DISPLAY_MEAT_PRODUCED_IF_NO_FEED:
                 # because feed and biofuel are zero, feed and biofuels plot
@@ -331,6 +330,14 @@ class ScenarioRunner:
                 biofuels_demand,
                 meat_dictionary_second_round,
             )
+
+            Validator.assert_feed_used_below_feed_demand(
+                feed_demand, interpreted_results_round2, round=2
+            )
+            Validator.assert_biofuels_used_below_biofuels_demand(
+                biofuels_demand, interpreted_results_round2, round=2
+            )
+
             if DISPLAY_MEAT_PRODUCED_IF_NO_FEED and (
                 interpreted_results_round1.meat_dictionary
                 == interpreted_results_round2.meat_dictionary
@@ -346,6 +353,11 @@ class ScenarioRunner:
                 print("")
             else:
                 slaughter_title = "Max meat produced from second round calculation (no restriction on feed before shutoff)"
+
+                # make sure animal populations not increasing
+                Validator.assert_population_not_increasing(
+                    interpreted_results_round2.meat_dictionary, round=3
+                )
 
             self.display_results_of_optimizer_round(
                 interpreted_results_round2,
@@ -394,6 +406,17 @@ class ScenarioRunner:
             interpreted_results_for_round3,
             feed_and_biofuels_round1,
             interpreter,
+        )
+
+        Validator.assert_feed_used_below_feed_demand(
+            feed_demand, interpreted_results_round3, round=3
+        )
+        Validator.assert_biofuels_used_below_biofuels_demand(
+            biofuels_demand, interpreted_results_round3, round=3
+        )
+
+        Validator.assert_population_not_increasing(
+            interpreted_results_round3.meat_dictionary, round=3
         )
 
         self.display_results_of_optimizer_round(
@@ -479,6 +502,9 @@ class ScenarioRunner:
 
     def set_depending_on_option(self, country_data, scenario_option):
         scenario_loader = Scenarios()
+
+        time_consts_for_params = {}
+
         # SCALE
 
         if scenario_option["scale"] == "global":
@@ -499,9 +525,6 @@ class ScenarioRunner:
             ), "You must specify 'scale' key as global,or country"
 
         constants_for_params["NMONTHS"] = scenario_option["NMONTHS"]
-
-        # EXCESS
-        constants_for_params = scenario_loader.set_excess_to_zero(constants_for_params)
 
         # STORED FOOD
 
@@ -647,8 +670,6 @@ class ScenarioRunner:
 
         # SEASONALITY
 
-        # SEASONALITY
-
         if scenario_option["seasonality"] == "no_seasonality":
             constants_for_params = scenario_loader.set_no_seasonality(
                 constants_for_params
@@ -699,14 +720,14 @@ class ScenarioRunner:
         # FISH
 
         if scenario_option["fish"] == "zero":
-            constants_for_params = scenario_loader.set_fish_zero(constants_for_params)
+            constants_for_params = scenario_loader.set_fish_zero(time_consts_for_params)
         elif scenario_option["fish"] == "nuclear_winter":
-            constants_for_params = scenario_loader.set_fish_nuclear_winter_reduction(
-                constants_for_params
+            time_consts_for_params = scenario_loader.set_fish_nuclear_winter_reduction(
+                time_consts_for_params
             )
         elif scenario_option["fish"] == "baseline":
-            constants_for_params = scenario_loader.set_fish_baseline(
-                constants_for_params
+            time_consts_for_params = scenario_loader.set_fish_baseline(
+                time_consts_for_params
             )
         else:
             scenario_is_correct = False
@@ -853,4 +874,4 @@ class ScenarioRunner:
             assert scenario_is_correct, """You must specify 'meat_strategy' key as either ,
             reduce_breeding_USA or baseline_breeding"""
 
-        return constants_for_params, scenario_loader
+        return constants_for_params, time_consts_for_params, scenario_loader

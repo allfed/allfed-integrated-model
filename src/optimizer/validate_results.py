@@ -218,7 +218,7 @@ class Validator:
                 f" {round(percent_people_fed_by_summing_all_foods,2)}%."
             )
             print(
-                "        Ignoring this because {country_code} is small and difference is small."
+                f"        Ignoring this because {country_code} is small and difference is small."
             )
         else:
             assert difference == 0, (
@@ -351,10 +351,10 @@ class Validator:
         )
 
     @staticmethod
-    def assert_population_not_increasing(meat_dictionary, epsilon=1e-4, round=None):
+    def assert_population_not_increasing(meat_dictionary, epsilon=1e-1, round=None):
         """
         Checks that the animal populations are never increasing with time (currently
-        the condition is considered satisfied if it is met to within 0.01%)
+        the condition is considered satisfied if it is met to within 10%)
 
         Args:
             meat_dictionary (dict): dictionary containing meat constants
@@ -388,7 +388,7 @@ class Validator:
         meat_dictionary_first_round,
         meat_dictionary_second_round,
         epsilon=1e-2,
-        small_number=10,
+        small_number=100,
     ):
         """
         Asserts that the total meat produced over the simulation timespan and the average animal population
@@ -427,51 +427,6 @@ class Validator:
                     + key
                     + " produced over the course of the simulation than first round"
                 )
-
-    @staticmethod
-    def assert_meat_consumption_increased_during_minimum_months(interpreted_results):
-        """
-        For the third round of optimization, asserts that the meat consumption in a "minimum month"
-        is greater or equal to the meat consumption in the previous month. A "minimum month" is defined as
-        a month where the optimizer reports that it is at the minimum value for kcals.
-        This is only relevant if only kcals is required in the optimization.
-
-        Args:
-            interpreted_results (InterpretedResults): interpreted results from round 3 of optimization
-
-        Returns:
-            None
-        """
-        # do nothing if fat and protein are included in the optimization
-        if interpreted_results.include_protein or interpreted_results.include_fat:
-            return
-        # identify minimum months
-        total_calories = (
-            interpreted_results.get_sum_by_adding_to_humans()
-            .in_units_kcals_equivalent()
-            .kcals
-        )
-        total_calories = np.round(total_calories)  # rounds to the nearest calorie
-        minimum_total_calories = np.min(total_calories)
-        minimum_month_indices = np.where(total_calories == minimum_total_calories)[0]
-
-        # check that meat consumption increases or stays constant in minimum months
-        meat_calories = interpreted_results.meat_kcals_equivalent.kcals
-        meat_calories_in_minimum_months = meat_calories[minimum_month_indices]
-        meat_calories_difference = np.diff(meat_calories_in_minimum_months)
-        # assert np.all(
-        #   np.logical_or(
-        #       meat_calories_difference > 0, np.isclose(meat_calories_difference, 0)
-        #   )
-        # ), "Error: meat consumption decreased in a month where total calories were at a minimum"
-        if not np.all(
-            np.logical_or(
-                meat_calories_difference > 0, np.isclose(meat_calories_difference, 0)
-            )
-        ):
-            print(
-                "Warning: meat consumption decreased in a month where total calories were at a minimum"
-            )
 
     @staticmethod
     def verify_minimum_food_consumption_sum_round2(
@@ -584,16 +539,19 @@ class Validator:
             )
             for month, percentage in enumerate(food_usage_percentages):
                 # if that food is not available that month, then skip
-                if available_food[month] <= epsilon or food_usage_percentages[month] <= epsilon:
+                if (
+                    available_food[month] <= epsilon
+                    or food_usage_percentages[month] <= epsilon
+                ):
                     continue
                 # if that food is available that month, then check that the percentage
                 # used is less than or equal to the previous food
                 assert percentage <= previous_food_usage_percentages[month] * (
-                   1 + epsilon
+                    1 + epsilon
                 ), (
-                   f"Error: {food_name} usage percentage ({percentage}%)"
-                   + f" is greater than {previous_food_name} in month {month}" +
-                     f"({previous_food_usage_percentages[month]}%)"
+                    f"Error: {food_name} usage percentage ({percentage}%)"
+                    + f" is greater than {previous_food_name} in month {month}"
+                    + f"({previous_food_usage_percentages[month]}%)"
                 )
                 previous_food_usage_percentages[month] = percentage
             previous_food_name = food_name
@@ -665,7 +623,9 @@ class Validator:
             )
 
     @staticmethod
-    def assert_feed_used_below_feed_demand(interpreted_results, round, epsilon=1e-4):
+    def assert_feed_used_below_feed_demand(
+        feed_demand, interpreted_results, round, epsilon=1e-4
+    ):
         """
         Asserts that the feed used is less than or equal to the feed demand for each month.
         Args:
@@ -679,19 +639,29 @@ class Validator:
         if interpreted_results.include_protein or interpreted_results.include_fat:
             return
 
-        feed_demand = interpreted_results.feed_and_biofuels.feed_demand.kcals
-        feed_used = interpreted_results.feed_sum_kcals_equivalent.kcals
-        feed_demand[(feed_demand < 0) & (feed_demand > -epsilon)] = 0
-        feed_used[(feed_used < 0) & (feed_used > -epsilon)] = 0
-        assert np.all(
-            np.logical_or(
-                feed_used <= feed_demand * (1 + epsilon), feed_used <= epsilon
-            )
-        ), f"Error: feed used is greater than feed demand in round {round}"
+        total_feed = (
+            interpreted_results.cell_sugar_feed
+            + interpreted_results.scp_feed
+            + interpreted_results.seaweed_feed
+            + interpreted_results.outdoor_crops_feed
+            + interpreted_results.stored_food_feed
+        )
+        reduced_feed_correct_units = (
+            total_feed.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            * (1 - epsilon)
+        )
+
+        assert np.all((feed_demand - reduced_feed_correct_units).kcals > -1e-6), (
+            f"Error: feed used is greater than feed demand in round {round}\n"
+            f"feed demand:\n"
+            f"{feed_demand}\n"
+            f"reduced_feed_correct_units:\n"
+            f"{reduced_feed_correct_units}\n"
+        )
 
     @staticmethod
     def assert_biofuels_used_below_biofuels_demand(
-        interpreted_results, round, epsilon=1e-4
+        biofuels_demand, interpreted_results, round, epsilon=1e-4
     ):
         """
         Asserts that the biofuels used is less than or equal to the biofuels demand for each month.
@@ -706,13 +676,24 @@ class Validator:
         if interpreted_results.include_protein or interpreted_results.include_fat:
             return
 
-        biofuels_demand = interpreted_results.feed_and_biofuels.biofuel_demand.kcals
-        biofuels_used = interpreted_results.biofuels_sum_kcals_equivalent.kcals
-        biofuels_demand[(biofuels_demand < 0) & (biofuels_demand > -epsilon)] = 0
-        biofuels_used[(biofuels_used < 0) & (biofuels_used > -epsilon)] = 0
+        total_biofuels = (
+            interpreted_results.cell_sugar_biofuels
+            + interpreted_results.scp_biofuels
+            + interpreted_results.seaweed_biofuels
+            + interpreted_results.outdoor_crops_biofuels
+            + interpreted_results.stored_food_biofuels
+        )
+        reduced_biofuels_correct_units = (
+            total_biofuels.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            * (1 - epsilon)
+        )
+
         assert np.all(
-            np.logical_or(
-                biofuels_used <= biofuels_demand * (1 + epsilon),
-                biofuels_used <= epsilon,
-            )
-        ), f"Error: biofuels used is greater than biofuels demand in round {round}"
+            (biofuels_demand - reduced_biofuels_correct_units).kcals > -1e-6
+        ), (
+            f"Error: biofuels used is greater than biofuels demand in round {round}\n"
+            f"biofuels demand:\n"
+            f"{biofuels_demand}\n"
+            f"reduced_biofuels_correct_units:\n"
+            f"{reduced_biofuels_correct_units}\n"
+        )

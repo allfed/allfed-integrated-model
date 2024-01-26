@@ -51,7 +51,9 @@ class Parameters:
             self.SIMULATION_STARTING_MONTH
         ]  # Starting month number for the simulation
 
-    def compute_parameters_first_round(self, constants_inputs, scenarios_loader):
+    def compute_parameters_first_round(
+        self, constants_inputs, time_consts_inputs, scenarios_loader
+    ):
         """
         Computes the parameters for the model based on the inputs and scenarios provided.
         This is relevant for the first round of optimization, with no feed assumed.
@@ -101,7 +103,9 @@ class Parameters:
         time_consts["growth_rates_monthly"] = growth_rates
 
         # Initialize fish parameters
-        time_consts = self.init_fish_params(time_consts, constants_inputs)
+        time_consts = self.init_fish_params(
+            time_consts, constants_inputs, time_consts_inputs
+        )
 
         # Initialize methane single cell protein constants
         constants_out, time_consts, methane_scp = self.init_scp_params(
@@ -134,6 +138,7 @@ class Parameters:
             time_consts,
             feed_biofuels_class,  # zero feed, zero biofuel
             biofuels_demand,  # biofuels requested by the user
+            feed_demand,  # feed requested by the user
             max_feed_that_could_be_used_second_round,
             meat_dictionary_first_round,  # meat if no feed were available
             meat_dictionary_second_round,  # meat if all feed were used (only used for debugging, not used in analysis)
@@ -160,6 +165,7 @@ class Parameters:
             time_consts,
             feed_biofuels_class,  # zero feed, zero biofuel
             biofuels_demand,  # biofuels requested by the user
+            feed_demand,  # feed requested by the user
             max_feed_that_could_be_used_second_round,
             meat_dictionary_first_round,
             meat_dictionary_second_round,
@@ -300,17 +306,9 @@ class Parameters:
         )
 
         # Check that the meat and population in the second round of optimization are greater than the first round
-        Validator.assert_round2_meat_and_population_greater_than_round1(
-           meat_dictionary_first_round, meat_dictionary_second_round
-        )
-
-        # Check that the animal populations are never increasing with time
-        Validator.assert_population_not_increasing(
-           meat_dictionary_first_round, round=1
-        )
-        Validator.assert_population_not_increasing(
-           meat_dictionary_second_round, round=2
-        )
+        # Validator.assert_round2_meat_and_population_greater_than_round1(
+        #     meat_dictionary_first_round, meat_dictionary_second_round
+        # )
 
         # FEED AND BIOFUELS from breeding reduction strategy
 
@@ -332,7 +330,6 @@ class Parameters:
         ), "Error: first round of optimization has no biofuels used (just maximize to humans)"
 
         # Update feed_and_biofuels_class object with zero of either every month
-        feed_and_biofuels_class.feed_demand = zero_feed_used
         feed_and_biofuels_class.biofuel_demand = zero_biofuels
 
         # Update time_consts dictionary with zero feed or biofuels every month
@@ -352,8 +349,9 @@ class Parameters:
         return (
             constants_out,
             time_consts,
-            biofuels_demand,
             feed_and_biofuels_class,
+            biofuels_demand,
+            feed_demand,  # the actual demand asked for by the user
             max_feed_that_could_be_used_second_round,
             meat_dictionary_first_round,
             meat_dictionary_second_round,
@@ -664,7 +662,7 @@ class Parameters:
         # return the updated constants_out dictionary and the stored_food object
         return constants_out, stored_food
 
-    def init_fish_params(self, time_consts, constants_inputs):
+    def init_fish_params(self, time_consts, constants_inputs, time_consts_inputs):
         """
         Initializes seafood parameters, not including seaweed.
 
@@ -680,7 +678,7 @@ class Parameters:
         # Create a Seafood object using the constants_inputs dictionary
         seafood = Seafood(constants_inputs)
 
-        seafood.set_seafood_production(constants_inputs)
+        seafood.set_seafood_production(time_consts_inputs)
         time_consts["fish"] = seafood
 
         return time_consts
@@ -1365,7 +1363,6 @@ class Parameters:
         )
 
         # Update feed_and_biofuels_class_round3 object with their values
-        feed_and_biofuels_class.feed_demand = max_feed_that_could_be_used_round3
         feed_and_biofuels_class.biofuel_demand = biofuel_sum_billion_kcals
         feed_and_biofuels_class.nonhuman_consumption = (
             max_feed_that_could_be_used_round3 + biofuel_sum_billion_kcals

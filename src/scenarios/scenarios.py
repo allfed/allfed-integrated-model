@@ -15,7 +15,6 @@ class Scenarios:
     def __init__(self):
         # used to ensure the properties of scenarios are set twice or left unset
         self.NONHUMAN_CONSUMPTION_SET = False
-        self.EXCESS_SET = False
         self.WASTE_SET = False
         self.INTAKE_CONSTRAINTS_SET = False
         self.NUTRITION_PROFILE_SET = False
@@ -41,7 +40,6 @@ class Scenarios:
         Ensure all properties of scenarios have been set
         """
         assert self.NONHUMAN_CONSUMPTION_SET
-        assert self.EXCESS_SET
         assert self.WASTE_SET
         assert self.INTAKE_CONSTRAINTS_SET
         assert self.NUTRITION_PROFILE_SET
@@ -601,24 +599,6 @@ class Scenarios:
         self.MEAT_STRATEGY_SET = True
         return constants_for_params
 
-    # EXCESS FEED
-
-    def set_excess_to_zero(self, constants_for_params):
-        assert not self.EXCESS_SET
-        constants_for_params["EXCESS_FEED_PERCENT"] = np.zeros(
-            constants_for_params["NMONTHS"]
-        )
-
-        self.EXCESS_SET = True
-        return constants_for_params
-
-    def set_excess(self, constants_for_params, excess):
-        assert not self.EXCESS_SET
-        constants_for_params["EXCESS_FEED_PERCENT"] = excess
-
-        self.EXCESS_SET = True
-        return constants_for_params
-
     # WASTE
 
     def set_waste_to_zero(self, constants_for_params):
@@ -1016,11 +996,10 @@ class Scenarios:
 
         # check that each month is between 0 and 1
         for i in range(12):
-            assert (
-                0 <= constants_for_params["SEASONALITY"][i] <= 1
-            ), "ERROR: Seasonality is not between 0 and 1 for country: " + country_data[
-                "country"
-            ]
+            assert 0 <= constants_for_params["SEASONALITY"][i] <= 1, (
+                "ERROR: Seasonality is not between 0 and 1 for country: "
+                + country_data["country"]
+            )
 
         self.SEASONALITY_SET = True
         return constants_for_params
@@ -1082,18 +1061,16 @@ class Scenarios:
 
     # FISH
 
-    def set_fish_zero(self, constants_for_params):
+    def set_fish_zero(self, time_consts):
         self.scenario_description += "\nno fish"
         assert not self.FISH_SET
         # 0% of fishing remains in baseline
-        constants_for_params["FISH_PERCENT_MONTHLY"] = np.array(
-            [0] * constants_for_params["NMONTHS"]
-        )
+        time_consts["FISH_PERCENT_MONTHLY"] = np.array([0] * time_consts["NMONTHS"])
 
         self.FISH_SET = True
-        return constants_for_params
+        return time_consts
 
-    def set_fish_nuclear_winter_reduction(self, constants_for_params):
+    def set_fish_nuclear_winter_reduction(self, time_consts):
         """
         Set the fish percentages in every country (or globally) from baseline
         although this is a global number, we don't have the regional number, so
@@ -1101,7 +1078,7 @@ class Scenarios:
         """
         self.scenario_description += "\nreduced fish"
         assert not self.FISH_SET
-        constants_for_params["FISH_PERCENT_MONTHLY"] = list(
+        time_consts["FISH_PERCENT_MONTHLY"] = list(
             np.array(
                 [
                     0.0,
@@ -1261,18 +1238,16 @@ class Scenarios:
         )
 
         self.FISH_SET = True
-        return constants_for_params
+        return time_consts
 
-    def set_fish_baseline(self, constants_for_params):
+    def set_fish_baseline(self, time_consts):
         self.scenario_description += "\nbaseline fish"
         assert not self.FISH_SET
         # 100% of fishing remains in baseline
-        constants_for_params["FISH_PERCENT_MONTHLY"] = np.array(
-            [100] * constants_for_params["NMONTHS"]
-        )
+        time_consts["FISH_PERCENT_MONTHLY"] = np.array([100] * time_consts["NMONTHS"])
 
         self.FISH_SET = True
-        return constants_for_params
+        return time_consts
 
     # CROP DISRUPTION
 

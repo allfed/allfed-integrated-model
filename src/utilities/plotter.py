@@ -272,7 +272,6 @@ class Plotter:
         add_slide_with_fig=True,
         description="",
     ):
-        print("feed")
         if (not plot_figure) and (not add_slide_with_fig):
             return
 
@@ -391,8 +390,6 @@ class Plotter:
 
                 # note: nonhuman consumption is pre-waste, because it is assumed to occur
                 # before the waste happens
-                print("feed_and_biofuels.nonhuman_consumption")
-                print(feed_and_biofuels.nonhuman_consumption)
                 ax.plot(
                     interpreter.time_months_middle,
                     interpreter.feed_and_biofuels.nonhuman_consumption.in_units_percent_fed().kcals,
@@ -1045,7 +1042,7 @@ class Plotter:
             country_name = lists_of_lists[i][1]
             interpreter = lists_of_lists[i][2]
             scenario_label = lists_of_lists[i][3]
-            print(country_name)
+            print("country: " + country_name)
             if i == 10:
                 ax = fig.add_subplot(gs[5, :])
                 a = np.array([[0, 1]])
