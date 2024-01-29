@@ -374,8 +374,8 @@ class Validator:
                 population_series[population_series < 1] = 0
                 relative_changes = np.diff(population_series) / previous_month
                 assert np.all(relative_changes <= epsilon), (
-                   f"Error: round {round} of optimization has increasing {key} with time "
-                   + f"beyond the allowed {epsilon*100}% threshold"
+                    f"Error: round {round} of optimization has increasing {key} with time "
+                    + f"beyond the allowed {epsilon*100}% threshold"
                 )
 
     @staticmethod
@@ -634,13 +634,7 @@ class Validator:
         if interpreted_results.include_protein or interpreted_results.include_fat:
             return
 
-        total_feed = (
-            interpreted_results.cell_sugar_feed
-            + interpreted_results.scp_feed
-            + interpreted_results.seaweed_feed
-            + interpreted_results.outdoor_crops_feed
-            + interpreted_results.stored_food_feed
-        )
+        total_feed = Validator.sum_feed_sources(interpreted_results)
         reduced_feed_correct_units = (
             total_feed.in_units_bil_kcals_thou_tons_thou_tons_per_month()
             * (1 - epsilon)
@@ -671,13 +665,7 @@ class Validator:
         if interpreted_results.include_protein or interpreted_results.include_fat:
             return
 
-        total_biofuels = (
-            interpreted_results.cell_sugar_biofuels
-            + interpreted_results.scp_biofuels
-            + interpreted_results.seaweed_biofuels
-            + interpreted_results.outdoor_crops_biofuels
-            + interpreted_results.stored_food_biofuels
-        )
+        total_biofuels = Validator.sum_biofuel_sources(interpreted_results)
         reduced_biofuels_correct_units = (
             total_biofuels.in_units_bil_kcals_thou_tons_thou_tons_per_month()
             * (1 - epsilon)
@@ -692,3 +680,74 @@ class Validator:
             f"reduced_biofuels_correct_units:\n"
             f"{reduced_biofuels_correct_units}\n"
         )
+
+    @staticmethod
+    def assert_feed_used_round3_below_feed_used_round2(
+        interpreted_results_round2, interpreted_results_round3, epsilon=1e-4
+    ):
+        # do nothing if fat and protein are included in the optimization
+        if (
+            interpreted_results_round3.include_protein
+            or interpreted_results_round3.include_fat
+        ):
+            return
+
+        total_feed_round2 = Validator.sum_feed_sources(interpreted_results_round2)
+        if total_feed_round2 is None:
+            return
+
+        total_feed_round3 = Validator.sum_feed_sources(interpreted_results_round3)
+
+        assert np.all(
+             total_feed_round2.kcals - total_feed_round3.kcals > -epsilon
+        ), "Error: total feed used in round 3 is greater than round 2"
+
+    @staticmethod
+    def sum_feed_sources(interpreted_results):
+        """
+        Sums all the feed sources together.
+        """
+        attributes = [
+            "cell_sugar_feed",
+            "scp_feed",
+            "seaweed_feed",
+            "outdoor_crops_feed",
+            "stored_food_feed",
+        ]
+
+        for attr in attributes:
+            if hasattr(interpreted_results, attr):
+                if "total_feed" not in locals():
+                    total_feed = getattr(interpreted_results, attr)
+                else:
+                    total_feed += getattr(interpreted_results, attr)
+
+        if "total_feed" not in locals():
+            total_feed = None
+        else:
+            return total_feed
+
+    @staticmethod
+    def sum_biofuel_sources(interpreted_results):
+        """
+        Sums all the biofuels sources together.
+        """
+        attributes = [
+            "cell_sugar_biofuels",
+            "scp_biofuels",
+            "seaweed_biofuels",
+            "outdoor_crops_biofuels",
+            "stored_food_biofuels",
+        ]
+
+        for attr in attributes:
+            if hasattr(interpreted_results, attr):
+                if "total_biofuels" not in locals():
+                    total_biofuels = getattr(interpreted_results, attr)
+                else:
+                    total_biofuels += getattr(interpreted_results, attr)
+
+        if "total_biofuels" not in locals():
+            total_biofuels = None
+        else:
+            return total_biofuels

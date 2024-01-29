@@ -220,6 +220,10 @@ class ScenarioRunner:
             interpreted_results_round2, interpreted_results_round3
         )
 
+        Validator.assert_feed_used_round3_below_feed_used_round2(
+            interpreted_results_round2, interpreted_results_round3
+        )
+
         return interpreted_results_round3
 
     def run_and_analyze_scenario(
