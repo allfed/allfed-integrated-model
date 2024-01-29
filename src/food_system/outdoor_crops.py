@@ -244,10 +244,6 @@ class OutdoorCrops:
             RATIO_OF_CROP_YIELDS_FROM_VERY_BEGINNING = constants_for_params[
                 "RATIO_OF_CROP_YIELDS_FROM_VERY_BEGINNING"
             ]
-        print("RATIO_KCALS_POSTDISASTER_1Y")
-        print(RATIO_KCALS_POSTDISASTER_1Y)
-        print("constants_for_params[SEASONALITY]")
-        print(constants_for_params["SEASONALITY"])
         MAY_UNTIL_DECEMBER_FIRST_YEAR_REDUCTION = (
             self.get_year_1_ratio_using_fraction_harvest_before_may(
                 RATIO_KCALS_POSTDISASTER_1Y,
@@ -309,7 +305,7 @@ class OutdoorCrops:
         )
         # 7 years of reductions should be 12*7 months.
         # assert len(self.all_months_reductions) == self.NMONTHS
-        PLOT_NO_SEASONALITY = True
+        PLOT_NO_SEASONALITY = False
         if PLOT_NO_SEASONALITY:
             print("Plotting with no seasonality")
             Plotter.plot_monthly_reductions_no_seasonality(self.all_months_reductions)
@@ -347,7 +343,6 @@ class OutdoorCrops:
             ratios = np.divide(
                 self.NO_ROT_KCALS_GROWN, self.ANNUAL_YIELD * 4e6 / 1e9 / 12
             )
-            # Plotter.plot_monthly_reductions_seasonally(ratios)
             Plotter.plot_monthly_reductions_seasonally(ratios)
 
     def assign_increase_from_increased_cultivated_area(self, constants_for_params):

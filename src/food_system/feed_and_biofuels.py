@@ -227,28 +227,29 @@ class FeedAndBiofuels:
 
         assert self.feed_monthly_usage.all_greater_than_or_equal_to_zero()
 
-        baseline_feed_kcals = np.array(
+        feed_kcals = np.array(
             [self.feed_monthly_usage.kcals] * feed_duration
             + [0] * (self.NMONTHS - feed_duration)
         )
-        baseline_feed_fat = np.array(
+        feed_fat = np.array(
             [self.feed_monthly_usage.fat] * feed_duration
             + [0] * (self.NMONTHS - feed_duration)
         )
-        baseline_feed_protein = np.array(
+        feed_protein = np.array(
             [self.feed_monthly_usage.protein] * feed_duration
             + [0] * (self.NMONTHS - feed_duration)
         )
 
-        baseline_feed = Food(
-            kcals=baseline_feed_kcals,
-            fat=baseline_feed_fat,
-            protein=baseline_feed_protein,
+        feed = Food(
+            kcals=feed_kcals,
+            fat=feed_fat,
+            protein=feed_protein,
             kcals_units="billion kcals each month",
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
-        return baseline_feed
+        # feed.plot("feed monthly usage")
+        return feed
 
     def get_biofuel_usage(self, biofuel_duration):
         """

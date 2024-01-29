@@ -56,12 +56,12 @@ class Seafood:
         )
 
     # includes all seafood (except seaweed), not just fish
-    def set_seafood_production(self, constants_for_params):
+    def set_seafood_production(self, time_consts_for_params):
         """
         Sets the seafood production for the Seafood class based on the given constants for parameters.
 
         Args:
-            constants_for_params (dict): A dictionary containing the constants for parameters.
+            time_consts_for_params (dict): A dictionary containing the month-by-month constants for parameters.
 
         Returns:
             None
@@ -70,7 +70,7 @@ class Seafood:
         # Based on Xia et al. (2021): Global Famine after Nuclear War
 
         # Get the percentage of fish each month from the given constants.
-        FISH_PERCENT_EACH_MONTH_LONG = constants_for_params["FISH_PERCENT_MONTHLY"]
+        FISH_PERCENT_EACH_MONTH_LONG = time_consts_for_params["FISH_PERCENT_MONTHLY"]
         FISH_PERCENT_EACH_MONTH = FISH_PERCENT_EACH_MONTH_LONG[0 : self.NMONTHS]
 
         # Calculate the production of fish per month based on the percentage of fish each month.
