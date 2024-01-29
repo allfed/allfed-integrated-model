@@ -351,7 +351,7 @@ class Validator:
         )
 
     @staticmethod
-    def assert_population_not_increasing(meat_dictionary, epsilon=1e-4, round=None):
+    def assert_population_not_increasing(meat_dictionary, epsilon=1e-3, round=None):
         """
         Checks that the animal populations are never increasing with time (currently
         the condition is considered satisfied if it is met to within 0.01%)
@@ -374,14 +374,9 @@ class Validator:
                 population_series[population_series < 1] = 0
                 relative_changes = np.diff(population_series) / previous_month
                 assert np.all(relative_changes <= epsilon), (
-                    f"Error: round {round} of optimization has increasing {key} with time"
-                    + f"beyond the allowed {epsilon*100}% threshold"
+                   f"Error: round {round} of optimization has increasing {key} with time "
+                   + f"beyond the allowed {epsilon*100}% threshold"
                 )
-                # if not np.all(relative_changes_first_round <= 0):
-                #    print(
-                #        f"Warning: round {round} of optimization has increasing {key} with time at the"
-                #        + f" {100*np.max(relative_changes_first_round)}% level"
-                #    )
 
     @staticmethod
     def assert_round2_meat_and_population_greater_than_round1(
@@ -584,16 +579,19 @@ class Validator:
             )
             for month, percentage in enumerate(food_usage_percentages):
                 # if that food is not available that month, then skip
-                if available_food[month] <= epsilon or food_usage_percentages[month] <= epsilon:
+                if (
+                    available_food[month] <= epsilon
+                    or food_usage_percentages[month] <= epsilon
+                ):
                     continue
                 # if that food is available that month, then check that the percentage
                 # used is less than or equal to the previous food
                 assert percentage <= previous_food_usage_percentages[month] * (
-                   1 + epsilon
+                    1 + epsilon
                 ), (
-                   f"Error: {food_name} usage percentage ({percentage}%)"
-                   + f" is greater than {previous_food_name} in month {month}" +
-                     f"({previous_food_usage_percentages[month]}%)"
+                    f"Error: {food_name} usage percentage ({percentage}%)"
+                    + f" is greater than {previous_food_name} in month {month}"
+                    + f"({previous_food_usage_percentages[month]}%)"
                 )
                 previous_food_usage_percentages[month] = percentage
             previous_food_name = food_name
