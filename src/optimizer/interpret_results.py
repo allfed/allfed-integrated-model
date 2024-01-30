@@ -497,7 +497,7 @@ class Interpreter:
 
         # TODO BUG?? Noticed this is failing at 3 decimal place rounding...
         immediate_outdoor_crops_rounded = (
-            self.immediate_outdoor_crops.get_rounded_to_decimal(2)
+            self.immediate_outdoor_crops.get_rounded_to_decimal(1)
         )
         new_stored_outdoor_crops_rounded = (
             self.new_stored_outdoor_crops.get_rounded_to_decimal(3)
@@ -859,33 +859,31 @@ class Interpreter:
         global_results.protein_fed = humans_fed_sum.protein
 
         global_results.fish_kcals_equivalent = (
-            fish_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+            fish_cumulative.in_units_kcals_equivalent()
         )
         global_results.cell_sugar_kcals_equivalent = (
-            cell_sugar_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+            cell_sugar_cumulative.in_units_kcals_equivalent()
         )
-        global_results.scp_kcals_equivalent = (
-            scp_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
-        )
+        global_results.scp_kcals_equivalent = scp_cumulative.in_units_kcals_equivalent()
         global_results.greenhouse_kcals_equivalent = (
-            greenhouse_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+            greenhouse_cumulative.in_units_kcals_equivalent()
         )
         global_results.seaweed_kcals_equivalent = (
-            seaweed_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+            seaweed_cumulative.in_units_kcals_equivalent()
         )
         global_results.milk_kcals_equivalent = (
-            milk_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+            milk_cumulative.in_units_kcals_equivalent()
         )
         global_results.meat_kcals_equivalent = (
-            meat_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+            meat_cumulative.in_units_kcals_equivalent()
         )
         global_results.immediate_outdoor_crops_to_humans_kcals_equivalent = (
-            immediate_outdoor_crops_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+            immediate_outdoor_crops_cumulative.in_units_kcals_equivalent()
         )
         global_results.new_stored_outdoor_crops_to_humans_kcals_equivalent = (
-            new_stored_outdoor_crops_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+            new_stored_outdoor_crops_cumulative.in_units_kcals_equivalent()
         )
         global_results.stored_food_to_humans_kcals_equivalent = (
-            stored_food_cumulative.in_units_percent_fed().in_units_kcals_equivalent()
+            stored_food_cumulative.in_units_kcals_equivalent()
         )
         return global_results

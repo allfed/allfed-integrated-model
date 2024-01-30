@@ -86,9 +86,6 @@ class Optimizer:
         # Create a copy of the initial variables
         variables = self.initial_variables.copy()
 
-        # print("variables before adding conditions")
-        # print(variables)
-
         # Add variables and constraints to the model
         (
             model,
@@ -118,11 +115,12 @@ class Optimizer:
         self, single_valued_constants, time_consts, min_human_food_consumption
     ):
         """
-        This function optimizes the model to maximize the amount of food produced for humans.
+        This function optimizes the model to maximize the amount of food produced for feed and biofuel.
         Args:
             single_valued_constants (dict): A dictionary containing single-valued constants
             time_consts (dict): A dictionary containing time-related constants
-
+            min_human_food_consumption (dict): A dictionary of foods mandated to be fed to humans in the optimization
+                in order of preference
         Returns:
             tuple: A tuple containing the following:
                 - model (LpProblem): The model to optimize
@@ -332,8 +330,6 @@ class Optimizer:
     ):
         # Add the conditions returned from the functions defined in "resource_constants"
         conditions = func(month, variables)
-        # print("conditions work")
-        # print(conditions)
         model = self.add_conditions_to_model(model, month, conditions)
 
         if optimization_type == "to_animals":
@@ -344,8 +340,6 @@ class Optimizer:
                 self.time_consts["min_human_food_consumption"],
                 food_name,
             )
-            # print("condition for animals:")
-            # print(condition)
             model = self.add_conditions_to_model(model, month, condition)
 
     def run_optimizations_on_constraints(
@@ -385,7 +379,6 @@ class Optimizer:
 
         # Set this to True to print PULP messages
         PRINT_PULP_MESSAGES = False
-        # if optimization_type == "to_animals":
         if PRINT_PULP_MESSAGES:
             print("")
             print(
@@ -432,6 +425,7 @@ class Optimizer:
                 model, variables
             )
         else:
+            print("running " + optimization_type)
             # Constrain the next optimization to have the same allocation of feed and biofuel as the previous
             # optimization
             (
@@ -468,6 +462,7 @@ class Optimizer:
                 variables,
                 ASSERT_SUCCESSFUL_OPTIMIZATION,
                 single_valued_constants,
+                optimization_type,
             )
         return percent_fed_from_first_optimization
 
@@ -728,6 +723,7 @@ class Optimizer:
         variables,
         ASSERT_SUCCESSFUL_OPTIMIZATION,
         single_valued_constants,
+        optimization_type,
     ):
         """
         Optimize the smoothing objective function to reduce fluctuations in the model.
@@ -761,6 +757,18 @@ class Optimizer:
             stored_food_change = LpVariable(f"Stored_Food_Change_{month}", lowBound=0)
             outdoor_crops_change = LpVariable(
                 f"Outdoor_Crops_Change_{month}", lowBound=0
+            )
+            outdoor_crops_change_feed = LpVariable(
+                f"Outdoor_Crops_Feed_Change_{month}", lowBound=0
+            )
+            outdoor_crops_change_biofuel = LpVariable(
+                f"Outdoor_Crops_Biofuel_Change_{month}", lowBound=0
+            )
+            stored_food_change_feed = LpVariable(
+                f"Stored_Food_Feed_Change_{month}", lowBound=0
+            )
+            stored_food_change_biofuel = LpVariable(
+                f"Stored_Food_Biofuel_Change_{month}", lowBound=0
             )
 
             if single_valued_constants["ADD_MEAT"]:
@@ -816,9 +824,81 @@ class Optimizer:
                     ),
                     f"Crops_Food_Decrease_{month}",
                 )
+            if optimization_type == "to_animals":
+                # in this case, we want to smooth out the feed and biofuel usage if possible
+                model_smoothing += (
+                    outdoor_crops_change_feed
+                    >= (
+                        variables["crops_food_feed"][month]
+                        - variables["crops_food_feed"][month - 1]
+                    ),
+                    f"Crops_Food_Feed_Increase_{month}",
+                )
+                model_smoothing += (
+                    outdoor_crops_change_feed
+                    >= -(
+                        variables["crops_food_feed"][month]
+                        - variables["crops_food_feed"][month - 1]
+                    ),
+                    f"Crops_Food_Feed_Decrease_{month}",
+                )
+                model_smoothing += (
+                    outdoor_crops_change_biofuel
+                    >= (
+                        variables["crops_food_biofuel"][month]
+                        - variables["crops_food_biofuel"][month - 1]
+                    ),
+                    f"Crops_Food_Biofuel_Increase_{month}",
+                )
+                model_smoothing += (
+                    outdoor_crops_change_biofuel
+                    >= -(
+                        variables["crops_food_biofuel"][month]
+                        - variables["crops_food_biofuel"][month - 1]
+                    ),
+                    f"Crops_Food_Biofuel_Decrease_{month}",
+                )
+                model_smoothing += (
+                    stored_food_change_feed
+                    >= (
+                        variables["stored_food_feed"][month]
+                        - variables["stored_food_feed"][month - 1]
+                    ),
+                    f"Stored_Food_Feed_Increase_{month}",
+                )
+                model_smoothing += (
+                    stored_food_change_feed
+                    >= -(
+                        variables["stored_food_feed"][month]
+                        - variables["stored_food_feed"][month - 1]
+                    ),
+                    f"Stored_Food_Feed_Decrease_{month}",
+                )
+                model_smoothing += (
+                    stored_food_change_biofuel
+                    >= (
+                        variables["stored_food_biofuel"][month]
+                        - variables["stored_food_biofuel"][month - 1]
+                    ),
+                    f"Stored_Food_Biofuel_Increase_{month}",
+                )
+                model_smoothing += (
+                    stored_food_change_biofuel
+                    >= -(
+                        variables["stored_food_biofuel"][month]
+                        - variables["stored_food_biofuel"][month - 1]
+                    ),
+                    f"Stored_Food_Biofuel_Decrease_{month}",
+                )
             # Add the absolute differences to the objective function
             smoothing_obj += PENALTY_COST * (
-                meat_change + stored_food_change + outdoor_crops_change
+                meat_change
+                + stored_food_change
+                + outdoor_crops_change
+                + outdoor_crops_change_feed
+                + outdoor_crops_change_biofuel
+                + stored_food_change_feed
+                + stored_food_change_biofuel
             )
 
         # Set the objective of the model to the smoothing objective function
@@ -1213,24 +1293,41 @@ class Optimizer:
             model = self.add_conditions_to_model(model, month, conditions)
         elif optimization_type == "to_animals":
             if add_feed_constraints:
+                if month == 0:
+                    print('self.time_consts["max_feed_that_could_be_used"]')
+                    print(
+                        self.time_consts[
+                            "max_feed_that_could_be_used"
+                        ].in_units_kcals_equivalent()
+                    )
+
                 conditions["Feed_Used"] = (
                     feed_sum
                     <= self.time_consts["max_feed_that_could_be_used"].kcals[month]
                 )
             if add_biofuel_constraints:
+                if month == 0:
+                    print(
+                        'self.time_consts["max_biofuel_that_could_be_used"].kcals[month]'
+                    )
+                    print(
+                        self.time_consts[
+                            "max_biofuel_that_could_be_used"
+                        ].in_units_kcals_equivalent()
+                    )
+
                 conditions["Biofuel_Used"] = (
-                    biofuel_sum <= self.time_consts["biofuel"].kcals[month]
+                    biofuel_sum
+                    <= self.time_consts["max_biofuel_that_could_be_used"].kcals[month]
                 )
 
             if month > 0 and add_feed_constraints:
                 feed_sum_previous_month = self.get_feed_sum(variables, month - 1)
+                biofuel_sum_previous_month = self.get_biofuel_sum(variables, month - 1)
                 conditions["Feed_Decreases"] = feed_sum_previous_month >= feed_sum
-
-            #     # always decrease feed used month to month
-            #     conditions["Feed_Decreases"] = feed_sum_previous_month >= feed_sum
-            #     # "Biofuel_Decreases": (
-            #     #     biofuel_sum <= self.time_consts["biofuel"].kcals[month]
-            #     # ),
+                conditions["Biofuel_Decreases"] = (
+                    biofuel_sum_previous_month >= biofuel_sum
+                )
             model = self.add_conditions_to_model(model, month, conditions)
 
         else:

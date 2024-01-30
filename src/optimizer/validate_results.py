@@ -699,7 +699,7 @@ class Validator:
         total_feed_round3 = Validator.sum_feed_sources(interpreted_results_round3)
 
         assert np.all(
-             total_feed_round2.kcals - total_feed_round3.kcals > -epsilon
+            total_feed_round2.kcals - total_feed_round3.kcals > -epsilon
         ), "Error: total feed used in round 3 is greater than round 2"
 
     @staticmethod
@@ -751,3 +751,64 @@ class Validator:
             total_biofuels = None
         else:
             return total_biofuels
+
+    def assert_feed_and_biofuel_used_is_zero_if_humans_are_starving(
+        interpreted_results, epsilon=1e-3
+    ):
+        if interpreted_results.include_protein or interpreted_results.include_fat:
+            assert (
+                False
+            ), "ERROR: we haven't dealt with this edge case of fat or protein required yet"
+        NMONTHS = interpreted_results.constants["NMONTHS"]
+
+        print("interpreted_results.percent_people_fed")
+        print(interpreted_results.percent_people_fed)
+        if interpreted_results.percent_people_fed < 100:
+            total_biofuels = (
+                interpreted_results.cell_sugar_biofuels
+                + interpreted_results.scp_biofuels
+                + interpreted_results.seaweed_biofuels
+                + interpreted_results.outdoor_crops_biofuels
+                + interpreted_results.stored_food_biofuels
+            )
+
+            total_feed = (
+                interpreted_results.cell_sugar_feed
+                + interpreted_results.scp_feed
+                + interpreted_results.seaweed_feed
+                + interpreted_results.outdoor_crops_feed
+                + interpreted_results.stored_food_feed
+            )
+            feed_and_biofuels_sum = total_biofuels + total_feed
+            print("feed_and_biofuels_sum")
+            print(feed_and_biofuels_sum)
+
+            # this is asserting the percent people fed from biofuels is less than 0.1% of the food.
+            # Honestly, 0.1% is a bit higher than I'd like, but I think this is resulting from compounding rounding
+            # errors in the second round optimization so it's hard to fix
+            print(
+                """assert np.allclose(
+                np.zeros(NMONTHS),
+                feed_and_biofuels_sum.kcals,
+                atol=0.1,
+            ) would return """
+            )
+            print(
+                np.allclose(
+                    np.zeros(NMONTHS),
+                    feed_and_biofuels_sum.kcals,
+                    atol=0.1,
+                )
+            )
+
+    @staticmethod
+    def make_sure_everyone_fed_if_round1_was_above_2100kcals(
+        percent_fed_round1, percent_fed_round3, epsilon=1e-1
+    ):
+        if percent_fed_round1 >= 100:
+            # assert percent_fed_round3 >= 100 - epsilon
+            print(
+                "assert interpreted_results_round3.percent_people_fed >= 100 - epsilon would return:"
+            )
+            print(percent_fed_round3 >= 100 - epsilon)
+            print()

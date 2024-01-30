@@ -157,6 +157,8 @@ class Parameters:
             "max_feed_that_could_be_used"
         ] = max_feed_that_could_be_used_second_round
 
+        time_consts["max_biofuel_that_could_be_used"] = biofuels_demand
+
         # Set inputs in constants_out
         constants_out["inputs"] = constants_inputs
 

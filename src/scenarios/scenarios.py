@@ -317,7 +317,8 @@ class Scenarios:
         self.IS_GLOBAL_ANALYSIS = False
 
         constants_for_params = self.init_generic_scenario()
-
+        # print("constants_for_paramsWASTE")
+        # print(constants_for_params["WASTE"])
         # global human population (2020)
         constants_for_params["POP"] = country_data["population"]
 
@@ -1260,7 +1261,7 @@ class Scenarios:
         assert not self.DISRUPTION_SET
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
 
-        for i in range(1, int(constants_for_params["NMONTHS"] / 12 + 1)):
+        for i in range(1, 11):
             constants_for_params["RATIO_CROPS_YEAR" + str(i)] = 1
 
         self.DISRUPTION_SET = True
@@ -1640,7 +1641,7 @@ class Scenarios:
         constants_for_params["ADD_METHANE_SCP"] = False
         constants_for_params["ADD_SEAWEED"] = False
 
-        constants_for_params = self.greenhouse(constants_for_params)
+        constants_for_params = self.low_area_greenhouse(constants_for_params)
 
         self.SCENARIO_SET = True
         return constants_for_params

@@ -251,6 +251,7 @@ class OutdoorCrops:
                 constants_for_params["COUNTRY_CODE"],
             )
         )
+
         # We then  end up at the month reduction appropriate for
         # the month before the next 12 month cycle. That means there are 13 total
         # values and we only keep the first 12 (the 13th index would have been the

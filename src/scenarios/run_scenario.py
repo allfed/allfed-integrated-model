@@ -40,9 +40,29 @@ class ScenarioRunner:
         feed_title="",
         to_humans_title="",
     ):
+        NMONTHS = interpreted_results.constants["NMONTHS"]
+        total_biofuels = (
+            interpreted_results.cell_sugar_biofuels
+            + interpreted_results.scp_biofuels
+            + interpreted_results.seaweed_biofuels
+            + interpreted_results.outdoor_crops_biofuels
+            + interpreted_results.stored_food_biofuels
+        )
+
+        total_feed = (
+            interpreted_results.cell_sugar_feed
+            + interpreted_results.scp_feed
+            + interpreted_results.seaweed_feed
+            + interpreted_results.outdoor_crops_feed
+            + interpreted_results.stored_food_feed
+        )
+        feed_and_biofuels_sum = total_biofuels + total_feed
+
         if not np.isnan(interpreted_results.percent_people_fed):
-            if (
-                not interpreted_results.feed_and_biofuels.nonhuman_consumption.all_equals_zero()
+            if not np.allclose(
+                np.zeros(NMONTHS),
+                feed_and_biofuels_sum.kcals,
+                atol=0.1,
             ):  # no reason to display an empty plot
                 Plotter.plot_feed(
                     interpreted_results,
@@ -68,7 +88,7 @@ class ScenarioRunner:
 
             Plotter.plot_fig_1ab(
                 interpreted_results,
-                interpreted_results.constants["NMONTHS"],
+                NMONTHS,
                 (to_humans_title + " " if to_humans_title is not "" else "")
                 + country_data["country"]
                 + figure_save_postfix,
@@ -356,8 +376,7 @@ class ScenarioRunner:
                 print("Choosing not to replot.")
                 print("")
             else:
-                slaughter_title = "Max meat produced from second round calculation (no restriction on feed before shutoff)"
-
+                slaughter_title = "Max meat produced from second round calc (no restriction on feed before shutoff)"
                 # make sure animal populations not increasing
                 Validator.assert_population_not_increasing(
                     interpreted_results_round2.meat_dictionary, round=3
@@ -421,6 +440,14 @@ class ScenarioRunner:
 
         Validator.assert_population_not_increasing(
             interpreted_results_round3.meat_dictionary, round=3
+        )
+
+        Validator.assert_feed_and_biofuel_used_is_zero_if_humans_are_starving(
+            interpreted_results_round3
+        )
+
+        Validator.make_sure_everyone_fed_if_round1_was_above_2100kcals(
+            percent_fed_from_model_round1, interpreted_results_round3.percent_people_fed
         )
 
         self.display_results_of_optimizer_round(
@@ -724,7 +751,7 @@ class ScenarioRunner:
         # FISH
 
         if scenario_option["fish"] == "zero":
-            constants_for_params = scenario_loader.set_fish_zero(
+            time_consts_for_params = scenario_loader.set_fish_zero(
                 constants_for_params, time_consts_for_params
             )
         elif scenario_option["fish"] == "nuclear_winter":
