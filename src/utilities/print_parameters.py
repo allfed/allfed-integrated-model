@@ -591,7 +591,7 @@ class PrintParameters:
                 protein_units="thousand tons each month",
             )
 
-            production_scp.in_units_kcals_grams_grams_per_capita_from_ratio(
+            production_scp.in_units_kcals_grams_grams_per_person_from_ratio(
                 methane_scp.SCP_KCALS_PER_KG,
                 methane_scp.SCP_FRAC_PROTEIN,
                 methane_scp.SCP_FRAC_FAT,

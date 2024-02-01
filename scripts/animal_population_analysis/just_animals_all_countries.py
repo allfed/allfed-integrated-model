@@ -161,8 +161,8 @@ df["beef_ratio"] = df["initial_beef_slaughter"] / df["initial_beef"]
 df["pig_ratio"] = df["initial_pig_slaughter"] / df["initial_pig"]
 df["poultry_ratio"] = df["initial_poultry_slaughter"] / df["initial_poultry"]
 
-# create gdp per capita
-df["GDP_per_capita"] = df["GDP"] / df["population"]
+# create gdp per person
+df["GDP_per_person"] = df["GDP"] / df["population"]
 
 
 # plot max month er country, sorted by max month
@@ -191,7 +191,7 @@ fig.show()
 fig = px.scatter(
     df,
     x="max_month",
-    y="GDP_per_capita",
+    y="GDP_per_person",
     color="country_x",
     title="Beef ratio vs time to zero population",
     # use the beef pop as the size of the marker, with a min size of 10 and max size of 100
