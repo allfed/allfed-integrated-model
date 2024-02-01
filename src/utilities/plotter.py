@@ -539,14 +539,13 @@ class Plotter:
                     animal_meat,
                 ) in interpreter.meat_dictionary.items():
                     meat_labels.append(animal_label)
-                    meat_list.append(animal_meat[:-1])
+                    meat_list.append(animal_meat)
 
                 if xlim == "earliest_month_zero":
                     xlim = interpreter.get_month_after_which_is_all_zero(
                         meat_list, interpreter.constants["NMONTHS"]
                     )
                 ax.set_xlim([0.25, xlim])
-
                 # Use the hatches when calling stackplot
                 stacks = ax.stackplot(
                     interpreter.time_months_middle,

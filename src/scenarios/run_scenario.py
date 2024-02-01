@@ -287,7 +287,7 @@ class ScenarioRunner:
         )
         validator = Validator()
         validator.ensure_all_time_constants_units_are_billion_kcals(time_consts_round1)
-
+        ROUND_1_WAS_RUN_FLAG = False
         if (
             constants_for_params["ADD_STORED_FOOD"]
             or constants_for_params["ADD_OUTDOOR_GROWING"]
@@ -312,6 +312,8 @@ class ScenarioRunner:
                 feed_and_biofuels_round1,
                 meat_dictionary_zero_feed_biofuels,
             )
+
+            ROUND_1_WAS_RUN_FLAG = True
 
             Validator.assert_feed_used_below_feed_demand(
                 feed_demand, interpreted_results_round1, round=1
@@ -445,10 +447,11 @@ class ScenarioRunner:
         Validator.assert_feed_and_biofuel_used_is_zero_if_humans_are_starving(
             interpreted_results_round3
         )
-
-        Validator.make_sure_everyone_fed_if_round1_was_above_2100kcals(
-            percent_fed_from_model_round1, interpreted_results_round3.percent_people_fed
-        )
+        if ROUND_1_WAS_RUN_FLAG:
+            Validator.make_sure_everyone_fed_if_round1_was_above_2100kcals(
+                percent_fed_from_model_round1,
+                interpreted_results_round3.percent_people_fed,
+            )
 
         self.display_results_of_optimizer_round(
             interpreted_results_round3,

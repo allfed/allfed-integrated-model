@@ -1293,29 +1293,11 @@ class Optimizer:
             model = self.add_conditions_to_model(model, month, conditions)
         elif optimization_type == "to_animals":
             if add_feed_constraints:
-                if month == 0:
-                    print('self.time_consts["max_feed_that_could_be_used"]')
-                    print(
-                        self.time_consts[
-                            "max_feed_that_could_be_used"
-                        ].in_units_kcals_equivalent()
-                    )
-
                 conditions["Feed_Used"] = (
                     feed_sum
                     <= self.time_consts["max_feed_that_could_be_used"].kcals[month]
                 )
             if add_biofuel_constraints:
-                if month == 0:
-                    print(
-                        'self.time_consts["max_biofuel_that_could_be_used"].kcals[month]'
-                    )
-                    print(
-                        self.time_consts[
-                            "max_biofuel_that_could_be_used"
-                        ].in_units_kcals_equivalent()
-                    )
-
                 conditions["Biofuel_Used"] = (
                     biofuel_sum
                     <= self.time_consts["max_biofuel_that_could_be_used"].kcals[month]

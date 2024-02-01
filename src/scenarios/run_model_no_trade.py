@@ -250,12 +250,18 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         n_errors = 0
         failed_countries = "Failed Countries: \n"
 
-        print(countries_list)
-
         (
             exclusive_countries_to_run,
             countries_to_skip,
         ) = self.get_countries_to_run_and_skip(countries_list)
+        if len(exclusive_countries_to_run) == 0:
+            print("Running all countries")
+        else:
+            print("Countries to run:")
+            print(exclusive_countries_to_run)
+        if len(countries_to_skip) > 0:
+            print("except the following countries:")
+            print(countries_list)
 
         results = {}
 
