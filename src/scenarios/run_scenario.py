@@ -84,6 +84,7 @@ class ScenarioRunner:
         interpreter,
         feed_and_biofuels_round1,
         meat_dictionary_zero_feed_biofuels,
+        title="Untitled",
     ):
         # FIRST ROUND: ENSURE HUMANS GET MINIMUM NEEDS
 
@@ -102,6 +103,7 @@ class ScenarioRunner:
             interpreter,
             percent_fed_from_model_round1,
             optimization_type="to_humans",
+            title=title
         )
         interpreted_results_round1.set_feed_and_biofuels(feed_and_biofuels_round1)
         interpreted_results_round1.set_meat_dictionary(
@@ -127,6 +129,7 @@ class ScenarioRunner:
         max_feed_that_could_be_used_second_round,
         biofuels_demand,
         meat_dictionary_second_round,
+        title="Untitled",
     ):
         # SECOND ROUND: REMAINING FEED-APPROPRIATE FOOD TO ANIMALS AND BIOFUELS UP TO THE AMOUNT THEY CAN BE USED
         min_human_food_consumption = constants_loader.compute_parameters_second_round(
@@ -158,6 +161,7 @@ class ScenarioRunner:
             interpreter,
             percent_fed_from_model_round2,
             optimization_type="to_animals",
+            title=title
         )
         # because the third round is where we view the feed and biofuel results of the second round,
         # just consider the feed used
@@ -181,6 +185,7 @@ class ScenarioRunner:
         interpreted_results_round2,
         feed_and_biofuels_round1,
         interpreter,
+        title="Untitled",
     ):
         # THIRD ROUND: NOW THAT THE AMOUNT OF FEED AND BIOFUEL CONSUMED IS KNOWN, ALLOCATE THE REST TO HUMANS
 
@@ -210,6 +215,7 @@ class ScenarioRunner:
             interpreter,
             percent_fed_from_model_round3,
             optimization_type="to_humans",
+            title=title,
         )
         # interpreter.set_feed_and_biofuels(feed_and_biofuels_round3)
         # interpreter.set_meat_dictionary(meat_dictionary_round3)
@@ -235,6 +241,7 @@ class ScenarioRunner:
         show_country_figures,
         figure_save_postfix,
         country_data,
+        title="Untitled",
     ):
         """
         computes params, Runs the optimizer, extracts data from optimizer, interprets
@@ -291,6 +298,7 @@ class ScenarioRunner:
                 interpreter,
                 feed_and_biofuels_round1,
                 meat_dictionary_zero_feed_biofuels,
+                title=title+"_round1"
             )
 
             Validator.assert_feed_used_below_feed_demand(
@@ -333,6 +341,7 @@ class ScenarioRunner:
                 max_feed_that_could_be_used_second_round,
                 biofuels_demand,
                 meat_dictionary_second_round,
+                title=title+"_round2",
             )
 
             Validator.assert_feed_used_below_feed_demand(
@@ -410,6 +419,7 @@ class ScenarioRunner:
             interpreted_results_for_round3,
             feed_and_biofuels_round1,
             interpreter,
+            title=title+"_round3",
         )
 
         Validator.assert_feed_used_below_feed_demand(
@@ -447,6 +457,7 @@ class ScenarioRunner:
         interpreter,
         percent_fed_from_model,
         optimization_type,
+        title="Untitled",
     ):
         validator = Validator()
 
@@ -458,7 +469,7 @@ class ScenarioRunner:
         # be removed from extracted_results
 
         #  interpret the results, nicer for plotting, reporting, and printing results
-        interpreted_results = interpreter.interpret_results(extracted_results)
+        interpreted_results = interpreter.interpret_results(extracted_results, title)
 
         # ensure no errors were made in the extraction and interpretation, or if the
         # optimizer did not correctly satisfy constraints within a reasonable margin

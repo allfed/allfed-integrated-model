@@ -112,6 +112,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         create_pptx_with_all_countries,
         show_country_figures,
         figure_save_postfix="",
+        title="Untitled",
     ):
         country_name = country_data["country"]
         (
@@ -162,6 +163,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 show_country_figures,
                 figure_save_postfix,
                 country_data,
+                title=title,
             )
             percent_people_fed = interpreted_results.percent_people_fed
         return (
@@ -285,6 +287,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 create_pptx_with_all_countries,
                 show_country_figures,
                 figure_save_postfix,
+                title=title,
             )
             country_name = country_data["country"]
             if np.isnan(needs_ratio):
