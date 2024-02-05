@@ -106,10 +106,7 @@ class Extractor:
         # if no greenhouses, plot shows zero
         # extract greenhouse results in terms of people fed and raw tons
         self.greenhouse = self.get_greenhouse_results(
-            time_consts["greenhouse_kcals_per_ha"],
-            time_consts["greenhouse_fat_per_ha"],
-            time_consts["greenhouse_protein_per_ha"],
-            time_consts["greenhouse_area"],
+            time_consts["greenhouse_crops"],
         )
         # if no outdoor food, plot shows zero
         # extract outdoor crops results in terms of people fed and raw tons
@@ -235,23 +232,9 @@ class Extractor:
 
     def get_greenhouse_results(
         self,
-        greenhouse_kcals_per_ha,
-        greenhouse_fat_per_ha,
-        greenhouse_protein_per_ha,
-        greenhouse_area,
+        greenhouse_crops,
     ):
-        self.greenhouse_percent_fed = Food(
-            kcals=np.multiply(
-                np.array(greenhouse_area), np.array(greenhouse_kcals_per_ha)
-            ),
-            fat=np.multiply(np.array(greenhouse_area), np.array(greenhouse_fat_per_ha)),
-            protein=np.multiply(
-                np.array(greenhouse_area), np.array(greenhouse_protein_per_ha)
-            ),
-            kcals_units="percent people fed each month",
-            fat_units="percent people fed each month",
-            protein_units="percent people fed each month",
-        )
+        self.greenhouse_percent_fed = greenhouse_crops
 
         return self.greenhouse_percent_fed.in_units_billions_fed()
 

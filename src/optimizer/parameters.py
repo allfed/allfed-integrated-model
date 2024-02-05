@@ -705,7 +705,6 @@ class Parameters:
         greenhouse_area = greenhouses.get_greenhouse_area(
             constants_inputs, outdoor_crops
         )
-        time_consts["greenhouse_area"] = greenhouse_area
 
         # Calculate the greenhouse yield per hectare
         if constants_inputs["INITIAL_CROP_AREA_FRACTION"] == 0:
@@ -719,6 +718,15 @@ class Parameters:
                 greenhouse_protein_per_ha,
             ) = greenhouses.get_greenhouse_yield_per_ha(constants_inputs, outdoor_crops)
 
+        time_consts["greenhouse_crops"] = Food(
+            kcals=np.multiply(greenhouse_kcals_per_ha, greenhouse_area),
+            fat=np.multiply(greenhouse_fat_per_ha, greenhouse_area),
+            protein=np.multiply(greenhouse_protein_per_ha, greenhouse_area),
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
+        )
+
         # Update the outdoor crops instance with the post-waste crops food produced
         outdoor_crops.set_crop_production_minus_greenhouse_area(
             constants_inputs, greenhouses.greenhouse_fraction_area
@@ -726,9 +734,6 @@ class Parameters:
 
         # Update the time constants dictionary with the calculated values
         time_consts["outdoor_crops"] = outdoor_crops
-        time_consts["greenhouse_kcals_per_ha"] = greenhouse_kcals_per_ha
-        time_consts["greenhouse_fat_per_ha"] = greenhouse_fat_per_ha
-        time_consts["greenhouse_protein_per_ha"] = greenhouse_protein_per_ha
 
         return time_consts
 

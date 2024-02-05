@@ -134,7 +134,7 @@ simulations:
   - `not_required` - Does not track protein requirements
 
 - **meat_strategy**:
-  - `reduce_breeding_USA` - Reduce breeding in accordance to "reduced" column in data/no_food_trade/animal_feed_data/species_options.csv
+  - `reduce_breeding` - Reduce breeding in accordance to "reduced" column in data/no_food_trade/animal_feed_data/species_options.csv
   - `baseline_breeding` - Normal breeding levels to maintain livestock levels, "baseline" column in data/no_food_trade/animal_feed_data/species_options.csv
 
 ## Detailed Notes

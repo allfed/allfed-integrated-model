@@ -317,8 +317,6 @@ class Scenarios:
         self.IS_GLOBAL_ANALYSIS = False
 
         constants_for_params = self.init_generic_scenario()
-        # print("constants_for_paramsWASTE")
-        # print(constants_for_params["WASTE"])
         # global human population (2020)
         constants_for_params["POP"] = country_data["population"]
 
@@ -720,11 +718,6 @@ class Scenarios:
 
         RETAIL_WASTE = country_data["retail_waste_price_triple"] * 100
         constants_for_params["WASTE_RETAIL"] = RETAIL_WASTE
-        print("WASTE TRIPLE!")
-        print("WASTE_RETAIL")
-        print(constants_for_params["WASTE_RETAIL"])
-        print("WASTE_DISTRIBUTION")
-        print(constants_for_params["WASTE_DISTRIBUTION"]["CROPS"])
 
         self.WASTE_SET = True
         return constants_for_params
@@ -1418,26 +1411,12 @@ class Scenarios:
 
         return constants_for_params
 
-    def low_area_greenhouse(self, constants_for_params):
-        constants_for_params["GREENHOUSE_GAIN_PCT"] = 44
-
-        # half values from greenhouse paper due to higher cost
-        constants_for_params["DELAY"]["GREENHOUSE_MONTHS"] = 2
-        constants_for_params[
-            "GREENHOUSE_AREA_MULTIPLIER"
-        ] = (
-            np.nan
-        )  # this will be used to indicate a more realistic, smaller greenhouse area ramp
-        constants_for_params["ADD_GREENHOUSES"] = True
-        return constants_for_params
-
     def greenhouse(self, constants_for_params):
         constants_for_params["GREENHOUSE_GAIN_PCT"] = 44
 
         # half values from greenhouse paper due to higher cost
         constants_for_params["DELAY"]["GREENHOUSE_MONTHS"] = 2
-        # constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
-        constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 2.4 / 39
+        constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
         constants_for_params["ADD_GREENHOUSES"] = True
         return constants_for_params
 
@@ -1495,7 +1474,7 @@ class Scenarios:
         constants_for_params = self.relocated_outdoor_crops(constants_for_params)
         constants_for_params = self.methane_scp(constants_for_params)
         constants_for_params = self.cellulosic_sugar(constants_for_params)
-        constants_for_params = self.low_area_greenhouse(constants_for_params)
+        constants_for_params = self.greenhouse(constants_for_params)
         constants_for_params = self.seaweed(constants_for_params)
 
         self.SCENARIO_SET = True
@@ -1641,7 +1620,7 @@ class Scenarios:
         constants_for_params["ADD_METHANE_SCP"] = False
         constants_for_params["ADD_SEAWEED"] = False
 
-        constants_for_params = self.low_area_greenhouse(constants_for_params)
+        constants_for_params = self.greenhouse(constants_for_params)
 
         self.SCENARIO_SET = True
         return constants_for_params

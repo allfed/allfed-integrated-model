@@ -154,163 +154,25 @@ class Greenhouses:
             return np.zeros(self.NMONTHS)
 
         if self.ADD_GREENHOUSES:
-            # NOTE:
-            # we've decided to limit the crop area to the fraction of australian crop
-            # area that can be grown in greenhouses
-            #
-            if np.isnan(self.GREENHOUSE_AREA_MULTIPLIER):
-                greenhouse_fraction_from_australia_long = np.array(
-                    [
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        13026,
-                        13026,
-                        13026,
-                        13026,
-                        13026,
-                        26052,
-                        26052,
-                        26052,
-                        26052,
-                        26052,
-                        39078,
-                        39078,
-                        39078,
-                        39078,
-                        39078,
-                        52104,
-                        52104,
-                        52104,
-                        52104,
-                        52104,
-                        65129,
-                        65129,
-                        65129,
-                        65129,
-                        65129,
-                        78155,
-                        78155,
-                        78155,
-                        78155,
-                        78155,
-                        91181,
-                        91181,
-                        91181,
-                        91181,
-                        91181,
-                        104207,
-                        104207,
-                        104207,
-                        104207,
-                        104207,
-                        117233,
-                        117233,
-                        117233,
-                        117233,
-                        117233,
-                        130259,
-                        130259,
-                        130259,
-                        130259,
-                        130259,
-                        143285,
-                        143285,
-                        143285,
-                        143285,
-                        143285,
-                        156311,
-                        156311,
-                        156311,
-                        156311,
-                        156311,
-                        169337,
-                        169337,
-                        169337,
-                        169337,
-                        169337,
-                        182362,
-                        182362,
-                        182362,
-                        182362,
-                        182362,
-                        195388,
-                        195388,
-                        195388,
-                        195388,
-                        195388,
-                        208414,
-                        208414,
-                        208414,
-                        208414,
-                        208414,
-                        221440,
-                        221440,
-                        221440,
-                        221440,
-                        221440,
-                        234466,
-                        234466,
-                        234466,
-                        234466,
-                        234466,
-                        247492,
-                        247492,
-                        247492,
-                        247492,
-                        247492,
-                        260518,
-                        260518,
-                        260518,
-                        260518,
-                        260518,
-                        273544,
-                        273544,
-                        273544,
-                        273544,
-                        273544,
-                        286569,
-                        286569,
-                        286569,
-                        286569,
-                        286569,
-                        299595,
-                        299595,
-                        299595,
-                        299595,
-                    ]
-                ) / (
-                    30920 * 1000
-                )  # NOTE: 30920 * 1000 is australia crop area in hectares
-
-                greenhouse_area_long = list(
-                    greenhouse_fraction_from_australia_long
-                    * constants_for_params["INITIAL_CROP_AREA_HA"]
-                )
-
-            else:
-                GREENHOUSE_LIMIT_AREA = (
-                    self.TOTAL_CROP_AREA * self.GREENHOUSE_AREA_MULTIPLIER
-                )
-                greenhouse_area_long = list(
+            GREENHOUSE_LIMIT_AREA = (
+                self.TOTAL_CROP_AREA * self.GREENHOUSE_AREA_MULTIPLIER
+            )
+            greenhouse_area_long = list(
+                np.append(
                     np.append(
                         np.append(
-                            np.append(
-                                np.linspace(0, 0, self.greenhouse_delay),
-                                np.linspace(0, 0, 5),
-                            ),
-                            np.linspace(0, GREENHOUSE_LIMIT_AREA, 37),
+                            np.linspace(0, 0, self.greenhouse_delay),
+                            np.linspace(0, 0, 5),
                         ),
-                        np.linspace(
-                            GREENHOUSE_LIMIT_AREA,
-                            GREENHOUSE_LIMIT_AREA,
-                            len(outdoor_crops.KCALS_GROWN) - 42,
-                        ),
-                    )
+                        np.linspace(0, GREENHOUSE_LIMIT_AREA, 37),
+                    ),
+                    np.linspace(
+                        GREENHOUSE_LIMIT_AREA,
+                        GREENHOUSE_LIMIT_AREA,
+                        len(outdoor_crops.KCALS_GROWN) - 42,
+                    ),
                 )
+            )
 
             greenhouse_area = np.array(greenhouse_area_long[0 : self.NMONTHS])
             CROP_WASTE_COEFFICIENT = (

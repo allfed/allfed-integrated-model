@@ -575,7 +575,7 @@ class ScenarioRunner:
 
             assert (
                 scenario_is_correct
-            ), "You must specify 'stored_food_at_start' key as zero, or baseline"
+            ), "You must specify 'stored_food' key as zero, or baseline"
 
         # END_SIMULATION_STOCKS_RATIO
 
@@ -896,7 +896,7 @@ class ScenarioRunner:
             all_resilient_foods,all_resilient_foods_and_more_area,no_resilient_foods,seaweed,methane_scp,
             cellulosic_sugar,industrial_foods,relocated_crops or greenhouse"""
 
-        if scenario_option["meat_strategy"] == "reduce_breeding_USA":
+        if scenario_option["meat_strategy"] == "reduce_breeding":
             constants_for_params = scenario_loader.set_breeding_to_greatly_reduced(
                 constants_for_params
             )
@@ -908,6 +908,6 @@ class ScenarioRunner:
             scenario_is_correct = False
 
             assert scenario_is_correct, """You must specify 'meat_strategy' key as either ,
-            reduce_breeding_USA or baseline_breeding"""
+            reduce_breeding or baseline_breeding"""
 
         return constants_for_params, time_consts_for_params, scenario_loader

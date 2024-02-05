@@ -513,7 +513,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         defaults["waste"] = "zero"
         defaults["nutrition"] = "baseline"
         defaults["buffer"] = "baseline"
-        defaults["shutoff"] = "reduce_breeding_USA"
+        defaults["shutoff"] = "reduce_breeding"
         defaults["cull"] = "do_eat_culled"
 
         options_including_defaults = []

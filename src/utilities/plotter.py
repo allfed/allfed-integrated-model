@@ -1089,16 +1089,20 @@ class Plotter:
                 # xticks = ax.get_xticks()
                 # ax.set_xticklabels(xticks, rotation=0, fontsize=9)
                 # ax.xaxis.set_major_formatter(lambda x, pos: str(round(x / 12, 0)))
-            if country_name == "Indonesia" and "Resilient" in scenario_label:
-                ylim_constraint = 3020
-            else:
-                ylim_constraint = 100000
 
             if i in figure_a_indices or i in figure_b_indices:
                 if row_index == 4:
                     add_xlabel = True
                 else:
                     add_xlabel = False
+
+                # constrain to only show up to the level of people fed in the scenario
+                ylim_constraint = (
+                    people_fed
+                    / 100
+                    * interpreter.constants["inputs"]["NUTRITION"]["KCALS_DAILY"]
+                )
+
                 ax, legend, pal = Plotter.helper_for_plotting_fig_2abcde(
                     ax,
                     interpreter,

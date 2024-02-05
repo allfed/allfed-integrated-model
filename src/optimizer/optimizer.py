@@ -1361,8 +1361,7 @@ class Optimizer:
                 + variables["meat_eaten"][month]
                 + variables["cellulosic_sugar_to_humans"][month]
                 + variables["methane_scp_to_humans"][month]
-                + self.time_consts["greenhouse_area"][month]
-                * self.time_consts["greenhouse_kcals_per_ha"][month]
+                + self.time_consts["greenhouse_crops"][month].kcals
                 + self.time_consts["fish"].to_humans.kcals[month]
             )
             / self.single_valued_constants["BILLION_KCALS_NEEDED"]
