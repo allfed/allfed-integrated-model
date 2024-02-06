@@ -20,9 +20,9 @@ Results from the paper can be rerun using the following commands in the scenario
 ```bash
 ./run_scenarios_from_yaml.sh False True one_food_at_a_time_USA.yaml
 ```
-This will take a few minutes! This shows a map of people fed in baseline (no nuclear winter but loss of trade), nuclear winter without resilient food (no food trade), and nuclear winter with no food trade.
+This shows a stackplot of people fed in baseline (no nuclear winter but loss of trade), nuclear winter without resilient food (no food trade), and nuclear winter with no food trade.
 
-The first argument is whether to show ploted simulation results for the different rounds of optimization.
+The first argument is whether to show plotted simulation results for the different rounds of optimization.
 The second argument is whether to show a map of percent people fed for all countries, and shows at the end for each type of scenario specified in the yaml file.
 
 Rounds of optimization: Round1 is zero feed/biofuel for ascertaining minimum human needs that can be satisfied, Round2 determines the amount of feed and biofuel that could be used to optimally produce feed and optionally biofuel, and the Round3 finally combines the appropriate amount of feed used while still satisfying human minimum caloric needs. You can alter the plots shown by commenting out display code in scenarios/run_scenario.py display_results_of_optimizer_round function calls.
