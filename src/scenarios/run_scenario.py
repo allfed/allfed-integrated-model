@@ -370,13 +370,9 @@ class ScenarioRunner:
                 and interpreted_results_round1.animal_population_dictionary
                 == interpreted_results_round2.animal_population_dictionary
             ):
+                # Meat produced from second round with no restriction is identical to with restrictions,
+                # so skip replotting.
                 slaughter_title = ""
-                print("")
-                print(
-                    "Meat produced from second round with no restriction is identical to with restrictions."
-                )
-                print("Choosing not to replot.")
-                print("")
             else:
                 slaughter_title = "Max meat produced from second round calc (no restriction on feed before shutoff)"
                 # make sure animal populations not increasing
@@ -584,8 +580,7 @@ class ScenarioRunner:
                 constants_for_params
             )
         elif (
-            scenario_option["end_simulation_stocks_ratio"]
-            == "no_stored_food_between_years"
+            scenario_option["end_simulation_stocks_ratio"] == "no_stored_between_years"
         ):
             constants_for_params = scenario_loader.set_no_stored_food_between_years(
                 constants_for_params
