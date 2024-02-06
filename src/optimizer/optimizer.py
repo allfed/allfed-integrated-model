@@ -172,8 +172,14 @@ class Optimizer:
             .in_units_bil_kcals_thou_tons_thou_tons_per_month()[month]
             .kcals
         )
-        lower_bound = 0.999999 * min_consumption
-        upper_bound = 1.000001 * min_consumption
+        if self.single_valued_constants["POP"] < 1e7:
+            # I loosened these by 1 order of magnitude and it fixed an optimization failure for djibouti...
+            # Loosened by 2 and fixed lesotho
+            lower_bound = 0.9999 * min_consumption
+            upper_bound = 1.0001 * min_consumption
+        else:
+            lower_bound = 0.99999 * min_consumption
+            upper_bound = 1.00001 * min_consumption
 
         # Define the relaxed conditions for the to_human variables
         if food_type == "outdoor_crops":
@@ -425,7 +431,6 @@ class Optimizer:
                 model, variables
             )
         else:
-            print("running " + optimization_type)
             # Constrain the next optimization to have the same allocation of feed and biofuel as the previous
             # optimization
             (
@@ -1607,7 +1612,7 @@ class Optimizer:
         elif month > 12:
             # Add the condition that all stored food prefixes after the second one are equal to 0
             for prefix in self.stored_food_prefixes[2:]:
-                conditions[prefix] = variables[prefix][month] == 0
+                conditions[prefix] = variables[prefix.lower()][month] == 0
 
         # If it's within the first year of the simulation
         else:

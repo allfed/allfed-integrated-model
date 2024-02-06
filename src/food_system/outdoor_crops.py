@@ -124,7 +124,6 @@ class OutdoorCrops:
         )  # the improvement can't be that much...
 
         if fraction_harvest_after_may_nuclear_winter < 0:
-            print(f"correction for iso3 went below 0: {country_iso3}")
             fraction_harvest_after_may_nuclear_winter = 0
 
         if fraction_harvest_after_may_nuclear_winter > 0:
@@ -236,14 +235,6 @@ class OutdoorCrops:
         RATIO_KCALS_POSTDISASTER_9Y = constants_for_params["RATIO_CROPS_YEAR9"]
         RATIO_KCALS_POSTDISASTER_10Y = constants_for_params["RATIO_CROPS_YEAR10"]
 
-        # we want to start at a ratio of 1 to slowly decline the yields, or 0 if we want an abrupt transition to some
-        # yield ratio that isn't 1.
-        if "RATIO_OF_CROP_YIELDS_FROM_VERY_BEGINNING" not in constants_for_params:
-            RATIO_OF_CROP_YIELDS_FROM_VERY_BEGINNING = 1
-        else:
-            RATIO_OF_CROP_YIELDS_FROM_VERY_BEGINNING = constants_for_params[
-                "RATIO_OF_CROP_YIELDS_FROM_VERY_BEGINNING"
-            ]
         MAY_UNTIL_DECEMBER_FIRST_YEAR_REDUCTION = (
             self.get_year_1_ratio_using_fraction_harvest_before_may(
                 RATIO_KCALS_POSTDISASTER_1Y,

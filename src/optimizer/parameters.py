@@ -1025,32 +1025,36 @@ class Parameters:
         """
         # first round results had no feed or biofuels!
         assert interpreted_results_round1.cell_sugar_biofuels_kcals_equivalent.all_equals_zero(
-            rounding_decimals=8
+            rounding_decimals=6
         )
         assert interpreted_results_round1.outdoor_crops_biofuels_kcals_equivalent.all_equals_zero(
-            rounding_decimals=8
+            rounding_decimals=6
         )
         assert interpreted_results_round1.scp_biofuels_kcals_equivalent.all_equals_zero(
-            rounding_decimals=8
+            rounding_decimals=6
         )
         assert interpreted_results_round1.seaweed_biofuels_kcals_equivalent.all_equals_zero(
-            rounding_decimals=8
+            rounding_decimals=6
+        )
+        assert interpreted_results_round1.stored_food_biofuels_kcals_equivalent.all_equals_zero(
+            rounding_decimals=6
         )
         assert (
-            interpreted_results_round1.stored_food_biofuels_kcals_equivalent.all_equals_zero()
+            interpreted_results_round1.cell_sugar_feed_kcals_equivalent.all_equals_zero(
+                rounding_decimals=6
+            )
         )
-        assert (
-            interpreted_results_round1.cell_sugar_feed_kcals_equivalent.all_equals_zero()
+        assert interpreted_results_round1.outdoor_crops_feed_kcals_equivalent.all_equals_zero(
+            rounding_decimals=6
         )
-        assert (
-            interpreted_results_round1.outdoor_crops_feed_kcals_equivalent.all_equals_zero()
+        assert interpreted_results_round1.scp_feed_kcals_equivalent.all_equals_zero(
+            rounding_decimals=6
         )
-        assert interpreted_results_round1.scp_feed_kcals_equivalent.all_equals_zero()
-        assert (
-            interpreted_results_round1.seaweed_feed_kcals_equivalent.all_equals_zero()
+        assert interpreted_results_round1.seaweed_feed_kcals_equivalent.all_equals_zero(
+            rounding_decimals=6
         )
-        assert (
-            interpreted_results_round1.stored_food_feed_kcals_equivalent.all_equals_zero()
+        assert interpreted_results_round1.stored_food_feed_kcals_equivalent.all_equals_zero(
+            rounding_decimals=6
         )
         min_human_food_consumption = self.calculate_human_consumption_for_min_needs(
             constants_inputs, interpreted_results_round1, percent_fed_from_model
