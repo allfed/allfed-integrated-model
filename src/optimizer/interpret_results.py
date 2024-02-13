@@ -51,7 +51,7 @@ class Interpreter:
             else:
                 self.meat_dictionary[animal_label] = value
 
-    def interpret_results(self, extracted_results):
+    def interpret_results(self, extracted_results, title="Untitled"):
         """
         This function takes the raw output of the optimizer food categories and total
         people fed in list form, and converts the naive people fed which includes
@@ -61,7 +61,7 @@ class Interpreter:
         Args:
             extracted_results (object): The raw output of the optimizer food categories and
             total people fed in list form
-            time_consts (dict): A dictionary containing time constants
+            title (str): Name/title of the run
 
         Returns:
             object: An instance of the Interpreter class
@@ -135,22 +135,25 @@ class Interpreter:
             minute = str(datetime.datetime.now().minute)
             second = str(datetime.datetime.now().second)
 
-            filename = (
-                "ykcals"
-                + "."
-                + year
-                + "."
-                + month
-                + "."
-                + day
-                + "."
-                + hour
-                + "."
-                + minute
-                + "."
-                + second
-                + ".csv"
-            )
+            if title!="Untitled":
+                filename = title+"_ykcals.csv"
+            else:
+                filename = (
+                    "ykcals"
+                    + "."
+                    + year
+                    + "."
+                    + month
+                    + "."
+                    + day
+                    + "."
+                    + hour
+                    + "."
+                    + minute
+                    + "."
+                    + second
+                    + ".csv"
+                )
             file_location = str(Path(repo_root) / "results" / filename)
             df.to_csv(file_location)
 
