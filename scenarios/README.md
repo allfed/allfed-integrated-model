@@ -7,7 +7,7 @@ First, ensure you have followed the installation instructions and have the requi
 To run the simulations configured in a YAML file:
 
 ```
-./run_scenarios_from_yaml.py <show_country_figures> <show_map_figures> <yaml_file> 
+./run_scenarios_from_yaml.sh <show_country_figures> <show_map_figures> <yaml_file> 
 ```
 
 - `show_country_figures` - True/False to show country-specific figures

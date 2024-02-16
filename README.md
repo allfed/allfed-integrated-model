@@ -25,7 +25,7 @@ This shows a stackplot of people fed in baseline (no nuclear winter but loss of 
 The first argument is whether to show plotted simulation results for the different rounds of optimization.
 The second argument is whether to show a map of percent people fed for all countries, and shows at the end for each type of scenario specified in the yaml file.
 
-Rounds of optimization: Round1 is zero feed/biofuel for ascertaining minimum human needs that can be satisfied, Round2 determines the amount of feed and biofuel that could be used to optimally produce feed and optionally biofuel, and the Round3 finally combines the appropriate amount of feed used while still satisfying human minimum caloric needs. You can alter the plots shown by commenting out display code in scenarios/run_scenario.py display_results_of_optimizer_round function calls.
+Rounds of optimization: Round1 is zero feed/biofuel for ascertaining minimum human needs that can be satisfied, Round2 determines the amount of feed and biofuel that could be used to optimally produce feed and optionally biofuel, and the Round3 finally combines the appropriate amount of feed and biofuel used while still satisfying human minimum caloric needs. You can alter the plots shown by commenting out display code in scenarios/run_scenario.py display_results_of_optimizer_round function calls.
 
 To run these scenarios for a specific country, you can create a new yaml file with a specific country specified in the yaml file. For example, to run Oman, you can add the following to the yaml:
 
@@ -60,7 +60,7 @@ https://zenodo.org/record/7039924
 #### Dependency management with Anaconda
 The integrated model is written in python 3, ensure you have some version of python3, although it has only been tested with python 3.9 or later. Then, install the required packages using conda or miniconda:
 
-You'll also need to install conda or miniconda or similar.
+You'll also need to install conda or miniconda, micromamba, or similar.
 
 See https://docs.anaconda.com/anaconda/install/index.html for installation instructions.
 
