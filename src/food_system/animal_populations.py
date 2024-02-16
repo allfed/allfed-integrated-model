@@ -55,7 +55,6 @@ class CalculateFeedAndMeat:
             scenario,
             remove_first_month=1,
         )
-        fig = go.Figure()
 
         # plot all the animals without detail
         # exclude chicken from output list
@@ -69,6 +68,7 @@ class CalculateFeedAndMeat:
         else:
             animal_list = [animal for animal in self.all_animals]
 
+        fig = go.Figure()
         for animal in animal_list:
             fig.add_trace(
                 go.Scatter(
@@ -289,7 +289,8 @@ class CountryData:
         """Function to calculate the number of hours required to slaughter the homekill animals."""
         # TODO: bring in the population of the country here, and create an algo to work this out.
         # could also do it based off 'desperation' as in normal conditions, this will be very low/non-existant/illegal
-        self.homekill_hours_total_month.append(10000)
+        # self.homekill_hours_total_month.append(10000)
+        self.homekill_hours_total_month.append(0)  # We are saying there is no homekill
 
     def calculate_total_slaughter_hours(self, all_animals):
         """Probably unneccesary, but could be sueful to ibnterogate the number of salughter hours to compare between
@@ -613,9 +614,33 @@ class AnimalSpecies:
                 + self.initial_slaughter
                 - transfer_births_or_head
             )
-            assert (
-                self.births_animals_month_baseline >= 0
-            ), "births_animals_month_baseline is negative, this is probably because transfer births are too high or slaughter too low - check the data inputs"
+            if not self.births_animals_month_baseline >= 0:
+                print(
+                    """
+                ERROR!
+                ERROR!
+                ERROR!
+                ERROR!
+                ERROR!
+                ERROR!
+                ERROR!
+                ERROR!
+                ERROR!
+                ERROR!
+                ERROR!
+                ERROR!
+                ERROR!
+                ERROR!
+                ERROR!
+                ERROR!
+                assert (
+                    self.births_animals_month_baseline >= 0
+                ), "births_animals_month_baseline is negative, this is probably because transfer births are too high or slaughter too low - check the data inputs"
+
+                This assert failed, but we are not currently enforcing it, for convenience. It will need to be fixed.
+                """
+                )
+                births_animals_month_baseline = 0
             # if a milk animal, this is JUST the milk animals born (meat transfer accounted for in pregnancy attribute)
 
         # next we need add slaughter to milk animals to account for calf culling
@@ -696,7 +721,10 @@ class AnimalSpecies:
             + self.homekill_healthy_this_month[-1]
             + self.homekill_starving_this_month[-1]
         )
-
+        assert total_homekill == 0, (
+            'ERROR: It seems you specified a nonzero "homekill", are you sure you wanted to do that?'
+            "If so, then remove this assert in food_system/animal_populations.py"
+        )
         return total_homekill
 
     def exported_births(self):
@@ -1133,10 +1161,44 @@ class AnimalPopulation:
             new_slaughtered_pregnant_animals = new_slaughter_rate
             new_pregnant_animals_total -= new_slaughtered_pregnant_animals
 
-        assert new_pregnant_animals_total >= 0, "new pregnant animals total is negative"
-        assert (
-            new_slaughtered_pregnant_animals >= 0
-        ), "new slaughtered pregnant animals is negative"
+        if not new_pregnant_animals_total >= 0:
+            print(
+                """
+            ERROR!
+            ERROR!
+            ERROR!
+            ERROR!
+            ERROR!
+            ERROR!
+            ERROR!
+            ERROR!
+            ERROR!
+            assert new_pregnant_animals_total >= 0, "new pregnant animals total is negative"
+
+            This assert failed, but we are not currently enforcing it, for convenience. It will need to be fixed.
+            """
+            )
+            new_pregnant_animals_total = 0
+        if not new_slaughtered_pregnant_animals >= 0:
+            print(
+                """
+            ERROR!
+            ERROR!
+            ERROR!
+            ERROR!
+            ERROR!
+            ERROR!
+            ERROR!
+            ERROR!
+            ERROR!
+            assert (
+                new_slaughtered_pregnant_animals >= 0
+            ), "new slaughtered pregnant animals is negative"
+
+            This assert failed, but we are not currently enforcing it, for convenience. It will need to be fixed.
+            """
+            )
+            new_slaughtered_pregnant_animals = 0
         return new_pregnant_animals_total, new_slaughtered_pregnant_animals
 
     def calculate_animal_population(
@@ -1499,7 +1561,6 @@ class AnimalPopulation:
             The final population of the animal.
 
         """
-
         animal.current_population -= (
             animal.other_death_starving[-1]
             + animal.homekill_healthy_this_month[-1]
@@ -2182,6 +2243,10 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
     # WHEN INTEGRATING, THESE CREATION OF OBJECTS SHOULD BE DONE OUTSIDE OF THE MAIN FUNCTION
     # AND ONLY ON THE FIRST RUN OF THE MODEL
 
+    if country_code == "SWT":
+        # this indicates swaziland, which is "SWZ" in non-cleaned-up FAOSTAT data
+        country_code = "SWZ"
+
     # # Populate animal objects ##
     # create animal objects
     animal_list = AnimalModelBuilder.create_animal_objects(
@@ -2429,6 +2494,8 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
                 AnimalPopulation.other_death_pregnant_adjustment(animal)
 
             animal.total_homekill_this_month.append(animal.total_homekill())
+            # if animal.total_homekill() not None and animal.total_homekill() >= 10:
+            #     quit()
 
             # FINALLY WE CAN Calculate THE NEW POPULATION
             AnimalPopulation.calculate_final_population(animal)

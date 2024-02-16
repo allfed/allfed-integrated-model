@@ -8,6 +8,7 @@
 # TODO: make a couple sub functions that deal with the different parts, where
 #      it assigns the returned values to the constants.
 import numpy as np
+import copy
 from src.food_system.meat_and_dairy import MeatAndDairy
 from src.food_system.outdoor_crops import OutdoorCrops
 from src.food_system.seafood import Seafood
@@ -20,6 +21,65 @@ from src.food_system.feed_and_biofuels import FeedAndBiofuels
 from src.food_system.food import Food
 from src.food_system.animal_populations import AnimalPopulation, CalculateFeedAndMeat
 from src.optimizer.validate_results import Validator
+
+
+def get_second_round_kcals_with_redistributed_meat(
+    round_1_meat_kcals, round_2_meat_kcals
+):
+    """
+    Gets a new array of kcals where the sum of kcals from meat remains the same, but the places where the meat was
+    originally larger than round 1 is reduced, and the places where the meat was less than round 1 is increased.
+    """
+    if round_1_meat_kcals.sum() > round_2_meat_kcals.sum():
+        print(
+            "WARNING: Meat produced from feed is less than produced without feed. Resetting the amount of meat "
+            " produced with feed to the amount of meat produced with zero feed."
+        )
+        round_2_meat_kcals = round_1_meat_kcals
+    difference = round_2_meat_kcals - round_1_meat_kcals
+    strictly_positive_difference = fill_negatives_with_positives(difference)
+
+    assert np.all(
+        strictly_positive_difference >= -0.001
+    )  # make sure it's indeed positive within a rounding error
+
+    # if the adjusted (filled in) map is higher, then we want that to be added to round_2_meat_kcals
+    adjustment_to_round2 = strictly_positive_difference - difference
+
+    assert abs(adjustment_to_round2.sum()) <= 0.001
+    # the total meat can't go below zero
+    assert np.all(adjustment_to_round2 + round_2_meat_kcals >= -0.001)
+
+    new_round_2_meat_kcals = round_2_meat_kcals + adjustment_to_round2
+
+    return new_round_2_meat_kcals
+
+
+def fill_negatives_with_positives(arr):
+    # go backwards through the array and fill any negative values with recent positive values so all values are above
+    # zero.
+    # Ensure the input is a numpy array
+    arr = np.array(arr, dtype=float)  # Use float for precision during adjustments
+    # Indices of negative values
+    negative_indices = np.where(arr < 0)[0]
+
+    # Work from the end of the array to find positive values
+    for neg_idx in negative_indices:
+        for i in range(len(arr) - 1, -1, -1):
+            # Skip if it's the same index or if the value is not positive
+            if i == neg_idx or arr[i] <= 0:
+                continue
+
+            # Calculate the adjustment needed
+            adjustment = min(-arr[neg_idx], arr[i])
+            arr[neg_idx] += adjustment
+            arr[i] -= adjustment
+
+            # Break if the negative value has been fully compensated
+            if arr[neg_idx] == 0:
+                break
+
+    return arr
 
 
 class Parameters:
@@ -139,25 +199,12 @@ class Parameters:
             feed_biofuels_class,  # zero feed, zero biofuel
             biofuels_demand,  # biofuels requested by the user
             feed_demand,  # feed requested by the user
-            max_feed_that_could_be_used_second_round,
-            meat_dictionary_first_round,  # meat if no feed were available
-            meat_dictionary_second_round,  # meat if all feed were used (only used for debugging, not used in analysis)
-        ) = self.init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels(
+            meat_dictionary_round1,  # meat if no feed were available
+        ) = self.init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels_round1(
             constants_out,
             constants_inputs,
             time_consts,
-            outdoor_crops,
-            methane_scp,
-            cellulosic_sugar,
-            seaweed,
-            stored_food,
         )
-
-        time_consts[
-            "max_feed_that_could_be_used"
-        ] = max_feed_that_could_be_used_second_round
-
-        time_consts["max_biofuel_that_could_be_used"] = biofuels_demand
 
         # Set inputs in constants_out
         constants_out["inputs"] = constants_inputs
@@ -168,42 +215,15 @@ class Parameters:
             feed_biofuels_class,  # zero feed, zero biofuel
             biofuels_demand,  # biofuels requested by the user
             feed_demand,  # feed requested by the user
-            max_feed_that_could_be_used_second_round,
-            meat_dictionary_first_round,
-            meat_dictionary_second_round,
+            meat_dictionary_round1,
         )
 
-    def init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels(
+    def init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels_round1(
         self,
         constants_out,
         constants_inputs,
         time_consts,
-        outdoor_crops,
-        methane_scp,
-        cellulosic_sugar,
-        seaweed,
-        stored_food,
     ):
-        """
-        Calculates the expected amount of livestock if breeding were quickly reduced and slaughter only increased
-        slightly,
-        then using that we calculate the feed they would use given the expected input animal populations over time.
-
-        Args:
-            self (object): instance of the class
-            constants_out (dict): dictionary containing output constants
-            constants_inputs (dict): dictionary containing input constants
-            time_consts (dict): dictionary containing time constants
-            outdoor_crops (dict): dictionary containing outdoor crop constants
-            methane_scp (dict): dictionary containing methane SCP constants
-            cellulosic_sugar (dict): dictionary containing cellulosic sugar constants
-            seaweed (dict): dictionary containing seaweed constants
-            stored_food (dict): dictionary containing stored food constants
-
-        Returns:
-            tuple: tuple containing constants_out, time_consts, and feed_and_biofuels_class
-        """
-
         # Initialize FeedAndBiofuels and MeatAndDairy objects
         feed_and_biofuels_class = FeedAndBiofuels(constants_inputs)
 
@@ -241,32 +261,17 @@ class Parameters:
 
         grasses_for_animals = meat_and_dairy.human_inedible_feed
         if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
-            feed_meat_object_first_round = CalculateFeedAndMeat(
+            feed_meat_object_round1 = CalculateFeedAndMeat(
                 country_code=constants_inputs["COUNTRY_CODE"],
                 available_feed=zero_feed,
-                available_grass=grasses_for_animals,
-                scenario="reduced",  # tries to reduce breeding
-            )
-
-            # it is convenient to calculate this now, although it is only used in the second round
-            feed_meat_object_second_round = CalculateFeedAndMeat(
-                country_code=constants_inputs["COUNTRY_CODE"],
-                available_feed=feed_demand,
                 available_grass=grasses_for_animals,
                 scenario="reduced",  # tries to reduce breeding
             )
 
         else:
-            feed_meat_object_first_round = CalculateFeedAndMeat(
+            feed_meat_object_round1 = CalculateFeedAndMeat(
                 country_code=constants_inputs["COUNTRY_CODE"],
                 available_feed=zero_feed,
-                available_grass=grasses_for_animals,
-                scenario="baseline",  # doesn't try to reduce breeding, baseline animal pops
-            )
-            # it is convenient to calculate this now, although it is only used in the second round
-            feed_meat_object_second_round = CalculateFeedAndMeat(
-                country_code=constants_inputs["COUNTRY_CODE"],
-                available_feed=feed_demand,
                 available_grass=grasses_for_animals,
                 scenario="baseline",  # doesn't try to reduce breeding, baseline animal pops
             )
@@ -276,12 +281,12 @@ class Parameters:
         # for first round (zero feed available to animals)
         (
             zero_feed_used,
-            meat_dictionary_first_round,
+            meat_dictionary_round1,
             time_consts,
             constants_out,
         ) = self.init_meat_and_dairy_and_feed_from_breeding(
             constants_inputs,
-            feed_meat_object_first_round,
+            feed_meat_object_round1,
             feed_and_biofuels_class,
             meat_and_dairy,
             constants_out,
@@ -292,40 +297,13 @@ class Parameters:
             zero_feed_used.all_equals_zero()
         ), "Error: first round of optimization has no feed used (just maximize to humans)"
 
-        # for second round (all feed available to animals)
-        (
-            max_feed_that_could_be_used_second_round,
-            meat_dictionary_second_round,  # if all feed needs were satisfied before feed shutoff
-            time_consts,
-            constants_out,
-        ) = self.init_meat_and_dairy_and_feed_from_breeding(
-            constants_inputs,
-            feed_meat_object_second_round,
-            feed_and_biofuels_class,
-            meat_and_dairy,
-            constants_out,
-            time_consts,
-        )
-
-        # Check that the meat and population in the second round of optimization are greater than the first round
-        # Validator.assert_round2_meat_and_population_greater_than_round1(
-        #     meat_dictionary_first_round, meat_dictionary_second_round
-        # )
-
         # FEED AND BIOFUELS from breeding reduction strategy
 
-        assert feed_demand.all_greater_than_or_equal_to(
-            max_feed_that_could_be_used_second_round
-        ), "Error: Animals ate more feed than was available!"
-
         feed_and_biofuels_class.nonhuman_consumption = zero_biofuels + zero_feed_used
-        # (
-        #     biofuels + max_feed_that_could_be_used_second_round
-        # )
         PLOT_FEED = False
 
         if PLOT_FEED:
-            feed.in_units_percent_fed().plot("feed")
+            zero_feed_used.in_units_percent_fed().plot("zero_feed_used")
 
         assert (
             zero_biofuels.all_equals_zero()
@@ -339,24 +317,14 @@ class Parameters:
         time_consts["biofuel"] = zero_biofuels
         time_consts["nonhuman_consumption"] = zero_feed_used + zero_biofuels
 
-        # Update time_consts dictionary with zero feed or biofuels every month
-        # These are only used for debugging and investigation
-        time_consts["feed_second_round"] = zero_feed_used
-        time_consts["biofuel_second_round"] = zero_biofuels
-        time_consts["nonhuman_consumption_second_round"] = (
-            zero_feed_used + zero_biofuels
-        )
-
         # Return tuple containing constants_out, time_consts, and feed_and_biofuels_class
         return (
             constants_out,
             time_consts,
             feed_and_biofuels_class,
-            biofuels_demand,
+            meat_dictionary_round1,
             feed_demand,  # the actual demand asked for by the user
-            max_feed_that_could_be_used_second_round,
-            meat_dictionary_first_round,
-            meat_dictionary_second_round,
+            biofuels_demand,  # the actual demand asked for by the user
         )
 
     def assert_constants_not_nan(self, single_valued_constants, time_consts):
@@ -927,12 +895,20 @@ class Parameters:
                 large_animals_culled=animals_killed_for_meat_large,
             )
         )
+        PLOT_MEAT_SLAUGHTERED = False
+        if PLOT_MEAT_SLAUGHTERED:
+            each_month_meat_slaughtered.plot("Meat this round")
 
         # Finally we take the running sum of meat slaughtered over time and set it to the monthly time constant
         # called "max_consumed_culled_kcals"
+        # NOTE: The second round may overwrite this value once the meat is redistributed over time (which is to ensure
+        # round 2 strictly has more kcals available, as it is required for optimization contstraints to always to be
+        #  satisfied in round 2)
         time_consts[
             "max_consumed_culled_kcals_each_month"
         ] = each_month_meat_slaughtered.get_running_total_nutrients_sum().kcals
+
+        time_consts["each_month_meat_slaughtered"] = each_month_meat_slaughtered
 
         # Calculate the amount of culled meat and update constants_out dictionary
         (
@@ -1015,14 +991,98 @@ class Parameters:
     def compute_parameters_second_round(
         self,
         constants_inputs,
+        constants_out,
+        time_consts_round1,
         interpreted_results_round1,
-        percent_fed_from_model,
     ):
         """
         Compute the parameters for the second round of optimizations, where we now know the amount of feed
         available for animals after humans have used all they need for their minimum nutritional needs.
 
         """
+        time_consts_round2 = copy.deepcopy(time_consts_round1)
+        feed_and_biofuels_class = FeedAndBiofuels(constants_inputs)
+        (
+            biofuels_demand,
+            feed_demand,
+        ) = feed_and_biofuels_class.get_biofuels_and_feed_from_delayed_shutoff(
+            constants_inputs
+        )
+
+        meat_and_dairy = MeatAndDairy(constants_inputs)
+        grasses_for_animals = meat_and_dairy.human_inedible_feed
+        if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
+            feed_meat_object_second_round = CalculateFeedAndMeat(
+                country_code=constants_inputs["COUNTRY_CODE"],
+                available_feed=feed_demand,
+                available_grass=grasses_for_animals,
+                scenario="reduced",  # tries to reduce breeding
+            )
+
+        else:
+            feed_meat_object_second_round = CalculateFeedAndMeat(
+                country_code=constants_inputs["COUNTRY_CODE"],
+                available_feed=feed_demand,
+                available_grass=grasses_for_animals,
+                scenario="baseline",  # doesn't try to reduce breeding, baseline animal pops
+            )
+
+        (
+            max_feed_that_could_be_used_second_round,
+            meat_dictionary_round2,  # if all feed needs were satisfied before feed shutoff
+            time_consts_round2,
+            constants_out,
+        ) = self.init_meat_and_dairy_and_feed_from_breeding(
+            constants_inputs,
+            feed_meat_object_second_round,
+            feed_and_biofuels_class,
+            meat_and_dairy,
+            constants_out,
+            time_consts_round2,
+        )
+
+        # Sometimes, the first round has a more efficient slaughtering process that occurs earlier than second round
+        # This mostly happens as the animals are starving and populations of animals are altering.
+        # As a result, there is more meat slaughtered earlier in the first round with no feed.
+        # This function moves any such increase in meat to earlier in the second round, so that the second round
+        # Strictly, always, has equal or more meat available, as is required by the second round optimization
+        # TODO: get  working with protein and fat
+        before_readjust_meat_round2 = copy.deepcopy(
+            time_consts_round2["each_month_meat_slaughtered"].kcals
+        )
+
+        time_consts_round2[
+            "each_month_meat_slaughtered"
+        ].kcals = get_second_round_kcals_with_redistributed_meat(
+            time_consts_round1["each_month_meat_slaughtered"].kcals,
+            time_consts_round2["each_month_meat_slaughtered"].kcals,
+        )
+
+        assert np.abs(
+            before_readjust_meat_round2.sum()
+            - time_consts_round2["each_month_meat_slaughtered"].kcals.sum()
+        ) <= 0.001 or (
+            before_readjust_meat_round2.sum()
+            < time_consts_round1["each_month_meat_slaughtered"].kcals.sum()
+        ), (
+            "ERROR: meat slaughter timing readjustment has changed the total kcals, even though there was less meat "
+            "in round 2 as is normally the case!"
+        )
+
+        # Finally we take the running sum of meat slaughtered over time and set it to the monthly time constant
+        # called "max_consumed_culled_kcals"
+        time_consts_round2["max_consumed_culled_kcals_each_month"] = (
+            time_consts_round2["each_month_meat_slaughtered"]
+            .get_running_total_nutrients_sum()
+            .kcals
+        )
+
+        time_consts_round2[
+            "max_feed_that_could_be_used"
+        ] = max_feed_that_could_be_used_second_round
+
+        time_consts_round2["max_biofuel_that_could_be_used"] = biofuels_demand
+
         # first round results had no feed or biofuels!
         assert interpreted_results_round1.cell_sugar_biofuels_kcals_equivalent.all_equals_zero(
             rounding_decimals=6
@@ -1057,7 +1117,7 @@ class Parameters:
             rounding_decimals=6
         )
         min_human_food_consumption = self.calculate_human_consumption_for_min_needs(
-            constants_inputs, interpreted_results_round1, percent_fed_from_model
+            constants_inputs, interpreted_results_round1
         )
         PRINT_MINIMUM_NEEDS_FOOD_FOR_HUMANS = False
         if PRINT_MINIMUM_NEEDS_FOOD_FOR_HUMANS:
@@ -1075,10 +1135,16 @@ class Parameters:
             print("END MINIMUM HUMAN NEEDS PRINTOUT")
             print("")
             print("")
-        return min_human_food_consumption
+        return (
+            constants_out,
+            time_consts_round2,
+            feed_and_biofuels_class,
+            meat_dictionary_round2,
+            min_human_food_consumption,
+        )
 
     def calculate_human_consumption_for_min_needs(
-        self, constants_inputs, interpreted_results_round1, percent_fed_from_model
+        self, constants_inputs, interpreted_results_round1
     ):
         """
         We run through each month and determine the amount consumed each month of all foods.
@@ -1102,11 +1168,15 @@ class Parameters:
         # The next round of optimization, we will then have the food humans don't eat be fed to animals.
         # This in turn increases meat and dairy to humans. However, the feed used by animals will no longer
         # go to humans.
-        if percent_fed_from_model > 100:
+        MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED = 100
+        if (
+            interpreted_results_round1.percent_people_fed
+            > MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED
+        ):
             kcals_daily_maximum = constants_inputs["NUTRITION"]["KCALS_DAILY"]
         else:
             kcals_daily_maximum = constants_inputs["NUTRITION"]["KCALS_DAILY"] * (
-                percent_fed_from_model / 100
+                interpreted_results_round1.percent_people_fed / 100
             )
 
         # As a Food object with nutrients:
@@ -1324,14 +1394,14 @@ class Parameters:
         self,
         constants_inputs,
         constants_out,
-        time_consts,
+        time_consts_round1,
         interpreted_round2,
         feed_and_biofuels_class,
     ):
         # TODO: make this function work with fat and protein minimums...
 
         # the constants_out output is what we modify and return
-
+        time_consts_round2 = copy.deepcopy(time_consts_round1)
         meat_and_dairy = MeatAndDairy(constants_inputs)
 
         feed_sum_billion_kcals = (
@@ -1362,7 +1432,7 @@ class Parameters:
         (
             max_feed_that_could_be_used_round3,
             meat_dictionary_round3,
-            time_consts,
+            time_consts_round2,
             constants_out,
         ) = self.init_meat_and_dairy_and_feed_from_breeding(
             constants_inputs,
@@ -1370,7 +1440,7 @@ class Parameters:
             feed_and_biofuels_class,
             meat_and_dairy,
             constants_out,
-            time_consts,
+            time_consts_round2,
         )
 
         # Update feed_and_biofuels_class_round3 object with their values
@@ -1379,17 +1449,19 @@ class Parameters:
             max_feed_that_could_be_used_round3 + biofuel_sum_billion_kcals
         )
 
-        # Update time_consts dictionary
-        time_consts["nonhuman_consumption"] = (
+        # Update time_consts_round2 dictionary
+        time_consts_round2["nonhuman_consumption"] = (
             max_feed_that_could_be_used_round3 + biofuel_sum_billion_kcals
         )
-        time_consts["feed"] = max_feed_that_could_be_used_round3
-        time_consts["biofuel"] = biofuel_sum_billion_kcals
-        time_consts["max_feed_that_could_be_used"] = max_feed_that_could_be_used_round3
+        time_consts_round2["feed"] = max_feed_that_could_be_used_round3
+        time_consts_round2["biofuel"] = biofuel_sum_billion_kcals
+        time_consts_round2[
+            "max_feed_that_could_be_used"
+        ] = max_feed_that_could_be_used_round3
 
         return (
             constants_out,
-            time_consts,
+            time_consts_round2,
             feed_and_biofuels_class,
             meat_dictionary_round3,
         )

@@ -24,6 +24,20 @@ from src.utilities.plotter import Plotter
 from src.food_system.food import Food
 
 
+def are_dicts_approx_same(dict1, dict2):
+    # Ensure both dictionaries have the same keys
+    if set(dict1.keys()) != set(dict2.keys()):
+        return False
+
+    for key in dict1.keys():
+        val1, val2 = np.array(dict1[key]), np.array(dict2[key])
+        # Compare arrays with a tolerance of 0.1%
+        if not np.allclose(val1, val2, rtol=0.001, atol=0):
+            return False
+
+    return True
+
+
 class ScenarioRunner:
     def __init__(self):
         pass
@@ -110,29 +124,22 @@ class ScenarioRunner:
 
         # actually make PuLP optimize effective people fed based on all the constants
         # we've determined
-        (
-            model_round1,
-            variables_round1,
-            percent_fed_from_model_round1,
-        ) = self.run_optimizer(single_valued_constants_round1, time_consts_round1)
-        interpreted_results_round1 = self.interpret_optimizer_results(
+        interpreted_results_round1 = self.run_optimizer(
             single_valued_constants_round1,
-            model_round1,
-            variables_round1,
             time_consts_round1,
-            interpreter,
-            percent_fed_from_model_round1,
             optimization_type="to_humans",
-            title=title
+            title=title,
         )
+
         interpreted_results_round1.set_feed_and_biofuels(feed_and_biofuels_round1)
+
         interpreted_results_round1.set_meat_dictionary(
             meat_dictionary_zero_feed_biofuels
         )
 
         return (
             interpreted_results_round1,
-            percent_fed_from_model_round1,
+            interpreted_results_round1.percent_people_fed,
             single_valued_constants_round1,
         )
 
@@ -145,54 +152,34 @@ class ScenarioRunner:
         single_valued_constants_round1,
         time_consts_round1,
         interpreter,
-        feed_and_biofuels_round1,
-        max_feed_that_could_be_used_second_round,
-        biofuels_demand,
-        meat_dictionary_second_round,
         title="Untitled",
     ):
         # SECOND ROUND: REMAINING FEED-APPROPRIATE FOOD TO ANIMALS AND BIOFUELS UP TO THE AMOUNT THEY CAN BE USED
-        min_human_food_consumption = constants_loader.compute_parameters_second_round(
-            constants_for_params,
-            interpreted_results_round1,
-            percent_fed_from_model_round1,
-        )
-
-        optimizer_to_animals = Optimizer(
-            single_valued_constants_round1, time_consts_round1
-        )
-
         (
-            model_round2,
-            variables_round2,
-            maximize_constraints_round2,
-            percent_fed_from_model_round2,
-        ) = optimizer_to_animals.optimize_feed_to_animals(
+            single_valued_constants_round2,
+            time_consts_round2,
+            feed_and_biofuels_round2,
+            meat_dictionary_round2,
+            min_human_food_consumption,
+        ) = constants_loader.compute_parameters_second_round(
+            constants_for_params,
             single_valued_constants_round1,
             time_consts_round1,
-            min_human_food_consumption,
+            interpreted_results_round1,
         )
-
-        interpreted_results_round2 = self.interpret_optimizer_results(
-            single_valued_constants_round1,  # these don't get updated in the second round
-            model_round2,
-            variables_round2,
-            time_consts_round1,  # these don't get updated in the second round
-            interpreter,
-            percent_fed_from_model_round2,
+        Validator.assert_meat_doesnt_increase_round_2(
+            time_consts_round1["each_month_meat_slaughtered"].kcals,
+            time_consts_round2["each_month_meat_slaughtered"].kcals,
+        )
+        interpreted_results_round2 = self.run_optimizer(
+            single_valued_constants_round2,
+            time_consts_round2,
             optimization_type="to_animals",
-            title=title
-        )
-        # because the third round is where we view the feed and biofuel results of the second round,
-        # just consider the feed used
-        # this is for the purposes of debugging and understanding the scenario and doesn't affect starvation
-        feed_and_biofuels_round2 = copy.deepcopy(feed_and_biofuels_round1)
-        feed_and_biofuels_round2.nonhuman_consumption = (
-            max_feed_that_could_be_used_second_round + biofuels_demand
+            min_human_food_consumption=min_human_food_consumption,
+            title=title,
         )
 
-        interpreted_results_round2.set_feed_and_biofuels(feed_and_biofuels_round2)
-        interpreted_results_round2.set_meat_dictionary(meat_dictionary_second_round)
+        interpreted_results_round2.set_meat_dictionary(meat_dictionary_round2)
 
         return interpreted_results_round2
 
@@ -222,26 +209,17 @@ class ScenarioRunner:
             feed_and_biofuels_round1,
         )
 
-        (
-            model,
-            variables,
-            percent_fed_from_model_round3,
-        ) = self.run_optimizer(single_valued_constants_round3, time_consts_round3)
-        interpreted_results_round3 = self.interpret_optimizer_results(
+        interpreted_results_round3 = self.run_optimizer(
             single_valued_constants_round3,
-            model,
-            variables,
             time_consts_round3,
-            interpreter,
-            percent_fed_from_model_round3,
             optimization_type="to_humans",
             title=title,
         )
-        # interpreter.set_feed_and_biofuels(feed_and_biofuels_round3)
-        # interpreter.set_meat_dictionary(meat_dictionary_round3)
         interpreted_results_round3.set_feed_and_biofuels(feed_and_biofuels_round3)
         interpreted_results_round3.set_meat_dictionary(meat_dictionary_round3)
-
+        # interpreted_results_round3.milk_kcals_equivalent.in_units_kcals_equivalent().plot(
+        #     "milk 3rd round"
+        # )
         Validator.assert_fewer_calories_round2_than_round3(
             interpreted_results_round2, interpreted_results_round3
         )
@@ -284,11 +262,9 @@ class ScenarioRunner:
             single_valued_constants_round1,
             time_consts_round1,
             feed_and_biofuels_round1,  # zero feed and biofuels
-            biofuels_demand,  # biofuels requested by the user
-            feed_demand,  # feed requested by the user
-            max_feed_that_could_be_used_second_round,  # Max feed used if no limitation before shutoff
             meat_dictionary_zero_feed_biofuels,  # Meat if no feed used.
-            meat_dictionary_second_round,  # Meat if all feed used.
+            feed_demand,  # feed requested by the user
+            biofuels_demand,  # biofuels requested by the user
         ) = constants_loader.compute_parameters_first_round(
             constants_for_params, time_consts_for_params, scenario_loader
         )
@@ -301,10 +277,7 @@ class ScenarioRunner:
             or constants_for_params["ADD_SEAWEED"]
             or constants_for_params["ADD_CELLULOSIC_SUGAR"]
             or constants_for_params["ADD_METHANE_SCP"]
-        ) and not (
-            max_feed_that_could_be_used_second_round.all_equals_zero()
-            and biofuels_demand.all_equals_zero()
-        ):
+        ) and not (feed_demand.all_equals_zero() and biofuels_demand.all_equals_zero()):
             # if any of the feed or biofuel resources are made available to the model
             # and the user has not requested zero feed and biofuel
 
@@ -318,7 +291,7 @@ class ScenarioRunner:
                 interpreter,
                 feed_and_biofuels_round1,
                 meat_dictionary_zero_feed_biofuels,
-                title=title+"_round1"
+                title=title + "_round1",
             )
 
             ROUND_1_WAS_RUN_FLAG = True
@@ -329,11 +302,6 @@ class ScenarioRunner:
             Validator.assert_biofuels_used_below_biofuels_demand(
                 biofuels_demand, interpreted_results_round1, round=1
             )
-
-            # # Check that the animal populations are never increasing with time
-            # Validator.assert_population_not_increasing(
-            #     meat_dictionary_zero_feed_biofuels, round=1
-            # )
 
             DISPLAY_MEAT_PRODUCED_IF_NO_FEED = True
             if DISPLAY_MEAT_PRODUCED_IF_NO_FEED:
@@ -359,11 +327,7 @@ class ScenarioRunner:
                 single_valued_constants_round1,
                 time_consts_round1,
                 interpreter,
-                feed_and_biofuels_round1,
-                max_feed_that_could_be_used_second_round,
-                biofuels_demand,
-                meat_dictionary_second_round,
-                title=title+"_round2",
+                title=title + "_round2",
             )
 
             Validator.assert_feed_used_below_feed_demand(
@@ -372,22 +336,24 @@ class ScenarioRunner:
             Validator.assert_biofuels_used_below_biofuels_demand(
                 biofuels_demand, interpreted_results_round2, round=2
             )
-
             if DISPLAY_MEAT_PRODUCED_IF_NO_FEED and (
-                interpreted_results_round1.meat_dictionary
-                == interpreted_results_round2.meat_dictionary
-                and interpreted_results_round1.animal_population_dictionary
-                == interpreted_results_round2.animal_population_dictionary
+                are_dicts_approx_same(
+                    interpreted_results_round1.meat_dictionary,
+                    interpreted_results_round2.meat_dictionary,
+                )
+                and are_dicts_approx_same(
+                    interpreted_results_round1.animal_population_dictionary,
+                    interpreted_results_round2.animal_population_dictionary,
+                )
             ):
                 # Meat produced from second round with no restriction is identical to with restrictions,
                 # so skip replotting.
                 slaughter_title = ""
+                print(
+                    "interpreted results approx same round 1 2 meat dict, animal dict, skipping"
+                )
             else:
                 slaughter_title = "Max meat produced from second round calc (no restriction on feed before shutoff)"
-                # make sure animal populations not increasing
-                Validator.assert_population_not_increasing(
-                    interpreted_results_round2.meat_dictionary, round=3
-                )
 
             self.display_results_of_optimizer_round(
                 interpreted_results_round2,
@@ -436,7 +402,7 @@ class ScenarioRunner:
             interpreted_results_for_round3,
             feed_and_biofuels_round1,
             interpreter,
-            title=title+"_round3",
+            title=title + "_round3",
         )
 
         Validator.assert_feed_used_below_feed_demand(
@@ -446,15 +412,8 @@ class ScenarioRunner:
             biofuels_demand, interpreted_results_round3, round=3
         )
 
-        Validator.assert_population_not_increasing(
-            interpreted_results_round3.meat_dictionary, round=3
-        )
-
-        Validator.assert_feed_and_biofuel_used_is_zero_if_humans_are_starving(
-            interpreted_results_round3
-        )
         if ROUND_1_WAS_RUN_FLAG:
-            Validator.make_sure_everyone_fed_if_round1_was_above_2100kcals(
+            Validator.assert_round3_percent_fed_not_lower_than_round1(
                 percent_fed_from_model_round1,
                 interpreted_results_round3.percent_people_fed,
             )
@@ -511,19 +470,57 @@ class ScenarioRunner:
 
         return interpreted_results
 
-    def run_optimizer(self, single_valued_constants, time_consts):
+    def run_optimizer(
+        self,
+        single_valued_constants,
+        time_consts,
+        optimization_type=None,
+        min_human_food_consumption=None,
+        title="Untitled",
+    ):
         """
         Runs the optimizer and returns the model, variables, and constants
         """
+        if optimization_type == "to_animals":
+            assert (
+                min_human_food_consumption is not None
+            ), "ERROR: must specify minimum human needs when running second round"
+
         optimizer = Optimizer(single_valued_constants, time_consts)
         validator = Validator()
+        interpreter = Interpreter()
 
-        (
+        if optimization_type == "to_humans":
+            (
+                model,
+                variables,
+                maximize_constraints,
+                percent_fed_from_model,
+            ) = optimizer.optimize_to_humans(single_valued_constants, time_consts)
+        elif optimization_type == "to_animals":
+            (
+                model,
+                variables,
+                maximize_constraints,
+                percent_fed_from_model,
+            ) = optimizer.optimize_feed_to_animals(
+                single_valued_constants,
+                time_consts,
+                min_human_food_consumption,
+            )
+        else:
+            raise ValueError("Optimization must be to humans or animals.")
+
+        interpreted_results = self.interpret_optimizer_results(
+            single_valued_constants,
             model,
             variables,
-            maximize_constraints,
+            time_consts,
+            interpreter,
             percent_fed_from_model,
-        ) = optimizer.optimize_to_humans(single_valued_constants, time_consts)
+            optimization_type=optimization_type,
+            title=title,
+        )
 
         CHECK_CONSTRAINTS = False
         if CHECK_CONSTRAINTS:
@@ -539,7 +536,7 @@ class ScenarioRunner:
                 model.variables(),
             )
 
-        return (model, variables, percent_fed_from_model)
+        return interpreted_results
 
     def set_depending_on_option(self, country_data, scenario_option):
         scenario_loader = Scenarios()

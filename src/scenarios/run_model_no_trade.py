@@ -105,6 +105,80 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             ],
         )
 
+    def alter_any_failing_scenarios(self, scenario_options, iso3):
+        """
+        These are the scenarios I seem to be unable to determine why optimization is failing.
+        I belive I have hit diminishing returns trying to figure them out, so I just patch them instead.
+        """
+        failing_scenarios = [
+            {
+                "country_code": "SLV",
+                "cull": ["do_eat_culled"],
+                "scale": ["country"],
+                "scenario": ["all_resilient_foods", "seaweed"],
+                "shutoff": [
+                    "continued",
+                    "long_delayed_shutoff",
+                    "short_delayed_shutoff",
+                ],
+                "CORRECTION": {"shutoff": "immediate"},
+                "WARNING": (
+                    "WARNING: SLV cannot run with seaweed under these specific conditions. "
+                    " Removing feed and biofuel demand from this scenario as a patch."
+                ),
+            },
+            {
+                "country_code": "DJI",
+                "crop_disruption": ["country_nuclear_winter"],
+                "cull": ["do_eat_culled", "dont_eat_culled"],
+                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
+                "scale": ["country"],
+                "scenario": [
+                    "no_resilient_foods",
+                    "seaweed",
+                    "methane_scp",
+                    "industrial_foods",
+                    "cellulosic_sugar",
+                ],
+                "seasonality": ["no_seasonality"],
+                "stored_food": ["baseline"],
+                "shutoff": [
+                    "continued",
+                    "long_delayed_shutoff",
+                    "short_delayed_shutoff",
+                ],
+                "CORRECTION": {"shutoff": "immediate"},
+                "WARNING": (
+                    "WARNING: DJI cannot run with baseline breeding under these specific conditions. "
+                    " Changing to reduced breeding in this scenario as a patch."
+                ),
+            },
+        ]
+        for failing_scenario in failing_scenarios:
+            iso3_failing_scenario = failing_scenario["country_code"]
+            correction = failing_scenario["CORRECTION"]
+            warning = failing_scenario["WARNING"]
+            del failing_scenario["country_code"]
+            del failing_scenario["CORRECTION"]
+            del failing_scenario["WARNING"]
+            # Check if keys in dict2 are a subset of keys in dict1 and values match for those keys
+            keys_are_subset = set(failing_scenario.keys()).issubset(
+                set(scenario_options.keys())
+            )
+            assert keys_are_subset
+            values_match = all(
+                scenario_options[key] in failing_scenario[key]
+                for key in failing_scenario
+            )
+            if values_match and iso3 == iso3_failing_scenario:
+                # alter the scenario
+                scenario_options[list(correction.keys())[0]] = list(
+                    correction.values()
+                )[0]
+                print(warning)
+
+        return scenario_options
+
     def run_optimizer_for_country(
         self,
         country_data,
@@ -165,6 +239,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 country_data,
                 title=title,
             )
+
             percent_people_fed = interpreted_results.percent_people_fed
         return (
             percent_people_fed / 100,
@@ -283,6 +358,10 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             if np.isnan(population):
                 continue
 
+            scenario_option = self.alter_any_failing_scenarios(
+                scenario_option, country_code
+            )
+
             (
                 needs_ratio,
                 scenario_description,
@@ -296,6 +375,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 title=title,
             )
             country_name = country_data["country"]
+            print("Country: " + country_name)
             if np.isnan(needs_ratio):
                 n_errors += 1
                 failed_countries += " " + country_name

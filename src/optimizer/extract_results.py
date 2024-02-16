@@ -256,16 +256,21 @@ class Extractor:
             production_kcals,
             1 / self.constants["KCALS_MONTHLY"],
         )
+        if self.constants["inputs"]["INCLUDE_FAT"]:
+            billions_fed_fat = self.to_monthly_list(
+                production_fat,
+                1 / self.constants["FAT_MONTHLY"] / 1e9,
+            )
+        else:
+            billions_fed_fat = np.zeros(self.constants["NMONTHS"])
 
-        billions_fed_fat = self.to_monthly_list(
-            production_fat,
-            1 / self.constants["FAT_MONTHLY"] / 1e9,
-        )
-
-        billions_fed_protein = self.to_monthly_list(
-            production_protein,
-            1 / self.constants["PROTEIN_MONTHLY"] / 1e9,
-        )
+        if self.constants["inputs"]["INCLUDE_PROTEIN"]:
+            billions_fed_protein = self.to_monthly_list(
+                production_protein,
+                1 / self.constants["PROTEIN_MONTHLY"] / 1e9,
+            )
+        else:
+            billions_fed_protein = np.zeros(self.constants["NMONTHS"])
 
         # Create a Food object with the monthly lists and corresponding units
         return Food(

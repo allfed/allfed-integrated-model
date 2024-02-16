@@ -75,7 +75,6 @@ class Plotter:
                 if label == "b":
                     continue
                 ax = fig.add_subplot(1, 1, 1)
-
             ykcals = []
             ykcals.append(interpreter.fish_kcals_equivalent.kcals)
             ykcals.append(interpreter.cell_sugar_kcals_equivalent.kcals)
@@ -1041,7 +1040,6 @@ class Plotter:
             country_name = lists_of_lists[i][1]
             interpreter = lists_of_lists[i][2]
             scenario_label = lists_of_lists[i][3]
-            print("country: " + country_name)
             if i == 10:
                 ax = fig.add_subplot(gs[5, :])
                 a = np.array([[0, 1]])

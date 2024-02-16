@@ -7,6 +7,7 @@ from datetime import time
 import sys
 import pulp
 import numpy as np
+import json
 from pulp import LpMaximize, LpMinimize, LpProblem, LpVariable, LpConstraint
 
 
@@ -180,6 +181,9 @@ class Optimizer:
         else:
             lower_bound = 0.99999 * min_consumption
             upper_bound = 1.00001 * min_consumption
+        if min_consumption == 0:
+            lower_bound = -0.001
+            upper_bound = 0.001
 
         # Define the relaxed conditions for the to_human variables
         if food_type == "outdoor_crops":
@@ -392,8 +396,6 @@ class Optimizer:
                 " variable definitions."
             )
             print(model)
-            print("")
-            print("")
         # Solve the initial model
         status = model.solve(
             pulp.PULP_CBC_CMD(gapRel=0.00001, msg=PRINT_PULP_MESSAGES, fracGap=0.0001)
@@ -402,6 +404,16 @@ class Optimizer:
         # Assert that the optimization was successful
         ASSERT_SUCCESSFUL_OPTIMIZATION = True
         if ASSERT_SUCCESSFUL_OPTIMIZATION:
+            if status != 1:
+                data = model.to_dict()
+                print("")
+                print("")
+                with open("model.json", "w") as f:
+                    json.dump(data, f, indent=4)
+                print(
+                    "model failed! saving the json as model.json in root dir. run the run_saved_model.py in "
+                    "scripts/ to reproduce the error"
+                )
             assert status == 1, "ERROR: OPTIMIZATION FAILED!"
 
         percent_fed_from_first_optimization = model.objective.value()
@@ -715,9 +727,9 @@ class Optimizer:
         status = model_max_to_humans.solve(
             pulp.PULP_CBC_CMD(gapRel=0.0001, msg=False, fracGap=0.001)
         )
-
-        # Check if optimization was successful
-        assert status == 1, "ERROR: OPTIMIZATION FAILED!"
+        if ASSERT_SUCCESSFUL_OPTIMIZATION:
+            # Check if optimization was successful
+            assert status == 1, "ERROR: OPTIMIZATION FAILED!"
 
         # Return the optimized model and updated variables dictionary
         return model_max_to_humans, variables
@@ -1875,36 +1887,40 @@ class Optimizer:
         )
 
         # Create a dictionary to store the nutrient multipliers
-        nutrient_multiplier_dictionary = {
-            fat_multiplier: "_Fat",
-            protein_multiplier: "_Protein",
-        }
+        nutrient_multiplier_dictionary = {}
+        if self.single_valued_constants["inputs"]["INCLUDE_PROTEIN"]:
+            nutrient_multiplier_dictionary[protein_multiplier] = "_Protein"
 
-        # Loop through the nutrient multiplier dictionary
-        for multiplier, nutrient in nutrient_multiplier_dictionary.items():
-            # Convert the nutrient name to lowercase
-            lowercase_nutrient = nutrient.lower()
+        if self.single_valued_constants["inputs"]["INCLUDE_FAT"]:
+            nutrient_multiplier_dictionary[fat_multiplier] = "_Fat"
+        if len(nutrient_multiplier_dictionary) > 0:
+            # Loop through the nutrient multiplier dictionary
+            for multiplier, nutrient in nutrient_multiplier_dictionary.items():
+                # Convert the nutrient name to lowercase
+                lowercase_nutrient = nutrient.lower()
 
-            # Add constraints for crops food eaten with a specified nutrient name
-            conditions.update(
-                self.add_crops_food_consumed_with_nutrient_name(
-                    variables, month, nutrient, lowercase_nutrient
+                # Add constraints for crops food eaten with a specified nutrient name
+                conditions.update(
+                    self.add_crops_food_consumed_with_nutrient_name(
+                        variables, month, nutrient, lowercase_nutrient
+                    )
                 )
-            )
 
-            # Loop through the usage types
-            for usage_type in ["_Feed", "_Biofuel"]:
-                # Convert the usage type to lowercase
-                lowercase_usage_type = usage_type.lower()
+                # Loop through the usage types
+                for usage_type in ["_Feed", "_Biofuel"]:
+                    # Convert the usage type to lowercase
+                    lowercase_usage_type = usage_type.lower()
 
-                # Add a constraint for the crops food eaten conversion
-                conditions["Crops_Food_Eaten_Conversion" + usage_type + nutrient] = (
-                    variables["crops_food" + lowercase_usage_type + lowercase_nutrient][
-                        month
-                    ]
-                    == variables["crops_food" + lowercase_usage_type][month]
-                    * multiplier
-                )
+                    # Add a constraint for the crops food eaten conversion
+                    conditions[
+                        "Crops_Food_Eaten_Conversion" + usage_type + nutrient
+                    ] = (
+                        variables[
+                            "crops_food" + lowercase_usage_type + lowercase_nutrient
+                        ][month]
+                        == variables["crops_food" + lowercase_usage_type][month]
+                        * multiplier
+                    )
 
         # Return the created conditions
         return conditions
@@ -1960,7 +1976,6 @@ class Optimizer:
             fat_multiplier,
             protein_multiplier,
         ) = self.get_outdoor_crops_month_constants(use_relocated_crops, month)
-
         conditions.update(
             self.create_linear_constraints_for_fat_and_protein_crops_food(
                 month, variables, fat_multiplier, protein_multiplier

@@ -109,22 +109,43 @@ class MeatAndDairy:
                     "RATIO_GRASSES_YEAR" + str(i)
                 ]
             else:
-                ratio_human_inedible_feed = 0
+                ratio_human_inedible_feed = constants_for_params[
+                    "RATIO_GRASSES_YEAR" + str(1)
+                ]
 
-            self.ratio_human_inedible_feed = np.append(
-                self.ratio_human_inedible_feed, [ratio_human_inedible_feed] * 12
-            )
+            if (
+                i == 1
+            ):  # the first year is only may through december (8 months including may)
+                self.human_inedible_feed_dry_caloric_tons_list = np.append(
+                    self.human_inedible_feed_dry_caloric_tons_list,
+                    [
+                        ratio_human_inedible_feed
+                        * constants_for_params["HUMAN_INEDIBLE_FEED_BASELINE_MONTHLY"]
+                    ]
+                    * 8,
+                )
+            elif i == 10:  # the last year is extended to make up for missing data
+                self.human_inedible_feed_dry_caloric_tons_list = np.append(
+                    self.human_inedible_feed_dry_caloric_tons_list,
+                    [
+                        ratio_human_inedible_feed
+                        * constants_for_params["HUMAN_INEDIBLE_FEED_BASELINE_MONTHLY"]
+                    ]
+                    * (12 + 4),
+                )
+            else:  # all other years are 12 months
+                self.human_inedible_feed_dry_caloric_tons_list = np.append(
+                    self.human_inedible_feed_dry_caloric_tons_list,
+                    [
+                        ratio_human_inedible_feed
+                        * constants_for_params["HUMAN_INEDIBLE_FEED_BASELINE_MONTHLY"]
+                    ]
+                    * 12,
+                )
+
             assert (
                 0 <= ratio_human_inedible_feed <= 10000
             ), "Error: Unreasonable ratio of grass production"
-            self.human_inedible_feed_dry_caloric_tons_list = np.append(
-                self.human_inedible_feed_dry_caloric_tons_list,
-                [
-                    ratio_human_inedible_feed
-                    * constants_for_params["HUMAN_INEDIBLE_FEED_BASELINE_MONTHLY"]
-                ]
-                * 12,
-            )
 
         human_inedible_feed_dry_caloric_tons = Food(
             kcals=self.human_inedible_feed_dry_caloric_tons_list,
@@ -134,6 +155,10 @@ class MeatAndDairy:
             fat_units="million tons each month",
             protein_units="million tons each month",
         )
+
+        PLOT_GRASSES_FOR_ANIMALS_FLAG = False
+        if PLOT_GRASSES_FOR_ANIMALS_FLAG:
+            human_inedible_feed_dry_caloric_tons.plot("grasses for animals")
 
         self.human_inedible_feed = (
             human_inedible_feed_dry_caloric_tons.in_units_bil_kcals_thou_tons_thou_tons_per_month()

@@ -26,16 +26,20 @@ class Seaweed:
             MAXIMUM_SEAWEED_AREA_GLOBAL
             * constants_for_params["SEAWEED_MAX_AREA_FRACTION"]
         )
-
-        self.MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS = constants_for_params[
-            "MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"
-        ]
-        self.MAX_SEAWEED_AS_PERCENT_KCALS_FEED = constants_for_params[
-            "MAX_SEAWEED_AS_PERCENT_KCALS_FEED"
-        ]
-        self.MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL = constants_for_params[
-            "MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"
-        ]
+        if constants_for_params["ADD_SEAWEED"]:
+            self.MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS = constants_for_params[
+                "MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"
+            ]
+            self.MAX_SEAWEED_AS_PERCENT_KCALS_FEED = constants_for_params[
+                "MAX_SEAWEED_AS_PERCENT_KCALS_FEED"
+            ]
+            self.MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL = constants_for_params[
+                "MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"
+            ]
+        else:
+            self.MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS = 0
+            self.MAX_SEAWEED_AS_PERCENT_KCALS_FEED = 0
+            self.MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL = 0
 
         # 1000s of tons wet global (trading blocs multiply this by some fraction)
         INITIAL_SEAWEED_GLOBAL = 1
