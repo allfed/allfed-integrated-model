@@ -116,14 +116,28 @@ class MeatAndDairy:
             if (
                 i == 1
             ):  # the first year is only may through december (8 months including may)
-                self.human_inedible_feed_dry_caloric_tons_list = np.append(
-                    self.human_inedible_feed_dry_caloric_tons_list,
-                    [
-                        ratio_human_inedible_feed
-                        * constants_for_params["HUMAN_INEDIBLE_FEED_BASELINE_MONTHLY"]
-                    ]
-                    * 8,
-                )
+                if not TESTING_FEW_MONTHS:
+                    self.human_inedible_feed_dry_caloric_tons_list = np.append(
+                        self.human_inedible_feed_dry_caloric_tons_list,
+                        [
+                            ratio_human_inedible_feed
+                            * constants_for_params[
+                                "HUMAN_INEDIBLE_FEED_BASELINE_MONTHLY"
+                            ]
+                        ]
+                        * 8,
+                    )
+                else:
+                    self.human_inedible_feed_dry_caloric_tons_list = np.append(
+                        self.human_inedible_feed_dry_caloric_tons_list,
+                        [
+                            ratio_human_inedible_feed
+                            * constants_for_params[
+                                "HUMAN_INEDIBLE_FEED_BASELINE_MONTHLY"
+                            ]
+                        ]
+                        * 12,
+                    )
             elif i == 10:  # the last year is extended to make up for missing data
                 self.human_inedible_feed_dry_caloric_tons_list = np.append(
                     self.human_inedible_feed_dry_caloric_tons_list,

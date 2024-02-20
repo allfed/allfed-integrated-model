@@ -131,9 +131,10 @@ simulations:
 
   - **shutoff**:
     - `immediate` - Immediately sets animal feed and biofuel production to 0
-    - `short_delayed_shutoff` - Phases out animal feed and biofuel production over a short timeframe (2 mo feed, 1 mo biofuel)
-    - `long_delayed_shutoff` - Phases out animal feed and biofuel production over a longer timeframe (3 mo feed, 2 mo biofuel)
-    - `continued` - Attempts to run continued animal feed and biofuel production as in present day
+    - `short_delayed_shutoff` - Phases out animal feed and biofuel production over a short timeframe (2 mo feed, 1 mo biofuel), only after 100% of people are fed
+    - `long_delayed_shutoff` - Phases out animal feed and biofuel production over a longer timeframe (3 mo feed, 2 mo biofuel), only after 100% of people are fed
+    - `continued` - Attempts to run continued animal feed and biofuel production as in present day, only after 100% of people are fed
+    - `continued_after_10_percent_fed` - Attempts to run continued animal feed and biofuel production as in present day, only after 10% of people are fed in each country, presumably the richest 10%.
     
   - **cull**:
     - `do_eat_culled` - Includes meat from culled animals

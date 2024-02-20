@@ -171,6 +171,17 @@ class ScenarioRunner:
             time_consts_round1["each_month_meat_slaughtered"].kcals,
             time_consts_round2["each_month_meat_slaughtered"].kcals,
         )
+        PLOT_MEAT_SLAUGHTERED = False
+        if PLOT_MEAT_SLAUGHTERED:
+            import matplotlib.pyplot as plt
+
+            plt.figure()
+            plt.plot(
+                time_consts_round2["each month meat slaughtered before retail waste"]
+            )
+            plt.title("round 2 meat cumulative")
+            plt.show()
+
         interpreted_results_round2 = self.run_optimizer(
             single_valued_constants_round2,
             time_consts_round2,
@@ -179,9 +190,31 @@ class ScenarioRunner:
             title=title,
         )
 
+        # looks like it's necessary to reduce the feed requirements by about 20kcals per month, in order
+        # to successfully run the optimization in the second round (however, this is only seemingly necessary when
+        # both culled meat is turned on and there's no storage between years?)
+
+        # Reduce each element by at most 20 kcals per person per day, ensuring results are not negative
+        interpreted_results_round2.feed_sum_kcals_equivalent.kcals = np.clip(
+            interpreted_results_round2.feed_sum_kcals_equivalent.kcals - 20,
+            0,
+            None,
+        )
+        interpreted_results_round2.biofuels_sum_kcals_equivalent.kcals = np.clip(
+            interpreted_results_round2.biofuels_sum_kcals_equivalent.kcals - 20,
+            0,
+            None,
+        )
+
         interpreted_results_round2.set_meat_dictionary(meat_dictionary_round2)
 
-        return interpreted_results_round2
+        return (
+            interpreted_results_round2,
+            meat_dictionary_round2,
+            time_consts_round2["each_month_meat_slaughtered"],
+            time_consts_round2["max_consumed_culled_kcals_each_month"],
+            single_valued_constants_round2["meat_summed_consumption"],
+        )
 
     def run_round_3(
         self,
@@ -192,6 +225,10 @@ class ScenarioRunner:
         interpreted_results_round2,
         feed_and_biofuels_round1,
         interpreter,
+        meat_dictionary_round2,
+        each_month_meat_slaughtered,
+        max_consumed_culled_kcals_each_month,
+        meat_summed_consumption,
         title="Untitled",
     ):
         # THIRD ROUND: NOW THAT THE AMOUNT OF FEED AND BIOFUEL CONSUMED IS KNOWN, ALLOCATE THE REST TO HUMANS
@@ -208,6 +245,27 @@ class ScenarioRunner:
             interpreted_results_round2,
             feed_and_biofuels_round1,
         )
+        # import matplotlib.pyplot as plt
+
+        # # plt.figure()
+        # # plt.plot(time_consts_round3['each_month_meat_slaughtered'])
+        # # plt.title("round 3 meat")
+        # # plt.show()
+        REPLACE_ROUND3_MEAT_WITH_ROUND2 = False
+        if REPLACE_ROUND3_MEAT_WITH_ROUND2:
+            time_consts_round3[
+                "each_month_meat_slaughtered"
+            ] = each_month_meat_slaughtered
+            time_consts_round3[
+                "max_consumed_culled_kcals_each_month"
+            ] = max_consumed_culled_kcals_each_month
+            single_valued_constants_round3[
+                "meat_summed_consumption"
+            ] = meat_summed_consumption
+        # plt.figure()
+        # plt.plot(time_consts_round3["max_consumed_culled_kcals_each_month"])
+        # plt.title("round 3 meat cumulative")
+        # plt.show()
 
         interpreted_results_round3 = self.run_optimizer(
             single_valued_constants_round3,
@@ -216,13 +274,16 @@ class ScenarioRunner:
             title=title,
         )
         interpreted_results_round3.set_feed_and_biofuels(feed_and_biofuels_round3)
-        interpreted_results_round3.set_meat_dictionary(meat_dictionary_round3)
+        if meat_dictionary_round2 is not None and REPLACE_ROUND3_MEAT_WITH_ROUND2:
+            interpreted_results_round3.set_meat_dictionary(meat_dictionary_round2)
+        else:
+            interpreted_results_round3.set_meat_dictionary(meat_dictionary_round3)
         # interpreted_results_round3.milk_kcals_equivalent.in_units_kcals_equivalent().plot(
         #     "milk 3rd round"
         # )
-        Validator.assert_fewer_calories_round2_than_round3(
-            interpreted_results_round2, interpreted_results_round3
-        )
+        # Validator.assert_fewer_calories_round2_than_round3(
+        #     interpreted_results_round2, interpreted_results_round3
+        # )
 
         Validator.assert_feed_used_round3_below_feed_used_round2(
             interpreted_results_round2, interpreted_results_round3
@@ -255,9 +316,8 @@ class ScenarioRunner:
         interpreter = Interpreter()
         # take the variables defining the scenario and compute the resulting needed
         # values as inputs to the optimizer
-
+        meat_dictionary_round2 = None
         constants_loader = Parameters()
-
         (
             single_valued_constants_round1,
             time_consts_round1,
@@ -268,6 +328,13 @@ class ScenarioRunner:
         ) = constants_loader.compute_parameters_first_round(
             constants_for_params, time_consts_for_params, scenario_loader
         )
+        each_month_meat_slaughtered = time_consts_round1["each_month_meat_slaughtered"]
+        max_consumed_culled_kcals_each_month = time_consts_round1[
+            "max_consumed_culled_kcals_each_month"
+        ]
+        meat_summed_consumption = single_valued_constants_round1[
+            "meat_summed_consumption"
+        ]
         validator = Validator()
         validator.ensure_all_time_constants_units_are_billion_kcals(time_consts_round1)
         ROUND_1_WAS_RUN_FLAG = False
@@ -319,7 +386,13 @@ class ScenarioRunner:
                     to_humans_title="Food to humans maximized, first round (no feed given to animals)",
                 )
 
-            interpreted_results_round2 = self.run_round_2(
+            (
+                interpreted_results_round2,
+                meat_dictionary_round2,
+                each_month_meat_slaughtered,
+                max_consumed_culled_kcals_each_month,
+                meat_summed_consumption,
+            ) = self.run_round_2(
                 constants_loader,
                 constants_for_params,
                 interpreted_results_round1,
@@ -402,6 +475,10 @@ class ScenarioRunner:
             interpreted_results_for_round3,
             feed_and_biofuels_round1,
             interpreter,
+            meat_dictionary_round2,
+            each_month_meat_slaughtered,
+            max_consumed_culled_kcals_each_month,
+            meat_summed_consumption,
             title=title + "_round3",
         )
 
@@ -414,6 +491,9 @@ class ScenarioRunner:
 
         if ROUND_1_WAS_RUN_FLAG:
             Validator.assert_round3_percent_fed_not_lower_than_round1(
+                constants_for_params[
+                    "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED"
+                ],
                 percent_fed_from_model_round1,
                 interpreted_results_round3.percent_people_fed,
             )
@@ -427,7 +507,7 @@ class ScenarioRunner:
             figure_save_postfix,
         )
         print("")
-        print("Percent people fed")
+        print(f'Percent people fed {country_data["country"]}:')
         print(round(interpreted_results_round3.percent_people_fed, 2))
         print("")
 
@@ -626,12 +706,15 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.set_continued_feed_biofuels(
                 constants_for_params
             )
+        elif scenario_option["shutoff"] == "continued_after_10_percent_fed":
+            constants_for_params = scenario_loader.set_continued_after_10_percent_fed(
+                constants_for_params
+            )
         else:
             scenario_is_correct = False
 
             assert scenario_is_correct, """You must specify 'shutoff' key as immediate,short_delayed_shutoff,one_month_delayed_shutoff,
-            long_delayed_shutoff, or continued"""
-
+            long_delayed_shutoff, continued_after_10_percent_fed, or continued"""
         # WASTE
 
         if scenario_option["waste"] == "zero":

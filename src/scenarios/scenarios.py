@@ -71,7 +71,7 @@ class Scenarios:
         constants_for_params["DELAY"] = {}
         constants_for_params["MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE"] = 1
 
-        constants_for_params["ADD_MILK"] = True
+        # constants_for_params["ADD_MILK"] = True
         constants_for_params["ADD_FISH"] = True
 
         self.GENERIC_INITIALIZED_SET = True
@@ -522,7 +522,9 @@ class Scenarios:
         assert not self.NONHUMAN_CONSUMPTION_SET
         constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 0
         constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 0
-
+        constants_for_params[
+            "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED"
+        ] = 100
         self.NONHUMAN_CONSUMPTION_SET = True
         return constants_for_params
 
@@ -531,6 +533,10 @@ class Scenarios:
         assert not self.NONHUMAN_CONSUMPTION_SET
         constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 1
         constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 1
+
+        constants_for_params[
+            "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED"
+        ] = 100
 
         self.NONHUMAN_CONSUMPTION_SET = True
         return constants_for_params
@@ -541,6 +547,9 @@ class Scenarios:
         constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 2
         constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 1
 
+        constants_for_params[
+            "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED"
+        ] = 100
         self.NONHUMAN_CONSUMPTION_SET = True
         return constants_for_params
 
@@ -549,6 +558,10 @@ class Scenarios:
         assert not self.NONHUMAN_CONSUMPTION_SET
         constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 3
         constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 2
+
+        constants_for_params[
+            "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED"
+        ] = 100
 
         self.NONHUMAN_CONSUMPTION_SET = True
         return constants_for_params
@@ -562,16 +575,37 @@ class Scenarios:
             "STORE_FOOD_BETWEEN_YEARS" in constants_for_params.keys()
         ), """ERROR : You must assign stored food before setting biofuels"""
 
-        if constants_for_params["STORE_FOOD_BETWEEN_YEARS"]:
-            constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = constants_for_params[
-                "NMONTHS"
-            ]
-            constants_for_params["DELAY"][
-                "BIOFUEL_SHUTOFF_MONTHS"
-            ] = constants_for_params["NMONTHS"]
-        else:
-            constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 11
-            constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 11
+        constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = constants_for_params[
+            "NMONTHS"
+        ]
+        constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = constants_for_params[
+            "NMONTHS"
+        ]
+        constants_for_params[
+            "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED"
+        ] = 100
+
+        self.NONHUMAN_CONSUMPTION_SET = True
+        return constants_for_params
+
+    def set_continued_after_10_percent_fed(self, constants_for_params):
+        self.scenario_description += "\ncontinued feed/biofuel after 10% fed"
+        assert not self.NONHUMAN_CONSUMPTION_SET
+        # if there is no food storage, then feed and biofuels when no food is being
+        # stored would not make any sense, as the total food available could go negative
+        assert (
+            "STORE_FOOD_BETWEEN_YEARS" in constants_for_params.keys()
+        ), """ERROR : You must assign stored food before setting biofuels"""
+
+        constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = constants_for_params[
+            "NMONTHS"
+        ]
+        constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = constants_for_params[
+            "NMONTHS"
+        ]
+        constants_for_params[
+            "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED"
+        ] = 10
 
         self.NONHUMAN_CONSUMPTION_SET = True
         return constants_for_params
@@ -1614,6 +1648,7 @@ class Scenarios:
         assert not self.CULLING_PARAM_SET
         self.scenario_description += "\ncull animals"
         constants_for_params["ADD_MEAT"] = True
+        constants_for_params["ADD_MILK"] = True
         self.CULLING_PARAM_SET = True
 
         return constants_for_params
@@ -1622,5 +1657,6 @@ class Scenarios:
         assert not self.CULLING_PARAM_SET
         self.scenario_description += "\nno culled animals"
         constants_for_params["ADD_MEAT"] = False
+        constants_for_params["ADD_MILK"] = False
         self.CULLING_PARAM_SET = True
         return constants_for_params

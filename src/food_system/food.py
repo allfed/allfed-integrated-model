@@ -645,7 +645,7 @@ class Food(UnitConversions):
         """
         assert (
             self.units == other.units
-        )  # Check that the units of the two foods are the same
+        ), "ERROR: adding foods with different units!"  # Check that the units of the two foods are the same
 
         # Add the kcals, fat, and protein of the two foods
         kcals = self.kcals + other.kcals
@@ -681,7 +681,9 @@ class Food(UnitConversions):
             >>> food3.protein
             10
         """
-        assert self.units == other.units  # Check that the units are the same
+        assert (
+            self.units == other.units
+        ), "ERROR: subtracting foods with different units!"  # Check that the units are the same
 
         # Subtract the nutrient quantities
         kcals = self.kcals - other.kcals
@@ -778,7 +780,9 @@ class Food(UnitConversions):
         """
         if isinstance(other, Food):
             # Check if the units of the two foods being divided are the same
-            assert self.units == other.units
+            assert (
+                self.units == other.units
+            ), "ERROR: comparing foods with different units!"
 
             if self.is_list_monthly():
                 # Check if both foods being divided are monthly lists
@@ -985,7 +989,9 @@ class Food(UnitConversions):
                     self.protein_units,
                 )
 
-                assert self.get_units() == other.get_units_from_element_to_list()
+                assert (
+                    self.get_units() == other.get_units_from_element_to_list()
+                ), "ERROR: multiplying foods with different units!"
 
             # this is a food and other is a list
             if isinstance(other, np.ndarray):
@@ -1116,7 +1122,9 @@ class Food(UnitConversions):
             >>> food1 == food2
             True
         """
-        assert self.units == other.units  # Ensure units are equal
+        assert (
+            self.units == other.units
+        ), "ERROR: comparing foods with different units!"  # Ensure units are equal
         if self.is_list_monthly():
             # Compare monthly foods
             return (
@@ -1153,7 +1161,9 @@ class Food(UnitConversions):
             >>> food1 != food2
             True
         """
-        assert self.units == other.units  # Ensure the units are the same
+        assert (
+            self.units == other.units
+        ), "ERROR: comparing foods with different units!"  # Ensure the units are the same
         if self.is_list_monthly():
             # Compare monthly foods
             return (

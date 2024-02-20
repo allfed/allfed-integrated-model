@@ -135,8 +135,8 @@ class Interpreter:
             minute = str(datetime.datetime.now().minute)
             second = str(datetime.datetime.now().second)
 
-            if title!="Untitled":
-                filename = title+"_ykcals.csv"
+            if title != "Untitled":
+                filename = title + "_ykcals.csv"
             else:
                 filename = (
                     "ykcals"
@@ -335,7 +335,6 @@ class Interpreter:
             self.percent_people_fed,
             self.constraining_nutrient,
         ) = self.get_percent_people_fed(humans_fed_sum)
-
         # rounding errors can be introduced by the optimizer. We correct them here.
         # ... at least the ones that we can identify.
         # We also round everything to within 0.1% of its value,

@@ -181,9 +181,6 @@ class Optimizer:
         else:
             lower_bound = 0.99999 * min_consumption
             upper_bound = 1.00001 * min_consumption
-        if min_consumption == 0:
-            lower_bound = -0.001
-            upper_bound = 0.001
 
         # Define the relaxed conditions for the to_human variables
         if food_type == "outdoor_crops":
@@ -470,10 +467,9 @@ class Optimizer:
             model, variables
         )
 
-        # If the first optimization was successful and if food storage between
-        # years is allowed, further optimize to reduce fluctuations in food
+        # If the first optimization was successful, further optimize to reduce fluctuations in food
         # distribution
-        if status == 1 and self.single_valued_constants["STORE_FOOD_BETWEEN_YEARS"]:
+        if status == 1:
             model, variables = self.reduce_fluctuations_with_a_final_optimization(
                 model,
                 variables,
@@ -1616,15 +1612,28 @@ class Optimizer:
                 variables["stored_food_end"][0]
                 == variables["stored_food_start"][0]
                 - variables["stored_food_to_humans"][0]
+                * 1
+                / (
+                    1 - self.single_valued_constants["STORED_FOOD_WASTE_RETAIL"] / 100
+                )  # increase calories, fat, and protein humans consumed by retail waste coefficient
                 - variables["stored_food_feed"][0]
                 - variables["stored_food_biofuel"][0]
             )
-
         # If it's after the first year of the simulation
         elif month > 12:
+            # conditions["Stored_Food_End"] = variables["stored_food_end"][month] == 0
+            # if self.optimization_type != "to_animals":
             # Add the condition that all stored food prefixes after the second one are equal to 0
-            for prefix in self.stored_food_prefixes[2:]:
+            for prefix in [
+                "Stored_Food_To_Humans",
+                "Stored_Food_Feed",
+                "Stored_Food_Biofuel",
+            ]:
                 conditions[prefix] = variables[prefix.lower()][month] == 0
+            conditions["Stored_Food_Start"] = (
+                variables["stored_food_start"][month]
+                == variables["stored_food_end"][month - 1]
+            )
 
         # If it's within the first year of the simulation
         else:
@@ -1635,8 +1644,16 @@ class Optimizer:
                 variables["stored_food_end"][month]
                 == variables["stored_food_start"][month]
                 - variables["stored_food_to_humans"][month]
+                * 1
+                / (
+                    1 - self.single_valued_constants["STORED_FOOD_WASTE_RETAIL"] / 100
+                )  # increase calories, fat, and protein humans consumed by retail waste coefficient
                 - variables["stored_food_feed"][month]
                 - variables["stored_food_biofuel"][month]
+            )
+            conditions["Stored_Food_Start"] = (
+                variables["stored_food_start"][month]
+                == variables["stored_food_end"][month - 1]
             )
 
         # Return the dictionary containing the conditions
@@ -1755,10 +1772,24 @@ class Optimizer:
             >>> add_outdoor_crops_to_model_no_storage(3, variables)
             {'Crops_Food_Storage_Zero': True}
         """
+        conditions = {}
+        # TODO: add fat and protein variables
+        conditions.update(
+            self.create_linear_constraints_for_fat_and_protein_crops_food(
+                month, variables, None, None
+            )
+        )
+
         # Create a dictionary containing the condition to be added to the model
-        conditions = {
-            "Crops_Food_Storage_Zero": variables["crops_food_storage"][month] == 0
-        }
+        conditions["Crops_Food_Storage_Zero"] = (
+            variables["crops_food_storage"][month] == 0
+        )
+        conditions["Crops_Food_Storage"] = (
+            0
+            == self.time_consts["outdoor_crops"].production.kcals[month]
+            - variables["crops_food_consumed"][month]
+        )
+
         # Return the dictionary containing the condition
         return conditions
 
@@ -1968,6 +1999,9 @@ class Optimizer:
     def add_outdoor_crops_to_model(self, month, variables):
         conditions = {}
 
+        # if not self.single_valued_constants["STORE_FOOD_BETWEEN_YEARS"]:
+        #     return self.add_outdoor_crops_to_model_no_storage(month, variables)
+
         use_relocated_crops = self.single_valued_constants["inputs"][
             "OG_USE_BETTER_ROTATION"
         ]
@@ -1976,6 +2010,7 @@ class Optimizer:
             fat_multiplier,
             protein_multiplier,
         ) = self.get_outdoor_crops_month_constants(use_relocated_crops, month)
+
         conditions.update(
             self.create_linear_constraints_for_fat_and_protein_crops_food(
                 month, variables, fat_multiplier, protein_multiplier

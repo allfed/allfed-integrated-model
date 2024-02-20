@@ -19,6 +19,7 @@ from src.food_system.food import Food
 from itertools import product
 import git
 from pathlib import Path
+import copy
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -153,7 +154,38 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                     " Changing to reduced breeding in this scenario as a patch."
                 ),
             },
+            {
+                "country_code": "NAM",
+                "crop_disruption": ["country_nuclear_winter"],
+                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
+                "scale": ["country"],
+                "shutoff": [
+                    "continued_after_10_percent_fed",
+                ],
+                "CORRECTION": {"shutoff": "continued"},
+                "WARNING": (
+                    "WARNING: NAM cannot run with baseline breeding under these specific conditions. "
+                    " Changing to reduced breeding in this scenario as a patch."
+                ),
+            },
+            {
+                "country_code": "BOL",
+                "crop_disruption": ["country_nuclear_winter"],
+                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
+                "scale": ["country"],
+                "cull": ["do_eat_culled"],
+                "shutoff": [
+                    "continued_after_10_percent_fed",
+                ],
+                "CORRECTION": {"shutoff": "continued"},
+                "WARNING": (
+                    "WARNING: BOL cannot run with these specific conditions. "
+                    " Changing to continued feed/biofuel after 100% fed in this country as a patch."
+                ),
+            },
         ]
+        unchanged_scenario_options_copy = copy.deepcopy(scenario_options)
+        altered_scenario_options = copy.deepcopy(scenario_options)
         for failing_scenario in failing_scenarios:
             iso3_failing_scenario = failing_scenario["country_code"]
             correction = failing_scenario["CORRECTION"]
@@ -172,12 +204,13 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             )
             if values_match and iso3 == iso3_failing_scenario:
                 # alter the scenario
-                scenario_options[list(correction.keys())[0]] = list(
+                altered_scenario_options[list(correction.keys())[0]] = list(
                     correction.values()
                 )[0]
                 print(warning)
-
-        return scenario_options
+                return altered_scenario_options  # there should only be one match, so return the alteration
+        # there were no alterations, return a copy of the original scenario options
+        return unchanged_scenario_options_copy
 
     def run_optimizer_for_country(
         self,
@@ -358,7 +391,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             if np.isnan(population):
                 continue
 
-            scenario_option = self.alter_any_failing_scenarios(
+            # let's alter some scenarios that are known to fail. Also make sure the changes are temporary by
+            # only altering a copy of the original scenario options
+            scenario_option_copy = self.alter_any_failing_scenarios(
                 scenario_option, country_code
             )
 
@@ -368,7 +403,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 interpreted_results,
             ) = self.run_optimizer_for_country(
                 country_data,
-                scenario_option,
+                scenario_option_copy,
                 create_pptx_with_all_countries,
                 show_country_figures,
                 figure_save_postfix,

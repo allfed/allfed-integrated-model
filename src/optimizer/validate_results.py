@@ -845,10 +845,10 @@ class Validator:
 
     @staticmethod
     def assert_round3_percent_fed_not_lower_than_round1(
-        percent_fed_round1, percent_fed_round3, epsilon=1
+        minimum_people_percent_fed, percent_fed_round1, percent_fed_round3, epsilon=1
     ):
         if (
-            percent_fed_round3 <= 99.9
+            percent_fed_round3 <= minimum_people_percent_fed - 0.1
         ):  # only in the case that people are starving do we check this
             if not percent_fed_round1 <= percent_fed_round3 + epsilon:
                 print(

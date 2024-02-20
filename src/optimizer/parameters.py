@@ -23,65 +23,6 @@ from src.food_system.animal_populations import AnimalPopulation, CalculateFeedAn
 from src.optimizer.validate_results import Validator
 
 
-def get_second_round_kcals_with_redistributed_meat(
-    round_1_meat_kcals, round_2_meat_kcals
-):
-    """
-    Gets a new array of kcals where the sum of kcals from meat remains the same, but the places where the meat was
-    originally larger than round 1 is reduced, and the places where the meat was less than round 1 is increased.
-    """
-    if round_1_meat_kcals.sum() > round_2_meat_kcals.sum():
-        print(
-            "WARNING: Meat produced from feed is less than produced without feed. Resetting the amount of meat "
-            " produced with feed to the amount of meat produced with zero feed."
-        )
-        round_2_meat_kcals = round_1_meat_kcals
-    difference = round_2_meat_kcals - round_1_meat_kcals
-    strictly_positive_difference = fill_negatives_with_positives(difference)
-
-    assert np.all(
-        strictly_positive_difference >= -0.001
-    )  # make sure it's indeed positive within a rounding error
-
-    # if the adjusted (filled in) map is higher, then we want that to be added to round_2_meat_kcals
-    adjustment_to_round2 = strictly_positive_difference - difference
-
-    assert abs(adjustment_to_round2.sum()) <= 0.001
-    # the total meat can't go below zero
-    assert np.all(adjustment_to_round2 + round_2_meat_kcals >= -0.001)
-
-    new_round_2_meat_kcals = round_2_meat_kcals + adjustment_to_round2
-
-    return new_round_2_meat_kcals
-
-
-def fill_negatives_with_positives(arr):
-    # go backwards through the array and fill any negative values with recent positive values so all values are above
-    # zero.
-    # Ensure the input is a numpy array
-    arr = np.array(arr, dtype=float)  # Use float for precision during adjustments
-    # Indices of negative values
-    negative_indices = np.where(arr < 0)[0]
-
-    # Work from the end of the array to find positive values
-    for neg_idx in negative_indices:
-        for i in range(len(arr) - 1, -1, -1):
-            # Skip if it's the same index or if the value is not positive
-            if i == neg_idx or arr[i] <= 0:
-                continue
-
-            # Calculate the adjustment needed
-            adjustment = min(-arr[neg_idx], arr[i])
-            arr[neg_idx] += adjustment
-            arr[i] -= adjustment
-
-            # Break if the negative value has been fully compensated
-            if arr[neg_idx] == 0:
-                break
-
-    return arr
-
-
 class Parameters:
     def __init__(self):
         """
@@ -217,6 +158,62 @@ class Parameters:
             feed_demand,  # feed requested by the user
             meat_dictionary_round1,
         )
+
+    def get_second_round_kcals_with_redistributed_meat(
+        self, round_1_meat_kcals, round_2_meat_kcals
+    ):
+        """
+        Gets a new array of kcals where the sum of kcals from meat remains the same, but the places where the meat was
+        originally larger than round 1 is reduced, and the places where the meat was less than round 1 is increased.
+        """
+        if round_1_meat_kcals.sum() > round_2_meat_kcals.sum():
+            print(
+                "WARNING: Meat produced from feed is less than produced without feed. Resetting the amount of meat "
+                " produced with feed to the amount of meat produced with zero feed."
+            )
+            round_2_meat_kcals = round_1_meat_kcals
+        difference = round_2_meat_kcals - round_1_meat_kcals
+        strictly_positive_difference = self.fill_negatives_with_positives(difference)
+
+        assert np.all(
+            strictly_positive_difference >= -0.001
+        )  # make sure it's indeed positive within a rounding error
+
+        # if the adjusted (filled in) map is higher, then we want that to be added to round_2_meat_kcals
+        adjustment_to_round2 = strictly_positive_difference - difference
+
+        assert abs(adjustment_to_round2.sum()) <= 0.001
+        # the total meat can't go below zero
+        assert np.all(adjustment_to_round2 + round_2_meat_kcals >= -0.001)
+
+        new_round_2_meat_kcals = round_2_meat_kcals + adjustment_to_round2
+
+        return new_round_2_meat_kcals
+
+    def fill_negatives_with_positives(self, arr):
+        # go backwards through the array and fill any negative values with recent positive values so all values are
+        # above zero. Ensure the input is a numpy array
+        arr = np.array(arr, dtype=float)  # Use float for precision during adjustments
+        # Indices of negative values
+        negative_indices = np.where(arr < 0)[0]
+
+        # Work from the end of the array to find positive values
+        for neg_idx in negative_indices:
+            for i in range(len(arr) - 1, -1, -1):
+                # Skip if it's the same index or if the value is not positive
+                if i == neg_idx or arr[i] <= 0:
+                    continue
+
+                # Calculate the adjustment needed
+                adjustment = min(-arr[neg_idx], arr[i])
+                arr[neg_idx] += adjustment
+                arr[i] -= adjustment
+
+                # Break if the negative value has been fully compensated
+                if arr[neg_idx] == 0:
+                    break
+
+        return arr
 
     def init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels_round1(
         self,
@@ -969,10 +966,14 @@ class Parameters:
         ) = meat_and_dairy.get_milk_produced_postwaste(monthly_milk_tons)
 
         # Set grazing milk constants in time_consts
-        time_consts["milk_kcals"] = milk_kcals
-        time_consts["milk_fat"] = milk_fat
-        time_consts["milk_protein"] = milk_protein
-
+        if constants_inputs["ADD_MILK"]:
+            time_consts["milk_kcals"] = milk_kcals
+            time_consts["milk_fat"] = milk_fat
+            time_consts["milk_protein"] = milk_protein
+        else:
+            time_consts["milk_kcals"] = np.zeros(len(milk_kcals))
+            time_consts["milk_fat"] = np.zeros(len(milk_fat))
+            time_consts["milk_protein"] = np.zeros(len(milk_protein))
         # Get meat nutrition constants
         (
             constants_out["KG_PER_SMALL_ANIMAL"],
@@ -1053,7 +1054,7 @@ class Parameters:
 
         time_consts_round2[
             "each_month_meat_slaughtered"
-        ].kcals = get_second_round_kcals_with_redistributed_meat(
+        ].kcals = self.get_second_round_kcals_with_redistributed_meat(
             time_consts_round1["each_month_meat_slaughtered"].kcals,
             time_consts_round2["each_month_meat_slaughtered"].kcals,
         )
@@ -1168,12 +1169,20 @@ class Parameters:
         # The next round of optimization, we will then have the food humans don't eat be fed to animals.
         # This in turn increases meat and dairy to humans. However, the feed used by animals will no longer
         # go to humans.
-        MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED = 100
+        MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED = constants_inputs[
+            "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED"
+        ]
+        fraction_to_feed_people_first = (
+            MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED / 100
+        )
         if (
             interpreted_results_round1.percent_people_fed
             > MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED
         ):
-            kcals_daily_maximum = constants_inputs["NUTRITION"]["KCALS_DAILY"]
+            kcals_daily_maximum = (
+                constants_inputs["NUTRITION"]["KCALS_DAILY"]
+                * fraction_to_feed_people_first
+            )
         else:
             kcals_daily_maximum = constants_inputs["NUTRITION"]["KCALS_DAILY"] * (
                 interpreted_results_round1.percent_people_fed / 100
@@ -1400,10 +1409,9 @@ class Parameters:
     ):
         # TODO: make this function work with fat and protein minimums...
 
-        # the constants_out output is what we modify and return
-        time_consts_round2 = copy.deepcopy(time_consts_round1)
-        meat_and_dairy = MeatAndDairy(constants_inputs)
+        time_consts_round3 = copy.deepcopy(time_consts_round1)
 
+        meat_and_dairy = MeatAndDairy(constants_inputs)
         feed_sum_billion_kcals = (
             interpreted_round2.feed_sum_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month()
         )
@@ -1430,9 +1438,9 @@ class Parameters:
 
         # final answer as to meat produced from feed
         (
-            max_feed_that_could_be_used_round3,
+            feed_used_round3,
             meat_dictionary_round3,
-            time_consts_round2,
+            time_consts_round3,
             constants_out,
         ) = self.init_meat_and_dairy_and_feed_from_breeding(
             constants_inputs,
@@ -1440,28 +1448,24 @@ class Parameters:
             feed_and_biofuels_class,
             meat_and_dairy,
             constants_out,
-            time_consts_round2,
+            time_consts_round3,
         )
 
         # Update feed_and_biofuels_class_round3 object with their values
         feed_and_biofuels_class.biofuel_demand = biofuel_sum_billion_kcals
         feed_and_biofuels_class.nonhuman_consumption = (
-            max_feed_that_could_be_used_round3 + biofuel_sum_billion_kcals
+            feed_used_round3 + biofuel_sum_billion_kcals
         )
-
         # Update time_consts_round2 dictionary
-        time_consts_round2["nonhuman_consumption"] = (
-            max_feed_that_could_be_used_round3 + biofuel_sum_billion_kcals
+        time_consts_round3["nonhuman_consumption"] = (
+            feed_used_round3 + biofuel_sum_billion_kcals
         )
-        time_consts_round2["feed"] = max_feed_that_could_be_used_round3
-        time_consts_round2["biofuel"] = biofuel_sum_billion_kcals
-        time_consts_round2[
-            "max_feed_that_could_be_used"
-        ] = max_feed_that_could_be_used_round3
+        time_consts_round3["feed"] = feed_used_round3
+        time_consts_round3["biofuel"] = biofuel_sum_billion_kcals
 
         return (
             constants_out,
-            time_consts_round2,
+            time_consts_round3,
             feed_and_biofuels_class,
             meat_dictionary_round3,
         )
