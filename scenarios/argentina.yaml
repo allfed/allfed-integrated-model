@@ -65,7 +65,7 @@ simulations:
     end_simulation_stocks_ratio: zero
     shutoff: continued
     cull: do_eat_culled
-    meat_strategy: reduce_breeding_USA
+    meat_strategy: reduce_breeding
     
   # Nuclear winter with reduced feed/waste  
   argentina_net_nuclear_winter_reduced:
@@ -85,7 +85,7 @@ simulations:
     end_simulation_stocks_ratio: zero
     shutoff: long_delayed_shutoff
     cull: do_eat_culled
-    meat_strategy: reduce_breeding_USA
+    meat_strategy: reduce_breeding
     
   # Nuclear winter with resilient foods
   argentina_net_nuclear_resilient:
@@ -105,7 +105,7 @@ simulations:
     end_simulation_stocks_ratio: zero
     shutoff: long_delayed_shutoff
     cull: do_eat_culled
-    meat_strategy: reduce_breeding_USA
+    meat_strategy: reduce_breeding
     
   # Nuclear winter with resilient foods & more area
   argentina_net_nuclear_resilient_more_area:
@@ -125,4 +125,4 @@ simulations:
     end_simulation_stocks_ratio: zero
     shutoff: long_delayed_shutoff
     cull: do_eat_culled
-    meat_strategy: reduce_breeding_USA
+    meat_strategy: reduce_breeding

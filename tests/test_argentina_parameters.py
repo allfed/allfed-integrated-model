@@ -91,9 +91,9 @@ def run_all_combinations():
                     "end_simulation_stocks_ratio": "zero",
                     "shutoff": "continued",
                     "cull": "do_eat_culled",
-                    "meat_strategy": "reduce_breeding_USA",
+                    "meat_strategy": "reduce_breeding",
                 }
-            }
+            },
         },
         {
             "settings": {"countries": "ARG", "NMONTHS": 120},
@@ -112,8 +112,8 @@ def run_all_combinations():
                     "cull": "dont_eat_culled",
                     "meat_strategy": "baseline_breeding",
                 }
-            }
-        }
+            },
+        },
     ]
     for i_base_config_data, base_config_data in enumerate(base_config_data_list):
         # The parameters to vary. All combinations of these parameters will be tested
