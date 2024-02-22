@@ -9,9 +9,10 @@ dependencies:
   - pytest
   - geopandas
   - seaborn
-  - yaml
+  - pyyaml 
   - ipykernel
   - flake8
+  - plotly # consider removing, but required for animal populations currently
   - pip:
     - gitpython
     - pulp
