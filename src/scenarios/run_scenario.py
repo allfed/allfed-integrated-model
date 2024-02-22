@@ -14,6 +14,10 @@ import sys
 import numpy as np
 import copy
 
+import git
+from pathlib import Path
+import pandas as pd
+
 from src.optimizer.optimizer import Optimizer
 from src.optimizer.interpret_results import Interpreter
 from src.optimizer.extract_results import Extractor
@@ -22,6 +26,9 @@ from src.optimizer.validate_results import Validator
 from src.optimizer.parameters import Parameters
 from src.utilities.plotter import Plotter
 from src.food_system.food import Food
+
+
+repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 
 def are_dicts_approx_same(dict1, dict2):
@@ -253,15 +260,15 @@ class ScenarioRunner:
         # # plt.show()
         REPLACE_ROUND3_MEAT_WITH_ROUND2 = False
         if REPLACE_ROUND3_MEAT_WITH_ROUND2:
-            time_consts_round3[
-                "each_month_meat_slaughtered"
-            ] = each_month_meat_slaughtered
-            time_consts_round3[
-                "max_consumed_culled_kcals_each_month"
-            ] = max_consumed_culled_kcals_each_month
-            single_valued_constants_round3[
-                "meat_summed_consumption"
-            ] = meat_summed_consumption
+            time_consts_round3["each_month_meat_slaughtered"] = (
+                each_month_meat_slaughtered
+            )
+            time_consts_round3["max_consumed_culled_kcals_each_month"] = (
+                max_consumed_culled_kcals_each_month
+            )
+            single_valued_constants_round3["meat_summed_consumption"] = (
+                meat_summed_consumption
+            )
         # plt.figure()
         # plt.plot(time_consts_round3["max_consumed_culled_kcals_each_month"])
         # plt.title("round 3 meat cumulative")
@@ -300,6 +307,7 @@ class ScenarioRunner:
         show_country_figures,
         figure_save_postfix,
         country_data,
+        save_all_results,
         title="Untitled",
     ):
         """
@@ -328,6 +336,12 @@ class ScenarioRunner:
         ) = constants_loader.compute_parameters_first_round(
             constants_for_params, time_consts_for_params, scenario_loader
         )
+
+        if save_all_results:
+            self.save_outdoor_crop_production_to_csv(
+                time_consts_round1, title, country_data
+            )
+
         each_month_meat_slaughtered = time_consts_round1["each_month_meat_slaughtered"]
         max_consumed_culled_kcals_each_month = time_consts_round1[
             "max_consumed_culled_kcals_each_month"
@@ -997,3 +1011,24 @@ class ScenarioRunner:
             reduce_breeding or baseline_breeding"""
 
         return constants_for_params, time_consts_for_params, scenario_loader
+
+    def save_outdoor_crop_production_to_csv(
+        self, time_consts_round1, title, country_data
+    ):
+        """
+        Saves the outdoor crop production to a csv file
+        """
+        production = (
+            time_consts_round1["outdoor_crops"]
+            .production.in_units_kcals_equivalent()
+            .kcals
+        )
+        df = pd.DataFrame()
+        df["production"] = production
+        df["month"] = df.index
+        df.to_csv(
+            Path(repo_root)
+            / "results"
+            / (title + "_" + country_data.country + "_outdoor_crop_production.csv"),
+            index=False,
+        )

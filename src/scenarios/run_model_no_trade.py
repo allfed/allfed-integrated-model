@@ -5,6 +5,7 @@ without trade scenarios.
 Created on Wed Jul 15
 @author: morgan
 """
+
 import pandas as pd
 import os
 import numpy as np
@@ -60,9 +61,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         if "buffer" not in this_simulation.keys():
             this_simulation["buffer"] = "baseline"
         if "shutoff" not in this_simulation.keys():
-            this_simulation[
-                "shutoff"
-            ] = "continued"  # this_simulation["shutoff"] = "immediate"
+            this_simulation["shutoff"] = (
+                "continued"  # this_simulation["shutoff"] = "immediate"
+            )
         if "cull" not in this_simulation.keys():
             this_simulation["cull"] = "do_eat_culled"
 
@@ -218,6 +219,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         scenario_option,
         create_pptx_with_all_countries,
         show_country_figures,
+        save_all_results,
         figure_save_postfix="",
         title="Untitled",
     ):
@@ -254,6 +256,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                     show_country_figures,
                     figure_save_postfix,
                     country_data,
+                    save_all_results,
                 )
                 percent_people_fed = interpreted_results.percent_people_fed
             except Exception as e:
@@ -270,6 +273,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 show_country_figures,
                 figure_save_postfix,
                 country_data,
+                save_all_results,
                 title=title,
             )
 
@@ -310,6 +314,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         countries_list=[],  # runs all the countries if empty
         figure_save_postfix="",
         return_results=False,
+        save_all_results=False,
     ):
         """
         This function runs the model for all countries in the world, no trade.
@@ -406,6 +411,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 scenario_option_copy,
                 create_pptx_with_all_countries,
                 show_country_figures,
+                save_all_results,
                 figure_save_postfix,
                 title=title,
             )
@@ -476,7 +482,71 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 + ".pptx"
             )
         # @li return a dataframe with each country and the world needs ratio
+        # print first value of the dict
+        if save_all_results:
+            self.save_all_results_to_csv(results, title)
         return [world, net_pop, net_pop_fed, results]
+
+    def save_all_results_to_csv(self, results, title):
+        """
+        Save the results to a csv file
+        Read by the web interface
+        """
+        # iterate over the values in the results dictionary
+        for country, result in results.items():
+            # Animal populations
+            df = pd.DataFrame(result.animal_population_dictionary)
+            df["month"] = df.index
+            df.to_csv(
+                Path(repo_root)
+                / "results"
+                / (title + "_" + country + "_animal_populations.csv"),
+                index=False,
+            )
+
+            # Biofuels
+            biofuels = pd.DataFrame(
+                {
+                    "biofuels_sum_kcals_equivalent": result.biofuels_sum_kcals_equivalent.kcals,
+                    "cell_sugar_biofuels_kcals_equivalent": result.cell_sugar_biofuels_kcals_equivalent.kcals,
+                    "outdoor_crops_biofuels_kcals_equivalent": result.outdoor_crops_biofuels_kcals_equivalent.kcals,
+                    "scp_biofuels_kcals_equivalent": result.scp_biofuels_kcals_equivalent.kcals,
+                    "seaweed_biofuels_kcals_equivalent": result.seaweed_biofuels_kcals_equivalent.kcals,
+                    "stored_food_biofuels_kcals_equivalent": result.stored_food_biofuels_kcals_equivalent.kcals,
+                }
+            )
+            biofuels["month"] = biofuels.index
+            biofuels.to_csv(
+                Path(repo_root) / "results" / (title + "_" + country + "_biofuels.csv"),
+                index=False,
+            )
+
+            # Feed
+            feed = pd.DataFrame(
+                {
+                    "feed_sum_kcals_equivalent": result.feed_sum_kcals_equivalent.kcals,
+                    "cell_sugar_feed_kcals_equivalent": result.cell_sugar_feed_kcals_equivalent.kcals,
+                    "outdoor_crops_feed_kcals_equivalent": result.outdoor_crops_feed_kcals_equivalent.kcals,
+                    "scp_feed_kcals_equivalent": result.scp_feed_kcals_equivalent.kcals,
+                    "seaweed_feed_kcals_equivalent": result.seaweed_feed_kcals_equivalent.kcals,
+                    "stored_food_feed_kcals_equivalent": result.stored_food_feed_kcals_equivalent.kcals,
+                }
+            )
+            feed["month"] = feed.index
+            feed.to_csv(
+                Path(repo_root) / "results" / (title + "_" + country + "_feed.csv"),
+                index=False,
+            )
+
+            # Meat
+            meat = pd.DataFrame(result.meat_dictionary)
+            meat["month"] = meat.index
+            meat.to_csv(
+                Path(repo_root) / "results" / (title + "_" + country + "_meat.csv"),
+                index=False,
+            )
+
+        return
 
     def get_countries_to_run_and_skip(self, countries_list):
         """
