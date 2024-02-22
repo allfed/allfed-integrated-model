@@ -394,9 +394,7 @@ class Optimizer:
             )
             print(model)
         # Solve the initial model
-        status = model.solve(
-            pulp.PULP_CBC_CMD(gapRel=0.00001, msg=PRINT_PULP_MESSAGES, fracGap=0.0001)
-        )
+        status = model.solve(pulp.PULP_CBC_CMD(gapRel=0.00001, msg=PRINT_PULP_MESSAGES))
 
         # Assert that the optimization was successful
         ASSERT_SUCCESSFUL_OPTIMIZATION = True
@@ -720,9 +718,7 @@ class Optimizer:
         model_max_to_humans.setObjective(variables["objective_function_best_to_humans"])
 
         # Solve the model using the PULP_CBC_CMD solver
-        status = model_max_to_humans.solve(
-            pulp.PULP_CBC_CMD(gapRel=0.0001, msg=False, fracGap=0.001)
-        )
+        status = model_max_to_humans.solve(pulp.PULP_CBC_CMD(gapRel=0.0001, msg=False))
         if ASSERT_SUCCESSFUL_OPTIMIZATION:
             # Check if optimization was successful
             assert status == 1, "ERROR: OPTIMIZATION FAILED!"
@@ -918,9 +914,7 @@ class Optimizer:
         model_smoothing.setObjective(smoothing_obj)
 
         # Solve the model using the PULP_CBC_CMD solver
-        status = model_smoothing.solve(
-            pulp.PULP_CBC_CMD(gapRel=0.0001, msg=False, fracGap=0.001)
-        )
+        status = model_smoothing.solve(pulp.PULP_CBC_CMD(gapRel=0.0001, msg=False))
 
         # Assert if optimization was successful
         if ASSERT_SUCCESSFUL_OPTIMIZATION:
@@ -1716,16 +1710,10 @@ class Optimizer:
         Returns:
             dict: A dictionary containing conditions related to meat
 
-        Example:
-            >>> optimizer = Optimizer()
-            >>> variables = {
-            ...     "meat_start": [10, 20, 30],
-            ...     "meat_end": [20, 30, 40],
-            ...     "meat_eaten": [5, 10, 15]
-            ... }
-            >>> optimizer.add_meat_to_model(1, variables)
-            {'Meat_Start': True, 'Meat_Eaten': 10}
         """
+        if not self.single_valued_constants["STORE_FOOD_BETWEEN_YEARS"]:
+            return self.add_meat_to_model_no_storage(month, variables)
+
         conditions = {}
 
         if month == 0:  # first Month
@@ -1753,6 +1741,33 @@ class Optimizer:
             * 1
             / (1 - self.single_valued_constants["MEAT_WASTE_RETAIL"] / 100)
             <= self.time_consts["max_consumed_culled_kcals_each_month"][month]
+        )
+
+        return conditions
+
+    def add_meat_to_model_no_storage(self, month, variables):
+        """
+        This function adds meat to the model based on the month and variables passed in.
+
+        It simply sets the meat eaten to the amount of meat slaughtered -- no storage at all.
+
+        Args:
+            month (int): The month for which the meat is being added
+            variables (dict): A dictionary containing variables related to meat
+
+        Returns:
+            dict: A dictionary containing conditions related to meat
+
+        """
+
+        conditions = {}
+
+        # Add in the constraint that meat eaten is less than the maximum consumed that month.
+        conditions["Meat_Eaten"] = (
+            variables["meat_eaten"][month]
+            * 1
+            / (1 - self.single_valued_constants["MEAT_WASTE_RETAIL"] / 100)
+            <= self.time_consts["each_month_meat_slaughtered"][month].kcals
         )
 
         return conditions

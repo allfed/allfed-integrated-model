@@ -610,24 +610,49 @@ class Scenarios:
         self.NONHUMAN_CONSUMPTION_SET = True
         return constants_for_params
 
+    def set_long_delayed_shutoff_after_10_percent_fed(self, constants_for_params):
+        self.scenario_description += "\ndelayed shutoff feed/biofuel after 10% fed"
+        assert not self.NONHUMAN_CONSUMPTION_SET
+        # if there is no food storage, then feed and biofuels when no food is being
+        # stored would not make any sense, as the total food available could go negative
+        assert (
+            "STORE_FOOD_BETWEEN_YEARS" in constants_for_params.keys()
+        ), """ERROR : You must assign stored food before setting biofuels"""
+
+        constants_for_params["DELAY"]["FEED_SHUTOFF_MONTHS"] = 12
+        constants_for_params["DELAY"]["BIOFUEL_SHUTOFF_MONTHS"] = 6
+        constants_for_params[
+            "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED"
+        ] = 10
+
+        self.NONHUMAN_CONSUMPTION_SET = True
+        return constants_for_params
+
     # MEAT PRODUCTION STRATEGIES
 
     def set_breeding_to_greatly_reduced(self, constants_for_params):
-        self.scenario_description += "\nfeed based on breeding patterns"
+        self.scenario_description += "\nstop breeding animals immediately"
         assert not self.MEAT_STRATEGY_SET
 
-        constants_for_params["REDUCED_BREEDING_STRATEGY"] = True
-        constants_for_params["USE_EFFICIENT_FEED_STRATEGY"] = np.nan  # undefined
+        constants_for_params["BREEDING_STRATEGY"] = "reduced"
 
         self.MEAT_STRATEGY_SET = True
         return constants_for_params
 
     def set_to_baseline_breeding(self, constants_for_params):
-        self.scenario_description += "\nfeed based on breeding patterns"
+        self.scenario_description += "\nunchanged animal breeding"
         assert not self.MEAT_STRATEGY_SET
 
-        constants_for_params["REDUCED_BREEDING_STRATEGY"] = False
-        constants_for_params["USE_EFFICIENT_FEED_STRATEGY"] = np.nan  # undefined
+        constants_for_params["BREEDING_STRATEGY"] = "baseline"
+
+        self.MEAT_STRATEGY_SET = True
+        return constants_for_params
+
+    def set_to_feed_only_ruminants(self, constants_for_params):
+        self.scenario_description += "\nfeed only ruminants, rest are reduced"
+        assert not self.MEAT_STRATEGY_SET
+
+        constants_for_params["BREEDING_STRATEGY"] = "feed_only_ruminants"
 
         self.MEAT_STRATEGY_SET = True
         return constants_for_params
@@ -832,7 +857,7 @@ class Scenarios:
     # INTAKE CONSTRAINTS
 
     def set_intake_constraints_to_enabled(self, constants_for_params):
-        self.scenario_description += "\nbaseline nutrition"
+        self.scenario_description += "\n% kcals limit for seaweed,cs,or scp enforced"
         assert not self.INTAKE_CONSTRAINTS_SET
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 10
         constants_for_params["MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_HUMANS"] = 40
@@ -849,7 +874,7 @@ class Scenarios:
         return constants_for_params
 
     def set_intake_constraints_to_disabled_for_humans(self, constants_for_params):
-        self.scenario_description += "\nminimum sufficient nutrition"
+        self.scenario_description += "\nno human % kcals limit for seaweed,cs,or scp"
         assert not self.INTAKE_CONSTRAINTS_SET
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = 100
         constants_for_params["MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_HUMANS"] = 100
@@ -873,7 +898,7 @@ class Scenarios:
         Sets the stored food at start of simulation to zero.
 
         """
-        self.scenario_description += "\nfood stored <= 12 months"
+        self.scenario_description += "\nzero stored food used"
         assert not self.STORED_FOOD_SET
         constants_for_params["STORE_FOOD_BETWEEN_YEARS"] = True
         constants_for_params["PERCENT_STORED_FOOD_TO_USE"] = 0
@@ -886,7 +911,7 @@ class Scenarios:
         Sets the stored food at start of simulation to the expected amount in the start month.
 
         """
-        self.scenario_description += "\nfood stored <= 12 months"
+        self.scenario_description += "\nexpected stored food usage in baseline scenario"
         assert not self.STORED_FOOD_SET
         constants_for_params["STORE_FOOD_BETWEEN_YEARS"] = True
         constants_for_params["PERCENT_STORED_FOOD_TO_USE"] = 100
@@ -925,7 +950,7 @@ class Scenarios:
         the end as a buffer.
 
         """
-        self.scenario_description += "\nfood stored <= 12 months"
+        self.scenario_description += "\nstored food/stored meat unused after 12 months"
         assert not self.STORED_FOOD_END_SIM_SET
         constants_for_params["STORE_FOOD_BETWEEN_YEARS"] = False
         constants_for_params["END_SIMULATION_STOCKS_RATIO"] = 0
@@ -1646,7 +1671,7 @@ class Scenarios:
 
     def cull_animals(self, constants_for_params):
         assert not self.CULLING_PARAM_SET
-        self.scenario_description += "\ncull animals"
+        self.scenario_description += "\nallow meat and milk consumption"
         constants_for_params["ADD_MEAT"] = True
         constants_for_params["ADD_MILK"] = True
         self.CULLING_PARAM_SET = True
@@ -1655,7 +1680,7 @@ class Scenarios:
 
     def dont_cull_animals(self, constants_for_params):
         assert not self.CULLING_PARAM_SET
-        self.scenario_description += "\nno culled animals"
+        self.scenario_description += "\nno meat or milk consumption"
         constants_for_params["ADD_MEAT"] = False
         constants_for_params["ADD_MILK"] = False
         self.CULLING_PARAM_SET = True

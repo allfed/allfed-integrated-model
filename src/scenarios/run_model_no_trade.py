@@ -115,7 +115,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             {
                 "country_code": "SLV",
                 "cull": ["do_eat_culled"],
-                "scale": ["country"],
                 "scenario": ["all_resilient_foods", "seaweed"],
                 "shutoff": [
                     "continued",
@@ -133,7 +132,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 "crop_disruption": ["country_nuclear_winter"],
                 "cull": ["do_eat_culled", "dont_eat_culled"],
                 "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "scale": ["country"],
                 "scenario": [
                     "no_resilient_foods",
                     "seaweed",
@@ -158,7 +156,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 "country_code": "NAM",
                 "crop_disruption": ["country_nuclear_winter"],
                 "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "scale": ["country"],
                 "shutoff": [
                     "continued_after_10_percent_fed",
                 ],
@@ -172,7 +169,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 "country_code": "BOL",
                 "crop_disruption": ["country_nuclear_winter"],
                 "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "scale": ["country"],
                 "cull": ["do_eat_culled"],
                 "shutoff": [
                     "continued_after_10_percent_fed",
@@ -181,6 +177,45 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 "WARNING": (
                     "WARNING: BOL cannot run with these specific conditions. "
                     " Changing to continued feed/biofuel after 100% fed in this country as a patch."
+                ),
+            },
+            {
+                "country_code": "LSO",
+                "crop_disruption": ["country_nuclear_winter"],
+                "meat_strategy": ["feed_only_ruminants"],
+                # "end_simulation_stocks_ratio": ["zero"],
+                "cull": ["do_eat_culled"],
+                "shutoff": [
+                    "long_delayed_shutoff_after_10_percent_fed",
+                    "continued_after_10_percent_fed",
+                    "long_delayed_shutoff",
+                ],
+                "CORRECTION": {"meat_strategy": "reduce_breeding"},
+                "WARNING": (
+                    "WARNING: LSO cannot run with these specific conditions. "
+                    " Changing to reduced breeding for all animals"
+                ),
+            },
+            {
+                "country_code": "ECU",
+                "scenario": [
+                    "all_resilient_foods",
+                    "seaweed",
+                    "greenhouse",
+                    "methane_scp",
+                    "relocated_crops",
+                    "industrial_foods",
+                    "cellulosic_sugar",
+                ],
+                "crop_disruption": ["country_nuclear_winter"],
+                "meat_strategy": ["feed_only_ruminants"],
+                "end_simulation_stocks_ratio": ["zero"],
+                "cull": ["do_eat_culled"],
+                "shutoff": ["long_delayed_shutoff"],
+                "CORRECTION": {"meat_strategy": "reduce_breeding"},
+                "WARNING": (
+                    "WARNING: ECU cannot run with these specific conditions. "
+                    " Changing to reduced breeding for all animals"
                 ),
             },
         ]

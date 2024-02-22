@@ -17,7 +17,7 @@ from src.utilities.make_powerpoint import MakePowerpoint
 
 from pathlib import Path
 from matplotlib.lines import Line2D
-
+import re
 import git
 
 plt.rcParams["axes.facecolor"] = "white"
@@ -228,23 +228,38 @@ class Plotter:
         path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
 
         saveloc = path_string + newtitle + ".png"
-        print("saveloc")
-        print(saveloc)
-        feed_saveloc = path_string + newtitle + "_feed.png"
+        feed_saveloc = re.sub(
+            r'[\\/*?:"<>|\n]', "_", path_string + newtitle + "_feed.png"
+        )
+        slaughter_saveloc = re.sub(
+            r'[\\/*?:"<>|\n]', "_", path_string + newtitle + "_slaughter.png"
+        )
         plt.savefig(
-            saveloc,
+            # Replace problematic characters with an underscore or remove them
+            re.sub(r'[\\/*?:"<>|\n]', "_", saveloc),
             dpi=300,
         )
         if add_slide_with_fig:
-            if interpreter.show_feed_biofuels:
-                crs.mp.insert_slide_with_feed(
-                    title_below=newtitle
+            if interpreter.show_feed_biofuels and os.path.isfile(feed_saveloc):
+                crs.mp.insert_slide(
+                    title_below="FEED "
+                    + newtitle
                     + ": Percent fed:"
                     + str(round(interpreter.percent_people_fed, 1))
                     + "%",
                     description=description,
-                    figure_save_loc=saveloc,
-                    feed_figure_save_loc=feed_saveloc,
+                    figure_save_loc=feed_saveloc,
+                )
+
+            if os.path.isfile(slaughter_saveloc):
+                crs.mp.insert_slide(
+                    title_below="SLAUGHTER "
+                    + newtitle
+                    + ": Percent fed:"
+                    + str(round(interpreter.percent_people_fed, 1))
+                    + "%",
+                    description=description,
+                    figure_save_loc=slaughter_saveloc,
                 )
 
             crs.mp.insert_slide(
@@ -466,10 +481,9 @@ class Plotter:
         path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
 
         saveloc = path_string + newtitle + "_feed.png"
-        print("saveloc")
-        print(saveloc)
         plt.savefig(
-            saveloc,
+            # Replace problematic characters with an underscore or remove them
+            re.sub(r'[\\/*?:"<>|\n]', "_", saveloc),
             dpi=300,
         )
         if plot_figure:
@@ -628,10 +642,9 @@ class Plotter:
         path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
 
         saveloc = path_string + newtitle + "_slaughter.png"
-        print("saveloc")
-        print(saveloc)
         plt.savefig(
-            saveloc,
+            # Replace problematic characters with an underscore or remove them
+            re.sub(r'[\\/*?:"<>|\n]', "_", saveloc),
             dpi=300,
         )
         if plot_figure:
@@ -1812,10 +1825,9 @@ class Plotter:
         plt.tight_layout(w_pad=1, h_pad=1)
         # if not showplot:
         saveloc = Path(repo_root) / "results" / "fig_s1abcd.png"
-        print("saveloc")
-        print(saveloc)
         plt.savefig(
-            saveloc,
+            # Replace problematic characters with an underscore or remove them
+            re.sub(r'[\\/*?:"<>|\n]', "_", saveloc),
             dpi=300,
         )
         # plt.close()
@@ -2097,11 +2109,10 @@ class Plotter:
         fig.suptitle(title)
 
         saveloc = Path(repo_root) / "results" / "large_reports" / (title + ".png")
-        print("saveloc")
-        print(saveloc)
 
         plt.savefig(
-            saveloc,
+            # Replace problematic characters with an underscore or remove them
+            re.sub(r'[\\/*?:"<>|\n]', "_", saveloc),
             dpi=300,
         )
         SHOWPLOT = True
@@ -2161,7 +2172,8 @@ class Plotter:
         print(saveloc)
 
         plt.savefig(
-            saveloc,
+            # Replace problematic characters with an underscore or remove them
+            re.sub(r'[\\/*?:"<>|\n]', "_", saveloc),
             dpi=300,
         )
 

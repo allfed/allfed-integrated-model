@@ -92,9 +92,9 @@ class ScenarioRunner:
                 Plotter.plot_slaughter(
                     interpreted_results,
                     "earliest_month_zero",
-                    (slaughter_title + " " if slaughter_title is not "" else "")
-                    + country_data["country"]
-                    + figure_save_postfix,
+                    # (slaughter_title + " " if slaughter_title is not "" else "")
+                    country_data["country"],
+                    # + figure_save_postfix,
                     show_country_figures,
                     create_pptx_with_all_countries,
                     scenario_loader.scenario_description,
@@ -370,7 +370,7 @@ class ScenarioRunner:
                 biofuels_demand, interpreted_results_round1, round=1
             )
 
-            DISPLAY_MEAT_PRODUCED_IF_NO_FEED = True
+            DISPLAY_MEAT_PRODUCED_IF_NO_FEED = False
             if DISPLAY_MEAT_PRODUCED_IF_NO_FEED:
                 # because feed and biofuel are zero, feed and biofuels plot
                 # most likely to be skipped unless there's some issue
@@ -428,17 +428,19 @@ class ScenarioRunner:
             else:
                 slaughter_title = "Max meat produced from second round calc (no restriction on feed before shutoff)"
 
-            self.display_results_of_optimizer_round(
-                interpreted_results_round2,
-                country_data,
-                show_country_figures,
-                create_pptx_with_all_countries,
-                scenario_loader,
-                figure_save_postfix,
-                slaughter_title=slaughter_title,
-                feed_title="Feed for second round optimization, no restriction to animals before shutoff",
-                to_humans_title="Humans fed only up to minimum needs",
-            )
+            DISPLAY_MEAT_PRODUCED_INCREASED_FEED = False
+            if DISPLAY_MEAT_PRODUCED_INCREASED_FEED:
+                self.display_results_of_optimizer_round(
+                    interpreted_results_round2,
+                    country_data,
+                    show_country_figures,
+                    create_pptx_with_all_countries,
+                    scenario_loader,
+                    figure_save_postfix,
+                    slaughter_title=slaughter_title,
+                    feed_title="Feed for second round optimization, no restriction to animals before shutoff",
+                    to_humans_title="Humans fed only up to minimum needs",
+                )
             interpreted_results_for_round3 = interpreted_results_round2
         else:
             # none of the feed or biofuel resources are made available to the model
@@ -505,6 +507,7 @@ class ScenarioRunner:
             create_pptx_with_all_countries,
             scenario_loader,
             figure_save_postfix,
+            slaughter_title="slaughter of animals for third round",
         )
         print("")
         print(f'Percent people fed {country_data["country"]}:')
@@ -709,6 +712,12 @@ class ScenarioRunner:
         elif scenario_option["shutoff"] == "continued_after_10_percent_fed":
             constants_for_params = scenario_loader.set_continued_after_10_percent_fed(
                 constants_for_params
+            )
+        elif scenario_option["shutoff"] == "long_delayed_shutoff_after_10_percent_fed":
+            constants_for_params = (
+                scenario_loader.set_long_delayed_shutoff_after_10_percent_fed(
+                    constants_for_params
+                )
             )
         else:
             scenario_is_correct = False
@@ -990,10 +999,14 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.set_to_baseline_breeding(
                 constants_for_params
             )
+        elif scenario_option["meat_strategy"] == "feed_only_ruminants":
+            constants_for_params = scenario_loader.set_to_feed_only_ruminants(
+                constants_for_params
+            )
         else:
             scenario_is_correct = False
 
             assert scenario_is_correct, """You must specify 'meat_strategy' key as either ,
-            reduce_breeding or baseline_breeding"""
+            reduce_breeding or baseline_breeding, or feed_only_ruminants"""
 
         return constants_for_params, time_consts_for_params, scenario_loader
