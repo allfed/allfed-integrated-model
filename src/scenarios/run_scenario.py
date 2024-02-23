@@ -88,7 +88,7 @@ class ScenarioRunner:
                 Plotter.plot_feed(
                     interpreted_results,
                     "earliest_month_zero",
-                    (feed_title + " " if feed_title != "" else "")
+                    (feed_title + " " if feed_title is not "" else "")
                     + country_data["country"]
                     + figure_save_postfix,
                     show_country_figures,
@@ -99,7 +99,7 @@ class ScenarioRunner:
                 Plotter.plot_slaughter(
                     interpreted_results,
                     "earliest_month_zero",
-                    (slaughter_title + " " if slaughter_title != "" else "")
+                    (slaughter_title + " " if slaughter_title is not "" else "")
                     + country_data["country"]
                     + figure_save_postfix,
                     show_country_figures,
@@ -110,7 +110,7 @@ class ScenarioRunner:
             Plotter.plot_fig_1ab(
                 interpreted_results,
                 NMONTHS,
-                (to_humans_title + " " if to_humans_title != "" else "")
+                (to_humans_title + " " if to_humans_title is not "" else "")
                 + country_data["country"]
                 + figure_save_postfix,
                 show_country_figures,
@@ -502,6 +502,9 @@ class ScenarioRunner:
         Validator.assert_biofuels_used_below_biofuels_demand(
             biofuels_demand, interpreted_results_round3, round=3
         )
+
+        if save_all_results:
+            self.save_feed_and_biofuels_to_csv(feed_demand, biofuels_demand, title, country_data)
 
         if ROUND_1_WAS_RUN_FLAG:
             Validator.assert_round3_percent_fed_not_lower_than_round1(
@@ -1032,3 +1035,22 @@ class ScenarioRunner:
             / (title + "_" + country_data.country + "_outdoor_crop_production.csv"),
             index=False,
         )
+        return
+
+    def save_feed_and_biofuels_to_csv(
+        self, feed_demand, biofuels_demand, title, country_data
+    ):
+        """
+        Saves the feed and biofuels demand to a csv file
+        """
+        df = pd.DataFrame()
+        df["feed_demand"] = feed_demand.in_units_kcals_equivalent().kcals
+        df["biofuels_demand"] = biofuels_demand.in_units_kcals_equivalent().kcals
+        df["month"] = df.index
+        df.to_csv(
+            Path(repo_root)
+            / "results"
+            / (title + "_" + country_data.country + "_feed_and_biofuels_demand.csv"),
+            index=False,
+        )
+        return
