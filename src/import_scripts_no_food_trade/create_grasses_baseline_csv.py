@@ -27,7 +27,8 @@ df_grasses = pd.read_excel(xls, "Grazing Baseline")[
 # rename the columns
 df_grasses.columns = ["iso3", "country", "grasses_baseline"]
 
-df_grasses["grasses_baseline"] = df_grasses["grasses_baseline"] * 1000
+# convert from thousand tons to million tons
+df_grasses["grasses_baseline"] = df_grasses["grasses_baseline"] / 1000
 
 df_grasses.to_csv(
     Path(repo_root)
