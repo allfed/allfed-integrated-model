@@ -166,17 +166,52 @@ def call_scenario_runner(
     pprint.pprint("")
     pprint.pprint("")
     scenario_runner = ScenarioRunnerNoTrade()
-    [world, pop_total, pop_fed, results] = scenario_runner.run_model_no_trade(
-        title=title,
-        create_pptx_with_all_countries=False,
-        show_country_figures=False,
-        show_map_figures=False,
-        add_map_slide_to_pptx=False,
-        scenario_option=this_simulation,
-        countries_list=countries_list,
-        figure_save_postfix=figure_save_postfix,
-        return_results=return_results,
-    )
+    RUN_LIMITED_SET_OF_COUNTRIES_TO_GENERATE_PPTX = False
+    if RUN_LIMITED_SET_OF_COUNTRIES_TO_GENERATE_PPTX:
+        [world, pop_total, pop_fed, results] = scenario_runner.run_model_no_trade(
+            title=title,
+            create_pptx_with_all_countries=True,
+            show_country_figures=False,
+            show_map_figures=False,
+            add_map_slide_to_pptx=True,
+            scenario_option=this_simulation,
+            # countries_list=countries_list,
+            countries_list=[
+                "IND",
+                "BRA",
+                "CHN",
+                "USA",
+                "PAK",
+                "ARG",
+                "MNG",
+                "AUS",
+                "CAN",
+                "NZL",
+                "DJI",
+                "IDN",
+                "GBR",
+                "CHL",
+                "RUS",
+                "NIG",
+                "ZAF",
+                "NGA",
+                "EGY",
+            ],
+            figure_save_postfix=figure_save_postfix,
+            return_results=return_results,
+        )
+    else:
+        [world, pop_total, pop_fed, results] = scenario_runner.run_model_no_trade(
+            title=title,
+            create_pptx_with_all_countries=False,
+            show_country_figures=False,
+            show_map_figures=False,
+            add_map_slide_to_pptx=False,
+            scenario_option=this_simulation,
+            countries_list=countries_list,
+            figure_save_postfix=figure_save_postfix,
+            return_results=return_results,
+        )
 
     return [world, pop_total, pop_fed, results]
 
@@ -239,77 +274,108 @@ def recalculate_plot_1():
     this_simulation["scenario"] = "no_resilient_foods"
 
     this_simulation["waste"] = "baseline_in_country"
-    this_simulation["shutoff"] = "continued"
+    this_simulation["shutoff"] = "continued_after_10_percent_fed"
     this_simulation["meat_strategy"] = "baseline_breeding"
 
+    this_simulation["seasonality"] = "country"
     this_simulation["stored_food"] = "baseline"
     this_simulation["end_simulation_stocks_ratio"] = "no_stored_between_years"
-    this_simulation["seasonality"] = "no_seasonality"
-
-    this_simulation["cull"] = "dont_eat_culled"
-    worst_case_title = "No Adaptations"
-
-    worst_case = call_scenario_runner_and_set_options(this_simulation, worst_case_title)
-    # WORST CASE + SIMPLE_ADAPTATIONS #
-
-    this_simulation["waste"] = "tripled_prices_in_country"
-    this_simulation["shutoff"] = "long_delayed_shutoff"
-    this_simulation["meat_strategy"] = "reduce_breeding"
-
-    simple_adaptations_title = "simple_adaptations"
-    simple_adaptations = call_scenario_runner_and_set_options(
-        this_simulation, simple_adaptations_title
-    )
-
-    # WORST CASE + SIMPLE_ADAPTATIONS + CULLING #
+    this_simulation["seasonality"] = "country"
 
     this_simulation["cull"] = "do_eat_culled"
 
-    simple_adaptations_culling_title = "simple_adaptations,\nculling"
-    simple_adaptations_culling = call_scenario_runner_and_set_options(
+    worst_case_title = "No Adaptations"
+    worst_case = call_scenario_runner_and_set_options(
         this_simulation,
-        simple_adaptations_culling_title,
+        worst_case_title,
+        # countries_list=[
+        #     "IND",
+        #     "BRA",
+        #     "CHN",
+        #     "USA",
+        #     "PAK",
+        #     "ARG",
+        #     "MNG",
+        #     "AUS",
+        #     "CAN",
+        #     "NZL",
+        #     "DJI",
+        #     "IDN",
+        #     "GBR",
+        #     "CHL",
+        #     "RUS",
+        #     "NIG",
+        #     "ZAF",
+        #     "NGA",
+        #     "EGY",
+        # ],
+    )
+    # WORST CASE + EAT AND STORE MEAT #
+
+    this_simulation["waste"] = "tripled_prices_in_country"
+    this_simulation["shutoff"] = "long_delayed_shutoff_after_10_percent_fed"
+    simple_adaptations_title = (
+        "Simple Adaptations \n(waste reduced,\n feed + biofuel delayed shutoff)"
+    )
+    simple_adaptations = call_scenario_runner_and_set_options(
+        this_simulation,
+        simple_adaptations_title,
+        # countries_list=["IND", "BRA", "CHN", "USA", "PAK"],
+    )
+
+    # WORST CASE + EAT AND STORE MEAT + SHUT OFF BREEDING + REDUCE WASTE #
+
+    this_simulation["end_simulation_stocks_ratio"] = "zero"
+    simple_adaptations_culling_title = "Simple Adaptations,\n Storage"
+    simple_adaptations_culling = call_scenario_runner_and_set_options(
+        this_simulation, simple_adaptations_culling_title  # , countries_list=["CHN"]
     )
 
     # WORST CASE + SIMPLE_ADAPTATIONS + CULLING + STORAGE #
-    this_simulation["end_simulation_stocks_ratio"] = "zero"
-    this_simulation["seasonality"] = "country"
+    this_simulation["meat_strategy"] = "feed_only_ruminants"
+    this_simulation["shutoff"] = "long_delayed_shutoff"
     example_scenario_title = (
-        "Example Scenario:\nsimple_adaptations\n+ culling\n+ storage"
+        "Example Scenario:\nSimple Adaptations\n+ Storage\n+Feed improved"
     )
     example_scenario = call_scenario_runner_and_set_options(
-        this_simulation, example_scenario_title
+        this_simulation, example_scenario_title  # , countries_list=["CHN"]
     )
 
     this_simulation["scenario"] = "all_resilient_foods"
-    all_resilient_foods_title = "Example Scenario\n + resilient foods"
+    all_resilient_foods_title = "Example Scenario\n + Resilient Foods"
     example_scenario_resilient_foods = call_scenario_runner_and_set_options(
-        this_simulation, all_resilient_foods_title
+        this_simulation, all_resilient_foods_title  # , countries_list=["CHN"]
     )
 
     # WORST CASE + SIMPLE_ADAPTATIONS + STORAGE + CULLING + ALL RESILIENT FOODS
     seaweed_title = "Example Scenario\n + seaweed"
     this_simulation["scenario"] = "seaweed"
-    seaweed = call_scenario_runner_and_set_options(this_simulation, seaweed_title)
+    seaweed = call_scenario_runner_and_set_options(
+        this_simulation, seaweed_title  # , countries_list=["CHN"]
+    )
 
     this_simulation["scenario"] = "methane_scp"
-    methane_scp_title = "Example Scenario\n + methane_scp"
+    methane_scp_title = "Example Scenario\n + Methane SCP"
     methane_scp = call_scenario_runner_and_set_options(
-        this_simulation, methane_scp_title
+        this_simulation, methane_scp_title  # , countries_list=["CHN"]
     )
 
     this_simulation["scenario"] = "cellulosic_sugar"
-    cs_title = "Example Scenario\n+ cellulosic_sugar"
-    cellulosic_sugar = call_scenario_runner_and_set_options(this_simulation, cs_title)
+    cs_title = "Example Scenario\n+ Cellulosic Sugar"
+    cellulosic_sugar = call_scenario_runner_and_set_options(
+        this_simulation, cs_title  # , countries_list=["CHN"]
+    )
 
     this_simulation["scenario"] = "relocated_crops"
-    cold_crops_title = "Example Scenario\n+ cold_crops"
-    cold_crops = call_scenario_runner_and_set_options(this_simulation, cold_crops_title)
+    cold_crops_title = "Example Scenario\n+ Cold Tolerant Crops"
+    cold_crops = call_scenario_runner_and_set_options(
+        this_simulation, cold_crops_title  # , countries_list=["CHN"]
+    )
 
     this_simulation["scenario"] = "greenhouse"
-    greenhouse_title = "Example Scenario\n+ greenhouse_crops"
+    greenhouse_title = "Example Scenario\n+ Greenhouse Crops"
     greenhouses = call_scenario_runner_and_set_options(
-        this_simulation, greenhouse_title
+        this_simulation, greenhouse_title  # , countries_list=["CHN"]
     )
 
     worlds = {}

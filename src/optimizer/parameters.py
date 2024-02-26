@@ -257,21 +257,12 @@ class Parameters:
         meat_and_dairy = MeatAndDairy(constants_inputs)
 
         grasses_for_animals = meat_and_dairy.human_inedible_feed
-        if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
-            feed_meat_object_round1 = CalculateFeedAndMeat(
-                country_code=constants_inputs["COUNTRY_CODE"],
-                available_feed=zero_feed,
-                available_grass=grasses_for_animals,
-                scenario="reduced",  # tries to reduce breeding
-            )
-
-        else:
-            feed_meat_object_round1 = CalculateFeedAndMeat(
-                country_code=constants_inputs["COUNTRY_CODE"],
-                available_feed=zero_feed,
-                available_grass=grasses_for_animals,
-                scenario="baseline",  # doesn't try to reduce breeding, baseline animal pops
-            )
+        feed_meat_object_round1 = CalculateFeedAndMeat(
+            country_code=constants_inputs["COUNTRY_CODE"],
+            available_feed=zero_feed,
+            available_grass=grasses_for_animals,
+            scenario=constants_inputs["BREEDING_STRATEGY"],  # tries to reduce breeding
+        )
 
         # MEAT AND DAIRY from breeding reduction strategy
 
@@ -1012,21 +1003,14 @@ class Parameters:
 
         meat_and_dairy = MeatAndDairy(constants_inputs)
         grasses_for_animals = meat_and_dairy.human_inedible_feed
-        if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
-            feed_meat_object_second_round = CalculateFeedAndMeat(
-                country_code=constants_inputs["COUNTRY_CODE"],
-                available_feed=feed_demand,
-                available_grass=grasses_for_animals,
-                scenario="reduced",  # tries to reduce breeding
-            )
-
-        else:
-            feed_meat_object_second_round = CalculateFeedAndMeat(
-                country_code=constants_inputs["COUNTRY_CODE"],
-                available_feed=feed_demand,
-                available_grass=grasses_for_animals,
-                scenario="baseline",  # doesn't try to reduce breeding, baseline animal pops
-            )
+        feed_meat_object_second_round = CalculateFeedAndMeat(
+            country_code=constants_inputs["COUNTRY_CODE"],
+            available_feed=feed_demand,
+            available_grass=grasses_for_animals,
+            scenario=constants_inputs[
+                "BREEDING_STRATEGY"
+            ],  # tries to reduce breeding or keep as baseline
+        )
 
         (
             max_feed_that_could_be_used_second_round,
@@ -1420,21 +1404,12 @@ class Parameters:
         )
 
         grasses_for_animals = meat_and_dairy.human_inedible_feed
-        if constants_inputs["REDUCED_BREEDING_STRATEGY"]:
-            feed_meat_object_third_round = CalculateFeedAndMeat(
-                country_code=constants_inputs["COUNTRY_CODE"],
-                available_feed=feed_sum_billion_kcals,
-                available_grass=grasses_for_animals,
-                scenario="reduced",  # tries to reduce breeding
-            )
-
-        else:
-            feed_meat_object_third_round = CalculateFeedAndMeat(
-                country_code=constants_inputs["COUNTRY_CODE"],
-                available_feed=feed_sum_billion_kcals,
-                available_grass=grasses_for_animals,
-                scenario="baseline",  # doesn't try to reduce breeding, baseline animal pops
-            )
+        feed_meat_object_third_round = CalculateFeedAndMeat(
+            country_code=constants_inputs["COUNTRY_CODE"],
+            available_feed=feed_sum_billion_kcals,
+            available_grass=grasses_for_animals,
+            scenario=constants_inputs["BREEDING_STRATEGY"],
+        )
 
         # final answer as to meat produced from feed
         (

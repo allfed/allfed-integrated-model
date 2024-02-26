@@ -116,7 +116,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             {
                 "country_code": "SLV",
                 "cull": ["do_eat_culled"],
-                "scale": ["country"],
                 "scenario": ["all_resilient_foods", "seaweed"],
                 "shutoff": [
                     "continued",
@@ -134,7 +133,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 "crop_disruption": ["country_nuclear_winter"],
                 "cull": ["do_eat_culled", "dont_eat_culled"],
                 "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "scale": ["country"],
                 "scenario": [
                     "no_resilient_foods",
                     "seaweed",
@@ -159,7 +157,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 "country_code": "NAM",
                 "crop_disruption": ["country_nuclear_winter"],
                 "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "scale": ["country"],
                 "shutoff": [
                     "continued_after_10_percent_fed",
                 ],
@@ -173,7 +170,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 "country_code": "BOL",
                 "crop_disruption": ["country_nuclear_winter"],
                 "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "scale": ["country"],
                 "cull": ["do_eat_culled"],
                 "shutoff": [
                     "continued_after_10_percent_fed",
@@ -182,6 +178,45 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 "WARNING": (
                     "WARNING: BOL cannot run with these specific conditions. "
                     " Changing to continued feed/biofuel after 100% fed in this country as a patch."
+                ),
+            },
+            {
+                "country_code": "LSO",
+                "crop_disruption": ["country_nuclear_winter"],
+                "meat_strategy": ["feed_only_ruminants"],
+                # "end_simulation_stocks_ratio": ["zero"],
+                "cull": ["do_eat_culled"],
+                "shutoff": [
+                    "long_delayed_shutoff_after_10_percent_fed",
+                    "continued_after_10_percent_fed",
+                    "long_delayed_shutoff",
+                ],
+                "CORRECTION": {"meat_strategy": "reduce_breeding"},
+                "WARNING": (
+                    "WARNING: LSO cannot run with these specific conditions. "
+                    " Changing to reduced breeding for all animals"
+                ),
+            },
+            {
+                "country_code": "ECU",
+                "scenario": [
+                    "all_resilient_foods",
+                    "seaweed",
+                    "greenhouse",
+                    "methane_scp",
+                    "relocated_crops",
+                    "industrial_foods",
+                    "cellulosic_sugar",
+                ],
+                "crop_disruption": ["country_nuclear_winter"],
+                "meat_strategy": ["feed_only_ruminants"],
+                "end_simulation_stocks_ratio": ["zero"],
+                "cull": ["do_eat_culled"],
+                "shutoff": ["long_delayed_shutoff"],
+                "CORRECTION": {"meat_strategy": "reduce_breeding"},
+                "WARNING": (
+                    "WARNING: ECU cannot run with these specific conditions. "
+                    "Changing to reduced breeding for all animals"
                 ),
             },
         ]
@@ -229,19 +264,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             time_consts_for_params,
             scenario_loader,
         ) = self.set_depending_on_option(country_data, scenario_option)
-
-        PRINT_COUNTRY = True
-        if PRINT_COUNTRY:
-            print("")
-            print("")
-            print("")
-            print("")
-            print("")
-            print("")
-            print(country_name)
-            print("")
-            print("")
-            print("")
 
         USE_TRY_CATCH = False
         if USE_TRY_CATCH:
@@ -392,15 +414,20 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
 
             population = country_data["population"]
 
-            # skip countries with no population
+            # skip countries with no
             if np.isnan(population):
                 continue
+            country_name = country_data["country"]
 
-            # let's alter some scenarios that are known to fail. Also make sure the changes are temporary by
-            # only altering a copy of the original scenario options
-            scenario_option_copy = self.alter_any_failing_scenarios(
-                scenario_option, country_code
-            )
+            ALTER_FAILING_SCENARIO = True
+            if ALTER_FAILING_SCENARIO:
+                # let's alter some scenarios that are known to fail. Also make sure the changes are temporary by
+                # only altering a copy of the original scenario options
+                scenario_option_copy = self.alter_any_failing_scenarios(
+                    scenario_option, country_code
+                )
+            else:
+                scenario_option_copy = copy.deepcopy(scenario_option)
 
             (
                 needs_ratio,
@@ -415,8 +442,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 figure_save_postfix,
                 title=title,
             )
-            country_name = country_data["country"]
-            print("Country: " + country_name)
             if np.isnan(needs_ratio):
                 n_errors += 1
                 failed_countries += " " + country_name
