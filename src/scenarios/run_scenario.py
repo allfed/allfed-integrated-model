@@ -167,6 +167,16 @@ class ScenarioRunner:
             time_consts_round1,
             interpreted_results_round1,
         )
+        if (
+            single_valued_constants_round2 is None
+            and time_consts_round2 is None
+            and feed_and_biofuels_round2 is None
+            and meat_dictionary_round2 is None
+            and min_human_food_consumption is None
+        ):
+            # this indicates the meat produced is in fact lower when feed is applied.
+            # Therefore, we will abort the second round and simply return the results from the first round with no feed
+            return None, None, None, None, None
         Validator.assert_meat_doesnt_increase_round_2(
             time_consts_round1["each_month_meat_slaughtered"].kcals,
             time_consts_round2["each_month_meat_slaughtered"].kcals,
@@ -291,6 +301,31 @@ class ScenarioRunner:
 
         return interpreted_results_round3
 
+    def get_interpreted_results_for_round3_if_zero_feed(self, interpreter, NMONTHS):
+        print("")
+        print("Skipped rounds 1 and 2 due to zero feed/biofuel")
+        print("")
+
+        interpreted_results_for_round3 = copy.deepcopy(interpreter)
+        interpreted_results_for_round3.feed_sum_kcals_equivalent = Food(
+            kcals=np.zeros(NMONTHS),
+            fat=np.zeros(NMONTHS),
+            protein=np.zeros(NMONTHS),
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
+        )
+
+        interpreted_results_for_round3.biofuels_sum_kcals_equivalent = Food(
+            kcals=np.zeros(NMONTHS),
+            fat=np.zeros(NMONTHS),
+            protein=np.zeros(NMONTHS),
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
+        )
+        return interpreted_results_for_round3
+
     def run_and_analyze_scenario(
         self,
         constants_for_params,
@@ -403,70 +438,70 @@ class ScenarioRunner:
                 title=title + "_round2",
             )
 
-            Validator.assert_feed_used_below_feed_demand(
-                feed_demand, interpreted_results_round2, round=2
-            )
-            Validator.assert_biofuels_used_below_biofuels_demand(
-                biofuels_demand, interpreted_results_round2, round=2
-            )
-            if DISPLAY_MEAT_PRODUCED_IF_NO_FEED and (
-                are_dicts_approx_same(
-                    interpreted_results_round1.meat_dictionary,
-                    interpreted_results_round2.meat_dictionary,
-                )
-                and are_dicts_approx_same(
-                    interpreted_results_round1.animal_population_dictionary,
-                    interpreted_results_round2.animal_population_dictionary,
-                )
+            if (
+                interpreted_results_round2 is None
+                and meat_dictionary_round2 is None
+                and each_month_meat_slaughtered is None
+                and max_consumed_culled_kcals_each_month is None
+                and meat_summed_consumption is None
             ):
-                # Meat produced from second round with no restriction is identical to with restrictions,
-                # so skip replotting.
-                slaughter_title = ""
-                print(
-                    "interpreted results approx same round 1 2 meat dict, animal dict, skipping"
+                # this indicates the meat produced is in fact lower when feed is applied.
+                # Therefore, we will abort the second round and simply return the results from the first round with no
+                # feed
+                interpreted_results_for_round3 = (
+                    self.get_interpreted_results_for_round3_if_zero_feed(
+                        interpreter, constants_for_params["NMONTHS"]
+                    )
                 )
-            else:
-                slaughter_title = "Max meat produced from second round calc (no restriction on feed before shutoff)"
 
-            DISPLAY_MEAT_PRODUCED_INCREASED_FEED = False
-            if DISPLAY_MEAT_PRODUCED_INCREASED_FEED:
-                self.display_results_of_optimizer_round(
-                    interpreted_results_round2,
-                    country_data,
-                    show_country_figures,
-                    create_pptx_with_all_countries,
-                    scenario_loader,
-                    figure_save_postfix,
-                    slaughter_title=slaughter_title,
-                    feed_title="Feed for second round optimization, no restriction to animals before shutoff",
-                    to_humans_title="Humans fed only up to minimum needs",
+            else:
+                Validator.assert_feed_used_below_feed_demand(
+                    feed_demand, interpreted_results_round2, round=2
                 )
-            interpreted_results_for_round3 = interpreted_results_round2
+                Validator.assert_biofuels_used_below_biofuels_demand(
+                    biofuels_demand, interpreted_results_round2, round=2
+                )
+                if DISPLAY_MEAT_PRODUCED_IF_NO_FEED and (
+                    are_dicts_approx_same(
+                        interpreted_results_round1.meat_dictionary,
+                        interpreted_results_round2.meat_dictionary,
+                    )
+                    and are_dicts_approx_same(
+                        interpreted_results_round1.animal_population_dictionary,
+                        interpreted_results_round2.animal_population_dictionary,
+                    )
+                ):
+                    # Meat produced from second round with no restriction is identical to with restrictions,
+                    # so skip replotting.
+                    slaughter_title = ""
+                    print(
+                        "interpreted results approx same round 1 2 meat dict, animal dict, skipping"
+                    )
+                else:
+                    slaughter_title = "Max meat produced from second round calc (no restriction on feed before shutoff)"
+
+                DISPLAY_MEAT_PRODUCED_INCREASED_FEED = False
+                if DISPLAY_MEAT_PRODUCED_INCREASED_FEED:
+                    self.display_results_of_optimizer_round(
+                        interpreted_results_round2,
+                        country_data,
+                        show_country_figures,
+                        create_pptx_with_all_countries,
+                        scenario_loader,
+                        figure_save_postfix,
+                        slaughter_title=slaughter_title,
+                        feed_title="Feed for second round optimization, no restriction to animals before shutoff",
+                        to_humans_title="Humans fed only up to minimum needs",
+                    )
+                interpreted_results_for_round3 = interpreted_results_round2
         else:
             # none of the feed or biofuel resources are made available to the model
             # or the user has not requested zero feed and biofuel
 
-            print("")
-            print("Skipped rounds 1 and 2 due to zero feed/biofuel")
-            print("")
-
-            interpreted_results_for_round3 = copy.deepcopy(interpreter)
-            interpreted_results_for_round3.feed_sum_kcals_equivalent = Food(
-                kcals=np.zeros(constants_for_params["NMONTHS"]),
-                fat=np.zeros(constants_for_params["NMONTHS"]),
-                protein=np.zeros(constants_for_params["NMONTHS"]),
-                kcals_units="billion kcals each month",
-                fat_units="thousand tons each month",
-                protein_units="thousand tons each month",
-            )
-
-            interpreted_results_for_round3.biofuels_sum_kcals_equivalent = Food(
-                kcals=np.zeros(constants_for_params["NMONTHS"]),
-                fat=np.zeros(constants_for_params["NMONTHS"]),
-                protein=np.zeros(constants_for_params["NMONTHS"]),
-                kcals_units="billion kcals each month",
-                fat_units="thousand tons each month",
-                protein_units="thousand tons each month",
+            interpreted_results_for_round3 = (
+                self.get_interpreted_results_for_round3_if_zero_feed(
+                    interpreter, constants_for_params["NMONTHS"]
+                )
             )
 
         interpreted_results_round3 = self.run_round_3(
@@ -509,10 +544,10 @@ class ScenarioRunner:
             figure_save_postfix,
             slaughter_title="slaughter of animals for third round",
         )
-        print("")
-        print(f'Percent people fed {country_data["country"]}:')
-        print(round(interpreted_results_round3.percent_people_fed, 2))
-        print("")
+        print(
+            f'Percent people fed {country_data["country"]} (iso3: {country_data["iso3"]}): '
+            f"{round(interpreted_results_round3.percent_people_fed, 2)}%"
+        )
 
         return interpreted_results_round3
 

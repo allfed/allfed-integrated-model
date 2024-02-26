@@ -226,17 +226,15 @@ class Plotter:
             fig.suptitle(newtitle)
 
         path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
+        newtitle_for_save = re.sub(r'[\\/*?:"<>|\n]', "_", newtitle)
+        saveloc = path_string + newtitle_for_save + ".png"
+        feed_saveloc = path_string + newtitle_for_save + "_feed.png"
 
-        saveloc = path_string + newtitle + ".png"
-        feed_saveloc = re.sub(
-            r'[\\/*?:"<>|\n]', "_", path_string + newtitle + "_feed.png"
-        )
-        slaughter_saveloc = re.sub(
-            r'[\\/*?:"<>|\n]', "_", path_string + newtitle + "_slaughter.png"
-        )
+        slaughter_saveloc = path_string + newtitle_for_save + "_slaughter.png"
+
         plt.savefig(
             # Replace problematic characters with an underscore or remove them
-            re.sub(r'[\\/*?:"<>|\n]', "_", saveloc),
+            saveloc,
             dpi=300,
         )
         if add_slide_with_fig:
@@ -374,8 +372,6 @@ class Plotter:
                 # then find max month
                 # maxy = max(sum([x[0:xlim] for x in ykcals]))
                 # maxy = max([sum(x[0:xlim]) for x in ykcals])
-                print("xlim")
-                print(xlim)
                 maxy = max([sum(x[0:xlim]) for x in ykcals])
 
                 maxy = 0
@@ -480,10 +476,10 @@ class Plotter:
             fig.suptitle(newtitle)
         path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
 
-        saveloc = path_string + newtitle + "_feed.png"
+        saveloc = path_string + re.sub(r'[\\/*?:"<>|\n]', "_", newtitle) + "_feed.png"
         plt.savefig(
             # Replace problematic characters with an underscore or remove them
-            re.sub(r'[\\/*?:"<>|\n]', "_", saveloc),
+            saveloc,
             dpi=300,
         )
         if plot_figure:
@@ -641,10 +637,12 @@ class Plotter:
         fig.suptitle(newtitle)
         path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
 
-        saveloc = path_string + newtitle + "_slaughter.png"
+        saveloc = (
+            path_string + re.sub(r'[\\/*?:"<>|\n]', "_", newtitle) + "_slaughter.png"
+        )
         plt.savefig(
             # Replace problematic characters with an underscore or remove them
-            re.sub(r'[\\/*?:"<>|\n]', "_", saveloc),
+            saveloc,
             dpi=300,
         )
         if plot_figure:
@@ -1827,7 +1825,7 @@ class Plotter:
         saveloc = Path(repo_root) / "results" / "fig_s1abcd.png"
         plt.savefig(
             # Replace problematic characters with an underscore or remove them
-            re.sub(r'[\\/*?:"<>|\n]', "_", saveloc),
+            saveloc,
             dpi=300,
         )
         # plt.close()
@@ -2108,11 +2106,16 @@ class Plotter:
         plt.tight_layout()
         fig.suptitle(title)
 
-        saveloc = Path(repo_root) / "results" / "large_reports" / (title + ".png")
+        saveloc = (
+            Path(repo_root)
+            / "results"
+            / "large_reports"
+            / (re.sub(r'[\\/*?:"<>|\n]', "_", title) + ".png")
+        )
 
         plt.savefig(
             # Replace problematic characters with an underscore or remove them
-            re.sub(r'[\\/*?:"<>|\n]', "_", saveloc),
+            saveloc,
             dpi=300,
         )
         SHOWPLOT = True
@@ -2167,13 +2170,18 @@ class Plotter:
         plt.tight_layout()
         fig.suptitle(title)
 
-        saveloc = Path(repo_root) / "results" / "large_reports" / "" + title + ".png"
+        saveloc = (
+            Path(repo_root)
+            / "results"
+            / "large_reports"
+            / ("" + re.sub(r'[\\/*?:"<>|\n]', "_", title) + ".png")
+        )
         print("saveloc")
         print(saveloc)
 
         plt.savefig(
             # Replace problematic characters with an underscore or remove them
-            re.sub(r'[\\/*?:"<>|\n]', "_", saveloc),
+            saveloc,
             dpi=300,
         )
 
@@ -2241,4 +2249,4 @@ class Plotter:
     def end_pptx(crs, saveloc):
         if not os.path.exists(Path(repo_root) / "results" / "large_reports"):
             os.mkdir(Path(repo_root) / "results" / "large_reports")
-        crs.mp.save_ppt(saveloc)
+        crs.mp.save_ppt(re.sub(r'[*?:"<>|\n]', "_", saveloc))

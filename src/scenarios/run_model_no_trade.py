@@ -215,7 +215,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 "CORRECTION": {"meat_strategy": "reduce_breeding"},
                 "WARNING": (
                     "WARNING: ECU cannot run with these specific conditions. "
-                    " Changing to reduced breeding for all animals"
+                    "Changing to reduced breeding for all animals"
                 ),
             },
         ]
@@ -262,19 +262,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             time_consts_for_params,
             scenario_loader,
         ) = self.set_depending_on_option(country_data, scenario_option)
-
-        PRINT_COUNTRY = True
-        if PRINT_COUNTRY:
-            print("")
-            print("")
-            print("")
-            print("")
-            print("")
-            print("")
-            print(country_name)
-            print("")
-            print("")
-            print("")
 
         USE_TRY_CATCH = False
         if USE_TRY_CATCH:
@@ -422,15 +409,20 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
 
             population = country_data["population"]
 
-            # skip countries with no population
+            # skip countries with no
             if np.isnan(population):
                 continue
+            country_name = country_data["country"]
 
-            # let's alter some scenarios that are known to fail. Also make sure the changes are temporary by
-            # only altering a copy of the original scenario options
-            scenario_option_copy = self.alter_any_failing_scenarios(
-                scenario_option, country_code
-            )
+            ALTER_FAILING_SCENARIO = True
+            if ALTER_FAILING_SCENARIO:
+                # let's alter some scenarios that are known to fail. Also make sure the changes are temporary by
+                # only altering a copy of the original scenario options
+                scenario_option_copy = self.alter_any_failing_scenarios(
+                    scenario_option, country_code
+                )
+            else:
+                scenario_option_copy = copy.deepcopy(scenario_option)
 
             (
                 needs_ratio,
@@ -444,8 +436,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 figure_save_postfix,
                 title=title,
             )
-            country_name = country_data["country"]
-            print("Country: " + country_name)
             if np.isnan(needs_ratio):
                 n_errors += 1
                 failed_countries += " " + country_name

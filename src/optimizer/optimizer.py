@@ -406,10 +406,13 @@ class Optimizer:
                 with open("model.json", "w") as f:
                     json.dump(data, f, indent=4)
                 print(
-                    "model failed! saving the json as model.json in root dir. run the run_saved_model.py in "
+                    f'model failed when running country {single_valued_constants["inputs"]["COUNTRY_CODE"]}! '
+                    "Saving the json as model.json in root dir. run the run_saved_model.py in "
                     "scripts/ to reproduce the error"
                 )
-            assert status == 1, "ERROR: OPTIMIZATION FAILED!"
+            assert (
+                status == 1
+            ), f'ERROR: OPTIMIZATION FAILED FOR {single_valued_constants["inputs"]["COUNTRY_CODE"]}!'
 
         percent_fed_from_first_optimization = model.objective.value()
         # To determine the allocation of
@@ -721,7 +724,9 @@ class Optimizer:
         status = model_max_to_humans.solve(pulp.PULP_CBC_CMD(gapRel=0.0001, msg=False))
         if ASSERT_SUCCESSFUL_OPTIMIZATION:
             # Check if optimization was successful
-            assert status == 1, "ERROR: OPTIMIZATION FAILED!"
+            assert (
+                status == 1
+            ), f'ERROR: OPTIMIZATION FAILED FOR {single_valued_constants["inputs"]["COUNTRY_CODE"]}!'
 
         # Return the optimized model and updated variables dictionary
         return model_max_to_humans, variables
@@ -918,7 +923,9 @@ class Optimizer:
 
         # Assert if optimization was successful
         if ASSERT_SUCCESSFUL_OPTIMIZATION:
-            assert status == 1, "ERROR: OPTIMIZATION FAILED!"
+            assert (
+                status == 1
+            ), f'ERROR: OPTIMIZATION FAILED FOR {single_valued_constants["inputs"]["COUNTRY_CODE"]}!'
 
         # Return the optimized model and the updated variables dictionary
         return model_smoothing, variables
