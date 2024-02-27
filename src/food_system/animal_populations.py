@@ -23,6 +23,7 @@ Functionality required
  # change how feed is attributed, make the DI% occur in a modular way, remove from the feed required calauclations (use net energy there, not gross energy)
 
 """
+
 from pathlib import Path
 import pandas as pd
 import git
@@ -1919,9 +1920,9 @@ class AnimalModelBuilder:
             # if milk animal, set the transfer population
             if animal.animal_function == "milk":
                 animal.set_milk_birth()
-                transfer_populations[
-                    animal.animal_species
-                ] = animal.set_initial_milk_transfer()
+                transfer_populations[animal.animal_species] = (
+                    animal.set_initial_milk_transfer()
+                )
                 transfer_pop = -transfer_populations[animal.animal_species]
             else:
                 # is not milk, recieve the transfer population (if no correspiodning milk animal, this will be zero)
@@ -2524,16 +2525,72 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
     return all_animals, feed_used, grass_used
 
 
-if __name__ == "__main__":
+def world_test():
+    """
+    Test the animal population model for the case with full-trade by including worldwide aggregated
+    feed and grass supply.
+    """
+    feed_world_baseline = 1447.96e6 / 12 * 4e6 / 1e9  # billion kcals / month
+    grass_world_baseline = 4206e6 / 12 * 4e6 / 1e9  # billion kcals / month
     feed = (
-        0  # billion kcals, shorthand way toa pply consistent supply over whole period
+        # 0  # billion kcals, shorthand way to apply consistent supply over whole period
+        feed_world_baseline
     )
     grass = (
-        0  # billion kcals, shorthand way toa pply consistent supply over whole period
+        # 0  # billion kcals, shorthand way to apply consistent supply over whole period
+        grass_world_baseline
     )
-    months = 10
+    months = 12
     output_list, feed_used, grass_used = main(
-        "JAM",
+        "WOR",
+        Debugging.available_feed_function(feed, months),
+        Debugging.available_grass_function(grass, months),
+        "baseline",
+        remove_first_month=1,
+    )
+    print(
+        "% feed used",
+        100 * feed_used[-1].kcals / feed_world_baseline,
+    )
+    print(
+        "% grass used",
+        100 * grass_used[-1].kcals / grass_world_baseline,
+    )
+    kg_meat_per_animal = {}
+    kg_meat_per_animal["small"] = 2.36
+    kg_meat_per_animal["medium"] = 24.6
+    kg_meat_per_animal["large"] = 269.7
+    number_of_animals = {}
+    number_of_animals["large"] = 0
+    number_of_animals["medium"] = 0
+    number_of_animals["small"] = 0
+    print()
+    for x in output_list:
+        print(x.animal_type)
+        assert all(np.abs(np.diff(x.population)/x.population[1:]) < 0.001), "population is not constant over time"
+        print(f"{x.population[-1] / 1e6} million individuals")
+        print(
+            f"{12 * x.slaughter[-1] * kg_meat_per_animal[x.animal_size] / 1e3 / 1e6} million tonnes of meat per year"
+        )
+        if "milk_cattle" == x.animal_type:
+            tons_milk_per_year = x.population[-1] * 12 * 24265 / 2.2046 / 365 * 30.4 / 1000 / 2
+            print(f"{tons_milk_per_year / 1e6} million tonnes of milk per year")
+            print(x.population_proportion_productive_milk)
+        number_of_animals[x.animal_size] += x.population[-1] / 1e9
+        print()
+    print("aggregated populations in billions", number_of_animals)
+
+
+if __name__ == "__main__":
+    feed = (
+        # 0  # billion kcals, shorthand way to apply consistent supply over whole period
+    )
+    grass = (
+        # 0  # billion kcals, shorthand way to apply consistent supply over whole period
+    )
+    months = 12
+    output_list, feed_used, grass_used = main(
+        "WOR",
         Debugging.available_feed_function(feed, months),
         Debugging.available_grass_function(grass, months),
         "baseline",
