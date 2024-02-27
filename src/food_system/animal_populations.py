@@ -48,8 +48,6 @@ class CalculateFeedAndMeat:
         object (of length (NMONTHS))
         """
 
-        print(available_feed, available_grass)
-
         self.all_animals, self.feed_used, self.grass_used = main(
             country_code,
             available_feed,
