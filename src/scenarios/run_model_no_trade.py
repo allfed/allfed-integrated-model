@@ -460,6 +460,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         else:
             ratio_fed = str(np.nan)
 
+        print("")
         print("Net population considered: " + str(net_pop / 1e9) + " Billion people")
         print("Fraction of this population fed: " + ratio_fed)
         print(scenario_description)

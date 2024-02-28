@@ -168,10 +168,10 @@ class Parameters:
         """
         if round_1_meat_kcals.sum() > round_2_meat_kcals.sum():
             print(
-                "WARNING: Meat produced from feed is less than produced without feed. Resetting the amount of meat "
-                " produced with feed to the amount of meat produced with zero feed."
+                "WARNING: Meat produced from feed is less than produced without feed. Skipping round 2 and setting"
+                " feed used to zero."
             )
-            round_2_meat_kcals = round_1_meat_kcals
+            return None
         difference = round_2_meat_kcals - round_1_meat_kcals
         strictly_positive_difference = self.fill_negatives_with_positives(difference)
 
@@ -257,6 +257,7 @@ class Parameters:
         meat_and_dairy = MeatAndDairy(constants_inputs)
 
         grasses_for_animals = meat_and_dairy.human_inedible_feed
+
         feed_meat_object_round1 = CalculateFeedAndMeat(
             country_code=constants_inputs["COUNTRY_CODE"],
             available_feed=zero_feed,
@@ -1003,6 +1004,7 @@ class Parameters:
 
         meat_and_dairy = MeatAndDairy(constants_inputs)
         grasses_for_animals = meat_and_dairy.human_inedible_feed
+
         feed_meat_object_second_round = CalculateFeedAndMeat(
             country_code=constants_inputs["COUNTRY_CODE"],
             available_feed=feed_demand,
@@ -1042,6 +1044,11 @@ class Parameters:
             time_consts_round1["each_month_meat_slaughtered"].kcals,
             time_consts_round2["each_month_meat_slaughtered"].kcals,
         )
+
+        if time_consts_round2["each_month_meat_slaughtered"].kcals is None:
+            # this indicates the meat produced is in fact lower when feed is applied.
+            # Therefore, we will abort the second round and simply return the results from the first round with no feed
+            return None, None, None, None, None
 
         assert np.abs(
             before_readjust_meat_round2.sum()
