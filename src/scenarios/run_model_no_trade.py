@@ -106,147 +106,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             ],
         )
 
-    def alter_any_failing_scenarios(self, scenario_options, iso3):
-        """
-        These are the scenarios I seem to be unable to determine why optimization is failing.
-        I belive I have hit diminishing returns trying to figure them out, so I just patch them instead.
-        """
-        failing_scenarios = [
-            {
-                "country_code": "SLV",
-                "cull": ["do_eat_culled"],
-                "scenario": ["all_resilient_foods", "seaweed"],
-                "shutoff": [
-                    "continued",
-                    "long_delayed_shutoff",
-                    "short_delayed_shutoff",
-                ],
-                "CORRECTION": {"shutoff": "immediate"},
-                "WARNING": (
-                    "WARNING: SLV cannot run with seaweed under these specific conditions. "
-                    " Removing feed and biofuel demand from this scenario as a patch."
-                ),
-            },
-            {
-                "country_code": "DJI",
-                "crop_disruption": ["country_nuclear_winter"],
-                "cull": ["do_eat_culled", "dont_eat_culled"],
-                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "scenario": [
-                    "no_resilient_foods",
-                    "seaweed",
-                    "methane_scp",
-                    "industrial_foods",
-                    "cellulosic_sugar",
-                ],
-                "seasonality": ["no_seasonality"],
-                "stored_food": ["baseline"],
-                "shutoff": [
-                    "continued",
-                    "long_delayed_shutoff",
-                    "short_delayed_shutoff",
-                ],
-                "CORRECTION": {"shutoff": "immediate"},
-                "WARNING": (
-                    "WARNING: DJI cannot run with baseline breeding under these specific conditions. "
-                    " Changing to reduced breeding in this scenario as a patch."
-                ),
-            },
-            {
-                "country_code": "NAM",
-                "crop_disruption": ["country_nuclear_winter"],
-                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "shutoff": [
-                    "continued_after_10_percent_fed",
-                ],
-                "CORRECTION": {"shutoff": "continued"},
-                "WARNING": (
-                    "WARNING: NAM cannot run with baseline breeding under these specific conditions. "
-                    " Changing to reduced breeding in this scenario as a patch."
-                ),
-            },
-            {
-                "country_code": "BOL",
-                "crop_disruption": ["country_nuclear_winter"],
-                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "cull": ["do_eat_culled"],
-                "shutoff": [
-                    "continued_after_10_percent_fed",
-                ],
-                "CORRECTION": {"shutoff": "continued"},
-                "WARNING": (
-                    "WARNING: BOL cannot run with these specific conditions. "
-                    " Changing to continued feed/biofuel after 100% fed in this country as a patch."
-                ),
-            },
-            {
-                "country_code": "LSO",
-                "crop_disruption": ["country_nuclear_winter"],
-                "meat_strategy": ["feed_only_ruminants"],
-                # "end_simulation_stocks_ratio": ["zero"],
-                "cull": ["do_eat_culled"],
-                "shutoff": [
-                    "long_delayed_shutoff_after_10_percent_fed",
-                    "continued_after_10_percent_fed",
-                    "long_delayed_shutoff",
-                ],
-                "CORRECTION": {"meat_strategy": "reduce_breeding"},
-                "WARNING": (
-                    "WARNING: LSO cannot run with these specific conditions. "
-                    " Changing to reduced breeding for all animals"
-                ),
-            },
-            {
-                "country_code": "ECU",
-                "scenario": [
-                    "all_resilient_foods",
-                    "seaweed",
-                    "greenhouse",
-                    "methane_scp",
-                    "relocated_crops",
-                    "industrial_foods",
-                    "cellulosic_sugar",
-                ],
-                "crop_disruption": ["country_nuclear_winter"],
-                "meat_strategy": ["feed_only_ruminants"],
-                "end_simulation_stocks_ratio": ["zero"],
-                "cull": ["do_eat_culled"],
-                "shutoff": ["long_delayed_shutoff"],
-                "CORRECTION": {"meat_strategy": "reduce_breeding"},
-                "WARNING": (
-                    "WARNING: ECU cannot run with these specific conditions. "
-                    "Changing to reduced breeding for all animals"
-                ),
-            },
-        ]
-        unchanged_scenario_options_copy = copy.deepcopy(scenario_options)
-        altered_scenario_options = copy.deepcopy(scenario_options)
-        for failing_scenario in failing_scenarios:
-            iso3_failing_scenario = failing_scenario["country_code"]
-            correction = failing_scenario["CORRECTION"]
-            warning = failing_scenario["WARNING"]
-            del failing_scenario["country_code"]
-            del failing_scenario["CORRECTION"]
-            del failing_scenario["WARNING"]
-            # Check if keys in dict2 are a subset of keys in dict1 and values match for those keys
-            keys_are_subset = set(failing_scenario.keys()).issubset(
-                set(scenario_options.keys())
-            )
-            assert keys_are_subset
-            values_match = all(
-                scenario_options[key] in failing_scenario[key]
-                for key in failing_scenario
-            )
-            if values_match and iso3 == iso3_failing_scenario:
-                # alter the scenario
-                altered_scenario_options[list(correction.keys())[0]] = list(
-                    correction.values()
-                )[0]
-                print(warning)
-                return altered_scenario_options  # there should only be one match, so return the alteration
-        # there were no alterations, return a copy of the original scenario options
-        return unchanged_scenario_options_copy
-
     def run_optimizer_for_country(
         self,
         country_data,
@@ -256,12 +115,11 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         figure_save_postfix="",
         title="Untitled",
     ):
-        country_name = country_data["country"]
         (
             constants_for_params,
             time_consts_for_params,
             scenario_loader,
-        ) = self.set_depending_on_option(country_data, scenario_option)
+        ) = self.set_depending_on_option(scenario_option, country_data=country_data)
 
         USE_TRY_CATCH = False
         if USE_TRY_CATCH:
@@ -275,7 +133,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                     create_pptx_with_all_countries,
                     show_country_figures,
                     figure_save_postfix,
-                    country_data,
+                    country_data["country"],
+                    country_data["iso3"],
+                    title=title,
                 )
                 percent_people_fed = interpreted_results.percent_people_fed
             except Exception as e:
@@ -291,7 +151,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 create_pptx_with_all_countries,
                 show_country_figures,
                 figure_save_postfix,
-                country_data,
+                country_data["country"],
+                country_data["iso3"],
                 title=title,
             )
 
@@ -414,23 +275,13 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 continue
             country_name = country_data["country"]
 
-            ALTER_FAILING_SCENARIO = True
-            if ALTER_FAILING_SCENARIO:
-                # let's alter some scenarios that are known to fail. Also make sure the changes are temporary by
-                # only altering a copy of the original scenario options
-                scenario_option_copy = self.alter_any_failing_scenarios(
-                    scenario_option, country_code
-                )
-            else:
-                scenario_option_copy = copy.deepcopy(scenario_option)
-
             (
                 needs_ratio,
                 scenario_description,
                 interpreted_results,
             ) = self.run_optimizer_for_country(
                 country_data,
-                scenario_option_copy,
+                scenario_option,
                 create_pptx_with_all_countries,
                 show_country_figures,
                 figure_save_postfix,

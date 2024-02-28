@@ -45,7 +45,7 @@ class ScenarioRunner:
     def display_results_of_optimizer_round(
         self,
         interpreted_results,
-        country_data,
+        country_name,
         show_country_figures,
         create_pptx_with_all_countries,
         scenario_loader,
@@ -82,7 +82,7 @@ class ScenarioRunner:
                     interpreted_results,
                     "earliest_month_zero",
                     (feed_title + " " if feed_title is not "" else "")
-                    + country_data["country"]
+                    + country_name
                     + figure_save_postfix,
                     show_country_figures,
                     create_pptx_with_all_countries,
@@ -93,7 +93,7 @@ class ScenarioRunner:
                     interpreted_results,
                     "earliest_month_zero",
                     # (slaughter_title + " " if slaughter_title is not "" else "")
-                    country_data["country"],
+                    country_name,
                     # + figure_save_postfix,
                     show_country_figures,
                     create_pptx_with_all_countries,
@@ -104,7 +104,7 @@ class ScenarioRunner:
                 interpreted_results,
                 NMONTHS,
                 (to_humans_title + " " if to_humans_title is not "" else "")
-                + country_data["country"]
+                + country_name
                 + figure_save_postfix,
                 show_country_figures,
                 create_pptx_with_all_countries,
@@ -334,7 +334,8 @@ class ScenarioRunner:
         create_pptx_with_all_countries,
         show_country_figures,
         figure_save_postfix,
-        country_data,
+        country_name,
+        country_iso3,
         title="Untitled",
     ):
         """
@@ -411,7 +412,7 @@ class ScenarioRunner:
                 # most likely to be skipped unless there's some issue
                 self.display_results_of_optimizer_round(
                     interpreted_results_round1,
-                    country_data,
+                    country_name,
                     show_country_figures,
                     create_pptx_with_all_countries,
                     scenario_loader,
@@ -484,7 +485,7 @@ class ScenarioRunner:
                 if DISPLAY_MEAT_PRODUCED_INCREASED_FEED:
                     self.display_results_of_optimizer_round(
                         interpreted_results_round2,
-                        country_data,
+                        country_name,
                         show_country_figures,
                         create_pptx_with_all_countries,
                         scenario_loader,
@@ -537,7 +538,7 @@ class ScenarioRunner:
 
         self.display_results_of_optimizer_round(
             interpreted_results_round3,
-            country_data,
+            country_name,
             show_country_figures,
             create_pptx_with_all_countries,
             scenario_loader,
@@ -545,7 +546,7 @@ class ScenarioRunner:
             slaughter_title="slaughter of animals for third round",
         )
         print(
-            f'Percent people fed {country_data["country"]} (iso3: {country_data["iso3"]}): '
+            f"Percent people fed {country_name} (iso3: {country_iso3}): "
             f"{round(interpreted_results_round3.percent_people_fed, 2)}%"
         )
 
@@ -656,17 +657,218 @@ class ScenarioRunner:
 
         return interpreted_results
 
-    def set_depending_on_option(self, country_data, scenario_option):
+    def alter_scenario_if_known_to_fail(self, scenario_option, iso3):
+        """
+        These are the scenarios I seem to be unable to determine why optimization is failing.
+        I belive I have hit diminishing returns trying to figure them out, so I just patch them instead.
+        """
+        failing_scenarios = [
+            {
+                "country_code": "SLV",
+                "cull": ["do_eat_culled"],
+                "scenario": ["all_resilient_foods", "seaweed"],
+                "shutoff": [
+                    "continued",
+                    "long_delayed_shutoff",
+                    "short_delayed_shutoff",
+                ],
+                "CORRECTION": {"shutoff": "immediate"},
+                "WARNING": (
+                    "WARNING: SLV cannot run with seaweed under these specific conditions. "
+                    " Removing feed and biofuel demand from this scenario as a patch."
+                ),
+            },
+            {
+                "country_code": "DJI",
+                "crop_disruption": ["country_nuclear_winter"],
+                "cull": ["do_eat_culled", "dont_eat_culled"],
+                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
+                "scenario": [
+                    "no_resilient_foods",
+                    "seaweed",
+                    "methane_scp",
+                    "industrial_foods",
+                    "cellulosic_sugar",
+                ],
+                "seasonality": ["no_seasonality"],
+                "stored_food": ["baseline"],
+                "shutoff": [
+                    "continued",
+                    "long_delayed_shutoff",
+                    "short_delayed_shutoff",
+                ],
+                "CORRECTION": {"shutoff": "immediate"},
+                "WARNING": (
+                    "WARNING: DJI cannot run with baseline breeding under these specific conditions. "
+                    " Changing to reduced breeding in this scenario as a patch."
+                ),
+            },
+            {
+                "country_code": "NAM",
+                "crop_disruption": ["country_nuclear_winter"],
+                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
+                "shutoff": [
+                    "continued_after_10_percent_fed",
+                ],
+                "CORRECTION": {"shutoff": "continued"},
+                "WARNING": (
+                    "WARNING: NAM cannot run with baseline breeding under these specific conditions. "
+                    " Changing to reduced breeding in this scenario as a patch."
+                ),
+            },
+            {
+                "country_code": "BOL",
+                "crop_disruption": ["country_nuclear_winter"],
+                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
+                "cull": ["do_eat_culled"],
+                "shutoff": [
+                    "continued_after_10_percent_fed",
+                ],
+                "CORRECTION": {"shutoff": "continued"},
+                "WARNING": (
+                    "WARNING: BOL cannot run with these specific conditions. "
+                    " Changing to continued feed/biofuel after 100% fed in this country as a patch."
+                ),
+            },
+            {
+                "country_code": "LSO",
+                "crop_disruption": ["country_nuclear_winter"],
+                "meat_strategy": ["feed_only_ruminants"],
+                # "end_simulation_stocks_ratio": ["zero"],
+                "cull": ["do_eat_culled"],
+                "shutoff": [
+                    "long_delayed_shutoff_after_10_percent_fed",
+                    "continued_after_10_percent_fed",
+                    "long_delayed_shutoff",
+                ],
+                "CORRECTION": {"meat_strategy": "reduce_breeding"},
+                "WARNING": (
+                    "WARNING: LSO cannot run with these specific conditions. "
+                    " Changing to reduced breeding for all animals"
+                ),
+            },
+            {
+                "country_code": "ECU",
+                "scenario": [
+                    "all_resilient_foods",
+                    "seaweed",
+                    "greenhouse",
+                    "methane_scp",
+                    "relocated_crops",
+                    "industrial_foods",
+                    "cellulosic_sugar",
+                ],
+                "crop_disruption": ["country_nuclear_winter"],
+                "meat_strategy": ["feed_only_ruminants"],
+                "end_simulation_stocks_ratio": ["zero"],
+                "cull": ["do_eat_culled"],
+                "shutoff": ["long_delayed_shutoff"],
+                "CORRECTION": {"meat_strategy": "reduce_breeding"},
+                "WARNING": (
+                    "WARNING: ECU cannot run with these specific conditions. "
+                    "Changing to reduced breeding for all animals"
+                ),
+            },
+        ]
+        unchanged_scenario_option_copy = copy.deepcopy(scenario_option)
+        altered_scenario_option = copy.deepcopy(scenario_option)
+        for failing_scenario in failing_scenarios:
+            iso3_failing_scenario = failing_scenario["country_code"]
+            correction = failing_scenario["CORRECTION"]
+            warning = failing_scenario["WARNING"]
+            del failing_scenario["country_code"]
+            del failing_scenario["CORRECTION"]
+            del failing_scenario["WARNING"]
+            # Check if keys in dict2 are a subset of keys in dict1 and values match for those keys
+            keys_are_subset = set(failing_scenario.keys()).issubset(
+                set(scenario_option.keys())
+            )
+            assert keys_are_subset
+            values_match = all(
+                scenario_option[key] in failing_scenario[key]
+                for key in failing_scenario
+            )
+            if values_match and iso3 == iso3_failing_scenario:
+                # alter the scenario
+                altered_scenario_option[list(correction.keys())[0]] = list(
+                    correction.values()
+                )[0]
+                print(warning)
+                return altered_scenario_option  # there should only be one match, so return the alteration
+        # there were no alterations, return a copy of the original scenario options
+        return unchanged_scenario_option_copy
+
+    def set_depending_on_option(self, scenario_option, country_data=None):
+        assert "scale" in scenario_option.keys(), "You must specify 'scale'"
+
+        assert "stored_food" in scenario_option.keys(), "You must specify 'stored_food'"
+
+        assert (
+            "end_simulation_stocks_ratio" in scenario_option.keys()
+        ), "You must specify 'end_simulation_stocks_ratio'"
+
+        assert "shutoff" in scenario_option.keys(), """You must specify 'shutoff'"""
+
+        assert "waste" in scenario_option.keys(), """You must specify 'waste'"""
+
+        assert "nutrition" in scenario_option.keys(), "You must specify 'nutrition'"
+
+        assert (
+            "intake_constraints" in scenario_option.keys()
+        ), "You must specify 'intake_constraints'"
+
+        assert (
+            "seasonality" in scenario_option.keys()
+        ), """You must specify 'seasonality'"""
+
+        assert "grasses" in scenario_option.keys(), """You must specify 'grasses'"""
+
+        assert "fish" in scenario_option.keys(), "You must specify 'fish'"
+
+        assert (
+            "crop_disruption" in scenario_option.keys()
+        ), """You must specify 'crop_disruption'"""
+
+        assert "protein" in scenario_option.keys(), "You must specify 'protein'"
+
+        assert "fat" in scenario_option.keys(), "You must specify 'fat'"
+
+        assert "cull" in scenario_option.keys(), "You must specify 'cull'"
+
+        assert "scenario" in scenario_option.keys(), """You must specify 'scenario'"""
+
+        assert (
+            "meat_strategy" in scenario_option.keys()
+        ), """You must specify 'meat_strategy'"""
+
+        scenario_is_correct = True  # until proven otherwise
+
         scenario_loader = Scenarios()
+        ALTER_FAILING_SCENARIO = True
+        if ALTER_FAILING_SCENARIO:
+            # let's alter some scenarios that are known to fail. Also make sure the changes are temporary by
+            # only altering a copy of the original scenario options
+            if country_data is None:
+                scenario_option_copy = self.alter_scenario_if_known_to_fail(
+                    scenario_option, "WOR"  # whole world
+                )
+            else:
+                scenario_option_copy = self.alter_scenario_if_known_to_fail(
+                    scenario_option, country_data["iso3"]  # the country of interest
+                )
+        else:
+            scenario_option_copy = copy.deepcopy(scenario_option)
 
         time_consts_for_params = {}
 
         # SCALE
-
-        if scenario_option["scale"] == "global":
+        if scenario_option_copy["scale"] == "global":
+            assert (
+                country_data is None
+            ), "ERROR: country data supplied for global crop run"
             constants_for_params = scenario_loader.init_global_food_system_properties()
-            constants_for_params["COUNTRY_CODE"] = "global"
-        elif scenario_option["scale"] == "country":
+            constants_for_params["COUNTRY_CODE"] = "WOR"
+        elif scenario_option_copy["scale"] == "country":
             constants_for_params = scenario_loader.init_country_food_system_properties(
                 country_data
             )
@@ -674,21 +876,19 @@ class ScenarioRunner:
             constants_for_params["COUNTRY_CODE"] = country_data["iso3"]
         else:
             scenario_is_correct = False
-            constants_for_params["COUNTRY_CODE"] = "global"
-
             assert (
                 scenario_is_correct
             ), "You must specify 'scale' key as global,or country"
 
-        constants_for_params["NMONTHS"] = scenario_option["NMONTHS"]
+        constants_for_params["NMONTHS"] = scenario_option_copy["NMONTHS"]
 
         # STORED FOOD
 
-        if scenario_option["stored_food"] == "zero":
+        if scenario_option_copy["stored_food"] == "zero":
             constants_for_params = scenario_loader.set_no_stored_food(
                 constants_for_params
             )
-        elif scenario_option["stored_food"] == "baseline":
+        elif scenario_option_copy["stored_food"] == "baseline":
             constants_for_params = scenario_loader.set_baseline_stored_food(
                 constants_for_params
             )
@@ -701,17 +901,18 @@ class ScenarioRunner:
 
         # END_SIMULATION_STOCKS_RATIO
 
-        if scenario_option["end_simulation_stocks_ratio"] == "zero":
+        if scenario_option_copy["end_simulation_stocks_ratio"] == "zero":
             constants_for_params = scenario_loader.set_stored_food_buffer_zero(
                 constants_for_params
             )
         elif (
-            scenario_option["end_simulation_stocks_ratio"] == "no_stored_between_years"
+            scenario_option_copy["end_simulation_stocks_ratio"]
+            == "no_stored_between_years"
         ):
             constants_for_params = scenario_loader.set_no_stored_food_between_years(
                 constants_for_params
             )
-        elif scenario_option["end_simulation_stocks_ratio"] == "baseline":
+        elif scenario_option_copy["end_simulation_stocks_ratio"] == "baseline":
             constants_for_params = scenario_loader.set_stored_food_buffer_as_baseline(
                 constants_for_params
             )
@@ -723,32 +924,35 @@ class ScenarioRunner:
             ), "You must specify 'end_simulation_stocks_ratio' key as zero, no_stored_between_years, or baseline"
 
         # SHUTOFF
-        if scenario_option["shutoff"] == "immediate":
+        if scenario_option_copy["shutoff"] == "immediate":
             constants_for_params = scenario_loader.set_immediate_shutoff(
                 constants_for_params
             )
-        elif scenario_option["shutoff"] == "one_month_delayed_shutoff":
+        elif scenario_option_copy["shutoff"] == "one_month_delayed_shutoff":
             constants_for_params = scenario_loader.set_one_month_delayed_shutoff(
                 constants_for_params
             )
 
-        elif scenario_option["shutoff"] == "short_delayed_shutoff":
+        elif scenario_option_copy["shutoff"] == "short_delayed_shutoff":
             constants_for_params = scenario_loader.set_short_delayed_shutoff(
                 constants_for_params
             )
-        elif scenario_option["shutoff"] == "long_delayed_shutoff":
+        elif scenario_option_copy["shutoff"] == "long_delayed_shutoff":
             constants_for_params = scenario_loader.set_long_delayed_shutoff(
                 constants_for_params
             )
-        elif scenario_option["shutoff"] == "continued":
+        elif scenario_option_copy["shutoff"] == "continued":
             constants_for_params = scenario_loader.set_continued_feed_biofuels(
                 constants_for_params
             )
-        elif scenario_option["shutoff"] == "continued_after_10_percent_fed":
+        elif scenario_option_copy["shutoff"] == "continued_after_10_percent_fed":
             constants_for_params = scenario_loader.set_continued_after_10_percent_fed(
                 constants_for_params
             )
-        elif scenario_option["shutoff"] == "long_delayed_shutoff_after_10_percent_fed":
+        elif (
+            scenario_option_copy["shutoff"]
+            == "long_delayed_shutoff_after_10_percent_fed"
+        ):
             constants_for_params = (
                 scenario_loader.set_long_delayed_shutoff_after_10_percent_fed(
                     constants_for_params
@@ -757,52 +961,57 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert scenario_is_correct, """You must specify 'shutoff' key as immediate,short_delayed_shutoff,one_month_delayed_shutoff,
-            long_delayed_shutoff, continued_after_10_percent_fed, or continued"""
+            assert scenario_is_correct, (
+                "You must specify 'shutoff' key as "
+                "immediate,short_delayed_shutoff,one_month_delayed_shutoff, "
+                "long_delayed_shutoff, continued_after_10_percent_fed, or continued."
+            )
         # WASTE
 
-        if scenario_option["waste"] == "zero":
+        if scenario_option_copy["waste"] == "zero":
             constants_for_params = scenario_loader.set_waste_to_zero(
                 constants_for_params
             )
-        elif scenario_option["waste"] == "tripled_prices_in_country":
+        elif scenario_option_copy["waste"] == "tripled_prices_in_country":
             constants_for_params = scenario_loader.set_country_waste_to_tripled_prices(
                 constants_for_params, country_data
             )
-        elif scenario_option["waste"] == "doubled_prices_in_country":
+        elif scenario_option_copy["waste"] == "doubled_prices_in_country":
             constants_for_params = scenario_loader.set_country_waste_to_doubled_prices(
                 constants_for_params, country_data
             )
-        elif scenario_option["waste"] == "baseline_in_country":
+        elif scenario_option_copy["waste"] == "baseline_in_country":
             constants_for_params = scenario_loader.set_country_waste_to_baseline_prices(
                 constants_for_params, country_data
             )
-        elif scenario_option["waste"] == "tripled_prices_globally":
+        elif scenario_option_copy["waste"] == "tripled_prices_globally":
             constants_for_params = scenario_loader.set_global_waste_to_tripled_prices(
                 constants_for_params
             )
-        elif scenario_option["waste"] == "doubled_prices_globally":
+        elif scenario_option_copy["waste"] == "doubled_prices_globally":
             constants_for_params = scenario_loader.set_global_waste_to_doubled_prices(
                 constants_for_params
             )
-        elif scenario_option["waste"] == "baseline_globally":
+        elif scenario_option_copy["waste"] == "baseline_globally":
             constants_for_params = scenario_loader.set_global_waste_to_baseline_prices(
                 constants_for_params
             )
         else:
             scenario_is_correct = False
 
-            assert scenario_is_correct, """You must specify 'waste' key as zero,tripled_prices_in_country,
-            doubled_prices_in_country,baseline_in_country,tripled_prices_globally,
-            doubled_prices_globally,or baseline_globally"""
+            assert scenario_is_correct, (
+                "You must specify 'waste' key as zero,tripled_prices_in_country,"
+                "doubled_prices_in_country,baseline_in_country,tripled_prices_globally,"
+                "doubled_prices_globally,or baseline_globally"
+            )
 
         # NUTRITION
 
-        if scenario_option["nutrition"] == "baseline":
+        if scenario_option_copy["nutrition"] == "baseline":
             constants_for_params = scenario_loader.set_baseline_nutrition_profile(
                 constants_for_params
             )
-        elif scenario_option["nutrition"] == "catastrophe":
+        elif scenario_option_copy["nutrition"] == "catastrophe":
             constants_for_params = scenario_loader.set_catastrophe_nutrition_profile(
                 constants_for_params
             )
@@ -815,11 +1024,11 @@ class ScenarioRunner:
 
         # INTAKE CONSTRAINTS
 
-        if scenario_option["intake_constraints"] == "enabled":
+        if scenario_option_copy["intake_constraints"] == "enabled":
             constants_for_params = scenario_loader.set_intake_constraints_to_enabled(
                 constants_for_params
             )
-        elif scenario_option["intake_constraints"] == "disabled_for_humans":
+        elif scenario_option_copy["intake_constraints"] == "disabled_for_humans":
             constants_for_params = (
                 scenario_loader.set_intake_constraints_to_disabled_for_humans(
                     constants_for_params
@@ -834,19 +1043,19 @@ class ScenarioRunner:
 
         # SEASONALITY
 
-        if scenario_option["seasonality"] == "no_seasonality":
+        if scenario_option_copy["seasonality"] == "no_seasonality":
             constants_for_params = scenario_loader.set_no_seasonality(
                 constants_for_params
             )
-        elif scenario_option["seasonality"] == "country":
+        elif scenario_option_copy["seasonality"] == "country":
             constants_for_params = scenario_loader.set_country_seasonality(
                 constants_for_params, country_data
             )
-        elif scenario_option["seasonality"] == "baseline_globally":
+        elif scenario_option_copy["seasonality"] == "baseline_globally":
             constants_for_params = scenario_loader.set_global_seasonality_baseline(
                 constants_for_params
             )
-        elif scenario_option["seasonality"] == "nuclear_winter_globally":
+        elif scenario_option_copy["seasonality"] == "nuclear_winter_globally":
             constants_for_params = (
                 scenario_loader.set_global_seasonality_nuclear_winter(
                     constants_for_params
@@ -855,43 +1064,47 @@ class ScenarioRunner:
         else:
             scenario_is_correct = False
 
-            assert scenario_is_correct, """You must specify 'seasonality' key as no_seasonality, country,
-             baseline_globally,or nuclear_winter_globally"""
+            assert scenario_is_correct, (
+                "You must specify 'seasonality' key as no_seasonality, country, "
+                "baseline_globally,or nuclear_winter_globally"
+            )
 
         # GRASSES
-        if scenario_option["grasses"] == "baseline":
+        if scenario_option_copy["grasses"] == "baseline":
             constants_for_params = scenario_loader.set_grasses_baseline(
                 constants_for_params
             )
-        elif scenario_option["grasses"] == "global_nuclear_winter":
+        elif scenario_option_copy["grasses"] == "global_nuclear_winter":
             constants_for_params = scenario_loader.set_global_grasses_nuclear_winter(
                 constants_for_params
             )
-        elif scenario_option["grasses"] == "country_nuclear_winter":
+        elif scenario_option_copy["grasses"] == "country_nuclear_winter":
             constants_for_params = scenario_loader.set_country_grasses_nuclear_winter(
                 constants_for_params, country_data
             )
-        elif scenario_option["grasses"] == "all_crops_die_instantly":
+        elif scenario_option_copy["grasses"] == "all_crops_die_instantly":
             constants_for_params = scenario_loader.set_country_grasses_to_zero(
                 constants_for_params
             )
         else:
             scenario_is_correct = False
 
-            assert scenario_is_correct, """You must specify 'grasses' key as baseline,
-            global_nuclear_winter,all_crops_die_instantly, or country_nuclear_winter"""
+            assert scenario_is_correct, (
+                "You must specify 'grasses' key as baseline,"
+                "global_nuclear_winter,all_crops_die_instantly, or country_nuclear_winter"
+            )
 
         # FISH
 
-        if scenario_option["fish"] == "zero":
+        if scenario_option_copy["fish"] == "zero":
             time_consts_for_params = scenario_loader.set_fish_zero(
                 constants_for_params, time_consts_for_params
             )
-        elif scenario_option["fish"] == "nuclear_winter":
+        elif scenario_option_copy["fish"] == "nuclear_winter":
             time_consts_for_params = scenario_loader.set_fish_nuclear_winter_reduction(
                 time_consts_for_params
             )
-        elif scenario_option["fish"] == "baseline":
+        elif scenario_option_copy["fish"] == "baseline":
             time_consts_for_params = scenario_loader.set_fish_baseline(
                 constants_for_params, time_consts_for_params
             )
@@ -904,38 +1117,40 @@ class ScenarioRunner:
 
         # CROPS
 
-        if scenario_option["crop_disruption"] == "zero":
+        if scenario_option_copy["crop_disruption"] == "zero":
             constants_for_params = scenario_loader.set_disruption_to_crops_to_zero(
                 constants_for_params
             )
-        elif scenario_option["crop_disruption"] == "global_nuclear_winter":
+        elif scenario_option_copy["crop_disruption"] == "global_nuclear_winter":
             constants_for_params = (
                 scenario_loader.set_nuclear_winter_global_disruption_to_crops(
                     constants_for_params
                 )
             )
-        elif scenario_option["crop_disruption"] == "country_nuclear_winter":
+        elif scenario_option_copy["crop_disruption"] == "country_nuclear_winter":
             constants_for_params = (
                 scenario_loader.set_nuclear_winter_country_disruption_to_crops(
                     constants_for_params, country_data
                 )
             )
-        elif scenario_option["crop_disruption"] == "all_crops_die_instantly":
+        elif scenario_option_copy["crop_disruption"] == "all_crops_die_instantly":
             constants_for_params = scenario_loader.set_zero_crops(constants_for_params)
         else:
             scenario_is_correct = False
 
-            assert scenario_is_correct, """You must specify 'crop_disruption' key as either zero,
-            global_nuclear_winter, all_crops_die_instantly, or country_nuclear_winter"""
+            assert scenario_is_correct, (
+                "You must specify 'crop_disruption' key as either zero,"
+                "global_nuclear_winter, all_crops_die_instantly, or country_nuclear_winter"
+            )
 
         # PROTEIN
 
-        if scenario_option["protein"] == "required":
+        if scenario_option_copy["protein"] == "required":
             print("ERROR: fat and protein not working in this version of the model")
             print("(compute parameters in the second round would need to be modified)")
             sys.exit()
             constants_for_params = scenario_loader.include_protein(constants_for_params)
-        elif scenario_option["protein"] == "not_required":
+        elif scenario_option_copy["protein"] == "not_required":
             constants_for_params = scenario_loader.dont_include_protein(
                 constants_for_params
             )
@@ -948,12 +1163,12 @@ class ScenarioRunner:
 
         # FAT
 
-        if scenario_option["fat"] == "required":
+        if scenario_option_copy["fat"] == "required":
             print("ERROR: fat and protein not working in this version of the model")
             print("(compute parameters in the second round would need to be modified)")
             sys.exit()
             constants_for_params = scenario_loader.include_fat(constants_for_params)
-        elif scenario_option["fat"] == "not_required":
+        elif scenario_option_copy["fat"] == "not_required":
             constants_for_params = scenario_loader.dont_include_fat(
                 constants_for_params
             )
@@ -966,9 +1181,9 @@ class ScenarioRunner:
 
         # CULLING
 
-        if scenario_option["cull"] == "do_eat_culled":
+        if scenario_option_copy["cull"] == "do_eat_culled":
             constants_for_params = scenario_loader.cull_animals(constants_for_params)
-        elif scenario_option["cull"] == "dont_eat_culled":
+        elif scenario_option_copy["cull"] == "dont_eat_culled":
             constants_for_params = scenario_loader.dont_cull_animals(
                 constants_for_params
             )
@@ -981,67 +1196,71 @@ class ScenarioRunner:
 
         # SCENARIO
 
-        if scenario_option["scenario"] == "all_resilient_foods":
+        if scenario_option_copy["scenario"] == "all_resilient_foods":
             constants_for_params = scenario_loader.get_all_resilient_foods_scenario(
                 constants_for_params
             )
-        elif scenario_option["scenario"] == "all_resilient_foods_and_more_area":
+        elif scenario_option_copy["scenario"] == "all_resilient_foods_and_more_area":
             constants_for_params = (
                 scenario_loader.get_all_resilient_foods_and_more_area_scenario(
                     constants_for_params
                 )
             )
-        elif scenario_option["scenario"] == "no_resilient_foods":
+        elif scenario_option_copy["scenario"] == "no_resilient_foods":
             constants_for_params = scenario_loader.get_no_resilient_food_scenario(
                 constants_for_params
             )
-        elif scenario_option["scenario"] == "seaweed":
+        elif scenario_option_copy["scenario"] == "seaweed":
             constants_for_params = scenario_loader.get_seaweed_scenario(
                 constants_for_params
             )
-        elif scenario_option["scenario"] == "methane_scp":
+        elif scenario_option_copy["scenario"] == "methane_scp":
             constants_for_params = scenario_loader.get_methane_scp_scenario(
                 constants_for_params
             )
-        elif scenario_option["scenario"] == "cellulosic_sugar":
+        elif scenario_option_copy["scenario"] == "cellulosic_sugar":
             constants_for_params = scenario_loader.get_cellulosic_sugar_scenario(
                 constants_for_params
             )
-        elif scenario_option["scenario"] == "relocated_crops":
+        elif scenario_option_copy["scenario"] == "relocated_crops":
             constants_for_params = scenario_loader.get_relocated_crops_scenario(
                 constants_for_params
             )
-        elif scenario_option["scenario"] == "greenhouse":
+        elif scenario_option_copy["scenario"] == "greenhouse":
             constants_for_params = scenario_loader.get_greenhouse_scenario(
                 constants_for_params
             )
-        elif scenario_option["scenario"] == "industrial_foods":
+        elif scenario_option_copy["scenario"] == "industrial_foods":
             constants_for_params = scenario_loader.get_industrial_foods_scenario(
                 constants_for_params
             )
         else:
             scenario_is_correct = False
 
-            assert scenario_is_correct, """You must specify 'scenario' key as either baseline_climate,
-            all_resilient_foods,all_resilient_foods_and_more_area,no_resilient_foods,seaweed,methane_scp,
-            cellulosic_sugar,industrial_foods,relocated_crops or greenhouse"""
+            assert scenario_is_correct, (
+                "You must specify 'scenario' key as either baseline_climate,"
+                "all_resilient_foods,all_resilient_foods_and_more_area,no_resilient_foods,seaweed,methane_scp,"
+                "cellulosic_sugar,industrial_foods,relocated_crops or greenhouse"
+            )
 
-        if scenario_option["meat_strategy"] == "reduce_breeding":
+        if scenario_option_copy["meat_strategy"] == "reduce_breeding":
             constants_for_params = scenario_loader.set_breeding_to_greatly_reduced(
                 constants_for_params
             )
-        elif scenario_option["meat_strategy"] == "baseline_breeding":
+        elif scenario_option_copy["meat_strategy"] == "baseline_breeding":
             constants_for_params = scenario_loader.set_to_baseline_breeding(
                 constants_for_params
             )
-        elif scenario_option["meat_strategy"] == "feed_only_ruminants":
+        elif scenario_option_copy["meat_strategy"] == "feed_only_ruminants":
             constants_for_params = scenario_loader.set_to_feed_only_ruminants(
                 constants_for_params
             )
         else:
             scenario_is_correct = False
 
-            assert scenario_is_correct, """You must specify 'meat_strategy' key as either ,
-            reduce_breeding or baseline_breeding, or feed_only_ruminants"""
+            assert scenario_is_correct, (
+                "You must specify 'meat_strategy' key as either , "
+                "reduce_breeding or baseline_breeding, or feed_only_ruminants"
+            )
 
         return constants_for_params, time_consts_for_params, scenario_loader
