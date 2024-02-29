@@ -191,6 +191,19 @@ class CalculateFeedAndMeat:
                 )  # + np.array(animal.total_homekill_this_month))
         return total_dairy_cows
 
+    def get_total_milk_bearing_animals(self):
+        """
+        Calculates the total number of milk-bearing animals in the population.
+
+        Returns:
+            numpy.ndarray: An array containing the total number of milk-bearing animals for each month
+        """
+        total_dairy = np.zeros(len(self.all_animals[0].population))
+        for animal in self.all_animals:
+            if "milk" in animal.animal_type:
+                total_dairy += np.array(animal.population)
+        return total_dairy
+
 
 # create country calss to store country data in
 class CountryData:
@@ -2565,21 +2578,22 @@ def world_test():
     number_of_animals["medium"] = 0
     number_of_animals["small"] = 0
     print()
+    tons_milk_per_year = 0
     for x in output_list:
-        print(x.animal_type)
-        assert all(np.abs(np.diff(x.population)/x.population[1:]) < 0.001), "population is not constant over time"
+        print(x.animal_type, x.animal_size)
+        assert all(
+            np.abs(np.diff(x.population) / x.population[1:]) < 0.001
+        ), "population is not constant over time"
         print(f"{x.population[-1] / 1e6} million individuals")
         print(
             f"{12 * x.slaughter[-1] * kg_meat_per_animal[x.animal_size] / 1e3 / 1e6} million tonnes of meat per year"
         )
-        if "milk_cattle" == x.animal_type:
-            tons_milk_per_year = x.population[-1] * 12 * 24265 / 2.2046 / 365 * 30.4 / 1000 / 2
-            print(f"{tons_milk_per_year / 1e6} million tonnes of milk per year")
-            print(x.population_proportion_productive_milk)
+        if "milk" in x.animal_type:
+            tons_milk_per_year += x.population[-1] * 1099.60 / 1000
         number_of_animals[x.animal_size] += x.population[-1] / 1e9
         print()
     print("aggregated populations in billions", number_of_animals)
-
+    print(f"{tons_milk_per_year / 1e6} million tonnes of milk per year")
 
 if __name__ == "__main__":
     feed = (

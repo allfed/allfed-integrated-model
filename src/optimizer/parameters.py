@@ -773,7 +773,7 @@ class Parameters:
             constants_out, time_consts, meat_and_dairy, feed_meat_object
         )
 
-        dairy_population = feed_meat_object.get_total_dairy_cows()
+        dairy_population = feed_meat_object.get_total_milk_bearing_animals()
 
         (
             constants_out,
@@ -933,14 +933,9 @@ class Parameters:
             tuple: tuple containing constants_out and time_consts
         """
 
-        # TODO: parametrize these constants in the scenarios so they can be adjusted
-        # without messing with the code
-
-        # Calculate monthly milk tons
-        # https://www.nass.usda.gov/Charts_and_Maps/Milk_Production_and_Milk_Cows/cowrates.php
-        monthly_milk_tons = dairy_pop * 24265 / 2.2046 / 365 * 30.4 / 1000 / 2
-        # cows * pounds per cow per day * punds_to_kg /days in year * days in month /
-        # kg_in_tons * ratio_milk_producing_cows
+        # Get the monthly milk production using the total milk-bearing animal population and
+        # the milk yield per animal
+        monthly_milk_tons = dairy_pop * constants_inputs["MILK_YIELD_KG_PER_MILK_BEARING_ANIMAL_PER_YEAR"] / 12 / 1000
 
         # Print annual pounds milk if PRINT_ANNUAL_POUNDS_MILK is True
         PRINT_ANNUAL_POUNDS_MILK = False
