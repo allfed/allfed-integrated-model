@@ -5,6 +5,7 @@
 ##                                                                            #
 ###############################################################################
 """
+
 from src.food_system.food import Food
 
 import numpy as np
@@ -367,7 +368,13 @@ class MeatAndDairy:
     # CULLED MEAT
 
     def get_max_slaughter_monthly_after_distribution_waste(
-        self, small_animals_culled, medium_animals_culled, large_animals_culled
+        self,
+        constants_inputs,
+        chickens_culled,
+        pigs_culled,
+        small_animals_nonchicken_culled,
+        medium_animals_nonpig_culled,
+        large_animals_culled,
     ):
         """
         Get the maximum number of animals that can be culled in a month and return the
@@ -375,23 +382,26 @@ class MeatAndDairy:
         """
 
         slaughtered_meat_monthly = Food(
-            kcals=np.zeros(len(small_animals_culled)),
-            fat=np.zeros(len(small_animals_culled)),
-            protein=np.zeros(len(small_animals_culled)),
+            kcals=np.zeros(len(small_animals_nonchicken_culled)),
+            fat=np.zeros(len(small_animals_nonchicken_culled)),
+            protein=np.zeros(len(small_animals_nonchicken_culled)),
             kcals_units="billion kcals each month",
             fat_units="thousand tons each month",
             protein_units="thousand tons each month",
         )
 
-        for m in range(0, len(small_animals_culled)):
+        for m in range(0, len(small_animals_nonchicken_culled)):
             (
                 calories,
                 fat_ratio,
                 protein_ratio,
             ) = self.calculate_meat_after_distribution_waste(
-                small_animals_culled[m],
-                medium_animals_culled[m],
-                large_animals_culled[m],
+                constants_inputs=constants_inputs,
+                init_chickens_culled=chickens_culled[m],
+                init_pigs_culled=pigs_culled[m],
+                init_small_animals_nonchicken_culled=small_animals_nonchicken_culled[m],
+                init_medium_animals_nonpigs_culled=medium_animals_nonpig_culled[m],
+                init_large_animals_culled=large_animals_culled[m],
             )
             meat_slaughtered_this_month = Food(
                 kcals=calories,
@@ -407,11 +417,44 @@ class MeatAndDairy:
 
     def calculate_meat_after_distribution_waste(
         self,
-        init_small_animals_culled,
-        init_medium_animals_culled,
+        constants_inputs,
+        init_chickens_culled,
+        init_pigs_culled,
+        init_small_animals_nonchicken_culled,
+        init_medium_animals_nonpigs_culled,
         init_large_animals_culled,
     ):
         KG_TO_1000_TONS = self.KG_TO_1000_TONS
+
+        KCALS_PER_CHICKEN = (
+            constants_inputs["KG_MEAT_PER_CHICKEN"]
+            * self.SMALL_ANIMAL_KCALS_PER_KG
+            / 1e9
+        )
+        FAT_PER_CHICKEN = (
+            self.SMALL_ANIMAL_FAT_RATIO
+            * constants_inputs["KG_MEAT_PER_CHICKEN"]
+            * KG_TO_1000_TONS
+        )
+        PROTEIN_PER_CHICKEN = (
+            self.SMALL_ANIMAL_PROTEIN_RATIO
+            * constants_inputs["KG_MEAT_PER_CHICKEN"]
+            * KG_TO_1000_TONS
+        )
+
+        KCALS_PER_PIG = (
+            self.MEDIUM_ANIMAL_KCALS_PER_KG * constants_inputs["KG_MEAT_PER_PIG"] / 1e9
+        )
+        FAT_PER_PIG = (
+            self.MEDIUM_ANIMAL_FAT_RATIO
+            * constants_inputs["KG_MEAT_PER_PIG"]
+            * KG_TO_1000_TONS
+        )
+        PROTEIN_PER_PIG = (
+            self.MEDIUM_ANIMAL_PROTEIN_RATIO
+            * constants_inputs["KG_MEAT_PER_PIG"]
+            * KG_TO_1000_TONS
+        )
 
         KCALS_PER_SMALL_ANIMAL = (
             self.SMALL_ANIMAL_KCALS_PER_KG * self.KG_PER_SMALL_ANIMAL / 1e9
@@ -447,20 +490,26 @@ class MeatAndDairy:
 
         # billion kcals
         init_meat_prewaste_kcals = (
-            init_small_animals_culled * KCALS_PER_SMALL_ANIMAL
-            + init_medium_animals_culled * KCALS_PER_MEDIUM_ANIMAL
+            init_chickens_culled * KCALS_PER_CHICKEN
+            + init_pigs_culled * KCALS_PER_PIG
+            + init_small_animals_nonchicken_culled * KCALS_PER_SMALL_ANIMAL
+            + init_medium_animals_nonpigs_culled * KCALS_PER_MEDIUM_ANIMAL
             + init_large_animals_culled * KCALS_PER_LARGE_ANIMAL
         )
         # thousand tons
         init_meat_prewaste_fat = (
-            init_small_animals_culled * FAT_PER_SMALL_ANIMAL
-            + init_medium_animals_culled * FAT_PER_MEDIUM_ANIMAL
+            init_chickens_culled * FAT_PER_CHICKEN
+            + init_pigs_culled * FAT_PER_PIG
+            + init_small_animals_nonchicken_culled * FAT_PER_SMALL_ANIMAL
+            + init_medium_animals_nonpigs_culled * FAT_PER_MEDIUM_ANIMAL
             + init_large_animals_culled * FAT_PER_LARGE_ANIMAL
         )
         # thousand tons
         init_meat_prewaste_protein = (
-            init_small_animals_culled * PROTEIN_PER_SMALL_ANIMAL
-            + init_medium_animals_culled * PROTEIN_MEDIUM_ANIMAL
+            init_chickens_culled * PROTEIN_PER_CHICKEN
+            + init_pigs_culled * PROTEIN_PER_PIG
+            + init_small_animals_nonchicken_culled * PROTEIN_PER_SMALL_ANIMAL
+            + init_medium_animals_nonpigs_culled * PROTEIN_MEDIUM_ANIMAL
             + init_large_animals_culled * PROTEIN_PER_LARGE_ANIMAL
         )
 

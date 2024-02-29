@@ -101,6 +101,13 @@ df19 = pd.read_csv(
     / "processed_data"
     / "milk_per_animal_csv.csv"
 )
+df20 = pd.read_csv(
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "processed_data"
+    / "meat_per_animal_csv.csv"
+)
 
 dataframes = [
     df1,
@@ -122,6 +129,7 @@ dataframes = [
     df17,
     df18,
     df19,
+    df20,
 ]
 
 

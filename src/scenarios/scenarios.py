@@ -309,6 +309,10 @@ class Scenarios:
         # Milk yield in kg per milk-bearing animal per year
         constants_for_params["MILK_YIELD_KG_PER_MILK_BEARING_ANIMAL_PER_YEAR"] = 1099.60
 
+        # Meat yield in kg per animal per year
+        constants_for_params["KG_MEAT_PER_PIG"] = 86.0
+        constants_for_params["KG_MEAT_PER_CHICKEN"] = 1.65
+
         constants_for_params["COUNTRY_CODE"] = "WOR"
 
         self.SCALE_SET = True
@@ -518,6 +522,14 @@ class Scenarios:
         # Milk yield in kg per milk-bearing animal per year
         constants_for_params["MILK_YIELD_KG_PER_MILK_BEARING_ANIMAL_PER_YEAR"] = (
             country_data["milk_yield_kg_per_milk_bearing_animal_per_year"]
+        )
+
+        # Meat yield in kg per animal
+        constants_for_params["KG_MEAT_PER_PIG"] = (
+            country_data["kg_meat_per_pig"]
+        )
+        constants_for_params["KG_MEAT_PER_CHICKEN"] = (
+            country_data["kg_meat_per_chicken"]
         )
 
         self.SCALE_SET = True
