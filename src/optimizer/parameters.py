@@ -1,7 +1,7 @@
 """
 ############################### Parameters ####################################
-##                                                                            #
 ##           Calculates all the parameters that feed into the optimizer       #
+##                                                                            #
 ##                                                                            #
 ###############################################################################
 """
@@ -452,9 +452,9 @@ class Parameters:
         # set the nutrition constants in the output dictionary
         constants_out["BILLION_KCALS_NEEDED"] = Food.conversions.billion_kcals_needed
         constants_out["THOU_TONS_FAT_NEEDED"] = Food.conversions.thou_tons_fat_needed
-        constants_out["THOU_TONS_PROTEIN_NEEDED"] = (
-            Food.conversions.thou_tons_protein_needed
-        )
+        constants_out[
+            "THOU_TONS_PROTEIN_NEEDED"
+        ] = Food.conversions.thou_tons_protein_needed
         constants_out["KCALS_MONTHLY"] = Food.conversions.kcals_monthly
         constants_out["PROTEIN_MONTHLY"] = Food.conversions.protein_monthly
         constants_out["FAT_MONTHLY"] = Food.conversions.fat_monthly
@@ -509,15 +509,15 @@ class Parameters:
         constants_out["MAXIMUM_DENSITY"] = seaweed.MAXIMUM_DENSITY
         constants_out["MAXIMUM_SEAWEED_AREA"] = seaweed.MAXIMUM_SEAWEED_AREA
         constants_out["INITIAL_BUILT_SEAWEED_AREA"] = seaweed.INITIAL_BUILT_SEAWEED_AREA
-        constants_out["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = (
-            seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_FEED
-        )
-        constants_out["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = (
-            seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL
-        )
-        constants_out["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = (
-            seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS
-        )
+        constants_out[
+            "MAX_SEAWEED_AS_PERCENT_KCALS_FEED"
+        ] = seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_FEED
+        constants_out[
+            "MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"
+        ] = seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL
+        constants_out[
+            "MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"
+        ] = seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS
 
         # return the constants_out dictionary, built_area, growth_rates, and the Seaweed object
         return constants_out, built_area, growth_rates, seaweed
@@ -562,12 +562,12 @@ class Parameters:
 
         # Update the constants_out dictionary with the outdoor crops' rotation fraction fat, and protein and harvest
         # duration in months
-        constants_out["OG_ROTATION_FRACTION_FAT"] = (
-            outdoor_crops.OG_ROTATION_FRACTION_FAT
-        )
-        constants_out["OG_ROTATION_FRACTION_PROTEIN"] = (
-            outdoor_crops.OG_ROTATION_FRACTION_PROTEIN
-        )
+        constants_out[
+            "OG_ROTATION_FRACTION_FAT"
+        ] = outdoor_crops.OG_ROTATION_FRACTION_FAT
+        constants_out[
+            "OG_ROTATION_FRACTION_PROTEIN"
+        ] = outdoor_crops.OG_ROTATION_FRACTION_PROTEIN
 
         constants_out["INITIAL_HARVEST_DURATION_IN_MONTHS"] = constants_inputs[
             "INITIAL_HARVEST_DURATION_IN_MONTHS"
@@ -748,12 +748,12 @@ class Parameters:
         # Calculate the SCP fat and protein production.
         methane_scp.calculate_scp_fat_and_protein_production()
 
-        constants_out["SCP_KCALS_TO_FAT_CONVERSION"] = (
-            methane_scp.SCP_KCALS_TO_FAT_CONVERSION
-        )
-        constants_out["SCP_KCALS_TO_PROTEIN_CONVERSION"] = (
-            methane_scp.SCP_KCALS_TO_PROTEIN_CONVERSION
-        )
+        constants_out[
+            "SCP_KCALS_TO_FAT_CONVERSION"
+        ] = methane_scp.SCP_KCALS_TO_FAT_CONVERSION
+        constants_out[
+            "SCP_KCALS_TO_PROTEIN_CONVERSION"
+        ] = methane_scp.SCP_KCALS_TO_PROTEIN_CONVERSION
 
         # Add the methane_scp object to the time_consts dictionary.
         time_consts["methane_scp"] = methane_scp.production
@@ -809,7 +809,9 @@ class Parameters:
             constants_out,
         )
 
-    def get_animal_meat_dictionary(self, constants_inputs, feed_meat_object, meat_and_dairy):
+    def get_animal_meat_dictionary(
+        self, constants_inputs, feed_meat_object, meat_and_dairy
+    ):
         # get the total slaughter by animal size from the all_animals list of animal objects
         animal_meat_dictionary = {}
         for animal in feed_meat_object.all_animals:
@@ -869,12 +871,12 @@ class Parameters:
                     )
                 )
 
-            animal_meat_dictionary[animal.animal_type] = (
-                this_animal_meat.in_units_kcals_equivalent().kcals
-            )
-            animal_meat_dictionary[animal.animal_type + "_population"] = (
-                animal.population
-            )
+            animal_meat_dictionary[
+                animal.animal_type
+            ] = this_animal_meat.in_units_kcals_equivalent().kcals
+            animal_meat_dictionary[
+                animal.animal_type + "_population"
+            ] = animal.population
 
         return animal_meat_dictionary
 
@@ -938,12 +940,11 @@ class Parameters:
         # NOTE: The second round may overwrite this value once the meat is redistributed over time (which is to ensure
         # round 2 strictly has more kcals available, as it is required for optimization contstraints to always to be
         #  satisfied in round 2)
-        time_consts["max_consumed_culled_kcals_each_month"] = (
-            each_month_meat_slaughtered.get_running_total_nutrients_sum().kcals
-        )
+        time_consts[
+            "max_consumed_culled_kcals_each_month"
+        ] = each_month_meat_slaughtered.get_running_total_nutrients_sum().kcals
 
         time_consts["each_month_meat_slaughtered"] = each_month_meat_slaughtered
-
         # Calculate the amount of culled meat and update constants_out dictionary
         (
             constants_out["meat_summed_consumption"],
@@ -1036,7 +1037,7 @@ class Parameters:
     def compute_parameters_second_round(
         self,
         constants_inputs,
-        constants_out,
+        constants_out_round1,
         time_consts_round1,
         interpreted_results_round1,
     ):
@@ -1046,6 +1047,7 @@ class Parameters:
 
         """
         time_consts_round2 = copy.deepcopy(time_consts_round1)
+        constants_out_round2 = copy.deepcopy(constants_out_round1)
         feed_and_biofuels_class = FeedAndBiofuels(constants_inputs)
         (
             biofuels_demand,
@@ -1070,16 +1072,15 @@ class Parameters:
             max_feed_that_could_be_used_second_round,
             meat_dictionary_round2,  # if all feed needs were satisfied before feed shutoff
             time_consts_round2,
-            constants_out,
+            constants_out_round2,
         ) = self.init_meat_and_dairy_and_feed_from_breeding(
             constants_inputs,
             feed_meat_object_second_round,
             feed_and_biofuels_class,
             meat_and_dairy,
-            constants_out,
+            constants_out_round2,
             time_consts_round2,
         )
-
         # Sometimes, the first round has a more efficient slaughtering process that occurs earlier than second round
         # This mostly happens as the animals are starving and populations of animals are altering.
         # As a result, there is more meat slaughtered earlier in the first round with no feed.
@@ -1090,11 +1091,11 @@ class Parameters:
             time_consts_round2["each_month_meat_slaughtered"].kcals
         )
 
-        time_consts_round2["each_month_meat_slaughtered"].kcals = (
-            self.get_second_round_kcals_with_redistributed_meat(
-                time_consts_round1["each_month_meat_slaughtered"].kcals,
-                time_consts_round2["each_month_meat_slaughtered"].kcals,
-            )
+        time_consts_round2[
+            "each_month_meat_slaughtered"
+        ].kcals = self.get_second_round_kcals_with_redistributed_meat(
+            time_consts_round1["each_month_meat_slaughtered"].kcals,
+            time_consts_round2["each_month_meat_slaughtered"].kcals,
         )
 
         if time_consts_round2["each_month_meat_slaughtered"].kcals is None:
@@ -1121,9 +1122,9 @@ class Parameters:
             .kcals
         )
 
-        time_consts_round2["max_feed_that_could_be_used"] = (
-            max_feed_that_could_be_used_second_round
-        )
+        time_consts_round2[
+            "max_feed_that_could_be_used"
+        ] = max_feed_that_could_be_used_second_round
 
         time_consts_round2["max_biofuel_that_could_be_used"] = biofuels_demand
 
@@ -1160,8 +1161,13 @@ class Parameters:
         assert interpreted_results_round1.stored_food_feed_kcals_equivalent.all_equals_zero(
             rounding_decimals=6
         )
+
+        extra_meat_round2 = (
+            time_consts_round2["each_month_meat_slaughtered"]
+            - time_consts_round1["each_month_meat_slaughtered"]
+        )
         min_human_food_consumption = self.calculate_human_consumption_for_min_needs(
-            constants_inputs, interpreted_results_round1
+            constants_inputs, interpreted_results_round1, extra_meat_round2
         )
         PRINT_MINIMUM_NEEDS_FOOD_FOR_HUMANS = False
         if PRINT_MINIMUM_NEEDS_FOOD_FOR_HUMANS:
@@ -1180,7 +1186,7 @@ class Parameters:
             print("")
             print("")
         return (
-            constants_out,
+            constants_out_round2,
             time_consts_round2,
             feed_and_biofuels_class,
             meat_dictionary_round2,
@@ -1188,7 +1194,7 @@ class Parameters:
         )
 
     def calculate_human_consumption_for_min_needs(
-        self, constants_inputs, interpreted_results_round1
+        self, constants_inputs, interpreted_results_round1, extra_meat_round2
     ):
         """
         We run through each month and determine the amount consumed each month of all foods.
@@ -1218,6 +1224,7 @@ class Parameters:
         fraction_to_feed_people_first = (
             MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED / 100
         )
+
         if (
             interpreted_results_round1.percent_people_fed
             > MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED
@@ -1226,6 +1233,7 @@ class Parameters:
                 constants_inputs["NUTRITION"]["KCALS_DAILY"]
                 * fraction_to_feed_people_first
             )
+
         else:
             kcals_daily_maximum = constants_inputs["NUTRITION"]["KCALS_DAILY"] * (
                 interpreted_results_round1.percent_people_fed / 100
@@ -1441,25 +1449,70 @@ class Parameters:
                 max_food_daily
             ), f"Consumption of {food_type} exceeds maximum allowed in some months."
 
+    def increase_biofuels_then_feed(
+        self, biofuel, feed, increase, max_biofuel, max_feed, total_crops_available
+    ):
+        # Ensure biofuel and feed are not decreased by calculating the potential increase correctly
+        # Honestly, this function hasn't been tested thoroughly. But it can't be too harmful as its
+        # bounded fairly heavily in how much it can adjust feed and thoroughly tested in terms of different scenarios.
+
+        potential_biofuel_increase = (
+            np.minimum(biofuel + increase, max_biofuel) - biofuel
+        )
+        potential_feed_increase = np.minimum(feed + increase, max_feed) - feed
+
+        # Check combined increase against total crops available
+        total_potential_increase = potential_biofuel_increase + potential_feed_increase
+        allowed_increase = np.where(
+            total_potential_increase + biofuel + feed <= total_crops_available,
+            total_potential_increase,
+            total_crops_available - biofuel - feed,
+        )
+
+        # Distribute allowed increase between biofuel and feed proportionally to their requested increase
+        proportion_biofuel = potential_biofuel_increase / (
+            total_potential_increase + 1e-9
+        )  # Adding small value to avoid division by zero
+        adjusted_biofuel_increase = allowed_increase * proportion_biofuel
+        adjusted_feed_increase = allowed_increase - adjusted_biofuel_increase
+
+        adjusted_biofuel_increase = np.maximum(
+            np.zeros(len(adjusted_biofuel_increase)), adjusted_biofuel_increase
+        )
+        adjusted_feed_increase = np.maximum(
+            np.zeros(len(adjusted_feed_increase)), adjusted_feed_increase
+        )
+
+        adjusted_biofuel = biofuel + adjusted_biofuel_increase
+        adjusted_feed = feed + adjusted_feed_increase
+
+        return adjusted_biofuel, adjusted_feed
+
     # ################ THIRD ROUND: FINAL TO HUMANS CALCULATION ##########################
     def compute_parameters_third_round(
         self,
         constants_inputs,
-        constants_out,
+        constants_out_round1,
+        constants_out_round2,
         time_consts_round1,
-        interpreted_round2,
+        time_consts_round2,
+        interpreted_results_round1,
+        interpreted_results_round2,
         feed_and_biofuels_class,
+        feed_demand,
+        biofuels_demand,
     ):
         # TODO: make this function work with fat and protein minimums...
 
         time_consts_round3 = copy.deepcopy(time_consts_round1)
+        constants_out_round3 = copy.deepcopy(constants_out_round1)
 
         meat_and_dairy = MeatAndDairy(constants_inputs)
         feed_sum_billion_kcals = (
-            interpreted_round2.feed_sum_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            interpreted_results_round2.feed_sum_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month()
         )
         biofuel_sum_billion_kcals = (
-            interpreted_round2.biofuels_sum_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            interpreted_results_round2.biofuels_sum_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month()
         )
 
         grasses_for_animals = meat_and_dairy.human_inedible_feed
@@ -1475,15 +1528,75 @@ class Parameters:
             feed_used_round3,
             meat_dictionary_round3,
             time_consts_round3,
-            constants_out,
+            constants_out_round3,
         ) = self.init_meat_and_dairy_and_feed_from_breeding(
             constants_inputs,
             feed_meat_object_third_round,
             feed_and_biofuels_class,
             meat_and_dairy,
-            constants_out,
+            constants_out_round3,
             time_consts_round3,
         )
+        if interpreted_results_round1 is not None:
+            # we are offsetting the increase in meat from round 3 by adding half that increase as increased biofuel,
+            # and if we hit biofuel caps, then increased feed. It helps hit the X% minimum fed before feeding biofuel
+            # or feed actually be ~X%, rather than X% + (the percent of feed displaced by meat)
+            # The divide by 2 and subtract 20 kcals is a  rule  of  thumb that seems to work
+            to_increase_biofuels_and_feed_kcals_equiv = (
+                (
+                    time_consts_round3["each_month_meat_slaughtered"]
+                    - time_consts_round1["each_month_meat_slaughtered"]
+                )
+                / 2
+            ).in_units_kcals_equivalent()
+
+            # THIS IS A BIT OF AN UGLY FIX
+            if constants_inputs["COUNTRY_CODE"] == "NZL":
+                const = 100
+            else:
+                const = 20
+            to_increase_biofuels_and_feed_kcals_equiv = to_increase_biofuels_and_feed_kcals_equiv.in_units_kcals_equivalent() - Food(
+                const + np.zeros(len(to_increase_biofuels_and_feed_kcals_equiv.kcals)),
+                np.zeros(len(to_increase_biofuels_and_feed_kcals_equiv.kcals)),
+                np.zeros(len(to_increase_biofuels_and_feed_kcals_equiv.kcals)),
+                "kcals per person per day each month",
+                "effective kcals per person per day each month",
+                "effective kcals per person per day each month",
+            )  # 20 kcals is the magic number to fix feed going over minimum constraints, for some reason
+            to_increase_biofuels_and_feed_kcals_equiv = (
+                to_increase_biofuels_and_feed_kcals_equiv.negative_values_to_zero()
+            )
+            print("to_increase_biofuels_and_feed_kcals_equiv")
+            print(to_increase_biofuels_and_feed_kcals_equiv)
+            to_increase_biofuels_and_feed = (
+                to_increase_biofuels_and_feed_kcals_equiv.in_units_bil_kcals_thou_tons_thou_tons_per_month().kcals
+            )
+
+            total_crops_available = (
+                interpreted_results_round1.immediate_outdoor_crops_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month().kcals
+                + interpreted_results_round1.new_stored_outdoor_crops_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month().kcals
+                + interpreted_results_round1.stored_food_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month().kcals
+            )
+
+            biofuel_sum_billion_kcals_copy = biofuel_sum_billion_kcals.kcals.copy()
+            feed_used_round3_copy = feed_used_round3.kcals.copy()
+
+            (
+                biofuel_sum_billion_kcals.kcals,
+                feed_used_round3.kcals,
+            ) = self.increase_biofuels_then_feed(
+                biofuel_sum_billion_kcals.kcals,
+                feed_used_round3.kcals,
+                to_increase_biofuels_and_feed,
+                biofuels_demand.in_units_bil_kcals_thou_tons_thou_tons_per_month().kcals,
+                feed_demand.in_units_bil_kcals_thou_tons_thou_tons_per_month().kcals,
+                total_crops_available,
+            )
+
+            assert (
+                biofuel_sum_billion_kcals_copy <= biofuel_sum_billion_kcals.kcals
+            ).all()
+            assert (feed_used_round3_copy <= feed_used_round3.kcals).all()
 
         # Update feed_and_biofuels_class_round3 object with their values
         feed_and_biofuels_class.biofuel_demand = biofuel_sum_billion_kcals
@@ -1498,7 +1611,7 @@ class Parameters:
         time_consts_round3["biofuel"] = biofuel_sum_billion_kcals
 
         return (
-            constants_out,
+            constants_out_round3,
             time_consts_round3,
             feed_and_biofuels_class,
             meat_dictionary_round3,
