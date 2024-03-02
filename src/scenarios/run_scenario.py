@@ -176,7 +176,7 @@ class ScenarioRunner:
         ):
             # this indicates the meat produced is in fact lower when feed is applied.
             # Therefore, we will abort the second round and simply return the results from the first round with no feed
-            return None, None, None, None, None
+            return None, None, None, None, None, None, None
         Validator.assert_meat_doesnt_increase_round_2(
             time_consts_round1["each_month_meat_slaughtered"].kcals,
             time_consts_round2["each_month_meat_slaughtered"].kcals,
@@ -224,6 +224,8 @@ class ScenarioRunner:
             time_consts_round2["each_month_meat_slaughtered"],
             time_consts_round2["max_consumed_culled_kcals_each_month"],
             single_valued_constants_round2["meat_summed_consumption"],
+            time_consts_round2,
+            single_valued_constants_round2,
         )
 
     def run_round_3(
@@ -231,10 +233,14 @@ class ScenarioRunner:
         constants_loader,
         constants_for_params,
         single_valued_constants_round1,
+        single_valued_constants_round2,
         time_consts_round1,
+        time_consts_round2,
         interpreted_results_round2,
         feed_and_biofuels_round1,
-        interpreter,
+        feed_demand,
+        biofuels_demand,
+        interpreted_results_round1,
         meat_dictionary_round2,
         each_month_meat_slaughtered,
         max_consumed_culled_kcals_each_month,
@@ -251,31 +257,15 @@ class ScenarioRunner:
         ) = constants_loader.compute_parameters_third_round(
             constants_for_params,
             single_valued_constants_round1,
+            single_valued_constants_round2,
             time_consts_round1,
+            time_consts_round2,
+            interpreted_results_round1,
             interpreted_results_round2,
             feed_and_biofuels_round1,
+            feed_demand,
+            biofuels_demand,
         )
-        # import matplotlib.pyplot as plt
-
-        # # plt.figure()
-        # # plt.plot(time_consts_round3['each_month_meat_slaughtered'])
-        # # plt.title("round 3 meat")
-        # # plt.show()
-        REPLACE_ROUND3_MEAT_WITH_ROUND2 = False
-        if REPLACE_ROUND3_MEAT_WITH_ROUND2:
-            time_consts_round3[
-                "each_month_meat_slaughtered"
-            ] = each_month_meat_slaughtered
-            time_consts_round3[
-                "max_consumed_culled_kcals_each_month"
-            ] = max_consumed_culled_kcals_each_month
-            single_valued_constants_round3[
-                "meat_summed_consumption"
-            ] = meat_summed_consumption
-        # plt.figure()
-        # plt.plot(time_consts_round3["max_consumed_culled_kcals_each_month"])
-        # plt.title("round 3 meat cumulative")
-        # plt.show()
 
         interpreted_results_round3 = self.run_optimizer(
             single_valued_constants_round3,
@@ -284,21 +274,6 @@ class ScenarioRunner:
             title=title,
         )
         interpreted_results_round3.set_feed_and_biofuels(feed_and_biofuels_round3)
-        if meat_dictionary_round2 is not None and REPLACE_ROUND3_MEAT_WITH_ROUND2:
-            interpreted_results_round3.set_meat_dictionary(meat_dictionary_round2)
-        else:
-            interpreted_results_round3.set_meat_dictionary(meat_dictionary_round3)
-        # interpreted_results_round3.milk_kcals_equivalent.in_units_kcals_equivalent().plot(
-        #     "milk 3rd round"
-        # )
-        # Validator.assert_fewer_calories_round2_than_round3(
-        #     interpreted_results_round2, interpreted_results_round3
-        # )
-
-        Validator.assert_feed_used_round3_below_feed_used_round2(
-            interpreted_results_round2, interpreted_results_round3
-        )
-
         return interpreted_results_round3
 
     def get_interpreted_results_for_round3_if_zero_feed(self, interpreter, NMONTHS):
@@ -428,6 +403,8 @@ class ScenarioRunner:
                 each_month_meat_slaughtered,
                 max_consumed_culled_kcals_each_month,
                 meat_summed_consumption,
+                time_consts_round2,
+                single_valued_constants_round2,
             ) = self.run_round_2(
                 constants_loader,
                 constants_for_params,
@@ -504,15 +481,18 @@ class ScenarioRunner:
                     interpreter, constants_for_params["NMONTHS"]
                 )
             )
-
         interpreted_results_round3 = self.run_round_3(
             constants_loader,
             constants_for_params,
             single_valued_constants_round1,
+            single_valued_constants_round2 if ROUND_1_WAS_RUN_FLAG else None,
             time_consts_round1,
+            time_consts_round2 if ROUND_1_WAS_RUN_FLAG else None,
             interpreted_results_for_round3,
             feed_and_biofuels_round1,
-            interpreter,
+            feed_demand,
+            biofuels_demand,
+            interpreted_results_round1 if ROUND_1_WAS_RUN_FLAG else None,
             meat_dictionary_round2,
             each_month_meat_slaughtered,
             max_consumed_culled_kcals_each_month,

@@ -772,6 +772,11 @@ class Optimizer:
             outdoor_crops_change = LpVariable(
                 f"Outdoor_Crops_Change_{month}", lowBound=0
             )
+            seaweed_change = LpVariable(f"Seaweed_Change_{month}", lowBound=0)
+            cellulosic_sugar_change = LpVariable(
+                f"Cellulosic_Sugar_Change_{month}", lowBound=0
+            )
+            methane_scp_change = LpVariable(f"Methane_Scp_Change_{month}", lowBound=0)
             outdoor_crops_change_feed = LpVariable(
                 f"Outdoor_Crops_Feed_Change_{month}", lowBound=0
             )
@@ -786,15 +791,6 @@ class Optimizer:
             )
 
             if single_valued_constants["ADD_MEAT"]:
-                # Constraints to calculate the absolute difference
-                model_smoothing += (
-                    meat_change
-                    >= (
-                        variables["meat_eaten"][month]
-                        - variables["meat_eaten"][month - 1]
-                    ),
-                    f"Meat_Increase_{month}",
-                )
                 model_smoothing += (
                     meat_change
                     >= -(
@@ -807,14 +803,6 @@ class Optimizer:
             if single_valued_constants["ADD_STORED_FOOD"]:
                 model_smoothing += (
                     stored_food_change
-                    >= (
-                        variables["stored_food_to_humans"][month]
-                        - variables["stored_food_to_humans"][month - 1]
-                    ),
-                    f"Stored_Food_Increase_{month}",
-                )
-                model_smoothing += (
-                    stored_food_change
                     >= -(
                         variables["stored_food_to_humans"][month]
                         - variables["stored_food_to_humans"][month - 1]
@@ -824,30 +812,42 @@ class Optimizer:
             if single_valued_constants["ADD_OUTDOOR_GROWING"]:
                 model_smoothing += (
                     outdoor_crops_change
-                    >= (
-                        variables["crops_food_to_humans"][month]
-                        - variables["crops_food_to_humans"][month - 1]
-                    ),
-                    f"Crops_Food_Increase_{month}",
-                )
-                model_smoothing += (
-                    outdoor_crops_change
                     >= -(
                         variables["crops_food_to_humans"][month]
                         - variables["crops_food_to_humans"][month - 1]
                     ),
                     f"Crops_Food_Decrease_{month}",
                 )
+            if single_valued_constants["ADD_SEAWEED"]:
+                model_smoothing += (
+                    seaweed_change
+                    >= -(
+                        variables["seaweed_to_humans"][month]
+                        - variables["seaweed_to_humans"][month - 1]
+                    ),
+                    f"Seaweed_Decrease_{month}",
+                )
+            if single_valued_constants["ADD_METHANE_SCP"]:
+                model_smoothing += (
+                    methane_scp_change
+                    >= -(
+                        variables["methane_scp_to_humans"][month]
+                        - variables["methane_scp_to_humans"][month - 1]
+                    ),
+                    f"Methane_Scp_Decrease_{month}",
+                )
+            if single_valued_constants["ADD_CELLULOSIC_SUGAR"]:
+                model_smoothing += (
+                    cellulosic_sugar_change
+                    >= -(
+                        variables["cellulosic_sugar_to_humans"][month]
+                        - variables["cellulosic_sugar_to_humans"][month - 1]
+                    ),
+                    f"Cell_Sugar_Decrease_{month}",
+                )
+
             if optimization_type == "to_animals":
                 # in this case, we want to smooth out the feed and biofuel usage if possible
-                model_smoothing += (
-                    outdoor_crops_change_feed
-                    >= (
-                        variables["crops_food_feed"][month]
-                        - variables["crops_food_feed"][month - 1]
-                    ),
-                    f"Crops_Food_Feed_Increase_{month}",
-                )
                 model_smoothing += (
                     outdoor_crops_change_feed
                     >= -(
@@ -855,14 +855,6 @@ class Optimizer:
                         - variables["crops_food_feed"][month - 1]
                     ),
                     f"Crops_Food_Feed_Decrease_{month}",
-                )
-                model_smoothing += (
-                    outdoor_crops_change_biofuel
-                    >= (
-                        variables["crops_food_biofuel"][month]
-                        - variables["crops_food_biofuel"][month - 1]
-                    ),
-                    f"Crops_Food_Biofuel_Increase_{month}",
                 )
                 model_smoothing += (
                     outdoor_crops_change_biofuel
@@ -874,27 +866,11 @@ class Optimizer:
                 )
                 model_smoothing += (
                     stored_food_change_feed
-                    >= (
-                        variables["stored_food_feed"][month]
-                        - variables["stored_food_feed"][month - 1]
-                    ),
-                    f"Stored_Food_Feed_Increase_{month}",
-                )
-                model_smoothing += (
-                    stored_food_change_feed
                     >= -(
                         variables["stored_food_feed"][month]
                         - variables["stored_food_feed"][month - 1]
                     ),
                     f"Stored_Food_Feed_Decrease_{month}",
-                )
-                model_smoothing += (
-                    stored_food_change_biofuel
-                    >= (
-                        variables["stored_food_biofuel"][month]
-                        - variables["stored_food_biofuel"][month - 1]
-                    ),
-                    f"Stored_Food_Biofuel_Increase_{month}",
                 )
                 model_smoothing += (
                     stored_food_change_biofuel
@@ -913,6 +889,9 @@ class Optimizer:
                 + outdoor_crops_change_biofuel
                 + stored_food_change_feed
                 + stored_food_change_biofuel
+                + seaweed_change
+                + methane_scp_change
+                + cellulosic_sugar_change
             )
 
         # Set the objective of the model to the smoothing objective function
