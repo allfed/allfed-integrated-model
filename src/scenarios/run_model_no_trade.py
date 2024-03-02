@@ -5,6 +5,7 @@ without trade scenarios.
 Created on Wed Jul 15
 @author: morgan
 """
+
 import pandas as pd
 import os
 import numpy as np
@@ -60,9 +61,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         if "buffer" not in this_simulation.keys():
             this_simulation["buffer"] = "baseline"
         if "shutoff" not in this_simulation.keys():
-            this_simulation[
-                "shutoff"
-            ] = "continued"  # this_simulation["shutoff"] = "immediate"
+            this_simulation["shutoff"] = (
+                "continued"  # this_simulation["shutoff"] = "immediate"
+            )
         if "cull" not in this_simulation.keys():
             this_simulation["cull"] = "do_eat_culled"
 
@@ -267,6 +268,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
 
             if country_code in countries_to_skip:
                 continue
+
+            self.verify_country_data(country_data)
 
             population = country_data["population"]
 
@@ -566,3 +569,239 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 show_country_figures=(plot_figs == "plot"),
                 create_pptx_with_all_countries=(create_pptx == "pptx"),
             )
+
+    def verify_country_data(self, country_data):
+        """
+        Runs a bunch of checks to make sure the country data is reasonable
+
+        Arguments:
+            country_data: a dictionary with the country data
+        """
+        country = country_data["country"]
+        # check that the country population is a reasonable number
+        assert (
+            country_data["population"] > 10_000
+        ), f"{country}: population is smaller than 10,000"
+        assert (
+            country_data["population"] < 1e10
+        ), f"{country}: population is greater than 10 billion"
+
+        # grass is in megatonnes
+        assert (
+            country_data["grasses_baseline"] < 20_000
+        ), f"{country}: grass_baseline is greater than 20,000 megatonnes"
+        assert (
+            country_data["grasses_baseline"] >= 0
+        ), f"{country}: grass_baseline is less than 0"
+
+        # the following are in tonnes per year
+        assert country_data["dairy"] >= 0, f"{country}: milk production is less than 0"
+        assert (
+            country_data["dairy"] < 1e9
+        ), f"{country}: milk produciton is more than 1 billion tonnes"
+        assert (
+            country_data["chicken"] >= 0
+        ), f"{country}: chicken production is less than 0"
+        assert (
+            country_data["chicken"] < 1e9
+        ), f"{country}: chicken production is more than 1 billion tonnes"
+        assert country_data["pork"] >= 0, f"{country}: pork production is less than 0"
+        assert (
+            country_data["pork"] < 1e9
+        ), f"{country}: pork production is more than 1 billion tonnes"
+        assert country_data["beef"] >= 0, f"{country}: beef production is less than 0"
+        assert (
+            country_data["beef"] < 1e9
+        ), f"{country}: beef production is more than 1 billion tonnes"
+
+        assert (
+            country_data["small_animals"] < 100e9
+        ), f"{country}: more than 100 billion small animals"
+        assert (
+            country_data["small_animals"] >= 0
+        ), f"{country}: fewer than 0 small animals"
+        assert (
+            country_data["medium_animals"] < 10e9
+        ), f"{country}: more than 10 billion medium animals"
+        assert (
+            country_data["medium_animals"] >= 0
+        ), f"{country}: fewer than 0 medium animals"
+        assert (
+            country_data["large_animals"] < 10e9
+        ), f"{country}: more than 10 billion large animals"
+        assert (
+            country_data["large_animals"] >= 0
+        ), f"{country}: fewer than 0 large animals"
+        assert (
+            country_data["dairy_cows"] < 1e9
+        ), f"{country}: more than 1 billion dairy cows"
+        assert country_data["dairy_cows"] >= 0, f"{country}: fewer than 0 dairy cows"
+
+        assert (
+            country_data["biofuel_kcals"] < 1e9
+        ), f"{country}: more than 1 billion biofuel kcals"
+        assert (
+            country_data["biofuel_kcals"] >= 0
+        ), f"{country}: fewer than 0 biofuel kcals"
+        assert (
+            country_data["biofuel_protein"] < 1e9
+        ), f"{country}: more than 1 billion biofuel grams of protein"
+        assert (
+            country_data["biofuel_protein"] >= 0
+        ), f"{country}: fewer than 0 biofuel grams of protein"
+        assert (
+            country_data["biofuel_fat"] < 1e9
+        ), f"{country}: more than 1 billion biofuel grams of fat"
+        assert (
+            country_data["biofuel_fat"] >= 0
+        ), f"{country}: fewer than 0 biofuel grams of fat"
+
+        assert (
+            country_data["feed_kcals"] < 2e9
+        ), f"{country}: more than 2 billion feed kcals"
+        assert country_data["feed_kcals"] >= 0, f"{country}: fewer than 0 feed kcals"
+        assert (
+            country_data["feed_protein"] < 1e9
+        ), f"{country}: more than 1 billion feed grams of protein"
+        assert (
+            country_data["feed_protein"] >= 0
+        ), f"{country}: fewer than 0 feed grams of protein"
+        assert (
+            country_data["feed_fat"] < 1e9
+        ), f"{country}: more than 1 billion feed grams of fat"
+        assert (
+            country_data["feed_fat"] >= 0
+        ), f"{country}: fewer than 0 feed grams of fat"
+
+        assert (
+            country_data["crop_kcals"] < 10e9
+        ), f"{country}: more than 10 billion crop kcals"
+        assert country_data["crop_kcals"] >= 0, f"{country}: fewer than 0 crop kcals"
+        assert (
+            country_data["crop_protein"] < 10e9
+        ), f"{country}: more than 10 billion crop grams of protein"
+        assert (
+            country_data["crop_protein"] >= 0
+        ), f"{country}: fewer than 0 crop grams of protein"
+        assert (
+            country_data["crop_fat"] < 10e9
+        ), f"{country}: more than 10 billion crop grams of fat"
+        assert (
+            country_data["crop_fat"] >= 0
+        ), f"{country}: fewer than 0 crop grams of fat"
+
+        assert all(
+            country_data[f"crop_reduction_year{i}"] >= -1 for i in range(1, 11)
+        ), f"{country}: crop reduction is less than -1"
+        assert all(
+            country_data[f"grasses_reduction_year{i}"] >= -1 for i in range(1, 11)
+        ), f"{country}: grasses reduction is less than -1"
+        assert np.isclose(
+            sum(country_data[f"seasonality_m{i}"] for i in range(1, 13)), 1
+        ), f"{country}: sum of seasonality is not 1"
+
+        months = [
+            "jan",
+            "feb",
+            "mar",
+            "apr",
+            "may",
+            "jun",
+            "jul",
+            "aug",
+            "sep",
+            "oct",
+            "nov",
+            "dec",
+        ]
+        assert all(
+            country_data[f"stocks_kcals_{months[i]}"] < 10e9 for i in range(0, 12)
+        ), f"{country}: stocks kcals is greater than 10 billion"
+        assert all(
+            country_data[f"stocks_kcals_{months[i]}"] >= 0 for i in range(0, 12)
+        ), f"{country}: stocks kcals is less than 0"
+
+        assert (
+            country_data["distribution_loss_crops"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_crops"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+        assert (
+            country_data["distribution_loss_sugar"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_sugar"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+        assert (
+            country_data["distribution_loss_meat"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_meat"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+        assert (
+            country_data["distribution_loss_dairy"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_dairy"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+        assert (
+            country_data["distribution_loss_seafood"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_seafood"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+
+        assert (
+            country_data["retail_waste_baseline"] < 1
+        ), f"{country}: retail waste is greater than 1"
+        assert (
+            country_data["retail_waste_baseline"] >= 0
+        ), f"{country}: retail waste is less than 0"
+        assert (
+            country_data["retail_waste_price_double"] < 1
+        ), f"{country}: retail waste is greater than 1"
+        assert (
+            country_data["retail_waste_price_double"] >= 0
+        ), f"{country}: retail waste is less than 0"
+        assert (
+            country_data["retail_waste_price_triple"] < 1
+        ), f"{country}: retail waste is greater than 1"
+        assert (
+            country_data["retail_waste_price_triple"] >= 0
+        ), f"{country}: retail waste is less than 0"
+
+        assert (
+            country_data["wood_pulp_tonnes"] < 1e9
+        ), f"{country}: wood pulp is greater than 1 billion tonnes"
+        assert (
+            country_data["wood_pulp_tonnes"] >= 0
+        ), f"{country}: wood pulp is less than 0 tonnes"
+
+        assert (
+            country_data["crop_area_1000ha"] < 2e9
+        ), f"{country}: crop area is greater than 2 billion hectares"
+        assert (
+            country_data["crop_area_1000ha"] >= 0
+        ), f"{country}: crop area is less than 0 hectares"
+
+        assert (
+            country_data["milk_yield_kg_per_milk_bearing_animal_per_year"] >= 0
+        ), f"{country}: milk yield is less than 0"
+        assert (
+            country_data["milk_yield_kg_per_milk_bearing_animal_per_year"] < 20000
+        ), f"{country}: milk yield is greater than 20,000"
+
+        assert (
+            country_data["kg_meat_per_pig"] >= 0
+        ), f"{country}: kg meat per pig is less than 0"
+        assert (
+            country_data["kg_meat_per_pig"] < 200
+        ), f"{country}: kg meat per pig is greater than 200"
+
+        assert (
+            country_data["kg_meat_per_chicken"] >= 0
+        ), f"{country}: kg meat per chicken is less than 0"
+        assert (
+            country_data["kg_meat_per_chicken"] < 5
+        ), f"{country}: kg meat per chicken is greater than 5"
