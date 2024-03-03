@@ -2176,8 +2176,6 @@ class Plotter:
             / "large_reports"
             / ("" + re.sub(r'[\\/*?:"<>|\n]', "_", title) + ".png")
         )
-        print("saveloc")
-        print(saveloc)
 
         plt.savefig(
             # Replace problematic characters with an underscore or remove them
@@ -2219,8 +2217,6 @@ class Plotter:
             Path(repo_root) / "results" / "large_reports" / "map_ratio_fed_"
         )
         saveloc = path_string + ratio_fed + ".png"
-        print("saveloc")
-        print(saveloc)
         fig.savefig(
             saveloc,
             dpi=300,

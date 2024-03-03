@@ -107,147 +107,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             ],
         )
 
-    def alter_any_failing_scenarios(self, scenario_options, iso3):
-        """
-        These are the scenarios I seem to be unable to determine why optimization is failing.
-        I belive I have hit diminishing returns trying to figure them out, so I just patch them instead.
-        """
-        failing_scenarios = [
-            {
-                "country_code": "SLV",
-                "cull": ["do_eat_culled"],
-                "scenario": ["all_resilient_foods", "seaweed"],
-                "shutoff": [
-                    "continued",
-                    "long_delayed_shutoff",
-                    "short_delayed_shutoff",
-                ],
-                "CORRECTION": {"shutoff": "immediate"},
-                "WARNING": (
-                    "WARNING: SLV cannot run with seaweed under these specific conditions. "
-                    " Removing feed and biofuel demand from this scenario as a patch."
-                ),
-            },
-            {
-                "country_code": "DJI",
-                "crop_disruption": ["country_nuclear_winter"],
-                "cull": ["do_eat_culled", "dont_eat_culled"],
-                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "scenario": [
-                    "no_resilient_foods",
-                    "seaweed",
-                    "methane_scp",
-                    "industrial_foods",
-                    "cellulosic_sugar",
-                ],
-                "seasonality": ["no_seasonality"],
-                "stored_food": ["baseline"],
-                "shutoff": [
-                    "continued",
-                    "long_delayed_shutoff",
-                    "short_delayed_shutoff",
-                ],
-                "CORRECTION": {"shutoff": "immediate"},
-                "WARNING": (
-                    "WARNING: DJI cannot run with baseline breeding under these specific conditions. "
-                    " Changing to reduced breeding in this scenario as a patch."
-                ),
-            },
-            {
-                "country_code": "NAM",
-                "crop_disruption": ["country_nuclear_winter"],
-                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "shutoff": [
-                    "continued_after_10_percent_fed",
-                ],
-                "CORRECTION": {"shutoff": "continued"},
-                "WARNING": (
-                    "WARNING: NAM cannot run with baseline breeding under these specific conditions. "
-                    " Changing to reduced breeding in this scenario as a patch."
-                ),
-            },
-            {
-                "country_code": "BOL",
-                "crop_disruption": ["country_nuclear_winter"],
-                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "cull": ["do_eat_culled"],
-                "shutoff": [
-                    "continued_after_10_percent_fed",
-                ],
-                "CORRECTION": {"shutoff": "continued"},
-                "WARNING": (
-                    "WARNING: BOL cannot run with these specific conditions. "
-                    " Changing to continued feed/biofuel after 100% fed in this country as a patch."
-                ),
-            },
-            {
-                "country_code": "LSO",
-                "crop_disruption": ["country_nuclear_winter"],
-                "meat_strategy": ["feed_only_ruminants"],
-                # "end_simulation_stocks_ratio": ["zero"],
-                "cull": ["do_eat_culled"],
-                "shutoff": [
-                    "long_delayed_shutoff_after_10_percent_fed",
-                    "continued_after_10_percent_fed",
-                    "long_delayed_shutoff",
-                ],
-                "CORRECTION": {"meat_strategy": "reduce_breeding"},
-                "WARNING": (
-                    "WARNING: LSO cannot run with these specific conditions. "
-                    " Changing to reduced breeding for all animals"
-                ),
-            },
-            {
-                "country_code": "ECU",
-                "scenario": [
-                    "all_resilient_foods",
-                    "seaweed",
-                    "greenhouse",
-                    "methane_scp",
-                    "relocated_crops",
-                    "industrial_foods",
-                    "cellulosic_sugar",
-                ],
-                "crop_disruption": ["country_nuclear_winter"],
-                "meat_strategy": ["feed_only_ruminants"],
-                "end_simulation_stocks_ratio": ["zero"],
-                "cull": ["do_eat_culled"],
-                "shutoff": ["long_delayed_shutoff"],
-                "CORRECTION": {"meat_strategy": "reduce_breeding"},
-                "WARNING": (
-                    "WARNING: ECU cannot run with these specific conditions. "
-                    "Changing to reduced breeding for all animals"
-                ),
-            },
-        ]
-        unchanged_scenario_options_copy = copy.deepcopy(scenario_options)
-        altered_scenario_options = copy.deepcopy(scenario_options)
-        for failing_scenario in failing_scenarios:
-            iso3_failing_scenario = failing_scenario["country_code"]
-            correction = failing_scenario["CORRECTION"]
-            warning = failing_scenario["WARNING"]
-            del failing_scenario["country_code"]
-            del failing_scenario["CORRECTION"]
-            del failing_scenario["WARNING"]
-            # Check if keys in dict2 are a subset of keys in dict1 and values match for those keys
-            keys_are_subset = set(failing_scenario.keys()).issubset(
-                set(scenario_options.keys())
-            )
-            assert keys_are_subset
-            values_match = all(
-                scenario_options[key] in failing_scenario[key]
-                for key in failing_scenario
-            )
-            if values_match and iso3 == iso3_failing_scenario:
-                # alter the scenario
-                altered_scenario_options[list(correction.keys())[0]] = list(
-                    correction.values()
-                )[0]
-                print(warning)
-                return altered_scenario_options  # there should only be one match, so return the alteration
-        # there were no alterations, return a copy of the original scenario options
-        return unchanged_scenario_options_copy
-
     def run_optimizer_for_country(
         self,
         country_data,
@@ -258,12 +117,11 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         figure_save_postfix="",
         title="Untitled",
     ):
-        country_name = country_data["country"]
         (
             constants_for_params,
             time_consts_for_params,
             scenario_loader,
-        ) = self.set_depending_on_option(country_data, scenario_option)
+        ) = self.set_depending_on_option(scenario_option, country_data=country_data)
 
         USE_TRY_CATCH = False
         if USE_TRY_CATCH:
@@ -279,6 +137,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                     figure_save_postfix,
                     country_data,
                     save_all_results,
+                    country_data["country"],
+                    country_data["iso3"],
+                    title=title,
                 )
                 percent_people_fed = interpreted_results.percent_people_fed
             except Exception as e:
@@ -296,6 +157,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 figure_save_postfix,
                 country_data,
                 save_all_results,
+                country_data["country"],
+                country_data["iso3"],
                 title=title,
             )
 
@@ -412,6 +275,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             if country_code in countries_to_skip:
                 continue
 
+            country_data = self.apply_custom_parameters(country_data, scenario_option)
+            self.verify_country_data(country_data)
+
             population = country_data["population"]
 
             # skip countries with no
@@ -419,23 +285,13 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 continue
             country_name = country_data["country"]
 
-            ALTER_FAILING_SCENARIO = True
-            if ALTER_FAILING_SCENARIO:
-                # let's alter some scenarios that are known to fail. Also make sure the changes are temporary by
-                # only altering a copy of the original scenario options
-                scenario_option_copy = self.alter_any_failing_scenarios(
-                    scenario_option, country_code
-                )
-            else:
-                scenario_option_copy = copy.deepcopy(scenario_option)
-
             (
                 needs_ratio,
                 scenario_description,
                 interpreted_results,
             ) = self.run_optimizer_for_country(
                 country_data,
-                scenario_option_copy,
+                scenario_option,
                 create_pptx_with_all_countries,
                 show_country_figures,
                 save_all_results,
@@ -466,6 +322,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         else:
             ratio_fed = str(np.nan)
 
+        print("")
         print("Net population considered: " + str(net_pop / 1e9) + " Billion people")
         print("Fraction of this population fed: " + ratio_fed)
         print(scenario_description)
@@ -784,3 +641,249 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 show_country_figures=(plot_figs == "plot"),
                 create_pptx_with_all_countries=(create_pptx == "pptx"),
             )
+
+    def apply_custom_parameters(self, country_data, scenario_option):
+        """
+        Apply custom parameters to the country data using parameters defined
+        in the scenario yaml file
+        """
+        for key, value in scenario_option.items():
+            if key in country_data:
+                country_data[key] = float(value)
+        return country_data
+
+    def verify_country_data(self, country_data):
+        """
+        Runs a bunch of checks to make sure the country data is reasonable
+
+        Arguments:
+            country_data: a dictionary with the country data
+        """
+        country = country_data["country"]
+        # check that the country population is a reasonable number
+        assert (
+            country_data["population"] > 10_000
+        ), f"{country}: population is smaller than 10,000"
+        assert (
+            country_data["population"] < 1e10
+        ), f"{country}: population is greater than 10 billion"
+
+        # grass is in megatonnes
+        assert (
+            country_data["grasses_baseline"] < 20_000
+        ), f"{country}: grass_baseline is greater than 20,000 megatonnes"
+        assert (
+            country_data["grasses_baseline"] >= 0
+        ), f"{country}: grass_baseline is less than 0"
+
+        # the following are in tonnes per year
+        assert country_data["dairy"] >= 0, f"{country}: milk production is less than 0"
+        assert (
+            country_data["dairy"] < 1e9
+        ), f"{country}: milk produciton is more than 1 billion tonnes"
+        assert (
+            country_data["chicken"] >= 0
+        ), f"{country}: chicken production is less than 0"
+        assert (
+            country_data["chicken"] < 1e9
+        ), f"{country}: chicken production is more than 1 billion tonnes"
+        assert country_data["pork"] >= 0, f"{country}: pork production is less than 0"
+        assert (
+            country_data["pork"] < 1e9
+        ), f"{country}: pork production is more than 1 billion tonnes"
+        assert country_data["beef"] >= 0, f"{country}: beef production is less than 0"
+        assert (
+            country_data["beef"] < 1e9
+        ), f"{country}: beef production is more than 1 billion tonnes"
+
+        assert (
+            country_data["small_animals"] < 100e9
+        ), f"{country}: more than 100 billion small animals"
+        assert (
+            country_data["small_animals"] >= 0
+        ), f"{country}: fewer than 0 small animals"
+        assert (
+            country_data["medium_animals"] < 10e9
+        ), f"{country}: more than 10 billion medium animals"
+        assert (
+            country_data["medium_animals"] >= 0
+        ), f"{country}: fewer than 0 medium animals"
+        assert (
+            country_data["large_animals"] < 10e9
+        ), f"{country}: more than 10 billion large animals"
+        assert (
+            country_data["large_animals"] >= 0
+        ), f"{country}: fewer than 0 large animals"
+        assert (
+            country_data["dairy_cows"] < 1e9
+        ), f"{country}: more than 1 billion dairy cows"
+        assert country_data["dairy_cows"] >= 0, f"{country}: fewer than 0 dairy cows"
+
+        assert (
+            country_data["biofuel_kcals"] < 1e9
+        ), f"{country}: more than 1 billion biofuel kcals"
+        assert (
+            country_data["biofuel_kcals"] >= 0
+        ), f"{country}: fewer than 0 biofuel kcals"
+        assert (
+            country_data["biofuel_protein"] < 1e9
+        ), f"{country}: more than 1 billion biofuel grams of protein"
+        assert (
+            country_data["biofuel_protein"] >= 0
+        ), f"{country}: fewer than 0 biofuel grams of protein"
+        assert (
+            country_data["biofuel_fat"] < 1e9
+        ), f"{country}: more than 1 billion biofuel grams of fat"
+        assert (
+            country_data["biofuel_fat"] >= 0
+        ), f"{country}: fewer than 0 biofuel grams of fat"
+
+        assert (
+            country_data["feed_kcals"] < 2e9
+        ), f"{country}: more than 2 billion feed kcals"
+        assert country_data["feed_kcals"] >= 0, f"{country}: fewer than 0 feed kcals"
+        assert (
+            country_data["feed_protein"] < 1e9
+        ), f"{country}: more than 1 billion feed grams of protein"
+        assert (
+            country_data["feed_protein"] >= 0
+        ), f"{country}: fewer than 0 feed grams of protein"
+        assert (
+            country_data["feed_fat"] < 1e9
+        ), f"{country}: more than 1 billion feed grams of fat"
+        assert (
+            country_data["feed_fat"] >= 0
+        ), f"{country}: fewer than 0 feed grams of fat"
+
+        assert (
+            country_data["crop_kcals"] < 10e9
+        ), f"{country}: more than 10 billion crop kcals"
+        assert country_data["crop_kcals"] >= 0, f"{country}: fewer than 0 crop kcals"
+        assert (
+            country_data["crop_protein"] < 10e9
+        ), f"{country}: more than 10 billion crop grams of protein"
+        assert (
+            country_data["crop_protein"] >= 0
+        ), f"{country}: fewer than 0 crop grams of protein"
+        assert (
+            country_data["crop_fat"] < 10e9
+        ), f"{country}: more than 10 billion crop grams of fat"
+        assert (
+            country_data["crop_fat"] >= 0
+        ), f"{country}: fewer than 0 crop grams of fat"
+
+        assert all(
+            country_data[f"crop_reduction_year{i}"] >= -1 for i in range(1, 11)
+        ), f"{country}: crop reduction is less than -1"
+        assert all(
+            country_data[f"grasses_reduction_year{i}"] >= -1 for i in range(1, 11)
+        ), f"{country}: grasses reduction is less than -1"
+        assert np.isclose(
+            sum(country_data[f"seasonality_m{i}"] for i in range(1, 13)), 1
+        ), f"{country}: sum of seasonality is not 1"
+
+        months = [
+            "jan",
+            "feb",
+            "mar",
+            "apr",
+            "may",
+            "jun",
+            "jul",
+            "aug",
+            "sep",
+            "oct",
+            "nov",
+            "dec",
+        ]
+        assert all(
+            country_data[f"stocks_kcals_{months[i]}"] < 10e9 for i in range(0, 12)
+        ), f"{country}: stocks kcals is greater than 10 billion"
+        assert all(
+            country_data[f"stocks_kcals_{months[i]}"] >= 0 for i in range(0, 12)
+        ), f"{country}: stocks kcals is less than 0"
+
+        assert (
+            country_data["distribution_loss_crops"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_crops"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+        assert (
+            country_data["distribution_loss_sugar"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_sugar"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+        assert (
+            country_data["distribution_loss_meat"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_meat"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+        assert (
+            country_data["distribution_loss_dairy"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_dairy"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+        assert (
+            country_data["distribution_loss_seafood"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_seafood"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+
+        assert (
+            country_data["retail_waste_baseline"] < 1
+        ), f"{country}: retail waste is greater than 1"
+        assert (
+            country_data["retail_waste_baseline"] >= 0
+        ), f"{country}: retail waste is less than 0"
+        assert (
+            country_data["retail_waste_price_double"] < 1
+        ), f"{country}: retail waste is greater than 1"
+        assert (
+            country_data["retail_waste_price_double"] >= 0
+        ), f"{country}: retail waste is less than 0"
+        assert (
+            country_data["retail_waste_price_triple"] < 1
+        ), f"{country}: retail waste is greater than 1"
+        assert (
+            country_data["retail_waste_price_triple"] >= 0
+        ), f"{country}: retail waste is less than 0"
+
+        assert (
+            country_data["wood_pulp_tonnes"] < 1e9
+        ), f"{country}: wood pulp is greater than 1 billion tonnes"
+        assert (
+            country_data["wood_pulp_tonnes"] >= 0
+        ), f"{country}: wood pulp is less than 0 tonnes"
+
+        assert (
+            country_data["crop_area_1000ha"] < 2e9
+        ), f"{country}: crop area is greater than 2 billion hectares"
+        assert (
+            country_data["crop_area_1000ha"] >= 0
+        ), f"{country}: crop area is less than 0 hectares"
+
+        assert (
+            country_data["milk_yield_kg_per_milk_bearing_animal_per_year"] >= 0
+        ), f"{country}: milk yield is less than 0"
+        assert (
+            country_data["milk_yield_kg_per_milk_bearing_animal_per_year"] < 20000
+        ), f"{country}: milk yield is greater than 20,000"
+
+        assert (
+            country_data["kg_meat_per_pig"] >= 0
+        ), f"{country}: kg meat per pig is less than 0"
+        assert (
+            country_data["kg_meat_per_pig"] < 200
+        ), f"{country}: kg meat per pig is greater than 200"
+
+        assert (
+            country_data["kg_meat_per_chicken"] >= 0
+        ), f"{country}: kg meat per chicken is less than 0"
+        assert (
+            country_data["kg_meat_per_chicken"] < 5
+        ), f"{country}: kg meat per chicken is greater than 5"

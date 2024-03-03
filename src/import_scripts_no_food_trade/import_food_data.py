@@ -7,7 +7,6 @@ The output is saved in data/no_food_trade/computer_readable_file.py.
 
 """
 
-
 from pathlib import Path
 import pandas as pd
 from functools import reduce
@@ -95,6 +94,20 @@ df18 = pd.read_csv(
     / "processed_data"
     / "improvement_csv.csv"
 )
+df19 = pd.read_csv(
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "processed_data"
+    / "milk_per_animal_csv.csv"
+)
+df20 = pd.read_csv(
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "processed_data"
+    / "meat_per_animal_csv.csv"
+)
 
 dataframes = [
     df1,
@@ -115,6 +128,8 @@ dataframes = [
     df16,
     df17,
     df18,
+    df19,
+    df20,
 ]
 
 

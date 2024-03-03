@@ -23,6 +23,7 @@ Functionality required
  # change how feed is attributed, make the DI% occur in a modular way, remove from the feed required calauclations (use net energy there, not gross energy)
 
 """
+
 from pathlib import Path
 import pandas as pd
 import git
@@ -120,19 +121,25 @@ class CalculateFeedAndMeat:
     def get_meat_produced(self):
         # set monthly values to zero with one example object from  all_animals
         # (all such objects should be same number of months)
-        animals_killed_for_meat_small = np.zeros(len(self.all_animals[0].slaughter))
-        animals_killed_for_meat_medium = np.zeros(len(self.all_animals[0].slaughter))
+        chickens_killed_for_meat = np.zeros(len(self.all_animals[0].slaughter))
+        pigs_killed_for_meat = np.zeros(len(self.all_animals[0].slaughter))
+        animals_killed_for_meat_small_nonchicken = np.zeros(len(self.all_animals[0].slaughter))
+        animals_killed_for_meat_medium_nonpig = np.zeros(len(self.all_animals[0].slaughter))
         animals_killed_for_meat_large = np.zeros(len(self.all_animals[0].slaughter))
         # add up all the numbers of animals slaughtered and feed
 
         # get the total slaughter by animal size from the all_animals list of animal objects
         for animal in self.all_animals:
-            if animal.animal_size == "small":
-                animals_killed_for_meat_small += np.array(
+            if animal.animal_type == "chicken":
+                chickens_killed_for_meat = np.array(animal.slaughter)
+            elif animal.animal_type == "pig":
+                pigs_killed_for_meat = np.array(animal.slaughter)
+            elif animal.animal_size == "small" and animal.animal_type != "chicken":
+                animals_killed_for_meat_small_nonchicken += np.array(
                     animal.slaughter
                 )  # + np.array(animal.total_homekill_this_month))
-            elif animal.animal_size == "medium":
-                animals_killed_for_meat_medium += np.array(
+            elif animal.animal_size == "medium" and animal.animal_type != "pig":
+                animals_killed_for_meat_medium_nonpig += np.array(
                     animal.slaughter
                 )  # + np.array(animal.total_homekill_this_month))
             elif animal.animal_size == "large":
@@ -170,8 +177,10 @@ class CalculateFeedAndMeat:
             plt.show()
         # convert the animals slaughtered list
         return (
-            animals_killed_for_meat_small,
-            animals_killed_for_meat_medium,
+            chickens_killed_for_meat,
+            pigs_killed_for_meat,
+            animals_killed_for_meat_small_nonchicken,
+            animals_killed_for_meat_medium_nonpig,
             animals_killed_for_meat_large,
         )
 
@@ -189,6 +198,19 @@ class CalculateFeedAndMeat:
                     animal.population
                 )  # + np.array(animal.total_homekill_this_month))
         return total_dairy_cows
+
+    def get_total_milk_bearing_animals(self):
+        """
+        Calculates the total number of milk-bearing animals in the population.
+
+        Returns:
+            numpy.ndarray: An array containing the total number of milk-bearing animals for each month
+        """
+        total_dairy = np.zeros(len(self.all_animals[0].population))
+        for animal in self.all_animals:
+            if "milk" in animal.animal_type:
+                total_dairy += np.array(animal.population)
+        return total_dairy
 
 
 # create country calss to store country data in
@@ -1919,9 +1941,9 @@ class AnimalModelBuilder:
             # if milk animal, set the transfer population
             if animal.animal_function == "milk":
                 animal.set_milk_birth()
-                transfer_populations[
-                    animal.animal_species
-                ] = animal.set_initial_milk_transfer()
+                transfer_populations[animal.animal_species] = (
+                    animal.set_initial_milk_transfer()
+                )
                 transfer_pop = -transfer_populations[animal.animal_species]
             else:
                 # is not milk, recieve the transfer population (if no correspiodning milk animal, this will be zero)
@@ -2524,16 +2546,81 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
     return all_animals, feed_used, grass_used
 
 
-if __name__ == "__main__":
+def world_test():
+    """
+    Test the animal population model for the case with full-trade by including worldwide aggregated
+    feed and grass supply.
+    """
+    feed_world_baseline = 1447.96e6 / 12 * 4e6 / 1e9  # billion kcals / month
+    grass_world_baseline = 4206e6 / 12 * 4e6 / 1e9  # billion kcals / month
     feed = (
-        0  # billion kcals, shorthand way toa pply consistent supply over whole period
+        # 0  # billion kcals, shorthand way to apply consistent supply over whole period
+        feed_world_baseline
     )
     grass = (
-        0  # billion kcals, shorthand way toa pply consistent supply over whole period
+        # 0  # billion kcals, shorthand way to apply consistent supply over whole period
+        grass_world_baseline
     )
-    months = 10
+    months = 12
     output_list, feed_used, grass_used = main(
-        "JAM",
+        "WOR",
+        Debugging.available_feed_function(feed, months),
+        Debugging.available_grass_function(grass, months),
+        "baseline",
+        remove_first_month=1,
+    )
+    print(
+        "% feed used",
+        100 * feed_used[-1].kcals / feed_world_baseline,
+    )
+    print(
+        "% grass used",
+        100 * grass_used[-1].kcals / grass_world_baseline,
+    )
+    number_of_animals = {}
+    number_of_animals["large"] = 0
+    number_of_animals["medium"] = 0
+    number_of_animals["small"] = 0
+    print()
+    tons_milk_per_year = 0
+    for x in output_list:
+        if x.animal_type=="chicken":
+            kg_meat_per_animal = 1.65
+        elif x.animal_type=="pig":
+            kg_meat_per_animal = 86.0
+        elif x.animal_size=="small" and x.animal_type!="chicken":
+            kg_meat_per_animal = 2.36
+        elif x.animal_size=="medium" and x.animal_type!="pig":
+            kg_meat_per_animal = 24.6
+        elif x.animal_size=="large":
+            kg_meat_per_animal = 269.7
+        else:
+            raise ValueError("animal size not recognized")
+        print(x.animal_type, x.animal_size)
+        assert all(
+            np.abs(np.diff(x.population) / x.population[1:]) < 0.001
+        ), "population is not constant over time"
+        print(f"{x.population[-1] / 1e6} million individuals")
+        print(
+            f"{12 * x.slaughter[-1] * kg_meat_per_animal / 1e3 / 1e6} million tonnes of meat per year"
+        )
+        if "milk" in x.animal_type:
+            tons_milk_per_year += x.population[-1] * 1099.60 / 1000
+        number_of_animals[x.animal_size] += x.population[-1] / 1e9
+        print()
+    print("aggregated populations in billions", number_of_animals)
+    print(f"{tons_milk_per_year / 1e6} million tonnes of milk per year")
+
+if __name__ == "__main__":
+    feed = (
+        # 0  # billion kcals, shorthand way to apply consistent supply over whole period
+    )
+    grass = (
+        # 0  # billion kcals, shorthand way to apply consistent supply over whole period
+    )
+    months = 12
+    output_list, feed_used, grass_used = main(
+        "WOR",
         Debugging.available_feed_function(feed, months),
         Debugging.available_grass_function(grass, months),
         "baseline",

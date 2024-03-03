@@ -28,5 +28,7 @@ python create_food_stock_csv.py
 python create_population_csv.py
 python create_food_waste_csv.py
 python create_pulp_csv.py
+python create_milk_per_animal_csv.py
+python create_meat_per_animal_csv.py
 python import_food_data.py
 cd ../../scripts

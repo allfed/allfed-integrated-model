@@ -306,7 +306,14 @@ class Scenarios:
         # fraction global crop area for entire earth is 1 by definition
         constants_for_params["INITIAL_CROP_AREA_FRACTION"] = 1
 
-        constants_for_params["COUNTRY_CODE"] = "global"
+        # Milk yield in kg per milk-bearing animal per year
+        constants_for_params["MILK_YIELD_KG_PER_MILK_BEARING_ANIMAL_PER_YEAR"] = 1099.60
+
+        # Meat yield in kg per animal per year
+        constants_for_params["KG_MEAT_PER_PIG"] = 86.0
+        constants_for_params["KG_MEAT_PER_CHICKEN"] = 1.65
+
+        constants_for_params["COUNTRY_CODE"] = "WOR"
 
         self.SCALE_SET = True
         return constants_for_params
@@ -467,9 +474,9 @@ class Scenarios:
         )
 
         constants_for_params["ROTATION_IMPROVEMENTS"] = {}
-        constants_for_params["ROTATION_IMPROVEMENTS"][
-            "POWER_LAW_IMPROVEMENT"
-        ] = country_data["power_law_improvement"]
+        constants_for_params["ROTATION_IMPROVEMENTS"]["POWER_LAW_IMPROVEMENT"] = (
+            country_data["power_law_improvement"]
+        )
 
         # annual tons cattle beef production
         constants_for_params["TONS_BEEF_ANNUAL"] = country_data["beef"]
@@ -511,6 +518,19 @@ class Scenarios:
         constants_for_params["END_OF_MONTH_STOCKS"]["DEC"] = country_data[
             "stocks_kcals_dec"
         ]
+
+        # Milk yield in kg per milk-bearing animal per year
+        constants_for_params["MILK_YIELD_KG_PER_MILK_BEARING_ANIMAL_PER_YEAR"] = (
+            country_data["milk_yield_kg_per_milk_bearing_animal_per_year"]
+        )
+
+        # Meat yield in kg per animal
+        constants_for_params["KG_MEAT_PER_PIG"] = (
+            country_data["kg_meat_per_pig"]
+        )
+        constants_for_params["KG_MEAT_PER_CHICKEN"] = (
+            country_data["kg_meat_per_chicken"]
+        )
 
         self.SCALE_SET = True
         return constants_for_params
@@ -1503,9 +1523,9 @@ class Scenarios:
     def methane_scp(self, constants_for_params):
         # (one month delay built into industrial food numbers)
         constants_for_params["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = 2
-        constants_for_params[
-            "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
-        ] = 1  # default values from CS and SCP papers
+        constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = (
+            1  # default values from CS and SCP papers
+        )
 
         constants_for_params["ADD_METHANE_SCP"] = True
         return constants_for_params
@@ -1513,9 +1533,9 @@ class Scenarios:
     def cellulosic_sugar(self, constants_for_params):
         # (one month delay built into industrial food numbers)
         constants_for_params["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = 2
-        constants_for_params[
-            "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
-        ] = 1  # default values from CS and SCP papers
+        constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = (
+            1  # default values from CS and SCP papers
+        )
 
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = True
         return constants_for_params
