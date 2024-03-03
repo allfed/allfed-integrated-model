@@ -88,13 +88,8 @@ class ScenarioRunner:
                 Plotter.plot_feed(
                     interpreted_results,
                     "earliest_month_zero",
-<<<<<<< HEAD
-                    (feed_title + " " if feed_title != "" else "")
-                    + country_data["country"]
-=======
                     (feed_title + " " if feed_title is not "" else "")
                     + country_name
->>>>>>> origin/james_simon_to_add_tests
                     + figure_save_postfix,
                     show_country_figures,
                     create_pptx_with_all_countries,
@@ -115,13 +110,8 @@ class ScenarioRunner:
             Plotter.plot_fig_1ab(
                 interpreted_results,
                 NMONTHS,
-<<<<<<< HEAD
-                (to_humans_title + " " if to_humans_title != "" else "")
-                + country_data["country"]
-=======
                 (to_humans_title + " " if to_humans_title is not "" else "")
                 + country_name
->>>>>>> origin/james_simon_to_add_tests
                 + figure_save_postfix,
                 show_country_figures,
                 create_pptx_with_all_countries,
@@ -283,30 +273,6 @@ class ScenarioRunner:
             feed_demand,
             biofuels_demand,
         )
-<<<<<<< HEAD
-        # import matplotlib.pyplot as plt
-
-        # # plt.figure()
-        # # plt.plot(time_consts_round3['each_month_meat_slaughtered'])
-        # # plt.title("round 3 meat")
-        # # plt.show()
-        REPLACE_ROUND3_MEAT_WITH_ROUND2 = False
-        if REPLACE_ROUND3_MEAT_WITH_ROUND2:
-            time_consts_round3["each_month_meat_slaughtered"] = (
-                each_month_meat_slaughtered
-            )
-            time_consts_round3["max_consumed_culled_kcals_each_month"] = (
-                max_consumed_culled_kcals_each_month
-            )
-            single_valued_constants_round3["meat_summed_consumption"] = (
-                meat_summed_consumption
-            )
-        # plt.figure()
-        # plt.plot(time_consts_round3["max_consumed_culled_kcals_each_month"])
-        # plt.title("round 3 meat cumulative")
-        # plt.show()
-=======
->>>>>>> origin/james_simon_to_add_tests
 
         interpreted_results_round3 = self.run_optimizer(
             single_valued_constants_round3,
