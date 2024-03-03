@@ -269,6 +269,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             if country_code in countries_to_skip:
                 continue
 
+            country_data = self.apply_custom_parameters(country_data, scenario_option)
             self.verify_country_data(country_data)
 
             population = country_data["population"]
@@ -569,6 +570,16 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 show_country_figures=(plot_figs == "plot"),
                 create_pptx_with_all_countries=(create_pptx == "pptx"),
             )
+
+    def apply_custom_parameters(self, country_data, scenario_option):
+        """
+        Apply custom parameters to the country data using parameters defined
+        in the scenario yaml file
+        """
+        for key, value in scenario_option.items():
+            if key in country_data:
+                country_data[key] = float(value)
+        return country_data
 
     def verify_country_data(self, country_data):
         """
