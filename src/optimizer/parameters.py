@@ -264,6 +264,7 @@ class Parameters:
             available_feed=zero_feed,
             available_grass=grasses_for_animals,
             scenario=constants_inputs["BREEDING_STRATEGY"],  # tries to reduce breeding
+            constants_inputs=constants_inputs,
         )
 
         # MEAT AND DAIRY from breeding reduction strategy
@@ -1066,6 +1067,7 @@ class Parameters:
             scenario=constants_inputs[
                 "BREEDING_STRATEGY"
             ],  # tries to reduce breeding or keep as baseline
+            constants_inputs=constants_inputs,
         )
 
         (
@@ -1521,6 +1523,7 @@ class Parameters:
             available_feed=feed_sum_billion_kcals,
             available_grass=grasses_for_animals,
             scenario=constants_inputs["BREEDING_STRATEGY"],
+            constants_inputs=constants_inputs,
         )
 
         # final answer as to meat produced from feed

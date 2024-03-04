@@ -1262,6 +1262,11 @@ class ScenarioRunner:
                 "reduce_breeding or baseline_breeding, or feed_only_ruminants"
             )
 
+        # add custom starting animal populations
+        for key in scenario_option_copy.keys():
+            if "_head" in key:
+                constants_for_params[f"{key}_start"] = int(scenario_option_copy[key])
+
         return constants_for_params, time_consts_for_params, scenario_loader
 
     def save_outdoor_crop_production_to_csv(

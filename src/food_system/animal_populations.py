@@ -41,7 +41,14 @@ Start main function
 
 
 class CalculateFeedAndMeat:
-    def __init__(self, country_code, available_feed, available_grass, scenario):
+    def __init__(
+        self,
+        country_code,
+        available_feed,
+        available_grass,
+        scenario,
+        constants_inputs=None,
+    ):
         """
         Call the main function to calculate the feed and meat produced
 
@@ -54,6 +61,7 @@ class CalculateFeedAndMeat:
             available_feed,
             available_grass,
             scenario,
+            constants_inputs,
             remove_first_month=1,
         )
 
@@ -123,8 +131,12 @@ class CalculateFeedAndMeat:
         # (all such objects should be same number of months)
         chickens_killed_for_meat = np.zeros(len(self.all_animals[0].slaughter))
         pigs_killed_for_meat = np.zeros(len(self.all_animals[0].slaughter))
-        animals_killed_for_meat_small_nonchicken = np.zeros(len(self.all_animals[0].slaughter))
-        animals_killed_for_meat_medium_nonpig = np.zeros(len(self.all_animals[0].slaughter))
+        animals_killed_for_meat_small_nonchicken = np.zeros(
+            len(self.all_animals[0].slaughter)
+        )
+        animals_killed_for_meat_medium_nonpig = np.zeros(
+            len(self.all_animals[0].slaughter)
+        )
         animals_killed_for_meat_large = np.zeros(len(self.all_animals[0].slaughter))
         # add up all the numbers of animals slaughtered and feed
 
@@ -2233,7 +2245,14 @@ class Debugging:
         return grass
 
 
-def main(country_code, available_feed, available_grass, scenario, remove_first_month=0):
+def main(
+    country_code,
+    available_feed,
+    available_grass,
+    scenario,
+    constants_inputs=None,
+    remove_first_month=0,
+):
     """Main function to be called by the user.
 
     This function will call the other functions in this file.
@@ -2248,6 +2267,12 @@ def main(country_code, available_feed, available_grass, scenario, remove_first_m
 
     # read animal population data
     df_animal_stock_info = AnimalDataReader.read_animal_population_data(population_csv)
+
+    # custom animal stock info
+    if constants_inputs:
+        for key, value in constants_inputs.items():
+            if "_head_start" in key:
+                df_animal_stock_info.loc[country_code, key.strip("_start")] = value
 
     # read animal nutrition data
     df_animal_attributes = AnimalDataReader.read_animal_nutrition_data(attributes_csv)
@@ -2584,15 +2609,15 @@ def world_test():
     print()
     tons_milk_per_year = 0
     for x in output_list:
-        if x.animal_type=="chicken":
+        if x.animal_type == "chicken":
             kg_meat_per_animal = 1.65
-        elif x.animal_type=="pig":
+        elif x.animal_type == "pig":
             kg_meat_per_animal = 86.0
-        elif x.animal_size=="small" and x.animal_type!="chicken":
+        elif x.animal_size == "small" and x.animal_type != "chicken":
             kg_meat_per_animal = 2.36
-        elif x.animal_size=="medium" and x.animal_type!="pig":
+        elif x.animal_size == "medium" and x.animal_type != "pig":
             kg_meat_per_animal = 24.6
-        elif x.animal_size=="large":
+        elif x.animal_size == "large":
             kg_meat_per_animal = 269.7
         else:
             raise ValueError("animal size not recognized")
@@ -2610,6 +2635,7 @@ def world_test():
         print()
     print("aggregated populations in billions", number_of_animals)
     print(f"{tons_milk_per_year / 1e6} million tonnes of milk per year")
+
 
 if __name__ == "__main__":
     feed = (
