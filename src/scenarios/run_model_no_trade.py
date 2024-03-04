@@ -719,41 +719,43 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         ), f"{country}: more than 1 billion dairy cows"
         assert country_data["dairy_cows"] >= 0, f"{country}: fewer than 0 dairy cows"
 
-        assert (
+        assert(
             country_data["biofuel_kcals"] < 1e9
-        ), f"{country}: more than 1 billion biofuel kcals"
+        ), f"{country}: more than 1 billion biofuel dry caloric tonnes"
         assert (
             country_data["biofuel_kcals"] >= 0
-        ), f"{country}: fewer than 0 biofuel kcals"
+        ), f"{country}: fewer than 0 biofuel dry caloric tonnes"
         assert (
             country_data["biofuel_protein"] < 1e9
-        ), f"{country}: more than 1 billion biofuel grams of protein"
+        ), f"{country}: more than 1 billion biofuel tonnes of protein"
         assert (
             country_data["biofuel_protein"] >= 0
-        ), f"{country}: fewer than 0 biofuel grams of protein"
+        ), f"{country}: fewer than 0 biofuel tonnes of protein"
         assert (
             country_data["biofuel_fat"] < 1e9
-        ), f"{country}: more than 1 billion biofuel grams of fat"
+        ), f"{country}: more than 1 billion biofuel tonnes of fat"
         assert (
             country_data["biofuel_fat"] >= 0
-        ), f"{country}: fewer than 0 biofuel grams of fat"
+        ), f"{country}: fewer than 0 biofuel tonnes of fat"
 
         assert (
             country_data["feed_kcals"] < 2e9
-        ), f"{country}: more than 2 billion feed kcals"
-        assert country_data["feed_kcals"] >= 0, f"{country}: fewer than 0 feed kcals"
+        ), f"{country}: more than 2 billion feed dry caloric tonnes"
+        assert (
+            country_data["feed_kcals"] >= 0
+        ), f"{country}: fewer than 0 feed dry caloric tonnes"
         assert (
             country_data["feed_protein"] < 1e9
-        ), f"{country}: more than 1 billion feed grams of protein"
+        ), f"{country}: more than 1 billion feed tonnes of protein"
         assert (
             country_data["feed_protein"] >= 0
-        ), f"{country}: fewer than 0 feed grams of protein"
+        ), f"{country}: fewer than 0 feed tonnes of protein"
         assert (
             country_data["feed_fat"] < 1e9
-        ), f"{country}: more than 1 billion feed grams of fat"
+        ), f"{country}: more than 1 billion feed tonnes of fat"
         assert (
             country_data["feed_fat"] >= 0
-        ), f"{country}: fewer than 0 feed grams of fat"
+        ), f"{country}: fewer than 0 feed tonnes of fat"
 
         assert (
             country_data["crop_kcals"] < 10e9
