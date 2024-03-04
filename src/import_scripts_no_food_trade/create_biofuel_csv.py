@@ -21,8 +21,8 @@ df_biofuel = pd.read_excel(xls, "Biofuel")[
         "ISO3 Country Code",
         "Country",
         "Biofuel/other caloric consumption in 2020 (million dry caloric tons)",
-        "Biofuel/other fat consumption in 2020 (tonnes)",
-        "Biofuel/other protein consumption in 2020 (tonnes)",
+        "Biofuel/other fat consumption in 2020 (million tonnes)",
+        "Biofuel/other protein consumption in 2020 (million tonnes)",
     ]
 ]
 
