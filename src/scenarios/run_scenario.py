@@ -281,6 +281,7 @@ class ScenarioRunner:
             title=title,
         )
         interpreted_results_round3.set_feed_and_biofuels(feed_and_biofuels_round3)
+        interpreted_results_round3.set_meat_dictionary(meat_dictionary_round3)
         return interpreted_results_round3
 
     def get_interpreted_results_for_round3_if_zero_feed(self, interpreter, NMONTHS):
