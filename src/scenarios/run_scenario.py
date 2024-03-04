@@ -81,7 +81,7 @@ class ScenarioRunner:
                 Plotter.plot_feed(
                     interpreted_results,
                     "earliest_month_zero",
-                    (feed_title + " " if feed_title is not "" else "")
+                    (feed_title + " " if feed_title != "" else "")
                     + country_name
                     + figure_save_postfix,
                     show_country_figures,
@@ -103,7 +103,7 @@ class ScenarioRunner:
             Plotter.plot_fig_1ab(
                 interpreted_results,
                 NMONTHS,
-                (to_humans_title + " " if to_humans_title is not "" else "")
+                (to_humans_title + " " if to_humans_title != "" else "")
                 + country_name
                 + figure_save_postfix,
                 show_country_figures,
@@ -1242,5 +1242,10 @@ class ScenarioRunner:
                 "You must specify 'meat_strategy' key as either , "
                 "reduce_breeding or baseline_breeding, or feed_only_ruminants"
             )
+
+        # add custom starting animal populations
+        for key in scenario_option_copy.keys():
+            if "_head" in key:
+                constants_for_params[f"{key}_start"] = int(scenario_option_copy[key])
 
         return constants_for_params, time_consts_for_params, scenario_loader
