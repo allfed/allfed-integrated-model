@@ -1569,8 +1569,6 @@ class Parameters:
             to_increase_biofuels_and_feed_kcals_equiv = (
                 to_increase_biofuels_and_feed_kcals_equiv.negative_values_to_zero()
             )
-            print("to_increase_biofuels_and_feed_kcals_equiv")
-            print(to_increase_biofuels_and_feed_kcals_equiv)
             to_increase_biofuels_and_feed = (
                 to_increase_biofuels_and_feed_kcals_equiv.in_units_bil_kcals_thou_tons_thou_tons_per_month().kcals
             )

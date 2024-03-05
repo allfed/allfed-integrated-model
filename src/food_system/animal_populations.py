@@ -648,33 +648,33 @@ class AnimalSpecies:
                 + self.initial_slaughter
                 - transfer_births_or_head
             )
-            if not self.births_animals_month_baseline >= 0:
-                print(
-                    """
-                ERROR!
-                ERROR!
-                ERROR!
-                ERROR!
-                ERROR!
-                ERROR!
-                ERROR!
-                ERROR!
-                ERROR!
-                ERROR!
-                ERROR!
-                ERROR!
-                ERROR!
-                ERROR!
-                ERROR!
-                ERROR!
-                assert (
-                    self.births_animals_month_baseline >= 0
-                ), "births_animals_month_baseline is negative, this is probably because transfer births are too high or slaughter too low - check the data inputs"
+            # if not self.births_animals_month_baseline >= 0:
+            #     print(
+            #         """
+            #     ERROR!
+            #     ERROR!
+            #     ERROR!
+            #     ERROR!
+            #     ERROR!
+            #     ERROR!
+            #     ERROR!
+            #     ERROR!
+            #     ERROR!
+            #     ERROR!
+            #     ERROR!
+            #     ERROR!
+            #     ERROR!
+            #     ERROR!
+            #     ERROR!
+            #     ERROR!
+            #     assert (
+            #         self.births_animals_month_baseline >= 0
+            #     ), "births_animals_month_baseline is negative, this is probably because transfer births are too high or slaughter too low - check the data inputs"
 
-                This assert failed, but we are not currently enforcing it, for convenience. It will need to be fixed.
-                """
-                )
-                births_animals_month_baseline = 0
+            #     This assert failed, but we are not currently enforcing it, for convenience. It will need to be fixed.
+            #     """
+            #     )
+            births_animals_month_baseline = 0
             # if a milk animal, this is JUST the milk animals born (meat transfer accounted for in pregnancy attribute)
 
         # next we need add slaughter to milk animals to account for calf culling
@@ -1196,42 +1196,42 @@ class AnimalPopulation:
             new_pregnant_animals_total -= new_slaughtered_pregnant_animals
 
         if not new_pregnant_animals_total >= 0:
-            print(
-                """
-            ERROR!
-            ERROR!
-            ERROR!
-            ERROR!
-            ERROR!
-            ERROR!
-            ERROR!
-            ERROR!
-            ERROR!
-            assert new_pregnant_animals_total >= 0, "new pregnant animals total is negative"
+            # print(
+            #     """
+            # ERROR!
+            # ERROR!
+            # ERROR!
+            # ERROR!
+            # ERROR!
+            # ERROR!
+            # ERROR!
+            # ERROR!
+            # ERROR!
+            # assert new_pregnant_animals_total >= 0, "new pregnant animals total is negative"
 
-            This assert failed, but we are not currently enforcing it, for convenience. It will need to be fixed.
-            """
-            )
+            # This assert failed, but we are not currently enforcing it, for convenience. It will need to be fixed.
+            # """
+            # )
             new_pregnant_animals_total = 0
         if not new_slaughtered_pregnant_animals >= 0:
-            print(
-                """
-            ERROR!
-            ERROR!
-            ERROR!
-            ERROR!
-            ERROR!
-            ERROR!
-            ERROR!
-            ERROR!
-            ERROR!
-            assert (
-                new_slaughtered_pregnant_animals >= 0
-            ), "new slaughtered pregnant animals is negative"
+            # print(
+            #     """
+            # ERROR!
+            # ERROR!
+            # ERROR!
+            # ERROR!
+            # ERROR!
+            # ERROR!
+            # ERROR!
+            # ERROR!
+            # ERROR!
+            # assert (
+            #     new_slaughtered_pregnant_animals >= 0
+            # ), "new slaughtered pregnant animals is negative"
 
-            This assert failed, but we are not currently enforcing it, for convenience. It will need to be fixed.
-            """
-            )
+            # This assert failed, but we are not currently enforcing it, for convenience. It will need to be fixed.
+            # """
+            # )
             new_slaughtered_pregnant_animals = 0
         return new_pregnant_animals_total, new_slaughtered_pregnant_animals
 
@@ -1953,9 +1953,9 @@ class AnimalModelBuilder:
             # if milk animal, set the transfer population
             if animal.animal_function == "milk":
                 animal.set_milk_birth()
-                transfer_populations[animal.animal_species] = (
-                    animal.set_initial_milk_transfer()
-                )
+                transfer_populations[
+                    animal.animal_species
+                ] = animal.set_initial_milk_transfer()
                 transfer_pop = -transfer_populations[animal.animal_species]
             else:
                 # is not milk, recieve the transfer population (if no correspiodning milk animal, this will be zero)
