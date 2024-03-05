@@ -100,7 +100,7 @@ class ScenarioRunner:
                     scenario_loader.scenario_description,
                 )
 
-            Plotter.plot_fig_1ab(
+            Plotter.plot_to_humans_stackplot(
                 interpreted_results,
                 NMONTHS,
                 (to_humans_title + " " if to_humans_title != "" else "")

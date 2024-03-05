@@ -618,7 +618,7 @@ def recalculate_plot_s1():
         title=title,
     )
 
-    Plotter.plot_fig_1ab(
+    Plotter.plot_to_humans_stackplot(
         interpreted_results,
         NMONTHS,
         "global_baseline",
@@ -626,8 +626,6 @@ def recalculate_plot_s1():
         add_slide_with_fig=False,
         description=scenario_loader.scenario_description,
     )
-
-    Plotter.plot_fig_s1abcd()
     results = {}
     results["baseline_global"] = interpreted_results
 

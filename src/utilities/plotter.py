@@ -40,7 +40,7 @@ class Plotter:
         pass
 
     @classmethod
-    def plot_fig_1ab(
+    def plot_to_humans_stackplot(
         crs,
         interpreter,
         xlim,
