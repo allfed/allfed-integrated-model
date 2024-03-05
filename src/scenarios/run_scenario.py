@@ -255,7 +255,6 @@ class ScenarioRunner:
         title="Untitled",
     ):
         # THIRD ROUND: NOW THAT THE AMOUNT OF FEED AND BIOFUEL CONSUMED IS KNOWN, ALLOCATE THE REST TO HUMANS
-
         (
             single_valued_constants_round3,
             time_consts_round3,
@@ -1266,6 +1265,11 @@ class ScenarioRunner:
         for key in scenario_option_copy.keys():
             if "_head" in key:
                 constants_for_params[f"{key}_start"] = int(scenario_option_copy[key])
+
+        # add custom large animal kg meat per head
+        for key in scenario_option_copy.keys():
+            if "kg_meat_per_large_animal" in key:
+                constants_for_params[key] = float(scenario_option_copy[key])
 
         return constants_for_params, time_consts_for_params, scenario_loader
 

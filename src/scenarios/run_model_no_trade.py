@@ -650,6 +650,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         for key, value in scenario_option.items():
             if key in country_data:
                 country_data[key] = float(value)
+            if key == "kg_meat_per_large_animal":
+                country_data["kg_meat_per_large_animal"] = float(value)
         return country_data
 
     def verify_country_data(self, country_data):
@@ -719,7 +721,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         ), f"{country}: more than 1 billion dairy cows"
         assert country_data["dairy_cows"] >= 0, f"{country}: fewer than 0 dairy cows"
 
-        assert(
+        assert (
             country_data["biofuel_kcals"] < 1e9
         ), f"{country}: more than 1 billion biofuel dry caloric tonnes"
         assert (
