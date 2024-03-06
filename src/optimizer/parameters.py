@@ -318,22 +318,22 @@ class Parameters:
             biofuels_demand,  # the actual demand asked for by the user
         )
 
-    def assert_constants_not_nan(self, single_valued_constants, time_consts):
+    def assert_constants_not_nan(self, consts_for_optimizer, time_consts):
         """
         This function checks that there are no NaN values in the constants, as the linear optimizer
-        will fail in a mysterious way if there are. It does this by iterating through the single_valued_constants
+        will fail in a mysterious way if there are. It does this by iterating through the consts_for_optimizer
         and time_consts dictionaries and checking each value for NaN.
 
         Args:
-            single_valued_constants (dict): A dictionary of single-valued constants
+            consts_for_optimizer (dict): A dictionary of single-valued constants
             time_consts (dict): A dictionary of time constants
 
         Returns:
             None
         """
 
-        # assert dictionary single_valued_constants values are all not nan
-        for k, v in single_valued_constants.items():
+        # assert dictionary consts_for_optimizer values are all not nan
+        for k, v in consts_for_optimizer.items():
             self.assert_dictionary_value_not_nan(k, v)
 
         # assert dictionary time_consts values are all not nan

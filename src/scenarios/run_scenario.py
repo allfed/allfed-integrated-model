@@ -113,7 +113,7 @@ class ScenarioRunner:
 
     def run_round_1(
         self,
-        single_valued_constants_round1,
+        consts_for_optimizer_round1,
         time_consts_round1,
         interpreter,
         feed_and_biofuels_round1,
@@ -125,7 +125,7 @@ class ScenarioRunner:
         # actually make PuLP optimize effective people fed based on all the constants
         # we've determined
         interpreted_results_round1 = self.run_optimizer(
-            single_valued_constants_round1,
+            consts_for_optimizer_round1,
             time_consts_round1,
             optimization_type="to_humans",
             title=title,
@@ -140,7 +140,7 @@ class ScenarioRunner:
         return (
             interpreted_results_round1,
             interpreted_results_round1.percent_people_fed,
-            single_valued_constants_round1,
+            consts_for_optimizer_round1,
         )
 
     def run_round_2(
@@ -149,26 +149,26 @@ class ScenarioRunner:
         constants_for_params,
         interpreted_results_round1,
         percent_fed_from_model_round1,
-        single_valued_constants_round1,
+        consts_for_optimizer_round1,
         time_consts_round1,
         interpreter,
         title="Untitled",
     ):
         # SECOND ROUND: REMAINING FEED-APPROPRIATE FOOD TO ANIMALS AND BIOFUELS UP TO THE AMOUNT THEY CAN BE USED
         (
-            single_valued_constants_round2,
+            consts_for_optimizer_round2,
             time_consts_round2,
             feed_and_biofuels_round2,
             meat_dictionary_round2,
             min_human_food_consumption,
         ) = constants_loader.compute_parameters_second_round(
             constants_for_params,
-            single_valued_constants_round1,
+            consts_for_optimizer_round1,
             time_consts_round1,
             interpreted_results_round1,
         )
         if (
-            single_valued_constants_round2 is None
+            consts_for_optimizer_round2 is None
             and time_consts_round2 is None
             and feed_and_biofuels_round2 is None
             and meat_dictionary_round2 is None
@@ -193,7 +193,7 @@ class ScenarioRunner:
             plt.show()
 
         interpreted_results_round2 = self.run_optimizer(
-            single_valued_constants_round2,
+            consts_for_optimizer_round2,
             time_consts_round2,
             optimization_type="to_animals",
             min_human_food_consumption=min_human_food_consumption,
@@ -223,17 +223,17 @@ class ScenarioRunner:
             meat_dictionary_round2,
             time_consts_round2["each_month_meat_slaughtered"],
             time_consts_round2["max_consumed_culled_kcals_each_month"],
-            single_valued_constants_round2["meat_summed_consumption"],
+            consts_for_optimizer_round2["meat_summed_consumption"],
             time_consts_round2,
-            single_valued_constants_round2,
+            consts_for_optimizer_round2,
         )
 
     def run_round_3(
         self,
         constants_loader,
         constants_for_params,
-        single_valued_constants_round1,
-        single_valued_constants_round2,
+        consts_for_optimizer_round1,
+        consts_for_optimizer_round2,
         time_consts_round1,
         time_consts_round2,
         interpreted_results_round2,
@@ -250,14 +250,14 @@ class ScenarioRunner:
         # THIRD ROUND: NOW THAT THE AMOUNT OF FEED AND BIOFUEL CONSUMED IS KNOWN, ALLOCATE THE REST TO HUMANS
 
         (
-            single_valued_constants_round3,
+            consts_for_optimizer_round3,
             time_consts_round3,
             feed_and_biofuels_round3,
             meat_dictionary_round3,
         ) = constants_loader.compute_parameters_third_round(
             constants_for_params,
-            single_valued_constants_round1,
-            single_valued_constants_round2,
+            consts_for_optimizer_round1,
+            consts_for_optimizer_round2,
             time_consts_round1,
             time_consts_round2,
             interpreted_results_round1,
@@ -268,11 +268,12 @@ class ScenarioRunner:
         )
 
         interpreted_results_round3 = self.run_optimizer(
-            single_valued_constants_round3,
+            consts_for_optimizer_round3,
             time_consts_round3,
             optimization_type="to_humans",
             title=title,
         )
+        interpreted_results_round3.set_meat_dictionary(meat_dictionary_round3)
         interpreted_results_round3.set_feed_and_biofuels(feed_and_biofuels_round3)
         return interpreted_results_round3
 
@@ -330,7 +331,7 @@ class ScenarioRunner:
         meat_dictionary_round2 = None
         constants_loader = Parameters()
         (
-            single_valued_constants_round1,
+            consts_for_optimizer_round1,
             time_consts_round1,
             feed_and_biofuels_round1,  # zero feed and biofuels
             meat_dictionary_zero_feed_biofuels,  # Meat if no feed used.
@@ -343,7 +344,7 @@ class ScenarioRunner:
         max_consumed_culled_kcals_each_month = time_consts_round1[
             "max_consumed_culled_kcals_each_month"
         ]
-        meat_summed_consumption = single_valued_constants_round1[
+        meat_summed_consumption = consts_for_optimizer_round1[
             "meat_summed_consumption"
         ]
         validator = Validator()
@@ -362,9 +363,9 @@ class ScenarioRunner:
             (
                 interpreted_results_round1,
                 percent_fed_from_model_round1,
-                single_valued_constants_round1,
+                consts_for_optimizer_round1,
             ) = self.run_round_1(
-                single_valued_constants_round1,
+                consts_for_optimizer_round1,
                 time_consts_round1,
                 interpreter,
                 feed_and_biofuels_round1,
@@ -404,13 +405,13 @@ class ScenarioRunner:
                 max_consumed_culled_kcals_each_month,
                 meat_summed_consumption,
                 time_consts_round2,
-                single_valued_constants_round2,
+                consts_for_optimizer_round2,
             ) = self.run_round_2(
                 constants_loader,
                 constants_for_params,
                 interpreted_results_round1,
                 percent_fed_from_model_round1,
-                single_valued_constants_round1,
+                consts_for_optimizer_round1,
                 time_consts_round1,
                 interpreter,
                 title=title + "_round2",
@@ -484,8 +485,8 @@ class ScenarioRunner:
         interpreted_results_round3 = self.run_round_3(
             constants_loader,
             constants_for_params,
-            single_valued_constants_round1,
-            single_valued_constants_round2 if ROUND_1_WAS_RUN_FLAG else None,
+            consts_for_optimizer_round1,
+            consts_for_optimizer_round2 if ROUND_1_WAS_RUN_FLAG else None,
             time_consts_round1,
             time_consts_round2 if ROUND_1_WAS_RUN_FLAG else None,
             interpreted_results_for_round3,
@@ -534,7 +535,7 @@ class ScenarioRunner:
 
     def interpret_optimizer_results(
         self,
-        single_valued_constants,
+        consts_for_optimizer,
         model,
         variables,
         time_consts,
@@ -545,7 +546,7 @@ class ScenarioRunner:
     ):
         validator = Validator()
 
-        extractor = Extractor(single_valued_constants)
+        extractor = Extractor(consts_for_optimizer)
         #  get values from all the optimizer in list and integer formats
         extracted_results = extractor.extract_results(model, variables, time_consts)
 
@@ -564,14 +565,14 @@ class ScenarioRunner:
             time_consts,
             percent_fed_from_model,
             optimization_type,
-            single_valued_constants["inputs"]["COUNTRY_CODE"],
+            consts_for_optimizer["inputs"]["COUNTRY_CODE"],
         )
 
         return interpreted_results
 
     def run_optimizer(
         self,
-        single_valued_constants,
+        consts_for_optimizer,
         time_consts,
         optimization_type=None,
         min_human_food_consumption=None,
@@ -585,7 +586,7 @@ class ScenarioRunner:
                 min_human_food_consumption is not None
             ), "ERROR: must specify minimum human needs when running second round"
 
-        optimizer = Optimizer(single_valued_constants, time_consts)
+        optimizer = Optimizer(consts_for_optimizer, time_consts)
         validator = Validator()
         interpreter = Interpreter()
 
@@ -595,7 +596,7 @@ class ScenarioRunner:
                 variables,
                 maximize_constraints,
                 percent_fed_from_model,
-            ) = optimizer.optimize_to_humans(single_valued_constants, time_consts)
+            ) = optimizer.optimize_to_humans(consts_for_optimizer, time_consts)
         elif optimization_type == "to_animals":
             (
                 model,
@@ -603,7 +604,7 @@ class ScenarioRunner:
                 maximize_constraints,
                 percent_fed_from_model,
             ) = optimizer.optimize_feed_to_animals(
-                single_valued_constants,
+                consts_for_optimizer,
                 time_consts,
                 min_human_food_consumption,
             )
@@ -611,7 +612,7 @@ class ScenarioRunner:
             raise ValueError("Optimization must be to humans or animals.")
 
         interpreted_results = self.interpret_optimizer_results(
-            single_valued_constants,
+            consts_for_optimizer,
             model,
             variables,
             time_consts,
