@@ -78,8 +78,8 @@ class Parameters:
         self.FIRST_TIME_RUN = False
 
         # Print scenario properties
-        PRINT_SCENARIO_PROPERTIES = False
-        if PRINT_SCENARIO_PROPERTIES:
+        PRINT_SCENARIO_PROPERTIES_FLAG = False
+        if PRINT_SCENARIO_PROPERTIES_FLAG:
             print(scenarios_loader.scenario_description)
 
         # Ensure every parameter has been initialized for the scenarios_loader
@@ -932,8 +932,8 @@ class Parameters:
             medium_animals_nonpig_culled=animals_killed_for_meat_medium_nonpig,
             large_animals_culled=animals_killed_for_meat_large,
         )
-        PLOT_MEAT_SLAUGHTERED = False
-        if PLOT_MEAT_SLAUGHTERED:
+        PLOT_MEAT_SLAUGHTERED_FLAG = False
+        if PLOT_MEAT_SLAUGHTERED_FLAG:
             each_month_meat_slaughtered.plot("Meat this round")
 
         # Finally we take the running sum of meat slaughtered over time and set it to the monthly time constant
@@ -997,8 +997,8 @@ class Parameters:
         )
 
         # Print annual pounds milk if PRINT_ANNUAL_POUNDS_MILK is True
-        PRINT_ANNUAL_POUNDS_MILK = False
-        if PRINT_ANNUAL_POUNDS_MILK:
+        PRINT_ANNUAL_POUNDS_MILK_FLAG = False
+        if PRINT_ANNUAL_POUNDS_MILK_FLAG:
             print("annual pounds milk")  # ton to kg, kg to pounds, monthly to annual
             print(
                 monthly_milk_tons * 1000 * 2.2046 * 12
@@ -1171,8 +1171,8 @@ class Parameters:
         min_human_food_consumption = self.calculate_human_consumption_for_min_needs(
             constants_inputs, interpreted_results_round1, extra_meat_round2
         )
-        PRINT_MINIMUM_NEEDS_FOOD_FOR_HUMANS = False
-        if PRINT_MINIMUM_NEEDS_FOOD_FOR_HUMANS:
+        PRINT_MINIMUM_NEEDS_FOOD_FOR_HUMANS_FLAG = False
+        if PRINT_MINIMUM_NEEDS_FOOD_FOR_HUMANS_FLAG:
             print("")
             print("")
             print("MINIMUM HUMAN NEEDS PRINTOUT")

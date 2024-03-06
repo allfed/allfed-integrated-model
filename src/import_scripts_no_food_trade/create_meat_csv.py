@@ -78,8 +78,8 @@ for i in range(0, len(countries)):
         meat_csv, [country, country_name, chicken, pork, beef]
     )
 
-PRINT_MEAT_DATA = False
-if PRINT_MEAT_DATA:
+PRINT_MEAT_DATA_FLAG = False
+if PRINT_MEAT_DATA_FLAG:
     print("chicken")
     print(chicken_sum_global / 1e9)
     print("pork")

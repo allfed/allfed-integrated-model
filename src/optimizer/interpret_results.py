@@ -106,8 +106,8 @@ class Interpreter:
         self.include_protein = Food.conversions.include_protein
 
         # Create CSV output
-        CREATE_CSV_OUTPUT = True
-        if CREATE_CSV_OUTPUT:
+        CREATE_CSV_OUTPUT_FLAG = True
+        if CREATE_CSV_OUTPUT_FLAG:
             dict = {
                 "fish": np.array(self.fish_kcals_equivalent.kcals),
                 "cell_sugar": np.array(self.cell_sugar_kcals_equivalent.kcals),
@@ -449,8 +449,8 @@ class Interpreter:
         (min_nutrient, percent_people_fed) = humans_fed_sum.get_min_nutrient()
 
         # Print the nutrients with constraining values and the estimated percentage of people fed
-        PRINT_FED = False
-        if PRINT_FED:
+        PRINT_FED_FLAG = False
+        if PRINT_FED_FLAG:
             print("Nutrients with constraining values are: " + str(min_nutrient))
             print(
                 "Estimated percent people fed is "

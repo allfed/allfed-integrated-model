@@ -155,8 +155,8 @@ for df in dataframes:
 
     # useful if there's something going on with the data and we want to see what is
     # going wrong
-    PRINT_ABOUT_IMPORTED_DATA = False
-    if PRINT_ABOUT_IMPORTED_DATA:
+    PRINT_ABOUT_IMPORTED_DATA_FLAG = False
+    if PRINT_ABOUT_IMPORTED_DATA_FLAG:
         print("df index:" + str(index))
         print("df columns")
         print(df.columns)

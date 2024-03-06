@@ -133,8 +133,8 @@ class Seaweed:
             self.SEAWEED_NEW_AREA_PER_MONTH_GLOBAL
             * constants_for_params["SEAWEED_NEW_AREA_FRACTION"]
         )
-        PRINT_DIFFERENCE_IN_SEAWEED_AREA = False
-        if PRINT_DIFFERENCE_IN_SEAWEED_AREA:
+        PRINT_DIFFERENCE_IN_SEAWEED_AREA_FLAG = False
+        if PRINT_DIFFERENCE_IN_SEAWEED_AREA_FLAG:
             print("MAX SEAWEED AREA Was: ")
             print(self.MAXIMUM_SEAWEED_AREA / (200 / 30.4))
             print("now is")

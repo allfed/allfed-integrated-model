@@ -385,8 +385,8 @@ class Optimizer:
         """
 
         # Set this to True to print PULP messages
-        PRINT_PULP_MESSAGES = False
-        if PRINT_PULP_MESSAGES:
+        PRINT_PULP_MESSAGES_FLAG = False
+        if PRINT_PULP_MESSAGES_FLAG:
             print("")
             print(
                 "This is the set of linear constraints for the model, containing all constraints and"
@@ -394,11 +394,11 @@ class Optimizer:
             )
             print(model)
         # Solve the initial model
-        status = model.solve(pulp.PULP_CBC_CMD(gapRel=0.00001, msg=PRINT_PULP_MESSAGES))
+        status = model.solve(pulp.PULP_CBC_CMD(gapRel=0.00001, msg=PRINT_PULP_MESSAGES_FLAG))
 
         # Assert that the optimization was successful
-        ASSERT_SUCCESSFUL_OPTIMIZATION = True
-        if ASSERT_SUCCESSFUL_OPTIMIZATION:
+        ASSERT_SUCCESSFUL_OPTIMIZATION_FLAG = True
+        if ASSERT_SUCCESSFUL_OPTIMIZATION_FLAG:
             if status != 1:
                 data = model.to_dict()
                 print("")
@@ -456,7 +456,7 @@ class Optimizer:
             model, variables = self.optimize_best_food_consumption_to_go_to_humans(
                 model,
                 variables,
-                ASSERT_SUCCESSFUL_OPTIMIZATION,
+                ASSERT_SUCCESSFUL_OPTIMIZATION_FLAG,
                 single_valued_constants,
             )
 
@@ -474,7 +474,7 @@ class Optimizer:
             model, variables = self.reduce_fluctuations_with_a_final_optimization(
                 model,
                 variables,
-                ASSERT_SUCCESSFUL_OPTIMIZATION,
+                ASSERT_SUCCESSFUL_OPTIMIZATION_FLAG,
                 single_valued_constants,
                 optimization_type,
             )

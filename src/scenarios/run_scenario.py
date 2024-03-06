@@ -181,8 +181,8 @@ class ScenarioRunner:
             time_consts_round1["each_month_meat_slaughtered"].kcals,
             time_consts_round2["each_month_meat_slaughtered"].kcals,
         )
-        PLOT_MEAT_SLAUGHTERED = False
-        if PLOT_MEAT_SLAUGHTERED:
+        PLOT_MEAT_SLAUGHTERED_FLAG = False
+        if PLOT_MEAT_SLAUGHTERED_FLAG:
             import matplotlib.pyplot as plt
 
             plt.figure()
@@ -381,8 +381,8 @@ class ScenarioRunner:
                 biofuels_demand, interpreted_results_round1, round=1
             )
 
-            DISPLAY_MEAT_PRODUCED_IF_NO_FEED = False
-            if DISPLAY_MEAT_PRODUCED_IF_NO_FEED:
+            DISPLAY_MEAT_PRODUCED_IF_NO_FEED_FLAG = False
+            if DISPLAY_MEAT_PRODUCED_IF_NO_FEED_FLAG:
                 # because feed and biofuel are zero, feed and biofuels plot
                 # most likely to be skipped unless there's some issue
                 self.display_results_of_optimizer_round(
@@ -439,7 +439,7 @@ class ScenarioRunner:
                 Validator.assert_biofuels_used_below_biofuels_demand(
                     biofuels_demand, interpreted_results_round2, round=2
                 )
-                if DISPLAY_MEAT_PRODUCED_IF_NO_FEED and (
+                if DISPLAY_MEAT_PRODUCED_IF_NO_FEED_FLAG and (
                     are_dicts_approx_same(
                         interpreted_results_round1.meat_dictionary,
                         interpreted_results_round2.meat_dictionary,
@@ -458,8 +458,8 @@ class ScenarioRunner:
                 else:
                     slaughter_title = "Max meat produced from second round calc (no restriction on feed before shutoff)"
 
-                DISPLAY_MEAT_PRODUCED_INCREASED_FEED = False
-                if DISPLAY_MEAT_PRODUCED_INCREASED_FEED:
+                DISPLAY_MEAT_PRODUCED_INCREASED_FEED_FLAG = False
+                if DISPLAY_MEAT_PRODUCED_INCREASED_FEED_FLAG:
                     self.display_results_of_optimizer_round(
                         interpreted_results_round2,
                         country_name,
@@ -621,8 +621,8 @@ class ScenarioRunner:
             title=title,
         )
 
-        CHECK_CONSTRAINTS = False
-        if CHECK_CONSTRAINTS:
+        CHECK_CONSTRAINTS_FLAG = False
+        if CHECK_CONSTRAINTS_FLAG:
             print("")
             print("VALIDATION")
             print("")
@@ -824,8 +824,8 @@ class ScenarioRunner:
         scenario_is_correct = True  # until proven otherwise
 
         scenario_loader = Scenarios()
-        ALTER_FAILING_SCENARIO = True
-        if ALTER_FAILING_SCENARIO:
+        ALTER_FAILING_SCENARIO_FLAG = True
+        if ALTER_FAILING_SCENARIO_FLAG:
             # let's alter some scenarios that are known to fail. Also make sure the changes are temporary by
             # only altering a copy of the original scenario options
             if country_data is None:

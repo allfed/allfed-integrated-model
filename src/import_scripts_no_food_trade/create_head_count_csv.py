@@ -133,8 +133,8 @@ for i in range(0, len(countries)):
         ],
     )
 
-PRINT_ALL_THE_GLOBAL_ANIMALS = False
-if PRINT_ALL_THE_GLOBAL_ANIMALS:
+PRINT_ALL_THE_GLOBAL_ANIMALS_FLAG = False
+if PRINT_ALL_THE_GLOBAL_ANIMALS_FLAG:
     print("small_animal_sum_global")
     print(small_animal_sum_global / 1e9)
     print("medium_animal_sum_global")

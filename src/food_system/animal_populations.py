@@ -159,8 +159,8 @@ class CalculateFeedAndMeat:
                     animal.slaughter
                 )  # + np.array(animal.total_homekill_this_month))
 
-        SHOW_ANIMAL_SLAUGHTER_PLOT = False
-        if SHOW_ANIMAL_SLAUGHTER_PLOT:
+        SHOW_ANIMAL_SLAUGHTER_PLOT_FLAG = False
+        if SHOW_ANIMAL_SLAUGHTER_PLOT_FLAG:
             plt.figure()
             plt.title("animal slaughter")
             labels = []  # to collect labels for the legend

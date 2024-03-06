@@ -122,8 +122,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             scenario_loader,
         ) = self.set_depending_on_option(scenario_option, country_data=country_data)
 
-        USE_TRY_CATCH = False
-        if USE_TRY_CATCH:
+        USE_TRY_CATCH_FLAG = False
+        if USE_TRY_CATCH_FLAG:
             try:
                 print("running scenario")
                 scenario_runner = ScenarioRunner()
@@ -173,8 +173,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         country_map = world[world["iso_a3"].apply(lambda x: x == country_code_map)]
 
         if len(country_map) == 0:
-            PRINT_NO_MATCH = False
-            if PRINT_NO_MATCH:
+            PRINT_NO_MATCH_FLAG = False
+            if PRINT_NO_MATCH_FLAG:
                 print("no match")
                 print(country_code_map)
         if len(country_map) == 1:
@@ -650,39 +650,41 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
 
         assert (
             country_data["biofuel_kcals"] < 1e9
-        ), f"{country}: more than 1 billion biofuel dry caloric tons"
+        ), f"{country}: more than 1 billion biofuel dry caloric tonnes"
         assert (
             country_data["biofuel_kcals"] >= 0
-        ), f"{country}: fewer than 0 biofuel dry caloric tons"
+        ), f"{country}: fewer than 0 biofuel dry caloric tonnes"
         assert (
             country_data["biofuel_protein"] < 1e9
-        ), f"{country}: more than 1 billion biofuel tons of protein"
+        ), f"{country}: more than 1 billion biofuel tonnes of protein"
         assert (
             country_data["biofuel_protein"] >= 0
-        ), f"{country}: fewer than 0 biofuel tons of protein"
+        ), f"{country}: fewer than 0 biofuel tonnes of protein"
         assert (
             country_data["biofuel_fat"] < 1e9
-        ), f"{country}: more than 1 billion biofuel tons of fat"
+        ), f"{country}: more than 1 billion biofuel tonnes of fat"
         assert (
             country_data["biofuel_fat"] >= 0
-        ), f"{country}: fewer than 0 biofuel tons of fat"
+        ), f"{country}: fewer than 0 biofuel tonnes of fat"
 
         assert (
             country_data["feed_kcals"] < 2e9
-        ), f"{country}: more than 2 billion feed dry caloric tons"
-        assert country_data["feed_kcals"] >= 0, f"{country}: fewer than 0 feed dry caloric tons"
+        ), f"{country}: more than 2 billion feed dry caloric tonnes"
+        assert (
+            country_data["feed_kcals"] >= 0
+        ), f"{country}: fewer than 0 feed dry caloric tonnes"
         assert (
             country_data["feed_protein"] < 1e9
-        ), f"{country}: more than 1 billion feed tons of protein"
+        ), f"{country}: more than 1 billion feed tonnes of protein"
         assert (
             country_data["feed_protein"] >= 0
-        ), f"{country}: fewer than 0 feed tons of protein"
+        ), f"{country}: fewer than 0 feed tonnes of protein"
         assert (
             country_data["feed_fat"] < 1e9
-        ), f"{country}: more than 1 billion feed tons of fat"
+        ), f"{country}: more than 1 billion feed tonnes of fat"
         assert (
             country_data["feed_fat"] >= 0
-        ), f"{country}: fewer than 0 feed tons of fat"
+        ), f"{country}: fewer than 0 feed tonnes of fat"
 
         assert (
             country_data["crop_kcals"] < 10e9

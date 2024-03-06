@@ -629,8 +629,8 @@ class Validator:
                 + f"\n round 2 {total_calories_round2[i]}"
                 + f"\n round 3 {total_that_month}"
             )
-            PRINT_KCAL_EXCEEDED_WARNING = False
-            if PRINT_KCAL_EXCEEDED_WARNING:
+            PRINT_KCAL_EXCEEDED_WARNING_FLAG = False
+            if PRINT_KCAL_EXCEEDED_WARNING_FLAG:
                 if total_that_month < total_calories_round2[i]:
                     print(
                         "WARNING: calories round 2 greater than round 3 by small amount"

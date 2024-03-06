@@ -54,8 +54,8 @@ pulp_csv["percent_of_global_production"] = pulp_csv["wood_pulp_tonnes"] / (
     pulp_csv["wood_pulp_tonnes"].sum()
 )
 
-PRINT_GLOBAL_WOOD_PULP = True
-if PRINT_GLOBAL_WOOD_PULP:
+PRINT_GLOBAL_WOOD_PULP_FLAG = True
+if PRINT_GLOBAL_WOOD_PULP_FLAG:
     print("wood_pulp_tonnes sum 2020")
     print(pulp_csv["wood_pulp_tonnes"].sum())
 

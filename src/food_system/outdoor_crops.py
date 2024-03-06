@@ -297,8 +297,8 @@ class OutdoorCrops:
         )
         # 7 years of reductions should be 12*7 months.
         # assert len(self.all_months_reductions) == self.NMONTHS
-        PLOT_NO_SEASONALITY = False
-        if PLOT_NO_SEASONALITY:
+        PLOT_NO_SEASONALITY_FLAG = False
+        if PLOT_NO_SEASONALITY_FLAG:
             print("Plotting with no seasonality")
             Plotter.plot_monthly_reductions_no_seasonality(self.all_months_reductions)
 
@@ -328,8 +328,8 @@ class OutdoorCrops:
         if constants_for_params["RATIO_INCREASED_CROP_AREA"] > 1:
             self.assign_increase_from_increased_cultivated_area(constants_for_params)
 
-        PLOT_WITH_SEASONALITY = False
-        if PLOT_WITH_SEASONALITY:
+        PLOT_WITH_SEASONALITY_FLAG = False
+        if PLOT_WITH_SEASONALITY_FLAG:
             print("Plotting with seasonality")
             # ratios between baseline production and actual production
             ratios = np.divide(

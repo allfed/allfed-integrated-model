@@ -150,8 +150,8 @@ def bulk_correlation_analysis(df, target_column):
     for column in columns_to_check:
         correlation = df[target_column].corr(df[column])
         print(f"Correlation between {target_column} and {column}: {correlation}")
-        PLOT_FIGURES = False
-        if PLOT_FIGURES:
+        PLOT_FIGURES_FLAG = False
+        if PLOT_FIGURES_FLAG:
             # Create a scatter plot to visualize the correlation using Plotly
             fig = px.scatter(df, x=target_column, y=column)
             fig.show()

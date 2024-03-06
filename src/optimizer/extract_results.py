@@ -150,8 +150,8 @@ class Extractor:
         if isinstance((variables[0]), int):
             return np.array([0] * len(variables))  # return initial value
 
-        SHOW_OUTPUT = False
-        if SHOW_OUTPUT:
+        SHOW_OUTPUT_FLAG = False
+        if SHOW_OUTPUT_FLAG:
             print("Monthly Output for " + str(variables[0]))
 
         # Loop through each month
@@ -164,7 +164,7 @@ class Extractor:
             # Append the converted variable value to the output list
             variable_output.append(val.varValue * conversion)
 
-            if SHOW_OUTPUT:
+            if SHOW_OUTPUT_FLAG:
                 print(" Month " + str(month) + ": " + str(variable_output[month]))
 
         return np.array(variable_output)

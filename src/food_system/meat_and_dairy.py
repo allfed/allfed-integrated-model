@@ -92,8 +92,8 @@ class MeatAndDairy:
         self.human_inedible_feed_dry_caloric_tons_list = np.array([])
         self.ratio_human_inedible_feed = np.array([])
         n_years = self.NMONTHS / 12  # in a really short one, just make meat a year
-        TESTING_FEW_MONTHS = False
-        if TESTING_FEW_MONTHS:
+        TESTING_FEW_MONTHS_FLAG = False
+        if TESTING_FEW_MONTHS_FLAG:
             print(
                 "WARNING! THE CODE IS IN A TESTING/DEBUGGING CONTEXT AND SHOULD NOT BE USED FOR OBTAINING RESULTS!!!"
             )
@@ -105,7 +105,7 @@ class MeatAndDairy:
             )
             n_years = 1  # COMMENT THIS BACK OUT ONCE DONE DOING FEW MONTHS!!!
         for i in range(1, int(n_years) + 1):
-            if not TESTING_FEW_MONTHS:
+            if not TESTING_FEW_MONTHS_FLAG:
                 ratio_human_inedible_feed = constants_for_params[
                     "RATIO_GRASSES_YEAR" + str(i)
                 ]
@@ -117,7 +117,7 @@ class MeatAndDairy:
             if (
                 i == 1
             ):  # the first year is only may through december (8 months including may)
-                if not TESTING_FEW_MONTHS:
+                if not TESTING_FEW_MONTHS_FLAG:
                     self.human_inedible_feed_dry_caloric_tons_list = np.append(
                         self.human_inedible_feed_dry_caloric_tons_list,
                         [

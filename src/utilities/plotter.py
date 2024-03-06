@@ -2118,8 +2118,8 @@ class Plotter:
             saveloc,
             dpi=300,
         )
-        SHOWPLOT = True
-        if SHOWPLOT:
+        SHOWPLOT_FLAG = True
+        if SHOWPLOT_FLAG:
             plt.show()
         # else:
         # plt.close()
@@ -2183,8 +2183,8 @@ class Plotter:
             dpi=300,
         )
 
-        SHOWPLOT = True
-        if SHOWPLOT:
+        SHOWPLOT_FLAG = True
+        if SHOWPLOT_FLAG:
             plt.show()
         # else:
         # plt.close()
