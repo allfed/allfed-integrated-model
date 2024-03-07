@@ -359,9 +359,7 @@ class ScenarioRunner:
         max_consumed_culled_kcals_each_month = time_consts_round1[
             "max_consumed_culled_kcals_each_month"
         ]
-        meat_summed_consumption = consts_for_optimizer_round1[
-            "meat_summed_consumption"
-        ]
+        meat_summed_consumption = consts_for_optimizer_round1["meat_summed_consumption"]
         validator = Validator()
         validator.ensure_all_time_constants_units_are_billion_kcals(time_consts_round1)
         ROUND_1_WAS_RUN_FLAG = False
@@ -524,7 +522,9 @@ class ScenarioRunner:
         )
 
         if save_all_results:
-            self.save_feed_and_biofuels_to_csv(feed_demand, biofuels_demand, title, country_data)
+            self.save_feed_and_biofuels_to_csv(
+                feed_demand, biofuels_demand, title, country_data
+            )
 
         if ROUND_1_WAS_RUN_FLAG:
             Validator.assert_round3_percent_fed_not_lower_than_round1(
@@ -1271,6 +1271,51 @@ class ScenarioRunner:
         for key in scenario_option_copy.keys():
             if "kg_meat_per_large_animal" in key:
                 constants_for_params[key] = float(scenario_option_copy[key])
+
+        # modify MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED to custom value
+        if (
+            "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED"
+            in scenario_option_copy.keys()
+        ):
+            constants_for_params[
+                "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED"
+            ] = float(
+                scenario_option_copy[
+                    "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED"
+                ]
+            )
+            assert (
+                0
+                <= constants_for_params[
+                    "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED"
+                ]
+                <= 100
+            ), "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED must be between 0 and 100"
+
+        # modify END_SIMULATION_STOCKS_RATIO to custom value
+        if "END_SIMULATION_STOCKS_RATIO" in scenario_option_copy.keys():
+            constants_for_params["END_SIMULATION_STOCKS_RATIO"] = float(
+                scenario_option_copy["END_SIMULATION_STOCKS_RATIO"]
+            )
+            assert 0 <= constants_for_params["END_SIMULATION_STOCKS_RATIO"] <= 1
+
+        # apply fix multiplier to crop production
+        if "CROP_PRODUCTION_MULTIPLIER" in scenario_option_copy.keys():
+            multiplier = float(scenario_option_copy["CROP_PRODUCTION_MULTIPLIER"])
+            assert 0 <=  multiplier <= 10
+            constants_for_params["RATIO_CROPS_YEAR1"] *= multiplier
+            constants_for_params["RATIO_CROPS_YEAR2"] *= multiplier
+            constants_for_params["RATIO_CROPS_YEAR3"] *= multiplier
+            constants_for_params["RATIO_CROPS_YEAR4"] *= multiplier
+            constants_for_params["RATIO_CROPS_YEAR5"] *= multiplier
+            constants_for_params["RATIO_CROPS_YEAR6"] *= multiplier
+            constants_for_params["RATIO_CROPS_YEAR7"] *= multiplier
+            constants_for_params["RATIO_CROPS_YEAR8"] *= multiplier
+            constants_for_params["RATIO_CROPS_YEAR9"] *= multiplier
+            constants_for_params["RATIO_CROPS_YEAR10"] *= multiplier
+            constants_for_params["RATIO_CROPS_YEAR11"] *= multiplier
+        
+
 
         return constants_for_params, time_consts_for_params, scenario_loader
 
