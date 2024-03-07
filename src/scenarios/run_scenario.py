@@ -14,6 +14,10 @@ import sys
 import numpy as np
 import copy
 
+import git
+from pathlib import Path
+import pandas as pd
+
 from src.optimizer.optimizer import Optimizer
 from src.optimizer.interpret_results import Interpreter
 from src.optimizer.extract_results import Extractor
@@ -22,6 +26,9 @@ from src.optimizer.validate_results import Validator
 from src.optimizer.parameters import Parameters
 from src.utilities.plotter import Plotter
 from src.food_system.food import Food
+
+
+repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 
 def are_dicts_approx_same(dict1, dict2):
@@ -248,7 +255,6 @@ class ScenarioRunner:
         title="Untitled",
     ):
         # THIRD ROUND: NOW THAT THE AMOUNT OF FEED AND BIOFUEL CONSUMED IS KNOWN, ALLOCATE THE REST TO HUMANS
-
         (
             consts_for_optimizer_round3,
             time_consts_round3,
@@ -275,6 +281,7 @@ class ScenarioRunner:
         )
         interpreted_results_round3.set_meat_dictionary(meat_dictionary_round3)
         interpreted_results_round3.set_feed_and_biofuels(feed_and_biofuels_round3)
+        interpreted_results_round3.set_meat_dictionary(meat_dictionary_round3)
         return interpreted_results_round3
 
     def get_interpreted_results_for_round3_if_zero_feed(self, interpreter, NMONTHS):
@@ -310,6 +317,8 @@ class ScenarioRunner:
         create_pptx_with_all_countries,
         show_country_figures,
         figure_save_postfix,
+        country_data,
+        save_all_results,
         country_name,
         country_iso3,
         title="Untitled",
@@ -340,6 +349,12 @@ class ScenarioRunner:
         ) = constants_loader.compute_parameters_first_round(
             constants_for_params, time_consts_for_params, scenario_loader
         )
+
+        if save_all_results:
+            self.save_outdoor_crop_production_to_csv(
+                time_consts_round1, title, country_data
+            )
+
         each_month_meat_slaughtered = time_consts_round1["each_month_meat_slaughtered"]
         max_consumed_culled_kcals_each_month = time_consts_round1[
             "max_consumed_culled_kcals_each_month"
@@ -507,6 +522,9 @@ class ScenarioRunner:
         Validator.assert_biofuels_used_below_biofuels_demand(
             biofuels_demand, interpreted_results_round3, round=3
         )
+
+        if save_all_results:
+            self.save_feed_and_biofuels_to_csv(feed_demand, biofuels_demand, title, country_data)
 
         if ROUND_1_WAS_RUN_FLAG:
             Validator.assert_round3_percent_fed_not_lower_than_round1(
@@ -1249,4 +1267,49 @@ class ScenarioRunner:
             if "_head" in key:
                 constants_for_params[f"{key}_start"] = int(scenario_option_copy[key])
 
+        # add custom large animal kg meat per head
+        for key in scenario_option_copy.keys():
+            if "kg_meat_per_large_animal" in key:
+                constants_for_params[key] = float(scenario_option_copy[key])
+
         return constants_for_params, time_consts_for_params, scenario_loader
+
+    def save_outdoor_crop_production_to_csv(
+        self, time_consts_round1, title, country_data
+    ):
+        """
+        Saves the outdoor crop production to a csv file
+        """
+        production = (
+            time_consts_round1["outdoor_crops"]
+            .production.in_units_kcals_equivalent()
+            .kcals
+        )
+        df = pd.DataFrame()
+        df["production"] = production
+        df["month"] = df.index
+        df.to_csv(
+            Path(repo_root)
+            / "results"
+            / (title + "_" + country_data.country + "_outdoor_crop_production.csv"),
+            index=False,
+        )
+        return
+
+    def save_feed_and_biofuels_to_csv(
+        self, feed_demand, biofuels_demand, title, country_data
+    ):
+        """
+        Saves the feed and biofuels demand to a csv file
+        """
+        df = pd.DataFrame()
+        df["feed_demand"] = feed_demand.in_units_kcals_equivalent().kcals
+        df["biofuels_demand"] = biofuels_demand.in_units_kcals_equivalent().kcals
+        df["month"] = df.index
+        df.to_csv(
+            Path(repo_root)
+            / "results"
+            / (title + "_" + country_data.country + "_feed_and_biofuels_demand.csv"),
+            index=False,
+        )
+        return

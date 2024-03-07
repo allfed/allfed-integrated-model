@@ -69,6 +69,9 @@ class MeatAndDairy:
         self.KG_PER_SMALL_ANIMAL = 2.36
         self.KG_PER_MEDIUM_ANIMAL = 24.6
         self.KG_PER_LARGE_ANIMAL = 269.7
+        
+        if "kg_meat_per_large_animal" in constants_for_params:
+            self.KG_PER_LARGE_ANIMAL = constants_for_params["kg_meat_per_large_animal"]
 
         self.LARGE_ANIMAL_KCALS_PER_KG = 2750
         self.LARGE_ANIMAL_FAT_RATIO = 0.182
