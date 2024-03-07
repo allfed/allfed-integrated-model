@@ -1318,6 +1318,25 @@ class ScenarioRunner:
             except:
                 pass
 
+        # apply fix multiplier to grass production
+        if "GRASSES_PRODUCTION_MULTIPLIER" in scenario_option_copy.keys():
+            multiplier = float(scenario_option_copy["GRASSES_PRODUCTION_MULTIPLIER"])
+            assert 0 <= multiplier <= 10
+            constants_for_params["RATIO_GRASSES_YEAR1"] *= multiplier
+            constants_for_params["RATIO_GRASSES_YEAR2"] *= multiplier
+            constants_for_params["RATIO_GRASSES_YEAR3"] *= multiplier
+            constants_for_params["RATIO_GRASSES_YEAR4"] *= multiplier
+            constants_for_params["RATIO_GRASSES_YEAR5"] *= multiplier
+            constants_for_params["RATIO_GRASSES_YEAR6"] *= multiplier
+            constants_for_params["RATIO_GRASSES_YEAR7"] *= multiplier
+            constants_for_params["RATIO_GRASSES_YEAR8"] *= multiplier
+            constants_for_params["RATIO_GRASSES_YEAR9"] *= multiplier
+            constants_for_params["RATIO_GRASSES_YEAR10"] *= multiplier
+            try:
+                constants_for_params["RATIO_GRASSES_YEAR11"] *= multiplier
+            except:
+                pass
+
         return constants_for_params, time_consts_for_params, scenario_loader
 
     def save_outdoor_crop_production_to_csv(
