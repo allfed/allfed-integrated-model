@@ -1302,7 +1302,7 @@ class ScenarioRunner:
         # apply fix multiplier to crop production
         if "CROP_PRODUCTION_MULTIPLIER" in scenario_option_copy.keys():
             multiplier = float(scenario_option_copy["CROP_PRODUCTION_MULTIPLIER"])
-            assert 0 <=  multiplier <= 10
+            assert 0 <= multiplier <= 10
             constants_for_params["RATIO_CROPS_YEAR1"] *= multiplier
             constants_for_params["RATIO_CROPS_YEAR2"] *= multiplier
             constants_for_params["RATIO_CROPS_YEAR3"] *= multiplier
@@ -1313,9 +1313,10 @@ class ScenarioRunner:
             constants_for_params["RATIO_CROPS_YEAR8"] *= multiplier
             constants_for_params["RATIO_CROPS_YEAR9"] *= multiplier
             constants_for_params["RATIO_CROPS_YEAR10"] *= multiplier
-            constants_for_params["RATIO_CROPS_YEAR11"] *= multiplier
-        
-
+            try:
+                constants_for_params["RATIO_CROPS_YEAR11"] *= multiplier
+            except:
+                pass
 
         return constants_for_params, time_consts_for_params, scenario_loader
 
