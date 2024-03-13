@@ -1,4 +1,4 @@
-src/scenarios/ykcals.csv
+src/scenarios/*.csv
 ykcals.csv
 model.json
 results/fig*

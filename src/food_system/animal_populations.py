@@ -33,6 +33,7 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import os
 import numpy as np
+from src.food_system.meat_and_dairy import MeatAndDairy
 
 
 """
@@ -47,6 +48,7 @@ class CalculateFeedAndMeat:
         available_feed,
         available_grass,
         scenario,
+        kcals_per_head_meat_dict,
         constants_inputs=None,
     ):
         """
@@ -63,68 +65,8 @@ class CalculateFeedAndMeat:
             scenario,
             constants_inputs,
             remove_first_month=1,
+            kcals_per_head_meat_dict=kcals_per_head_meat_dict,
         )
-
-        # plot all the animals without detail
-        # exclude chicken from output list
-        ignore_chicken_graph = 0
-        if ignore_chicken_graph == 1:
-            animal_list = [
-                animal
-                for animal in self.all_animals
-                if "chicken" not in animal.animal_type
-            ]
-        else:
-            animal_list = [animal for animal in self.all_animals]
-
-        fig = go.Figure()
-        for animal in animal_list:
-            fig.add_trace(
-                go.Scatter(
-                    y=animal.slaughter,
-                    mode="lines",
-                    name=animal.animal_type + " slaughter",
-                )
-            )
-            fig.add_trace(
-                go.Scatter(
-                    y=animal.population,
-                    mode="lines",
-                    name=animal.animal_type + " population",
-                )
-            )
-
-        # fig2 = go.Figure()
-
-        # # Plot one animal
-        # k = 0
-        # # Add detailed lines to the plot
-        # fig2.add_trace(go.Scatter(y=animal_list[k].births_animals_month, mode="lines", name="births"))
-        # fig2.add_trace(go.Scatter(y=animal_list[k].slaughter, mode="lines", name="slaughter"))
-        # fig2.add_trace(go.Scatter(y=animal_list[k].total_homekill_this_month, mode="lines", name="homekill"))
-        # fig2.add_trace(go.Scatter(y=animal_list[k].other_death_total, mode="lines", name="other death total"))
-        # fig2.add_trace(go.Scatter(y=animal_list[k].population, mode="lines", name="population"))
-        # fig2.add_trace(
-        #     go.Scatter(y=animal_list[k].pregnant_animals_birthing_this_month, mode="lines", name="preg this month")
-        # )
-        # fig2.add_trace(go.Scatter(y=animal_list[k].pregnant_animals_total, mode="lines", name="preg total"))
-        # fig2.add_trace(go.Scatter(y=animal_list[k].transfer_population, mode="lines", name="transfer pop"))
-        # fig2.add_trace(go.Scatter(y=animal_list[k].transfer_births, mode="lines", name="transfer births"))
-
-        # print("Baseline slaughter: ", animal_list[k].baseline_slaughter, animal_list[k].animal_type)
-        # print("Target population: ", animal_list[k].target_population_head)
-        # print(
-        #     "Final population: ",
-        #     animal_list[k].current_population,
-        # )
-        # # print("Difference: ", animal_list[k].current_population - animal_list[k].target_population_head)
-
-        # # add title to the figure, and set the x axis title
-        # fig2.update_layout(title=animal_list[k].animal_type, xaxis_title="Month")
-
-        # # Show figures
-        # fig2.show()
-        # fig.show()
 
     def get_meat_produced(self):
         # set monthly values to zero with one example object from  all_animals
@@ -249,7 +191,9 @@ class CountryData:
     - homekill_hours_total_month: a list of total homekill hours for each month.
     - homekill_hours_budget: a list of budgeted homekill hours for each month.
     - meat_output: a list of meat output for each month.
-    - spare_slaughter_hours: the number of spare slaughter hours for the country.
+    - small_slaughter_hours: the number of small animal slaughter hours for the country.
+    - medium_slaughter_hours: the number of medium animal hours for the country.
+    - large_slaughter_hours: the number of large animal hours for the country.
     - EK_region: the FAO region for the country.
     - LSU_conversion_factors: a dictionary of livestock unit conversion factors for the country.
 
@@ -263,7 +207,6 @@ class CountryData:
         self.homekill_hours_total_month = []
         self.homekill_hours_budget = []
         self.meat_output = []
-        self.spare_slaughter_hours = 0
 
     def set_livestock_unit_factors(
         self, df_country_info, df_regional_conversion_factors
@@ -820,70 +763,49 @@ class AnimalSpecies:
             self.net_energy_required_per_species(), 0, 0
         )  # this is the feed required per month for the species
 
-    def feed_the_species(self, food_input, feed_type="feed"):
-        """
-        Main function to feed the species
+    def feed_the_species(self, grass_input, feed_input, is_ruminant=False):
+        if not isinstance(grass_input, Food) or not isinstance(feed_input, Food):
+            raise TypeError("Input is not a Food object")
 
-        Attempts to work with a food object with all three macros and one with only kcals
-        Not tested with the three macros, and also not sure how to handle fungibility of macros
-
-        Also, some confusion currently with what to expect as an input, will it be a food object with numpy lists?
-        Or will it be a food object with a single value? Single value is good, but the nature of the object
-        is that it is passed as a reference, so it will be changed in this function. This is not ideal.
-
-        Anyway, this works for now but will require attention to properly integrate with the rest of the model
-
-        Parameters
-        ----------
-        food_input : Food
-            the food object to be used to feed the species - currently assumed to be a single value (not numpy list)
-
-        Returns
-        -------
-        food_input : Food
-            the food object after feeding the species
-
-        Also updates the population_fed variable
-
-
-        """
-        # check that it is a valid food object
-        if not isinstance(food_input, Food):
-            raise TypeError("food_input is not a Food object")
-
-        # function to feed the species
         NE_required = self.NE_balance.kcals
-
         if NE_required == 0:
-            # no food required
-            # print('no food required for ' + self.animal_type)
+            return grass_input, feed_input
 
-            return food_input
+        # Calculate NE from grass, if ruminant, else 0
+        NE_from_grass = (
+            grass_input.kcals * self.digestion_efficiency["grass"] if is_ruminant else 0
+        )
+        # Calculate NE from feed
+        NE_from_feed = feed_input.kcals * self.digestion_efficiency["feed"]
+
+        # First, attempt to satisfy NE requirement with grass, if available
+        if NE_from_grass >= NE_required:
+            consumed_grass = NE_required / self.digestion_efficiency["grass"]
+            grass_input.kcals -= consumed_grass
+            self.NE_balance.kcals = 0
+            self.population_fed = self.current_population
         else:
-            DI_for_species = self.digestion_efficiency[feed_type]
-            NE_in_food = food_input.kcals * DI_for_species
+            # Use grass completely if it's not enough
+            if NE_from_grass > 0:
+                NE_required -= NE_from_grass
+                grass_input.kcals = 0
 
-            # only using kcals
-            if NE_in_food > NE_required:
-                # whole population is fed
+            # Use feed to satisfy remaining NE requirement
+            if NE_from_feed >= NE_required:
+                consumed_feed = NE_required / self.digestion_efficiency["feed"]
+                feed_input.kcals -= consumed_feed
+                self.NE_balance.kcals = 0
                 self.population_fed = self.current_population
-                # update the food object
-                NE_in_food -= NE_required
-                self.NE_balance = Food(0, 0, 0)
-                food_input.kcals = NE_in_food / DI_for_species
-
             else:
-                # not enough food to feed the whole population
-                # calculate the number of animals that can be fed
+                # If feed is also not enough, feed as much as possible
+                feed_input.kcals = 0
+                NE_provided = NE_from_grass + NE_from_feed
+                self.NE_balance.kcals -= NE_provided
                 self.population_fed = round(
-                    NE_in_food / NE_required * self.current_population
+                    (NE_provided / self.NE_balance.kcals) * self.current_population
                 )
-                # update the food object
-                NE_required -= NE_in_food
-                food_input.kcals = 0
-                self.NE_balance = Food(NE_required, 0, 0)
 
-        return food_input
+        return grass_input, feed_input
 
     def append_month_zero(self):
         """
@@ -1044,7 +966,7 @@ class AnimalPopulation:
         return new_births_animals_month, new_export_births
 
     def calculate_change_in_population(
-        animal, country_object, new_additive_animals_month
+        animal, country_object, new_additive_animals_month, remaining_hours_this_size
     ):
         """
         This function will calculate the change in animal population for a given animal type
@@ -1081,13 +1003,17 @@ class AnimalPopulation:
         # Determine slaughter rates (USE spare slaughter hours)
         # Each call of this function is "greedy" and will take as many slaughter hours as possible until the species is at the target population
         # This means that the slaughter hours are used in the order that the species are listed in the animal_types list
+
+        # limit by available hours
         current_slaughter_rate = AnimalPopulation.calculate_slaughter_rate(
             animal,
             country_object,
             new_additive_animals_month,
             new_other_animal_death,
+            remaining_hours_this_size,
         )
 
+        # Further limit by available animal population
         # This is the main calculation of the population, update the slaughter rate if there are not enough animals
         current_slaughter_rate = AnimalPopulation.calculate_animal_population(
             animal,
@@ -1096,6 +1022,16 @@ class AnimalPopulation:
             new_other_animal_death + retiring_animals,
             current_slaughter_rate,
         )  ##TODO BUG here, what happens if retiring animals is huge, then even at slaughter = 0 we will get to negative pop
+
+        # reduce hours based on amount of slaughter used
+        # UNITS: current_slaughter_rate -> head / month, animal.animal_slaughter_hours -> hours / head
+        #        allocated_hours -> hours / month
+        allocated_hours = current_slaughter_rate * animal.animal_slaughter_hours
+
+        remaining_hours_this_size -= allocated_hours
+        assert (
+            remaining_hours_this_size >= 0
+        ), "ERROR: allocated negative hours for slaughter..."
 
         # Determine how many of the animals who died this month were pregnant
         # Check if the number of pregnant animals set for slaughter is less than the number of animals slaughtered this month
@@ -1133,7 +1069,7 @@ class AnimalPopulation:
         animal.other_death_causes_other_than_starving.append(new_other_animal_death)
         animal.slaughtered_pregnant_animals.append(new_slaughtered_pregnant_animals)
 
-        return
+        return remaining_hours_this_size
 
     def calculate_pregnant_animals_birthing(animal, new_pregnant_animals_total):
         """
@@ -1269,26 +1205,20 @@ class AnimalPopulation:
 
         # check if the actual slaughter rate is less than zero, if so, set it to zero
         if actual_slaughter_rate < 0:
+            print("SLAUGHTER BELOW ZERO???")
             actual_slaughter_rate = 0
-
-        country_object.spare_slaughter_hours = (
-            new_slaughter_rate - actual_slaughter_rate
-        ) * animal.animal_slaughter_hours
 
         animal.current_population = (
             new_animal_population_pre_slaughter - actual_slaughter_rate
         )
-        # check if the population is below zero
+
         # BUG this might fix it, but will still overestimate the number of animals retiring (as they might be dead, not retiring (milk only))
         if animal.current_population < 0:
+            print("POP BELOW ZERO????")
             animal.current_population = 0
             actual_slaughter_rate = 0
 
         return actual_slaughter_rate
-
-    # def calculate_imported_and_transfer_population(animal):
-
-    #     animal.transfer_births_or_head
 
     def calculate_births(animal):
         """
@@ -1356,7 +1286,11 @@ class AnimalPopulation:
         return new_other_animal_death
 
     def calculate_slaughter_rate(
-        animal, country_object, new_births_animals_month, new_other_animal_death
+        animal,
+        country_object,
+        new_births_animals_month,
+        new_other_animal_death,
+        remaining_hours_this_size,
     ):
         """
         This function calculates the new slaughter rate based on the spare slaughter hours and the target animal population
@@ -1384,22 +1318,36 @@ class AnimalPopulation:
         else:
             current_slaughter = animal.slaughter[-1]
             # BUG do we need this^^^ ? baseline slaughter IS affected by the change in slaughter rate
+            # BUG??: Why do we do this? If the animal.slaughter in the last month of the slaughter array is used,
+            #        this means each animal type could never increase in slaughter after being lower right?
+            # Why not just set to baseline slaughter always?
 
         # for dealing with milk, if slaughter hours is nan, then set it to 0
         if np.isnan(current_slaughter):
             print("slaughter hours is nan")
             # animal.slaughter[-1] = 0
             new_slaughter_rate = 0
-            return new_slaughter_rate
-
         else:
-            # if there are no spare slaughter hours, then set the slaughter rate to the previous slaughter rate, this will
-            # will happen becuase the numerator will be 0
-            new_slaughter_rate = (
-                current_slaughter
-                + country_object.spare_slaughter_hours / animal.animal_slaughter_hours
-            )
-            country_object.spare_slaughter_hours = 0
+            if remaining_hours_this_size > 0:
+                # UNITS: hours/month
+                hours_to_slaughter_this_type = (
+                    # UNITS:current_slaughter -> head / month,animal.animal_slaughter_hours -> hour/head
+                    current_slaughter
+                    * animal.animal_slaughter_hours
+                )
+
+                # Allocate slaughter hours to the current animal, not exceeding remaining hours
+                allocated_hours = min(
+                    hours_to_slaughter_this_type, remaining_hours_this_size
+                )
+
+                # Now that we've figured out hours of slaughter available, limit slaughter accordingly
+                # UNITS: allocated_hours -> hours / month, animal.animal_slaughter_hours -> hours / head
+                #        new_slaughter_rate -> head / month
+                new_slaughter_rate = allocated_hours / animal.animal_slaughter_hours
+            else:
+                # there are no remaining hours to use for slaughtering in this category.
+                new_slaughter_rate = 0
 
             return new_slaughter_rate
 
@@ -1626,15 +1574,11 @@ class AnimalPopulation:
         for animal in animal_list:
             animal.reset_NE_balance()
 
-        # feed the ruminants grass
-        for ruminant in ruminants:
-            available_grass = ruminant.feed_the_species(
-                available_grass, "grass"
-            )  # TODO: Currently feed type is onyl defined here, might be more sensible to attach it to the FOOD object.
-
-        # feed everything grain
         for animal in animal_list:
-            available_feed = animal.feed_the_species(available_feed, "feed")
+            is_ruminant = animal in ruminants
+            (available_grass, available_feed) = animal.feed_the_species(
+                available_grass, available_feed, is_ruminant
+            )
 
         # all feeding is done in the order of the lists supplied.
         return available_feed, available_grass
@@ -1842,6 +1786,10 @@ class AnimalModelBuilder:
 
         # loop through the animal types and create objects for each
         for animal_type in animal_types:
+            if animal_type == "meat_cattle" and df_animal_stock_info.name == "IND":
+                # here we encode the cultural value of not eating beef in India
+                continue
+
             # if animal type contains the word "milk" then it is a dairy animal
             if "milk" in animal_type:
                 slaughter_input = 0  # set to zero for now, but will be updated to non zero due to dairy calf culling
@@ -1883,8 +1831,193 @@ class AnimalModelBuilder:
 
         return animal_objects
 
+    def get_optimal_next_animal_to_feed(
+        animal_dict, kcals_per_head_meat_dict, df_animal_attributes
+    ):
+        # figures out the best way to optimally spend available slaughter hours and
+        # produce calories, returns best animal to slaughter as an animal dict sorted descending.
+        #
+        # We need to both subtract meat produced from feed used to get a "net_kcals" term
+        # and then we need to sort by the net_kcals for each animal.
+        # The thing is, if there are 10 chickens and 1000 pig, but chickens are better per unit feed
+        # (say chickens give 100 kcals for 200 feed (conversion efficiency 50%)
+        # but say pigs give 50 kcals per 200 feed (conversion efficiency 25%)
+        # then we want to choose chickens next...
+        # But also, we have limited hours.
+        #
+        # So assume horses and ducks are 50% efficient and 25% efficient, respectively at using feed.
+        # but horses take 1 hour per billion kcals, and ducks take 10 hours per billion kcals.
+        #
+        # Then if we have limited hours per month, say 5 hours a month.
+        # How to optimally choose the best animal?
+        #
+        # # 50%  25%   conversion efficiency
+        #
+        # Ho   Du
+        # 1    10    heads slaughtered per hour slaughtering
+        # 6000 600   kg used per month per head feed
+        # 10   1     hours per head slaughtered
+        # 1000 10    kg per head slaughtered
+        # 1000 100    -> kg per hour slaughtered
+        #
+        # (
+        #    We can say that in one hour, we get in kg:
+        #        kg per hour slaughtered
+        #            = heads slaughtered per hour slaughtering
+        #              * kg per head slaughtered
+        #  )
+        #
+        # Okay so let's say we allocate the whole month to slaughtering either horses or ducks.
+        #
+        # Ho   Du
+        # 5000 500    kg slaughtered in a month
+        # 1000 100    kg lost net, if we slaugher this animal the whole month
+        #
+        # So the question is, assuming infinite animal populations to slaughter, what variables
+        # need to be combined (and how) to get which animal is preferred to slaughter?
+        #
+        #
+        #
+        # OKAY Let's alter our assumptions, and let one take way less time to slaughter
+        #
+        # Ho   Du
+        # 1    10    heads slaughtered per hour slaughtering
+        # 6000 600   kg used per month per head feed
+        # 10   0.1   hours per head slaughtered
+        # 1000 10    kg per head slaughtered
+        # 1000 1000   -> kg per hour slaughtered
+        #
+        # (
+        #    We can say that in one hour, we get in kg:
+        #        kg per hour slaughtered
+        #            = heads slaughtered per hour slaughtering
+        #              * kg per head slaughtered
+        #  )
+        #
+        # Okay so let's say we allocate the whole month to slaughtering either horses or ducks.
+        #
+        # Ho   Du
+        # 5000 5000   kg slaughtered in a month
+        # 1000 -4400  kg lost net, if we slaugher this animal the whole month
+        #
+        # So clearly, we should switch the order of animals if one is 10x faster to slaughter
+        # There's also a difference between the order of feeding an animal and actually slaughtering
+        # I will ignore the feeding order for now, because that's not really critical.
+        # Well... I guess we do in general want to focus on slaughtering the animals that use the most feed
+        # because in general, over the long run this will be a big problem.
+        # On the other hand, maybe failing to feed the right animals will cause big problems?
+        # It doesn't matter much, because the feeding order is the same with zero feed and with lots of feed.
+        # So, imagine in a no feed scenario slaughter is prioritized optimally, when you add feed, you will still have at least as long
+        # focusing slaughter on the most meat producing animal. You can't be sure you have an optimal *usage of feed*,
+        # But if there is no feed available and animals will die anyway, you need to ensure you are slaughtering the most meat producing ones first.
+        # So I guess, we don't really want to count the feed used, because this makes it less obvious that when you have zero feed,
+        # you will get less meat than when you have feed.
+        #
+        # IMPORTANT: If choosing most meat producing in a month animal, the feed can only extend the duration with which you can efficiently harvest meat off the most efficient animal to slaughter!
+        #
+        # Therefore, to ensure zero feed scenario produces less meat than nonzero feed scenario, we don't care about feed allocation order.
+        # Still, if you *do* have feed usage, then it would be interesting: is it strictly better to optimize the slaughter on the animals that maximize (meat) - (feed) in the month in question?
+        #
+        # Well, reducing populations of heavy feed users is good for the future. I suppose there is the question of natural breeding -- if breeding increases a population, that might be relevant. But I will ignore this for now as a small factor.
+        # So then the only case where we are having an effect which is not just maximizing kcals actually makes   (meat) - (feed) strategy *better*. So I think it must be the case that  (meat) - (feed) is better approach.
+        #
+        #
+        # Assuming infinite animal populations to slaughter, I think we need to slaughter first the animal that has the highest value for (net kg)/hour:
+        # (kg meat per hour slaughtered) = (heads slaughtered per hour slaughtering) * (kg meat per animal)
+        # (net kg feed saved per hour slaughter) = (feed kg used per animal per month) * (heads slaughtered per hour slaughtering)
+        # MAXIMIZE: (kg meat per hour slaughtered) + (net kg feed saved per hour slaughter)
+        #
+        #
+        # And what if we don't assume infinite pops? Then will we quickly drive down populations of animals that have high (meat) - (feed) deltas?
+        # OKAY. If the way pops work is that if we don't slaughter the animals, then they starve, the net meat obtained will be determined by
+        # the total number of months spent slaughtering the most efficient populations before they starved.
+        # Q. but what if #1 (meat) - (feed) delta animal lives a long time, #2 (meat) - (feed) delta animal lives really short?
+        # A. Indeed, we lost our chance at #2. But if we had been slaughtering #2, then we wouldn't have been slaughtering #1.
+        #    So then it is still good that we focused on driving down #1 pop before it starved.
+        # Q. What if the #1 meat producer has low feed usage? Won't that lead to a suboptimal outcome if feed is being supplied as an "extra" optional addition, intended to produce more meat?
+        # A. Then we won't slaughter as much meat, but we'll use more feed. The thing is, we report back out feed usage, so the scenario simply won't use as much feed and it will end up for humans, so we don't lose in that scenario either.
+        # Q. What about grass usage efficiency? We don't care at all? What if an animal uses all the grass and produces very little meat?
+        # A. We feed in rough order of efficient usage of feed (feed in to meat out). So, for grasses this is the order we feed them.
+        #    Therefore, for the most part, one species cannot use all the grass up and be more inefficient than the next.
+        #
+        #
+        # Now to make it more specific:
+        #    >>  hours_per_month_this_animal_pop = this_animal_population *
+        #           # multiply the slaughter baseline by the number of slaughter hours required per species (animal_slaughter_hours)
+        #
+        # This is how to get hours per head
+        # slaughter_hours = np.array(
+        #     [animal.animal_slaughter_hours for animal in all_animals]
+        # )
+        #
+        # # calculate the total slaughter hours by multiplying the animal population by the slaughter hours
+        # total_slaughter_hours = sum(
+        #     np.array(slaughter_baseline) * np.array(slaughter_hours)
+        # )
+        #
+
+        all_efficiencies = {}
+        for animal_name, animal in animal_dict.items():
+            animal_slaughter_hours = df_animal_attributes.loc[animal.animal_type][
+                "animal_slaughter_hours"
+            ]
+            # calculate actual meat kcals per animal per slaughter hour
+            slaughter_hours_per_head = animal_slaughter_hours
+            if animal.animal_type == "chicken":
+                kcals_per_head_meat = kcals_per_head_meat_dict["KCALS_PER_CHICKEN"]
+            elif animal.animal_type == "pig":
+                kcals_per_head_meat = kcals_per_head_meat_dict["KCALS_PER_PIG"]
+            elif animal.animal_size == "small" and animal.animal_type != "chicken":
+                kcals_per_head_meat = kcals_per_head_meat_dict["KCALS_PER_SMALL_ANIMAL"]
+            elif animal.animal_size == "medium" and animal.animal_type != "pig":
+                kcals_per_head_meat = kcals_per_head_meat_dict[
+                    "KCALS_PER_MEDIUM_ANIMAL"
+                ]
+            elif animal.animal_size == "large":
+                kcals_per_head_meat = kcals_per_head_meat_dict["KCALS_PER_LARGE_ANIMAL"]
+            meat_kcals_per_slaughter_hour = (
+                kcals_per_head_meat / slaughter_hours_per_head
+            )
+
+            # this says that for every kcal of feed, we get digestion_efficiency kcals of meat.
+            digestion_efficiency = animal.digestion_efficiency["feed"]
+            assert digestion_efficiency > 0, "ERROR: impossibly low meat efficiency"
+            assert digestion_efficiency <= 1, "ERROR: impossibly high meat efficiency"
+
+            # this is how much feed we save by spending an hour slaughtering the animal
+            # near zero efficiency would require a huge amount of feed.
+            # near 100% efficiency would require very little feed.
+            energy_used_by_animal = animal.net_energy_required_per_month()
+            each_animal_feed_consumed_month_kcals = (
+                energy_used_by_animal / digestion_efficiency
+            )
+            feed_kcals_saved_per_hour_slaughtered = (
+                each_animal_feed_consumed_month_kcals / slaughter_hours_per_head
+            )
+            net_kcals_gained_per_hour_slaughter_this_month = (
+                meat_kcals_per_slaughter_hour + feed_kcals_saved_per_hour_slaughtered
+            )
+            animal.net_kcals_gained_per_hour_slaughter_this_month = (
+                net_kcals_gained_per_hour_slaughter_this_month
+            )
+
+        # reorder the animal dict in accordance with the maximal caloric gains
+        animal_dict = dict(
+            sorted(
+                animal_dict.items(),
+                key=lambda item: item[1].net_kcals_gained_per_hour_slaughter_this_month,
+                reverse=True,
+            )
+        )
+
+        return animal_dict
+
     def update_animal_objects_with_slaughter(
-        animal_list, df_animal_attributes, df_animal_options, scenario
+        animal_list,
+        df_animal_attributes,
+        df_animal_options,
+        scenario,
+        kcals_per_head_meat_dict,
     ):
         """
         This function updates the animal objects with the slaughter data
@@ -1913,8 +2046,9 @@ class AnimalModelBuilder:
         transfer_populations = {}
         for animal in animal_list:
             transfer_populations[animal.animal_species] = 0
-
+        # NOTE: BUG? I wonder if this gets undone at any point... or does it actually change the existing order...
         # order animal_list with milk first, in order to calculate transfer head appropriately
+
         animal_list = sorted(animal_list, key=lambda x: x.animal_function, reverse=True)
 
         selected_scenario = df_animal_options.loc[
@@ -1946,10 +2080,10 @@ class AnimalModelBuilder:
             target_population_fraction = selected_scenario.loc[animal.animal_type][
                 "target_population_fraction"
             ]
+
             starvation_death_fraction = selected_scenario.loc[animal.animal_type][
                 "starvation_death_fraction"
             ]
-
             # if milk animal, set the transfer population
             if animal.animal_function == "milk":
                 animal.set_milk_birth()
@@ -2245,6 +2379,25 @@ class Debugging:
         return grass
 
 
+def calculate_net_slaughter_hours_by_size(animals):
+    """
+    @author: DMR
+    This function gets the total hours in the relevant size (small, medium, or large) which can be used to slaughter
+    animals of that size
+    """
+    hours_by_size_dict = {}
+    for category in ["small", "medium", "large"]:
+        # UNITS: hours per month slaughter for this animal
+        total_slaughter_hours = sum(
+            # UNITS: animal_slaughter_hours -> hours / head, baseline_slaughter -> heads / month
+            animal.animal_slaughter_hours * animal.baseline_slaughter
+            for animal in animals
+            if animal.animal_size == category
+        )
+        hours_by_size_dict[category] = total_slaughter_hours
+    return hours_by_size_dict
+
+
 def main(
     country_code,
     available_feed,
@@ -2252,6 +2405,7 @@ def main(
     scenario,
     constants_inputs=None,
     remove_first_month=0,
+    kcals_per_head_meat_dict=None,
 ):
     """Main function to be called by the user.
 
@@ -2299,16 +2453,22 @@ def main(
     animal_list = AnimalModelBuilder.create_animal_objects(
         df_animal_stock_info.loc[country_code], df_animal_attributes
     )
-
-    # sort the animal objects by approximate feed conversion
-    # ## TODO: look at my dual use of lists and dicts here, probably unneccesary ###
-    # Should standardise, although no biggie as it is passing pointers not the actual data so cost is low
-    animal_dict = dict(
-        sorted(
-            animal_list.items(),
-            key=lambda item: item[1].approximate_feed_conversion,
+    SLAUGHTER_OPTIMALLY = True
+    if SLAUGHTER_OPTIMALLY and kcals_per_head_meat_dict is not None:
+        animal_dict = AnimalModelBuilder.get_optimal_next_animal_to_feed(
+            animal_list, kcals_per_head_meat_dict, df_animal_attributes
         )
-    )
+    else:
+        # sort the animal objects by approximate feed conversion
+        # ## TODO: look at my dual use of lists and dicts here, probably unneccesary ###
+        # Should standardise, although no biggie as it is passing pointers not the actual data so cost is low
+        animal_dict = dict(
+            sorted(
+                animal_list.items(),
+                key=lambda item: item[1].approximate_feed_conversion,
+                reverse=True,  # added this, but maybe doesn't matter...
+            )
+        )
 
     # get list of milk animals,
     milk_animals = [
@@ -2339,7 +2499,11 @@ def main(
         milk_animals, df_animal_attributes
     )
     AnimalModelBuilder.update_animal_objects_with_slaughter(
-        all_animals, df_animal_attributes, df_animal_options, scenario
+        all_animals,
+        df_animal_attributes,
+        df_animal_options,
+        scenario,
+        kcals_per_head_meat_dict,
     )
 
     # create country object
@@ -2358,7 +2522,6 @@ def main(
     grass_used = Food(np.zeros(len(available_feed.kcals)))
 
     #### END CREATION OF OBJECTS ####
-
     # do month zero baseline appends
     for animal in all_animals:
         animal.append_month_zero()
@@ -2369,7 +2532,6 @@ def main(
         country_object.month = month
         if month != 0:
             AnimalPopulation.set_current_populations(all_animals)
-
         ## THESE FEED OBJECTS WILL BE PASSED IN ####
         # create available feed object
         feed_available_this_month = available_feed[month]
@@ -2377,7 +2539,6 @@ def main(
 
         ## Do the feeding
         # feed the animals
-
         (
             feed_available_this_month,
             grass_available_this_month,
@@ -2427,12 +2588,24 @@ def main(
             births[animal.animal_type] = new_births
             animal.births_animals_month.append(new_births)
 
+            ADD_TRANSFER_POPULATIONS = True
             if animal.animal_function == "milk":
-                transfer_populations[animal.animal_species] = (
-                    animal.retiring_milk_head_monthly() + new_transfer_births
-                )
+                if ADD_TRANSFER_POPULATIONS:
+                    transfer_populations[animal.animal_species] = (
+                        animal.retiring_milk_head_monthly() + new_transfer_births
+                    )
+                    animal.transfer_births.append(new_transfer_births)
+
+                else:
+                    transfer_populations[animal.animal_species] = 0
+                    animal.transfer_births.append(0)
+
                 animal.retiring_milk_animals.append(animal.retiring_milk_head_monthly())
-                animal.transfer_births.append(new_transfer_births)
+
+                # if month == 4 or month == 20:
+                #     print(
+                #         f"animal.animal_type {animal.animal_type} month {month} animal.retiring_milk_head_monthly() {animal.retiring_milk_head_monthly()} new_transfer_births {new_transfer_births} "
+                #     )
 
                 # add to tranfser population
                 ##### THIS ISN'T WORKING CHANGED TO FUCNTION, MAYBE GOOD NOW
@@ -2446,7 +2619,17 @@ def main(
         # or maybe feed usage per slaughter hour is the best use?
         ##### ##### ##### ##### ##### ##### ##### ##### ##### #####
 
+        # This resets hours each size animal category has available for slaughter each month
+        # to the total hours available in baseline and scaled by change_in_slaughter_rate.
+        hours_by_size_dict = calculate_net_slaughter_hours_by_size(all_animals)
+
         for animal in all_animals:
+            assert animal.animal_size in [
+                "small",
+                "medium",
+                "large",
+            ], "ERROR: animals must be small, medium, or large"
+
             if "milk" not in animal.animal_type:
                 # if not a milk animal add
                 # divide by two as the transfer population is split between meat and milk
@@ -2464,8 +2647,17 @@ def main(
                     -transfer_populations[animal.animal_species]
                 )
 
-            AnimalPopulation.calculate_change_in_population(
-                animal, country_object, new_additive_animals_month
+            # Because we are looping through animal types in descending order of efficiency,
+            # the most efficient will use up as many hours as they can, and if there are any left, those will
+            # be allocated to less efficient animals within the size class
+
+            hours_by_size_dict[
+                animal.animal_size
+            ] = AnimalPopulation.calculate_change_in_population(
+                animal,
+                country_object,
+                new_additive_animals_month,
+                hours_by_size_dict[animal.animal_size],
             )
 
         # then new loop... for homekill
@@ -2520,8 +2712,6 @@ def main(
                     animal, population_starving_post_all_slaughter_homekill
                 )
             )
-            # next do the other death from starving.
-            # might be zero if all of starving is dead
 
             animal.other_death_total.append(
                 animal.other_death_starving[-1]
@@ -2541,11 +2731,11 @@ def main(
                 AnimalPopulation.other_death_pregnant_adjustment(animal)
 
             animal.total_homekill_this_month.append(animal.total_homekill())
-            # if animal.total_homekill() not None and animal.total_homekill() >= 10:
-            #     quit()
 
             # FINALLY WE CAN Calculate THE NEW POPULATION
             AnimalPopulation.calculate_final_population(animal)
+            # next do the other death from starving.
+            # might be zero if all of starving is dead
 
             ### FINALLY, we have it all
             # New population
@@ -2606,7 +2796,6 @@ def world_test():
     number_of_animals["large"] = 0
     number_of_animals["medium"] = 0
     number_of_animals["small"] = 0
-    print()
     tons_milk_per_year = 0
     for x in output_list:
         if x.animal_type == "chicken":
@@ -2632,111 +2821,74 @@ def world_test():
         if "milk" in x.animal_type:
             tons_milk_per_year += x.population[-1] * 1099.60 / 1000
         number_of_animals[x.animal_size] += x.population[-1] / 1e9
-        print()
     print("aggregated populations in billions", number_of_animals)
     print(f"{tons_milk_per_year / 1e6} million tonnes of milk per year")
 
 
 if __name__ == "__main__":
-    feed = (
-        # 0  # billion kcals, shorthand way to apply consistent supply over whole period
-    )
-    grass = (
-        # 0  # billion kcals, shorthand way to apply consistent supply over whole period
-    )
+    meat_and_dairy = MeatAndDairy(constants_inputs)
+
     months = 12
-    output_list, feed_used, grass_used = main(
-        "WOR",
-        Debugging.available_feed_function(feed, months),
-        Debugging.available_grass_function(grass, months),
-        "baseline",
-        remove_first_month=1,
-    )
-    # Initialize figure
-    fig = go.Figure()
+    for f in np.linspace(0, 0.5, 3):
+        grass = f  # billion kcals, shorthand way to apply consistent supply over whole period
+        print(f)
+        feed = f  # billion kcals, shorthand way to apply consistent supply over whole period
+        # output_list, feed_used, grass_used = main(
+        #     "USA",
+        #     Debugging.available_feed_function(feed, months),
+        #     Debugging.available_grass_function(grass, months),
+        #     "baseline",
+        #     remove_first_month=1,
+        # )
+        feed_world_baseline = 1447.96e6 / 12 * 4e6 / 1e9 * f  # billion kcals / month
+        grass_world_baseline = 4206e6 / 12 * 4e6 / 1e9 * f  # billion kcals / month
+        feed = (
+            # 0  # billion kcals, shorthand way to apply consistent supply over whole period
+            feed_world_baseline
+        )
+        grass = (
+            # 0  # billion kcals, shorthand way to apply consistent supply over whole period
+            grass_world_baseline
+            * f
+        )
+        months = 12
+        all_animals, feed_used, grass_used = main(
+            "WOR",
+            Debugging.available_feed_function(feed, months),
+            Debugging.available_grass_function(grass, months),
+            "baseline",
+            remove_first_month=1,
+        )
+        print(
+            "% feed used",
+            100 * feed_used[-1].kcals / feed_world_baseline,
+        )
+        print(
+            "% grass used",
+            100 * grass_used[-1].kcals / grass_world_baseline,
+        )
 
-    # plot all the animals without detail
-    # exclude chicken from output list
-    ignore_chicken_graph = 0
-    if ignore_chicken_graph == 1:
-        animal_list = [
-            animal for animal in output_list if "chicken" not in animal.animal_type
-        ]
-    else:
-        animal_list = [animal for animal in output_list]
+        # plot all the animals without detail
+        # exclude chicken from output list
+        animal_list = [animal for animal in all_animals]
 
-    for animal in animal_list:
-        # fig.add_trace(go.Scatter(y=animal.slaughter, mode='lines', name=animal.animal_type + " slaughter"))
-        fig.add_trace(
-            go.Scatter(
-                y=animal.population,
-                mode="lines",
-                name=animal.animal_type + " population",
+        fig = go.Figure()
+        for animal in animal_list:
+            fig.add_trace(
+                go.Scatter(
+                    y=animal.slaughter,
+                    mode="lines",
+                    name=animal.animal_type + " slaughter",
+                )
             )
-        )
-
-    fig2 = go.Figure()
-
-    # Plot one animal
-    k = 3
-    # Add detailed lines to the plot
-    fig2.add_trace(
-        go.Scatter(y=animal_list[k].births_animals_month, mode="lines", name="births")
-    )
-    fig2.add_trace(
-        go.Scatter(y=animal_list[k].slaughter, mode="lines", name="slaughter")
-    )
-    fig2.add_trace(
-        go.Scatter(
-            y=animal_list[k].total_homekill_this_month, mode="lines", name="homekill"
-        )
-    )
-    fig2.add_trace(
-        go.Scatter(
-            y=animal_list[k].other_death_total, mode="lines", name="other death total"
-        )
-    )
-    fig2.add_trace(
-        go.Scatter(y=animal_list[k].population, mode="lines", name="population")
-    )
-    fig2.add_trace(
-        go.Scatter(
-            y=animal_list[k].pregnant_animals_birthing_this_month,
-            mode="lines",
-            name="preg this month",
-        )
-    )
-    fig2.add_trace(
-        go.Scatter(
-            y=animal_list[k].pregnant_animals_total, mode="lines", name="preg total"
-        )
-    )
-    fig2.add_trace(
-        go.Scatter(
-            y=animal_list[k].transfer_population, mode="lines", name="transfer pop"
-        )
-    )
-    fig2.add_trace(
-        go.Scatter(
-            y=animal_list[k].transfer_births, mode="lines", name="transfer births"
-        )
-    )
-
-    print(
-        "Baseline slaughter: ",
-        animal_list[k].baseline_slaughter,
-        animal_list[k].animal_type,
-    )
-    print("Target population: ", animal_list[k].target_population_head)
-    print(
-        "Final population: ",
-        animal_list[k].current_population,
-    )
-    # print("Difference: ", animal_list[k].current_population - animal_list[k].target_population_head)
-
-    # add title to the figure, and set the x axis title
-    fig2.update_layout(title=animal_list[k].animal_type, xaxis_title="Month")
-
-    # Show figure
-    fig2.show()
-    fig.show()
+        fig.show()
+        fig = go.Figure()
+        for animal in animal_list:
+            fig.add_trace(
+                go.Scatter(
+                    y=animal.population,
+                    mode="lines",
+                    name=animal.animal_type + " population",
+                )
+            )
+        fig.show()

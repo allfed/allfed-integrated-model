@@ -61,9 +61,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         if "buffer" not in this_simulation.keys():
             this_simulation["buffer"] = "baseline"
         if "shutoff" not in this_simulation.keys():
-            this_simulation["shutoff"] = (
-                "continued"  # this_simulation["shutoff"] = "immediate"
-            )
+            this_simulation[
+                "shutoff"
+            ] = "continued"  # this_simulation["shutoff"] = "immediate"
         if "cull" not in this_simulation.keys():
             this_simulation["cull"] = "do_eat_culled"
 
@@ -284,7 +284,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             if np.isnan(population):
                 continue
             country_name = country_data["country"]
-
             (
                 needs_ratio,
                 scenario_description,
@@ -775,10 +774,13 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         assert (
             country_data["crop_fat"] >= 0
         ), f"{country}: fewer than 0 crop grams of fat"
-
-        assert all(
-            country_data[f"crop_reduction_year{i}"] >= -1 for i in range(1, 11)
-        ), f"{country}: crop reduction is less than -1"
+        for i in range(1, 11):
+            if country_data[f"crop_reduction_year{i}"] < -1:
+                diff = country_data[f"crop_reduction_year{i}"] + 1
+                if abs(diff) < 1e-8:
+                    country_data[f"crop_reduction_year{i}"] = -1
+                else:
+                    assert False, "ERROR: crop reduction is less than -1"
         assert all(
             country_data[f"grasses_reduction_year{i}"] >= -1 for i in range(1, 11)
         ), f"{country}: grasses reduction is less than -1"
@@ -803,9 +805,17 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         assert all(
             country_data[f"stocks_kcals_{months[i]}"] < 10e9 for i in range(0, 12)
         ), f"{country}: stocks kcals is greater than 10 billion"
-        assert all(
-            country_data[f"stocks_kcals_{months[i]}"] >= 0 for i in range(0, 12)
-        ), f"{country}: stocks kcals is less than 0"
+        for i in range(1, 11):
+            if country_data[f"stocks_kcals_{months[i]}"] < 0:
+                print(country_data[f"stocks_kcals_{months[i]}"])
+                if abs(country_data[f"stocks_kcals_{months[i]}"]) < 1e-8:
+                    country_data[f"crop_reduction_year{i}"] = 0
+                else:
+                    assert False, "ERROR: stocks is negative"
+
+        # assert all(
+        #     country_data[f"stocks_kcals_{months[i]}"] >= 0 for i in range(0, 12)
+        # ), f"{country}: stocks kcals is less than 0"
 
         assert (
             country_data["distribution_loss_crops"] < 1

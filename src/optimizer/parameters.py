@@ -142,6 +142,7 @@ class Parameters:
             biofuels_demand,  # biofuels requested by the user
             feed_demand,  # feed requested by the user
             meat_dictionary_round1,  # meat if no feed were available
+            feed_meat_object_round1,
         ) = self.init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels_round1(
             constants_out,
             constants_inputs,
@@ -158,19 +159,64 @@ class Parameters:
             biofuels_demand,  # biofuels requested by the user
             feed_demand,  # feed requested by the user
             meat_dictionary_round1,
+            feed_meat_object_round1,
         )
 
     def get_second_round_kcals_with_redistributed_meat(
-        self, round_1_meat_kcals, round_2_meat_kcals
+        self,
+        round_1_meat_kcals,
+        round_2_meat_kcals,
+        milk_kcals_round1,
+        milk_kcals_round2,
     ):
         """
         Gets a new array of kcals where the sum of kcals from meat remains the same, but the places where the meat was
         originally larger than round 1 is reduced, and the places where the meat was less than round 1 is increased.
         """
-        if round_1_meat_kcals.sum() > round_2_meat_kcals.sum():
+
+        if (round_1_meat_kcals.sum()) > (round_2_meat_kcals.sum()):
+            title = (
+                str(
+                    (round_1_meat_kcals.sum() - round_2_meat_kcals.sum())
+                    / round_1_meat_kcals.sum()
+                )
+                + " fractional difference"
+            )
+            PLOT_WHEN_ROUND2_GREATER_THAN_ROUND1 = False
+            if PLOT_WHEN_ROUND2_GREATER_THAN_ROUND1:
+                print("milk_kcals_round1")
+                print(milk_kcals_round1)
+                print("milk_kcals_round2")
+                print(milk_kcals_round2)
+                import matplotlib.pyplot as plt
+
+                print("")
+                print("")
+                print("")
+                print("GREATER THAN AMOUNT TOTAL")
+                print(
+                    f"{round_1_meat_kcals.sum() - round_2_meat_kcals.sum()} billion kcals"
+                )
+                print("")
+                print("")
+
+                plt.figure()
+                plt.plot(
+                    round_1_meat_kcals,  # + milk_kcals_round1,
+                    label="round_1_meat_kcals",
+                )
+                plt.plot(
+                    round_2_meat_kcals,  # + milk_kcals_round2,
+                    label="round_2_meat_kcals",
+                )
+                plt.title(title)
+                plt.legend()
+                plt.show()
             print(
                 "WARNING: Meat produced from feed is less than produced without feed. Skipping round 2 and setting"
-                " feed used to zero."
+                " feed used to zero.\n"
+                f"Fractional increase in meat produced with zero feed compared to no feed:\n"
+                f"{title}"
             )
             return None
         difference = round_2_meat_kcals - round_1_meat_kcals
@@ -259,14 +305,15 @@ class Parameters:
 
         grasses_for_animals = meat_and_dairy.human_inedible_feed
 
+        meat_and_dairy.initialize_this_country_animal_kcals(constants_inputs)
         feed_meat_object_round1 = CalculateFeedAndMeat(
             country_code=constants_inputs["COUNTRY_CODE"],
             available_feed=zero_feed,
             available_grass=grasses_for_animals,
             scenario=constants_inputs["BREEDING_STRATEGY"],  # tries to reduce breeding
+            kcals_per_head_meat_dict=meat_and_dairy.kcals_per_head_meat_dict,
             constants_inputs=constants_inputs,
         )
-
         # MEAT AND DAIRY from breeding reduction strategy
 
         # for first round (zero feed available to animals)
@@ -316,6 +363,7 @@ class Parameters:
             meat_dictionary_round1,
             feed_demand,  # the actual demand asked for by the user
             biofuels_demand,  # the actual demand asked for by the user
+            feed_meat_object_round1,
         )
 
     def assert_constants_not_nan(self, consts_for_optimizer, time_consts):
@@ -780,7 +828,6 @@ class Parameters:
         )
 
         dairy_population = feed_meat_object.get_total_milk_bearing_animals()
-
         (
             constants_out,
             time_consts,
@@ -1060,6 +1107,7 @@ class Parameters:
         meat_and_dairy = MeatAndDairy(constants_inputs)
         grasses_for_animals = meat_and_dairy.human_inedible_feed
 
+        meat_and_dairy.initialize_this_country_animal_kcals(constants_inputs)
         feed_meat_object_second_round = CalculateFeedAndMeat(
             country_code=constants_inputs["COUNTRY_CODE"],
             available_feed=feed_demand,
@@ -1067,9 +1115,9 @@ class Parameters:
             scenario=constants_inputs[
                 "BREEDING_STRATEGY"
             ],  # tries to reduce breeding or keep as baseline
+            kcals_per_head_meat_dict=meat_and_dairy.kcals_per_head_meat_dict,
             constants_inputs=constants_inputs,
         )
-
         (
             max_feed_that_could_be_used_second_round,
             meat_dictionary_round2,  # if all feed needs were satisfied before feed shutoff
@@ -1092,12 +1140,13 @@ class Parameters:
         before_readjust_meat_round2 = copy.deepcopy(
             time_consts_round2["each_month_meat_slaughtered"].kcals
         )
-
         time_consts_round2[
             "each_month_meat_slaughtered"
         ].kcals = self.get_second_round_kcals_with_redistributed_meat(
             time_consts_round1["each_month_meat_slaughtered"].kcals,
             time_consts_round2["each_month_meat_slaughtered"].kcals,
+            time_consts_round1["milk_kcals"],
+            time_consts_round2["milk_kcals"],
         )
 
         if time_consts_round2["each_month_meat_slaughtered"].kcals is None:
@@ -1160,6 +1209,7 @@ class Parameters:
         assert interpreted_results_round1.seaweed_feed_kcals_equivalent.all_equals_zero(
             rounding_decimals=6
         )
+        # print("missing assert")
         assert interpreted_results_round1.stored_food_feed_kcals_equivalent.all_equals_zero(
             rounding_decimals=6
         )
@@ -1503,6 +1553,7 @@ class Parameters:
         feed_and_biofuels_class,
         feed_demand,
         biofuels_demand,
+        feed_meat_object_round1,
     ):
         # TODO: make this function work with fat and protein minimums...
 
@@ -1510,21 +1561,26 @@ class Parameters:
         constants_out_round3 = copy.deepcopy(constants_out_round1)
 
         meat_and_dairy = MeatAndDairy(constants_inputs)
-        feed_sum_billion_kcals = (
-            interpreted_results_round2.feed_sum_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month()
-        )
         biofuel_sum_billion_kcals = (
             interpreted_results_round2.biofuels_sum_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month()
         )
 
-        grasses_for_animals = meat_and_dairy.human_inedible_feed
-        feed_meat_object_third_round = CalculateFeedAndMeat(
-            country_code=constants_inputs["COUNTRY_CODE"],
-            available_feed=feed_sum_billion_kcals,
-            available_grass=grasses_for_animals,
-            scenario=constants_inputs["BREEDING_STRATEGY"],
-            constants_inputs=constants_inputs,
-        )
+        meat_and_dairy.initialize_this_country_animal_kcals(constants_inputs)
+        if time_consts_round2 is not None:
+            feed_sum_billion_kcals = (
+                interpreted_results_round2.feed_sum_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month()
+            )
+            grasses_for_animals = meat_and_dairy.human_inedible_feed
+            feed_meat_object_third_round = CalculateFeedAndMeat(
+                country_code=constants_inputs["COUNTRY_CODE"],
+                available_feed=feed_sum_billion_kcals,
+                available_grass=grasses_for_animals,
+                scenario=constants_inputs["BREEDING_STRATEGY"],
+                kcals_per_head_meat_dict=meat_and_dairy.kcals_per_head_meat_dict,
+                constants_inputs=constants_inputs,
+            )
+        else:
+            feed_meat_object_third_round = feed_meat_object_round1
 
         # final answer as to meat produced from feed
         (
@@ -1540,7 +1596,9 @@ class Parameters:
             constants_out_round3,
             time_consts_round3,
         )
-        if interpreted_results_round1 is not None:
+
+        INCREASE_FEED = True
+        if INCREASE_FEED and interpreted_results_round1 is not None:
             # we are offsetting the increase in meat from round 3 by adding half that increase as increased biofuel,
             # and if we hit biofuel caps, then increased feed. It helps hit the X% minimum fed before feeding biofuel
             # or feed actually be ~X%, rather than X% + (the percent of feed displaced by meat)

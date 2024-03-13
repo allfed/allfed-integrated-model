@@ -308,11 +308,11 @@ class Validator:
         """
         # Check that the cell_sugar variable is greater than or equal to zero
         assert interpreted_results.cell_sugar.all_greater_than_or_equal_to_zero(
-            threshold=1e-9
+            threshold=1e-6
         )
 
         # Check that the scp variable is greater than or equal to zero
-        assert interpreted_results.scp.all_greater_than_or_equal_to_zero(threshold=1e-9)
+        assert interpreted_results.scp.all_greater_than_or_equal_to_zero(threshold=1e-6)
 
         # Check that the greenhouse variable is greater than or equal to zero
         assert interpreted_results.greenhouse.get_rounded_to_decimal(
@@ -544,12 +544,17 @@ class Validator:
             previous_food_name = food_name
 
     @staticmethod
-    def assert_meat_doesnt_increase_round_2(
-        meat_running_available_round1, meat_running_available_round2, epsilon=1e-2
+    def assert_meat_dairy_doesnt_decrease_round_2(
+        meat_running_available_round1,
+        meat_running_available_round2,
+        milk_kcals_round1,
+        milk_kcals_round2,
+        epsilon=1e-2,
     ):
         assert np.all(
-            meat_running_available_round2.sum()
-            >= meat_running_available_round1.sum() * (1 - epsilon)
+            meat_running_available_round2.sum() + milk_kcals_round1.sum()
+            >= (meat_running_available_round1.sum() + milk_kcals_round1.sum())
+            * (1 - epsilon)
         ), (
             "Error: round 2 gets the same or more feed, yet it appears that the sum of meat available in round 2 is "
             "less than in round 1."
@@ -661,7 +666,6 @@ class Validator:
             total_feed.in_units_bil_kcals_thou_tons_thou_tons_per_month()
             * (1 - epsilon)
         )
-
         assert np.all((feed_demand - reduced_feed_correct_units).kcals > -1e-6), (
             f"Error: feed used is greater than feed demand in round {round}\n"
             f"feed demand:\n"

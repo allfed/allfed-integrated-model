@@ -184,9 +184,11 @@ class ScenarioRunner:
             # this indicates the meat produced is in fact lower when feed is applied.
             # Therefore, we will abort the second round and simply return the results from the first round with no feed
             return None, None, None, None, None, None, None
-        Validator.assert_meat_doesnt_increase_round_2(
+        Validator.assert_meat_dairy_doesnt_decrease_round_2(
             time_consts_round1["each_month_meat_slaughtered"].kcals,
             time_consts_round2["each_month_meat_slaughtered"].kcals,
+            time_consts_round1["milk_kcals"],
+            time_consts_round2["milk_kcals"],
         )
         PLOT_MEAT_SLAUGHTERED_FLAG = False
         if PLOT_MEAT_SLAUGHTERED_FLAG:
@@ -252,6 +254,7 @@ class ScenarioRunner:
         each_month_meat_slaughtered,
         max_consumed_culled_kcals_each_month,
         meat_summed_consumption,
+        feed_meat_object_round1,
         title="Untitled",
     ):
         # THIRD ROUND: NOW THAT THE AMOUNT OF FEED AND BIOFUEL CONSUMED IS KNOWN, ALLOCATE THE REST TO HUMANS
@@ -271,6 +274,7 @@ class ScenarioRunner:
             feed_and_biofuels_round1,
             feed_demand,
             biofuels_demand,
+            feed_meat_object_round1,
         )
 
         interpreted_results_round3 = self.run_optimizer(
@@ -290,14 +294,6 @@ class ScenarioRunner:
         print("")
 
         interpreted_results_for_round3 = copy.deepcopy(interpreter)
-        interpreted_results_for_round3.feed_sum_kcals_equivalent = Food(
-            kcals=np.zeros(NMONTHS),
-            fat=np.zeros(NMONTHS),
-            protein=np.zeros(NMONTHS),
-            kcals_units="billion kcals each month",
-            fat_units="thousand tons each month",
-            protein_units="thousand tons each month",
-        )
 
         interpreted_results_for_round3.biofuels_sum_kcals_equivalent = Food(
             kcals=np.zeros(NMONTHS),
@@ -346,6 +342,7 @@ class ScenarioRunner:
             meat_dictionary_zero_feed_biofuels,  # Meat if no feed used.
             feed_demand,  # feed requested by the user
             biofuels_demand,  # biofuels requested by the user
+            feed_meat_object_round1,
         ) = constants_loader.compute_parameters_first_round(
             constants_for_params, time_consts_for_params, scenario_loader
         )
@@ -511,6 +508,7 @@ class ScenarioRunner:
             each_month_meat_slaughtered,
             max_consumed_culled_kcals_each_month,
             meat_summed_consumption,
+            feed_meat_object_round1,
             title=title + "_round3",
         )
 
@@ -543,6 +541,7 @@ class ScenarioRunner:
             scenario_loader,
             figure_save_postfix,
             slaughter_title="slaughter of animals for third round",
+            feed_title="feed biofuel for third round",
         )
         print(
             f"Percent people fed {country_name} (iso3: {country_iso3}): "

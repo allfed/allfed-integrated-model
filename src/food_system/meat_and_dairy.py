@@ -418,6 +418,84 @@ class MeatAndDairy:
             # no negative slaughter rates (addresses rounding errors)
         return slaughtered_meat_monthly
 
+    def initialize_this_country_animal_kcals(self, constants_inputs):
+        KG_TO_1000_TONS = self.KG_TO_1000_TONS
+
+        self.KCALS_PER_CHICKEN = (
+            constants_inputs["KG_MEAT_PER_CHICKEN"]
+            * self.SMALL_ANIMAL_KCALS_PER_KG
+            / 1e9
+        )
+        self.FAT_PER_CHICKEN = (
+            self.SMALL_ANIMAL_FAT_RATIO
+            * constants_inputs["KG_MEAT_PER_CHICKEN"]
+            * KG_TO_1000_TONS
+        )
+        self.PROTEIN_PER_CHICKEN = (
+            self.SMALL_ANIMAL_PROTEIN_RATIO
+            * constants_inputs["KG_MEAT_PER_CHICKEN"]
+            * KG_TO_1000_TONS
+        )
+
+        self.KCALS_PER_PIG = (
+            self.MEDIUM_ANIMAL_KCALS_PER_KG * constants_inputs["KG_MEAT_PER_PIG"] / 1e9
+        )
+        self.FAT_PER_PIG = (
+            self.MEDIUM_ANIMAL_FAT_RATIO
+            * constants_inputs["KG_MEAT_PER_PIG"]
+            * KG_TO_1000_TONS
+        )
+        self.PROTEIN_PER_PIG = (
+            self.MEDIUM_ANIMAL_PROTEIN_RATIO
+            * constants_inputs["KG_MEAT_PER_PIG"]
+            * KG_TO_1000_TONS
+        )
+
+        self.KCALS_PER_SMALL_ANIMAL = (
+            self.SMALL_ANIMAL_KCALS_PER_KG * self.KG_PER_SMALL_ANIMAL / 1e9
+        )
+        self.FAT_PER_SMALL_ANIMAL = (
+            self.SMALL_ANIMAL_FAT_RATIO * self.KG_PER_SMALL_ANIMAL * KG_TO_1000_TONS
+        )
+        self.PROTEIN_PER_SMALL_ANIMAL = (
+            self.SMALL_ANIMAL_PROTEIN_RATIO * self.KG_PER_SMALL_ANIMAL * KG_TO_1000_TONS
+        )
+
+        self.KCALS_PER_MEDIUM_ANIMAL = (
+            self.MEDIUM_ANIMAL_KCALS_PER_KG * self.KG_PER_MEDIUM_ANIMAL / 1e9
+        )
+        self.FAT_PER_MEDIUM_ANIMAL = (
+            self.MEDIUM_ANIMAL_FAT_RATIO * self.KG_PER_MEDIUM_ANIMAL * KG_TO_1000_TONS
+        )
+        self.PROTEIN_MEDIUM_ANIMAL = (
+            self.MEDIUM_ANIMAL_PROTEIN_RATIO
+            * self.KG_PER_MEDIUM_ANIMAL
+            * KG_TO_1000_TONS
+        )
+
+        self.KCALS_PER_LARGE_ANIMAL = (
+            self.LARGE_ANIMAL_KCALS_PER_KG * self.KG_PER_LARGE_ANIMAL / 1e9
+        )
+        self.FAT_PER_LARGE_ANIMAL = (
+            self.LARGE_ANIMAL_FAT_RATIO * self.KG_PER_LARGE_ANIMAL * KG_TO_1000_TONS
+        )
+        self.PROTEIN_PER_LARGE_ANIMAL = (
+            self.LARGE_ANIMAL_PROTEIN_RATIO * self.KG_PER_LARGE_ANIMAL * KG_TO_1000_TONS
+        )
+
+        self.kcals_per_head_meat_dict = {}
+        self.kcals_per_head_meat_dict["KCALS_PER_CHICKEN"] = self.KCALS_PER_CHICKEN
+        self.kcals_per_head_meat_dict["KCALS_PER_PIG"] = self.KCALS_PER_PIG
+        self.kcals_per_head_meat_dict[
+            "KCALS_PER_SMALL_ANIMAL"
+        ] = self.KCALS_PER_SMALL_ANIMAL
+        self.kcals_per_head_meat_dict[
+            "KCALS_PER_MEDIUM_ANIMAL"
+        ] = self.KCALS_PER_MEDIUM_ANIMAL
+        self.kcals_per_head_meat_dict[
+            "KCALS_PER_LARGE_ANIMAL"
+        ] = self.KCALS_PER_LARGE_ANIMAL
+
     def calculate_meat_after_distribution_waste(
         self,
         constants_inputs,
@@ -427,93 +505,29 @@ class MeatAndDairy:
         init_medium_animals_nonpigs_culled,
         init_large_animals_culled,
     ):
-        KG_TO_1000_TONS = self.KG_TO_1000_TONS
-
-        KCALS_PER_CHICKEN = (
-            constants_inputs["KG_MEAT_PER_CHICKEN"]
-            * self.SMALL_ANIMAL_KCALS_PER_KG
-            / 1e9
-        )
-        FAT_PER_CHICKEN = (
-            self.SMALL_ANIMAL_FAT_RATIO
-            * constants_inputs["KG_MEAT_PER_CHICKEN"]
-            * KG_TO_1000_TONS
-        )
-        PROTEIN_PER_CHICKEN = (
-            self.SMALL_ANIMAL_PROTEIN_RATIO
-            * constants_inputs["KG_MEAT_PER_CHICKEN"]
-            * KG_TO_1000_TONS
-        )
-
-        KCALS_PER_PIG = (
-            self.MEDIUM_ANIMAL_KCALS_PER_KG * constants_inputs["KG_MEAT_PER_PIG"] / 1e9
-        )
-        FAT_PER_PIG = (
-            self.MEDIUM_ANIMAL_FAT_RATIO
-            * constants_inputs["KG_MEAT_PER_PIG"]
-            * KG_TO_1000_TONS
-        )
-        PROTEIN_PER_PIG = (
-            self.MEDIUM_ANIMAL_PROTEIN_RATIO
-            * constants_inputs["KG_MEAT_PER_PIG"]
-            * KG_TO_1000_TONS
-        )
-
-        KCALS_PER_SMALL_ANIMAL = (
-            self.SMALL_ANIMAL_KCALS_PER_KG * self.KG_PER_SMALL_ANIMAL / 1e9
-        )
-        FAT_PER_SMALL_ANIMAL = (
-            self.SMALL_ANIMAL_FAT_RATIO * self.KG_PER_SMALL_ANIMAL * KG_TO_1000_TONS
-        )
-        PROTEIN_PER_SMALL_ANIMAL = (
-            self.SMALL_ANIMAL_PROTEIN_RATIO * self.KG_PER_SMALL_ANIMAL * KG_TO_1000_TONS
-        )
-
-        KCALS_PER_MEDIUM_ANIMAL = (
-            self.MEDIUM_ANIMAL_KCALS_PER_KG * self.KG_PER_MEDIUM_ANIMAL / 1e9
-        )
-        FAT_PER_MEDIUM_ANIMAL = (
-            self.MEDIUM_ANIMAL_FAT_RATIO * self.KG_PER_MEDIUM_ANIMAL * KG_TO_1000_TONS
-        )
-        PROTEIN_MEDIUM_ANIMAL = (
-            self.MEDIUM_ANIMAL_PROTEIN_RATIO
-            * self.KG_PER_MEDIUM_ANIMAL
-            * KG_TO_1000_TONS
-        )
-
-        KCALS_PER_LARGE_ANIMAL = (
-            self.LARGE_ANIMAL_KCALS_PER_KG * self.KG_PER_LARGE_ANIMAL / 1e9
-        )
-        FAT_PER_LARGE_ANIMAL = (
-            self.LARGE_ANIMAL_FAT_RATIO * self.KG_PER_LARGE_ANIMAL * KG_TO_1000_TONS
-        )
-        PROTEIN_PER_LARGE_ANIMAL = (
-            self.LARGE_ANIMAL_PROTEIN_RATIO * self.KG_PER_LARGE_ANIMAL * KG_TO_1000_TONS
-        )
-
         # billion kcals
         init_meat_prewaste_kcals = (
-            init_chickens_culled * KCALS_PER_CHICKEN
-            + init_pigs_culled * KCALS_PER_PIG
-            + init_small_animals_nonchicken_culled * KCALS_PER_SMALL_ANIMAL
-            + init_medium_animals_nonpigs_culled * KCALS_PER_MEDIUM_ANIMAL
-            + init_large_animals_culled * KCALS_PER_LARGE_ANIMAL
+            init_chickens_culled * self.KCALS_PER_CHICKEN
+            + init_pigs_culled * self.KCALS_PER_PIG
+            + init_small_animals_nonchicken_culled * self.KCALS_PER_SMALL_ANIMAL
+            + init_medium_animals_nonpigs_culled * self.KCALS_PER_MEDIUM_ANIMAL
+            + init_large_animals_culled * self.KCALS_PER_LARGE_ANIMAL
         )
         # thousand tons
         init_meat_prewaste_fat = (
-            init_chickens_culled * FAT_PER_CHICKEN
-            + init_pigs_culled * FAT_PER_PIG
-            + init_small_animals_nonchicken_culled * FAT_PER_SMALL_ANIMAL
-            + init_medium_animals_nonpigs_culled * FAT_PER_MEDIUM_ANIMAL
-            + init_large_animals_culled * FAT_PER_LARGE_ANIMAL
+            init_chickens_culled * self.FAT_PER_CHICKEN
+            + init_pigs_culled * self.FAT_PER_PIG
+            + init_small_animals_nonchicken_culled * self.FAT_PER_SMALL_ANIMAL
+            + init_medium_animals_nonpigs_culled * self.FAT_PER_MEDIUM_ANIMAL
+            + init_large_animals_culled * self.FAT_PER_LARGE_ANIMAL
         )
         # thousand tons
         init_meat_prewaste_protein = (
-            init_chickens_culled * PROTEIN_PER_CHICKEN
-            + init_pigs_culled * PROTEIN_PER_PIG
-            + init_small_animals_nonchicken_culled * PROTEIN_PER_SMALL_ANIMAL
-            + init_medium_animals_nonpigs_culled * PROTEIN_MEDIUM_ANIMAL
-            + init_large_animals_culled * PROTEIN_PER_LARGE_ANIMAL
+            init_chickens_culled * self.PROTEIN_PER_CHICKEN
+            + init_pigs_culled * self.PROTEIN_PER_PIG
+            + init_small_animals_nonchicken_culled * self.PROTEIN_PER_SMALL_ANIMAL
+            + init_medium_animals_nonpigs_culled * self.PROTEIN_MEDIUM_ANIMAL
+            + init_large_animals_culled * self.PROTEIN_PER_LARGE_ANIMAL
         )
 
         initial_meat_prewaste = init_meat_prewaste_kcals
