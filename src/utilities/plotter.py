@@ -751,7 +751,9 @@ class Plotter:
         plt.tight_layout()
         plt.show()
 
-    def helper_for_plotting_fig_3abcde(interpreter, xlim, gs, row, fig, max_y_percent):
+    def helper_for_plotting_fig_3abcde(
+        interpreter, xlim, gs, row, fig, max_y_percent, ADD_SECOND_COLUMN
+    ):
         legend = Plotter.get_people_fed_legend(interpreter, True)
         pal = [
             "#1e7ecd",  # fish
@@ -811,7 +813,7 @@ class Plotter:
                 # ax.set_ylim([0, maxy])
 
                 plt.ylabel("Kcals / person / day", fontsize=9)
-            if label == "b":
+            if label == "b" and ADD_SECOND_COLUMN:
                 ax = fig.add_subplot(gs[row, 2])
 
                 ax.plot(
@@ -857,7 +859,7 @@ class Plotter:
                         labels=reversed(labels),
                     )
 
-            if label == "b":
+            if label == "b" and ADD_SECOND_COLUMN:
                 if row == 3:
                     labels = ["Calories"]
                     if interpreter.include_fat:
@@ -1329,7 +1331,7 @@ class Plotter:
         print("saved figure 2abcd")
         plt.show()
 
-    def plot_fig_3abcde_updated(results, xlim):
+    def plot_fig_3abcde_updated(results, xlim, ADD_SECOND_COLUMN=False):
         lists_of_lists = []
         for scenario_name, interpreter in results.items():
             print(scenario_name)
@@ -1343,10 +1345,10 @@ class Plotter:
 
         gs = gridspec.GridSpec(
             5,
-            3,
+            3 if ADD_SECOND_COLUMN else 2,
             wspace=0.4,
             hspace=0.5,
-            width_ratios=[1, 2, 2],
+            width_ratios=[1, 2, 2] if ADD_SECOND_COLUMN else [1, 4],
             height_ratios=[0.125, 2, 2, 2, 3],
             left=0.02,
             right=0.98,
@@ -1356,9 +1358,9 @@ class Plotter:
 
         ax = fig.add_subplot(gs[0, 1])
         ax.axis("off")
-
-        ax = fig.add_subplot(gs[0, 2])
-        ax.axis("off")
+        if ADD_SECOND_COLUMN:
+            ax = fig.add_subplot(gs[0, 2])
+            ax.axis("off")
 
         for i in range(3):
             [
@@ -1367,12 +1369,9 @@ class Plotter:
                 scenario_name,
             ] = lists_of_lists[i]
             row = i + 1
-            if row == 1:
-                max_y_percent = 300
-            else:
-                max_y_percent = -1
+            max_y_percent = -1
             gs, fig = Plotter.helper_for_plotting_fig_3abcde(
-                interpreter, xlim, gs, row, fig, max_y_percent
+                interpreter, xlim, gs, row, fig, max_y_percent, ADD_SECOND_COLUMN
             )
             ax = fig.add_subplot(gs[row, 0])
             percent_fed = str(int(percent_people_fed))

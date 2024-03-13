@@ -285,6 +285,17 @@ def call_global_scenario_runner(this_simulation, title):
         time_consts_for_params,
         scenario_loader,
     ) = scenario_runner.set_depending_on_option(this_simulation)
+    NO_TRADE_CSV = (
+        Path(repo_root) / "data" / "no_food_trade" / "computer_readable_combined.csv"
+    )
+    import pandas as pd
+
+    no_trade_table = pd.read_csv(NO_TRADE_CSV)
+    iso3 = "WOR"
+    for index, country_data in no_trade_table.iterrows():
+        country_code = country_data["iso3"]
+        if country_code == iso3:
+            break
 
     interpreted_results = scenario_runner.run_and_analyze_scenario(
         constants_for_params,
@@ -293,6 +304,8 @@ def call_global_scenario_runner(this_simulation, title):
         create_pptx_with_all_countries=False,
         show_country_figures=False,
         figure_save_postfix="_world",
+        country_data=country_data,
+        save_all_results=False,
         country_name="world",
         country_iso3="WOR",
         title=title,
@@ -369,7 +382,7 @@ def recalculate_plot_1():
     this_simulation["meat_strategy"] = "feed_only_ruminants"
     this_simulation["shutoff"] = "long_delayed_shutoff"
     example_scenario_title = (
-        "Example Scenario:\nSimple Adaptations\n+ Storage\n+Feed improved"
+        "Example Scenario:\nSimple Adaptations\n+ Storage\n+Feed Improved"
     )
     example_scenario = call_scenario_runner_and_set_options(
         this_simulation, example_scenario_title  # , countries_list=["CHN"]
@@ -541,7 +554,7 @@ def recalculate_plot_3():
     this_simulation["waste"] = "tripled_prices_globally"
     this_simulation["shutoff"] = "long_delayed_shutoff_after_10_percent_fed"
 
-    title_simple_adaptations = "trade\n+ simple_adaptations"
+    title_simple_adaptations = "Trade\n+ Simple Adaptations"
     results_simple_adaptations = call_global_scenario_runner(
         this_simulation, title_simple_adaptations
     )
@@ -550,7 +563,7 @@ def recalculate_plot_3():
     this_simulation["end_simulation_stocks_ratio"] = "zero"
     this_simulation["meat_strategy"] = "feed_only_ruminants"
     this_simulation["shutoff"] = "long_delayed_shutoff"
-    title_example_scenario = "trade\n+ simple_adaptations\n+ culling\n+ storage"
+    title_example_scenario = "Trade\n+ Simple Adaptations\n+ Storage\n+Feed Improved"
     results_example_scenario = call_global_scenario_runner(
         this_simulation, title_example_scenario
     )
@@ -558,7 +571,7 @@ def recalculate_plot_3():
     # WORST CASE + SIMPLE_ADAPTATIONS + STORAGE + CULLING + ALL RESILIENT FOODS
     this_simulation["scenario"] = "all_resilient_foods"
     title_resilient_foods = (
-        "trade\n+ simple_adaptations\n+ culling\n+ storage\n+ resilient foods"
+        "Trade\n+ Simple Adaptations\n+ Storage\n+ Feed Improved\n+ Resilient Foods"
     )
     results_resilient_foods = call_global_scenario_runner(
         this_simulation, title_resilient_foods
@@ -606,6 +619,17 @@ def recalculate_plot_s1():
         scenario_loader,
     ) = scenario_runner.set_depending_on_option(this_simulation)
 
+    NO_TRADE_CSV = (
+        Path(repo_root) / "data" / "no_food_trade" / "computer_readable_combined.csv"
+    )
+    import pandas as pd
+
+    no_trade_table = pd.read_csv(NO_TRADE_CSV)
+    iso3 = "WOR"
+    for index, country_data in no_trade_table.iterrows():
+        country_code = country_data["iso3"]
+        if country_code == iso3:
+            break
     interpreted_results = scenario_runner.run_and_analyze_scenario(
         constants_for_params,
         time_consts_for_params,
@@ -613,6 +637,8 @@ def recalculate_plot_s1():
         create_pptx_with_all_countries=False,
         show_country_figures=False,
         figure_save_postfix="_world",
+        country_data=country_data,
+        save_all_results=False,
         country_name="world",
         country_iso3="WOR",
         title=title,
