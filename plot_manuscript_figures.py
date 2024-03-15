@@ -6,6 +6,7 @@ It is separate from the .yaml configured custom by-country plots in the scenario
 Created on Feb 05 2024
 @author: morgan
 """
+
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 from src.scenarios.run_scenario import ScenarioRunner
 from src.utilities.plotter import Plotter
