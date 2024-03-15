@@ -474,9 +474,9 @@ class Scenarios:
         )
 
         constants_for_params["ROTATION_IMPROVEMENTS"] = {}
-        constants_for_params["ROTATION_IMPROVEMENTS"]["POWER_LAW_IMPROVEMENT"] = (
-            country_data["power_law_improvement"]
-        )
+        constants_for_params["ROTATION_IMPROVEMENTS"][
+            "POWER_LAW_IMPROVEMENT"
+        ] = country_data["power_law_improvement"]
 
         # annual tons cattle beef production
         constants_for_params["TONS_BEEF_ANNUAL"] = country_data["beef"]
@@ -520,17 +520,15 @@ class Scenarios:
         ]
 
         # Milk yield in kg per milk-bearing animal per year
-        constants_for_params["MILK_YIELD_KG_PER_MILK_BEARING_ANIMAL_PER_YEAR"] = (
-            country_data["milk_yield_kg_per_milk_bearing_animal_per_year"]
-        )
+        constants_for_params[
+            "MILK_YIELD_KG_PER_MILK_BEARING_ANIMAL_PER_YEAR"
+        ] = country_data["milk_yield_kg_per_milk_bearing_animal_per_year"]
 
         # Meat yield in kg per animal
-        constants_for_params["KG_MEAT_PER_PIG"] = (
-            country_data["kg_meat_per_pig"]
-        )
-        constants_for_params["KG_MEAT_PER_CHICKEN"] = (
-            country_data["kg_meat_per_chicken"]
-        )
+        constants_for_params["KG_MEAT_PER_PIG"] = country_data["kg_meat_per_pig"]
+        constants_for_params["KG_MEAT_PER_CHICKEN"] = country_data[
+            "kg_meat_per_chicken"
+        ]
 
         self.SCALE_SET = True
         return constants_for_params
@@ -890,6 +888,7 @@ class Scenarios:
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = 10
         constants_for_params["MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_BIOFUEL"] = 100
         constants_for_params["MAX_METHANE_SCP_AS_PERCENT_KCALS_BIOFUEL"] = 100
+
         self.INTAKE_CONSTRAINTS_SET = True
         return constants_for_params
 
@@ -1523,9 +1522,9 @@ class Scenarios:
     def methane_scp(self, constants_for_params):
         # (one month delay built into industrial food numbers)
         constants_for_params["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = 2
-        constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = (
-            1  # default values from CS and SCP papers
-        )
+        constants_for_params[
+            "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
+        ] = 1  # default values from CS and SCP papers
 
         constants_for_params["ADD_METHANE_SCP"] = True
         return constants_for_params
@@ -1533,9 +1532,9 @@ class Scenarios:
     def cellulosic_sugar(self, constants_for_params):
         # (one month delay built into industrial food numbers)
         constants_for_params["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = 2
-        constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = (
-            1  # default values from CS and SCP papers
-        )
+        constants_for_params[
+            "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
+        ] = 1  # default values from CS and SCP papers
 
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = True
         return constants_for_params
@@ -1543,7 +1542,6 @@ class Scenarios:
     def get_all_resilient_foods_scenario(self, constants_for_params):
         self.scenario_description += "\nall resilient foods"
         assert not self.SCENARIO_SET
-
         constants_for_params = self.relocated_outdoor_crops(constants_for_params)
         constants_for_params = self.methane_scp(constants_for_params)
         constants_for_params = self.cellulosic_sugar(constants_for_params)
@@ -1554,12 +1552,20 @@ class Scenarios:
         return constants_for_params
 
     def get_all_resilient_foods_and_more_area_scenario(self, constants_for_params):
-        self.scenario_description += "\nall resilient foods"
+        self.scenario_description += "\nall resilient foods and more area"
         assert not self.SCENARIO_SET
+
+        print(
+            "WARNING: There is a known issue where a smaller % minimum needs met occurs"
+        )
+        print("         if methane scp and cellulosic sugar are included")
+        print("         in addition to relocated crops with increased area")
+        print("         in some scenarios, compared to no increased area.")
 
         constants_for_params = self.expanded_area_and_relocated_outdoor_crops(
             constants_for_params
         )
+
         constants_for_params = self.methane_scp(constants_for_params)
         constants_for_params = self.cellulosic_sugar(constants_for_params)
         constants_for_params = self.greenhouse(constants_for_params)

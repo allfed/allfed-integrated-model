@@ -1107,12 +1107,16 @@ class Plotter:
                 else:
                     add_xlabel = False
 
-                # constrain to only show up to the level of people fed in the scenario
-                ylim_constraint = (
-                    people_fed
-                    / 100
-                    * interpreter.constants["inputs"]["NUTRITION"]["KCALS_DAILY"]
-                )
+                CONSTRAIN_UP_TO_PERCENT_FED = True
+                if CONSTRAIN_UP_TO_PERCENT_FED:
+                    # constrain to only show up to the level of people fed in the scenario
+                    ylim_constraint = (
+                        people_fed
+                        / 100
+                        * interpreter.constants["inputs"]["NUTRITION"]["KCALS_DAILY"]
+                    )
+                else:
+                    ylim_constraint = 10000
 
                 ax, legend, pal = Plotter.helper_for_plotting_fig_2abcde(
                     ax,

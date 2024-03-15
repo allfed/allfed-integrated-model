@@ -58,7 +58,7 @@ def test_run_all_scenarios():
                 # Tell user which scenario is running
                 print_banner(f" RUNNING SCENARIO: {file} ")
                 # Run the scenario
-                run_scenarios_from_yaml.main(["False", "False", file_path])
+                run_scenarios_from_yaml.main(["False", "False", "False", file_path])
 
 
 if __name__ == "__main__":

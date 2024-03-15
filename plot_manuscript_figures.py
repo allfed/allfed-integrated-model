@@ -26,26 +26,26 @@ def print_usage():
     print(
         """
 Usage: python3 plot_paper_figures.py [action] [plot_numbers...]
-    
+
 Arguments:
     action          Either 'rerun' to recalculate plots or 'load' to load existing plots.
     plot_numbers    The specific plots to run or load. Allowed values are '1', '2', '3', 's1', or 'all'.
                     Specify multiple plots by listing them after the action argument.
                     Use 'all' to indicate all plots should be processed.
-                    
+
                     Figure 1 refers to "Caloric needs met, no international food trade, all countries"
-                    
-                    Figure 2 refers to "Caloric needs met over time, top 5 population countries, 
+
+                    Figure 2 refers to "Caloric needs met over time, top 5 population countries,
                         no food international food trade"
 
                     Figure 3 refers to "Needs met with continued international food trade"
-                    
+
                     Figure s1 refers to the first plot in the supplemental information, "Production in 2020"
-    
+
 Examples:
     python3 plot_paper_figures.py rerun 1 s1    Recalculate and plot figures 1 and s1.
     python3 plot_paper_figures.py load all      Load and plot all available figures.
-    
+
 Use '--help' to display this message.
 """
     )
@@ -395,7 +395,7 @@ def recalculate_plot_1():
     )
 
     # WORST CASE + SIMPLE_ADAPTATIONS + STORAGE + CULLING + ALL RESILIENT FOODS
-    seaweed_title = "Example Scenario\n + seaweed"
+    seaweed_title = "Example Scenario\n + Seaweed"
     this_simulation["scenario"] = "seaweed"
     seaweed = call_scenario_runner_and_set_options(
         this_simulation, seaweed_title  # , countries_list=["CHN"]
@@ -474,7 +474,7 @@ def recalculate_plot_2():
 
     this_simulation["cull"] = "do_eat_culled"
 
-    countries_list = ["CHN", "IND", "USA", "IDN", "PAK"]
+    countries_list = ["CHN", "IND", "USA", "BRA", "NGA"]
 
     example_scenario = call_scenario_runner_and_set_options(
         this_simulation,
@@ -499,8 +499,8 @@ def recalculate_plot_2():
         "China": "China",
         "India": "India",
         "United States of America": "USA",
-        "Indonesia": "Indonesia",
-        "Pakistan": "Pakistan",
+        "Brazil": "Brazil",
+        "Nigeria": "Nigeria",
     }
     list_by_country = []
 

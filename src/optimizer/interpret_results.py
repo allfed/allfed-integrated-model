@@ -409,6 +409,8 @@ class Interpreter:
             + self.milk
         )
 
+        self.to_humans_fed_sum = to_humans_fed_sum
+
         # Return the total amount of nutrients that can be fed to humans
         return to_humans_fed_sum
 
@@ -640,6 +642,23 @@ class Interpreter:
             + self.outdoor_crops_biofuels_kcals_equivalent
             + self.stored_food_biofuels_kcals_equivalent
         )
+
+        total_biofuels = (
+            self.cell_sugar_biofuels
+            + self.scp_biofuels
+            + self.seaweed_biofuels
+            + self.outdoor_crops_biofuels
+            + self.stored_food_biofuels
+        )
+
+        total_feed = (
+            self.cell_sugar_feed
+            + self.scp_feed
+            + self.seaweed_feed
+            + self.outdoor_crops_feed
+            + self.stored_food_feed
+        )
+        self.feed_and_biofuels_sum = total_feed + total_biofuels
 
     def sum_many_results_together(many_results, cap_at_100_percent):
         """

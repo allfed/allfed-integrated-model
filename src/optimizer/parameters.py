@@ -1118,6 +1118,7 @@ class Parameters:
             kcals_per_head_meat_dict=meat_and_dairy.kcals_per_head_meat_dict,
             constants_inputs=constants_inputs,
         )
+
         (
             max_feed_that_could_be_used_second_round,
             meat_dictionary_round2,  # if all feed needs were satisfied before feed shutoff
@@ -1209,7 +1210,6 @@ class Parameters:
         assert interpreted_results_round1.seaweed_feed_kcals_equivalent.all_equals_zero(
             rounding_decimals=6
         )
-        # print("missing assert")
         assert interpreted_results_round1.stored_food_feed_kcals_equivalent.all_equals_zero(
             rounding_decimals=6
         )
@@ -1570,6 +1570,9 @@ class Parameters:
             feed_sum_billion_kcals = (
                 interpreted_results_round2.feed_sum_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month()
             )
+            # this sometimes prevents optimization failures...
+            feed_sum_billion_kcals = feed_sum_billion_kcals * 0.999999999
+
             grasses_for_animals = meat_and_dairy.human_inedible_feed
             feed_meat_object_third_round = CalculateFeedAndMeat(
                 country_code=constants_inputs["COUNTRY_CODE"],
@@ -1596,7 +1599,6 @@ class Parameters:
             constants_out_round3,
             time_consts_round3,
         )
-
         INCREASE_FEED = True
         if INCREASE_FEED and interpreted_results_round1 is not None:
             # we are offsetting the increase in meat from round 3 by adding half that increase as increased biofuel,

@@ -69,7 +69,7 @@ class MeatAndDairy:
         self.KG_PER_SMALL_ANIMAL = 2.36
         self.KG_PER_MEDIUM_ANIMAL = 24.6
         self.KG_PER_LARGE_ANIMAL = 269.7
-        
+
         if "kg_meat_per_large_animal" in constants_for_params:
             self.KG_PER_LARGE_ANIMAL = constants_for_params["kg_meat_per_large_animal"]
 
@@ -116,7 +116,6 @@ class MeatAndDairy:
                 ratio_human_inedible_feed = constants_for_params[
                     "RATIO_GRASSES_YEAR" + str(1)
                 ]
-
             if (
                 i == 1
             ):  # the first year is only may through december (8 months including may)
@@ -142,7 +141,7 @@ class MeatAndDairy:
                         ]
                         * 12,
                     )
-            elif i == 10:  # the last year is extended to make up for missing data
+            elif i == n_years:  # the last year is extended to make up for missing data
                 self.human_inedible_feed_dry_caloric_tons_list = np.append(
                     self.human_inedible_feed_dry_caloric_tons_list,
                     [

@@ -394,7 +394,9 @@ class Optimizer:
             )
             print(model)
         # Solve the initial model
-        status = model.solve(pulp.PULP_CBC_CMD(gapRel=0.00001, msg=PRINT_PULP_MESSAGES_FLAG))
+        status = model.solve(
+            pulp.PULP_CBC_CMD(gapRel=0.00001, msg=PRINT_PULP_MESSAGES_FLAG)
+        )
 
         # Assert that the optimization was successful
         ASSERT_SUCCESSFUL_OPTIMIZATION_FLAG = True
@@ -789,6 +791,18 @@ class Optimizer:
             stored_food_change_biofuel = LpVariable(
                 f"Stored_Food_Biofuel_Change_{month}", lowBound=0
             )
+            methane_scp_change_feed = LpVariable(
+                f"Methane_Scp_Feed_Change_{month}", lowBound=0
+            )
+            methane_scp_change_biofuel = LpVariable(
+                f"Methane_Scp_Biofuel_Change_{month}", lowBound=0
+            )
+            cellulosic_sugar_change_feed = LpVariable(
+                f"Cellulosic_Sugar_Feed_Change_{month}", lowBound=0
+            )
+            cellulosic_sugar_change_biofuel = LpVariable(
+                f"Cellulosic_Sugar_Biofuel_Change_{month}", lowBound=0
+            )
 
             if consts_for_optimizer["ADD_MEAT"]:
                 model_smoothing += (
@@ -880,13 +894,53 @@ class Optimizer:
                     ),
                     f"Stored_Food_Biofuel_Decrease_{month}",
                 )
+                if consts_for_optimizer["ADD_METHANE_SCP"]:
+                    model_smoothing += (
+                        methane_scp_change_feed
+                        >= -(
+                            variables["methane_scp_feed"][month]
+                            - variables["methane_scp_feed"][month - 1]
+                        ),
+                        f"Methane_Scp_Feed_Decrease_{month}",
+                    )
+                    model_smoothing += (
+                        methane_scp_change_biofuel
+                        >= -(
+                            variables["methane_scp_biofuel"][month]
+                            - variables["methane_scp_biofuel"][month - 1]
+                        ),
+                        f"Methane_Scp_Biofuel_Decrease_{month}",
+                    )
+
+                if consts_for_optimizer["ADD_CELLULOSIC_SUGAR"]:
+                    model_smoothing += (
+                        cellulosic_sugar_change_feed
+                        >= -(
+                            variables["cellulosic_sugar_feed"][month]
+                            - variables["cellulosic_sugar_feed"][month - 1]
+                        ),
+                        f"Cell_Sugar_Feed_Decrease_{month}",
+                    )
+                    model_smoothing += (
+                        cellulosic_sugar_change_feed
+                        >= -(
+                            variables["cellulosic_sugar_biofuel"][month]
+                            - variables["cellulosic_sugar_biofuel"][month - 1]
+                        ),
+                        f"Cell_Sugar_Biofuel_Decrease_{month}",
+                    )
+
             # Add the absolute differences to the objective function
             smoothing_obj += PENALTY_COST * (
                 meat_change
                 + stored_food_change
                 + outdoor_crops_change
                 + outdoor_crops_change_feed
+                + methane_scp_change_feed
+                + cellulosic_sugar_change_feed
                 + outdoor_crops_change_biofuel
+                + methane_scp_change_biofuel
+                + cellulosic_sugar_change_biofuel
                 + stored_food_change_feed
                 + stored_food_change_biofuel
                 + seaweed_change
@@ -1167,9 +1221,7 @@ class Optimizer:
                                 max_fraction_of_consumption
                                 * (
                                     variables["consumed_kcals"][month]
-                                    * self.consts_for_optimizer[
-                                        "BILLION_KCALS_NEEDED"
-                                    ]
+                                    * self.consts_for_optimizer["BILLION_KCALS_NEEDED"]
                                     / 100
                                 )
                             )

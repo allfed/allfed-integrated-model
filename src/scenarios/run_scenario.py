@@ -62,27 +62,11 @@ class ScenarioRunner:
         to_humans_title="",
     ):
         NMONTHS = interpreted_results.constants["NMONTHS"]
-        total_biofuels = (
-            interpreted_results.cell_sugar_biofuels
-            + interpreted_results.scp_biofuels
-            + interpreted_results.seaweed_biofuels
-            + interpreted_results.outdoor_crops_biofuels
-            + interpreted_results.stored_food_biofuels
-        )
-
-        total_feed = (
-            interpreted_results.cell_sugar_feed
-            + interpreted_results.scp_feed
-            + interpreted_results.seaweed_feed
-            + interpreted_results.outdoor_crops_feed
-            + interpreted_results.stored_food_feed
-        )
-        feed_and_biofuels_sum = total_biofuels + total_feed
 
         if not np.isnan(interpreted_results.percent_people_fed):
             if not np.allclose(
                 np.zeros(NMONTHS),
-                feed_and_biofuels_sum.kcals,
+                interpreted_results.feed_and_biofuels_sum.kcals,
                 atol=0.1,
             ):  # no reason to display an empty plot
                 Plotter.plot_feed(
@@ -212,7 +196,13 @@ class ScenarioRunner:
         # looks like it's necessary to reduce the feed requirements by about 20kcals per month, in order
         # to successfully run the optimization in the second round (however, this is only seemingly necessary when
         # both culled meat is turned on and there's no storage between years?)
-
+        # print(
+        #     "interpreted_results_round2.feed_sum_kcals_equivalent + interpreted_results_round2.biofuels_sum_kcals_equivalent"
+        # )
+        # print(
+        #     interpreted_results_round2.feed_sum_kcals_equivalent
+        #     + interpreted_results_round2.biofuels_sum_kcals_equivalent
+        # )
         # Reduce each element by at most 20 kcals per person per day, ensuring results are not negative
         interpreted_results_round2.feed_sum_kcals_equivalent.kcals = np.clip(
             interpreted_results_round2.feed_sum_kcals_equivalent.kcals - 20,
@@ -392,7 +382,7 @@ class ScenarioRunner:
                 biofuels_demand, interpreted_results_round1, round=1
             )
 
-            DISPLAY_MEAT_PRODUCED_IF_NO_FEED_FLAG = False
+            DISPLAY_MEAT_PRODUCED_IF_NO_FEED_FLAG = True
             if DISPLAY_MEAT_PRODUCED_IF_NO_FEED_FLAG:
                 # because feed and biofuel are zero, feed and biofuels plot
                 # most likely to be skipped unless there's some issue
@@ -469,7 +459,7 @@ class ScenarioRunner:
                 else:
                     slaughter_title = "Max meat produced from second round calc (no restriction on feed before shutoff)"
 
-                DISPLAY_MEAT_PRODUCED_INCREASED_FEED_FLAG = False
+                DISPLAY_MEAT_PRODUCED_INCREASED_FEED_FLAG = True
                 if DISPLAY_MEAT_PRODUCED_INCREASED_FEED_FLAG:
                     self.display_results_of_optimizer_round(
                         interpreted_results_round2,
@@ -797,6 +787,12 @@ class ScenarioRunner:
         return unchanged_scenario_option_copy
 
     def set_depending_on_option(self, scenario_option, country_data=None):
+        PRINT_SCENARIO_OPTIONS = False
+        if PRINT_SCENARIO_OPTIONS:
+            import pprint
+
+            pprint.pprint("scenario_option")
+            pprint.pprint(scenario_option)
         assert "scale" in scenario_option.keys(), "You must specify 'scale'"
 
         assert "stored_food" in scenario_option.keys(), "You must specify 'stored_food'"
@@ -1314,7 +1310,7 @@ class ScenarioRunner:
             constants_for_params["RATIO_CROPS_YEAR10"] *= multiplier
             try:
                 constants_for_params["RATIO_CROPS_YEAR11"] *= multiplier
-            except:
+            except BaseException:
                 pass
 
         # apply fix multiplier to grass production
@@ -1333,7 +1329,7 @@ class ScenarioRunner:
             constants_for_params["RATIO_GRASSES_YEAR10"] *= multiplier
             try:
                 constants_for_params["RATIO_GRASSES_YEAR11"] *= multiplier
-            except:
+            except BaseException:
                 pass
 
         return constants_for_params, time_consts_for_params, scenario_loader

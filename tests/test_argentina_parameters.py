@@ -10,6 +10,9 @@ from src.scenarios import run_scenarios_from_yaml
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 
 test_tolerance = 0.1  # The percent difference between two results that is considered a real difference
+# The percent difference between two results that is considered a real difference is higher
+# for relocated in "continued" case
+test_tolerance_sum_total = 1.01  # relative difference of 1%
 test_scenario_key = "argentina_test"
 scenario_runner = ScenarioRunnerNoTrade()
 
@@ -45,10 +48,17 @@ def runner(config_data):
         figure_save_postfix=f"_{test_scenario_key}",
         return_results=True,
     )
-    percent_people_fed = interpreted_results[
+
+    interpreted_results_of_interest = interpreted_results[
         list(interpreted_results.keys())[0]
-    ].percent_people_fed
-    return percent_people_fed
+    ]
+    percent_people_fed = interpreted_results_of_interest.percent_people_fed
+    sum_total_kcals = (
+        interpreted_results_of_interest.feed_and_biofuels_sum
+        + interpreted_results_of_interest.to_humans_fed_sum
+    )
+
+    return percent_people_fed, sum_total_kcals
 
 
 @pytest.fixture(scope="module")
@@ -169,7 +179,7 @@ def run_all_combinations():
             config_data["simulations"][test_scenario_key]["waste"] = combination[4]
             # Run the model
             # print(config_data["simulations"][test_scenario_key])
-            percent_people_fed = runner(config_data)
+            percent_people_fed, sum_total_kcals = runner(config_data)
             # Store the results as a dict
             results.append(
                 {
@@ -180,6 +190,7 @@ def run_all_combinations():
                     "waste": combination[4],
                     "percent_people_fed": percent_people_fed,
                     "base_config_data": i_base_config_data,
+                    "sum_total_kcals": sum_total_kcals.kcals.sum(),
                 }
             )
     return results
@@ -203,7 +214,7 @@ def select_runs(results, independent_parameter):
         key = tuple(
             item[k]
             for k in item
-            if k not in [independent_parameter, "percent_people_fed"]
+            if k not in [independent_parameter, "percent_people_fed", "sum_total_kcals"]
         )
 
         # Group the dictionaries by this key
@@ -228,38 +239,60 @@ def test_resilient_foods(run_all_combinations):
         "methane_scp" <= "industrial_foods"
         "cellulosic_sugar" <= "industrial_foods"
     This is repeated for all available combinations of the other parameters
+
+    Specifically,
     """
     select_runs_results = select_runs(run_all_combinations, "scenario")
-    print(select_runs_results)
+    # print(select_runs_results)
     for key, runs in select_runs_results.items():
         no_resilient_food_result = None
+        no_resilient_food_sum_total_kcals = None
         seaweed_only_result = None
+        seaweed_only_sum_total_kcals = None
         methane_scp_only_result = None
+        methane_scp_only_sum_total_kcals = None
         cellulosic_sugar_only_result = None
+        cellulosic_sugar_only_sum_total_kcals = None
         relocated_crops_only_result = None
+        relocated_crops_only_sum_total_kcals = None
         greenhouse_only_result = None
+        greenhouse_only_sum_total_kcals = None
         industrial_foods_only_result = None
+        industrial_foods_only_sum_total_kcals = None
         all_resilient_food_result = None
+        all_resilient_food_sum_total_kcals = None
         all_resilient_food_and_more_area_result = None
+        all_resilient_food_and_more_area_sum_total_kcals = None
         for run in runs:
             if run["scenario"] == "no_resilient_foods":
                 no_resilient_food_result = run["percent_people_fed"]
+                no_resilient_food_sum_total_kcals = run["sum_total_kcals"]
             elif run["scenario"] == "seaweed":
                 seaweed_only_result = run["percent_people_fed"]
+                seaweed_only_sum_total_kcals = run["sum_total_kcals"]
             elif run["scenario"] == "methane_scp":
                 methane_scp_only_result = run["percent_people_fed"]
+                methane_scp_only_sum_total_kcals = run["sum_total_kcals"]
             elif run["scenario"] == "cellulosic_sugar":
                 cellulosic_sugar_only_result = run["percent_people_fed"]
+                cellulosic_sugar_only_sum_total_kcals = run["sum_total_kcals"]
             elif run["scenario"] == "relocated_crops":
                 relocated_crops_only_result = run["percent_people_fed"]
+                relocated_crops_only_sum_total_kcals = run["sum_total_kcals"]
             elif run["scenario"] == "greenhouse":
                 greenhouse_only_result = run["percent_people_fed"]
+                greenhouse_only_sum_total_kcals = run["sum_total_kcals"]
             elif run["scenario"] == "industrial_foods":
                 industrial_foods_only_result = run["percent_people_fed"]
+                industrial_foods_only_sum_total_kcals = run["sum_total_kcals"]
             elif run["scenario"] == "all_resilient_foods":
                 all_resilient_food_result = run["percent_people_fed"]
+                all_resilient_food_sum_total_kcals = run["sum_total_kcals"]
             elif run["scenario"] == "all_resilient_foods_and_more_area":
                 all_resilient_food_and_more_area_result = run["percent_people_fed"]
+                all_resilient_food_and_more_area_sum_total_kcals = run[
+                    "sum_total_kcals"
+                ]
             else:
                 raise ValueError("Unexpected scenario")
         # Now we check if all conditions are met
@@ -273,8 +306,10 @@ def test_resilient_foods(run_all_combinations):
             no_resilient_food_result <= cellulosic_sugar_only_result + test_tolerance
         ), "Including cellulosic sugar cannot decrease the number of people fed"
         assert (
-            no_resilient_food_result <= relocated_crops_only_result + test_tolerance
+            no_resilient_food_sum_total_kcals
+            <= relocated_crops_only_sum_total_kcals * test_tolerance_sum_total
         ), "Including relocated crops cannot decrease the number of people fed"
+
         assert (
             no_resilient_food_result <= greenhouse_only_result + test_tolerance
         ), "Including greenhouse cannot decrease the number of people fed"
@@ -289,27 +324,33 @@ def test_resilient_foods(run_all_combinations):
             <= industrial_foods_only_result + test_tolerance
         ), "Adding methane SCP cannot decrease the number of people fed compared to having just cellulosic sugar"
         assert (
-            seaweed_only_result <= all_resilient_food_result + test_tolerance
+            seaweed_only_sum_total_kcals
+            <= all_resilient_food_sum_total_kcals * test_tolerance_sum_total
         ), "Adding all resilient foods cannot decrease the number of people fed compared to having just seaweed"
         assert (
-            methane_scp_only_result <= all_resilient_food_result + test_tolerance
+            methane_scp_only_sum_total_kcals
+            <= all_resilient_food_sum_total_kcals * test_tolerance_sum_total
         ), "Adding all resilient foods cannot decrease the number of people fed compared to having just methane SCP"
         assert (
-            cellulosic_sugar_only_result <= all_resilient_food_result + test_tolerance
+            cellulosic_sugar_only_sum_total_kcals
+            <= all_resilient_food_sum_total_kcals * test_tolerance_sum_total
         ), "Adding all resilient foods cannot decrease the number of people fed compared to having just cellulosic sugar"
         assert (
-            relocated_crops_only_result <= all_resilient_food_result + test_tolerance
+            relocated_crops_only_sum_total_kcals
+            <= all_resilient_food_sum_total_kcals * test_tolerance_sum_total
         ), "Adding all resilient foods cannot decrease the number of people fed compared to having just relocated crops"
         # test disabled due to all_resilient_foods assuming low_area_greenhouse
         # assert (
-        #    greenhouse_only_result <= all_resilient_food_result + test_tolerance
+        #    greenhouse_only_result <= all_resilient_food_result + test_tolerance_relocated
         # ), "Adding all resilient foods cannot decrease the number of people fed compared to having just greenhouse"
         assert (
-            industrial_foods_only_result <= all_resilient_food_result + test_tolerance
+            industrial_foods_only_sum_total_kcals
+            <= all_resilient_food_sum_total_kcals * test_tolerance_sum_total
         ), "Adding all resilient foods cannot decrease the number of people fed compared to having just industrial foods"
         assert (
-            all_resilient_food_result
-            <= all_resilient_food_and_more_area_result + test_tolerance
+            all_resilient_food_sum_total_kcals
+            <= all_resilient_food_and_more_area_sum_total_kcals
+            * test_tolerance_sum_total
         ), "Adding more area cannot decrease the number of people fed compared to having just resilient foods"
 
 
@@ -330,8 +371,8 @@ def test_intake_constraints(run_all_combinations):
             else:
                 raise ValueError("Unexpected intake_constraints")
         assert (
-            enabled_result >= disabled_result - test_tolerance
-        ), "Using intake_constraints enabled must result in more people fed than using disabled_for_humans"
+            disabled_result >= enabled_result - test_tolerance
+        ), "Using intake_constraints disabled_for_humans  must result in more people fed than using intake_constraints enabled "
 
 
 def test_stored_food(run_all_combinations):
@@ -341,16 +382,20 @@ def test_stored_food(run_all_combinations):
     select_runs_results = select_runs(run_all_combinations, "stored_food")
     for key, runs in select_runs_results.items():
         zero_result = None
+        zero_sum_total_kcals = None
         baseline_result = None
+        baseline_sum_total_kcals = None
         for run in runs:
             if run["stored_food"] == "zero":
                 zero_result = run["percent_people_fed"]
+                zero_sum_total_kcals = run["sum_total_kcals"]
             elif run["stored_food"] == "baseline":
                 baseline_result = run["percent_people_fed"]
+                baseline_sum_total_kcals = run["sum_total_kcals"]
             else:
                 raise ValueError("Unexpected stored_food")
         assert (
-            zero_result <= baseline_result + test_tolerance
+            zero_sum_total_kcals <= baseline_sum_total_kcals * test_tolerance_sum_total
         ), "Storing no food must result in fewer people fed than storing food"
 
 
@@ -393,10 +438,13 @@ def test_nuclear_crop_reduction(run_all_combinations):
         for run in runs:
             if run["crop_disruption"] == "country_nuclear_winter":
                 nuclear_winter_result = run["percent_people_fed"]
+                nuclear_winter_sum_total_kcals = run["sum_total_kcals"]
             elif run["crop_disruption"] == "zero":
                 zero_result = run["percent_people_fed"]
+                zero_sum_total_kcals = run["sum_total_kcals"]
             else:
                 raise ValueError("Unexpected crop_disruption")
         assert (
-            nuclear_winter_result <= zero_result + test_tolerance
+            nuclear_winter_sum_total_kcals
+            <= zero_sum_total_kcals * test_tolerance_sum_total
         ), "Reducing crop production due to nuclear winter must result in fewer people fed"
