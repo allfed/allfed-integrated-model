@@ -17,6 +17,37 @@ test_scenario_key = "argentina_test"
 scenario_runner = ScenarioRunnerNoTrade()
 
 
+def assert_fewer_people_fed_or_less_overall_food(
+    result_smaller,
+    result_sum_total_smaller,
+    result_bigger,
+    result_sum_total_bigger,
+    assert_message,
+):
+    """
+    There is a problem: the INCREASE_FEED boolean in parameters sometimes guesses wrong about the amount of meat
+    obtained, and over-adjusts feed. So in theory, this test may occasionally fail. But so far so good.
+    If it does fail, try setting INCREASE_FEED to false.
+
+    BUG: Also, there's a minor bug in the second round optimization (to_animals): it seems to refuse to include SCP and
+    seaweed and cellulosic sugar in the feed for animals in that round, yet the third round has no such problem.
+    As a result, the second round, where feed is allocated, does not allocate sufficient feed. And when the third round
+    is run, suddenly there's more feed and fewer people fed. So when we add seaweed, cs, or methane scp to the scenario
+    sometimes this actually reduces people fed. It's also the case when we relocate crops and seaweed, cs, or scp are
+    enabled.
+    """
+    if result_smaller <= 100 or result_bigger <= 100:
+        # less than 100% fed! must be fewer people fed in the smaller scenario
+        assert result_smaller <= result_bigger + test_tolerance, f"{assert_message}"
+    else:
+        # in case >= 100%, sometimes more food just goes to animal feed. And the result is smaller to humans,
+        # but still no-one starves.
+        assert (
+            result_sum_total_smaller
+            <= result_sum_total_bigger * test_tolerance_sum_total
+        ), f"{assert_message}"
+
+
 def runner(config_data):
     """
     Runs a single-country no-trade scenario, and returns the percent of people fed
@@ -305,10 +336,14 @@ def test_resilient_foods(run_all_combinations):
         assert (
             no_resilient_food_result <= cellulosic_sugar_only_result + test_tolerance
         ), "Including cellulosic sugar cannot decrease the number of people fed"
-        assert (
-            no_resilient_food_sum_total_kcals
-            <= relocated_crops_only_sum_total_kcals * test_tolerance_sum_total
-        ), "Including relocated crops cannot decrease the number of people fed"
+
+        assert_fewer_people_fed_or_less_overall_food(
+            result_smaller=no_resilient_food_result,
+            result_sum_total_smaller=no_resilient_food_sum_total_kcals,
+            result_bigger=relocated_crops_only_result,
+            result_sum_total_bigger=relocated_crops_only_sum_total_kcals,
+            assert_message="Including relocated crops cannot decrease the number of people fed",
+        )
 
         assert (
             no_resilient_food_result <= greenhouse_only_result + test_tolerance
@@ -323,35 +358,49 @@ def test_resilient_foods(run_all_combinations):
             cellulosic_sugar_only_result
             <= industrial_foods_only_result + test_tolerance
         ), "Adding methane SCP cannot decrease the number of people fed compared to having just cellulosic sugar"
-        assert (
-            seaweed_only_sum_total_kcals
-            <= all_resilient_food_sum_total_kcals * test_tolerance_sum_total
-        ), "Adding all resilient foods cannot decrease the number of people fed compared to having just seaweed"
-        assert (
-            methane_scp_only_sum_total_kcals
-            <= all_resilient_food_sum_total_kcals * test_tolerance_sum_total
-        ), "Adding all resilient foods cannot decrease the number of people fed compared to having just methane SCP"
-        assert (
-            cellulosic_sugar_only_sum_total_kcals
-            <= all_resilient_food_sum_total_kcals * test_tolerance_sum_total
-        ), "Adding all resilient foods cannot decrease the number of people fed compared to having just cellulosic sugar"
-        assert (
-            relocated_crops_only_sum_total_kcals
-            <= all_resilient_food_sum_total_kcals * test_tolerance_sum_total
-        ), "Adding all resilient foods cannot decrease the number of people fed compared to having just relocated crops"
-        # test disabled due to all_resilient_foods assuming low_area_greenhouse
+
+        assert_fewer_people_fed_or_less_overall_food(
+            result_smaller=seaweed_only_result,
+            result_sum_total_smaller=seaweed_only_sum_total_kcals,
+            result_bigger=all_resilient_food_result,
+            result_sum_total_bigger=all_resilient_food_sum_total_kcals,
+            assert_message="Adding all resilient foods cannot decrease the number of people fed compared to having just seaweed",
+        )
+
+        assert_fewer_people_fed_or_less_overall_food(
+            result_smaller=methane_scp_only_result,
+            result_sum_total_smaller=methane_scp_only_sum_total_kcals,
+            result_bigger=all_resilient_food_result,
+            result_sum_total_bigger=all_resilient_food_sum_total_kcals,
+            assert_message="Adding all resilient foods cannot decrease the number of people fed compared to having just methane scp",
+        )
+
+        assert_fewer_people_fed_or_less_overall_food(
+            result_smaller=relocated_crops_only_result,
+            result_sum_total_smaller=relocated_crops_only_sum_total_kcals,
+            result_bigger=all_resilient_food_result,
+            result_sum_total_bigger=all_resilient_food_sum_total_kcals,
+            assert_message="Adding all resilient foods cannot decrease the number of people fed compared to having just relocated crops",
+        )
+
         # assert (
         #    greenhouse_only_result <= all_resilient_food_result + test_tolerance_relocated
         # ), "Adding all resilient foods cannot decrease the number of people fed compared to having just greenhouse"
-        assert (
-            industrial_foods_only_sum_total_kcals
-            <= all_resilient_food_sum_total_kcals * test_tolerance_sum_total
-        ), "Adding all resilient foods cannot decrease the number of people fed compared to having just industrial foods"
-        assert (
-            all_resilient_food_sum_total_kcals
-            <= all_resilient_food_and_more_area_sum_total_kcals
-            * test_tolerance_sum_total
-        ), "Adding more area cannot decrease the number of people fed compared to having just resilient foods"
+
+        assert_fewer_people_fed_or_less_overall_food(
+            result_smaller=industrial_foods_only_result,
+            result_sum_total_smaller=industrial_foods_only_sum_total_kcals,
+            result_bigger=all_resilient_food_result,
+            result_sum_total_bigger=all_resilient_food_sum_total_kcals,
+            assert_message="Adding all resilient foods cannot decrease the number of people fed compared to having just industrial foods",
+        )
+        assert_fewer_people_fed_or_less_overall_food(
+            result_smaller=all_resilient_food_result,
+            result_sum_total_smaller=all_resilient_food_sum_total_kcals,
+            result_bigger=all_resilient_food_and_more_area_result,
+            result_sum_total_bigger=all_resilient_food_and_more_area_sum_total_kcals,
+            assert_message="Adding more area cannot decrease the number of people fed compared to having just resilient foods",
+        )
 
 
 def test_intake_constraints(run_all_combinations):
@@ -406,23 +455,37 @@ def test_waste(run_all_combinations):
     select_runs_results = select_runs(run_all_combinations, "waste")
     for key, runs in select_runs_results.items():
         baseline_result = None
+        baseline_total_kcals = None
         doubled_prices_result = None
+        doubled_prices_total_kcals = None
         tripled_prices_result = None
+        tripled_prices_total_kcals = None
         for run in runs:
             if run["waste"] == "baseline_in_country":
+                baseline_total_kcals = run["sum_total_kcals"]
                 baseline_result = run["percent_people_fed"]
             elif run["waste"] == "doubled_prices_in_country":
-                doubled_prices_result = run["percent_people_fed"]
+                doubled_total_kcals = run["sum_total_kcals"]
+                doubled_result = run["percent_people_fed"]
             elif run["waste"] == "tripled_prices_in_country":
-                tripled_prices_result = run["percent_people_fed"]
+                tripled_total_kcals = run["sum_total_kcals"]
+                tripled_result = run["percent_people_fed"]
             else:
                 raise ValueError("Unexpected waste")
-        assert (
-            baseline_result <= doubled_prices_result + test_tolerance
-        ), "Wasting more food must result in fewer people fed"
-        assert (
-            doubled_prices_result <= tripled_prices_result + test_tolerance
-        ), "Wasting more food must result in fewer people fed"
+        assert_fewer_people_fed_or_less_overall_food(
+            result_smaller=baseline_result,
+            result_sum_total_smaller=baseline_total_kcals,
+            result_bigger=doubled_result,
+            result_sum_total_bigger=doubled_total_kcals,
+            assert_message="Wasting more food must result in fewer people fed",
+        )
+        assert_fewer_people_fed_or_less_overall_food(
+            result_smaller=doubled_result,
+            result_sum_total_smaller=doubled_total_kcals,
+            result_bigger=tripled_result,
+            result_sum_total_bigger=tripled_total_kcals,
+            assert_message="Wasting more food must result in fewer people fed",
+        )
 
 
 def test_nuclear_crop_reduction(run_all_combinations):
@@ -444,7 +507,10 @@ def test_nuclear_crop_reduction(run_all_combinations):
                 zero_sum_total_kcals = run["sum_total_kcals"]
             else:
                 raise ValueError("Unexpected crop_disruption")
-        assert (
-            nuclear_winter_sum_total_kcals
-            <= zero_sum_total_kcals * test_tolerance_sum_total
-        ), "Reducing crop production due to nuclear winter must result in fewer people fed"
+        assert_fewer_people_fed_or_less_overall_food(
+            result_smaller=nuclear_winter_result,
+            result_sum_total_smaller=nuclear_winter_sum_total_kcals,
+            result_bigger=zero_result,
+            result_sum_total_bigger=zero_sum_total_kcals,
+            assert_message="Reducing crop production due to nuclear winter must result in fewer people fed",
+        )

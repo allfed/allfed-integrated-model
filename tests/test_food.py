@@ -5,14 +5,17 @@ import pytest
 import numpy as np
 from src.food_system.food import Food
 
-Food.conversions.set_nutrition_requirements(
-    kcals_daily=100,
-    fat_daily=10,
-    protein_daily=10,
-    include_fat=True,
-    include_protein=True,
-    population=1000,
-)
+
+@pytest.fixture(scope="module", autouse=True)
+def set_nutrition_requirements():
+    Food.conversions.set_nutrition_requirements(
+        kcals_daily=100,
+        fat_daily=10,
+        protein_daily=10,
+        include_fat=True,
+        include_protein=True,
+        population=1000,
+    )
 
 
 def create_food_monthly(kcals=[1, 2, 1], fat=[1, 2, 2], protein=[1, 2, 2]):
