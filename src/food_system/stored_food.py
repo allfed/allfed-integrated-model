@@ -35,8 +35,13 @@ class StoredFood:
 
         # (nuclear event in mid-may)
 
-        self.buffer_ratio = constants_for_params["BUFFER_RATIO"]
-        self.CROP_WASTE = constants_for_params["WASTE"]["CROPS"]
+        self.end_simulation_ratio = constants_for_params["END_SIMULATION_STOCKS_RATIO"]
+        self.percent_stored_food_to_use = constants_for_params[
+            "PERCENT_STORED_FOOD_TO_USE"
+        ]
+        self.CROP_WASTE_DISTRIBUTION = constants_for_params["WASTE_DISTRIBUTION"][
+            "CROPS"
+        ]
 
         self.SF_FRACTION_FAT = outdoor_crops.OG_FRACTION_FAT
         self.SF_FRACTION_PROTEIN = outdoor_crops.OG_FRACTION_PROTEIN
@@ -58,7 +63,7 @@ class StoredFood:
 
         Assumptions:
 
-        buffer_ratio (float): the percent of the typical buffered stored food
+        end_simulation_ratio (float): the percent of the typical stored food
         to keep at the end of the simulation.
 
         The stocks listed are tabulated at the end of the month.
@@ -73,10 +78,11 @@ class StoredFood:
         """
 
         starting_month_index = starting_month - 1  # convert to zero indexed
-        buffer_ratio = self.buffer_ratio
+        end_simulation_ratio = self.end_simulation_ratio
+        fraction_stored_food_to_use = self.percent_stored_food_to_use / 100
         end_of_month_stocks = self.end_of_month_stocks
 
-        # lowest stock levels in baseline scenario (if buffer_ratio == 1)
+        # lowest stock levels in baseline scenario (if end_simulation_ratio == 1)
         lowest_stocks = min(end_of_month_stocks)
 
         # month before simulation start
@@ -84,9 +90,15 @@ class StoredFood:
 
         stocks_at_start_of_month = end_of_month_stocks[month_before_index]
 
+        # BUG! TODO: Make it so that the stored food is able to go negative
+        # even if we end up with the right amount at the end of the simulation
+        # (end_simulation_ratio is currently reducing *initial* stored food, but this is not accurate and
+        # overestimates starvation)
+
         # stores at the start of the simulation
         self.TONS_DRY_CALORIC_EQIVALENT_SF = (
-            stocks_at_start_of_month - lowest_stocks * buffer_ratio
+            stocks_at_start_of_month * fraction_stored_food_to_use
+            - lowest_stocks * end_simulation_ratio
         )
 
         # convert to billion kcals
@@ -94,16 +106,16 @@ class StoredFood:
 
         # convert the stored food to billion kcals
         self.initial_available = Food(
-            kcals=self.INITIAL_SF_KCALS * (1 - self.CROP_WASTE / 100),
+            kcals=self.INITIAL_SF_KCALS * (1 - self.CROP_WASTE_DISTRIBUTION / 100),
             fat=(
                 self.INITIAL_SF_KCALS
                 * self.SF_FRACTION_FAT
-                * (1 - self.CROP_WASTE / 100)
+                * (1 - self.CROP_WASTE_DISTRIBUTION / 100)
             ),
             protein=(
                 self.INITIAL_SF_KCALS
                 * self.SF_FRACTION_PROTEIN
-                * (1 - self.CROP_WASTE / 100)
+                * (1 - self.CROP_WASTE_DISTRIBUTION / 100)
             ),
             kcals_units="billion kcals",
             fat_units="thousand tons",

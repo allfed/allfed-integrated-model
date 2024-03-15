@@ -1,0 +1,24 @@
+settings:
+  countries: USA
+  NMONTHS: 120
+simulations:  
+  # Baseline Model By Country (converted from the provided code)
+  baseline_model_by_country:
+    title: Baseline Model by Country
+    scale: country
+    seasonality: country
+    grasses: baseline
+    crop_disruption: zero
+    scenario: no_resilient_foods
+    fish: baseline
+    waste: baseline_in_country
+    nutrition: baseline
+    intake_constraints: enabled
+    buffer: baseline
+    shutoff: continued
+    cull: do_eat_culled
+    fat: not_required
+    protein: not_required
+    meat_strategy: baseline_breeding
+    stored_food: baseline
+    end_simulation_stocks_ratio: baseline

@@ -7,7 +7,6 @@
 """
 
 import numpy as np
-from src.food_system.food import Food
 
 
 class Seaweed:
@@ -27,20 +26,20 @@ class Seaweed:
             MAXIMUM_SEAWEED_AREA_GLOBAL
             * constants_for_params["SEAWEED_MAX_AREA_FRACTION"]
         )
-
-        self.MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS = constants_for_params[
-            "MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"
-        ]
-
-        self.MAX_SEAWEED_HUMANS_CAN_CONSUME_MONTHLY = (
-            self.MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS
-            / 100
-            * (constants_for_params["POP"] * Food.conversions.kcals_monthly / 1e9)
-        )
-
-        self.MAX_SEAWEED_AS_PERCENT_KCALS_FEED = constants_for_params[
-            "MAX_SEAWEED_AS_PERCENT_KCALS_FEED"
-        ]
+        if constants_for_params["ADD_SEAWEED"]:
+            self.MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS = constants_for_params[
+                "MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"
+            ]
+            self.MAX_SEAWEED_AS_PERCENT_KCALS_FEED = constants_for_params[
+                "MAX_SEAWEED_AS_PERCENT_KCALS_FEED"
+            ]
+            self.MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL = constants_for_params[
+                "MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"
+            ]
+        else:
+            self.MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS = 0
+            self.MAX_SEAWEED_AS_PERCENT_KCALS_FEED = 0
+            self.MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL = 0
 
         # 1000s of tons wet global (trading blocs multiply this by some fraction)
         INITIAL_SEAWEED_GLOBAL = 1
@@ -78,7 +77,10 @@ class Seaweed:
             * constants_for_params["SEAWEED_NEW_AREA_FRACTION"]
         )
 
-        self.SEAWEED_WASTE = constants_for_params["WASTE"]["SEAWEED"]
+        self.SEAWEED_WASTE_DISTRIBUTION = constants_for_params["WASTE_DISTRIBUTION"][
+            "SEAWEED"
+        ]
+        self.SEAWEED_WASTE_RETAIL = constants_for_params["WASTE_RETAIL"]
 
         # seaweed billion kcals per 1000 tons wet
         # convert 1000 tons to kg
@@ -90,20 +92,20 @@ class Seaweed:
             * self.KCALS_PER_KG
             / 1e9
             * self.WET_TO_DRY_MASS_CONVERSION
-            * (1 - self.SEAWEED_WASTE / 100)
+            * (1 - self.SEAWEED_WASTE_DISTRIBUTION / 100)
         )
         # seaweed fraction digestible protein per 1000 ton wet
         self.SEAWEED_PROTEIN = (
             self.MASS_FRACTION_PROTEIN_DRY
             * self.WET_TO_DRY_MASS_CONVERSION
-            * (1 - self.SEAWEED_WASTE / 100)
+            * (1 - self.SEAWEED_WASTE_DISTRIBUTION / 100)
         )
 
         # seaweed fraction fat per 1000 tons wet
         self.SEAWEED_FAT = (
             self.MASS_FRACTION_FAT_DRY
             * self.WET_TO_DRY_MASS_CONVERSION
-            * (1 - self.SEAWEED_WASTE / 100)
+            * (1 - self.SEAWEED_WASTE_DISTRIBUTION / 100)
         )
 
     def get_growth_rates(self, constants_for_params):
@@ -131,8 +133,8 @@ class Seaweed:
             self.SEAWEED_NEW_AREA_PER_MONTH_GLOBAL
             * constants_for_params["SEAWEED_NEW_AREA_FRACTION"]
         )
-        PRINT_DIFFERENCE_IN_SEAWEED_AREA = False
-        if PRINT_DIFFERENCE_IN_SEAWEED_AREA:
+        PRINT_DIFFERENCE_IN_SEAWEED_AREA_FLAG = False
+        if PRINT_DIFFERENCE_IN_SEAWEED_AREA_FLAG:
             print("MAX SEAWEED AREA Was: ")
             print(self.MAXIMUM_SEAWEED_AREA / (200 / 30.4))
             print("now is")
@@ -161,8 +163,6 @@ class Seaweed:
 
         # reduce list to length of months of simulation
         built_area = built_area_long[: self.NMONTHS]
-        # print("built_area")
-        # print(built_area)
         self.built_area = built_area
 
         return built_area

@@ -5,14 +5,17 @@ import pytest
 import numpy as np
 from src.food_system.food import Food
 
-Food.conversions.set_nutrition_requirements(
-    kcals_daily=100,
-    fat_daily=10,
-    protein_daily=10,
-    include_fat=True,
-    include_protein=True,
-    population=1000,
-)
+
+@pytest.fixture(scope="module", autouse=True)
+def set_nutrition_requirements():
+    Food.conversions.set_nutrition_requirements(
+        kcals_daily=100,
+        fat_daily=10,
+        protein_daily=10,
+        include_fat=True,
+        include_protein=True,
+        population=1000,
+    )
 
 
 def create_food_monthly(kcals=[1, 2, 1], fat=[1, 2, 2], protein=[1, 2, 2]):
@@ -141,6 +144,54 @@ def test_make_sure_not_nan_scalar_food():
     food1 = Food(kcals=1, fat=1, protein=np.nan)
     with pytest.raises(AssertionError):
         food1.make_sure_not_nan()
+
+
+def test_min_elementwise():
+    """
+    Tests if the min_elementwise function produces the correct result
+    """
+    food1 = create_food_monthly(kcals=[10, 20, 30], fat=[5, 15, 25], protein=[1, 2, 3])
+    food2 = create_food_monthly(kcals=[5, 25, 15], fat=[10, 5, 20], protein=[2, 1, 4])
+
+    # Get the minimum Food object using min_elementwise method
+    min_food = Food.min_elementwise(food1, food2)
+
+    # Check the values of the resulting Food object
+    assert np.array_equal(min_food.kcals, [5, 20, 15]), "Minimum kcals not as expected"
+    assert np.array_equal(min_food.fat, [5, 5, 20]), "Minimum fat not as expected"
+    assert np.array_equal(
+        min_food.protein, [1, 1, 3]
+    ), "Minimum protein not as expected"
+
+    # Check the units of the resulting Food object
+    assert min_food.kcals_units == "kcals each month", "Kcals units mismatch"
+    assert min_food.fat_units == "kcals each month", "Fat units mismatch"
+    assert min_food.protein_units == "kcals each month", "Protein units mismatch"
+
+
+def test_get_remaining_food_needed_and_amount_used():
+    demand = Food([2000, 2500], [50, 50], [100, 120], "kcal", "g", "g")
+    resource = Food([1500, 2700], [40, 50], [90, 110], "kcal", "g", "g")
+    max_fraction = 0.9
+
+    (
+        remaining,
+        demand_satisfied_by_resource,
+    ) = Food.get_remaining_food_needed_and_amount_used(demand, resource, max_fraction)
+
+    expected_satisfied = Food(
+        [1500, 0.9 * 2500], [40, 0.9 * 50], [90, 0.9 * 120], "kcal", "g", "g"
+    )
+    expected_remaining = Food(
+        [500, 0.1 * 2500], [10, 0.1 * 50], [10, 0.1 * 120], "kcal", "g", "g"
+    )
+
+    assert (
+        demand_satisfied_by_resource == expected_satisfied
+    ), f"Satisfied demand: \nExpected: \n{expected_satisfied}\nBut got: \n{demand_satisfied_by_resource}\n"
+    assert (
+        remaining == expected_remaining
+    ), f"Remaining resource: \nExpected: \n{expected_remaining}\nBut got: \n{remaining}\n"
 
 
 def test_make_sure_not_nan_monthly_food():
@@ -1161,3 +1212,67 @@ def test_negative_values_to_zero_monthly_food():
     assert food.kcals_units == "kcals each month"
     assert food.protein_units == "kcals each month"
     assert food.fat_units == "kcals each month"
+
+
+def test_abs_values():
+    """
+    Tests if the abs_values method produces a Food object with absolute values of all nutrients.
+    """
+    food = create_food_monthly(
+        kcals=[-10, 20, -30], fat=[-5, -15, 25], protein=[-1, 2, -3]
+    )
+
+    # Get the Food object with absolute values using abs_values method
+    abs_food = food.get_abs_values()
+
+    # Check the values of the resulting Food object
+    assert np.array_equal(
+        abs_food.kcals, [10, 20, 30]
+    ), "Absolute kcals not as expected"
+    assert np.array_equal(abs_food.fat, [5, 15, 25]), "Absolute fat not as expected"
+    assert np.array_equal(
+        abs_food.protein, [1, 2, 3]
+    ), "Absolute protein not as expected"
+
+    # Check the units of the resulting Food object
+    assert abs_food.kcals_units == "kcals each month", "Kcals units mismatch"
+    assert abs_food.fat_units == "kcals each month", "Fat units mismatch"
+    assert abs_food.protein_units == "kcals each month", "Protein units mismatch"
+
+
+def test_shift():
+    """
+    Tests if the shift method works as expected
+    """
+    # Create a sample Food object
+    food = create_food_monthly(
+        kcals=[100, 200, 300], fat=[50, 100, 150], protein=[10, 20, 30]
+    )
+
+    # Shift by 1 month
+    shifted_food = food.shift(1)
+
+    # Expected shifted values
+    expected_kcals = [0, 100, 200]
+    expected_fat = [0, 50, 100]
+    expected_protein = [0, 10, 20]
+
+    # Check the shifted values
+    assert np.array_equal(
+        shifted_food.kcals, expected_kcals
+    ), "Shifted kcals not as expected"
+    assert np.array_equal(shifted_food.fat, expected_fat), "Shifted fat not as expected"
+    assert np.array_equal(
+        shifted_food.protein, expected_protein
+    ), "Shifted protein not as expected"
+
+    # Check the units of the shifted Food object
+    assert (
+        shifted_food.kcals_units == "kcals each month"
+    ), "Kcals units mismatch after shifting"
+    assert (
+        shifted_food.fat_units == "kcals each month"
+    ), "Fat units mismatch after shifting"
+    assert (
+        shifted_food.protein_units == "kcals each month"
+    ), "Protein units mismatch after shifting"

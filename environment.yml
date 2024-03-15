@@ -9,11 +9,10 @@ dependencies:
   - pytest
   - geopandas
   - seaborn
-  - yaml
+  - pyyaml 
   - ipykernel
   - flake8
-- pip:
-  - gitpython
-  - pulp
-
-prefix: /home/dmrivers/Apps/miniconda3/envs/intmodel
+  - plotly # consider removing, but required for animal populations currently
+  - pip:
+    - gitpython
+    - pulp

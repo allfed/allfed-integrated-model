@@ -2,7 +2,7 @@
 
 
 ## MeatAndDairy
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L12)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L14)
 ```python 
 MeatAndDairy(
    constants_for_params
@@ -16,141 +16,101 @@ MeatAndDairy(
 
 
 ### .calculate_meat_nutrition
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L112)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L233)
 ```python
 .calculate_meat_nutrition()
 ```
 
+---
+Calculates the nutritional values of meat products based on animal ratios and
+nutritional ratios of small, medium, and large animals.
+
+
+**Args**
+
+* **self**  : instance of the class
+
+
+**Returns**
+
+None
 
 ### .get_meat_nutrition
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L157)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L293)
 ```python
 .get_meat_nutrition()
 ```
 
+---
+Returns a tuple containing nutritional information for different sizes of animals.
 
-### .calculate_meat_limits
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L169)
+
+**Returns**
+
+* **tuple**  : A tuple containing the following nutritional information:
+    - KG_PER_SMALL_ANIMAL (float): The weight of meat in kilograms for a small animal.
+    - KG_PER_MEDIUM_ANIMAL (float): The weight of meat in kilograms for a medium animal.
+    - KG_PER_LARGE_ANIMAL (float): The weight of meat in kilograms for a large animal.
+    - LARGE_ANIMAL_KCALS_PER_KG (float): The number of kilocalories per kilogram of meat for a large animal.
+    - LARGE_ANIMAL_FAT_RATIO (float): The ratio of fat to meat for a large animal.
+    - LARGE_ANIMAL_PROTEIN_RATIO (float): The ratio of protein to meat for a large animal.
+    - MEDIUM_ANIMAL_KCALS_PER_KG (float): The number of kilocalories per kilogram of meat for a medium
+        animal.
+    - SMALL_ANIMAL_KCALS_PER_KG (float): The number of kilocalories per kilogram of meat for a small animal.
+
+
+### .get_milk_produced_postwaste
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L324)
 ```python
-.calculate_meat_limits(
-   MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE, culled_meat_initial
+.get_milk_produced_postwaste(
+   milk_produced_prewaste
 )
 ```
 
 ---
-calculate the baseline levels of meat production, indicating slaughter capacity
+Calculates the amount of grazing milk produced post-waste, given the amount of grazing milk produced pre-waste.
 
-There's no limit on the actual amount eaten, but the amount produced and
-then preserved after culling is assumed to be some multiple of current slaughter
-capacity
 
-This just means that the limit each month on the amount that could be eaten is
-the sum of the max estimated slaughter capacity each month
+**Args**
 
-### .calculate_continued_ratios_meat_dairy_grazing
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L205)
+* **milk_produced_prewaste** (list) : A list of the amount of grazing milk produced pre-waste.
+
+
+**Returns**
+
+* **tuple**  : A tuple containing the amount of grazing milk produced post-waste in billions of kcals, thousands
+of tons of fat, and thousands of tons of protein.
+
+### .get_max_slaughter_monthly_after_distribution_waste
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L372)
 ```python
-.calculate_continued_ratios_meat_dairy_grazing(
-   constants_for_params
-)
-```
-
-
-### .calculate_continued_ratios_meat_dairy_grain
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L257)
-```python
-.calculate_continued_ratios_meat_dairy_grain(
-   fed_to_animals_prewaste, outdoor_crops
-)
-```
-
-
-### .calculate_meat_and_dairy_from_grain
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L324)
-```python
-.calculate_meat_and_dairy_from_grain(
-   fed_to_animals_prewaste
-)
-```
-
-
-### .calculate_meat_milk_from_human_inedible_feed
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L419)
-```python
-.calculate_meat_milk_from_human_inedible_feed(
-   constants_for_params
-)
-```
-
-
-### .get_milk_from_human_edible_feed
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L451)
-```python
-.get_milk_from_human_edible_feed(
-   constants_for_params
-)
-```
-
-
-### .get_meat_from_human_edible_feed
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L485)
-```python
-.get_meat_from_human_edible_feed()
-```
-
-
-### .get_grazing_milk_produced_postwaste
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L650)
-```python
-.get_grazing_milk_produced_postwaste(
-   grazing_milk_produced_prewaste
-)
-```
-
-
-### .get_cattle_grazing_maintained
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L678)
-```python
-.get_cattle_grazing_maintained()
-```
-
-
-### .get_max_slaughter_monthly
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L728)
-```python
-.get_max_slaughter_monthly(
-   small_animals_culled, medium_animals_culled, large_animals_culled
+.get_max_slaughter_monthly_after_distribution_waste(
+   constants_inputs, chickens_culled, pigs_culled,
+   small_animals_nonchicken_culled, medium_animals_nonpig_culled,
+   large_animals_culled
 )
 ```
 
 ---
 Get the maximum number of animals that can be culled in a month and return the
-resulting array for max total calories consumed that month.
+resulting array for max total calories slaughtered that month.
 
-### .calculate_culled_meat
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L745)
+### .initialize_this_country_animal_kcals
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L420)
 ```python
-.calculate_culled_meat(
-   init_small_animals_culled, init_medium_animals_culled,
+.initialize_this_country_animal_kcals(
+   constants_inputs
+)
+```
+
+
+### .calculate_meat_after_distribution_waste
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L498)
+```python
+.calculate_meat_after_distribution_waste(
+   constants_inputs, init_chickens_culled, init_pigs_culled,
+   init_small_animals_nonchicken_culled, init_medium_animals_nonpigs_culled,
    init_large_animals_culled
-)
-```
-
-
-### .get_culled_meat_post_waste
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L823)
-```python
-.get_culled_meat_post_waste(
-   constants_for_params
-)
-```
-
-
-### .calculate_animals_culled
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/meat_and_dairy.py/#L832)
-```python
-.calculate_animals_culled(
-   constants_for_params
 )
 ```
 

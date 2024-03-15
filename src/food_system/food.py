@@ -216,16 +216,45 @@ class Food(UnitConversions):
         """
         super().__init__()
 
+        assert (
+            isinstance(kcals, float)
+            or isinstance(kcals, int)
+            or isinstance(kcals, list)
+            or isinstance(kcals, np.number)
+            or isinstance(kcals, np.ndarray)
+        ), (
+            "Type must be ndarray, list, float or int."
+            f" type(kcals) type(fat) type(protein): {type(kcals)} {type(fat)} {type(protein)}"
+        )
+        assert (
+            isinstance(fat, float)
+            or isinstance(fat, int)
+            or isinstance(fat, list)
+            or isinstance(fat, np.number)
+            or isinstance(fat, np.ndarray)
+        ), (
+            "Type must be ndarray, list, float or int."
+            f" type(kcals) type(fat) type(protein): {type(kcals)} {type(fat)} {type(protein)}"
+        )
+        assert (
+            isinstance(protein, float)
+            or isinstance(protein, int)
+            or isinstance(protein, list)
+            or isinstance(protein, np.number)
+            or isinstance(protein, np.ndarray)
+        ), (
+            "Type must be ndarray, list, float or int."
+            f" type(kcals) type(fat) type(protein): {type(kcals)} {type(fat)} {type(protein)}"
+        )
+
         self.kcals = kcals
         self.fat = fat
         self.protein = protein
-
         self.set_units(
             kcals_units,
             fat_units,
             protein_units,
         )
-
         if self.is_list_monthly():
             self.NMONTHS = len(self.kcals)
 
@@ -234,30 +263,37 @@ class Food(UnitConversions):
             #       as a default python list type and then get rid of all the casting to
             #       np arrays in the rest of the code
             self.kcals = np.array(self.kcals)
-
             # this is used to set a reasonable default if kcals are supplied but fat and
             # protein are not
             if "each month" not in self.kcals_units:
                 self.kcals_units = self.kcals_units + " each month"
-
             if isinstance(self.fat, int):
                 self.fat = np.zeros(len(self.kcals))
                 self.fat_units = self.fat_units + " each month"
             else:
                 self.fat = np.array(self.fat)
+                if "each month" not in self.fat_units:
+                    self.fat_units = self.fat_units + " each month"
 
             if isinstance(self.protein, int):
                 self.protein = np.zeros(len(self.kcals))
                 self.protein_units = self.protein_units + " each month"
             else:
                 self.protein = np.array(self.protein)
+                if "each month" not in self.protein_units:
+                    self.protein_units = self.protein_units + " each month"
+            self.set_units(
+                self.kcals_units,
+                self.fat_units,
+                self.protein_units,
+            )
 
         else:
             self.NMONTHS = np.nan  # number of months is not a number
 
         self.validate_if_list()
 
-    def new_food_just_from_kcals(
+    def reset_food(
         # these are the default values but they can can be overwritten
         self,
         kcals=0,
@@ -284,7 +320,7 @@ class Food(UnitConversions):
 
         Example:
             >>> food = Food()
-            >>> food.new_food_just_from_kcals(kcals=100, fat=10, protein=20)
+            >>> food.reset_food() # sets back to zero and resets units
         """
 
         # Call the parent constructor
@@ -365,8 +401,8 @@ class Food(UnitConversions):
         # Calculate total energy in billion kcals
         total_energy_billion_kcals = (
             self.protein * protein_kcal
-            + self.fat * fat_kcal  # billion kcals
-            + self.kcals  # billion kcals
+            + self.fat * fat_kcal
+            + self.kcals  # billion kcals  # billion kcals
         )  # billion kcals
 
         return total_energy_billion_kcals
@@ -609,7 +645,7 @@ class Food(UnitConversions):
         """
         assert (
             self.units == other.units
-        )  # Check that the units of the two foods are the same
+        ), "ERROR: adding foods with different units!"  # Check that the units of the two foods are the same
 
         # Add the kcals, fat, and protein of the two foods
         kcals = self.kcals + other.kcals
@@ -645,7 +681,9 @@ class Food(UnitConversions):
             >>> food3.protein
             10
         """
-        assert self.units == other.units  # Check that the units are the same
+        assert (
+            self.units == other.units
+        ), "ERROR: subtracting foods with different units!"  # Check that the units are the same
 
         # Subtract the nutrient quantities
         kcals = self.kcals - other.kcals
@@ -655,6 +693,59 @@ class Food(UnitConversions):
         # Create a new Food object with the subtracted nutrient quantities
         return Food(
             kcals, fat, protein, self.kcals_units, self.fat_units, self.protein_units
+        )
+
+    @staticmethod
+    def get_remaining_food_needed_and_amount_used(
+        demand, resource, max_fraction_of__demand_satisfied_by_resource
+    ):
+        """
+        Calculate the remaining food resource needed to satisfy a given food demand based on a certain resource.
+
+        Args:
+            demand (Food): The food demand.
+            resource (Food): Available food resources.
+            max_fraction_of__demand_satisfied_by_resource (float): Maximum fraction of the demand which
+                is allowed to be satisfied by the food resource.
+
+        Returns:
+            Food: Remaining food needed to meet the demand.
+        """
+        resource_for_demand = demand * max_fraction_of__demand_satisfied_by_resource
+        resources_used_for_demand_after_limit = Food.min_elementwise(
+            resource_for_demand, resource
+        )
+        resource_used_for_demand = Food.min_elementwise(
+            resources_used_for_demand_after_limit, demand
+        )
+
+        remaining_food_needed_to_meet_demand = demand - resource_used_for_demand
+        return remaining_food_needed_to_meet_demand, resource_used_for_demand
+
+    def shift(self, months):
+        """
+        Shifts the monthly values of kcals, fat, and protein by the given number of months.
+        The newly introduced values (for months that are shifted into existence) will be set to 0.
+        """
+        if not self.is_list_monthly():
+            raise ValueError("The food object must be in monthly mode to use shift.")
+
+        kcals_shifted = np.roll(self.kcals, months)
+        fat_shifted = np.roll(self.fat, months)
+        protein_shifted = np.roll(self.protein, months)
+
+        # Set the values of the newly introduced months to 0
+        kcals_shifted[:months] = 0
+        fat_shifted[:months] = 0
+        protein_shifted[:months] = 0
+
+        return Food(
+            kcals=kcals_shifted,
+            fat=fat_shifted,
+            protein=protein_shifted,
+            kcals_units=self.kcals_units,
+            fat_units=self.fat_units,
+            protein_units=self.protein_units,
         )
 
     def __truediv__(self, other):
@@ -689,7 +780,9 @@ class Food(UnitConversions):
         """
         if isinstance(other, Food):
             # Check if the units of the two foods being divided are the same
-            assert self.units == other.units
+            assert (
+                self.units == other.units
+            ), "ERROR: comparing foods with different units!"
 
             if self.is_list_monthly():
                 # Check if both foods being divided are monthly lists
@@ -777,9 +870,31 @@ class Food(UnitConversions):
             protein_units=self.protein_units,
         )
 
+    def __setitem__(self, key, value):
+        """
+        Assigns the given value to the macronutrient values at the specified index.
+
+        Args:
+            key (int or slice): The index or range of indices to assign.
+            value (Food): The Food object to assign.
+        """
+        if not isinstance(value, Food):
+            raise ValueError("Assigned value must be an instance of the Food class")
+
+        if self.is_list_monthly():
+            self.kcals[key] = value.kcals
+            self.fat[key] = value.fat
+            self.protein[key] = value.protein
+        else:
+            raise ValueError(
+                "Cannot assign value using index on a non-monthly Food object"
+            )
+
     def __mul__(self, other):
         """
-        Multiplies a food's macronutrients by a number.
+        TODO: make this more modular
+
+        Multiplies a food's macronutrients by a number, food, or food list.
 
         Args:
             other (typing.Union[Food, np.ndarray, float, int]): The object to multiply with the Food object.
@@ -789,7 +904,7 @@ class Food(UnitConversions):
 
         This function multiplies a food's macronutrients by a number. The function can handle different types of
         inputs for the 'other' argument, including a Food object, a numpy array, a float,
-        # or an int. The function returns a new Food object with the multiplied macronutrient values.
+        or an int. The function returns a new Food object with the multiplied macronutrient values.
 
         The multiplication is constrained to handle only certain cases. The function can multiply ratios with
         non-ratios or ratios with ratios, because unit conversions can get confusing otherwise.
@@ -874,7 +989,9 @@ class Food(UnitConversions):
                     self.protein_units,
                 )
 
-                assert self.get_units() == other.get_units_from_element_to_list()
+                assert (
+                    self.get_units() == other.get_units_from_element_to_list()
+                ), "ERROR: multiplying foods with different units!"
 
             # this is a food and other is a list
             if isinstance(other, np.ndarray):
@@ -972,11 +1089,15 @@ class Food(UnitConversions):
     def __rmul__(self, other):
         """
         Multiplies a food's macronutrients by a number.
+        Calls the __mul__ for commutativity
+
         This method is called when the argument is a number and the food object is on the right side of the operator.
         Args:
-            other (int or float): The number to multiply the macronutrients by.
+            other (typing.Union[Food, np.ndarray, float, int]): The object to multiply with the Food object.
+
         Returns:
-            Food: A new Food object with the macronutrients multiplied by the given number.
+            Food: A new Food object with the multiplied macronutrient values.
+
         """
         return self.__mul__(other)
 
@@ -1001,7 +1122,9 @@ class Food(UnitConversions):
             >>> food1 == food2
             True
         """
-        assert self.units == other.units  # Ensure units are equal
+        assert (
+            self.units == other.units
+        ), "ERROR: comparing foods with different units!"  # Ensure units are equal
         if self.is_list_monthly():
             # Compare monthly foods
             return (
@@ -1038,7 +1161,9 @@ class Food(UnitConversions):
             >>> food1 != food2
             True
         """
-        assert self.units == other.units  # Ensure the units are the same
+        assert (
+            self.units == other.units
+        ), "ERROR: comparing foods with different units!"  # Ensure the units are the same
         if self.is_list_monthly():
             # Compare monthly foods
             return (
@@ -1090,7 +1215,6 @@ class Food(UnitConversions):
         """
         # Initialize an empty string to hold the return value
         return_string = ""
-
         # Create a string representation of the kcals and add it to the return string
         kcal_string = "    kcals: % s % s" % (
             np.round(self.kcals, 5),
@@ -1577,7 +1701,7 @@ class Food(UnitConversions):
         # or if the current food's fat or protein value is less than or equal to the other food's fat or protein value
         return self.kcals <= other.kcals or less_than_fat or less_than_protein
 
-    def all_equals_zero(self):
+    def all_equals_zero(self, rounding_decimals=9):
         """
         Check if all macronutrients of the food are equal to zero.
         Args:
@@ -1585,27 +1709,35 @@ class Food(UnitConversions):
         Returns:
             bool: True if the food's macronutrients are equal to zero, False otherwise.
         """
+
+        # Define a rounding function
+        def round_to_precision(value):
+            return round(value, rounding_decimals)
+
         # Check if the food is monthly
         if self.is_list_monthly():
             # Validate the food list
             self.validate_if_list()
 
-            # Check if all macronutrients are equal to zero
-            return (
-                (np.array(self.kcals) == 0).all()
-                and ((np.array(self.fat) == 0).all() or self.conversions.exclude_fat)
-                and (
-                    (np.array(self.protein) == 0).all()
-                    or self.conversions.exclude_protein
-                )
+            # Check if all macronutrients are effectively zero
+            kcals_zero = all(round_to_precision(kcal) == 0 for kcal in self.kcals)
+            fat_zero = self.conversions.exclude_fat or all(
+                round_to_precision(fat) == 0 for fat in self.fat
+            )
+            protein_zero = self.conversions.exclude_protein or all(
+                round_to_precision(protein) == 0 for protein in self.protein
             )
 
-        # Check if all macronutrients are equal to zero
-        return (
-            self.kcals == 0
-            and (self.fat == 0 or self.conversions.exclude_fat)
-            and (self.protein == 0 or self.conversions.exclude_protein)
+            return kcals_zero and fat_zero and protein_zero
+
+        # Check if all macronutrients are effectively zero
+        kcals_zero = round_to_precision(self.kcals) == 0
+        fat_zero = self.conversions.exclude_fat or round_to_precision(self.fat) == 0
+        protein_zero = (
+            self.conversions.exclude_protein or round_to_precision(self.protein) == 0
         )
+
+        return kcals_zero and fat_zero and protein_zero
 
     def any_equals_zero(self):
         """
@@ -1720,7 +1852,7 @@ class Food(UnitConversions):
         # Check if any of the kcals, fat, or protein are greater than zero
         return self.kcals > 0 or zero_fat or zero_protein
 
-    def all_greater_than_or_equal_to_zero(self):
+    def all_greater_than_or_equal_to_zero(self, threshold=0):
         """
         Checks if all macronutrients of the food are greater than or equal to zero.
         Args:
@@ -1735,10 +1867,13 @@ class Food(UnitConversions):
 
             # Check if all macronutrients are greater than or equal to zero
             return (
-                (np.array(self.kcals) >= 0).all()
-                and ((np.array(self.fat) >= 0).all() or self.conversions.exclude_fat)
+                (np.array(self.kcals) >= -threshold).all()
                 and (
-                    (np.array(self.protein) >= 0).all()
+                    (np.array(self.fat) >= -threshold).all()
+                    or self.conversions.exclude_fat
+                )
+                and (
+                    (np.array(self.protein) >= -threshold).all()
                     or self.conversions.exclude_protein
                 )
             )
@@ -1918,6 +2053,19 @@ class Food(UnitConversions):
         # Return the summed up nutrient values with altered units
         return food_sum
 
+    def get_abs_values(self):
+        """
+        Returns a new Food object with the absolute values of all nutrients.
+        """
+        return Food(
+            kcals=np.abs(self.kcals),
+            fat=np.abs(self.fat),
+            protein=np.abs(self.protein),
+            kcals_units=self.kcals_units,
+            fat_units=self.fat_units,
+            protein_units=self.protein_units,
+        )
+
     def get_running_total_nutrients_sum(self):
         """
         Calculates the running sum of the nutrients in all the months, without altering the units.
@@ -2034,6 +2182,57 @@ class Food(UnitConversions):
             amount_consumed_list.protein[i] = amount_consumed.protein
 
         return amount_consumed_list
+
+    @staticmethod
+    def min_elementwise(food1, food2):
+        """
+        Returns a new Food object where each nutrient value
+        is the minimum between the corresponding values of food1 and food2.
+
+        Args:
+            food1 (Food): First Food object.
+            food2 (Food): Second Food object.
+
+        Returns:
+            Food: New Food object with minimum nutrient values for each month.
+
+        Raises:
+            ValueError: If either of the Food objects is not in monthly list format.
+        """
+
+        assert food1.units == food2.units  # Check that the units are the same
+
+        # Ensure both Food objects are in list format
+        if not (food1.is_list_monthly() and food2.is_list_monthly()):
+            # Compute minimum for each nutrient
+            min_kcals = min(food1.kcals, food2.kcals)
+            min_fat = min(food1.fat, food2.fat)
+            min_protein = min(food1.protein, food2.protein)
+
+            # Return the new Food object with minimum nutrient values
+            return Food(
+                min_kcals,
+                min_fat,
+                min_protein,
+                food1.kcals_units,
+                food1.fat_units,
+                food1.protein_units,
+            )
+
+        # Compute element-wise minimum for each nutrient
+        min_kcals = np.minimum(food1.kcals, food2.kcals)
+        min_fat = np.minimum(food1.fat, food2.fat)
+        min_protein = np.minimum(food1.protein, food2.protein)
+
+        # Return the new Food object with minimum nutrient values
+        return Food(
+            min_kcals,
+            min_fat,
+            min_protein,
+            food1.kcals_units,
+            food1.fat_units,
+            food1.protein_units,
+        )
 
     def get_consumed_amount(self, demand_to_be_met, used_nutrient_ratio):
         """

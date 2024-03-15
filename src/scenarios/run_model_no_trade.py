@@ -5,6 +5,7 @@ without trade scenarios.
 Created on Wed Jul 15
 @author: morgan
 """
+
 import pandas as pd
 import os
 import numpy as np
@@ -15,7 +16,6 @@ import datetime
 from datetime import date
 from src.utilities.plotter import Plotter
 from src.scenarios.run_scenario import ScenarioRunner
-from src.food_system.food import Food
 from itertools import product
 import git
 from pathlib import Path
@@ -47,9 +47,10 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         Set a few options to set on top of the specific options for the given simulation
         These could easily change if another scenario was of more interest.
         """
-        this_simulation["fat"] = "not_required"
-        this_simulation["protein"] = "not_required"
-        this_simulation["meat_strategy"] = "efficient_meat_strategy"
+        if "fat" not in this_simulation.keys():
+            this_simulation["fat"] = "not_required"
+        if "protein" not in this_simulation.keys():
+            this_simulation["fat"] = "not_required"
 
         if "waste" not in this_simulation.keys():
             this_simulation["waste"] = "zero"
@@ -60,19 +61,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         if "shutoff" not in this_simulation.keys():
             this_simulation[
                 "shutoff"
-            ] = "reduce_breeding_USA"  # this_simulation["shutoff"] = "immediate"
+            ] = "continued"  # this_simulation["shutoff"] = "immediate"
         if "cull" not in this_simulation.keys():
             this_simulation["cull"] = "do_eat_culled"
-
-        # this_simulation["waste"] = "zero"
-        # this_simulation["nutrition"] = "baseline"
-        # this_simulation["buffer"] = "baseline"
-        # this_simulation["shutoff"] = "immediate"
-        # this_simulation["cull"] = "dont_eat_culled"
-
-        # this_simulation["fat"] = "not_required"
-        # this_simulation["protein"] = "not_required"
-        # this_simulation["meat_strategy"] = "efficient_meat_strategy"
 
         self.run_model_no_trade(
             title=this_simulation["scenario"] + "_" + this_simulation["fish"],
@@ -120,43 +111,33 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         scenario_option,
         create_pptx_with_all_countries,
         show_country_figures,
+        save_all_results,
         figure_save_postfix="",
+        title="Untitled",
     ):
-        country_name = country_data["country"]
-        constants_for_params, scenario_loader = self.set_depending_on_option(
-            country_data, scenario_option
-        )
+        (
+            constants_for_params,
+            time_consts_for_params,
+            scenario_loader,
+        ) = self.set_depending_on_option(scenario_option, country_data=country_data)
 
-        # No excess calories
-        constants_for_params["EXCESS_FEED"] = Food(
-            kcals=[0] * constants_for_params["NMONTHS"],
-            fat=[0] * constants_for_params["NMONTHS"],
-            protein=[0] * constants_for_params["NMONTHS"],
-            kcals_units="billion kcals each month",
-            fat_units="thousand tons each month",
-            protein_units="thousand tons each month",
-        )
-
-        PRINT_COUNTRY = True
-        if PRINT_COUNTRY:
-            print("")
-            print("")
-            print("")
-            print("")
-            print("")
-            print("")
-            print(country_name)
-            print("")
-            print("")
-            print("")
-
-        USE_TRY_CATCH = False
-        if USE_TRY_CATCH:
+        USE_TRY_CATCH_FLAG = False
+        if USE_TRY_CATCH_FLAG:
             try:
                 print("running scenario")
                 scenario_runner = ScenarioRunner()
                 interpreted_results = scenario_runner.run_and_analyze_scenario(
-                    constants_for_params, scenario_loader
+                    constants_for_params,
+                    time_consts_for_params,
+                    scenario_loader,
+                    create_pptx_with_all_countries,
+                    show_country_figures,
+                    figure_save_postfix,
+                    country_data,
+                    save_all_results,
+                    country_data["country"],
+                    country_data["iso3"],
+                    title=title,
                 )
                 percent_people_fed = interpreted_results.percent_people_fed
             except Exception as e:
@@ -166,30 +147,20 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         else:
             scenario_runner = ScenarioRunner()
             interpreted_results = scenario_runner.run_and_analyze_scenario(
-                constants_for_params, scenario_loader
-            )
-            percent_people_fed = interpreted_results.percent_people_fed
-        print("percent_people_fed")
-        print(percent_people_fed)
-        if not np.isnan(percent_people_fed):
-            Plotter.plot_feed(
-                interpreted_results,
-                84,  # constants_for_params["NMONTHS"],
-                country_data["country"] + figure_save_postfix,
-                show_country_figures,
+                constants_for_params,
+                time_consts_for_params,
+                scenario_loader,
                 create_pptx_with_all_countries,
-                scenario_loader.scenario_description,
-            )
-            Plotter.plot_fig_1ab(
-                interpreted_results,
-                84,
-                # constants_for_params["NMONTHS"],
-                country_data["country"] + figure_save_postfix,
                 show_country_figures,
-                create_pptx_with_all_countries,
-                scenario_loader.scenario_description,
+                figure_save_postfix,
+                country_data,
+                save_all_results,
+                country_data["country"],
+                country_data["iso3"],
+                title=title,
             )
 
+            percent_people_fed = interpreted_results.percent_people_fed
         return (
             percent_people_fed / 100,
             scenario_loader.scenario_description,
@@ -205,8 +176,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         country_map = world[world["iso_a3"].apply(lambda x: x == country_code_map)]
 
         if len(country_map) == 0:
-            PRINT_NO_MATCH = False
-            if PRINT_NO_MATCH:
+            PRINT_NO_MATCH_FLAG = False
+            if PRINT_NO_MATCH_FLAG:
                 print("no match")
                 print(country_code_map)
         if len(country_map) == 1:
@@ -226,6 +197,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         countries_list=[],  # runs all the countries if empty
         figure_save_postfix="",
         return_results=False,
+        save_all_results=False,
     ):
         """
         This function runs the model for all countries in the world, no trade.
@@ -276,12 +248,18 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         n_errors = 0
         failed_countries = "Failed Countries: \n"
 
-        print(countries_list)
-
         (
             exclusive_countries_to_run,
             countries_to_skip,
         ) = self.get_countries_to_run_and_skip(countries_list)
+        if len(exclusive_countries_to_run) == 0:
+            print("Running all countries")
+        else:
+            print("Countries to run:")
+            print(exclusive_countries_to_run)
+        if len(countries_to_skip) > 0:
+            print("except the following countries:")
+            print(countries_list)
 
         results = {}
 
@@ -295,12 +273,15 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             if country_code in countries_to_skip:
                 continue
 
+            country_data = self.apply_custom_parameters(country_data, scenario_option)
+            self.verify_country_data(country_data)
+
             population = country_data["population"]
 
-            # skip countries with no population
+            # skip countries with no
             if np.isnan(population):
                 continue
-
+            country_name = country_data["country"]
             (
                 needs_ratio,
                 scenario_description,
@@ -310,9 +291,10 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 scenario_option,
                 create_pptx_with_all_countries,
                 show_country_figures,
+                save_all_results,
                 figure_save_postfix,
+                title=title,
             )
-            country_name = country_data["country"]
             if np.isnan(needs_ratio):
                 n_errors += 1
                 failed_countries += " " + country_name
@@ -337,6 +319,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         else:
             ratio_fed = str(np.nan)
 
+        print("")
         print("Net population considered: " + str(net_pop / 1e9) + " Billion people")
         print("Fraction of this population fed: " + ratio_fed)
         print(scenario_description)
@@ -378,7 +361,71 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 + ".pptx"
             )
         # @li return a dataframe with each country and the world needs ratio
+        # print first value of the dict
+        if save_all_results:
+            self.save_all_results_to_csv(results, title)
         return [world, net_pop, net_pop_fed, results]
+
+    def save_all_results_to_csv(self, results, title):
+        """
+        Save the results to a csv file
+        Read by the web interface
+        """
+        # iterate over the values in the results dictionary
+        for country, result in results.items():
+            # Animal populations
+            df = pd.DataFrame(result.animal_population_dictionary)
+            df["month"] = df.index
+            df.to_csv(
+                Path(repo_root)
+                / "results"
+                / (title + "_" + country + "_animal_populations.csv"),
+                index=False,
+            )
+
+            # Biofuels
+            biofuels = pd.DataFrame(
+                {
+                    "biofuels_sum_kcals_equivalent": result.biofuels_sum_kcals_equivalent.kcals,
+                    "cell_sugar_biofuels_kcals_equivalent": result.cell_sugar_biofuels_kcals_equivalent.kcals,
+                    "outdoor_crops_biofuels_kcals_equivalent": result.outdoor_crops_biofuels_kcals_equivalent.kcals,
+                    "scp_biofuels_kcals_equivalent": result.scp_biofuels_kcals_equivalent.kcals,
+                    "seaweed_biofuels_kcals_equivalent": result.seaweed_biofuels_kcals_equivalent.kcals,
+                    "stored_food_biofuels_kcals_equivalent": result.stored_food_biofuels_kcals_equivalent.kcals,
+                }
+            )
+            biofuels["month"] = biofuels.index
+            biofuels.to_csv(
+                Path(repo_root) / "results" / (title + "_" + country + "_biofuels.csv"),
+                index=False,
+            )
+
+            # Feed
+            feed = pd.DataFrame(
+                {
+                    "feed_sum_kcals_equivalent": result.feed_sum_kcals_equivalent.kcals,
+                    "cell_sugar_feed_kcals_equivalent": result.cell_sugar_feed_kcals_equivalent.kcals,
+                    "outdoor_crops_feed_kcals_equivalent": result.outdoor_crops_feed_kcals_equivalent.kcals,
+                    "scp_feed_kcals_equivalent": result.scp_feed_kcals_equivalent.kcals,
+                    "seaweed_feed_kcals_equivalent": result.seaweed_feed_kcals_equivalent.kcals,
+                    "stored_food_feed_kcals_equivalent": result.stored_food_feed_kcals_equivalent.kcals,
+                }
+            )
+            feed["month"] = feed.index
+            feed.to_csv(
+                Path(repo_root) / "results" / (title + "_" + country + "_feed.csv"),
+                index=False,
+            )
+
+            # Meat
+            meat = pd.DataFrame(result.meat_dictionary)
+            meat["month"] = meat.index
+            meat.to_csv(
+                Path(repo_root) / "results" / (title + "_" + country + "_meat.csv"),
+                index=False,
+            )
+
+        return
 
     def get_countries_to_run_and_skip(self, countries_list):
         """
@@ -533,7 +580,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         defaults["waste"] = "zero"
         defaults["nutrition"] = "baseline"
         defaults["buffer"] = "baseline"
-        defaults["shutoff"] = "reduce_breeding_USA"
+        defaults["shutoff"] = "reduce_breeding"
         defaults["cull"] = "do_eat_culled"
 
         options_including_defaults = []
@@ -591,3 +638,264 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 show_country_figures=(plot_figs == "plot"),
                 create_pptx_with_all_countries=(create_pptx == "pptx"),
             )
+
+    def apply_custom_parameters(self, country_data, scenario_option):
+        """
+        Apply custom parameters to the country data using parameters defined
+        in the scenario yaml file
+        """
+        for key, value in scenario_option.items():
+            if key in country_data:
+                country_data[key] = float(value)
+            if key == "kg_meat_per_large_animal":
+                country_data["kg_meat_per_large_animal"] = float(value)
+        return country_data
+
+    def verify_country_data(self, country_data):
+        """
+        Runs a bunch of checks to make sure the country data is reasonable
+
+        Arguments:
+            country_data: a dictionary with the country data
+        """
+        country = country_data["country"]
+        # check that the country population is a reasonable number
+        assert (
+            country_data["population"] > 10_000
+        ), f"{country}: population is smaller than 10,000"
+        assert (
+            country_data["population"] < 1e10
+        ), f"{country}: population is greater than 10 billion"
+
+        # grass is in megatonnes
+        assert (
+            country_data["grasses_baseline"] < 20_000
+        ), f"{country}: grass_baseline is greater than 20,000 megatonnes"
+        assert (
+            country_data["grasses_baseline"] >= 0
+        ), f"{country}: grass_baseline is less than 0"
+
+        # the following are in tonnes per year
+        assert country_data["dairy"] >= 0, f"{country}: milk production is less than 0"
+        assert (
+            country_data["dairy"] < 1e9
+        ), f"{country}: milk produciton is more than 1 billion tonnes"
+        assert (
+            country_data["chicken"] >= 0
+        ), f"{country}: chicken production is less than 0"
+        assert (
+            country_data["chicken"] < 1e9
+        ), f"{country}: chicken production is more than 1 billion tonnes"
+        assert country_data["pork"] >= 0, f"{country}: pork production is less than 0"
+        assert (
+            country_data["pork"] < 1e9
+        ), f"{country}: pork production is more than 1 billion tonnes"
+        assert country_data["beef"] >= 0, f"{country}: beef production is less than 0"
+        assert (
+            country_data["beef"] < 1e9
+        ), f"{country}: beef production is more than 1 billion tonnes"
+
+        assert (
+            country_data["small_animals"] < 100e9
+        ), f"{country}: more than 100 billion small animals"
+        assert (
+            country_data["small_animals"] >= 0
+        ), f"{country}: fewer than 0 small animals"
+        assert (
+            country_data["medium_animals"] < 10e9
+        ), f"{country}: more than 10 billion medium animals"
+        assert (
+            country_data["medium_animals"] >= 0
+        ), f"{country}: fewer than 0 medium animals"
+        assert (
+            country_data["large_animals"] < 10e9
+        ), f"{country}: more than 10 billion large animals"
+        assert (
+            country_data["large_animals"] >= 0
+        ), f"{country}: fewer than 0 large animals"
+        assert (
+            country_data["dairy_cows"] < 1e9
+        ), f"{country}: more than 1 billion dairy cows"
+        assert country_data["dairy_cows"] >= 0, f"{country}: fewer than 0 dairy cows"
+
+        assert (
+            country_data["biofuel_kcals"] < 1e9
+        ), f"{country}: more than 1 billion biofuel dry caloric tonnes"
+        assert (
+            country_data["biofuel_kcals"] >= 0
+        ), f"{country}: fewer than 0 biofuel dry caloric tonnes"
+        assert (
+            country_data["biofuel_protein"] < 1e9
+        ), f"{country}: more than 1 billion biofuel tonnes of protein"
+        assert (
+            country_data["biofuel_protein"] >= 0
+        ), f"{country}: fewer than 0 biofuel tonnes of protein"
+        assert (
+            country_data["biofuel_fat"] < 1e9
+        ), f"{country}: more than 1 billion biofuel tonnes of fat"
+        assert (
+            country_data["biofuel_fat"] >= 0
+        ), f"{country}: fewer than 0 biofuel tonnes of fat"
+
+        assert (
+            country_data["feed_kcals"] < 2e9
+        ), f"{country}: more than 2 billion feed dry caloric tonnes"
+        assert (
+            country_data["feed_kcals"] >= 0
+        ), f"{country}: fewer than 0 feed dry caloric tonnes"
+        assert (
+            country_data["feed_protein"] < 1e9
+        ), f"{country}: more than 1 billion feed tonnes of protein"
+        assert (
+            country_data["feed_protein"] >= 0
+        ), f"{country}: fewer than 0 feed tonnes of protein"
+        assert (
+            country_data["feed_fat"] < 1e9
+        ), f"{country}: more than 1 billion feed tonnes of fat"
+        assert (
+            country_data["feed_fat"] >= 0
+        ), f"{country}: fewer than 0 feed tonnes of fat"
+
+        assert (
+            country_data["crop_kcals"] < 10e9
+        ), f"{country}: more than 10 billion crop kcals"
+        assert country_data["crop_kcals"] >= 0, f"{country}: fewer than 0 crop kcals"
+        assert (
+            country_data["crop_protein"] < 10e9
+        ), f"{country}: more than 10 billion crop grams of protein"
+        assert (
+            country_data["crop_protein"] >= 0
+        ), f"{country}: fewer than 0 crop grams of protein"
+        assert (
+            country_data["crop_fat"] < 10e9
+        ), f"{country}: more than 10 billion crop grams of fat"
+        assert (
+            country_data["crop_fat"] >= 0
+        ), f"{country}: fewer than 0 crop grams of fat"
+        for i in range(1, 11):
+            if country_data[f"crop_reduction_year{i}"] < -1:
+                diff = country_data[f"crop_reduction_year{i}"] + 1
+                if abs(diff) < 1e-8:
+                    country_data[f"crop_reduction_year{i}"] = -1
+                else:
+                    assert False, "ERROR: crop reduction is less than -1"
+        assert all(
+            country_data[f"grasses_reduction_year{i}"] >= -1 for i in range(1, 11)
+        ), f"{country}: grasses reduction is less than -1"
+        assert np.isclose(
+            sum(country_data[f"seasonality_m{i}"] for i in range(1, 13)), 1
+        ), f"{country}: sum of seasonality is not 1"
+
+        months = [
+            "jan",
+            "feb",
+            "mar",
+            "apr",
+            "may",
+            "jun",
+            "jul",
+            "aug",
+            "sep",
+            "oct",
+            "nov",
+            "dec",
+        ]
+        assert all(
+            country_data[f"stocks_kcals_{months[i]}"] < 10e9 for i in range(0, 12)
+        ), f"{country}: stocks kcals is greater than 10 billion"
+        for i in range(1, 11):
+            if country_data[f"stocks_kcals_{months[i]}"] < 0:
+                print(country_data[f"stocks_kcals_{months[i]}"])
+                if abs(country_data[f"stocks_kcals_{months[i]}"]) < 1e-8:
+                    country_data[f"crop_reduction_year{i}"] = 0
+                else:
+                    assert False, "ERROR: stocks is negative"
+
+        # assert all(
+        #     country_data[f"stocks_kcals_{months[i]}"] >= 0 for i in range(0, 12)
+        # ), f"{country}: stocks kcals is less than 0"
+
+        assert (
+            country_data["distribution_loss_crops"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_crops"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+        assert (
+            country_data["distribution_loss_sugar"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_sugar"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+        assert (
+            country_data["distribution_loss_meat"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_meat"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+        assert (
+            country_data["distribution_loss_dairy"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_dairy"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+        assert (
+            country_data["distribution_loss_seafood"] < 1
+        ), f"{country}: distribution loss is greater than 1"
+        assert (
+            country_data["distribution_loss_seafood"] >= 0
+        ), f"{country}: distribution loss is less than 0"
+
+        assert (
+            country_data["retail_waste_baseline"] < 1
+        ), f"{country}: retail waste is greater than 1"
+        assert (
+            country_data["retail_waste_baseline"] >= 0
+        ), f"{country}: retail waste is less than 0"
+        assert (
+            country_data["retail_waste_price_double"] < 1
+        ), f"{country}: retail waste is greater than 1"
+        assert (
+            country_data["retail_waste_price_double"] >= 0
+        ), f"{country}: retail waste is less than 0"
+        assert (
+            country_data["retail_waste_price_triple"] < 1
+        ), f"{country}: retail waste is greater than 1"
+        assert (
+            country_data["retail_waste_price_triple"] >= 0
+        ), f"{country}: retail waste is less than 0"
+
+        assert (
+            country_data["wood_pulp_tonnes"] < 1e9
+        ), f"{country}: wood pulp is greater than 1 billion tonnes"
+        assert (
+            country_data["wood_pulp_tonnes"] >= 0
+        ), f"{country}: wood pulp is less than 0 tonnes"
+
+        assert (
+            country_data["crop_area_1000ha"] < 2e9
+        ), f"{country}: crop area is greater than 2 billion hectares"
+        assert (
+            country_data["crop_area_1000ha"] >= 0
+        ), f"{country}: crop area is less than 0 hectares"
+
+        assert (
+            country_data["milk_yield_kg_per_milk_bearing_animal_per_year"] >= 0
+        ), f"{country}: milk yield is less than 0"
+        assert (
+            country_data["milk_yield_kg_per_milk_bearing_animal_per_year"] < 20000
+        ), f"{country}: milk yield is greater than 20,000"
+
+        assert (
+            country_data["kg_meat_per_pig"] >= 0
+        ), f"{country}: kg meat per pig is less than 0"
+        assert (
+            country_data["kg_meat_per_pig"] < 200
+        ), f"{country}: kg meat per pig is greater than 200"
+
+        assert (
+            country_data["kg_meat_per_chicken"] >= 0
+        ), f"{country}: kg meat per chicken is less than 0"
+        assert (
+            country_data["kg_meat_per_chicken"] < 5
+        ), f"{country}: kg meat per chicken is greater than 5"

@@ -6,19 +6,33 @@
 ###############################################################################
 """
 import numpy as np
+from src.food_system.food import Food
 
 
 class Seafood:
     def __init__(self, constants_for_params):
-        self.NMONTHS = constants_for_params["NMONTHS"]
-        self.ADD_FISH = constants_for_params["ADD_FISH"]
+        """
+        Initializes the Seafood object with the given constants for parameters.
 
-        FISH_WASTE = constants_for_params["WASTE"]["SEAFOOD"]
+        Args:
+            constants_for_params (dict): A dictionary containing the constants for parameters.
+
+        Returns:
+            None
+        """
+
+        # number of months to run the model for
+        self.NMONTHS = constants_for_params["NMONTHS"]
+        # additional fish to add
+        self.ADD_FISH = constants_for_params["ADD_FISH"]
+        FISH_WASTE_COEFFICIENT = (
+            1 - constants_for_params["WASTE_DISTRIBUTION"]["SEAFOOD"] / 100
+        ) * (1 - constants_for_params["WASTE_RETAIL"] / 100)
 
         # fish kcals per month, billions
         self.FISH_KCALS = (
             constants_for_params["FISH_DRY_CALORIC_ANNUAL"]
-            * (1 - FISH_WASTE / 100)
+            * FISH_WASTE_COEFFICIENT
             * 4e6
             / 1e9
             / 12
@@ -29,7 +43,7 @@ class Seafood:
             constants_for_params["FISH_PROTEIN_TONS_ANNUAL"]
             / 1e3
             / 12
-            * (1 - FISH_WASTE / 100)
+            * FISH_WASTE_COEFFICIENT
         )
 
         # units of 1000s tons fat
@@ -38,17 +52,28 @@ class Seafood:
             constants_for_params["FISH_FAT_TONS_ANNUAL"]
             / 1e3
             / 12
-            * (1 - FISH_WASTE / 100)
+            * FISH_WASTE_COEFFICIENT
         )
 
     # includes all seafood (except seaweed), not just fish
-    def get_seafood_production(self, constants_for_params):
+    def set_seafood_production(self, time_consts_for_params):
+        """
+        Sets the seafood production for the Seafood class based on the given constants for parameters.
+
+        Args:
+            time_consts_for_params (dict): A dictionary containing the month-by-month constants for parameters.
+
+        Returns:
+            None
+
+        """
         # Based on Xia et al. (2021): Global Famine after Nuclear War
 
-        FISH_PERCENT_EACH_MONTH_LONG = constants_for_params["FISH_PERCENT_MONTHLY"]
-
+        # Get the percentage of fish each month from the given constants.
+        FISH_PERCENT_EACH_MONTH_LONG = time_consts_for_params["FISH_PERCENT_MONTHLY"]
         FISH_PERCENT_EACH_MONTH = FISH_PERCENT_EACH_MONTH_LONG[0 : self.NMONTHS]
 
+        # Calculate the production of fish per month based on the percentage of fish each month.
         if self.ADD_FISH:
             production_kcals_fish_per_month = []
             production_protein_fish_per_month = []
@@ -62,8 +87,12 @@ class Seafood:
             production_protein_fish_per_month = [0] * len(FISH_PERCENT_EACH_MONTH)
             production_fat_fish_per_month = [0] * len(FISH_PERCENT_EACH_MONTH)
 
-        return (
-            np.array(production_kcals_fish_per_month),
-            np.array(production_fat_fish_per_month),
-            np.array(production_protein_fish_per_month),
+        # Set the seafood production to the calculated fish production.
+        self.to_humans = Food(
+            kcals=np.array(production_kcals_fish_per_month),
+            fat=np.array(production_fat_fish_per_month),
+            protein=np.array(production_protein_fish_per_month),
+            kcals_units="billion kcals each month",
+            fat_units="thousand tons each month",
+            protein_units="thousand tons each month",
         )

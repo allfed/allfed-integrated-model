@@ -1,6 +1,8 @@
-src/scenarios/ykcals.csv
+src/scenarios/*.csv
 ykcals.csv
-
+model.json
+results/fig*
+results/ykcals*
 results/large_reports/*.png
 results/large_reports/*.npy
 results/large_reports/*.pptx
@@ -10,6 +12,10 @@ results/large_reports/*.jpeg
 results/large_reports/*.bmp
 results/large_reports/*.pkl
 
+#DELETEME
+old_src/
+# mkdocs
+site/ 
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

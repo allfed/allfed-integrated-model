@@ -1,0 +1,165 @@
+iso3,country,kg_meat_per_pig,kg_meat_per_chicken
+AFG,Afghanistan,0.0,0.79999995
+ALB,Albania,49.5,1.1611
+DZA,Algeria,38.2,1.0
+AGO,Angola,67.4,0.9
+ARG,Argentina,93.0,3.0
+ARM,Armenia,91.700005,1.0676
+AUS,Australia,78.700005,1.907
+AUT,Austria,98.0,1.2899
+AZE,Azerbaijan,51.8,1.1803
+BHR,Bahrain,0.0,0.8989
+BGD,Bangladesh,0.0,0.7
+BRB,Barbados,79.1,1.5794
+BLR,Belarus,84.5,1.3047
+BEL,Belgium,98.4,1.4797
+BEN,Benin,35.7,0.55
+BTN,Bhutan,39.100002,1.2626
+BOL,Bolivia,59.0,3.0
+BIH,Bosnia and Herzegovina,76.3,1.5751
+BWA,Botswana,42.4,1.512
+BRA,Brazil,82.3,2.3667998
+BRN,Brunei,35.0,1.5375999
+BGR,Bulgaria,68.5,1.7552999
+BFA,Burkina Faso,69.200005,1.1876
+BDI,Burundi,71.0,1.01
+KHM,Cambodia,50.0,1.0
+CMR,Cameroon,30.0,0.79999995
+CAN,Canada,102.6,1.7307999
+CPV,Cape Verde,50.0,1.2832
+CAF,Central African Republic,31.5,0.89089996
+TCD,Chad,29.9,0.8145
+CHL,Chile,106.200005,2.3325999
+CHN,China,88.3,1.3253
+COL,Colombia,88.6,1.5553
+COG,Congo,45.4,1.0
+CRI,Costa Rica,75.6,1.821
+CIV,Cote d'Ivoire,43.2,1.0411
+HRV,Croatia,72.0,1.4893999
+CUB,Cuba,59.100002,1.3395
+CYP,Cyprus,74.200005,1.9998
+CZE,Czechia,92.5,1.3478
+COD,Democratic Republic of Congo,51.7,0.63
+DNK,Denmark,93.0,1.5956
+DJI,Djibouti,0.0,0.0
+DOM,Dominican Republic,68.0,1.6329
+ECU,Ecuador,109.1,2.1
+EGY,Egypt,25.1,1.3866
+SLV,El Salvador,45.7,1.1119
+ERI,Eritrea,0.0,0.7288
+EST,Estonia,80.5,1.69
+SWT,Eswatini,50.7,1.0
+ETH,Ethiopia,52.600002,0.79999995
+FJI,Fiji,45.0,1.9755
+FIN,Finland,91.3,1.7121999
+FRA,France,94.5,1.5008999
+GAB,Gabon,30.0,0.81219995
+GMB,Gambia,40.0,1.0361999
+GEO,Georgia,35.4,1.4793999
+DEU,Germany,95.8,1.7256999
+GHA,Ghana,42.5,0.6915
+GRC,Greece,58.8,1.6561999
+GTM,Guatemala,91.3,1.7465
+GIN,Guinea,124.700005,1.5617
+GNB,Guinea-Bissau,39.7,0.83129996
+GUY,Guyana,64.0,1.5113
+HTI,Haiti,60.0,0.91029996
+HND,Honduras,63.8,1.925
+HUN,Hungary,95.5,1.9466
+IND,India,35.0,1.3432
+IDN,Indonesia,54.9,0.84059995
+IRN,Iran,0.0,1.0541999
+IRQ,Iraq,0.0,1.3442999
+IRL,Ireland,90.8,1.48
+ISR,Israel,81.9,1.0921999
+ITA,Italy,121.8,1.8364999
+JAM,Jamaica,61.0,1.6636
+JPN,Japan,78.3,2.8813
+JOR,Jordan,0.0,0.93299997
+KAZ,Kazakhstan,72.700005,1.8413999
+KEN,Kenya,65.0,1.4
+KWT,Kuwait,0.0,1.319
+KGZ,Kyrgyzstan,63.600002,2.1708
+LAO,Laos,30.6,0.8053
+LVA,Latvia,85.6,1.6537
+LBN,Lebanon,54.3,1.7787
+LSO,Lesotho,50.0,0.79999995
+LBR,Liberia,42.3,0.8458
+LBY,Libya,0.0,1.1882
+LTU,Lithuania,83.700005,1.8118999
+LUX,Luxembourg,84.8,1.36
+MDG,Madagascar,70.200005,0.79999995
+MWI,Malawi,26.4,2.5525
+MYS,Malaysia,118.5,2.5028
+MLI,Mali,49.7,0.7561
+MLT,Malta,87.5,1.6317999
+MRT,Mauritania,0.0,0.7094
+MUS,Mauritius,68.4,0.98819995
+MEX,Mexico,82.4,1.8220999
+MDA,Moldova,78.5,1.288
+MNG,Mongolia,40.3,1.443
+MAR,Morocco,49.8,0.7223
+MOZ,Mozambique,100.0,3.0
+MMR,Myanmar,65.5,1.49
+NAM,Namibia,59.600002,0.801
+NPL,Nepal,39.0,0.8318
+NLD,Netherlands,99.8,1.6693
+NZL,New Zealand,70.9,1.9051
+NIC,Nicaragua,50.9,2.2905998
+NER,Niger,45.0,0.79999995
+NGA,Nigeria,45.0,1.0
+PRK,North Korea,50.0,1.1
+MKD,North Macedonia,102.6,0.74039996
+NOR,Norway,86.200005,1.4606
+OMN,Oman,0.0,0.81619996
+PAK,Pakistan,0.0,1.18
+PAN,Panama,73.8,1.7427
+PNG,Papua New Guinea,41.100002,0.91709995
+PRY,Paraguay,104.0,1.0
+PER,Peru,53.100002,2.2554
+PHL,Philippines,56.8,1.1955999
+POL,Poland,93.6,1.8704
+PRT,Portugal,65.4,1.4550999
+QAT,Qatar,0.0,3.0
+ROU,Romania,95.3,1.6628
+RUS,Russia,92.9,1.8855
+RWA,Rwanda,38.100002,3.0
+SAU,Saudi Arabia,0.0,1.3948
+SEN,Senegal,53.2,1.4434999
+SRB,Serbia,56.4,1.7141
+SLE,Sierra Leone,54.9,0.88019997
+SGP,Singapore,64.5,1.6832999
+SVK,Slovakia,93.700005,1.51
+SVN,Slovenia,96.5,1.7026999
+SOM,Somalia,48.4,0.80539995
+ZAF,South Africa,88.8,1.916
+KOR,South Korea,76.5,0.8886
+SSD,South Sudan,0.0,1.0
+ESP,Spain,88.700005,1.9559
+LKA,Sri Lanka,72.4,1.2753
+SDN,Sudan,0.0,2.4912
+SUR,Suriname,69.0,1.6035999
+SWE,Sweden,95.3,1.5985999
+CHE,Switzerland,90.3,1.3
+SYR,Syria,0.0,1.2814
+TWN,Taiwan,102.700005,1.7289
+TJK,Tajikistan,40.0,2.0860999
+TZA,Tanzania,108.9,1.0127
+THA,Thailand,75.0,1.379
+TGO,Togo,19.6,0.79999995
+TTO,Trinidad and Tobago,55.2,1.5651
+TUN,Tunisia,50.7,1.3580999
+TUR,Turkey,63.8,1.8061
+TKM,Turkmenistan,55.5,1.2066
+UGA,Uganda,61.3,1.3370999
+UKR,Ukraine,89.3,1.8074
+ARE,United Arab Emirates,0.0,1.2716
+GBR,United Kingdom,89.8,1.5725
+USA,United States,97.3,2.2147
+URY,Uruguay,90.6,2.3711
+UZB,Uzbekistan,70.200005,3.0
+VEN,Venezuela,70.3,1.7619
+VNM,Vietnam,54.9,1.8948
+YEM,Yemen,0.0,1.0447
+ZMB,Zambia,44.0,1.0351
+ZWE,Zimbabwe,54.9,1.5164

@@ -1,0 +1,235 @@
+alpha3,entity,alpha2,region,subregion,land_borders
+ABW,Aruba,AW,Americas,Caribbean,
+AFG,Afghanistan,AF,Asia,Southern Asia,"IRN,PAK,TKM,UZB,TJK,CHN"
+AGO,Angola,AO,Africa,Middle Africa,"COG,COD,ZMB,NAM"
+AIA,Anguilla,AI,Americas,Caribbean,
+ALB,Albania,AL,Europe,Southern Europe,"MNE,GRC,MKD"
+AND,Andorra,AD,Europe,Southern Europe,"FRA,ESP"
+ARE,United Arab Emirates,AE,Asia,Western Asia,"OMN,SAU"
+ARG,Argentina,AR,Americas,South America,"BOL,BRA,CHL,PRY,URY"
+ARM,Armenia,AM,Asia,Western Asia,"AZE,GEO,IRN,TUR"
+ASM,American Samoa,AS,Oceania,Polynesia,
+ATG,Antigua and Barbuda,AG,Americas,Caribbean,
+AUS,Australia,AU,Oceania,Australia and New Zealand,
+AUT,Austria,AT,Europe,Western Europe,"CZE,DEU,HUN,ITA,LIE,SVK,SVN,CHE"
+AZE,Azerbaijan,AZ,Asia,Western Asia,"ARM,GEO,IRN,RUS,TUR"
+BDI,Burundi,BI,Africa,Eastern Africa,"COD,RWA,TZA"
+BEL,Belgium,BE,Europe,Western Europe,"FRA,DEU,LUX,NLD"
+BEN,Benin,BJ,Africa,Western Africa,"BFA,NER,NGA,TGO"
+BES,Bonaire Sint Eustatius and Saba,BQ,Americas,Caribbean,
+BFA,Burkina Faso,BF,Africa,Western Africa,"BEN,CIV,GHA,MLI,NER,TGO"
+BGD,Bangladesh,BD,Asia,Southern Asia,"MMR,IND"
+BGR,Bulgaria,BG,Europe,Eastern Europe,"GRC,MKD,ROU,SRB,TUR"
+BHR,Bahrain,BH,Asia,Western Asia,
+BHS,Bahamas,BS,Americas,Caribbean,
+BIH,Bosnia and Herzegovina,BA,Europe,Southern Europe,"HRV,MNE,SRB"
+BLR,Belarus,BY,Europe,Eastern Europe,"LVA,LTU,POL,RUS,UKR"
+BLZ,Belize,BZ,Americas,Central America,"GTM,MEX"
+BMU,Bermuda,BM,Americas,Northern America,
+BOL,Bolivia,BO,Americas,South America,"ARG,BRA,CHL,PRY,PER"
+BRA,Brazil,BR,Americas,South America,"ARG,BOL,COL,GUF,GUY,PRY,PER,SUR,URY,VEN"
+BRB,Barbados,BB,Americas,Caribbean,
+BRN,Brunei,BN,Asia,South-Eastern Asia,MYS
+BTN,Bhutan,BT,Asia,Southern Asia,"CHN,IND"
+BWA,Botswana,BW,Africa,Southern Africa,"NAM,ZAF,ZMB,ZWE"
+CAF,Central African Republic,CF,Africa,Middle Africa,"CMR,TCD,COD,COG,SSD,SDN"
+CAN,Canada,CA,Americas,Northern America,USA
+CHE,Switzerland,CH,Europe,Western Europe,"AUT,FRA,ITA,LIE,DEU"
+CHL,Chile,CL,Americas,South America,"ARG,BOL,PER"
+CHN,China,CN,Asia,Eastern Asia,"AFG,BTN,MMR,HKG,IND,KAZ,PRK,KGZ,LAO,MAC,MNG,PAK,RUS,TJK,VNM"
+CIV,Cote d'Ivoire,CI,Africa,Western Africa,"BFA,GHA,GIN,LBR,MLI"
+CMR,Cameroon,CM,Africa,Middle Africa,"CAF,TCD,COG,GNQ,GAB,NGA"
+COD,Democratic Republic of Congo,CD,Africa,Middle Africa,"AGO,BDI,CAF,COG,RWA,SSD,TZA,UGA,ZMB"
+COG,Congo,CG,Africa,Middle Africa,"AGO,CMR,CAF,COD,GAB"
+COK,Cook Islands,CK,Oceania,Polynesia,
+COL,Colombia,CO,Americas,South America,"BRA,ECU,PAN,PER,VEN"
+COM,Comoros,KM,Africa,Eastern Africa,
+CPV,Cape Verde,CV,Africa,Western Africa,
+CRI,Costa Rica,CR,Americas,Central America,"NIC,PAN"
+CUB,Cuba,CU,Americas,Caribbean,
+CUW,Curacao,CW,Americas,Caribbean,
+CYM,Cayman Islands,KY,Americas,Caribbean,
+CYP,Cyprus,CY,Europe,Southern Europe,GBR
+CZE,Czechia,CZ,Europe,Eastern Europe,"AUT,DEU,POL,SVK"
+DEU,Germany,DE,Europe,Western Europe,"AUT,BEL,CZE,DNK,FRA,LUX,NLD,POL,CHE"
+DJI,Djibouti,DJ,Africa,Eastern Africa,"ERI,ETH,SOM"
+DMA,Dominica,DM,Americas,Caribbean,
+DNK,Denmark,DK,Europe,Northern Europe,DEU
+DOM,Dominican Republic,DO,Americas,Caribbean,HTI
+DZA,Algeria,DZ,Africa,Northern Africa,"TUN,LBY,NER,ESH,MRT,MLI,MAR"
+ECU,Ecuador,EC,Americas,South America,"COL,PER"
+EGY,Egypt,EG,Africa,Northern Africa,"ISR,LBY,SDN"
+ERI,Eritrea,ER,Africa,Eastern Africa,"DJI,ETH,SDN"
+ESH,Western Sahara,EH,Africa,Northern Africa,"DZA,MRT,MAR"
+ESP,Spain,ES,Europe,Southern Europe,"AND,FRA,GIB,PRT,MAR"
+EST,Estonia,EE,Europe,Northern Europe,"LVA,RUS"
+ETH,Ethiopia,ET,Africa,Eastern Africa,"DJI,ERI,KEN,SOM,SSD,SDN"
+FIN,Finland,FI,Europe,Northern Europe,"NOR,SWE,RUS"
+FJI,Fiji,FJ,Oceania,Melanesia,
+FLK,Falkland Islands,FK,Americas,South America,
+FRA,France,FR,Europe,Western Europe,"AND,BEL,DEU,ITA,LUX,MCO,ESP,CHE"
+FRO,Faeroe Islands,FO,Europe,Northern Europe,
+FSM,Micronesia (country),FM,Oceania,Micronesia,
+GAB,Gabon,GA,Africa,Middle Africa,"CMR,COG,GNQ"
+GBR,United Kingdom,GB,Europe,Northern Europe,IRL
+GEO,Georgia,GE,Asia,Western Asia,"ARM,AZE,RUS,TUR"
+GHA,Ghana,GH,Africa,Western Africa,"BFA,CIV,TGO"
+GIB,Gibraltar,GI,Europe,Southern Europe,ESP
+GIN,Guinea,GN,Africa,Western Africa,"CIV,GNB,LBR,MLI,SEN,SLE"
+GLP,Guadeloupe,GP,Americas,Caribbean,
+GMB,Gambia,GM,Africa,Western Africa,SEN
+GNB,Guinea-Bissau,GW,Africa,Western Africa,"GIN,SEN"
+GNQ,Equatorial Guinea,GQ,Africa,Middle Africa,"CMR,GAB"
+GRC,Greece,GR,Europe,Southern Europe,"ALB,BGR,TUR,MKD"
+GRD,Grenada,GD,Americas,Caribbean,
+GRL,Greenland,GL,Americas,Northern America,
+GTM,Guatemala,GT,Americas,Central America,"BLZ,SLV,HND,MEX"
+GUF,French Guiana,GF,Americas,South America,"BRA,SUR"
+GUM,Guam,GU,Oceania,Micronesia,
+GUY,Guyana,GY,Americas,South America,"BRA,SUR,VEN"
+HKG,Hong Kong,HK,Asia,Eastern Asia,CHN
+HND,Honduras,HN,Americas,Central America,"GTM,SLV,NIC"
+HRV,Croatia,HR,Europe,Southern Europe,"BIH,HUN,MNE,SRB,SVN"
+HTI,Haiti,HT,Americas,Caribbean,DOM
+HUN,Hungary,HU,Europe,Eastern Europe,"AUT,HRV,ROU,SRB,SVK,SVN,UKR"
+IDN,Indonesia,ID,Asia,South-Eastern Asia,"TLS,MYS,PNG"
+IMN,Isle of Man,IM,Europe,Northern Europe,
+IND,India,IN,Asia,Southern Asia,"AFG,BGD,BTN,MMR,CHN,NPL,PAK,LKA"
+IRL,Ireland,IE,Europe,Northern Europe,GBR
+IRN,Iran,IR,Asia,Southern Asia,"AFG,ARM,AZE,IRQ,PAK,TUR,TKM"
+IRQ,Iraq,IQ,Asia,Western Asia,"IRN,JOR,KWT,SAU,SYR,TUR"
+ISL,Iceland,IS,Europe,Northern Europe,
+ISR,Israel,IL,Asia,Western Asia,"EGY,JOR,LBN,SYR"
+ITA,Italy,IT,Europe,Southern Europe,"AUT,FRA,SMR,SVN,CHE,VAT"
+JAM,Jamaica,JM,Americas,Caribbean,
+JOR,Jordan,JO,Asia,Western Asia,"IRQ,ISR,SAU,SYR"
+JPN,Japan,JP,Asia,Eastern Asia,
+KAZ,Kazakhstan,KZ,Asia,Central Asia,"CHN,KGZ,RUS,TKM,UZB"
+KEN,Kenya,KE,Africa,Eastern Africa,"ETH,SOM,SSD,TZA,UGA"
+KGZ,Kyrgyzstan,KG,Asia,Central Asia,"CHN,KAZ,TJK,UZB"
+KHM,Cambodia,KH,Asia,South-Eastern Asia,"LAO,THA,VNM"
+KIR,Kiribati,KI,Oceania,Micronesia,
+KNA,Saint Kitts and Nevis,KN,Americas,Caribbean,
+KOR,South Korea,KR,Asia,Eastern Asia,PRK
+KWT,Kuwait,KW,Asia,Western Asia,"IRN,SAU"
+LAO,Laos,LA,Asia,South-Eastern Asia,"MMR,KHM,CHN,THA,VNM"
+LBN,Lebanon,LB,Asia,Western Asia,"ISR,SYR"
+LBR,Liberia,LR,Africa,Western Africa,"GIN,CIV,SLE"
+LBY,Libya,LY,Africa,Northern Africa,"DZA,TCD,EGY,NER,SDN,TUN"
+LCA,Saint Lucia,LC,Americas,Caribbean,
+LIE,Liechtenstein,LI,Europe,Western Europe,"AUT,CHE"
+LKA,Sri Lanka,LK,Asia,Southern Asia,IND
+LSO,Lesotho,LS,Africa,Southern Africa,ZAF
+LTU,Lithuania,LT,Europe,Northern Europe,"BLR,LVA,POL,RUS"
+LUX,Luxembourg,LU,Europe,Western Europe,"BEL,FRA,DEU"
+LVA,Latvia,LV,Europe,Northern Europe,"BLR,EST,LTU,RUS"
+MAC,Macao,MO,Asia,Eastern Asia,CHN
+MAF,Saint Martin (French part),MF,Americas,Caribbean,
+MAR,Morocco,MA,Africa,Northern Africa,"DZA,ESH,ESP"
+MCO,Monaco,MC,Europe,Western Europe,FRA
+MDA,Moldova,MD,Europe,Eastern Europe,"ROU,UKR"
+MDG,Madagascar,MG,Africa,Eastern Africa,
+MDV,Maldives,MV,Asia,Southern Asia,
+MEX,Mexico,MX,Americas,Central America,"BLZ,GTM,USA"
+MHL,Marshall Islands,MH,Oceania,Micronesia,
+MKD,North Macedonia,MK,Europe,Southern Europe,"ALB,BGR,GRC,SRB"
+MLI,Mali,ML,Africa,Western Africa,"DZA,BFA,GIN,CIV,MRT,NER,SEN"
+MLT,Malta,MT,Europe,Southern Europe,
+MMR,Myanmar,MM,Asia,South-Eastern Asia,"BGD,CHN,IND,LAO,THA"
+MNE,Montenegro,ME,Europe,Southern Europe,"ALB,BIH,HRV,MKD"
+MNG,Mongolia,MN,Asia,Eastern Asia,"CHN,RUS"
+MNP,Northern Mariana Islands,MP,Oceania,Micronesia,
+MOZ,Mozambique,MZ,Africa,Eastern Africa,"MWI,ZAF,SWZ,TZA,ZMB,ZWE"
+MRT,Mauritania,MR,Africa,Western Africa,"DZA,MLI,SEN,ESH"
+MSR,Montserrat,MS,Americas,Caribbean,
+MTQ,Martinique,MQ,Americas,Caribbean,
+MUS,Mauritius,MU,Africa,Eastern Africa,
+MWI,Malawi,MW,Africa,Eastern Africa,"MOZ,TZA,ZMB"
+MYS,Malaysia,MY,Asia,South-Eastern Asia,"BRN,IDN,THA"
+MYT,Mayotte,YT,Africa,Eastern Africa,
+NAM,Namibia,,Africa,Southern Africa,"AGO,BWA,ZAF,ZMB"
+NCL,New Caledonia,NC,Oceania,Melanesia,
+NER,Niger,NE,Africa,Western Africa,"DZA,BEN,BFA,TCD,LBY,MLI,NGA"
+NGA,Nigeria,NG,Africa,Western Africa,"BEN,CMR,TCD,NER"
+NIC,Nicaragua,NI,Americas,Central America,"CRI,HND"
+NIU,Niue,NU,Oceania,Polynesia,
+NLD,Netherlands,NL,Europe,Western Europe,"BEL,DEU"
+NOR,Norway,NO,Europe,Northern Europe,"FIN,SWE,RUS"
+NPL,Nepal,NP,Asia,Southern Asia,"CHN,IND"
+NRU,Nauru,NR,Oceania,Micronesia,
+NZL,New Zealand,NZ,Oceania,Australia and New Zealand,
+OMN,Oman,OM,Asia,Western Asia,"SAU,ARE,YEM"
+PAK,Pakistan,PK,Asia,Southern Asia,"AFG,CHN,IND,IRN"
+PAN,Panama,PA,Americas,Central America,"COL,CRI"
+PER,Peru,PE,Americas,South America,"BOL,BRA,CHL,COL,ECU"
+PHL,Philippines,PH,Asia,South-Eastern Asia,
+PLW,Palau,PW,Oceania,Micronesia,
+PNG,Papua New Guinea,PG,Oceania,Melanesia,IDN
+POL,Poland,PL,Europe,Eastern Europe,"BLR,CZE,DEU,LTU,RUS,SVK,UKR"
+PRI,Puerto Rico,PR,Americas,Caribbean,
+PRK,North Korea,KP,Asia,Eastern Asia,"CHN,KOR,RUS"
+PRT,Portugal,PT,Europe,Southern Europe,ESP
+PRY,Paraguay,PY,Americas,South America,"ARG,BOL,BRA"
+PSE,Palestine,PS,Asia,Western Asia,"ISR,JOR,EGY"
+PYF,French Polynesia,PF,Oceania,Polynesia,
+QAT,Qatar,QA,Asia,Western Asia,SAU
+REU,Reunion,RE,Africa,Eastern Africa,
+ROU,Romania,RO,Europe,Eastern Europe,"BGR,HUN,MDA,SRB,UKR"
+RUS,Russia,RU,Europe,Eastern Europe,"AZE,BLR,CHN,EST,FIN,GEO,KAZ,PRK,LVA,LTU,MNG,NOR,POL,UKR"
+RWA,Rwanda,RW,Africa,Eastern Africa,"BDI,COD,TZA,UGA"
+SAU,Saudi Arabia,SA,Asia,Western Asia,"IRQ,JOR,KWT,OMN,QAT,ARE,YEM"
+SDN,Sudan,SD,Africa,Northern Africa,"CAF,TCD,EGY,ERI,ETH,LBY,SSD"
+SEN,Senegal,SN,Africa,Western Africa,"GMB,GIN,GNB,MLI,MRT"
+SGP,Singapore,SG,Asia,South-Eastern Asia,
+SHN,Saint Helena,SH,Africa,Western Africa,
+SLB,Solomon Islands,SB,Oceania,Melanesia,
+SLE,Sierra Leone,SL,Africa,Western Africa,"GIN,LBR"
+SLV,El Salvador,SV,Americas,Central America,"GTM,HND"
+SMR,San Marino,SM,Europe,Southern Europe,ITA
+SOM,Somalia,SO,Africa,Eastern Africa,"DJI,ETH,KEN"
+SPM,Saint Pierre and Miquelon,PM,Americas,Northern America,
+SRB,Serbia,RS,Europe,Eastern Europe,"HUN,ROU,BGR,MKD,HRV,BIH,MNE,ALB"
+SSD,South Sudan,SS,Africa,Middle Africa,"CAF,COD,ETH,KEN,SDN,UGA"
+STP,Sao Tome and Principe,ST,Africa,Middle Africa,
+SUR,Suriname,SR,Americas,South America,"BRA,GUF,FRA,GUY"
+SVK,Slovakia,SK,Europe,Eastern Europe,"AUT,CZE,HUN,POL,UKR"
+SVN,Slovenia,SI,Europe,Southern Europe,"AUT,HRV,ITA,HUN"
+SWE,Sweden,SE,Europe,Northern Europe,"FIN,NOR"
+SWZ,Eswatini,SZ,Africa,Southern Africa,"MOZ,ZAF"
+SXM,Sint Maarten (Dutch part),SX,Americas,Caribbean,
+SYC,Seychelles,SC,Africa,Eastern Africa,
+SYR,Syria,SY,Asia,Western Asia,"IRQ,ISR,JOR,LBN,TUR"
+TCA,Turks and Caicos Islands,TC,Americas,Caribbean,
+TCD,Chad,TD,Africa,Middle Africa,"CMR,CAF,LBY,NER,NGA,SSD"
+TGO,Togo,TG,Africa,Western Africa,"BEN,BFA,GHA"
+THA,Thailand,TH,Asia,South-Eastern Asia,"MMR,KHM,LAO,MYS"
+TJK,Tajikistan,TJ,Asia,Central Asia,"AFG,CHN,KGZ,UZB"
+TKL,Tokelau,TK,Oceania,Polynesia,
+TKM,Turkmenistan,TM,Asia,Central Asia,"AFG,IRN,KAZ,UZB"
+TLS,Timor,TL,Asia,South-Eastern Asia,IDN
+TON,Tonga,TO,Oceania,Polynesia,
+TTO,Trinidad and Tobago,TT,Americas,Caribbean,
+TUN,Tunisia,TN,Africa,Northern Africa,"DZA,LBY"
+TUR,Turkey,TR,Asia,Western Asia,"ARM,AZE,BGR,GEO,GRC,IRN,IRQ,SYR"
+TUV,Tuvalu,TV,Oceania,Polynesia,
+TWN,Taiwan,TW,Asia,Eastern Asia,
+TZA,Tanzania,TZ,Africa,Eastern Africa,"BDI,COD,KEN,MWI,MOZ,RWA,UGA,ZMB"
+UGA,Uganda,UG,Africa,Eastern Africa,"COD,KEN,RWA,SSD,TZA"
+UKR,Ukraine,UA,Europe,Eastern Europe,"BLR,HUN,MDA,POL,ROU,RUS,SVK"
+URY,Uruguay,UY,Americas,South America,"ARG,BRA"
+USA,United States,US,Americas,Northern America,"CAN,MEX"
+UZB,Uzbekistan,UZ,Asia,Central Asia,"AFG,KAZ,KGZ,TJK,TKM"
+VAT,Vatican,VA,Europe,Southern Europe,ITA
+VCT,Saint Vincent and the Grenadines,VC,Americas,Caribbean,
+VEN,Venezuela,VE,Americas,South America,"BRA,COL,GUY"
+VGB,British Virgin Islands,VG,Americas,Caribbean,
+VIR,United States Virgin Islands,VI,Americas,Caribbean,
+VNM,Vietnam,VN,Asia,South-Eastern Asia,"KHM,CHN,LAO"
+VUT,Vanuatu,VU,Oceania,Melanesia,
+WLF,Wallis and Futuna,WF,Oceania,Polynesia,
+WSM,Samoa,WS,Oceania,Polynesia,
+YEM,Yemen,YE,Asia,Western Asia,"OMN,SAU"
+ZAF,South Africa,ZA,Africa,Southern Africa,"BWA,LSO,MOZ,NAM,SWZ,ZWE"
+ZMB,Zambia,ZM,Africa,Eastern Africa,"AGO,BWA,COD,MWI,MOZ,NAM,TZA,ZWE"
+ZWE,Zimbabwe,ZW,Africa,Eastern Africa,"BWA,MOZ,ZAF,ZMB"
+WOR,World,ZZ,World,World,

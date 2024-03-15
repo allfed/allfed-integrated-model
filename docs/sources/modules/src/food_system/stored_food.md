@@ -16,7 +16,7 @@ StoredFood(
 
 
 ### .calculate_stored_food_to_use
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/stored_food.py/#L44)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/stored_food.py/#L49)
 ```python
 .calculate_stored_food_to_use(
    starting_month
@@ -44,7 +44,7 @@ eating into the typical buffer.
 ---
 Assumptions:
 
-buffer_ratio (float): the percent of the typical buffered stored food
+end_simulation_ratio (float): the percent of the typical stored food
 to keep at the end of the simulation.
 
 The stocks listed are tabulated at the end of the month.
@@ -58,12 +58,3 @@ the optimizer will run through the stocks for the duration of
 each month. So, even starting at August (the minimum month), you would
 want to use the difference in stocks at the end of the previous month
 until the end of August to determine the stocks.
-
-### .set_to_zero
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/stored_food.py/#L113)
-```python
-.set_to_zero()
-```
-
----
-Initializes the stored food to zero.
