@@ -32,7 +32,6 @@ import pandas as pd
 import git
 from src.food_system.food import Food
 import matplotlib.pyplot as plt
-import plotly.graph_objects as go
 import numpy as np
 
 
@@ -2143,9 +2142,9 @@ class AnimalModelBuilder:
             # if milk animal, set the transfer population
             if animal.animal_function == "milk":
                 animal.set_milk_birth()
-                transfer_populations[animal.animal_species] = (
-                    animal.set_initial_milk_transfer()
-                )
+                transfer_populations[
+                    animal.animal_species
+                ] = animal.set_initial_milk_transfer()
                 transfer_pop = -transfer_populations[animal.animal_species]
             else:
                 # is not milk, recieve the transfer population (if no correspiodning milk animal, this will be zero)
@@ -2690,13 +2689,13 @@ def main(
             # the most efficient will use up as many hours as they can, and if there are any left, those will
             # be allocated to less efficient animals within the size class
 
-            hours_by_size_dict[animal.animal_size] = (
-                AnimalPopulation.calculate_change_in_population(
-                    animal,
-                    country_object,
-                    new_additive_animals_month,
-                    hours_by_size_dict[animal.animal_size],
-                )
+            hours_by_size_dict[
+                animal.animal_size
+            ] = AnimalPopulation.calculate_change_in_population(
+                animal,
+                country_object,
+                new_additive_animals_month,
+                hours_by_size_dict[animal.animal_size],
             )
 
         # then new loop... for homekill
@@ -2920,23 +2919,29 @@ if __name__ == "__main__":
         # exclude chicken from output list
         animal_list = [animal for animal in all_animals]
 
-        fig = go.Figure()
-        for animal in animal_list:
-            fig.add_trace(
-                go.Scatter(
-                    y=animal.slaughter,
-                    mode="lines",
-                    name=animal.animal_type + " slaughter",
+        PLOTLY_INSTALLED = False
+        if PLOTLY_INSTALLED:
+            fig = go.Figure()
+            for animal in animal_list:
+                fig.add_trace(
+                    go.Scatter(
+                        y=animal.slaughter,
+                        mode="lines",
+                        name=animal.animal_type + " slaughter",
+                    )
                 )
-            )
-        fig.show()
-        fig = go.Figure()
-        for animal in animal_list:
-            fig.add_trace(
-                go.Scatter(
-                    y=animal.population,
-                    mode="lines",
-                    name=animal.animal_type + " population",
+            fig.show()
+            fig = go.Figure()
+            for animal in animal_list:
+                fig.add_trace(
+                    go.Scatter(
+                        y=animal.population,
+                        mode="lines",
+                        name=animal.animal_type + " population",
+                    )
                 )
+            fig.show()
+        else:
+            print(
+                "ERROR: import plotly and rerun if you wish to have plots shown on running animal_populations.py"
             )
-        fig.show()
