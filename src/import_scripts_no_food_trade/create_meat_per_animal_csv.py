@@ -34,7 +34,11 @@ df_meat = df_meat[df_meat["iso3"].isin(df_head_counts["iso3"])]
 
 
 df_meat.to_csv(
-    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "meat_per_animal_csv.csv",
+    Path(repo_root)
+    / "data"
+    / "no_food_trade"
+    / "processed_data"
+    / "meat_per_animal_csv.csv",
     sep=",",
     index=False,
 )

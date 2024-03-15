@@ -16,11 +16,9 @@ import datetime
 from datetime import date
 from src.utilities.plotter import Plotter
 from src.scenarios.run_scenario import ScenarioRunner
-from src.food_system.food import Food
 from itertools import product
 import git
 from pathlib import Path
-import copy
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 

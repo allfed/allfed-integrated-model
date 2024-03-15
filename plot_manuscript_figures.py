@@ -6,7 +6,6 @@ It is separate from the .yaml configured custom by-country plots in the scenario
 Created on Feb 05 2024
 @author: morgan
 """
-import sys
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 from src.scenarios.run_scenario import ScenarioRunner
 from src.utilities.plotter import Plotter
@@ -15,6 +14,7 @@ from pathlib import Path
 import numpy as np
 import copy
 import pprint
+import sys
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -49,7 +49,6 @@ Examples:
 Use '--help' to display this message.
 """
     )
-    import sys
 
 
 def load_results(figure_name):

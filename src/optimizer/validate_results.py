@@ -8,7 +8,6 @@
 ###############################################################################
 """
 import numpy as np
-import pytest
 from src.food_system.food import Food
 
 

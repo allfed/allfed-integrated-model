@@ -196,13 +196,6 @@ class ScenarioRunner:
         # looks like it's necessary to reduce the feed requirements by about 20kcals per month, in order
         # to successfully run the optimization in the second round (however, this is only seemingly necessary when
         # both culled meat is turned on and there's no storage between years?)
-        # print(
-        #     "interpreted_results_round2.feed_sum_kcals_equivalent + interpreted_results_round2.biofuels_sum_kcals_equivalent"
-        # )
-        # print(
-        #     interpreted_results_round2.feed_sum_kcals_equivalent
-        #     + interpreted_results_round2.biofuels_sum_kcals_equivalent
-        # )
         # Reduce each element by at most 20 kcals per person per day, ensuring results are not negative
         interpreted_results_round2.feed_sum_kcals_equivalent.kcals = np.clip(
             interpreted_results_round2.feed_sum_kcals_equivalent.kcals - 20,

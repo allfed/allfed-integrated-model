@@ -297,7 +297,8 @@ class Extractor:
             Food: a Food object containing the extracted results
         """
         # Convert production_kcals, ratio_kcals, ratio_fat, and ratio_protein to monthly lists
-        # We would eventually like to do this unit conversion within the UnitConversions class, but we ran into a complication
+        # We would eventually like to do this unit conversion within the UnitConversions class, but we ran into a
+        # complication
         # where we're going from percent fed monthly to fat and protein is tricky
         billions_fed_kcals = self.to_monthly_list(
             production_kcals,
@@ -498,10 +499,12 @@ class Extractor:
         self, billions_fed_new_stored_outdoor_crops_kcals
     ):
         """
-        Sets the values of new_stored_outdoor_crops attribute of the Extractor class with the given billions_fed_new_stored_outdoor_crops_kcals.
+        Sets the values of new_stored_outdoor_crops attribute of the Extractor class with the given
+        billions_fed_new_stored_outdoor_crops_kcals.
         Args:
             self (Extractor): An instance of the Extractor class.
-            billions_fed_new_stored_outdoor_crops_kcals (list): A list of kcals in billions fed to new stored outdoor crops each month.
+            billions_fed_new_stored_outdoor_crops_kcals (list): A list of kcals in billions fed to new stored outdoor
+            crops each month.
         Returns:
             None
         """
@@ -539,7 +542,8 @@ class Extractor:
 
     def validate_outdoor_growing_production(self):
         """
-        Validates the outdoor growing production by checking if the difference between the outdoor crops to humans and the
+        Validates the outdoor growing production by checking if the difference between the outdoor crops to humans and
+        the
         sum of immediate outdoor crops and new stored outdoor crops is equal to zero.
         Args:
             self (Extractor): An instance of the Extractor class.
@@ -591,9 +595,6 @@ class Extractor:
             meat_eaten,
             1 / self.constants["KCALS_MONTHLY"],
         )
-
-        # Calculate the amount of culled meat grazing in billions of people fed each month
-        billions_fed_meat_grazing_kcals = billions_fed_meat_kcals
 
         # Calculate the amount of fat in culled meat in billions of people fed each month
         billions_fed_meat_fat = self.to_monthly_list(

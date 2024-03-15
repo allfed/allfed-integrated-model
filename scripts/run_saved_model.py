@@ -6,8 +6,7 @@ https://stackoverflow.com/questions/76158127/linear-relaxation-infeasible-in-pyt
 """
 
 import pulp
-from pulp import LpMaximize, LpMinimize, LpProblem, LpVariable, LpConstraint
-import pulp
+from pulp import LpProblem
 from typing import Tuple
 
 

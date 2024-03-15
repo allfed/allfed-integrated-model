@@ -20,7 +20,7 @@ from src.food_system.methane_scp import MethaneSCP
 from src.food_system.seaweed import Seaweed
 from src.food_system.feed_and_biofuels import FeedAndBiofuels
 from src.food_system.food import Food
-from src.food_system.animal_populations import AnimalPopulation, CalculateFeedAndMeat
+from src.food_system.animal_populations import CalculateFeedAndMeat
 from src.optimizer.validate_results import Validator
 
 
@@ -1618,7 +1618,7 @@ class Parameters:
                 const = 100
             else:
                 const = 20
-            to_increase_biofuels_and_feed_kcals_equiv = to_increase_biofuels_and_feed_kcals_equiv.in_units_kcals_equivalent() - Food(
+            twenty_kcals_food = Food(
                 const + np.zeros(len(to_increase_biofuels_and_feed_kcals_equiv.kcals)),
                 np.zeros(len(to_increase_biofuels_and_feed_kcals_equiv.kcals)),
                 np.zeros(len(to_increase_biofuels_and_feed_kcals_equiv.kcals)),
@@ -1627,16 +1627,22 @@ class Parameters:
                 "effective kcals per person per day each month",
             )  # 20 kcals is the magic number to fix feed going over minimum constraints, for some reason
             to_increase_biofuels_and_feed_kcals_equiv = (
+                to_increase_biofuels_and_feed_kcals_equiv.in_units_kcals_equivalent()
+                - twenty_kcals_food
+            )
+            to_increase_biofuels_and_feed_kcals_equiv = (
                 to_increase_biofuels_and_feed_kcals_equiv.negative_values_to_zero()
             )
             to_increase_biofuels_and_feed = (
                 to_increase_biofuels_and_feed_kcals_equiv.in_units_bil_kcals_thou_tons_thou_tons_per_month().kcals
             )
-
+            sum1 = interpreted_results_round1.immediate_outdoor_crops_kcals_equivalent
+            sum2 = interpreted_results_round1.new_stored_outdoor_crops_kcals_equivalent
+            sum3 = interpreted_results_round1.stored_food_kcals_equivalent
             total_crops_available = (
-                interpreted_results_round1.immediate_outdoor_crops_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month().kcals
-                + interpreted_results_round1.new_stored_outdoor_crops_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month().kcals
-                + interpreted_results_round1.stored_food_kcals_equivalent.in_units_bil_kcals_thou_tons_thou_tons_per_month().kcals
+                sum1.in_units_bil_kcals_thou_tons_thou_tons_per_month().kcals
+                + sum2.in_units_bil_kcals_thou_tons_thou_tons_per_month().kcals
+                + sum3.in_units_bil_kcals_thou_tons_thou_tons_per_month().kcals
             )
 
             biofuel_sum_billion_kcals_copy = biofuel_sum_billion_kcals.kcals.copy()

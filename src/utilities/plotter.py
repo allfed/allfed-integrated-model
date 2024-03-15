@@ -1052,7 +1052,6 @@ class Plotter:
             people_fed = int(lists_of_lists[i][0])
             country_name = lists_of_lists[i][1]
             interpreter = lists_of_lists[i][2]
-            scenario_label = lists_of_lists[i][3]
             if i == 10:
                 ax = fig.add_subplot(gs[5, :])
                 a = np.array([[0, 1]])

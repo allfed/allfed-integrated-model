@@ -40,7 +40,9 @@ from pathlib import Path
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
 
 
-def run_scenarios_from_yaml(config_data, show_country_figures, show_map_figures, web_interface):
+def run_scenarios_from_yaml(
+    config_data, show_country_figures, show_map_figures, web_interface
+):
     """
     Run the scenario in a loop, for each scenario specified, and using all data defined from the scenarios config file
     """
@@ -159,10 +161,17 @@ def main(args):
     color map of by-country fractional starvation.
 
     """
-    (show_country_figures, show_map_figures, web_interface, yaml_filename) = get_input_args(args)
+    (
+        show_country_figures,
+        show_map_figures,
+        web_interface,
+        yaml_filename,
+    ) = get_input_args(args)
 
     config_data = load_config_data(yaml_filename)
-    run_scenarios_from_yaml(config_data, show_country_figures, show_map_figures, web_interface)
+    run_scenarios_from_yaml(
+        config_data, show_country_figures, show_map_figures, web_interface
+    )
 
 
 if __name__ == "__main__":
