@@ -2,7 +2,7 @@
 
 
 ## Parameters
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L26)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L27)
 ```python 
 
 ```
@@ -13,16 +13,18 @@
 **Methods:**
 
 
-### .compute_parameters
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L55)
+### .compute_parameters_first_round
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L56)
 ```python
-.compute_parameters(
-   constants_inputs, scenarios_loader
+.compute_parameters_first_round(
+   constants_inputs, time_consts_inputs, scenarios_loader
 )
 ```
 
 ---
 Computes the parameters for the model based on the inputs and scenarios provided.
+This is relevant for the first round of optimization, with no feed assumed.
+
 
 
 **Args**
@@ -38,58 +40,56 @@ Computes the parameters for the model based on the inputs and scenarios provided
 
 **Raises**
 
-* **AssertionError**  : If maintained meat needs to be added for continued feed usage or if the function is not run for the first time.
+* **AssertionError**  : If maintained meat needs to be added for continued feed usage or if the function is not
+run for the first time.
 
-
-### .init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L158)
+### .get_second_round_kcals_with_redistributed_meat
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L165)
 ```python
-.init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels(
-   constants_out, constants_inputs, time_consts, outdoor_crops, methane_scp,
-   cellulosic_sugar, seaweed, stored_food
+.get_second_round_kcals_with_redistributed_meat(
+   round_1_meat_kcals, round_2_meat_kcals, milk_kcals_round1, milk_kcals_round2
 )
 ```
 
 ---
-Calculates the expected amount of livestock if breeding were quickly reduced and slaughter only increased slightly,
-then using that we calculate the feed they would use given the expected input animal populations over time.
+Gets a new array of kcals where the sum of kcals from meat remains the same, but the places where the meat was
+originally larger than round 1 is reduced, and the places where the meat was less than round 1 is increased.
+
+### .fill_negatives_with_positives
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L240)
+```python
+.fill_negatives_with_positives(
+   arr
+)
+```
 
 
-**Args**
-
-* **self** (object) : instance of the class
-* **constants_out** (dict) : dictionary containing output constants
-* **constants_inputs** (dict) : dictionary containing input constants
-* **time_consts** (dict) : dictionary containing time constants
-* **outdoor_crops** (dict) : dictionary containing outdoor crop constants
-* **methane_scp** (dict) : dictionary containing methane SCP constants
-* **cellulosic_sugar** (dict) : dictionary containing cellulosic sugar constants
-* **seaweed** (dict) : dictionary containing seaweed constants
-* **stored_food** (dict) : dictionary containing stored food constants
-
-
-**Returns**
-
-* **tuple**  : tuple containing constants_out, time_consts, and feed_and_biofuels
+### .init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels_round1
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L265)
+```python
+.init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels_round1(
+   constants_out, constants_inputs, time_consts
+)
+```
 
 
 ### .assert_constants_not_nan
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L258)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L369)
 ```python
 .assert_constants_not_nan(
-   single_valued_constants, time_consts
+   consts_for_optimizer, time_consts
 )
 ```
 
 ---
 This function checks that there are no NaN values in the constants, as the linear optimizer
-will fail in a mysterious way if there are. It does this by iterating through the single_valued_constants
+will fail in a mysterious way if there are. It does this by iterating through the consts_for_optimizer
 and time_consts dictionaries and checking each value for NaN.
 
 
 **Args**
 
-* **single_valued_constants** (dict) : A dictionary of single-valued constants
+* **consts_for_optimizer** (dict) : A dictionary of single-valued constants
 * **time_consts** (dict) : A dictionary of time constants
 
 
@@ -98,7 +98,7 @@ and time_consts dictionaries and checking each value for NaN.
 None
 
 ### .assert_dictionary_value_not_nan
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L281)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L392)
 ```python
 .assert_dictionary_value_not_nan(
    key, value
@@ -126,7 +126,7 @@ None
 
 
 ### .init_scenario
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L313)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L424)
 ```python
 .init_scenario(
    constants_out, constants_inputs
@@ -149,7 +149,7 @@ Initializes the scenario for some constants_out used for the optimizer.
 
 
 ### .set_nutrition_per_month
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L353)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L463)
 ```python
 .set_nutrition_per_month(
    constants_out, constants_inputs
@@ -160,7 +160,8 @@ Initializes the scenario for some constants_out used for the optimizer.
 Set the nutrition per month for the simulation.
 
 This function sets the nutrition per month for the simulation based on the input constants.
-It assumes a 2100 kcals diet, and scales the "upper safe" nutrition from the spreadsheet down to this "standard" level.
+It assumes a 2100 kcals diet, and scales the "upper safe" nutrition from the spreadsheet down to this
+"standard" level.
 It also adds 20% loss, according to the sorts of loss seen in this spreadsheet.
 
 
@@ -177,7 +178,7 @@ It also adds 20% loss, according to the sorts of loss seen in this spreadsheet.
 
 
 ### .set_seaweed_params
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L411)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L522)
 ```python
 .set_seaweed_params(
    constants_out, constants_inputs
@@ -203,7 +204,7 @@ along with the constants_out dictionary and the Seaweed object.
 and the Seaweed object
 
 ### .init_outdoor_crops
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L462)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L574)
 ```python
 .init_outdoor_crops(
    constants_out, constants_inputs
@@ -225,12 +226,14 @@ Initializes the outdoor crops parameters by calculating the rotation ratios and 
 * **tuple**  : A tuple containing the updated constants_out and the outdoor_crops object
 
 ---
-This function initializes the outdoor crops parameters by calculating the rotation ratios and monthly production.
-It takes in two dictionaries, constants_out and constants_inputs, which contain the output and input constants respectively.
+This function initializes the outdoor crops parameters by calculating the rotation ratios and monthly
+production.
+It takes in two dictionaries, constants_out and constants_inputs, which contain the output and input constants
+respectively.
 The function returns a tuple containing the updated constants_out and the outdoor_crops object.
 
 ### .init_stored_food
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L511)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L630)
 ```python
 .init_stored_food(
    constants_out, constants_inputs, outdoor_crops
@@ -257,10 +260,10 @@ available stored food is set to zero.
 
 
 ### .init_fish_params
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L553)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L674)
 ```python
 .init_fish_params(
-   time_consts, constants_inputs
+   time_consts, constants_inputs, time_consts_inputs
 )
 ```
 
@@ -281,7 +284,7 @@ Initializes seafood parameters, not including seaweed.
 
 
 ### .init_greenhouse_params
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L574)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L695)
 ```python
 .init_greenhouse_params(
    time_consts, constants_inputs, outdoor_crops
@@ -305,7 +308,7 @@ Initializes the greenhouse parameters and calculates the greenhouse yield per he
 
 
 ### .init_cs_params
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L621)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L747)
 ```python
 .init_cs_params(
    constants_out, time_consts, constants_inputs
@@ -334,7 +337,7 @@ production using the inputs provided in the constants_inputs dictionary. The
 resulting object is then added to the time_consts dictionary.
 
 ### .init_scp_params
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L663)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L778)
 ```python
 .init_scp_params(
    constants_out, time_consts, constants_inputs
@@ -357,30 +360,41 @@ Initializes the parameters for single cell protein.
 
 
 ### .init_meat_and_dairy_and_feed_from_breeding
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L707)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L813)
 ```python
 .init_meat_and_dairy_and_feed_from_breeding(
-   constants_inputs, reduction_in_dairy_calves,
-   use_grass_and_residues_for_dairy, cao, feed_and_biofuels, meat_and_dairy,
-   feed_ratio, constants_out, time_consts
+   constants_inputs, feed_meat_object, feed_and_biofuels_class, meat_and_dairy,
+   constants_out, time_consts
 )
 ```
 
 
-### .calculate_culled_meat_from_feed_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L907)
+### .get_animal_meat_dictionary
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L860)
 ```python
-.calculate_culled_meat_from_feed_results(
-   constants_out, time_consts, meat_and_dairy, feed_dairy_meat_results
+.get_animal_meat_dictionary(
+   constants_inputs, feed_meat_object, meat_and_dairy
+)
+```
+
+
+### .calculate_meat_from_feed_results
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L939)
+```python
+.calculate_meat_from_feed_results(
+   constants_inputs, constants_out, time_consts, meat_and_dairy,
+   feed_meat_object
 )
 ```
 
 ---
-Calculates the amount of culled meat from feed results and updates the constants_out and time_consts dictionaries.
+Calculates the amount of culled meat from feed results and updates the constants_out and time_consts
+dictionaries.
 
 
 **Args**
 
+* **constants_inputs** (dict) : dictionary containing input constants
 * **constants_out** (dict) : dictionary containing constants to be updated
 * **time_consts** (dict) : dictionary containing time constants to be updated
 * **meat_and_dairy** (MeatAndDairy) : instance of MeatAndDairy class
@@ -392,22 +406,10 @@ Calculates the amount of culled meat from feed results and updates the constants
 * **tuple**  : tuple containing updated constants_out and time_consts dictionaries
 
 
-**Example**
-
-* 0, "CULLED_MEAT_FRACTION_FAT": 0, "CULLED_MEAT_FRACTION_PROTEIN": 0}
-* 0}
-* [100, 200, 300], "Pig Slaughtered": [50, 100, 150], "Beef Slaughtered": [20, 40, 60]}
-* 0.0, 'CULLED_MEAT_FRACTION_FAT': 0.0, 'CULLED_MEAT_FRACTION_PROTEIN': 0.0}, {'max_culled_kcals': 0.0})
-
+### .calculate_non_meat_and_dairy_from_feed_results
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1016)
 ```python
-
->>> calculate_culled_meat_from_feed_results(constants_out, time_consts, meat_and_dairy, feed_dairy_meat_results)
-```
-
-### .calculate_non_culled_meat_and_dairy_from_feed_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L951)
-```python
-.calculate_non_culled_meat_and_dairy_from_feed_results(
+.calculate_non_meat_and_dairy_from_feed_results(
    constants_inputs, constants_out, time_consts, dairy_pop, meat_and_dairy
 )
 ```
@@ -430,110 +432,71 @@ Calculates the non-culled meat and dairy from feed results.
 * **tuple**  : tuple containing constants_out and time_consts
 
 
-### .init_meat_and_dairy_params
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1039)
+### .compute_parameters_second_round
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1085)
 ```python
-.init_meat_and_dairy_params(
-   constants_inputs, constants_out, time_consts, feed_and_biofuels,
-   outdoor_crops
+.compute_parameters_second_round(
+   constants_inputs, constants_out_round1, time_consts_round1,
+   interpreted_results_round1
 )
 ```
 
 ---
-Initializes meat and dairy parameters.
+Compute the parameters for the second round of optimizations, where we now know the amount of feed
+available for animals after humans have used all they need for their minimum nutritional needs.
 
-
-**Args**
-
-* **constants_inputs** (dict) : dictionary of input constants
-* **constants_out** (dict) : dictionary of output constants
-* **time_consts** (dict) : dictionary of time constants
-* **feed_and_biofuels** (dict) : dictionary of feed and biofuel constants
-* **outdoor_crops** (dict) : dictionary of outdoor crop constants
-
-
-**Returns**
-
-* **tuple**  : tuple containing meat and dairy object, constants_out dictionary, and time_consts dictionary
-
-
-### .init_grazing_params
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1091)
+### .calculate_human_consumption_for_min_needs
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1248)
 ```python
-.init_grazing_params(
-   constants_inputs, time_consts, meat_and_dairy
+.calculate_human_consumption_for_min_needs(
+   constants_inputs, interpreted_results_round1, extra_meat_round2
 )
 ```
 
 ---
-Initializes grazing parameters for the simulation.
+We run through each month and determine the amount consumed each month of all foods.
+However, any human consumption which exceeds the starvation percentage is ignored.
+To determine when to start ignoring human consumption, we loop through the different foods
+in the following order of priority for humans to consume:
+  First fish, then meat, then dairy, then greenhouse crops, then outdoor crops, then stored food,
+  then scp, then cs, then seaweed.
 
+NOTE: We only use variables set here in the optimizer that are NOT  greenhouses or dairy or fish, because
+greenhouses and dairy and fish are not actually added as variables in the model (they are added as monthly
+constants to sum of human consumption) and they cannot be optimized.
+Furthermore, these foods always go to humans anyway.
+We only add these variables for the purposes of validation in the case
+that they sum up to human caloric minimum needs.
 
-**Args**
-
-* **constants_inputs** (dict) : A dictionary containing constant inputs for the simulation.
-* **time_consts** (dict) : A dictionary containing time constants for the simulation.
-* **meat_and_dairy** (MeatAndDairy) : An instance of the MeatAndDairy class.
-
-
-**Returns**
-
-* **tuple**  : A tuple containing the updated time constants and the updated meat_and_dairy instance.
-
-
-### .init_grain_fed_meat_params
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1146)
+### .assert_consumption_within_limits
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1478)
 ```python
-.init_grain_fed_meat_params(
-   time_consts, meat_and_dairy, feed_and_biofuels, constants_inputs,
-   outdoor_crops
+.assert_consumption_within_limits(
+   human_food_consumption, kcals_daily_maximum
 )
 ```
 
 ---
-Initializes grain-fed meat parameters by calculating the amount of grain-fed meat and milk
-produced from human-edible feed, and updating the time constants dictionary with the results.
+Asserts that each Food object in the human_food_consumption dictionary is less than
+or equal to kcals_daily_maximum for all months.
 
-
-**Args**
-
-* **self**  : instance of the class
-* **time_consts** (dict) : dictionary containing time constants
-* **meat_and_dairy** (MeatAndDairy) : instance of MeatAndDairy class
-* **feed_and_biofuels** (FeedAndBiofuels) : instance of FeedAndBiofuels class
-* **constants_inputs** (dict) : dictionary containing constant inputs
-* **outdoor_crops** (OutdoorCrops) : instance of OutdoorCrops class
-
-
-**Returns**
-
-* **tuple**  : updated time constants dictionary and instance of MeatAndDairy class
-
-
-### .init_culled_meat_params
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1239)
+### .increase_biofuels_then_feed
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1504)
 ```python
-.init_culled_meat_params(
-   constants_inputs, constants_out, time_consts, meat_and_dairy
+.increase_biofuels_then_feed(
+   biofuel, feed, increase, max_biofuel, max_feed, total_crops_available
 )
 ```
 
----
-Initializes the parameters for culled meat, which is based on the amount that wouldn't be maintained
-(excluding maintained cattle as well as maintained chicken and pork). This calculation is pre-waste for
-the meat maintained of course (no waste applied to livestock maintained counts from which we determined
-the amount of meat which can be culled). The actual culled meat returned is post waste.
 
-
-**Args**
-
-* **constants_inputs** (dict) : dictionary of input constants
-* **constants_out** (dict) : dictionary of output constants
-* **time_consts** (dict) : dictionary of time constants
-* **meat_and_dairy** (MeatAndDairy) : instance of MeatAndDairy class
-
-
-**Returns**
-
-* **tuple**  : tuple containing updated constants_out, time_consts, and meat_and_dairy
+### .compute_parameters_third_round
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1544)
+```python
+.compute_parameters_third_round(
+   constants_inputs, constants_out_round1, constants_out_round2,
+   time_consts_round1, time_consts_round2, interpreted_results_round1,
+   interpreted_results_round2, feed_and_biofuels_class, feed_demand,
+   biofuels_demand, feed_meat_object_round1
+)
+```
 

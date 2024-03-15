@@ -16,7 +16,7 @@ CellulosicSugar(
 
 
 ### .calculate_monthly_cs_production
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/cellulosic_sugar.py/#L63)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/cellulosic_sugar.py/#L51)
 ```python
 .calculate_monthly_cs_production(
    constants_for_params

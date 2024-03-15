@@ -2,7 +2,7 @@
 
 
 ## Interpreter
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L26)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L27)
 ```python 
 
 ```
@@ -16,11 +16,29 @@ ways of interpreting the results, as a diet, or as a total food supply.
 **Methods:**
 
 
+### .set_feed_and_biofuels
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L38)
+```python
+.set_feed_and_biofuels(
+   feed_and_biofuels
+)
+```
+
+
+### .set_meat_dictionary
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L42)
+```python
+.set_meat_dictionary(
+   meat_dictionary
+)
+```
+
+
 ### .interpret_results
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L35)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L54)
 ```python
 .interpret_results(
-   extracted_results, time_consts
+   extracted_results, title = 'Untitled'
 )
 ```
 
@@ -34,7 +52,7 @@ subtracted from the sum of outdoor growing and stored food.
 **Args**
 
 * **extracted_results** (object) : The raw output of the optimizer food categories and
-* **time_consts** (dict) : A dictionary containing time constants
+* **title** (str) : Name/title of the run
 total people fed in list form
 
 
@@ -47,7 +65,7 @@ ANYTHING assigned to "self" here is part of a useful result that will either
 be printed or plotted as a result
 
 ### .assign_percent_fed_from_extractor
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L145)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L162)
 ```python
 .assign_percent_fed_from_extractor(
    extracted_results
@@ -67,7 +85,7 @@ of the extraction process.
 None
 
 ### .assign_kcals_equivalent_from_extractor
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L203)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L212)
 ```python
 .assign_kcals_equivalent_from_extractor(
    extracted_results
@@ -87,7 +105,7 @@ Assigns the kcals equivalent of various food sources to their respective attribu
 None
 
 ### .set_to_humans_properties_kcals_equivalent
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L269)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L264)
 ```python
 .set_to_humans_properties_kcals_equivalent(
    extracted_results
@@ -107,7 +125,7 @@ Converts the stored food and outdoor crops to humans properties to their equival
 None
 
 ### .assign_time_months_middle
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L299)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L294)
 ```python
 .assign_time_months_middle(
    NMONTHS
@@ -138,7 +156,7 @@ None
 ```
 
 ### .assign_interpreted_properties
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L321)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L316)
 ```python
 .assign_interpreted_properties(
    extracted_results
@@ -168,37 +186,21 @@ None
 ```
 
 ### .get_mean_min_nutrient
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L352)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L354)
 ```python
 .get_mean_min_nutrient()
 ```
 
 ---
-Calculates the mean number of people fed in all months by finding the minimum of any nutrient in any month.
-This is useful for assessing what would have happened if stored food were not a constraint on the number of people fed.
+for finding the minimum of any nutrient in any month
+and then getting the mean people fed in all the months
+This is useful for assessing what would have happened if stored food were not
+a constraint on number of people fed
 
-
-**Args**
-
-* **self** (Interpreter) : An instance of the Interpreter class.
-
-
-**Returns**
-
-* **float**  : The mean number of people fed in all months.
-
-
-**Example**
-
-
-```python
-
->>> interpreter.get_mean_min_nutrient()
-2.0
-```
+returns: the mean people fed in all months
 
 ### .get_sum_by_adding_to_humans
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L378)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L374)
 ```python
 .get_sum_by_adding_to_humans()
 ```
@@ -229,18 +231,16 @@ Sums the resulting nutrients from the extracted_results and returns the total.
 >>> interpreter.scp = 150
 >>> interpreter.greenhouse = 300
 >>> interpreter.fish = 100
->>> interpreter.culled_meat_plus_grazing_cattle_maintained = 50
->>> interpreter.grazing_milk = 25
->>> interpreter.grain_fed_meat = 75
->>> interpreter.grain_fed_milk = 50
+>>> interpreter.meat = 50
+>>> interpreter.milk = 25
 >>> interpreter.get_sum_by_adding_to_humans()
 1025.0
 ```
 
-### .print_kcals_per_capita_per_day
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L423)
+### .print_kcals_per_person_per_day
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L417)
 ```python
-.print_kcals_per_capita_per_day(
+.print_kcals_per_person_per_day(
    interpreted_results
 )
 ```
@@ -258,17 +258,8 @@ the interpreted results of a scenario.
 
 None
 
-
-**Example**
-
-
-```python
-
->>> Interpreter.print_kcals_per_capita_per_day(interpreted_results)
-```
-
 ### .get_percent_people_fed
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L446)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L435)
 ```python
 .get_percent_people_fed(
    humans_fed_sum
@@ -276,39 +267,33 @@ None
 ```
 
 ---
-Calculates the estimated percentage of people fed based on the minimum nutrients required to meet the needs of the population in any month, for kcals, fat, and protein.
+Calculates the estimated percentage of people fed based on the minimum nutrients required to meet the
+needs of the population in any month, for kcals, fat, and protein.
 
 
 **Args**
 
-* **humans_fed_sum** (HumanFedSum) : An instance of the HumanFedSum class representing the total amount of nutrients available for the population.
+* **humans_fed_sum** (HumanFedSum) : An instance of the HumanFedSum class representing the total amount of
+nutrients available for the population.
 
 
 **Returns**
 
-* **list**  : A list containing the estimated percentage of people fed and the minimum nutrients required to meet their needs.
-
-
-**Example**
-
-* 1000, 'fat': 50, 'protein': 20}]
-
-```python
-
->>> interpreter = Interpreter()
->>> interpreter.get_percent_people_fed(humans_fed_sum)
-```
+* **list**  : A list containing the estimated percentage of people fed and the minimum nutrients required to
+meet their needs.
 
 ### .correct_and_validate_rounding_errors
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L480)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L466)
 ```python
 .correct_and_validate_rounding_errors()
 ```
 
 ---
 This function corrects any rounding errors that might have occurred during the optimization process.
-It ensures that the values are rounded to the nearest 3 decimal places and that they are greater than or equal to zero.
-The function returns the corrected values for stored_food, outdoor_crops, immediate_outdoor_crops, new_stored_outdoor_crops, and seaweed.
+It ensures that the values are rounded to the nearest 3 decimal places and that they are greater than or equal
+to zero.
+The function returns the corrected values for stored_food, outdoor_crops,
+immediate_outdoor_crops, new_stored_outdoor_crops, and seaweed.
 
 
 **Args**
@@ -318,80 +303,22 @@ None
 
 **Returns**
 
-* **tuple**  : A tuple containing the corrected values for stored_food, outdoor_crops, immediate_outdoor_crops, new_stored_outdoor_crops, and seaweed.
+* **tuple**  : A tuple containing the corrected values for stored_food, outdoor_crops, immediate_outdoor_crops,
+new_stored_outdoor_crops, and seaweed.
 
-
-**Example**
-
-
+### .get_month_after_which_is_all_zero
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L526)
 ```python
-
->>> stored_food, outdoor_crops, immediate_outdoor_crops, new_stored_outdoor_crops, seaweed = interpreter.correct_and_validate_rounding_errors()
-```
-
-### .get_increased_excess_to_feed
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L539)
-```python
-.get_increased_excess_to_feed(
-   feed_delay, percent_fed
+.get_month_after_which_is_all_zero(
+   variables, nmonths
 )
 ```
 
----
-Calculates the excess feed to be added to the diet at a consistent percentage
-in the months of interest (months to calculate diet).
 
-
-**Args**
-
-* **feed_delay** (int) : the number of months before the shutoff
-* **percent_fed** (float) : the percentage of the baseline feed to be fed to the population
-
-
-**Returns**
-
-* **excess_per_month** (numpy.ndarray) : kcals per month, units percent
-
-
-**Raises**
-
-* **AssertionError**  : if the length of additional_excess_to_add_percent is not equal to after_shutoff_feed
-
-
-### .correct_and_validate_rounding_errors
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L480)
+### .calculate_feed_and_biofuels
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L563)
 ```python
-.correct_and_validate_rounding_errors()
-```
-
----
-This function corrects any rounding errors that might have occurred during the optimization process.
-It ensures that the values are rounded to the nearest 3 decimal places and that they are greater than or equal to zero.
-The function returns the corrected values for stored_food, outdoor_crops, immediate_outdoor_crops, new_stored_outdoor_crops, and seaweed.
-
-
-**Args**
-
-None
-
-
-**Returns**
-
-* **tuple**  : A tuple containing the corrected values for stored_food, outdoor_crops, immediate_outdoor_crops, new_stored_outdoor_crops, and seaweed.
-
-
-**Example**
-
-
-```python
-
->>> stored_food, outdoor_crops, immediate_outdoor_crops, new_stored_outdoor_crops, seaweed = interpreter.correct_and_validate_rounding_errors()
-```
-
-### .set_feed_and_biofuels
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L662)
-```python
-.set_feed_and_biofuels(
+.calculate_feed_and_biofuels(
    seaweed_used_for_biofuel, methane_scp_used_for_biofuel,
    cellulosic_sugar_used_for_biofuel, stored_food_used_for_biofuel,
    outdoor_crops_used_for_biofuel, seaweed_used_for_feed,
@@ -406,7 +333,7 @@ outdoor crops, methane, and cellulosic sugar that are used for feed and
 biofuels, and the remaining feed and biofuel needed from stored food.
 
 ### .sum_many_results_together
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L727)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/interpret_results.py/#L663)
 ```python
 .sum_many_results_together(
    many_results, cap_at_100_percent

@@ -19,7 +19,7 @@ Seafood(
 [source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/seafood.py/#L59)
 ```python
 .set_seafood_production(
-   constants_for_params
+   time_consts_for_params
 )
 ```
 
@@ -29,7 +29,7 @@ Sets the seafood production for the Seafood class based on the given constants f
 
 **Args**
 
-* **constants_for_params** (dict) : A dictionary containing the constants for parameters.
+* **time_consts_for_params** (dict) : A dictionary containing the month-by-month constants for parameters.
 
 
 **Returns**

@@ -104,12 +104,19 @@ For both versions: Code from this project will only run smoothly when opened in 
 environment and when the working directory is set to the path location of the repository on
 your machine.
 
+# Regenerate documentation
+```bash
+python3 automate_mkdocs.py
+gendocs --config mkgendocs.yml
+mkdocs serve
+```
+Then navigate to `http://127.0.0.1:8000/` in your web browser.
 
 # Detailed Explanation of Files and Folders in this Repository
 
 Below we explain all of the folders and files used for getting data, processing data, running simulations, then displaying and saving results of models.
 
-Files purely for documentation or creating the python environment are not included below.
+Files purely for  mentation or creating the python environment are not included below.
 
 Directory Structure
 ------------

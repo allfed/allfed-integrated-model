@@ -15,50 +15,62 @@ An integrated food supply model for resilient foods in nuclear winter
 
 (See Dependencies section first)
 
-Results from the paper can be rerun using the following commands in the src/scenarios folder
+Results from the paper can be rerun using the following command:
+```bash
+python3 plot_manuscript_figures.py rerun all
+```
+You can always just run 
+```bash
+python3 plot_manuscript_figures.py rerun all
+```
+To recalculate fewer plots or show specific results from the paper.
+
+Individual scenarios, or a series of scenarios of interest, can be specified in the scenarios/ folder.
+```bash
+./run_scenarios_from_yaml.sh False True False one_food_at_a_time_USA.yaml
+```
+This shows a stackplot of people fed in baseline (no nuclear winter but loss of trade), nuclear winter without resilient food (no food trade), and nuclear winter with no food trade.
+
+The first argument is whether to show plotted simulation results for the different rounds of optimization.
+The second argument is whether to show a map of percent people fed for all countries, and shows at the end for each type of scenario specified in the yaml file.
+The third argument should be set to False unless you are running the model from the [web interface](https://github.com/allfed/integrated-model-web).
+
+Rounds of optimization: Round1 is zero feed/biofuel for ascertaining minimum human needs that can be satisfied, Round2 determines the amount of feed and biofuel that could be used to optimally produce feed and optionally biofuel, and the Round3 finally combines the appropriate amount of feed and biofuel used while still satisfying human minimum caloric needs. You can alter the plots shown by commenting out display code in scenarios/run_scenario.py display_results_of_optimizer_round function calls.
+
+To run these scenarios for a specific country, you can create a new yaml file with a specific country specified in the yaml file. For example, to run Oman, you can add the following to the yaml:
+
+```
+settings:
+  countries: "OMN"
+```
+Where "OMN" is the 3 letter iso3 code for Oman.
+
+If you name this new yaml file for the scenarios as: "your_yaml_file_here.yaml", then you would run:
 
 ```bash
-python create_fig_1ab.py
-python create_fig_2abcde.py
-python create_fig_3abcd.py
-python run_model_baseline.py
+./run_scenarios_from_yaml.sh True False your_yaml_file_here.yaml
 ```
 
-For the country-by-country no food trade model, run
-```bash
-python run_baseline_by_country_no_trade.py
-```
-if you want to recreate the figures and results from the Nature Foods paper. 
+To see the results for Oman baseline, nuclear winter, and nuclear winter with resilient foods.
 
-# Update Documentation with MkDocs
-
-Once conda is activated, you can use gendocs
-
-```bash
-python automate_mkdocs.py
-gendocs --config mkgendocs.yml
-mkdocs serve
-```
-
-Then navigate to localhost:8000 in your browser to see the locally built documentation.
 
 # More Details
 
 See the zenodo repository for more results and reports:
 https://zenodo.org/record/7039924
 
-* A scenario is created by creating a new instance of the Scenario class in `scenario.py`. This class contains a collection of methods that provide your model with the parameter value it needs to run. Here you can also change the parameter values if you want to change the model to your specifications.
-* Once you got all your parameter values ready you create an Instance of the Parameter class from `parameter.py`. This class allows you to initialize the model with the parameter values you defined.
-* Finally to create an instance of the Optimizer class from `optimizer.py` and provide it with your parameters. This will run the model itself and optimize it.
-* to see which parameters and scenarios can be set, look at src/scenarios/run_scenarios.py "set_depending_on_option" method
 # How the model works in general
 
 ![Flow Chart](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/overview.png)
 
+# more details
+![Flow Chart](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/outfile.png)
+
+
 #### Dependency management with Anaconda
 The integrated model is written in python 3, ensure you have some version of python3, although it has only been tested with python 3.9 or later. Then, install the required packages using conda or miniconda:
 
-You'll also need to install conda or miniconda or similar.
+You'll also need to install conda or miniconda, micromamba, or similar.
 
 See https://docs.anaconda.com/anaconda/install/index.html for installation instructions.
 
@@ -315,4 +327,3 @@ Finally the results are returned from run_scenario back up the call chain in rev
 **utilities/**
 
 various useful utilities that are called elsewhere in the program, that do not serve any core function for the modelling. Notably, all the plotting code is located in the utilities directory.
-

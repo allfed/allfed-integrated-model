@@ -2,7 +2,7 @@
 
 
 ## FeedAndBiofuels
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L19)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L16)
 ```python 
 FeedAndBiofuels(
    constants_for_params
@@ -15,8 +15,17 @@ FeedAndBiofuels(
 **Methods:**
 
 
+### .create_feed_food_from_kcals
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L61)
+```python
+.create_feed_food_from_kcals(
+   food_kcals
+)
+```
+
+
 ### .set_feed_and_biofuels
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L56)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L76)
 ```python
 .set_feed_and_biofuels(
    outdoor_crops_used_for_biofuel, methane_scp_used_for_biofuel,
@@ -66,25 +75,32 @@ None
 ... )
 ```
 
-### .get_biofuels_and_feed_before_waste_from_animal_pops
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L162)
+### .get_biofuels_and_feed_from_delayed_shutoff
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L182)
 ```python
-.get_biofuels_and_feed_before_waste_from_animal_pops(
-   constants_for_params, feed_over_time
+.get_biofuels_and_feed_from_delayed_shutoff(
+   constants_for_params
+)
+```
+
+
+### .get_feed_usage
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L194)
+```python
+.get_feed_usage(
+   feed_duration
 )
 ```
 
 ---
-Mostly, this function converts from feed_over_time in dry caloric tons to
-the appropriate fat and protein values, as well as getting biofules from the
-expected shutoff duration, then creates a Food object for the feed usage.
-This function has "animal pops" in there because it's used only in the case that
-feed is calculated in the context of breeding.
+This function is used to get the feed usage before the cap is applied.
+The total number of months before shutoff is the duration, representing the
+number of nonzero feed months for feeds to be used.
 
-### .get_biofuel_usage_prewaste
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L189)
+### .get_biofuel_usage
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L254)
 ```python
-.get_biofuel_usage_prewaste(
+.get_biofuel_usage(
    biofuel_duration
 )
 ```
@@ -102,61 +118,5 @@ number of nonzero biofuel months for biofuels to be used.
 
 **Returns**
 
-* **Food**  : A Food object representing the biofuel usage before waste is applied.
-
-
-**Example**
-
-
-```python
-
->>> feed.get_biofuel_usage_prewaste(6)
-Food(kcals=[1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 0, 0, 0, 0, 0, 0],
-     fat=[0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0, 0, 0, 0, 0, 0],
-     protein=[0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0, 0, 0, 0, 0, 0],
-     kcals_units='billion kcals each month',
-     fat_units='thousand tons each month',
-     protein_units='thousand tons each month')
-```
-
-### .get_excess_food_usage_from_percents
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L261)
-```python
-.get_excess_food_usage_from_percents(
-   excess_feed_percent
-)
-```
-
----
-Calculates the excess food usage based on the percentage of excess feed.
-
-**Args**
-
-* **excess_feed_percent** (float) : The percentage of excess feed.
-
-
-**Returns**
-
-* **Food**  : A Food object representing the excess food usage.
-
-
-### .convert_kcal_to_tons
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L286)
-```python
-.convert_kcal_to_tons(
-   kcals
-)
-```
-
----
-Converts a given number of kcals to tons of feed or biofuel.
-
-**Args**
-
-* **kcals** (float) : number of kcals to convert to tons
-
-
-**Returns**
-
-* **float**  : number of tons equivalent to the given number of kcals
+* **Food**  : A Food object representing the biofuel usage per month.
 

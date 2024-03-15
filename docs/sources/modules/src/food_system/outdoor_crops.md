@@ -16,122 +16,57 @@ OutdoorCrops(
 
 
 ### .calculate_rotation_ratios
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L75)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L61)
 ```python
 .calculate_rotation_ratios(
    constants_for_params
 )
 ```
 
+
+### .get_year_1_ratio_using_fraction_harvest_before_may
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L100)
+```python
+.get_year_1_ratio_using_fraction_harvest_before_may(
+   first_year_xia_et_al_reduction, seasonality_values, country_iso3
+)
+```
+
 ---
-Calculates the rotation ratios for fat and protein based on the constants provided.
-If OG_USE_BETTER_ROTATION is True, the function uses the ROTATION_IMPROVEMENTS
-constants to calculate the ratios. Otherwise, the original ratios are used.
-
-**Args**
-
-* **constants_for_params** (dict) : A dictionary containing the constants needed for
-the calculation.
+This function subtracts off the estimated harvest for the first year for countries where
 
 ### .calculate_monthly_production
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L126)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L160)
 ```python
 .calculate_monthly_production(
    constants_for_params
 )
 ```
 
----
-Calculates the monthly production of outdoor crops based on various parameters.
-
-
-**Args**
-
-* **self**  : instance of the class
-* **constants_for_params** (dict) : dictionary containing various constants used in the calculation
-
-
-**Returns**
-
-None
-
-
-**Raises**
-
-* **AssertionError**  : if the sum of seasonality values is not within a certain range
-
 
 ### .assign_increase_from_increased_cultivated_area
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L323)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L340)
 ```python
 .assign_increase_from_increased_cultivated_area(
    constants_for_params
 )
 ```
 
----
-This function calculates the increase in crop yield due to an increase in cultivated area.
-It updates the KCALS_GROWN array with the new values.
-
-
-**Args**
-
-* **self** (object) : The instance of the class
-* **constants_for_params** (dict) : A dictionary containing the constants used in the calculation
-
-
-**Returns**
-
-None
 
 ### .assign_reduction_from_climate_impact
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L364)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L366)
 ```python
 .assign_reduction_from_climate_impact(
    constants_for_params
 )
 ```
 
----
-Assigns the reduction in crop production due to climate impact for each month of the year.
-
-**Args**
-
-* **self**  : instance of the class
-* **constants_for_params**  : dictionary containing constants used in the function
-
 
 ### .set_crop_production_minus_greenhouse_area
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L404)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/outdoor_crops.py/#L394)
 ```python
 .set_crop_production_minus_greenhouse_area(
    constants_for_params, greenhouse_fraction_area
 )
 ```
 
----
-Calculates the crop production minus greenhouse area and sets the production attribute of the class instance.
-
-
-**Args**
-
-* **self** (OutdoorCrops) : instance of the class
-* **constants_for_params** (dict) : dictionary containing constants for parameters
-* **greenhouse_fraction_area** (numpy.ndarray) : array containing the fraction of greenhouse area for each month
-
-
-**Returns**
-
-None
-
-
-**Example**
-
-* {"CROPS": 10}, "OG_USE_BETTER_ROTATION": True, "INITIAL_HARVEST_DURATION_IN_MONTHS": 3, "DELAY": {"ROTATION_CHANGE_IN_MONTHS": 2}}
-
-```python
-
->>> greenhouse_fraction_area = np.array([0.5, 0.6, 0.7, 0.8, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2])
->>> oc = OutdoorCrops()
->>> oc.set_crop_production_minus_greenhouse_area(constants_for_params, greenhouse_fraction_area)
-```

@@ -11,7 +11,8 @@
 
 ---
 This function calculates the kcal ratios production for wheat, rice, soy, and spring wheat for each country.
-We assume some similar crops will count towards these ratios, in order to get a better approximation of how the reduction will affect the country.
+We assume some similar crops will count towards these ratios, in order to get a better approximation of how the
+reduction will affect the country.
 
 
 **Args**
@@ -34,7 +35,7 @@ We assume some similar crops will count towards these ratios, in order to get a 
 
 
 ### get_overall_reduction
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/import_scripts_no_food_trade/create_nuclear_winter_csv.py/#L93)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/import_scripts_no_food_trade/create_nuclear_winter_csv.py/#L92)
 ```python
 .get_overall_reduction(
    country_data, country_id, crop_macros
@@ -85,31 +86,11 @@ Calculate the crop reduction percentage for each year and aggregate as array.
 * **list**  : A list of crop and grass reduction percentages for each year.
 
 
-**Example**
-
-* {'year1': 100, 'year2': 90, 'year3': 80, 'year4': 70, 'year5': 60,
-* 50, 'year7': 40, 'year8': 30, 'year9': 20, 'year10': 10},
-* {'year1': 100, 'year2': 90, 'year3': 80, 'year4': 70, 'year5': 60,
-* 50, 'year7': 40, 'year8': 30, 'year9': 20, 'year10': 10}}
-* 0.5, 'crop_reduction_year2': 0.6, 'crop_reduction_year3': 0.7,
-* 0.8, 'crop_reduction_year5': 0.9, 'crop_reduction_year6': 1.0,
-* 1.1, 'crop_reduction_year8': 1.2, 'crop_reduction_year9': 1.3,
-* 1.4, 'grasses_reduction_year1': 0.5, 'grasses_reduction_year2': 0.6,
-* 0.7, 'grasses_reduction_year4': 0.8, 'grasses_reduction_year5': 0.9,
-* 1.0, 'grasses_reduction_year7': 1.1, 'grasses_reduction_year8': 1.2,
-* 1.3, 'grasses_reduction_year10': 1.4}
-
-```python
-
->>> calculate_reductions(country_data, country_id, crop_macros)
-[0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4]
-```
-
 ----
 
 
 ### clean_up_nw_csv
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/import_scripts_no_food_trade/create_nuclear_winter_csv.py/#L201)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/import_scripts_no_food_trade/create_nuclear_winter_csv.py/#L185)
 ```python
 .clean_up_nw_csv(
    nw_csv, nw_csv_cols
@@ -117,7 +98,8 @@ Calculate the crop reduction percentage for each year and aggregate as array.
 ```
 
 ---
-This function takes in a nuclear winter csv file and its columns, cleans up the data, and returns a pandas dataframe.
+This function takes in a nuclear winter csv file and its columns, cleans up the data, and returns a pandas
+dataframe.
 
 
 **Args**
@@ -135,7 +117,7 @@ This function takes in a nuclear winter csv file and its columns, cleans up the 
 
 
 ### get_all_crops_correct_countries
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/import_scripts_no_food_trade/create_nuclear_winter_csv.py/#L252)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/import_scripts_no_food_trade/create_nuclear_winter_csv.py/#L238)
 ```python
 .get_all_crops_correct_countries(
    input_table
@@ -143,8 +125,10 @@ This function takes in a nuclear winter csv file and its columns, cleans up the 
 ```
 
 ---
-This function takes in a table of crop data for different countries and returns the columns with all the reductions for every crop, with the
-countries properly aggregated (eu27+uk combined) and Taiwan reductions equal to China's (Rutgers dataset doesn't include Taiwan as a distinct entity)
+This function takes in a table of crop data for different countries and returns the columns with all the
+reductions for every crop, with the
+countries properly aggregated (eu27+uk combined) and Taiwan reductions equal to China's (Rutgers dataset doesn't
+include Taiwan as a distinct entity)
 
 
 **Args**
@@ -154,7 +138,8 @@ countries properly aggregated (eu27+uk combined) and Taiwan reductions equal to 
 
 **Returns**
 
-* **tuple**  : A tuple containing two lists. The first list contains tuples of country IDs and names. The second list contains the reductions for all crops for each country.
+* **tuple**  : A tuple containing two lists. The first list contains tuples of country IDs and names. The second list
+contains the reductions for all crops for each country.
 
 
 **Raises**

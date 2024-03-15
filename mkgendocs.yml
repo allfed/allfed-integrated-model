@@ -9,83 +9,30 @@ copyright: ALLFED
 
 #This specifies the autogeneration portion
 pages:
-  - page: "modules/src/scenarios/run_ARG_1a_to_2d.md"
-    source: "src/scenarios/run_ARG_1a_to_2d.py"
-    functions:
-      - run_ARG_net_baseline
-      - run_ARG_gross_baseline
-      - run_ARG_net_nuclear_winter
-      - run_ARG_net_nuclear_winter_reduced_feed_waste
-      - run_ARG_net_nuclear_winter_reduced_feed_waste_resilient
-      - run_ARG_net_nuclear_winter_reduced_feed_waste_resilient_more_area
-
-  - page: "modules/src/scenarios/run_model_with_resilient_foods.md"
-    source: "src/scenarios/run_model_with_resilient_foods.py"
-    functions:
-      - run_model_with_resilient_foods
-      - set_common_resilient_properties
-
   - page: "modules/src/scenarios/run_scenario.md"
     source: "src/scenarios/run_scenario.py"
     classes:
       - ScenarioRunner
+    functions:
+      - are_dicts_approx_same
 
   - page: "modules/src/scenarios/scenarios.md"
     source: "src/scenarios/scenarios.py"
     classes:
       - Scenarios
 
-  - page: "modules/src/scenarios/create_figure_3abcd.md"
-    source: "src/scenarios/create_figure_3abcd.py"
-    functions:
-      - call_scenario_runner
-
-  - page: "modules/src/scenarios/create_figure_2abcde.md"
-    source: "src/scenarios/create_figure_2abcde.py"
-    functions:
-      - call_scenario_runner
-      - call_scenario_runner_whole_world_combined
-      - call_scenario_runner_with_and_without_fat_protein
-      - recalculate_plots
-
   - page: "modules/src/scenarios/run_model_no_trade.md"
     source: "src/scenarios/run_model_no_trade.py"
     classes:
       - ScenarioRunnerNoTrade
 
-  - page: "modules/src/scenarios/run_USA_with_improved_numbers.md"
-    source: "src/scenarios/run_USA_with_improved_numbers.py"
+  - page: "modules/src/scenarios/run_scenarios_from_yaml.md"
+    source: "src/scenarios/run_scenarios_from_yaml.py"
     functions:
-      - run_USA_with_and_without_resilient
-
-  - page: "modules/src/scenarios/run_model_no_resilient_foods.md"
-    source: "src/scenarios/run_model_no_resilient_foods.py"
-    functions:
-      - run_model_no_resilient_foods
-      - set_common_no_resilient_properties
-
-  - page: "modules/src/scenarios/create_figure_1ab.md"
-    source: "src/scenarios/create_figure_1ab.py"
-    functions:
-      - call_scenario_runner
-      - call_scenario_runner_with_and_without_fat_protein
-      - recalculate_plots
-
-  - page: "modules/src/scenarios/run_country_specific_KR.md"
-    source: "src/scenarios/run_country_specific_KR.py"
-    functions:
-      - run_USA_with_and_without_resilient
-
-  - page: "modules/src/scenarios/run_AUS_with_improved_numbers.md"
-    source: "src/scenarios/run_AUS_with_improved_numbers.py"
-    functions:
-      - run_AUS_with_and_without_resilient
-
-  - page: "modules/src/scenarios/run_model_baseline.md"
-    source: "src/scenarios/run_model_baseline.py"
-    functions:
-      - run_model_baseline
-      - set_common_baseline_properties
+      - run_scenarios_from_yaml
+      - load_config_data
+      - print_usage_message
+      - get_input_args
 
   - page: "modules/src/import_scripts_no_food_trade/create_nuclear_winter_csv.md"
     source: "src/import_scripts_no_food_trade/create_nuclear_winter_csv.py"
@@ -111,6 +58,13 @@ pages:
     classes:
       - ImportUtilities
 
+  - page: "modules/src/utilities/constants.md"
+    source: "src/utilities/constants.py"
+    classes:
+      - ScenarioConstants
+      - FixedConstants
+      - MonthlyConstants
+
   - page: "modules/src/utilities/plotter.md"
     source: "src/utilities/plotter.py"
     classes:
@@ -124,27 +78,16 @@ pages:
   - page: "modules/src/food_system/animal_populations.md"
     source: "src/food_system/animal_populations.py"
     classes:
+      - CalculateFeedAndMeat
+      - CountryData
       - AnimalSpecies
+      - AnimalPopulation
+      - AnimalDataReader
+      - AnimalModelBuilder
+      - Debugging
     functions:
-      - read_animal_population_data
-      - read_animal_nutrition_data
-      - read_animal_options
-      - create_animal_objects
-      - update_animal_objects_with_slaughter
-      - update_animal_objects_with_milk
-      - available_feed
-      - available_grass
-      - feed_animals
-      - calculate_additive_births
-      - calculate_change_in_population
-      - calculate_pregnant_animals_birthing
-      - calculate_pregnant_slaughter
-      - calculate_animal_population
-      - calculate_retiring_milk_animals
-      - calculate_births
-      - calculate_breeding_changes
-      - calculate_other_deaths
-      - calculate_slaughter_rate
+      - calculate_net_slaughter_hours_by_size
+      - world_test
 
   - page: "modules/src/food_system/seafood.md"
     source: "src/food_system/seafood.py"
@@ -185,11 +128,6 @@ pages:
     source: "src/food_system/unit_conversions.py"
     classes:
       - UnitConversions
-
-  - page: "modules/src/food_system/calculate_animals_and_feed_over_time.md"
-    source: "src/food_system/calculate_animals_and_feed_over_time.py"
-    classes:
-      - CalculateAnimalOutputs
 
   - page: "modules/src/food_system/outdoor_crops.md"
     source: "src/food_system/outdoor_crops.py"

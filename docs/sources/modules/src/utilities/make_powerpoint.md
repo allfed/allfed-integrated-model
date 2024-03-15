@@ -35,7 +35,7 @@ Creates a title slide with the given title and today's date as the subtitle.
 None
 
 ### .insert_slide
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/make_powerpoint.py/#L49)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/make_powerpoint.py/#L53)
 ```python
 .insert_slide(
    title_below, description, figure_save_loc
@@ -58,7 +58,7 @@ Inserts a slide into the PowerPoint presentation with a title, description, and 
 None
 
 ### .save_ppt
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/make_powerpoint.py/#L94)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/make_powerpoint.py/#L98)
 ```python
 .save_ppt(
    pres_name
@@ -80,7 +80,7 @@ Saves the PowerPoint presentation with the given name.
 None
 
 ### .insert_slide_with_feed
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/make_powerpoint.py/#L107)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/make_powerpoint.py/#L111)
 ```python
 .insert_slide_with_feed(
    title_below, description, figure_save_loc, feed_figure_save_loc
@@ -97,28 +97,6 @@ Inserts a slide with a title, two images, and a textbox with a description.
 * **description** (str) : The description to be added to the textbox.
 * **figure_save_loc** (str) : The file path of the first image to be added.
 * **feed_figure_save_loc** (str) : The file path of the second image to be added.
-
-
-**Returns**
-
-None
-
-### .save_ppt
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/make_powerpoint.py/#L94)
-```python
-.save_ppt(
-   pres_name
-)
-```
-
----
-Saves the PowerPoint presentation with the given name.
-
-
-**Args**
-
-* **self**  : the PowerPoint presentation object
-* **pres_name** (str) : the name of the PowerPoint presentation to save
 
 
 **Returns**

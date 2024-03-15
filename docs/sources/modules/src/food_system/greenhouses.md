@@ -16,10 +16,10 @@ Greenhouses(
 
 
 ### .assign_productivity_reduction_from_climate_impact
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/greenhouses.py/#L49)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/greenhouses.py/#L50)
 ```python
 .assign_productivity_reduction_from_climate_impact(
-   months_cycle, all_months_reductions, exponent, CROP_WASTE
+   months_cycle, all_months_reductions, exponent, CROP_WASTE_COEFFICIENT
 )
 ```
 
@@ -32,7 +32,7 @@ Assigns productivity reduction from climate impact to greenhouses.
 * **months_cycle** (list) : list of monthly cycles
 * **all_months_reductions** (list) : list of all months reductions
 * **exponent** (float) : exponent value
-* **CROP_WASTE** (float) : crop waste value
+* **CROP_WASTE_COEFFICIENT** (float) : crop waste value
 
 
 **Returns**
@@ -55,7 +55,7 @@ None
 ```
 
 ### .get_greenhouse_area
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/greenhouses.py/#L117)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/greenhouses.py/#L124)
 ```python
 .get_greenhouse_area(
    constants_for_params, outdoor_crops
@@ -77,14 +77,15 @@ Calculates the area of greenhouses needed to grow crops and returns it as an arr
 * **ndarray**  : an array containing the area of greenhouses needed to grow crops
 
 ---
-This function calculates the area of greenhouses needed to grow crops. It first checks if there is any crop area to
+This function calculates the area of greenhouses needed to grow crops. It first checks if there is any crop
+area to
 grow. If there is no crop area, it returns an array of zeros. If there is crop area, it calculates the area of
 greenhouses needed based on the greenhouse area multiplier and the total crop area. If the greenhouse area
 multiplier is not specified, it uses the greenhouse fraction from Australia to calculate the greenhouse area. It
 then assigns the productivity reduction from climate impact and returns the greenhouse area array.
 
 ### .get_greenhouse_yield_per_ha
-[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/greenhouses.py/#L326)
+[source](https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/greenhouses.py/#L198)
 ```python
 .get_greenhouse_yield_per_ha(
    constants_for_params, outdoor_crops
