@@ -31,6 +31,7 @@ scenario is a named dictionary with parameter-value pairs. This makes it easy
 to visualize, edit, and manage various scenarios.
 
 """
+
 import sys
 import os
 import yaml

@@ -3,6 +3,7 @@ This file runs the Argentina no-trade scenario many times, each time changing th
 a single parameter in the yaml file. Tests are run to ensure that the change in the
 output is as expected.
 """
+
 import itertools
 import pytest
 
@@ -198,12 +199,12 @@ def run_all_combinations():
             # Create a new config data for this combination
             config_data = base_config_data.copy()
             config_data["simulations"][test_scenario_key]["scenario"] = combination[0]
-            config_data["simulations"][test_scenario_key][
-                "crop_disruption"
-            ] = combination[1]
-            config_data["simulations"][test_scenario_key][
-                "intake_constraints"
-            ] = combination[2]
+            config_data["simulations"][test_scenario_key]["crop_disruption"] = (
+                combination[1]
+            )
+            config_data["simulations"][test_scenario_key]["intake_constraints"] = (
+                combination[2]
+            )
             config_data["simulations"][test_scenario_key]["stored_food"] = combination[
                 3
             ]

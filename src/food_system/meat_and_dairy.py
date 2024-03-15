@@ -485,15 +485,15 @@ class MeatAndDairy:
         self.kcals_per_head_meat_dict = {}
         self.kcals_per_head_meat_dict["KCALS_PER_CHICKEN"] = self.KCALS_PER_CHICKEN
         self.kcals_per_head_meat_dict["KCALS_PER_PIG"] = self.KCALS_PER_PIG
-        self.kcals_per_head_meat_dict[
-            "KCALS_PER_SMALL_ANIMAL"
-        ] = self.KCALS_PER_SMALL_ANIMAL
-        self.kcals_per_head_meat_dict[
-            "KCALS_PER_MEDIUM_ANIMAL"
-        ] = self.KCALS_PER_MEDIUM_ANIMAL
-        self.kcals_per_head_meat_dict[
-            "KCALS_PER_LARGE_ANIMAL"
-        ] = self.KCALS_PER_LARGE_ANIMAL
+        self.kcals_per_head_meat_dict["KCALS_PER_SMALL_ANIMAL"] = (
+            self.KCALS_PER_SMALL_ANIMAL
+        )
+        self.kcals_per_head_meat_dict["KCALS_PER_MEDIUM_ANIMAL"] = (
+            self.KCALS_PER_MEDIUM_ANIMAL
+        )
+        self.kcals_per_head_meat_dict["KCALS_PER_LARGE_ANIMAL"] = (
+            self.KCALS_PER_LARGE_ANIMAL
+        )
 
     def calculate_meat_after_distribution_waste(
         self,

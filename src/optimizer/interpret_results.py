@@ -10,6 +10,7 @@ Created on Tue Jul 19
 
 @author: morgan
 """
+
 import numpy as np
 from src.food_system.food import Food
 import pandas as pd

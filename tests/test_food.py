@@ -1,6 +1,7 @@
 """
 Test Suite for the food module.
 """
+
 import pytest
 import numpy as np
 from src.food_system.food import Food
