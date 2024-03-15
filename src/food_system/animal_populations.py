@@ -32,7 +32,6 @@ import pandas as pd
 import git
 from src.food_system.food import Food
 import matplotlib.pyplot as plt
-import plotly.graph_objects as go
 import numpy as np
 
 
@@ -2919,24 +2918,29 @@ if __name__ == "__main__":
         # plot all the animals without detail
         # exclude chicken from output list
         animal_list = [animal for animal in all_animals]
+        print(
+            "ERROR: uncomment code below and rerun if you wish to have plots shown on running animal_populations.py"
+        )
 
-        fig = go.Figure()
-        for animal in animal_list:
-            fig.add_trace(
-                go.Scatter(
-                    y=animal.slaughter,
-                    mode="lines",
-                    name=animal.animal_type + " slaughter",
-                )
-            )
-        fig.show()
-        fig = go.Figure()
-        for animal in animal_list:
-            fig.add_trace(
-                go.Scatter(
-                    y=animal.population,
-                    mode="lines",
-                    name=animal.animal_type + " population",
-                )
-            )
-        fig.show()
+        # INSTALL PLOTLY AND UNCOMMENT BELOW TO SEE PLOTS
+        #     fig = go.Figure()
+        #     for animal in animal_list:
+        #         fig.add_trace(
+        #             go.Scatter(
+        #                 y=animal.slaughter,
+        #                 mode="lines",
+        #                 name=animal.animal_type + " slaughter",
+        #             )
+        #         )
+        #     fig.show()
+        #     fig = go.Figure()
+        #     for animal in animal_list:
+        #         fig.add_trace(
+        #             go.Scatter(
+        #                 y=animal.population,
+        #                 mode="lines",
+        #                 name=animal.animal_type + " population",
+        #             )
+        #         )
+        #     fig.show()
+        # else:

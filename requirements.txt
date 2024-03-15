@@ -11,3 +11,4 @@ openpyxl>=3.0.10
 python-pptx>=0.6.21
 pulp>=2.6.0
 GitPython
+PyYAML>=5.4.1
