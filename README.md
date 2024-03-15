@@ -21,9 +21,9 @@ python3 plot_manuscript_figures.py rerun all
 ```
 You can always just run 
 ```bash
-python3 plot_manuscript_figures.py rerun all
+python3 plot_manuscript_figures.py
 ```
-To recalculate fewer plots or show specific results from the paper.
+To see how to run fewer plots, load plots you already ran, or show specific results from the paper.
 
 Individual scenarios, or a series of scenarios of interest, can be specified in the scenarios/ folder.
 ```bash
