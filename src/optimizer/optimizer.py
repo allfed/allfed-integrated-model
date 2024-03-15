@@ -3,6 +3,7 @@ Optimizer Model
 In this model, we estimate the macronutrient production allocated optimally
 over time including models for traditional and resilient foods.
 """
+
 import sys
 import pulp
 import json
@@ -294,7 +295,10 @@ class Optimizer:
                 model, variables, month, optimization_type
             )
             if optimization_type == "to_humans":
-                (model, variables,) = self.add_total_human_consumption_to_model(
+                (
+                    model,
+                    variables,
+                ) = self.add_total_human_consumption_to_model(
                     model, variables, month, optimization_type
                 )
 

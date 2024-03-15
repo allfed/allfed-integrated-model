@@ -157,9 +157,9 @@ class Seaweed:
                 self.NMONTHS,
             ),
         )
-        built_area_long[
-            built_area_long > self.MAXIMUM_SEAWEED_AREA
-        ] = self.MAXIMUM_SEAWEED_AREA
+        built_area_long[built_area_long > self.MAXIMUM_SEAWEED_AREA] = (
+            self.MAXIMUM_SEAWEED_AREA
+        )
 
         # reduce list to length of months of simulation
         built_area = built_area_long[: self.NMONTHS]
