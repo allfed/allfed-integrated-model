@@ -15,8 +15,17 @@ An integrated food supply model for resilient foods in nuclear winter
 
 (See Dependencies section first)
 
-Results from the paper can be rerun using the following commands in the scenarios/ folder
+Results from the paper can be rerun using the following command:
+```bash
+python3 plot_manuscript_figures.py rerun all
+```
+You can always just run 
+```bash
+python3 plot_manuscript_figures.py rerun all
+```
+To recalculate fewer plots or show specific results from the paper.
 
+Individual scenarios, or a series of scenarios of interest, can be specified in the scenarios/ folder.
 ```bash
 ./run_scenarios_from_yaml.sh False True False one_food_at_a_time_USA.yaml
 ```
