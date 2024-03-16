@@ -27,7 +27,7 @@ To see how to run fewer plots, load plots you already ran, or show specific resu
 
 Individual scenarios, or a series of scenarios of interest, can be specified in the scenarios/ folder.
 ```bash
-./run_scenarios_from_yaml.sh False True False one_food_at_a_time_USA.yaml
+./run_scenarios_from_yaml.sh False True False argentina.yaml
 ```
 This shows a stackplot of people fed in baseline (no nuclear winter but loss of trade), nuclear winter without resilient food (no food trade), and nuclear winter with no food trade.
 
