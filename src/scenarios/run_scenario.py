@@ -375,7 +375,7 @@ class ScenarioRunner:
                 biofuels_demand, interpreted_results_round1, round=1
             )
 
-            DISPLAY_MEAT_PRODUCED_IF_NO_FEED_FLAG = True
+            DISPLAY_MEAT_PRODUCED_IF_NO_FEED_FLAG = False
             if DISPLAY_MEAT_PRODUCED_IF_NO_FEED_FLAG:
                 # because feed and biofuel are zero, feed and biofuels plot
                 # most likely to be skipped unless there's some issue
@@ -452,7 +452,7 @@ class ScenarioRunner:
                 else:
                     slaughter_title = "Max meat produced from second round calc (no restriction on feed before shutoff)"
 
-                DISPLAY_MEAT_PRODUCED_INCREASED_FEED_FLAG = True
+                DISPLAY_MEAT_PRODUCED_INCREASED_FEED_FLAG = False
                 if DISPLAY_MEAT_PRODUCED_INCREASED_FEED_FLAG:
                     self.display_results_of_optimizer_round(
                         interpreted_results_round2,

@@ -732,6 +732,9 @@ class Plotter:
                     va="center",
                 )
             if i in figure_a_indices or i in figure_b_indices:
+                world = world.to_crs(
+                    "+proj=wintri"
+                )  # Change projection to Winkel Tripel
                 world.plot(
                     ax=ax,
                     column="needs_ratio",
@@ -2215,6 +2218,7 @@ class Plotter:
             return
         fig, ax = plt.subplots()
         world.boundary.plot(ax=ax, color="Black", linewidth=0.1)
+        world = world.to_crs("+proj=wintri")  # Change projection to Winkel Tripel
         world.plot(
             ax=ax,
             column="needs_ratio",

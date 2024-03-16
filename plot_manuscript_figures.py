@@ -371,9 +371,15 @@ def recalculate_plot_1():
     )
 
     # WORST CASE + EAT AND STORE MEAT + SHUT OFF BREEDING + REDUCE WASTE #
+    RUN_SIMULATION_LEAVING_TYPICAL_BUFFERS = True
+    if RUN_SIMULATION_LEAVING_TYPICAL_BUFFERS:
+        this_simulation["end_simulation_stocks_ratio"] = "baseline"
+        suffix_storage = ""
+    else:
+        this_simulation["end_simulation_stocks_ratio"] = "zero"
+        suffix_storage = " (Reduced)"
+    simple_adaptations_culling_title = f"Simple Adaptations,\n Storage {suffix_storage}"
 
-    this_simulation["end_simulation_stocks_ratio"] = "zero"
-    simple_adaptations_culling_title = "Simple Adaptations,\n Storage"
     simple_adaptations_culling = call_scenario_runner_and_set_options(
         this_simulation, simple_adaptations_culling_title  # , countries_list=["CHN"]
     )
@@ -381,9 +387,7 @@ def recalculate_plot_1():
     # WORST CASE + SIMPLE_ADAPTATIONS + CULLING + STORAGE #
     this_simulation["meat_strategy"] = "feed_only_ruminants"
     this_simulation["shutoff"] = "long_delayed_shutoff"
-    example_scenario_title = (
-        "Example Scenario:\nSimple Adaptations\n+ Storage\n+Feed Improved"
-    )
+    example_scenario_title = f"Example Scenario:\nSimple Adaptations\n+ Storage{suffix_storage}\n+Feed Improved"
     example_scenario = call_scenario_runner_and_set_options(
         this_simulation, example_scenario_title  # , countries_list=["CHN"]
     )
