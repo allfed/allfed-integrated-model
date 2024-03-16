@@ -196,7 +196,6 @@ class OutdoorCrops:
         )
         # seasonality does not have a net effect on average production over a year
         assert (SUM < 1.001 and SUM > 0.999) or SUM == 0
-
         # tons dry carb equivalent
         JAN_YIELD = JAN_FRACTION * self.ANNUAL_YIELD
         FEB_YIELD = FEB_FRACTION * self.ANNUAL_YIELD
@@ -333,7 +332,7 @@ class OutdoorCrops:
             print("Plotting with seasonality")
             # ratios between baseline production and actual production
             ratios = np.divide(
-                self.NO_ROT_KCALS_GROWN, self.ANNUAL_YIELD * 4e6 / 1e9 / 12
+                self.NO_RELOCATION_KCALS_GROWN, self.ANNUAL_YIELD * 4e6 / 1e9 / 12
             )
             Plotter.plot_monthly_reductions_seasonally(ratios)
 
@@ -365,8 +364,9 @@ class OutdoorCrops:
 
     def assign_reduction_from_climate_impact(self, constants_for_params):
         self.KCALS_GROWN = []
-        self.NO_ROT_KCALS_GROWN = []
-
+        self.NO_RELOCATION_KCALS_GROWN = []
+        mean_month = np.mean(self.months_cycle)
+        daily_kcals = mean_month * 12 * 1e9 / 365 / 95e6
         for i in range(self.NMONTHS):
             cycle_index = i % 12
             month_kcals = self.months_cycle[cycle_index]
@@ -385,7 +385,7 @@ class OutdoorCrops:
                     month_kcals * baseline_reduction**self.OG_KCAL_EXPONENT
                 )
 
-            self.NO_ROT_KCALS_GROWN.append(month_kcals * baseline_reduction)
+            self.NO_RELOCATION_KCALS_GROWN.append(month_kcals * baseline_reduction)
 
             assert (
                 self.KCALS_GROWN[-1] >= month_kcals * baseline_reduction
@@ -408,12 +408,12 @@ class OutdoorCrops:
                 )
 
                 crops_produced[:hd] = np.multiply(
-                    np.array(self.NO_ROT_KCALS_GROWN[:hd]),
+                    np.array(self.NO_RELOCATION_KCALS_GROWN[:hd]),
                     (1 - greenhouse_fraction_area[:hd]),
                 )
 
             else:
-                crops_produced = np.array(self.NO_ROT_KCALS_GROWN)
+                crops_produced = np.array(self.NO_RELOCATION_KCALS_GROWN)
 
         else:
             crops_produced = np.array([0] * self.NMONTHS)

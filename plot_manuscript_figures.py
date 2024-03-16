@@ -643,15 +643,28 @@ def recalculate_plot_s1():
         country_iso3="WOR",
         title=title,
     )
+    PLOT_SLAUGHTER = False
+    if PLOT_SLAUGHTER:
+        Plotter.plot_slaughter(
+            interpreted_results,
+            "earliest_month_zero",
+            # (slaughter_title + " " if slaughter_title is not "" else "")
+            "world",
+            # + figure_save_postfix,
+            True,
+            False,
+            scenario_loader.scenario_description,
+        )
 
     Plotter.plot_to_humans_stackplot(
         interpreted_results,
-        NMONTHS,
-        "global_baseline",
+        72,
+        "Global Baseline",
         plot_figure=True,
         add_slide_with_fig=False,
         description=scenario_loader.scenario_description,
     )
+
     results = {}
     results["baseline_global"] = interpreted_results
 

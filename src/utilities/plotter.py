@@ -54,7 +54,9 @@ class Plotter:
 
         ADD_THE_NUTRITION_PLOT = interpreter.include_protein or interpreter.include_fat
 
-        legend = Plotter.get_people_fed_legend(interpreter, True)
+        is_nuclear_winter = not "baseline" in newtitle.lower()
+
+        legend = Plotter.get_people_fed_legend(interpreter, is_nuclear_winter)
         fig = plt.figure()
         pal = [
             "#1e7ecd",
@@ -215,7 +217,7 @@ class Plotter:
             if label == "b":
                 plt.title("Available food macronutrition")
 
-            plt.xlabel("Months since May nuclear winter onset")
+            plt.xlabel("Months since start of simulation")
 
         # plt.rcParams["figure.figsize"] = [12.50, 10]
 
@@ -231,7 +233,6 @@ class Plotter:
         feed_saveloc = path_string + newtitle_for_save + "_feed.png"
 
         slaughter_saveloc = path_string + newtitle_for_save + "_slaughter.png"
-
         plt.savefig(
             # Replace problematic characters with an underscore or remove them
             saveloc,
@@ -1530,17 +1531,30 @@ class Plotter:
             "#ffeb7a",
             "#e7d2ad",
         ]
-
+        if not interpreter.include_fat and not interpreter.include_protein:
+            ONLY_SHOW_A_AND_B = True
+        else:
+            ONLY_SHOW_A_AND_B = False
         for i, label in enumerate(("a", "b", "c", "d")):
+            to_show_label = label
+            if ONLY_SHOW_A_AND_B and label != "a":
+                # skip labels "b" and "d". We only  want  "c"  (but  we'll  display  as  "b")
+                if label == "b" or label == "d":
+                    continue
+                i == 1
+                to_show_label = "b"
             if label == "a":
                 interpreter = interpreter1
             if label == "b":
-                interpreter = interpreter1
+                interpreter = interpreter2
             if label == "c":
                 interpreter = interpreter2
             if label == "d":
                 interpreter = interpreter2
-            ax = fig.add_subplot(2, 2, i + 1)
+            if ONLY_SHOW_A_AND_B:
+                ax = fig.add_subplot(2, 1, i + 1)
+            else:
+                ax = fig.add_subplot(2, 2, i + 1)
             if label == "a":
                 xlim = xlim1
                 plt.title("Resilient food availability")
@@ -1577,7 +1591,7 @@ class Plotter:
                 ax.text(
                     -0.06,
                     1.1,
-                    label,
+                    to_show_label,
                     transform=ax.transAxes,
                     fontsize=11,
                     fontweight="bold",
