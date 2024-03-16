@@ -587,7 +587,7 @@ def recalculate_plot_3():
 def recalculate_plot_s1():
     # WORST CASE #
     this_simulation = {}
-    this_simulation["NMONTHS"] = NMONTHS = 120
+    this_simulation["NMONTHS"] = 120
     this_simulation["scale"] = "global"
     this_simulation["crop_disruption"] = "zero"
     this_simulation["grasses"] = "baseline"
