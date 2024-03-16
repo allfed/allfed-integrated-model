@@ -365,8 +365,6 @@ class OutdoorCrops:
     def assign_reduction_from_climate_impact(self, constants_for_params):
         self.KCALS_GROWN = []
         self.NO_RELOCATION_KCALS_GROWN = []
-        mean_month = np.mean(self.months_cycle)
-        daily_kcals = mean_month * 12 * 1e9 / 365 / 95e6
         for i in range(self.NMONTHS):
             cycle_index = i % 12
             month_kcals = self.months_cycle[cycle_index]

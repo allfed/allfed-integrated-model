@@ -54,7 +54,7 @@ class Plotter:
 
         ADD_THE_NUTRITION_PLOT = interpreter.include_protein or interpreter.include_fat
 
-        is_nuclear_winter = not "baseline" in newtitle.lower()
+        is_nuclear_winter = "baseline" not in newtitle.lower()
 
         legend = Plotter.get_people_fed_legend(interpreter, is_nuclear_winter)
         fig = plt.figure()
@@ -1531,7 +1531,7 @@ class Plotter:
             "#ffeb7a",
             "#e7d2ad",
         ]
-        if not interpreter.include_fat and not interpreter.include_protein:
+        if not interpreter1.include_fat and not interpreter1.include_protein:
             ONLY_SHOW_A_AND_B = True
         else:
             ONLY_SHOW_A_AND_B = False
