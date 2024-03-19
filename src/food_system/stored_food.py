@@ -101,7 +101,9 @@ class StoredFood:
             stocks_at_start_of_month * fraction_stored_food_to_use
             - lowest_stocks * end_simulation_ratio
         )
-
+        assert (
+            self.TONS_DRY_CALORIC_EQIVALENT_SF >= 0
+        ), "ERROR: Negative stored food is impossible."
         # convert to billion kcals
         self.INITIAL_SF_KCALS = self.TONS_DRY_CALORIC_EQIVALENT_SF * 4e6 / 1e9
 

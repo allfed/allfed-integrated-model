@@ -660,19 +660,9 @@ class ScenarioRunner:
                 ),
             },
             {
-                "country_code": "DJI",
-                "crop_disruption": ["country_nuclear_winter"],
-                "cull": ["do_eat_culled", "dont_eat_culled"],
-                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "scenario": [
-                    "no_resilient_foods",
-                    "seaweed",
-                    "methane_scp",
-                    "industrial_foods",
-                    "cellulosic_sugar",
-                ],
-                "seasonality": ["no_seasonality"],
-                "stored_food": ["baseline"],
+                "country_code": "ALB",
+                "cull": ["do_eat_culled"],
+                "scenario": ["all_resilient_foods", "seaweed"],
                 "shutoff": [
                     "continued",
                     "long_delayed_shutoff",
@@ -680,52 +670,8 @@ class ScenarioRunner:
                 ],
                 "CORRECTION": {"shutoff": "immediate"},
                 "WARNING": (
-                    "WARNING: DJI cannot run with baseline breeding under these specific conditions. "
-                    " Changing to reduced breeding in this scenario as a patch."
-                ),
-            },
-            {
-                "country_code": "NAM",
-                "crop_disruption": ["country_nuclear_winter"],
-                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "shutoff": [
-                    "continued_after_10_percent_fed",
-                ],
-                "CORRECTION": {"shutoff": "continued"},
-                "WARNING": (
-                    "WARNING: NAM cannot run with baseline breeding under these specific conditions. "
-                    " Changing to reduced breeding in this scenario as a patch."
-                ),
-            },
-            {
-                "country_code": "BOL",
-                "crop_disruption": ["country_nuclear_winter"],
-                "meat_strategy": ["baseline_breeding", "reduce_breeding"],
-                "cull": ["do_eat_culled"],
-                "shutoff": [
-                    "continued_after_10_percent_fed",
-                ],
-                "CORRECTION": {"shutoff": "continued"},
-                "WARNING": (
-                    "WARNING: BOL cannot run with these specific conditions. "
-                    " Changing to continued feed/biofuel after 100% fed in this country as a patch."
-                ),
-            },
-            {
-                "country_code": "LSO",
-                "crop_disruption": ["country_nuclear_winter"],
-                "meat_strategy": ["feed_only_ruminants"],
-                # "end_simulation_stocks_ratio": ["zero"],
-                "cull": ["do_eat_culled"],
-                "shutoff": [
-                    "long_delayed_shutoff_after_10_percent_fed",
-                    "continued_after_10_percent_fed",
-                    "long_delayed_shutoff",
-                ],
-                "CORRECTION": {"meat_strategy": "reduce_breeding"},
-                "WARNING": (
-                    "WARNING: LSO cannot run with these specific conditions. "
-                    " Changing to reduced breeding for all animals"
+                    "WARNING: ALB cannot run with seaweed under these specific conditions. "
+                    " Removing feed and biofuel demand from this scenario as a patch."
                 ),
             },
             {
@@ -739,15 +685,37 @@ class ScenarioRunner:
                     "industrial_foods",
                     "cellulosic_sugar",
                 ],
-                "crop_disruption": ["country_nuclear_winter"],
+                "crop_disruption": ["zero", "baseline"],
                 "meat_strategy": ["feed_only_ruminants"],
-                "end_simulation_stocks_ratio": ["zero"],
+                "end_simulation_stocks_ratio": ["zero", "baseline"],
                 "cull": ["do_eat_culled"],
                 "shutoff": ["long_delayed_shutoff"],
-                "CORRECTION": {"meat_strategy": "reduce_breeding"},
+                "CORRECTION": {"shutoff": "immediate"},
                 "WARNING": (
                     "WARNING: ECU cannot run with these specific conditions. "
-                    "Changing to reduced breeding for all animals"
+                    "Changing scenario to shut off all feed and biofuels immediately."
+                ),
+            },
+            {
+                "country_code": "ECU",
+                "scenario": [
+                    "all_resilient_foods",
+                    "seaweed",
+                    "greenhouse",
+                    "methane_scp",
+                    "relocated_crops",
+                    "industrial_foods",
+                    "cellulosic_sugar",
+                ],
+                "crop_disruption": ["zero", "baseline"],
+                "meat_strategy": ["feed_only_ruminants"],
+                "end_simulation_stocks_ratio": ["zero", "baseline"],
+                "cull": ["do_eat_culled"],
+                "shutoff": ["long_delayed_shutoff"],
+                "CORRECTION": {"shutoff": "immediate"},
+                "WARNING": (
+                    "WARNING: ECU cannot run with these specific conditions. "
+                    "Changing scenario to shut off all feed and biofuels immediately."
                 ),
             },
         ]
@@ -903,12 +871,20 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.set_stored_food_buffer_as_baseline(
                 constants_for_params
             )
+        elif (
+            scenario_option_copy["end_simulation_stocks_ratio"]
+            == "baseline_no_stored_between_years"
+        ):
+            constants_for_params = scenario_loader.set_stored_food_buffer_as_baseline_and_no_stored_between_years(
+                constants_for_params
+            )
         else:
             scenario_is_correct = False
 
-            assert (
-                scenario_is_correct
-            ), "You must specify 'end_simulation_stocks_ratio' key as zero, no_stored_between_years, or baseline"
+            assert scenario_is_correct, (
+                "You must specify 'end_simulation_stocks_ratio' key as zero, no_stored_between_years, "
+                "baseline_no_stored_between_years, or baseline"
+            )
 
         # SHUTOFF
         if scenario_option_copy["shutoff"] == "immediate":

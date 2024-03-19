@@ -474,9 +474,9 @@ class Scenarios:
         )
 
         constants_for_params["ROTATION_IMPROVEMENTS"] = {}
-        constants_for_params["ROTATION_IMPROVEMENTS"]["POWER_LAW_IMPROVEMENT"] = (
-            country_data["power_law_improvement"]
-        )
+        constants_for_params["ROTATION_IMPROVEMENTS"][
+            "POWER_LAW_IMPROVEMENT"
+        ] = country_data["power_law_improvement"]
 
         # annual tons cattle beef production
         constants_for_params["TONS_BEEF_ANNUAL"] = country_data["beef"]
@@ -520,9 +520,9 @@ class Scenarios:
         ]
 
         # Milk yield in kg per milk-bearing animal per year
-        constants_for_params["MILK_YIELD_KG_PER_MILK_BEARING_ANIMAL_PER_YEAR"] = (
-            country_data["milk_yield_kg_per_milk_bearing_animal_per_year"]
-        )
+        constants_for_params[
+            "MILK_YIELD_KG_PER_MILK_BEARING_ANIMAL_PER_YEAR"
+        ] = country_data["milk_yield_kg_per_milk_bearing_animal_per_year"]
 
         # Meat yield in kg per animal
         constants_for_params["KG_MEAT_PER_PIG"] = country_data["kg_meat_per_pig"]
@@ -985,6 +985,22 @@ class Scenarios:
         self.scenario_description += "\nstocks available at end of simulation"
         assert not self.STORED_FOOD_END_SIM_SET
         constants_for_params["STORE_FOOD_BETWEEN_YEARS"] = True
+        constants_for_params["END_SIMULATION_STOCKS_RATIO"] = 1
+
+        self.STORED_FOOD_END_SIM_SET = True
+        return constants_for_params
+
+    def set_stored_food_buffer_as_baseline_and_no_stored_between_years(
+        self, constants_for_params
+    ):
+        """
+        Sets the stored food buffer as 100% -- the typical stored food buffer
+        in ~2020 left at the end of the simulation.
+
+        """
+        self.scenario_description += "\nstocks available at end of simulation"
+        assert not self.STORED_FOOD_END_SIM_SET
+        constants_for_params["STORE_FOOD_BETWEEN_YEARS"] = False
         constants_for_params["END_SIMULATION_STOCKS_RATIO"] = 1
 
         self.STORED_FOOD_END_SIM_SET = True
@@ -1522,9 +1538,9 @@ class Scenarios:
     def methane_scp(self, constants_for_params):
         # (one month delay built into industrial food numbers)
         constants_for_params["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = 2
-        constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = (
-            1  # default values from CS and SCP papers
-        )
+        constants_for_params[
+            "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
+        ] = 1  # default values from CS and SCP papers
 
         constants_for_params["ADD_METHANE_SCP"] = True
         return constants_for_params
@@ -1532,9 +1548,9 @@ class Scenarios:
     def cellulosic_sugar(self, constants_for_params):
         # (one month delay built into industrial food numbers)
         constants_for_params["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = 2
-        constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = (
-            1  # default values from CS and SCP papers
-        )
+        constants_for_params[
+            "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
+        ] = 1  # default values from CS and SCP papers
 
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = True
         return constants_for_params
