@@ -21,12 +21,8 @@ class Greenhouses:
             None
 
         """
-        # GLOBAL CROP AREA INCLUDING US:
-        # (calculated from sum of crop area in between 23 latitude)
-        # UNITS: hectares
-        # Set the total crop area based on the given constants.
         self.TOTAL_CROP_AREA = (
-            769176.2e3 * constants_for_params["INITIAL_CROP_AREA_FRACTION"]
+            constants_for_params["INITIAL_GLOBAL_CROP_AREA"] * constants_for_params["INITIAL_CROP_AREA_FRACTION"]
         )
 
         # Set the starting month number based on the given constants.

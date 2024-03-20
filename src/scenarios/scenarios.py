@@ -64,14 +64,18 @@ class Scenarios:
         constants_for_params = {}
 
         # the following are used for all scenarios
-        constants_for_params["GLOBAL_POP"] = 7723713182  # (about 7.8 billion)
+        constants_for_params["GLOBAL_POP"] = 7723713182  # (about 7.8 billion 2020)
+
+        # GLOBAL CROP AREA
+        # UNITS: hectares
+        # NOTE: This has been changed to 1.43 billion hectares to match the sum of column "C"
+        # "Country Crop Area ('000 Hectares)" column in "Greenhouses" tab   
+        # in "Integrated Model No Food Trade" Spreadsheet
+        constants_for_params["INITIAL_GLOBAL_CROP_AREA"] = 1.43e9
 
         # not used unless smoothing true
         # useful for ensuring output variables don't fluctuate wildly
         constants_for_params["DELAY"] = {}
-        constants_for_params["MAX_RATIO_CULLED_SLAUGHTER_TO_BASELINE"] = 1
-
-        # constants_for_params["ADD_MILK"] = True
         constants_for_params["ADD_FISH"] = True
 
         self.GENERIC_INITIALIZED_SET = True
@@ -1504,7 +1508,11 @@ class Scenarios:
 
         # half values from greenhouse paper due to higher cost
         constants_for_params["DELAY"]["GREENHOUSE_MONTHS"] = 2
-        constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 1 / 4
+
+        # the greenhouse area of 190 million hectares divided by the total crop area 
+        # This same fraction is used for the given country, or the globe depending on the "scale"
+        # setting.
+        constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 0.19e9 / constants_for_params["INITIAL_GLOBAL_CROP_AREA"]
         constants_for_params["ADD_GREENHOUSES"] = True
         return constants_for_params
 
