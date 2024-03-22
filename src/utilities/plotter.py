@@ -744,6 +744,7 @@ class Plotter:
                 world.boundary.plot(ax=ax, color="Black", linewidth=0.1)
                 ax.axes.get_xaxis().set_ticks([])
                 ax.axes.get_yaxis().set_ticks([])
+
         plt.savefig(
             Path(repo_root) / "results" / "fig_1ab.png",
             dpi=300,
@@ -1841,7 +1842,9 @@ class Plotter:
         fig.set_figwidth(10)
         plt.tight_layout(w_pad=1, h_pad=1)
         # if not showplot:
+        print("saving")
         saveloc = Path(repo_root) / "results" / "fig_s1abcd.png"
+        print(saveloc)
         plt.savefig(
             # Replace problematic characters with an underscore or remove them
             saveloc,
@@ -1971,7 +1974,7 @@ class Plotter:
             legend = legend + [""]
 
         if interpreter.constants["ADD_MILK"]:
-            legend = legend + ["Dairy Milk"]
+            legend = legend + ["Dairy"]
         else:
             legend = legend + [""]
 

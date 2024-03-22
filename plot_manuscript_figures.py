@@ -23,7 +23,7 @@ repo_root = git.Repo(".", search_parent_directories=True).working_dir
 # COMMAND LINE INTERFACE FUNCTIONS #
 RUN_FIGURE_1_WITH_BASELINE_CLIMATE = False
 RUN_FIGURE_1_LEAVING_TYPICAL_BUFFERS = False
-RUN_FIGURE_1_NO_STORAGE = True
+RUN_FIGURE_1_NO_STORAGE = False
 
 
 def print_usage():
@@ -319,6 +319,19 @@ def call_global_scenario_runner(this_simulation, title):
         country_iso3="WOR",
         title=title,
     )
+    PLOT_FEED = False
+    if PLOT_FEED:
+        Plotter.plot_feed(
+            interpreted_results,
+            "earliest_month_zero",
+            # (slaughter_title + " " if slaughter_title is not "" else "")
+            "world",
+            # + figure_save_postfix,
+            True,
+            False,
+            "",
+        )
+
     return interpreted_results
 
 
@@ -387,7 +400,7 @@ def recalculate_plot_1():
         # countries_list=["IND", "BRA", "CHN", "USA", "PAK"],
     )
 
-    # WORST CASE + EAT AND STORE MEAT + SHUT OFF BREEDING + REDUCE WASTE #
+    # WORST CASE + EAT AND STORE MEAT + SHUT OFF BREEDING + REDUCE  #
     if RUN_FIGURE_1_LEAVING_TYPICAL_BUFFERS:
         assert (
             not RUN_FIGURE_1_NO_STORAGE
@@ -400,12 +413,14 @@ def recalculate_plot_1():
 
     if RUN_FIGURE_1_NO_STORAGE:
         this_simulation["end_simulation_stocks_ratio"] = "no_stored_between_years"
-        include_storage_resilient_foods_tag = ", No Storage"
+        include_storage_resilient_foods_tag = ", No Rationing"
         suffix_storage = " Removed"
     else:
         include_storage_resilient_foods_tag = ""
 
-    simple_adaptations_culling_title = f"Simple Adaptations,\n Storage{suffix_storage}"
+    simple_adaptations_culling_title = (
+        f"Simple Adaptations,\n Rationing{suffix_storage}"
+    )
 
     simple_adaptations_culling = call_scenario_runner_and_set_options(
         this_simulation, simple_adaptations_culling_title  # , countries_list=["CHN"]
@@ -414,7 +429,7 @@ def recalculate_plot_1():
     # WORST CASE + SIMPLE_ADAPTATIONS + CULLING + STORAGE #
     this_simulation["meat_strategy"] = "feed_only_ruminants"
     this_simulation["shutoff"] = "long_delayed_shutoff"
-    example_scenario_title = f"Example Scenario:\nSimple Adaptations\n+ Storage{suffix_storage}\n+Feed Improved"
+    example_scenario_title = f"Example Scenario:\nSimple Adaptations\n+ Rationing{suffix_storage}\n+Feed Improved"
     example_scenario = call_scenario_runner_and_set_options(
         this_simulation, example_scenario_title  # , countries_list=["CHN"]
     )
@@ -500,7 +515,7 @@ def recalculate_plot_1():
         print("\nBaseline climate run for figure 1\n")
 
     if RUN_FIGURE_1_NO_STORAGE:
-        print("\nStorage removed all scenarios figure 1\n")
+        print("\nRationing removed all scenarios figure 1\n")
 
     return worlds, ratios
 
@@ -612,7 +627,8 @@ def recalculate_plot_3():
     this_simulation["end_simulation_stocks_ratio"] = "zero"
     this_simulation["meat_strategy"] = "feed_only_ruminants"
     this_simulation["shutoff"] = "long_delayed_shutoff"
-    title_example_scenario = "Trade\n+ Simple Adaptations\n+ Storage\n+ Improved Feed"
+
+    title_example_scenario = "Trade\n+ Simple Adaptations\n+ Rationing\n+ Improved Feed"
     results_example_scenario = call_global_scenario_runner(
         this_simulation, title_example_scenario
     )
@@ -620,11 +636,12 @@ def recalculate_plot_3():
     # WORST CASE + SIMPLE_ADAPTATIONS + STORAGE + CULLING + ALL RESILIENT FOODS
     this_simulation["scenario"] = "all_resilient_foods"
     title_resilient_foods = (
-        "Trade\n+ Simple Adaptations\n+ Storage\n+ Feed Improved\n+ Resilient Foods"
+        "Trade\n+ Simple Adaptations\n+ Rationing\n+ Feed Improved\n+ Resilient Foods"
     )
     results_resilient_foods = call_global_scenario_runner(
         this_simulation, title_resilient_foods
     )
+
     results = {}
     results[title_simple_adaptations] = results_simple_adaptations
     results[title_example_scenario] = results_example_scenario

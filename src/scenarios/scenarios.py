@@ -64,18 +64,26 @@ class Scenarios:
         constants_for_params = {}
 
         # the following are used for all scenarios
-        constants_for_params["GLOBAL_POP"] = 7723713182  # (about 7.8 billion 2020)
+        constants_for_params["GLOBAL_POP"] = 7.723713182e9  # (about 7.8 billion 2020)
 
         # GLOBAL CROP AREA
         # UNITS: hectares
         # NOTE: This has been changed to 1.43 billion hectares to match the sum of column "C"
-        # "Country Crop Area ('000 Hectares)" column in "Greenhouses" tab   
+        # "Country Crop Area ('000 Hectares)" column in "Greenhouses" tab
         # in "Integrated Model No Food Trade" Spreadsheet
         constants_for_params["INITIAL_GLOBAL_CROP_AREA"] = 1.43e9
 
-        # not used unless smoothing true
-        # useful for ensuring output variables don't fluctuate wildly
         constants_for_params["DELAY"] = {}
+
+        # The duration from planting to harvest of crops -- this is used to calculate the additional delay before the
+        # implementation of relocated crops has an effect on improving yields.
+        constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
+
+        # This will be added to the initial harvest duration above to further delay relocated crops,
+        # it represents how slow people are to realize they need to start planting different crops
+        # (note, it's assumed to be a uniform global number)
+        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 2
+
         constants_for_params["ADD_FISH"] = True
 
         self.GENERIC_INITIALIZED_SET = True
@@ -92,13 +100,13 @@ class Scenarios:
         constants_for_params["POP"] = 7723713182  # (about 7.8 billion)
 
         # annual tons dry caloric equivalent
-        constants_for_params["BASELINE_CROP_KCALS"] = 3898e6 * 1.015
+        constants_for_params["BASELINE_CROP_KCALS"] = 3898e6
 
         # annual tons fat
-        constants_for_params["BASELINE_CROP_FAT"] = 322e6 * 1.08
+        constants_for_params["BASELINE_CROP_FAT"] = 322e6
 
         # annual tons protein
-        constants_for_params["BASELINE_CROP_PROTEIN"] = 350e6 * 0.94
+        constants_for_params["BASELINE_CROP_PROTEIN"] = 350e6
 
         # annual tons dry caloric equivalent
         constants_for_params["BIOFUEL_KCALS"] = 623e6
@@ -886,7 +894,7 @@ class Scenarios:
         constants_for_params["MAX_METHANE_SCP_AS_PERCENT_KCALS_HUMANS"] = 50
 
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 10
-        constants_for_params["MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_FEED"] = 5
+        constants_for_params["MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_FEED"] = 10
         constants_for_params["MAX_METHANE_SCP_AS_PERCENT_KCALS_FEED"] = 43
 
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = 10
@@ -904,7 +912,7 @@ class Scenarios:
         constants_for_params["MAX_METHANE_SCP_AS_PERCENT_KCALS_HUMANS"] = 100
 
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = 10
-        constants_for_params["MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_FEED"] = 5
+        constants_for_params["MAX_CELLULOSIC_SUGAR_AS_PERCENT_KCALS_FEED"] = 10
         constants_for_params["MAX_METHANE_SCP_AS_PERCENT_KCALS_FEED"] = 43
 
         constants_for_params["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = 10
@@ -1485,9 +1493,7 @@ class Scenarios:
 
     def no_resilient_foods(self, constants_for_params):
         constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = 0
-        constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
         constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
-        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 0
 
         constants_for_params["OG_USE_BETTER_ROTATION"] = False
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
@@ -1509,10 +1515,12 @@ class Scenarios:
         # half values from greenhouse paper due to higher cost
         constants_for_params["DELAY"]["GREENHOUSE_MONTHS"] = 2
 
-        # the greenhouse area of 190 million hectares divided by the total crop area 
+        # the greenhouse area of 190 million hectares divided by the total crop area
         # This same fraction is used for the given country, or the globe depending on the "scale"
         # setting.
-        constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = 0.19e9 / constants_for_params["INITIAL_GLOBAL_CROP_AREA"]
+        constants_for_params["GREENHOUSE_AREA_MULTIPLIER"] = (
+            0.19e9 / constants_for_params["INITIAL_GLOBAL_CROP_AREA"]
+        )
         constants_for_params["ADD_GREENHOUSES"] = True
         return constants_for_params
 
@@ -1523,8 +1531,6 @@ class Scenarios:
         # occur averaging in year 3 globally
         constants_for_params["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.647
         constants_for_params["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
-        constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7 + 1
-        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 2
         constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
 
         return constants_for_params
@@ -1536,8 +1542,6 @@ class Scenarios:
         # occur averaging in year 3 globally
         constants_for_params["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.647
         constants_for_params["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
-        constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 7 + 1
-        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 2
         constants_for_params["RATIO_INCREASED_CROP_AREA"] = 72 / 39
         constants_for_params["NUMBER_YEARS_TAKES_TO_REACH_INCREASED_AREA"] = 3
 
@@ -1604,14 +1608,11 @@ class Scenarios:
 
         constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = 0
 
-        constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
-
         constants_for_params["OG_USE_BETTER_ROTATION"] = False
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
         constants_for_params["ADD_GREENHOUSES"] = False
         constants_for_params["ADD_METHANE_SCP"] = False
         constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
-        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 0
 
         constants_for_params = self.seaweed(constants_for_params)
 
@@ -1622,14 +1623,11 @@ class Scenarios:
         self.scenario_description += "\nscaled up methane SCP"
         assert not self.SCENARIO_SET
 
-        constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
-
         constants_for_params["OG_USE_BETTER_ROTATION"] = False
         constants_for_params["ADD_CELLULOSIC_SUGAR"] = False
         constants_for_params["ADD_GREENHOUSES"] = False
         constants_for_params["ADD_SEAWEED"] = False
         constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
-        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 0
 
         constants_for_params = self.methane_scp(constants_for_params)
 
@@ -1640,14 +1638,11 @@ class Scenarios:
         self.scenario_description += "\nscaled up cellulosic sugar"
         assert not self.SCENARIO_SET
 
-        constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
-
         constants_for_params["OG_USE_BETTER_ROTATION"] = False
         constants_for_params["ADD_METHANE_SCP"] = False
         constants_for_params["ADD_GREENHOUSES"] = False
         constants_for_params["ADD_SEAWEED"] = False
         constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
-        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 0
 
         constants_for_params = self.cellulosic_sugar(constants_for_params)
 
@@ -1658,13 +1653,10 @@ class Scenarios:
         self.scenario_description += "\nscaled up cellulosic sugar"
         assert not self.SCENARIO_SET
 
-        constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
-
         constants_for_params["OG_USE_BETTER_ROTATION"] = False
         constants_for_params["ADD_GREENHOUSES"] = False
         constants_for_params["ADD_SEAWEED"] = False
         constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
-        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 0
 
         constants_for_params = self.methane_scp(constants_for_params)
         constants_for_params = self.cellulosic_sugar(constants_for_params)
@@ -1694,8 +1686,6 @@ class Scenarios:
 
         constants_for_params["INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"] = 0
 
-        constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"] = 8
-        constants_for_params["DELAY"]["ROTATION_CHANGE_IN_MONTHS"] = 0
         constants_for_params["RATIO_INCREASED_CROP_AREA"] = 1
 
         constants_for_params["OG_USE_BETTER_ROTATION"] = False
