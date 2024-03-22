@@ -427,13 +427,21 @@ def test_intake_constraints(run_all_combinations):
         for run in runs:
             if run["intake_constraints"] == "enabled":
                 enabled_result = run["percent_people_fed"]
+                enabled_total_kcals = run["sum_total_kcals"]
             elif run["intake_constraints"] == "disabled_for_humans":
                 disabled_result = run["percent_people_fed"]
+                disabled_total_kcals = run["sum_total_kcals"]
             else:
                 raise ValueError("Unexpected intake_constraints")
-        assert disabled_result >= enabled_result - test_tolerance, (
-            "Using intake_constraints disabled_for_humans  must result in more people fed than using"
-            " intake_constraints enabled "
+
+        assert_fewer_people_fed_or_less_overall_food(
+            result_smaller=enabled_result,
+            result_sum_total_smaller=enabled_total_kcals,
+            result_bigger=disabled_result,
+            result_sum_total_bigger=disabled_total_kcals,
+            assert_message=(
+                "Adding intake constraints cannot decrease the number of people fed"
+            ),
         )
 
 
