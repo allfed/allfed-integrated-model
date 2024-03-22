@@ -22,7 +22,8 @@ class Greenhouses:
 
         """
         self.TOTAL_CROP_AREA = (
-            constants_for_params["INITIAL_GLOBAL_CROP_AREA"] * constants_for_params["INITIAL_CROP_AREA_FRACTION"]
+            constants_for_params["INITIAL_GLOBAL_CROP_AREA"]
+            * constants_for_params["INITIAL_CROP_AREA_FRACTION"]
         )
 
         # Set the starting month number based on the given constants.

@@ -78,9 +78,9 @@ for i in range(0, len(df_seaweed)):
         )
         df_seaweed_new.loc[i, "initial_built_fraction"] = coast_fraction
         for col in growth_cols:
-            df_seaweed_new.loc[i, "seaweed_growth_per_day_" + str(col)] = (
-                df_seaweed.loc[i, col]
-            )
+            df_seaweed_new.loc[
+                i, "seaweed_growth_per_day_" + str(col)
+            ] = df_seaweed.loc[i, col]
 
 # Save to file
 df_seaweed_new.to_csv(

@@ -59,9 +59,9 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         if "buffer" not in this_simulation.keys():
             this_simulation["buffer"] = "baseline"
         if "shutoff" not in this_simulation.keys():
-            this_simulation["shutoff"] = (
-                "continued"  # this_simulation["shutoff"] = "immediate"
-            )
+            this_simulation[
+                "shutoff"
+            ] = "continued"  # this_simulation["shutoff"] = "immediate"
         if "cull" not in this_simulation.keys():
             this_simulation["cull"] = "do_eat_culled"
 
