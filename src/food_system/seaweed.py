@@ -19,9 +19,10 @@ class Seaweed:
 
         # units: 1000 km^2 global (trading blocs multiply this by some fraction)
         self.SEAWEED_NEW_AREA_PER_MONTH_GLOBAL = 2.0765 * 30
+        # total coastline is 617,672 km^2. 3 km^2 per km of coast gives 1,853,000 km^2
 
-        # 1000 km^2 (seaweed) times the fraction
-        MAXIMUM_SEAWEED_AREA_GLOBAL = 1000
+        # units: 1000 km^2 (seaweed). Multiply 1000 by number below to get max kmv^2
+        MAXIMUM_SEAWEED_AREA_GLOBAL = 1853
         self.MAXIMUM_SEAWEED_AREA = (
             MAXIMUM_SEAWEED_AREA_GLOBAL
             * constants_for_params["SEAWEED_MAX_AREA_FRACTION"]

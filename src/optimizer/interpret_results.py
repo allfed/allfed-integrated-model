@@ -21,6 +21,7 @@ from datetime import date
 import git
 from pathlib import Path
 import sys
+import re
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -136,8 +137,9 @@ class Interpreter:
             minute = str(datetime.datetime.now().minute)
             second = str(datetime.datetime.now().second)
 
-            if title != "Untitled":
-                filename = title + "_ykcals.csv"
+            newtitle_for_save = re.sub(r'[\\/*?:"<>|\n]', "_", title)
+            if newtitle_for_save != "Untitled":
+                filename = newtitle_for_save + "_ykcals.csv"
             else:
                 filename = (
                     "ykcals"

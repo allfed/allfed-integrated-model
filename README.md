@@ -27,9 +27,16 @@ To see how to run fewer plots, load plots you already ran, or show specific resu
 
 Individual scenarios, or a series of scenarios of interest, can be specified in the scenarios/ folder.
 ```bash
-./run_scenarios_from_yaml.sh False True False argentina.yaml
+./run_scenarios_from_yaml.sh True False True argentina.yaml
 ```
-This shows a stackplot of people fed in baseline (no nuclear winter but loss of trade), nuclear winter without resilient food (no food trade), and nuclear winter with no food trade.
+This shows a series of stackplots of argentina with no food trade, including animal slaughter, feed, and food available to humans after waste each month. The scenarios shown are:
+
+1. Baseline net production (continued feed/biofuel, normal climate)
+2. Baseline gross production (shut off feed/biofuel, normal climate)
+3. Nuclear winter net production (continued feed/biofuel, 150 Tg nuclear winter)
+4. Nuclear winter with reduced feed/waste  (continued feed/biofuel, nuclear winter, reduced waste)
+5. Nuclear winter with resilient foods (continued feed/biofuel, nuclear winter, reduced waste, resilient foods)
+6. Nuclear winter with resilient foods & more area (continued feed/biofuel, nuclear winter, reduced waste, resilient foods, cropland expansion)
 
 The first argument is whether to show plotted simulation results for the different rounds of optimization.
 The second argument is whether to show a map of percent people fed for all countries, and shows at the end for each type of scenario specified in the yaml file.
