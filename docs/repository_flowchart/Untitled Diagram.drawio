@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-03-24T15:16:54.946Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="pJcCvmmOLU9fBbWrizNZ" version="24.1.0" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-24T17:14:47.850Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="RyKG7g5IlCFchFPifPpC" version="24.1.0" type="github">
   <diagram name="Page-1" id="vb958Nm0k1HjrjN-Do-v">
     <mxGraphModel dx="3561" dy="3447" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
@@ -16,8 +16,8 @@
         </mxCell>
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-1" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="900" y="150" as="sourcePoint" />
-            <mxPoint x="980" y="200" as="targetPoint" />
+            <mxPoint x="790" y="140" as="sourcePoint" />
+            <mxPoint x="790" y="220" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-2" value="&lt;div&gt;&lt;i&gt;run_model_no_trade.py&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_model_no_trade():&lt;/i&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Loops through all countries specified in scenario_option &quot;settings&quot;.&lt;/div&gt;&lt;div&gt;&lt;div&gt;Imports each country as country_data (where country_data comes from each row of computer_readable_combined).&lt;/div&gt;&lt;/div&gt;&lt;div&gt;Then calls&lt;i&gt; &lt;/i&gt;&lt;i&gt;run_optimizer_for_country() &lt;/i&gt;passing in scenario_option and country_data for that country&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;div&gt;&lt;i&gt;run_optimizer_for_country():&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;Calls &lt;i&gt;set_depending_on_option&lt;/i&gt;()&lt;/div&gt;&lt;div&gt;Then for each country, calls run_and_analyze_scenario() passing in &lt;br&gt;&lt;div&gt;constants_for_params and&lt;br&gt;&lt;/div&gt;time_consts_for_params&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
@@ -27,7 +27,7 @@
           <mxGeometry x="-20" y="-1660" width="400" height="160" as="geometry" />
         </mxCell>
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-6" value="run_and_analyze_scenario:" style="text;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="220" y="260" width="180" height="40" as="geometry" />
+          <mxGeometry x="720" y="280" width="180" height="40" as="geometry" />
         </mxCell>
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-7" value="&lt;div&gt;Scenarios.py&lt;/div&gt;&lt;div&gt;=&amp;gt; Scenarios class has an instance called scenarios_loader&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;set_depending_on_option uses methods in Scenarios to set the specific values of constants_for_params and&lt;br&gt;time_consts_for_params for this simulation&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="595" y="-800" width="252" height="180" as="geometry" />
@@ -224,6 +224,9 @@
             <mxPoint x="1270" y="-1169" as="sourcePoint" />
             <mxPoint x="1320" y="-1169" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-69" value="&lt;div&gt;constants_for_params &lt;br&gt;&lt;/div&gt;time_consts_for_params" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="150" width="180" height="50" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
