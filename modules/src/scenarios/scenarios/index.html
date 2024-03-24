@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../../../../img/favicon.ico">
+  <title>Scenarios - ALLFED Integrated Model</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../../../css/theme.css" />
+  <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Scenarios";
+    var mkdocs_page_input_path = "modules/src/scenarios/scenarios.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../../../.." class="icon icon-home"> ALLFED Integrated Model</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../..">ALLFED Integrated Food System Model</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Modules</span></p>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="#">Src</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="#">Food system</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/animal_populations/">Animal populations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/cellulosic_sugar/">Cellulosic sugar</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/feed_and_biofuels/">Feed and biofuels</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/food/">Food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/greenhouses/">Greenhouses</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/meat_and_dairy/">Meat and dairy</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/methane_scp/">Methane scp</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/outdoor_crops/">Outdoor crops</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/seafood/">Seafood</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/seaweed/">Seaweed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/stored_food/">Stored food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/unit_conversions/">Unit conversions</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Import scripts no food trade</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_crop_macros_csv/">Create crop macros csv</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_nuclear_winter_csv/">Create nuclear winter csv</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Optimizer</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/extract_results/">Extract results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/interpret_results/">Interpret results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/optimizer/">Optimizer</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/parameters/">Parameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/validate_results/">Validate results</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Scenarios</a>
+    <ul class="current">
+                <li class="toctree-l3"><a class="reference internal" href="../run_model_no_trade/">Run model no trade</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../run_scenario/">Run scenario</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../run_scenarios_from_yaml/">Run scenarios from yaml</a>
+                </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="./">Scenarios</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#scenarios">Scenarios</a>
+    </li>
+    </ul>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Utilities</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/constants/">Constants</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/import_utilities/">Import utilities</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/make_powerpoint/">Make powerpoint</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/plotter/">Plotter</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../..">ALLFED Integrated Model</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Modules &raquo;</li>
+        
+      
+        
+          <li>Src &raquo;</li>
+        
+      
+        
+          <li>Scenarios &raquo;</li>
+        
+      
+    
+    <li>Scenarios</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1"></h1>
+<h2 id="scenarios">Scenarios</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L14">source</a></p>
+<pre><code class="language-python">
+</code></pre>
+<p><strong>Methods:</strong></p>
+<h3 id="check_all_set">.check_all_set</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L38">source</a></p>
+<pre><code class="language-python">.check_all_set()
+</code></pre>
+<hr />
+<p>Ensure all properties of scenarios have been set</p>
+<h3 id="init_generic_scenario">.init_generic_scenario</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L62">source</a></p>
+<pre><code class="language-python">.init_generic_scenario()
+</code></pre>
+<h3 id="init_global_food_system_properties">.init_global_food_system_properties</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L92">source</a></p>
+<pre><code class="language-python">.init_global_food_system_properties()
+</code></pre>
+<h3 id="init_country_food_system_properties">.init_country_food_system_properties</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L333">source</a></p>
+<pre><code class="language-python">.init_country_food_system_properties(
+   country_data
+)
+</code></pre>
+<h3 id="set_immediate_shutoff">.set_immediate_shutoff</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L550">source</a></p>
+<pre><code class="language-python">.set_immediate_shutoff(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_one_month_delayed_shutoff">.set_one_month_delayed_shutoff</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L561">source</a></p>
+<pre><code class="language-python">.set_one_month_delayed_shutoff(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_short_delayed_shutoff">.set_short_delayed_shutoff</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L574">source</a></p>
+<pre><code class="language-python">.set_short_delayed_shutoff(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_long_delayed_shutoff">.set_long_delayed_shutoff</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L586">source</a></p>
+<pre><code class="language-python">.set_long_delayed_shutoff(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_continued_feed_biofuels">.set_continued_feed_biofuels</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L599">source</a></p>
+<pre><code class="language-python">.set_continued_feed_biofuels(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_continued_after_10_percent_fed">.set_continued_after_10_percent_fed</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L621">source</a></p>
+<pre><code class="language-python">.set_continued_after_10_percent_fed(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_long_delayed_shutoff_after_10_percent_fed">.set_long_delayed_shutoff_after_10_percent_fed</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L643">source</a></p>
+<pre><code class="language-python">.set_long_delayed_shutoff_after_10_percent_fed(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_breeding_to_greatly_reduced">.set_breeding_to_greatly_reduced</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L663">source</a></p>
+<pre><code class="language-python">.set_breeding_to_greatly_reduced(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_to_baseline_breeding">.set_to_baseline_breeding</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L672">source</a></p>
+<pre><code class="language-python">.set_to_baseline_breeding(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_to_feed_only_ruminants">.set_to_feed_only_ruminants</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L681">source</a></p>
+<pre><code class="language-python">.set_to_feed_only_ruminants(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_waste_to_zero">.set_waste_to_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L692">source</a></p>
+<pre><code class="language-python">.set_waste_to_zero(
+   constants_for_params
+)
+</code></pre>
+<h3 id="get_global_distribution_waste">.get_global_distribution_waste</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L707">source</a></p>
+<pre><code class="language-python">.get_global_distribution_waste()
+</code></pre>
+<hr />
+<p>Calculates the distribution waste of the global food system.</p>
+<h3 id="set_global_waste_to_tripled_prices">.set_global_waste_to_tripled_prices</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L724">source</a></p>
+<pre><code class="language-python">.set_global_waste_to_tripled_prices(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_global_waste_to_doubled_prices">.set_global_waste_to_doubled_prices</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L742">source</a></p>
+<pre><code class="language-python">.set_global_waste_to_doubled_prices(
+   constants_for_params
+)
+</code></pre>
+<hr />
+<p>overall waste, on farm + distribution + retail
+2x prices (note, currently set to 2019, not 2020)</p>
+<h3 id="set_global_waste_to_baseline_prices">.set_global_waste_to_baseline_prices</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L760">source</a></p>
+<pre><code class="language-python">.set_global_waste_to_baseline_prices(
+   constants_for_params
+)
+</code></pre>
+<hr />
+<p>overall waste, on farm+distribution+retail
+1x prices (note, currently set to 2019, not 2020)</p>
+<h3 id="get_distribution_waste">.get_distribution_waste</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L779">source</a></p>
+<pre><code class="language-python">.get_distribution_waste(
+   country_data
+)
+</code></pre>
+<hr />
+<p>Calculates the distribution waste of the global food system.</p>
+<h3 id="set_country_waste_to_tripled_prices">.set_country_waste_to_tripled_prices</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L795">source</a></p>
+<pre><code class="language-python">.set_country_waste_to_tripled_prices(
+   constants_for_params, country_data
+)
+</code></pre>
+<hr />
+<p>overall waste, on farm + distribution + retail
+3x prices (note, currently set to 2019, not 2020)</p>
+<h3 id="set_country_waste_to_doubled_prices">.set_country_waste_to_doubled_prices</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L814">source</a></p>
+<pre><code class="language-python">.set_country_waste_to_doubled_prices(
+   constants_for_params, country_data
+)
+</code></pre>
+<hr />
+<p>overall waste, on farm + distribution + retail
+2x prices (note, currently set to 2019, not 2020)</p>
+<h3 id="set_country_waste_to_baseline_prices">.set_country_waste_to_baseline_prices</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L832">source</a></p>
+<pre><code class="language-python">.set_country_waste_to_baseline_prices(
+   constants_for_params, country_data
+)
+</code></pre>
+<hr />
+<p>overall waste, on farm+distribution+retail
+1x prices (note, currently set to 2019, not 2020)</p>
+<h3 id="set_baseline_nutrition_profile">.set_baseline_nutrition_profile</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L851">source</a></p>
+<pre><code class="language-python">.set_baseline_nutrition_profile(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_catastrophe_nutrition_profile">.set_catastrophe_nutrition_profile</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L869">source</a></p>
+<pre><code class="language-python">.set_catastrophe_nutrition_profile(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_intake_constraints_to_enabled">.set_intake_constraints_to_enabled</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L889">source</a></p>
+<pre><code class="language-python">.set_intake_constraints_to_enabled(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_intake_constraints_to_disabled_for_humans">.set_intake_constraints_to_disabled_for_humans</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L907">source</a></p>
+<pre><code class="language-python">.set_intake_constraints_to_disabled_for_humans(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_no_stored_food">.set_no_stored_food</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L927">source</a></p>
+<pre><code class="language-python">.set_no_stored_food(
+   constants_for_params
+)
+</code></pre>
+<hr />
+<p>Sets the stored food at start of simulation to zero.</p>
+<h3 id="set_baseline_stored_food">.set_baseline_stored_food</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L940">source</a></p>
+<pre><code class="language-python">.set_baseline_stored_food(
+   constants_for_params
+)
+</code></pre>
+<hr />
+<p>Sets the stored food at start of simulation to the expected amount in the start month.</p>
+<h3 id="set_stored_food_buffer_zero">.set_stored_food_buffer_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L955">source</a></p>
+<pre><code class="language-python">.set_stored_food_buffer_zero(
+   constants_for_params
+)
+</code></pre>
+<hr />
+<p>Sets the stored food buffer as zero -- no stored food left at
+the end of the simulation.</p>
+<p>However, in reality food in transit and food in grocery stores and
+warehouses means there would still likely be some food available at
+the end as a buffer.</p>
+<h3 id="set_no_stored_food_between_years">.set_no_stored_food_between_years</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L973">source</a></p>
+<pre><code class="language-python">.set_no_stored_food_between_years(
+   constants_for_params
+)
+</code></pre>
+<hr />
+<p>Sets the stored food between years as zero. No food is traded between the
+12 month intervals seasons. Makes more sense if seasonality is assumed zero.
+All expected stored food at start is however available.</p>
+<p>However, in reality food in transit and food in grocery stores and
+warehouses means there would still likely be some food available at
+the end as a buffer.</p>
+<h3 id="set_stored_food_buffer_as_baseline">.set_stored_food_buffer_as_baseline</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L991">source</a></p>
+<pre><code class="language-python">.set_stored_food_buffer_as_baseline(
+   constants_for_params
+)
+</code></pre>
+<hr />
+<p>Sets the stored food buffer as 100% -- the typical stored food buffer
+in ~2020 left at the end of the simulation.</p>
+<h3 id="set_stored_food_buffer_as_baseline_and_no_stored_between_years">.set_stored_food_buffer_as_baseline_and_no_stored_between_years</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1005">source</a></p>
+<pre><code class="language-python">.set_stored_food_buffer_as_baseline_and_no_stored_between_years(
+   constants_for_params
+)
+</code></pre>
+<hr />
+<p>Sets the stored food buffer as 100% -- the typical stored food buffer
+in ~2020 left at the end of the simulation.</p>
+<h3 id="set_no_seasonality">.set_no_seasonality</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1023">source</a></p>
+<pre><code class="language-python">.set_no_seasonality(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_global_seasonality_baseline">.set_global_seasonality_baseline</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1034">source</a></p>
+<pre><code class="language-python">.set_global_seasonality_baseline(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_global_seasonality_nuclear_winter">.set_global_seasonality_nuclear_winter</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1057">source</a></p>
+<pre><code class="language-python">.set_global_seasonality_nuclear_winter(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_country_seasonality">.set_country_seasonality</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1082">source</a></p>
+<pre><code class="language-python">.set_country_seasonality(
+   constants_for_params, country_data
+)
+</code></pre>
+<h3 id="set_grasses_baseline">.set_grasses_baseline</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1109">source</a></p>
+<pre><code class="language-python">.set_grasses_baseline(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_global_grasses_nuclear_winter">.set_global_grasses_nuclear_winter</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1118">source</a></p>
+<pre><code class="language-python">.set_global_grasses_nuclear_winter(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_country_grasses_nuclear_winter">.set_country_grasses_nuclear_winter</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1138">source</a></p>
+<pre><code class="language-python">.set_country_grasses_nuclear_winter(
+   constants_for_params, country_data
+)
+</code></pre>
+<h3 id="set_country_grasses_to_zero">.set_country_grasses_to_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1151">source</a></p>
+<pre><code class="language-python">.set_country_grasses_to_zero(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_fish_zero">.set_fish_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1164">source</a></p>
+<pre><code class="language-python">.set_fish_zero(
+   constants_for_params, time_consts
+)
+</code></pre>
+<h3 id="set_fish_nuclear_winter_reduction">.set_fish_nuclear_winter_reduction</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1175">source</a></p>
+<pre><code class="language-python">.set_fish_nuclear_winter_reduction(
+   time_consts
+)
+</code></pre>
+<hr />
+<p>Set the fish percentages in every country (or globally) from baseline
+although this is a global number, we don't have the regional number, so
+we use the global instead.</p>
+<h3 id="set_fish_baseline">.set_fish_baseline</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1345">source</a></p>
+<pre><code class="language-python">.set_fish_baseline(
+   constants_for_params, time_consts
+)
+</code></pre>
+<h3 id="set_disruption_to_crops_to_zero">.set_disruption_to_crops_to_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1358">source</a></p>
+<pre><code class="language-python">.set_disruption_to_crops_to_zero(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_nuclear_winter_global_disruption_to_crops">.set_nuclear_winter_global_disruption_to_crops</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1369">source</a></p>
+<pre><code class="language-python">.set_nuclear_winter_global_disruption_to_crops(
+   constants_for_params
+)
+</code></pre>
+<h3 id="set_nuclear_winter_country_disruption_to_crops">.set_nuclear_winter_country_disruption_to_crops</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1390">source</a></p>
+<pre><code class="language-python">.set_nuclear_winter_country_disruption_to_crops(
+   constants_for_params, country_data
+)
+</code></pre>
+<h3 id="set_zero_crops">.set_zero_crops</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1436">source</a></p>
+<pre><code class="language-python">.set_zero_crops(
+   constants_for_params
+)
+</code></pre>
+<h3 id="include_protein">.include_protein</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1461">source</a></p>
+<pre><code class="language-python">.include_protein(
+   constants_for_params
+)
+</code></pre>
+<h3 id="dont_include_protein">.dont_include_protein</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1468">source</a></p>
+<pre><code class="language-python">.dont_include_protein(
+   constants_for_params
+)
+</code></pre>
+<h3 id="include_fat">.include_fat</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1477">source</a></p>
+<pre><code class="language-python">.include_fat(
+   constants_for_params
+)
+</code></pre>
+<h3 id="dont_include_fat">.dont_include_fat</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1485">source</a></p>
+<pre><code class="language-python">.dont_include_fat(
+   constants_for_params
+)
+</code></pre>
+<h3 id="no_resilient_foods">.no_resilient_foods</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1494">source</a></p>
+<pre><code class="language-python">.no_resilient_foods(
+   constants_for_params
+)
+</code></pre>
+<h3 id="seaweed">.seaweed</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1506">source</a></p>
+<pre><code class="language-python">.seaweed(
+   constants_for_params
+)
+</code></pre>
+<h3 id="greenhouse">.greenhouse</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1512">source</a></p>
+<pre><code class="language-python">.greenhouse(
+   constants_for_params
+)
+</code></pre>
+<h3 id="relocated_outdoor_crops">.relocated_outdoor_crops</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1527">source</a></p>
+<pre><code class="language-python">.relocated_outdoor_crops(
+   constants_for_params
+)
+</code></pre>
+<h3 id="expanded_area_and_relocated_outdoor_crops">.expanded_area_and_relocated_outdoor_crops</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1538">source</a></p>
+<pre><code class="language-python">.expanded_area_and_relocated_outdoor_crops(
+   constants_for_params
+)
+</code></pre>
+<h3 id="methane_scp">.methane_scp</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1550">source</a></p>
+<pre><code class="language-python">.methane_scp(
+   constants_for_params
+)
+</code></pre>
+<h3 id="cellulosic_sugar">.cellulosic_sugar</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1560">source</a></p>
+<pre><code class="language-python">.cellulosic_sugar(
+   constants_for_params
+)
+</code></pre>
+<h3 id="get_all_resilient_foods_scenario">.get_all_resilient_foods_scenario</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1570">source</a></p>
+<pre><code class="language-python">.get_all_resilient_foods_scenario(
+   constants_for_params
+)
+</code></pre>
+<h3 id="get_all_resilient_foods_and_more_area_scenario">.get_all_resilient_foods_and_more_area_scenario</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1582">source</a></p>
+<pre><code class="language-python">.get_all_resilient_foods_and_more_area_scenario(
+   constants_for_params
+)
+</code></pre>
+<h3 id="get_seaweed_scenario">.get_seaweed_scenario</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1605">source</a></p>
+<pre><code class="language-python">.get_seaweed_scenario(
+   constants_for_params
+)
+</code></pre>
+<h3 id="get_methane_scp_scenario">.get_methane_scp_scenario</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1622">source</a></p>
+<pre><code class="language-python">.get_methane_scp_scenario(
+   constants_for_params
+)
+</code></pre>
+<h3 id="get_cellulosic_sugar_scenario">.get_cellulosic_sugar_scenario</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1637">source</a></p>
+<pre><code class="language-python">.get_cellulosic_sugar_scenario(
+   constants_for_params
+)
+</code></pre>
+<h3 id="get_industrial_foods_scenario">.get_industrial_foods_scenario</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1652">source</a></p>
+<pre><code class="language-python">.get_industrial_foods_scenario(
+   constants_for_params
+)
+</code></pre>
+<h3 id="get_relocated_crops_scenario">.get_relocated_crops_scenario</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1667">source</a></p>
+<pre><code class="language-python">.get_relocated_crops_scenario(
+   constants_for_params
+)
+</code></pre>
+<h3 id="get_greenhouse_scenario">.get_greenhouse_scenario</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1683">source</a></p>
+<pre><code class="language-python">.get_greenhouse_scenario(
+   constants_for_params
+)
+</code></pre>
+<h3 id="get_no_resilient_food_scenario">.get_no_resilient_food_scenario</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1701">source</a></p>
+<pre><code class="language-python">.get_no_resilient_food_scenario(
+   constants_for_params
+)
+</code></pre>
+<h3 id="cull_animals">.cull_animals</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1712">source</a></p>
+<pre><code class="language-python">.cull_animals(
+   constants_for_params
+)
+</code></pre>
+<h3 id="dont_cull_animals">.dont_cull_animals</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/scenarios.py/#L1721">source</a></p>
+<pre><code class="language-python">.dont_cull_animals(
+   constants_for_params
+)
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../utilities/constants/" class="btn btn-neutral float-right" title="Constants">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../run_scenarios_from_yaml/" class="btn btn-neutral" title="Run scenarios from yaml"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Me</p>
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../run_scenarios_from_yaml/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../utilities/constants/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../../../..';</script>
+    <script src="../../../../js/theme_extra.js" defer></script>
+    <script src="../../../../js/theme.js" defer></script>
+      <script src="../../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

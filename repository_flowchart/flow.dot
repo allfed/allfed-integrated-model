@@ -1,0 +1,58 @@
+digraph ModelOverview{
+    // Things relationg to run_scenario.py
+    model_res_food[label="run_model_with_resilient_foods.py", style="filled", color="#3A913F"]
+    model_base[label="run_model_baseline.py", style="filled", color="#3A913F"]
+    model_no_res_food[label="run_model_no_resilient_foods.py", style="filled", color="#3A913F"]
+    figure_3abcd[label="create_figure_3abcd.py", style="filled", color="#3A913F"]
+    run_scenario[label="run_scenario.py", style="filled", color="#3A913F"]
+    // make connections to run_scenario.py
+    model_res_food -> run_scenario
+    model_base -> run_scenario [label="call for\neach scenario"]
+    model_no_res_food -> run_scenario
+    figure_3abcd -> run_scenario
+
+    //things relating to run_model_no_trade.py
+    create_figure_1ab[label="create_figure_1ab.py", style="filled", color="#3A913F"]
+    create_figure_2abcde[label="create_figure_2abcde.py", style="filled", color="#3A913F"]
+    reproduce_xia_et_al_USA[label="reproduce_xia_et_al_USA.py", style="filled", color="#3A913F"]
+    run_USA_with_improved_numbers[label="run_USA_with_improved_numbers.py", style="filled", color="#3A913F"]
+    run_model_no_trade_with_resilient_foods[label="run_model_no_trade_with_resilient_foods.py", style="filled", color="#3A913F"]
+    run_model_no_trade_no_resilient_foods[label="run_model_no_trade_no_resilient_foods.py", style="filled", color="#3A913F"]
+    run_model_no_trade_baseline[label="run_model_no_trade_baseline.py", style="filled", color="#3A913F"]
+    run_model_no_trade[label="run_model_no_trade.py", style="filled", color="#3A913F"]
+    // make connections to run_model_no_trade.py
+    create_figure_1ab -> run_model_no_trade
+    create_figure_2abcde -> run_model_no_trade
+    reproduce_xia_et_al_USA -> run_model_no_trade
+    run_USA_with_improved_numbers -> run_model_no_trade[label="call with\nscenarios defined"]
+    run_model_no_trade_with_resilient_foods -> run_model_no_trade
+    run_model_no_trade_no_resilient_foods -> run_model_no_trade
+    run_model_no_trade_baseline -> run_model_no_trade
+
+    run_model_no_trade -> run_scenario[label="call for\neach scenario"]
+
+    //load data
+    data_no_food_trade_computer_readable_combined[label="data/no_food_trade/computer_readable_combined.csv.csv", style="filled", color="#3A913F"]
+    scenario[label="scenario.py", style="filled", color="#3A913F"]
+    data_no_food_trade_computer_readable_combined -> scenario[label="loads"]
+
+    //load scenarios
+    scenario -> run_scenario[label="loads"]
+
+    //run the model
+    parameters[label="parameters.py", style="filled", color="#3A913F"]
+    optimizer[label="optimizer.py", style="filled", color="#3A913F"]
+    extract_results[label="extract_results.py", style="filled", color="#3A913F"]
+    interpret_results[label="interpret_results.py", style="filled", color="#3A913F"]
+    validate_results[label="validate_results.py", style="filled", color="#3A913F"]
+    run_scenario -> parameters
+    parameters -> optimizer
+    optimizer -> extract_results
+    extract_results -> interpret_results
+    interpret_results -> validate_results
+    validate_results -> interpret_results
+    interpret_results -> extract_results
+    extract_results -> optimizer
+    optimizer -> parameters
+    parameters -> run_scenario
+}

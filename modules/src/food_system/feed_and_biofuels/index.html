@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../../../../img/favicon.ico">
+  <title>Feed and biofuels - ALLFED Integrated Model</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../../../css/theme.css" />
+  <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Feed and biofuels";
+    var mkdocs_page_input_path = "modules/src/food_system/feed_and_biofuels.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../../../.." class="icon icon-home"> ALLFED Integrated Model</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../..">ALLFED Integrated Food System Model</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Modules</span></p>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="#">Src</a>
+    <ul class="current">
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Food system</a>
+    <ul class="current">
+                <li class="toctree-l3"><a class="reference internal" href="../animal_populations/">Animal populations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../cellulosic_sugar/">Cellulosic sugar</a>
+                </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="./">Feed and biofuels</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#feedandbiofuels">FeedAndBiofuels</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../food/">Food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../greenhouses/">Greenhouses</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../meat_and_dairy/">Meat and dairy</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../methane_scp/">Methane scp</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../outdoor_crops/">Outdoor crops</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../seafood/">Seafood</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../seaweed/">Seaweed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../stored_food/">Stored food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../unit_conversions/">Unit conversions</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Import scripts no food trade</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_crop_macros_csv/">Create crop macros csv</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_nuclear_winter_csv/">Create nuclear winter csv</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Optimizer</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/extract_results/">Extract results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/interpret_results/">Interpret results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/optimizer/">Optimizer</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/parameters/">Parameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/validate_results/">Validate results</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Scenarios</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_model_no_trade/">Run model no trade</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenario/">Run scenario</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenarios_from_yaml/">Run scenarios from yaml</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/scenarios/">Scenarios</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Utilities</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/constants/">Constants</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/import_utilities/">Import utilities</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/make_powerpoint/">Make powerpoint</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/plotter/">Plotter</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../..">ALLFED Integrated Model</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Modules &raquo;</li>
+        
+      
+        
+          <li>Src &raquo;</li>
+        
+      
+        
+          <li>Food system &raquo;</li>
+        
+      
+    
+    <li>Feed and biofuels</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1"></h1>
+<h2 id="feedandbiofuels">FeedAndBiofuels</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L16">source</a></p>
+<pre><code class="language-python">FeedAndBiofuels(
+   constants_for_params
+)
+</code></pre>
+<p><strong>Methods:</strong></p>
+<h3 id="create_feed_food_from_kcals">.create_feed_food_from_kcals</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L61">source</a></p>
+<pre><code class="language-python">.create_feed_food_from_kcals(
+   food_kcals
+)
+</code></pre>
+<h3 id="set_feed_and_biofuels">.set_feed_and_biofuels</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L76">source</a></p>
+<pre><code class="language-python">.set_feed_and_biofuels(
+   outdoor_crops_used_for_biofuel, methane_scp_used_for_biofuel,
+   cellulosic_sugar_used_for_biofuel, remaining_biofuel_needed_from_stored_food,
+   outdoor_crops_used_for_feed, methane_scp_used_for_feed,
+   cellulosic_sugar_used_for_feed, remaining_feed_needed_from_stored_food
+)
+</code></pre>
+<hr />
+<p>This function sets the feed and biofuel usage for each month. It takes the
+outdoor crops, methane, and cellulosic sugar that are used for feed and
+biofuels, and the remaining feed and biofuel needed from stored food.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>outdoor_crops_used_for_biofuel</strong> (list) : A list of outdoor crops used for biofuel</li>
+<li><strong>methane_scp_used_for_biofuel</strong> (list) : A list of methane SCP used for biofuel</li>
+<li><strong>cellulosic_sugar_used_for_biofuel</strong> (list) : A list of cellulosic sugar used for biofuel</li>
+<li><strong>remaining_biofuel_needed_from_stored_food</strong> (Food) : The remaining biofuel needed from stored food</li>
+<li><strong>outdoor_crops_used_for_feed</strong> (list) : A list of outdoor crops used for feed</li>
+<li><strong>methane_scp_used_for_feed</strong> (list) : A list of methane SCP used for feed</li>
+<li><strong>cellulosic_sugar_used_for_feed</strong> (list) : A list of cellulosic sugar used for feed</li>
+<li><strong>remaining_feed_needed_from_stored_food</strong> (Food) : The remaining feed needed from stored food</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; feed_and_biofuels.set_feed_and_biofuels(
+...     [10, 20, 30],
+...     [40, 50, 60],
+...     [70, 80, 90],
+...     Food(100),
+...     [10, 20, 30],
+...     [40, 50, 60],
+...     [70, 80, 90],
+...     Food(100),
+... )
+</code></pre>
+<h3 id="get_biofuels_and_feed_from_delayed_shutoff">.get_biofuels_and_feed_from_delayed_shutoff</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L182">source</a></p>
+<pre><code class="language-python">.get_biofuels_and_feed_from_delayed_shutoff(
+   constants_for_params
+)
+</code></pre>
+<h3 id="get_feed_usage">.get_feed_usage</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L194">source</a></p>
+<pre><code class="language-python">.get_feed_usage(
+   feed_duration
+)
+</code></pre>
+<hr />
+<p>This function is used to get the feed usage before the cap is applied.
+The total number of months before shutoff is the duration, representing the
+number of nonzero feed months for feeds to be used.</p>
+<h3 id="get_biofuel_usage">.get_biofuel_usage</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/feed_and_biofuels.py/#L254">source</a></p>
+<pre><code class="language-python">.get_biofuel_usage(
+   biofuel_duration
+)
+</code></pre>
+<hr />
+<p>This function calculates the biofuel usage before the cap is applied.
+The total number of months before shutoff is the duration, representing the
+number of nonzero biofuel months for biofuels to be used.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>biofuel_duration</strong> (int) : The number of months before the biofuel shutoff.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>Food</strong>  : A Food object representing the biofuel usage per month.</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../food/" class="btn btn-neutral float-right" title="Food">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../cellulosic_sugar/" class="btn btn-neutral" title="Cellulosic sugar"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Me</p>
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../cellulosic_sugar/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../food/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../../../..';</script>
+    <script src="../../../../js/theme_extra.js" defer></script>
+    <script src="../../../../js/theme.js" defer></script>
+      <script src="../../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

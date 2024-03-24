@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../../../../img/favicon.ico">
+  <title>Extract results - ALLFED Integrated Model</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../../../css/theme.css" />
+  <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Extract results";
+    var mkdocs_page_input_path = "modules/src/optimizer/extract_results.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../../../.." class="icon icon-home"> ALLFED Integrated Model</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../..">ALLFED Integrated Food System Model</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Modules</span></p>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="#">Src</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="#">Food system</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/animal_populations/">Animal populations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/cellulosic_sugar/">Cellulosic sugar</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/feed_and_biofuels/">Feed and biofuels</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/food/">Food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/greenhouses/">Greenhouses</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/meat_and_dairy/">Meat and dairy</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/methane_scp/">Methane scp</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/outdoor_crops/">Outdoor crops</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/seafood/">Seafood</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/seaweed/">Seaweed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/stored_food/">Stored food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/unit_conversions/">Unit conversions</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Import scripts no food trade</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_crop_macros_csv/">Create crop macros csv</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_nuclear_winter_csv/">Create nuclear winter csv</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Optimizer</a>
+    <ul class="current">
+                <li class="toctree-l3 current"><a class="reference internal current" href="./">Extract results</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#extractor">Extractor</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../interpret_results/">Interpret results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../optimizer/">Optimizer</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../parameters/">Parameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../validate_results/">Validate results</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Scenarios</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_model_no_trade/">Run model no trade</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenario/">Run scenario</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenarios_from_yaml/">Run scenarios from yaml</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/scenarios/">Scenarios</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Utilities</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/constants/">Constants</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/import_utilities/">Import utilities</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/make_powerpoint/">Make powerpoint</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/plotter/">Plotter</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../..">ALLFED Integrated Model</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Modules &raquo;</li>
+        
+      
+        
+          <li>Src &raquo;</li>
+        
+      
+        
+          <li>Optimizer &raquo;</li>
+        
+      
+    
+    <li>Extract results</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1"></h1>
+<h2 id="extractor">Extractor</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L14">source</a></p>
+<pre><code class="language-python">Extractor(
+   constants
+)
+</code></pre>
+<p><strong>Methods:</strong></p>
+<h3 id="extract_results">.extract_results</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L27">source</a></p>
+<pre><code class="language-python">.extract_results(
+   model, variables, time_consts
+)
+</code></pre>
+<hr />
+<p>Extracts the results from the model and stores them in the Extractor object.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>model</strong> (pysd.PySD) : the PySD model object</li>
+<li><strong>variables</strong> (dict) : a dictionary of model variables</li>
+<li><strong>time_consts</strong> (dict) : a dictionary of time constants</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>Extractor</strong>  : the Extractor object with the extracted results stored in its attributes</li>
+</ul>
+<h3 id="to_monthly_list">.to_monthly_list</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L139">source</a></p>
+<pre><code class="language-python">.to_monthly_list(
+   variables, conversion
+)
+</code></pre>
+<hr />
+<p>Converts a list of variables to a monthly list of values.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>variables</strong> (list) : A list of variables to be converted.</li>
+<li><strong>conversion</strong> (float) : A conversion factor to be applied to each variable.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>array</strong>  : A numpy array of the converted monthly values.</li>
+</ul>
+<h3 id="to_monthly_list_outdoor_crops_kcals">.to_monthly_list_outdoor_crops_kcals</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L175">source</a></p>
+<pre><code class="language-python">.to_monthly_list_outdoor_crops_kcals(
+   crops_food_eaten, crops_kcals_produced, conversion
+)
+</code></pre>
+<hr />
+<p>This function calculates the amount of outdoor crop production that is immediately eaten and the
+amount that is stored for later consumption. If more is eaten than produced, the difference is
+attributed to the eating of stored up crops.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>crops_food_eaten</strong>  : list of the amount of crops eaten each month</li>
+<li><strong>crops_kcals_produced</strong>  : list of the amount of crop production (kcals) each month</li>
+<li><strong>conversion</strong>  : conversion factor from kcals to another unit of measurement</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li>A list of two lists:<ul>
+<li>The first list contains the amount of outdoor crop production (converted to the specified
+unit of measurement) that is immediately eaten each month.</li>
+<li>The second list contains the amount of outdoor crop production (converted to the specified
+unit of measurement) that is stored for later consumption each month.</li>
+</ul>
+</li>
+</ul>
+<h3 id="get_greenhouse_results">.get_greenhouse_results</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L234">source</a></p>
+<pre><code class="language-python">.get_greenhouse_results(
+   greenhouse_crops
+)
+</code></pre>
+<h3 id="create_food_object_from_fat_protein_variables">.create_food_object_from_fat_protein_variables</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L242">source</a></p>
+<pre><code class="language-python">.create_food_object_from_fat_protein_variables(
+   production_kcals, production_fat, production_protein
+)
+</code></pre>
+<hr />
+<p>This function creates a Food object from the given production_kcals, production_fat, and production_protein.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>production_kcals</strong> (float) : the amount of kcals produced</li>
+<li><strong>production_fat</strong> (float) : the amount of fat produced</li>
+<li><strong>production_protein</strong> (float) : the amount of protein produced</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>Food</strong>  : a Food object with kcals, fat, and protein attributes</li>
+</ul>
+<h3 id="extract_generic_results">.extract_generic_results</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L286">source</a></p>
+<pre><code class="language-python">.extract_generic_results(
+   production_kcals, ratio_kcals, ratio_fat, ratio_protein, constants
+)
+</code></pre>
+<hr />
+<p>Extracts generic results from production_kcals, ratio_kcals, ratio_fat, ratio_protein, and constants.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>production_kcals</strong> (float) : total production kcals</li>
+<li><strong>ratio_kcals</strong> (float) : ratio of kcals to production kcals</li>
+<li><strong>ratio_fat</strong> (float) : ratio of fat to production kcals</li>
+<li><strong>ratio_protein</strong> (float) : ratio of protein to production kcals</li>
+<li><strong>constants</strong> (dict) : dictionary of constants used in the calculations</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>Food</strong>  : a Food object containing the extracted results</li>
+</ul>
+<h3 id="extract_outdoor_crops_results">.extract_outdoor_crops_results</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L329">source</a></p>
+<pre><code class="language-python">.extract_outdoor_crops_results(
+   crops_food_to_humans, crops_food_to_humans_fat, crops_food_to_humans_protein,
+   crops_food_biofuel, crops_food_biofuel_fat, crops_food_biofuel_protein,
+   crops_food_feed, crops_food_feed_fat, crops_food_feed_protein,
+   outdoor_crops_production
+)
+</code></pre>
+<hr />
+<p>Extracts results for outdoor crops and assigns them to the corresponding food objects.
+Calculates outdoor crop production for humans and assigns the values to the corresponding food object.
+Validates if immediate and new stored sources add up correctly.
+Calculates and assigns new stored outdoor crops values.
+Calculates and assigns immediate outdoor crops values.
+Validates if the total outdoor growing production has not changed.</p>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<h3 id="calculate_outdoor_crops_kcals">.calculate_outdoor_crops_kcals</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L452">source</a></p>
+<pre><code class="language-python">.calculate_outdoor_crops_kcals(
+   crops_food_to_humans, to_humans_outdoor_crop_production
+)
+</code></pre>
+<h3 id="validate_sources_add_up">.validate_sources_add_up</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L461">source</a></p>
+<pre><code class="language-python">.validate_sources_add_up(
+   billions_fed_immediate_outdoor_crops_kcals,
+   billions_fed_new_stored_outdoor_crops_kcals
+)
+</code></pre>
+<hr />
+<p>Validates that the sum of immediate and new stored sources of outdoor crops for humans
+matches the input of outdoor crop for humans.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>billions_fed_immediate_outdoor_crops_kcals</strong> (list) : A list of billions of kcals fed
+    from immediate outdoor crops to humans.</li>
+<li><strong>billions_fed_new_stored_outdoor_crops_kcals</strong> (list) : A list of billions of kcals fed
+    from new stored outdoor crops to humans.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; extractor.outdoor_crops_to_humans.kcals = [1, 2, 3]
+&gt;&gt;&gt; extractor.validate_sources_add_up([0.5, 1, 1.5], [0.5, 1, 1.5])
+None
+
+</code></pre>
+<p><strong>Raises</strong></p>
+<ul>
+<li><strong>AssertionError</strong>  : If the sum of immediate and new stored sources of outdoor crops for
+    humans does not match the input of outdoor crop for humans.</li>
+</ul>
+<h3 id="set_new_stored_outdoor_crops_values">.set_new_stored_outdoor_crops_values</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L499">source</a></p>
+<pre><code class="language-python">.set_new_stored_outdoor_crops_values(
+   billions_fed_new_stored_outdoor_crops_kcals
+)
+</code></pre>
+<hr />
+<p>Sets the values of new_stored_outdoor_crops attribute of the Extractor class with the given
+billions_fed_new_stored_outdoor_crops_kcals.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong> (Extractor) : An instance of the Extractor class.</li>
+<li><strong>billions_fed_new_stored_outdoor_crops_kcals</strong> (list) : A list of kcals in billions fed to new stored outdoor
+crops each month.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<h3 id="set_immediate_outdoor_crops_values">.set_immediate_outdoor_crops_values</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L522">source</a></p>
+<pre><code class="language-python">.set_immediate_outdoor_crops_values(
+   billions_fed_immediate_outdoor_crops_kcals
+)
+</code></pre>
+<hr />
+<p>Sets the values of immediate outdoor crops in the Extractor object.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong> (Extractor) : The Extractor object.</li>
+<li><strong>billions_fed_immediate_outdoor_crops_kcals</strong> (list) : A list of kcals fed to billions of people each month.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<h3 id="validate_outdoor_growing_production">.validate_outdoor_growing_production</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L544">source</a></p>
+<pre><code class="language-python">.validate_outdoor_growing_production()
+</code></pre>
+<hr />
+<p>Validates the outdoor growing production by checking if the difference between the outdoor crops to humans and
+the
+sum of immediate outdoor crops and new stored outdoor crops is equal to zero.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong> (Extractor) : An instance of the Extractor class.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<h3 id="extract_meat_milk_results">.extract_meat_milk_results</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L563">source</a></p>
+<pre><code class="language-python">.extract_meat_milk_results(
+   meat_eaten, milk_kcals, milk_fat, milk_protein
+)
+</code></pre>
+<hr />
+<p>Extracts the results of meat and milk production from various sources and calculates the amount of food
+produced in billions of people fed each month.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>meat_eaten</strong> (list) : List of the amount of culled meat eaten in kg per year</li>
+<li><strong>milk_kcals</strong> (list) : List of the amount of grazing milk produced in kcal per year</li>
+<li><strong>milk_fat</strong> (list) : List of the amount of grazing milk produced in fat per year</li>
+<li><strong>milk_protein</strong> (list) : List of the amount of grazing milk produced in protein per year</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; extractor = Extractor()
+&gt;&gt;&gt; extractor.extract_meat_milk_results(
+&gt;&gt;&gt;     meat_eaten=[1000, 2000, 3000],
+&gt;&gt;&gt;     milk_kcals=[1000, 2000, 3000],
+&gt;&gt;&gt;     milk_fat=[100, 200, 300],
+&gt;&gt;&gt;     milk_protein=[50, 100, 150],
+&gt;&gt;&gt; )
+</code></pre>
+<h3 id="extract_to_humans_feed_and_biofuel">.extract_to_humans_feed_and_biofuel</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L645">source</a></p>
+<pre><code class="language-python">.extract_to_humans_feed_and_biofuel(
+   to_humans, feed, biofuel, kcals_ratio, fat_ratio, protein_ratio, constants
+)
+</code></pre>
+<h3 id="get_objective_optimization_results">.get_objective_optimization_results</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/extract_results.py/#L691">source</a></p>
+<pre><code class="language-python">.get_objective_optimization_results(
+   model
+)
+</code></pre>
+<hr />
+<p>This function extracts the optimization results for the objective function of the model.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong>  : instance of the Extractor class</li>
+<li><strong>model</strong>  : the optimization model to extract results from</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : a tuple containing the optimization results for consumed_kcals, consumed_fat, and consumed_protein</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../interpret_results/" class="btn btn-neutral float-right" title="Interpret results">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../import_scripts_no_food_trade/create_nuclear_winter_csv/" class="btn btn-neutral" title="Create nuclear winter csv"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Me</p>
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../import_scripts_no_food_trade/create_nuclear_winter_csv/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../interpret_results/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../../../..';</script>
+    <script src="../../../../js/theme_extra.js" defer></script>
+    <script src="../../../../js/theme.js" defer></script>
+      <script src="../../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

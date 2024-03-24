@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../../../../img/favicon.ico">
+  <title>Food - ALLFED Integrated Model</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../../../css/theme.css" />
+  <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Food";
+    var mkdocs_page_input_path = "modules/src/food_system/food.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../../../.." class="icon icon-home"> ALLFED Integrated Model</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../..">ALLFED Integrated Food System Model</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Modules</span></p>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="#">Src</a>
+    <ul class="current">
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Food system</a>
+    <ul class="current">
+                <li class="toctree-l3"><a class="reference internal" href="../animal_populations/">Animal populations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../cellulosic_sugar/">Cellulosic sugar</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../feed_and_biofuels/">Feed and biofuels</a>
+                </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="./">Food</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#food">Food</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../greenhouses/">Greenhouses</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../meat_and_dairy/">Meat and dairy</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../methane_scp/">Methane scp</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../outdoor_crops/">Outdoor crops</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../seafood/">Seafood</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../seaweed/">Seaweed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../stored_food/">Stored food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../unit_conversions/">Unit conversions</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Import scripts no food trade</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_crop_macros_csv/">Create crop macros csv</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_nuclear_winter_csv/">Create nuclear winter csv</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Optimizer</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/extract_results/">Extract results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/interpret_results/">Interpret results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/optimizer/">Optimizer</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/parameters/">Parameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/validate_results/">Validate results</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Scenarios</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_model_no_trade/">Run model no trade</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenario/">Run scenario</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenarios_from_yaml/">Run scenarios from yaml</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/scenarios/">Scenarios</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Utilities</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/constants/">Constants</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/import_utilities/">Import utilities</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/make_powerpoint/">Make powerpoint</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/plotter/">Plotter</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../..">ALLFED Integrated Model</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Modules &raquo;</li>
+        
+      
+        
+          <li>Src &raquo;</li>
+        
+      
+        
+          <li>Food system &raquo;</li>
+        
+      
+    
+    <li>Food</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1"></h1>
+<h2 id="food">Food</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L25">source</a></p>
+<pre><code class="language-python">Food(
+   kcals = 0, fat = 0, protein = 0, kcals_units = 'billionkcals',
+   fat_units = 'thousandtons', protein_units = 'thousandtons'
+)
+</code></pre>
+<hr />
+<p>A food always has calories, fat, and protein.
+Food applies to biofuels and feed properties as well.</p>
+<p>A food always has units for each nutrient and these need to match when combining
+foods in some way, such as adding up, multiplying, or dividing their nutrients</p>
+<p>Best practice is to alter the food's units to be as specific as possible to prevent
+errors in the calculation.</p>
+<p>Here are some examples of using the food class:</p>
+<p>CONVENTIONS:
+A nutrient with a list of the value for each month, will need to
+have " each month" at the end of the units.
+A nutrient that represents the value for every month must have
+a " per month" at the end of the units.
+A nutrient with a single value all summed up over all time periods must not
+contain any " each month" or " per month" in the units.</p>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<p>example_food=Food(10,3,1)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>(defaults to billion kcals, thousand tons monthly fat, thousand tons monthly
+protein)</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>print(example_food):
+    protein: 1  thousand tons</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code class="language-python">
+&gt;&gt;&gt;     kcals_units = 'ratio minimum global needs per year',
+&gt;&gt;&gt;     fat_units = 'ratio minimum global needs per year',
+&gt;&gt;&gt;     protein_units = 'ratio minimum global needs per year',
+&gt;&gt;&gt; )
+&gt;&gt;&gt; print(example_food):
+    protein: 1  ratio minimum global needs per year
+
+</code></pre>
+<p>(in order to get a min nutrient, you need to make sure the units are all the same)
+(in reality, you would want to divide the values by the actual global needs above)</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>print(example_food.get_min_nutrient())
+    ('protein', 1)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code class="language-python">
+&gt;&gt;&gt; example_food_monthly.set_units(
+&gt;&gt;&gt;     kcals_units = 'ratio minimum global needs per month',
+&gt;&gt;&gt;     fat_units = 'ratio minimum global needs per month',
+&gt;&gt;&gt;     protein_units = 'ratio minimum global needs per month',
+&gt;&gt;&gt; )
+
+</code></pre>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>print(example_food_monthly)
+    protein: 0.08333333333333333  ratio minimum global needs per month</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code class="language-python">
+&gt;&gt;&gt; example_food_all_months = Food(
+&gt;&gt;&gt;     [example_food_monthly.kcals] * NMONTHS,
+&gt;&gt;&gt;     [example_food_monthly.fat] * NMONTHS,
+&gt;&gt;&gt;     [example_food_monthly.protein] * NMONTHS,
+&gt;&gt;&gt; )
+&gt;&gt;&gt; example_food_all_months.set_units(
+&gt;&gt;&gt;     kcals_units = 'ratio minimum global needs each month',
+&gt;&gt;&gt;     fat_units = 'ratio minimum global needs each month',
+&gt;&gt;&gt;     protein_units = 'ratio minimum global needs each month',
+&gt;&gt;&gt; )
+&gt;&gt;&gt; print(example_food_all_months)
+    ratio minimum global needs each month
+</code></pre>
+<p><strong>Methods:</strong></p>
+<h3 id="reset_food">.reset_food</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L296">source</a></p>
+<pre><code class="language-python">.reset_food(
+   kcals = 0, fat = 0, protein = 0, kcals_units = 'billionkcals',
+   fat_units = 'thousandtons', protein_units = 'thousandtons'
+)
+</code></pre>
+<hr />
+<p>Initializes a new food object with the given macronutrients and sets the default units.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>kcals</strong> (float) : The number of kilocalories in the food. Default is 0.</li>
+<li><strong>fat</strong> (float) : The amount of fat in the food. Default is 0.</li>
+<li><strong>protein</strong> (float) : The amount of protein in the food. Default is 0.</li>
+<li><strong>kcals_units</strong> (str) : The units for the kilocalories. Default is "billion kcals".</li>
+<li><strong>fat_units</strong> (str) : The units for the fat. Default is "thousand tons".</li>
+<li><strong>protein_units</strong> (str) : The units for the protein. Default is "thousand tons".</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; food.reset_food() # sets back to zero and resets units
+</code></pre>
+<h3 id="total_energy_in_food">.total_energy_in_food</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L362">source</a></p>
+<pre><code class="language-python">.total_energy_in_food()
+</code></pre>
+<hr />
+<p>Calculates the total energy in a given food in billion kcals by converting energy in protein and fat.
+Only works if:
+kcals_units="billion kcals",
+fat_units="thousand tons",
+protein_units="thousand tons",
+As a thousand tonnes, and a billion kcals are the same (10^9), the maths for conversion is simple.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong> (Food) : An instance of the Food class.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>float</strong>  : The total energy in billion kcals.</li>
+</ul>
+<p><strong>Raises</strong></p>
+<ul>
+<li><strong>AssertionError</strong>  : If kcals_units, fat_units, or protein_units are not set to the correct values.</li>
+</ul>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; food.kcals_units = &quot;billion kcals&quot;
+&gt;&gt;&gt; food.fat_units = &quot;thousand tons&quot;
+&gt;&gt;&gt; food.protein_units = &quot;thousand tons&quot;
+&gt;&gt;&gt; food.protein = 1000
+&gt;&gt;&gt; food.fat = 2000
+&gt;&gt;&gt; food.kcals = 3000
+&gt;&gt;&gt; food.total_energy_in_food()
+23000.0
+</code></pre>
+<h3 id="validate_if_list">.validate_if_list</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L410">source</a></p>
+<pre><code class="language-python">.validate_if_list()
+</code></pre>
+<hr />
+<p>Checks if the food object is a list type and runs all the necessary checks to ensure
+that the list is properly set up.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong> (Food) : The Food object to be validated.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; food.validate_if_list()
+</code></pre>
+<h3 id="make_sure_not_a_list">.make_sure_not_a_list</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L454">source</a></p>
+<pre><code class="language-python">.make_sure_not_a_list()
+</code></pre>
+<hr />
+<p>Check if any of the food nutrients are a list or numpy array and throw an error if so.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong>  : instance of the Food class</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<h3 id="make_sure_is_a_list">.make_sure_is_a_list</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L473">source</a></p>
+<pre><code class="language-python">.make_sure_is_a_list()
+</code></pre>
+<hr />
+<p>This function checks if the food nutrients are in the form of a list and throws an error if not.
+It then validates the list properties.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong> (Food) : An instance of the Food class.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; food.make_sure_is_a_list()
+</code></pre>
+<h3 id="make_sure_fat_protein_zero_if_kcals_is_zero">.make_sure_fat_protein_zero_if_kcals_is_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L490">source</a></p>
+<pre><code class="language-python">.make_sure_fat_protein_zero_if_kcals_is_zero()
+</code></pre>
+<hr />
+<p>This function ensures that the values of fat and protein are zero if kcals is zero.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong> (Food) : an instance of the Food class</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<h3 id="ensure_other_list_zero_if_this_is_zero">.ensure_other_list_zero_if_this_is_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L532">source</a></p>
+<pre><code class="language-python">.ensure_other_list_zero_if_this_is_zero(
+   other_list
+)
+</code></pre>
+<hr />
+<p>Get the value of the elements where the passed in list is zero, otherwise
+returned elements are zero.</p>
+<h3 id="make_sure_not_nan">.make_sure_not_nan</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L596">source</a></p>
+<pre><code class="language-python">.make_sure_not_nan()
+</code></pre>
+<hr />
+<p>Check if the food's nutritional values are NaN and raise an assertion error if they are.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong> (Food) : An instance of the Food class.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<h3 id="shift">.shift</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L725">source</a></p>
+<pre><code class="language-python">.shift(
+   months
+)
+</code></pre>
+<hr />
+<p>Shifts the monthly values of kcals, fat, and protein by the given number of months.
+The newly introduced values (for months that are shifted into existence) will be set to 0.</p>
+<h3 id="plot">.plot</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1182">source</a></p>
+<pre><code class="language-python">.plot(
+   title = 'genericfoodobjectovertime'
+)
+</code></pre>
+<hr />
+<p>Plots the properties of this food object using the Plotter class.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>title</strong> (str) : The title of the plot. Defaults to "generic food object over time".</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>str</strong>  : The file path of the saved plot.</li>
+</ul>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; food.plot(&quot;My Food Plot&quot;)
+'/path/to/saved/plot.png'
+</code></pre>
+<h3 id="is_list_monthly">.is_list_monthly</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1276">source</a></p>
+<pre><code class="language-python">.is_list_monthly()
+</code></pre>
+<hr />
+<p>Check if kcals is a list or numpy array.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong>  : instance of Food class</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if kcals is a list or numpy array, False otherwise</li>
+</ul>
+<h3 id="is_never_negative">.is_never_negative</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1287">source</a></p>
+<pre><code class="language-python">.is_never_negative()
+</code></pre>
+<hr />
+<p>Checks whether the food's macronutrients are never negative.</p>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if all macronutrients are non-negative, False otherwise.</li>
+</ul>
+<h3 id="all_greater_than">.all_greater_than</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1313">source</a></p>
+<pre><code class="language-python">.all_greater_than(
+   other
+)
+</code></pre>
+<hr />
+<p>Determines if the macronutrient values of the current food object are greater than the macronutrient values of</p>
+<p>another food object.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>other</strong> (Food) : The other food object to compare against.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if the current food object's macronutrient values are greater than the other food object's
+macronutrient values.</li>
+</ul>
+<p><strong>Raises</strong></p>
+<ul>
+<li><strong>AssertionError</strong>  : If the units of the two food objects are not the same.</li>
+</ul>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; food2 = Food('banana', 120, 0.4, 0.6, 0.3, 'g')
+&gt;&gt;&gt; food1.all_greater_than(food2)
+False
+</code></pre>
+<h3 id="all_less_than">.all_less_than</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1364">source</a></p>
+<pre><code class="language-python">.all_less_than(
+   other
+)
+</code></pre>
+<hr />
+<p>Compares the macronutrient values of two food items and returns True if the values of the current food item
+are less than the other food item's values.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>other</strong> (Food) : The other food item to compare with.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if the current food item's macronutrient values are less than the other food item's values.</li>
+</ul>
+<p><strong>Raises</strong></p>
+<ul>
+<li><strong>AssertionError</strong>  : If the units of the two food items are not the same.</li>
+</ul>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; food2 = Food('banana', 100, 1.0, 0.2, 'g')
+&gt;&gt;&gt; food1.all_less_than(food2)
+True
+</code></pre>
+<h3 id="any_greater_than">.any_greater_than</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1411">source</a></p>
+<pre><code class="language-python">.any_greater_than(
+   other
+)
+</code></pre>
+<hr />
+<p>Determines if the macronutrient values of the current food object are greater than the macronutrient values of
+another food object.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>other</strong> (Food) : The other food object to compare against.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if the current food object's macronutrient values are greater than the other food object's
+macronutrient values.</li>
+</ul>
+<p><strong>Raises</strong></p>
+<ul>
+<li><strong>AssertionError</strong>  : If the units of the two food objects are not the same.</li>
+</ul>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; food2 = Food('banana', 105, 0.4, 0.6, 0.1, 'g')
+&gt;&gt;&gt; food1.any_greater_than(food2)
+False
+</code></pre>
+<h3 id="any_less_than">.any_less_than</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1468">source</a></p>
+<pre><code class="language-python">.any_less_than(
+   other
+)
+</code></pre>
+<hr />
+<p>Determines if the macronutrient values of the current food object are less than the macronutrient values of
+another food object.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>other</strong> (Food) : The other food object to compare against.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if the current food object's macronutrient values are less than the other food object's
+macronutrient values.</li>
+</ul>
+<h3 id="all_greater_than_or_equal_to">.all_greater_than_or_equal_to</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1515">source</a></p>
+<pre><code class="language-python">.all_greater_than_or_equal_to(
+   other
+)
+</code></pre>
+<hr />
+<p>Compares the macronutrient values of two food items and returns True if the values of the
+current food item are greater than or equal to the other food item's values.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>other</strong> (Food) : The other food item to compare with.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if the current food item's macronutrient values are greater than or equal to
+the other food item's values, False otherwise.</li>
+</ul>
+<h3 id="all_less_than_or_equal_to">.all_less_than_or_equal_to</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1555">source</a></p>
+<pre><code class="language-python">.all_less_than_or_equal_to(
+   other
+)
+</code></pre>
+<hr />
+<p>Determines if the macronutrients of this food are less than or equal to the macronutrients of another food.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>other</strong> (Food or List[Food]) : The other food or list of foods to compare to.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if the food's macronutrients are less than or equal to the other food's.</li>
+</ul>
+<hr />
+<p>Cases:
+    - This is a single food, other is a single food
+    - This is a single food, other is a list of foods
+    - This is a list of foods, other is a single food
+    - This is a list of foods, other is a list of foods</p>
+<h3 id="any_greater_than_or_equal_to">.any_greater_than_or_equal_to</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1602">source</a></p>
+<pre><code class="language-python">.any_greater_than_or_equal_to(
+   other
+)
+</code></pre>
+<hr />
+<p>Determines if the macronutrient values of the current food object are greater than or equal to
+the macronutrient values of another food object.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>other</strong> (Food) : The other food object to compare against.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if the current food object's macronutrient values are greater than or equal to
+the other food object's macronutrient values.</li>
+</ul>
+<h3 id="any_less_than_or_equal_to">.any_less_than_or_equal_to</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1644">source</a></p>
+<pre><code class="language-python">.any_less_than_or_equal_to(
+   other
+)
+</code></pre>
+<hr />
+<p>Determines if the macronutrients of the current food object are less than or equal to
+those of another food object.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>other</strong> (Food) : The other food object to compare against.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if the current food's macronutrients are less than or equal to the other food's.</li>
+</ul>
+<h3 id="all_equals_zero">.all_equals_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1704">source</a></p>
+<pre><code class="language-python">.all_equals_zero(
+   rounding_decimals = 9
+)
+</code></pre>
+<hr />
+<p>Check if all macronutrients of the food are equal to zero.</p>
+<p><strong>Args</strong></p>
+<p>None</p>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if the food's macronutrients are equal to zero, False otherwise.</li>
+</ul>
+<h3 id="any_equals_zero">.any_equals_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1742">source</a></p>
+<pre><code class="language-python">.any_equals_zero()
+</code></pre>
+<hr />
+<p>Check if any of the macronutrients of the food are equal to zero.</p>
+<p><strong>Args</strong></p>
+<p>None</p>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if any of the macronutrients are equal to zero, False otherwise.</li>
+</ul>
+<h3 id="all_greater_than_zero">.all_greater_than_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1784">source</a></p>
+<pre><code class="language-python">.all_greater_than_zero()
+</code></pre>
+<hr />
+<p>Check if all macronutrients of the food are greater than zero.</p>
+<p><strong>Args</strong></p>
+<p>None</p>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if all macronutrients are greater than zero, False otherwise.</li>
+</ul>
+<h3 id="any_greater_than_zero">.any_greater_than_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1811">source</a></p>
+<pre><code class="language-python">.any_greater_than_zero()
+</code></pre>
+<hr />
+<p>Returns True if any of the food's macronutrients are greater than zero.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong> (Food) : an instance of the Food class</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if any of the food's macronutrients are greater than zero, False otherwise</li>
+</ul>
+<h3 id="all_greater_than_or_equal_to_zero">.all_greater_than_or_equal_to_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1855">source</a></p>
+<pre><code class="language-python">.all_greater_than_or_equal_to_zero(
+   threshold = 0
+)
+</code></pre>
+<hr />
+<p>Checks if all macronutrients of the food are greater than or equal to zero.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong> (Food) : An instance of the Food class.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>bool</strong>  : True if all macronutrients are greater than or equal to zero, False otherwise.</li>
+</ul>
+<h3 id="as_numpy_array">.as_numpy_array</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1890">source</a></p>
+<pre><code class="language-python">.as_numpy_array()
+</code></pre>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>ndarray</strong>  : an ordered numpy array containing the nutrients of the food.</li>
+</ul>
+<h3 id="get_min_nutrient">.get_min_nutrient</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1898">source</a></p>
+<pre><code class="language-python">.get_min_nutrient()
+</code></pre>
+<hr />
+<p>Returns the minimum nutrient of the food.</p>
+<p>If the food is a list, it can return the minimum of any month of any nutrient.
+If the food is not a list, it returns the minimum of any nutrient.</p>
+<p>Only works when the units are identical for the different nutrients.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong>  : an instance of the Food class</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : a tuple containing the name and value of the minimum nutrient</li>
+</ul>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; food.get_min_nutrient()
+('kcals', 0)
+
+</code></pre>
+<p><strong>Raises</strong></p>
+<ul>
+<li><strong>AssertionError</strong>  : if the units for kcals, fat, and protein are not identical</li>
+<li><strong>AssertionError</strong>  : if the minimum nutrient value is greater than the kcals value</li>
+<li><strong>AssertionError</strong>  : if the minimum nutrient value is greater than the fat value and
+                the fat nutrient is not excluded</li>
+<li><strong>AssertionError</strong>  : if the minimum nutrient value is greater than the protein value and
+                the protein nutrient is not excluded</li>
+</ul>
+<h3 id="get_max_nutrient">.get_max_nutrient</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L1961">source</a></p>
+<pre><code class="language-python">.get_max_nutrient()
+</code></pre>
+<hr />
+<p>Returns the maximum nutrient of the food.</p>
+<p>NOTE:
+This function only works on single valued instances of nutrients, not arrays.</p>
+<p><strong>Args</strong></p>
+<p>None</p>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : A tuple containing the name and value of the maximum nutrient.</li>
+</ul>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; food.kcals = 100
+&gt;&gt;&gt; food.fat = 20
+&gt;&gt;&gt; food.protein = 30
+&gt;&gt;&gt; food.conversions.include_fat = True
+&gt;&gt;&gt; food.conversions.include_protein = True
+&gt;&gt;&gt; food.kcals_units = &quot;kcal&quot;
+&gt;&gt;&gt; food.fat_units = &quot;g&quot;
+&gt;&gt;&gt; food.protein_units = &quot;g&quot;
+&gt;&gt;&gt; food.get_max_nutrient()
+('fat', 20)
+</code></pre>
+<h3 id="get_nutrients_sum">.get_nutrients_sum</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2024">source</a></p>
+<pre><code class="language-python">.get_nutrients_sum()
+</code></pre>
+<hr />
+<p>Sums up the nutrients in all the months, then alters the units to remove "each month".</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong>  : instance of the Food class</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>Food</strong>  : instance of the Food class with summed up nutrient values and altered units</li>
+</ul>
+<p><strong>Raises</strong></p>
+<ul>
+<li><strong>AssertionError</strong>  : if the list is not monthly</li>
+</ul>
+<h3 id="get_abs_values">.get_abs_values</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2056">source</a></p>
+<pre><code class="language-python">.get_abs_values()
+</code></pre>
+<hr />
+<p>Returns a new Food object with the absolute values of all nutrients.</p>
+<h3 id="get_running_total_nutrients_sum">.get_running_total_nutrients_sum</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2069">source</a></p>
+<pre><code class="language-python">.get_running_total_nutrients_sum()
+</code></pre>
+<hr />
+<p>Calculates the running sum of the nutrients in all the months, without altering the units.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong>  : instance of the Food class</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>Food</strong>  : a new instance of the Food class with the running sum of the nutrients</li>
+</ul>
+<h3 id="get_amount_used_other_food">.get_amount_used_other_food</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2123">source</a></p>
+<pre><code class="language-python">.get_amount_used_other_food(
+   other_fat_ratio, other_protein_ratio
+)
+</code></pre>
+<hr />
+<p>Running sum of the amount used of the other food each month.</p>
+<p>This function calculates the amount of stored food or outdoor growing that is
+used by biofuels and feed. It determines the amount of the other food used by
+taking the max amount used of the three nutrients, which is satisfied by a
+certain number of units of the other food. Surplus of the nutrients used is
+not used at all in the calculation.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>other_fat_ratio</strong> (float) : The ratio of fat in the other food</li>
+<li><strong>other_protein_ratio</strong> (float) : The ratio of protein in the other food</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>Food</strong>  : A Food object containing the amount of kcals, fat, and protein consumed
+each month</li>
+</ul>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; other_fat_ratio = 0.2
+&gt;&gt;&gt; other_protein_ratio = 0.3
+&gt;&gt;&gt; amount_consumed_list = food.get_amount_used_other_food(other_fat_ratio, other_protein_ratio)
+</code></pre>
+<h3 id="get_consumed_amount">.get_consumed_amount</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2237">source</a></p>
+<pre><code class="language-python">.get_consumed_amount(
+   demand_to_be_met, used_nutrient_ratio
+)
+</code></pre>
+<hr />
+<p>Returns the amount used of the demand_to_be_met a food with a given used_nutrient_ratio.
+The maximum nutrient used is used to determine the amount of the consumed
+food will be used.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>demand_to_be_met</strong> (Food) : A Food object representing the nutrient demand to be met</li>
+<li><strong>used_nutrient_ratio</strong> (Food) : A Food object representing the nutrient ratio of the food being consumed</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>Food</strong>  : A Food object representing the amount of food consumed to meet the nutrient demand</li>
+</ul>
+<p><strong>Raises</strong></p>
+<ul>
+<li><strong>AssertionError</strong>  : If demand_to_be_met is a monthly list</li>
+<li><strong>AssertionError</strong>  : If used_nutrient_ratio fat or protein is less than or equal to 0</li>
+</ul>
+<h3 id="get_first_month">.get_first_month</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2280">source</a></p>
+<pre><code class="language-python">.get_first_month()
+</code></pre>
+<hr />
+<p>Returns the nutrient values for the first month and converts the units from "each" to "per".</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong>  : instance of the Food class</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : dictionary containing the nutrient values for the first month</li>
+</ul>
+<p><strong>Raises</strong></p>
+<ul>
+<li><strong>AssertionError</strong>  : if the nutrient values are not in a list format</li>
+</ul>
+<h3 id="get_month">.get_month</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2296">source</a></p>
+<pre><code class="language-python">.get_month(
+   index
+)
+</code></pre>
+<hr />
+<p>Get the i month's nutrient values, and convert the units from "each" to "per".</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>index</strong> (int) : The index of the month to retrieve nutrient values for.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>Food</strong>  : A Food object containing the nutrient values for the specified month.</li>
+</ul>
+<h3 id="get_min_all_months">.get_min_all_months</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2326">source</a></p>
+<pre><code class="language-python">.get_min_all_months()
+</code></pre>
+<hr />
+<p>Creates a new Food object with the minimum nutrient values for each month.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong>  : The Food object to operate on.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>A new Food object with the minimum nutrient values for each month.</p>
+<h3 id="get_max_all_months">.get_max_all_months</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2353">source</a></p>
+<pre><code class="language-python">.get_max_all_months()
+</code></pre>
+<hr />
+<p>Returns a new Food object with the maximum nutrient values for each month.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong> (Food) : The Food object to find the maximum nutrient values for.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>Food</strong>  : A new Food object with the maximum nutrient values for each month.</li>
+</ul>
+<h3 id="negative_values_to_zero">.negative_values_to_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2380">source</a></p>
+<pre><code class="language-python">.negative_values_to_zero()
+</code></pre>
+<hr />
+<p>Replaces negative values with zero for each month for all nutrients.
+If the food object is monthly, it replaces negative values for each month.
+If the food object is not monthly, it replaces negative values for the entire year.
+Also tests that the function worked by asserting that all values are greater than or equal to zero.</p>
+<p><strong>Args</strong></p>
+<p>None</p>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>Food</strong>  : the relevant food object with negative values replaced</li>
+</ul>
+<h3 id="get_rounded_to_decimal">.get_rounded_to_decimal</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2423">source</a></p>
+<pre><code class="language-python">.get_rounded_to_decimal(
+   decimals
+)
+</code></pre>
+<hr />
+<p>Round the nutritional values of a food item to the nearest decimal place.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>decimals</strong> (int) : The number of decimal places to round to.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>Food</strong>  : A new Food object with rounded nutritional values.</li>
+</ul>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; rounded_food = food.get_rounded_to_decimal(1)
+&gt;&gt;&gt; rounded_food.kcals
+100.1
+&gt;&gt;&gt; rounded_food.fat
+5.7
+&gt;&gt;&gt; rounded_food.protein
+11.0
+
+</code></pre>
+<hr />
+<p>NOTE: This function is only implemented for lists at the moment.</p>
+<h3 id="replace_if_list_with_zeros_is_zero">.replace_if_list_with_zeros_is_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2462">source</a></p>
+<pre><code class="language-python">.replace_if_list_with_zeros_is_zero(
+   list_with_zeros, replacement
+)
+</code></pre>
+<hr />
+<p>Replaces elements in a list with zeros with a specified replacement.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>list_with_zeros</strong> (Food list) : A list that has zeros in it.</li>
+<li><strong>replacement</strong> (Food list, Food, or number) : Thing used to replace the elements.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>Food</strong>  : A copy of the original list with places where list_with_zeros is zero replaced with replacement.</li>
+</ul>
+<p><strong>Raises</strong></p>
+<ul>
+<li><strong>AssertionError</strong>  : If the length of list_with_zeros is not equal to the length of the original list.</li>
+<li><strong>AssertionError</strong>  : If the units of replacement are not the same as the units of the original list.</li>
+</ul>
+<p><strong>Example</strong></p>
+<ul>
+<li><strong>kcals</strong>  : [101 693   0   3 786], fat: [1 20 0 4 40], protein: [10 20 0 40 20]</li>
+</ul>
+<pre><code class="language-python">
+&gt;&gt;&gt; list_with_zeros = Food(kcals=[0, 1, 3, 0, 5], fat=[0, 1, 3, 0, 5], protein=[0, 1, 3, 0, 5])
+&gt;&gt;&gt; replacement = Food(kcals=[101, 62, 23, 3, 0], fat=[1, 2, 3, 4, 5], protein=[10, 20, 30, 40, 50])
+&gt;&gt;&gt; processed_list = original_list.replace_if_list_with_zeros_is_zero(list_with_zeros, replacement)
+&gt;&gt;&gt; print(processed_list)
+</code></pre>
+<h3 id="set_to_zero_after_month">.set_to_zero_after_month</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/food.py/#L2554">source</a></p>
+<pre><code class="language-python">.set_to_zero_after_month(
+   month
+)
+</code></pre>
+<hr />
+<p>Set all values after the given month to zero.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>month</strong> (int) : The month after which all values should be set to zero.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../greenhouses/" class="btn btn-neutral float-right" title="Greenhouses">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../feed_and_biofuels/" class="btn btn-neutral" title="Feed and biofuels"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Me</p>
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../feed_and_biofuels/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../greenhouses/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../../../..';</script>
+    <script src="../../../../js/theme_extra.js" defer></script>
+    <script src="../../../../js/theme.js" defer></script>
+      <script src="../../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
