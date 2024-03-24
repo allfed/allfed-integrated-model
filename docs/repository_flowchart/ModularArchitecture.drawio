@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-03-24T19:55:33.465Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="8Qne3vc4y-QhC89cBZPz" version="24.1.0" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-24T19:59:01.739Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="crHkYlAc1T5ekY3VKtQA" version="24.1.0" type="github">
   <diagram name="Page-1" id="vb958Nm0k1HjrjN-Do-v">
     <mxGraphModel dx="3088" dy="3243" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
@@ -8,7 +8,7 @@
           <mxGeometry x="280" y="1140" width="750" height="800" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-7" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
-          <mxGeometry x="70" y="-815" width="1030" height="1015" as="geometry" />
+          <mxGeometry x="70" y="-800" width="1030" height="1015" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-19" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
           <mxGeometry x="-380" y="-250" width="430" height="410" as="geometry" />
@@ -22,7 +22,7 @@
         <mxCell id="GCf3FXKfKVam4WNOABnw-6" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
           <mxGeometry x="20" y="-1500" width="1590" height="510" as="geometry" />
         </mxCell>
-        <mxCell id="RVlSqpslpW0tmy56jza0-9" value="&lt;b&gt;USER INPUT&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;div&gt;scenario_option (also named config or this_simulation).&lt;/div&gt;&lt;div&gt;scenario_option is always the &lt;br&gt;&lt;/div&gt;&lt;div&gt;same for the different countries we run.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;scenario_option is specified either in&lt;br&gt;&lt;/div&gt;&lt;div&gt;plot_manuscript_figures.py&lt;/div&gt;&lt;div&gt; or &lt;br&gt;&lt;/div&gt;&lt;div&gt;src/scenarios/run_scenarios_from_yaml.py&lt;/div&gt;&lt;div&gt;If desired.&lt;br&gt;&lt;/div&gt;species_options.csv can also be adjusted (see &quot;animal populations&quot;)." style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+        <mxCell id="RVlSqpslpW0tmy56jza0-9" value="&lt;b&gt;USER INPUT&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;div&gt;scenario_option (also named config or this_simulation).&lt;/div&gt;&lt;div&gt;scenario_option is always the &lt;br&gt;&lt;/div&gt;&lt;div&gt;same for the different countries we run.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;scenario_option is specified either in&lt;br&gt;&lt;/div&gt;&lt;div&gt;plot_manuscript_figures.py&lt;/div&gt;&lt;div&gt; or &lt;br&gt;&lt;/div&gt;&lt;div&gt;src/scenarios/run_scenarios_from_yaml.py&lt;/div&gt;&lt;div&gt;If desired.&lt;br&gt;&lt;/div&gt;&lt;div&gt;species_options.csv can also be adjusted (see &quot;animal populations&quot;).&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;plot_manuscript_figures.py&lt;/div&gt;and&lt;div&gt;src/scenarios/run_scenarios_from_yaml.py&lt;/div&gt;&lt;div&gt;also call src/utilities.plotter.py with context-specific plots&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
           <mxGeometry x="-180" y="-190" width="48" height="90" as="geometry" />
         </mxCell>
         <mxCell id="RVlSqpslpW0tmy56jza0-10" value="scenario_option dictionary with&lt;br&gt;&lt;div&gt;&quot;settings&quot; and &quot;simulations&quot; keys containing dictionaries&lt;br&gt;&lt;/div&gt;" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
@@ -288,7 +288,7 @@
             <mxPoint x="-700" y="780" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="GCf3FXKfKVam4WNOABnw-20" value="&lt;b&gt;USER INPUT&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+        <mxCell id="GCf3FXKfKVam4WNOABnw-20" value="&lt;b&gt;USER INPUT&lt;br&gt;&amp;nbsp;AND ADDITIONAL PLOTTING&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="-310" y="-230" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-22" value="&lt;b&gt;ANIMAL POPULATIONS&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
@@ -405,10 +405,15 @@
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-25" value="&lt;b&gt;OPTIMIZATION AND&amp;nbsp; OPTIMIZER MODEL POSTPROCESSING&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="330" y="1185" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="Nyg9t3aIWLBTnF1s83V8-27" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-27" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.924;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.849;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="tfmpyOpyPmMC_fq-cLrZ-2" target="GCf3FXKfKVam4WNOABnw-19">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="970" y="80" as="sourcePoint" />
-            <mxPoint x="1170" y="80" as="targetPoint" />
+            <mxPoint x="520" as="sourcePoint" />
+            <mxPoint x="-40" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-28" value="last round of interpreted results for all countries run" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="Nyg9t3aIWLBTnF1s83V8-27">
+          <mxGeometry x="0.0808" y="-3" relative="1" as="geometry">
+            <mxPoint x="-4" y="-15" as="offset" />
           </mxGeometry>
         </mxCell>
       </root>
