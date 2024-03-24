@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-03-24T19:59:01.739Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="crHkYlAc1T5ekY3VKtQA" version="24.1.0" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-24T20:03:19.734Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="Hbi38R6pT5_v_lltRTCG" version="24.1.0" type="github">
   <diagram name="Page-1" id="vb958Nm0k1HjrjN-Do-v">
-    <mxGraphModel dx="3088" dy="3243" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+    <mxGraphModel dx="4522" dy="4150" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -8,7 +8,7 @@
           <mxGeometry x="280" y="1140" width="750" height="800" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-7" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
-          <mxGeometry x="70" y="-800" width="1030" height="1015" as="geometry" />
+          <mxGeometry x="70" y="-810" width="1030" height="1025" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-19" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
           <mxGeometry x="-380" y="-250" width="430" height="410" as="geometry" />
@@ -99,8 +99,8 @@
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-27" value="IMPORT&amp;nbsp; DATA" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" parent="1" vertex="1">
           <mxGeometry x="420" y="-1540" width="290" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-28" value="&lt;div&gt;we run the &lt;i&gt;scripts/run_all_imports.sh&lt;/i&gt; which calls&lt;/div&gt;&lt;div&gt; &lt;i&gt;src/import_scripts_no_food_trade/&lt;/i&gt;&lt;i&gt;create_[&lt;/i&gt;resource name&lt;i&gt;]csv.py&lt;/i&gt;&lt;/div&gt;&lt;div&gt;for all resources (excluding data required for animal_populations.py,&lt;/div&gt;&lt;div&gt; which is an imperfection in the code which should be fixed eventually).&lt;/div&gt;&lt;div&gt;This creates a csv for each food resource in &lt;i&gt;data/no_food_trade/processed_data/&lt;/i&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;Then it calls &lt;div&gt; &lt;i&gt;src/import_scripts_no_food_trade/&lt;/i&gt;import_food_data.py&lt;/div&gt;&lt;div&gt;which combines everything to computer_readable_combined.csv&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
-          <mxGeometry x="280" y="-1500" width="600" height="190" as="geometry" />
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-28" value="&lt;div&gt;we run the &lt;i&gt;scripts/run_all_imports.sh&lt;/i&gt; once if any of the raw data input has changed.&lt;/div&gt;&lt;div&gt;This in turn cals &lt;/div&gt;&lt;div&gt; &lt;i&gt;src/import_scripts_no_food_trade/&lt;/i&gt;&lt;i&gt;create_[&lt;/i&gt;resource name&lt;i&gt;]csv.py&lt;/i&gt;&lt;/div&gt;&lt;div&gt;for all resources (excluding data required for animal_populations.py,&lt;/div&gt;&lt;div&gt; which is an imperfection in the code which should be fixed eventually).&lt;/div&gt;&lt;div&gt;This creates a csv for each food resource in &lt;i&gt;data/no_food_trade/processed_data/&lt;/i&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;Then it calls &lt;div&gt; &lt;i&gt;src/import_scripts_no_food_trade/&lt;/i&gt;import_food_data.py&lt;/div&gt;&lt;div&gt;which combines everything to computer_readable_combined.csv&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="275" y="-1510" width="610" height="210" as="geometry" />
         </mxCell>
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-29" value="data/no_food_trade/raw_data/" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="40" y="-1238" width="200" height="150" as="geometry" />
@@ -411,7 +411,7 @@
             <mxPoint x="-40" y="120" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Nyg9t3aIWLBTnF1s83V8-28" value="last round of interpreted results for all countries run" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="Nyg9t3aIWLBTnF1s83V8-27">
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-28" value="&lt;div&gt;last round of interpreted results for all countries run (resuts)&lt;/div&gt;&lt;div&gt;also a gepandas &quot;world&quot; map object is returned with each country % fed assigned on the map&lt;br&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="Nyg9t3aIWLBTnF1s83V8-27">
           <mxGeometry x="0.0808" y="-3" relative="1" as="geometry">
             <mxPoint x="-4" y="-15" as="offset" />
           </mxGeometry>
