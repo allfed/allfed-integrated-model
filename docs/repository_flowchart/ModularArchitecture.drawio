@@ -1,11 +1,17 @@
-<mxfile host="app.diagrams.net" modified="2024-03-24T19:46:03.048Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="uM48r21jOpglHXCkrOyF" version="24.1.0" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-24T19:55:33.465Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="8Qne3vc4y-QhC89cBZPz" version="24.1.0" type="github">
   <diagram name="Page-1" id="vb958Nm0k1HjrjN-Do-v">
-    <mxGraphModel dx="4261" dy="3985" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+    <mxGraphModel dx="3088" dy="3243" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-24" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="1140" width="750" height="800" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-7" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="70" y="-815" width="1030" height="1015" as="geometry" />
+        </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-19" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
-          <mxGeometry x="-380" y="-250" width="430" height="470" as="geometry" />
+          <mxGeometry x="-380" y="-250" width="430" height="410" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-12" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="-640" y="1050" width="450" height="300" as="geometry" />
@@ -16,13 +22,10 @@
         <mxCell id="GCf3FXKfKVam4WNOABnw-6" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
           <mxGeometry x="20" y="-1500" width="1590" height="510" as="geometry" />
         </mxCell>
-        <mxCell id="GCf3FXKfKVam4WNOABnw-7" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
-          <mxGeometry x="64" y="-815" width="1226" height="1005" as="geometry" />
-        </mxCell>
         <mxCell id="RVlSqpslpW0tmy56jza0-9" value="&lt;b&gt;USER INPUT&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;div&gt;scenario_option (also named config or this_simulation).&lt;/div&gt;&lt;div&gt;scenario_option is always the &lt;br&gt;&lt;/div&gt;&lt;div&gt;same for the different countries we run.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;scenario_option is specified either in&lt;br&gt;&lt;/div&gt;&lt;div&gt;plot_manuscript_figures.py&lt;/div&gt;&lt;div&gt; or &lt;br&gt;&lt;/div&gt;&lt;div&gt;src/scenarios/run_scenarios_from_yaml.py&lt;/div&gt;&lt;div&gt;If desired.&lt;br&gt;&lt;/div&gt;species_options.csv can also be adjusted (see &quot;animal populations&quot;)." style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
           <mxGeometry x="-180" y="-190" width="48" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="RVlSqpslpW0tmy56jza0-10" value="scenario_option&lt;br&gt;&lt;div&gt;&quot;settings&quot; and &quot;simulations&quot;&lt;br&gt;&lt;/div&gt;" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+        <mxCell id="RVlSqpslpW0tmy56jza0-10" value="scenario_option dictionary with&lt;br&gt;&lt;div&gt;&quot;settings&quot; and &quot;simulations&quot; keys containing dictionaries&lt;br&gt;&lt;/div&gt;" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
           <mxGeometry x="-0.3333" y="30" width="50" height="50" relative="1" as="geometry">
             <mxPoint x="40" y="30" as="sourcePoint" />
             <mxPoint x="525" y="30" as="targetPoint" />
@@ -226,19 +229,12 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-69" value="&lt;div&gt;constants_for_params &lt;br&gt;&lt;/div&gt;time_consts_for_params" style="text;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="740" y="210" width="180" height="50" as="geometry" />
+          <mxGeometry x="640" y="240" width="180" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="GCf3FXKfKVam4WNOABnw-1" value="&amp;nbsp;computer_readable_combined.csv" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;entryX=0.364;entryY=0.751;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" target="GCf3FXKfKVam4WNOABnw-7" edge="1">
-          <mxGeometry x="-0.0239" y="-3" width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="260" y="-290" as="sourcePoint" />
-            <mxPoint x="509.75" y="-105" as="targetPoint" />
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="GCf3FXKfKVam4WNOABnw-3" value="" style="curved=1;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+        <mxCell id="GCf3FXKfKVam4WNOABnw-3" value="" style="curved=1;endArrow=classic;html=1;rounded=0;" parent="1" edge="1" target="tfmpyOpyPmMC_fq-cLrZ-2">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="1430" y="-1060" as="sourcePoint" />
-            <mxPoint x="260" y="-290" as="targetPoint" />
+            <mxPoint x="250" y="-620" as="targetPoint" />
             <Array as="points">
               <mxPoint x="650" y="-880" />
               <mxPoint x="480" y="-910" />
@@ -246,6 +242,7 @@
               <mxPoint x="330" y="-870" />
               <mxPoint x="260" y="-830" />
               <mxPoint x="250" y="-620" />
+              <mxPoint x="390" y="-220" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -360,7 +357,7 @@
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-13" value="&lt;b&gt;FOOD SYSTEM&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="-622.5" y="1060" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="Nyg9t3aIWLBTnF1s83V8-14" value="&lt;br&gt;&lt;div&gt;interpreted_results&lt;/div&gt;" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-14" value="&lt;br&gt;&lt;div&gt;interpreted_results&lt;/div&gt;&amp;nbsp;for the final round" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry x="-0.3939" y="-60" width="50" height="50" relative="1" as="geometry">
             <mxPoint x="900" y="470" as="sourcePoint" />
             <mxPoint x="900" y="140" as="targetPoint" />
@@ -379,7 +376,7 @@
             <mxPoint x="750" y="1160" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Nyg9t3aIWLBTnF1s83V8-19" value="interpreted_results" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-19" value="interpreted_results for this round" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry x="-0.5" y="-70" width="50" height="50" relative="1" as="geometry">
             <mxPoint x="850" y="1150" as="sourcePoint" />
             <mxPoint x="850" y="1030" as="targetPoint" />
@@ -395,7 +392,7 @@
             <mxPoint x="750" y="1600" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Nyg9t3aIWLBTnF1s83V8-22" value="interpreted_results" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-22" value="interpreted_results for this round" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry x="-0.5" y="-60" width="50" height="50" relative="1" as="geometry">
             <mxPoint x="850" y="1590" as="sourcePoint" />
             <mxPoint x="850" y="1470" as="targetPoint" />
@@ -405,8 +402,14 @@
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-23" value="&lt;div&gt;consts_for_optimizer for the round (previously constants_out)&lt;br&gt;&lt;/div&gt;&lt;div&gt;time_consts for the round&lt;br&gt;&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="540" y="1510" width="210" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="Nyg9t3aIWLBTnF1s83V8-24" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" vertex="1" parent="1">
-          <mxGeometry x="280" y="1140" width="750" height="800" as="geometry" />
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-25" value="&lt;b&gt;OPTIMIZATION AND&amp;nbsp; OPTIMIZER MODEL POSTPROCESSING&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="330" y="1185" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-27" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="970" y="80" as="sourcePoint" />
+            <mxPoint x="1170" y="80" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
