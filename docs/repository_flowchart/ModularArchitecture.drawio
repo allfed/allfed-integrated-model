@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-03-24T19:36:21.738Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="3TcdfFykBEH_Z8XEzWuy" version="24.1.0" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-24T19:41:35.827Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="E_LUPJNd4bxPMXr01de2" version="24.1.0" type="github">
   <diagram name="Page-1" id="vb958Nm0k1HjrjN-Do-v">
-    <mxGraphModel dx="3860" dy="3731" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+    <mxGraphModel dx="3860" dy="3601" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -252,7 +252,7 @@
         <mxCell id="GCf3FXKfKVam4WNOABnw-8" value="&lt;b&gt;SCENARIO LOADING AND PARAMETER SELECTION&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="100" y="-770" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="GCf3FXKfKVam4WNOABnw-10" value="&lt;div&gt;&lt;i&gt;animal_populations.py&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;src.food_system.animal_populations.CalculateFeedAndMeat&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Run all the calculations to determine animals slaughetered and number of dairy animals producing milk, as well as the amount of feed and grass that the animals consume&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Has its own separate data import scheme which is not ideal.&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="GCf3FXKfKVam4WNOABnw-10" value="&lt;div&gt;&lt;i&gt;animal_populations.py&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;src.food_system.animal_populations.CalculateFeedAndMeat.__init__()&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Run all the calculations to determine animals slaughetered and number of dairy animals producing milk, as well as the amount of feed and grass that the animals consume&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Has its own separate data import scheme which is not ideal.&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-445" y="610" width="425" height="140" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-11" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" parent="1" target="GCf3FXKfKVam4WNOABnw-10" edge="1">
@@ -318,7 +318,7 @@
             <mxPoint x="628" y="590" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="GCf3FXKfKVam4WNOABnw-30" value="&lt;div&gt;&lt;i&gt;run_scenario.py&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_and_analyze_scenario() &lt;/i&gt;is called&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;which calls in turn&lt;i&gt; run_round_1()&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_round_2()&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_round_3()&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;these call&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;i&gt;compute_parameters_first_round()&lt;/i&gt;&lt;/i&gt;&lt;div&gt;&lt;i&gt;compute_parameters_second_round()&lt;br&gt;compute_parameters_third_round&lt;/i&gt;()&lt;/div&gt;&lt;div&gt;and all also call&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_optimizer()&lt;/i&gt;&lt;/div&gt;&lt;div&gt;and finally&lt;i&gt; &lt;/i&gt;&lt;br&gt;&lt;i&gt;&lt;i&gt;run_and_analyze_scenario() &lt;/i&gt;&lt;/i&gt;calls&lt;i&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;display_results_of_optimizer_round()&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;i&gt;&lt;i&gt;run_and_analyze_scenario() &lt;/i&gt;&lt;/i&gt;is run once for each country. It runs each of the 3 rounds of optimization. For each round of optimization (&lt;i&gt;&lt;i&gt;compute_parameters_first_round()&lt;/i&gt;&lt;/i&gt;&lt;div&gt;&lt;i&gt;compute_parameters_second_round()&lt;br&gt;compute_parameters_third_round&lt;/i&gt;())&lt;/div&gt;, it first computes the parameters required for the round of optimization. Then, it actually runs the optimization with using run_round_1(), run_round_2(), and run_round_3() (which in&amp;nbsp; turn&amp;nbsp; all&amp;nbsp; call run_optimizer())&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;The interpreted_results object from the final round of optimization is then passed to display_optimizer_results and is additionally returned.&lt;br&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="GCf3FXKfKVam4WNOABnw-30" value="&lt;div&gt;&lt;i&gt;run_scenario.py&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_and_analyze_scenario() &lt;/i&gt;is called&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;which calls in turn&lt;i&gt; run_round_1()&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_round_2()&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_round_3()&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;these call&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;i&gt;compute_parameters_first_round()&lt;/i&gt;&lt;/i&gt;&lt;div&gt;&lt;i&gt;compute_parameters_second_round()&lt;br&gt;compute_parameters_third_round&lt;/i&gt;()&lt;/div&gt;&lt;div&gt;and all also call&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_optimizer()&lt;/i&gt;&lt;/div&gt;&lt;div&gt;and finally&lt;i&gt; &lt;/i&gt;&lt;br&gt;&lt;i&gt;&lt;i&gt;run_and_analyze_scenario() &lt;/i&gt;&lt;/i&gt;calls&lt;i&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;display_results_of_optimizer_round()&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;i&gt;&lt;i&gt;run_and_analyze_scenario() &lt;/i&gt;&lt;/i&gt;is run once for each country. It runs each of the 3 rounds of optimization. For each round of optimization (&lt;i&gt;&lt;i&gt;compute_parameters_first_round()&lt;/i&gt;&lt;/i&gt;&lt;div&gt;&lt;i&gt;compute_parameters_second_round()&lt;br&gt;compute_parameters_third_round&lt;/i&gt;())&lt;/div&gt;, it first computes the parameters required for the round of optimization. Then, it actually runs the optimization with run_optimizer())&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;The interpreted_results object from the final round of optimization is then passed to display_optimizer_results and is additionally returned.&lt;br&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="950" y="330" width="440" height="500" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-2" value="src/food_system/*.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
@@ -354,8 +354,8 @@
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-10" value="time_consts out&#xa;constants_outputs" style="text;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="190" y="910" width="120" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="Nyg9t3aIWLBTnF1s83V8-11" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;The food_system classes contain&lt;br&gt;&lt;/div&gt;&lt;div&gt;helper functions for calculating values &lt;br&gt;&lt;/div&gt;&lt;div&gt;necessary to run the optimization for this round&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;Each type of food has its own class and set of functions related to that type of food" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-142" y="1060" width="302" height="40" as="geometry" />
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-11" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;The food_system classes contain&lt;br&gt;&lt;/div&gt;&lt;div&gt;helper functions for calculating values &lt;br&gt;&lt;/div&gt;&lt;div&gt;necessary to run the optimization for this round. These are all referred to as &quot;parameters&quot; of the linear optimization.&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;Each type of food has its own class and set of functions related to that type of food" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-142" y="1070" width="302" height="40" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-13" value="&lt;b&gt;FOOD SYSTEM&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="-262.5" y="880" width="60" height="30" as="geometry" />
@@ -371,7 +371,7 @@
           <mxGeometry x="1000" y="1010" width="340" height="260" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-17" value="&lt;div&gt;run_scenario.py&lt;/div&gt;&lt;div&gt;&lt;i&gt;interpret_optimizer_results()&lt;/i&gt;&lt;/div&gt;&lt;div&gt;The Extractor and Interpreter are initialized. &lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;The Extractor takes all the numeric values determined as the result of the optimizer (the amount of food to humans or the amount of food to animals), and turns them into normal python integers and floats rather than pulp&#39;s weird variable format.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;The Interpreter converts the results to useful units and does some useful analysis, such as computing the percent of people fed, and the feed and biofuel sum.&lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp;The instantiation of the Interpreter (interpreted_results)&amp;nbsp; contains all the data that are used for analysis and plotting this country\s results.&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1010" y="1350" width="340" height="260" as="geometry" />
+          <mxGeometry x="980" y="1430" width="340" height="260" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-18" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -379,14 +379,31 @@
             <mxPoint x="1110" y="980" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Nyg9t3aIWLBTnF1s83V8-19" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-19" value="interpreted_results" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry x="-0.5" y="-70" width="50" height="50" relative="1" as="geometry">
             <mxPoint x="1210" y="970" as="sourcePoint" />
             <mxPoint x="1210" y="850" as="targetPoint" />
+            <mxPoint y="1" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-20" value="&lt;div&gt;consts_for_optimizer for the round (previously constants_out)&lt;br&gt;&lt;/div&gt;&lt;div&gt;time_consts for the round&lt;br&gt;&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="900" y="890" width="210" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-21" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1110" y="1290" as="sourcePoint" />
+            <mxPoint x="1110" y="1420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-22" value="interpreted_results" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry x="-0.5" y="-60" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1210" y="1410" as="sourcePoint" />
+            <mxPoint x="1210" y="1290" as="targetPoint" />
+            <mxPoint y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-23" value="&lt;div&gt;consts_for_optimizer for the round (previously constants_out)&lt;br&gt;&lt;/div&gt;&lt;div&gt;time_consts for the round&lt;br&gt;&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="900" y="1330" width="210" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
