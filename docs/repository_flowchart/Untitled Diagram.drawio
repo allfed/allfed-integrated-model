@@ -1,9 +1,48 @@
-<mxfile host="app.diagrams.net" modified="2024-03-24T13:47:51.215Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" version="24.1.0" etag="h8tnzLgCZb3QPvLpe3yU" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-24T13:58:27.479Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="rayQAxdIZAT0_oUSypr1" version="24.1.0" type="github">
   <diagram name="Page-1" id="vb958Nm0k1HjrjN-Do-v">
-    <mxGraphModel>
+    <mxGraphModel dx="388" dy="2518" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="RVlSqpslpW0tmy56jza0-1" value="&lt;div&gt;&lt;i&gt;import_scripts_no_food_trade/*.py&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;imports all the raw data and converts to computer readable combined&lt;br&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="185" width="250" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="RVlSqpslpW0tmy56jza0-3" value="computer_readable_combined" style="shape=datastore;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="230" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="RVlSqpslpW0tmy56jza0-4" value="data/no_food_trade/raw_data" style="shape=datastore;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="230" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="RVlSqpslpW0tmy56jza0-5" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="310" y="310" as="sourcePoint" />
+            <mxPoint x="360" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RVlSqpslpW0tmy56jza0-6" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="640" y="307.76" as="sourcePoint" />
+            <mxPoint x="690" y="307.76" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RVlSqpslpW0tmy56jza0-7" value="&lt;div&gt;scenarios.py&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;takes all the &lt;br&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="990" y="185" width="250" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="RVlSqpslpW0tmy56jza0-8" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="930" y="310" as="sourcePoint" />
+            <mxPoint x="980" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RVlSqpslpW0tmy56jza0-9" value="&lt;div&gt;scenario_option&lt;br&gt;&lt;br&gt;either sent from plot_manuscript&lt;br&gt;&lt;/div&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="572" y="-60" width="48" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="RVlSqpslpW0tmy56jza0-10" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="890" y="140" as="sourcePoint" />
+            <mxPoint x="970" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
