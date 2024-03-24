@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-03-24T14:43:59.403Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="kaP_6VzWmPqqNi_Xtp1B" version="24.1.0" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-24T14:54:42.160Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="ZzFCZW3-PcUNZtdrKyBe" version="24.1.0" type="github">
   <diagram name="Page-1" id="vb958Nm0k1HjrjN-Do-v">
     <mxGraphModel dx="1192" dy="3030" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
@@ -34,7 +34,7 @@
             <mxPoint x="980" y="310" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="RVlSqpslpW0tmy56jza0-9" value="&lt;b&gt;USER SUPPLIES&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;div&gt;scenario_option (also named config or this_simulation)&lt;br&gt;&lt;br&gt;either sent from &lt;br&gt;&lt;/div&gt;&lt;div&gt;plot_manuscript_figures.py&lt;/div&gt;&lt;div&gt; or &lt;br&gt;&lt;/div&gt;&lt;div&gt;src/scenarios/run_scenarios_from_yaml.py&lt;br&gt;&lt;/div&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+        <mxCell id="RVlSqpslpW0tmy56jza0-9" value="&lt;b&gt;USER SUPPLIES&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;div&gt;scenario_option (also named config or this_simulation).&lt;/div&gt;&lt;div&gt;scenario_option is always the same for the different countries we run.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;scenario_option is specified either in&lt;br&gt;&lt;/div&gt;&lt;div&gt;plot_manuscript_figures.py&lt;/div&gt;&lt;div&gt; or &lt;br&gt;&lt;/div&gt;&lt;div&gt;src/scenarios/run_scenarios_from_yaml.py&lt;br&gt;&lt;/div&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
           <mxGeometry x="250" y="-190" width="48" height="90" as="geometry" />
         </mxCell>
         <mxCell id="RVlSqpslpW0tmy56jza0-10" value="scenario_option&lt;br&gt;&lt;div&gt;&quot;settings&quot; and &quot;simulations&quot;&lt;br&gt;&lt;/div&gt;" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
@@ -50,8 +50,8 @@
             <mxPoint x="980" y="200" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-2" value="&lt;div&gt;&lt;i&gt;run_model_no_trade.py&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_model_no_trade():&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;Loops through all countries specified in scenario_option &quot;settings&quot;. &lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;imports each country as country_data (where country_data comes from each row of computer_readable_combined)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;For each country, calls run_optimizer_for_country()&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="570" y="-170" width="380" height="200" as="geometry" />
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-2" value="&lt;div&gt;&lt;i&gt;run_model_no_trade.py&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_model_no_trade():&lt;/i&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Loops through all countries specified in scenario_option &quot;settings&quot;.&lt;/div&gt;&lt;div&gt;&lt;div&gt;Imports each country as country_data (where country_data comes from each row of computer_readable_combined).&lt;/div&gt;&lt;/div&gt;&lt;div&gt;Then calls&lt;i&gt; &lt;/i&gt;&lt;i&gt;run_optimizer_for_country() &lt;/i&gt;passing in scenario_option and country_data for that country&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;div&gt;&lt;i&gt;run_optimizer_for_country():&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;Calls &lt;i&gt;set_depending_on_option&lt;/i&gt;()&lt;/div&gt;&lt;div&gt;Then for each country, calls run_and_analyze_scenario() passing in &lt;br&gt;&lt;div&gt;constants_for_params and&lt;br&gt;&lt;/div&gt;time_consts_for_params&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="570" y="-170" width="380" height="290" as="geometry" />
         </mxCell>
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-4" value="&lt;div&gt;&lt;b&gt;Note&lt;/b&gt;: this diagram is just for no trade or partial trade. &lt;br&gt;&lt;/div&gt;&lt;div&gt;Full trade scenarios work differently &lt;br&gt;&lt;/div&gt;&lt;div&gt;(see plot_manuscript_figures rerun_figure_s1 &lt;br&gt;&lt;/div&gt;&lt;div&gt;to see an example, full trade is simpler)&lt;/div&gt;" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="30" y="-930" width="400" height="160" as="geometry" />
@@ -62,7 +62,7 @@
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-7" value="&lt;div&gt;Scenarios.py&lt;/div&gt;&lt;div&gt;=&amp;gt; Scenarios class has an instance called scenarios_loader&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;set_depending_on_option uses methods in Scenarios to set the specific values of constants_for_params and&lt;br&gt;time_consts_for_params for this simulation&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="595" y="-800" width="252" height="180" as="geometry" />
         </mxCell>
-        <UserObject label="&lt;div&gt;&lt;i&gt;run_model_no_trade.py&lt;/i&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;set_depending_on_option():&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;takes: country_data and &quot;simulation&quot; from scenario_option&lt;br&gt;&lt;br&gt;uses scenarios.py to compute the constants (both monthly and single valued) for the parameters&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;div&gt;returns:&lt;/div&gt;&lt;div&gt;constants_for_params&lt;/div&gt;time_consts_for_params&lt;br&gt;&lt;br&gt;these are all the relevant variable values needed to compute parameters for the scenario&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" link="set_depending_on_option&lt;br&gt;takes: country_data and scenario_option&lt;br&gt;&lt;br&gt;uses scenarios.py to compute the constants (both monthly and single valued) for the parameters&lt;br&gt;&lt;br&gt;&lt;br&gt;returns:constants_for_params&lt;br&gt;time_consts_for_params&lt;br&gt;&lt;br&gt;these are all the relevant variable values for the scenario&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" id="tfmpyOpyPmMC_fq-cLrZ-9">
+        <UserObject label="&lt;div&gt;&lt;i&gt;run_model_no_trade.py&lt;/i&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;set_depending_on_option&lt;/i&gt;():&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;takes: country_data and &quot;simulation&quot; from scenario_option&lt;br&gt;&lt;br&gt;uses scenarios.py to compute the constants (both monthly and single valued) for the parameters&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;div&gt;returns:&lt;/div&gt;&lt;div&gt;constants_for_params&lt;/div&gt;time_consts_for_params&lt;br&gt;&lt;br&gt;these are all the relevant variable values needed to compute parameters for the scenario&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" link="set_depending_on_option&lt;br&gt;takes: country_data and scenario_option&lt;br&gt;&lt;br&gt;uses scenarios.py to compute the constants (both monthly and single valued) for the parameters&lt;br&gt;&lt;br&gt;&lt;br&gt;returns:constants_for_params&lt;br&gt;time_consts_for_params&lt;br&gt;&lt;br&gt;these are all the relevant variable values for the scenario&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" id="tfmpyOpyPmMC_fq-cLrZ-9">
           <mxCell style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
             <mxGeometry x="510" y="-520" width="460" height="270" as="geometry" />
           </mxCell>
@@ -102,8 +102,17 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-18" value="&lt;div&gt;&lt;i&gt;scenario_runner.py&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_optimizer_for_country():&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;Loops through all countries specified in scenario_option &quot;settings&quot;. &lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;imports each country as country_data (where country_data comes from each row of computer_readable_combined)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;For each country, calls run_optimizer_for_country()&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-18" value="&lt;div&gt;&lt;i&gt;scenario_runner.py&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_and_analyze_scenario():&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="1130" y="-170" width="380" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-19" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="980" y="-70.42" as="sourcePoint" />
+            <mxPoint x="1110" y="-70.42" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-21" value="&lt;div&gt;constants_for_params &lt;br&gt;&lt;/div&gt;time_consts_for_params" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="980" y="-130" width="180" height="50" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
