@@ -1,0 +1,324 @@
+<mxfile host="app.diagrams.net" modified="2024-03-24T18:28:15.685Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="R4-FhWUEkKlK6qVI0Cvc" version="24.1.0" type="github">
+  <diagram name="Page-1" id="vb958Nm0k1HjrjN-Do-v">
+    <mxGraphModel dx="2757" dy="3034" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="GCf3FXKfKVam4WNOABnw-21" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="-510" y="280" width="520" height="530" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-6" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="20" y="-1500" width="1590" height="510" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-7" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="64" y="-815" width="1226" height="1005" as="geometry" />
+        </mxCell>
+        <mxCell id="RVlSqpslpW0tmy56jza0-9" value="&lt;b&gt;USER INPUT&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;div&gt;scenario_option (also named config or this_simulation).&lt;/div&gt;&lt;div&gt;scenario_option is always the &lt;br&gt;&lt;/div&gt;&lt;div&gt;same for the different countries we run.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;scenario_option is specified either in&lt;br&gt;&lt;/div&gt;&lt;div&gt;plot_manuscript_figures.py&lt;/div&gt;&lt;div&gt; or &lt;br&gt;&lt;/div&gt;&lt;div&gt;src/scenarios/run_scenarios_from_yaml.py&lt;br&gt;&lt;/div&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+          <mxGeometry x="-150" y="-160" width="48" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="RVlSqpslpW0tmy56jza0-10" value="scenario_option&lt;br&gt;&lt;div&gt;&quot;settings&quot; and &quot;simulations&quot;&lt;br&gt;&lt;/div&gt;" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry x="-0.3333" y="30" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="40" y="30" as="sourcePoint" />
+            <mxPoint x="525" y="30" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-1" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="790" y="140" as="sourcePoint" />
+            <mxPoint x="790" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-2" value="&lt;div&gt;&lt;i&gt;run_model_no_trade.py&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_model_no_trade():&lt;/i&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Loops through all countries specified in scenario_option &quot;settings&quot;.&lt;/div&gt;&lt;div&gt;&lt;div&gt;Imports each country as country_data (where country_data comes from each row of computer_readable_combined).&lt;/div&gt;&lt;/div&gt;&lt;div&gt;Then calls&lt;i&gt; &lt;/i&gt;&lt;i&gt;run_optimizer_for_country() &lt;/i&gt;passing in scenario_option and country_data for that country&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;div&gt;&lt;i&gt;run_optimizer_for_country():&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;Calls &lt;i&gt;set_depending_on_option&lt;/i&gt;()&lt;/div&gt;&lt;div&gt;Then for each country, calls run_and_analyze_scenario() passing in &lt;br&gt;&lt;div&gt;constants_for_params and&lt;br&gt;&lt;/div&gt;time_consts_for_params&lt;/div&gt;&amp;nbsp;for the&amp;nbsp; country in question" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="570" y="-170" width="380" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-4" value="&lt;div&gt;&lt;b&gt;Note&lt;/b&gt;: this diagram is just for no trade or partial trade. &lt;br&gt;&lt;/div&gt;&lt;div&gt;Full trade scenarios work slightly differently &lt;br&gt;&lt;/div&gt;&lt;div&gt;(see plot_manuscript_figures rerun_figure_s1 &lt;br&gt;&lt;/div&gt;&lt;div&gt;to see an example, full trade is simpler)&lt;/div&gt;" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-20" y="-1660" width="400" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-7" value="&lt;div&gt;Scenarios.py&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;set_depending_on_option uses methods in Scenarios to set the specific values of constants_for_params and&lt;br&gt;time_consts_for_params for this simulation&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="595" y="-800" width="252" height="180" as="geometry" />
+        </mxCell>
+        <UserObject label="&lt;div&gt;&lt;i&gt;run_scenario.py&lt;/i&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;set_depending_on_option&lt;/i&gt;():&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;takes: country_data and &quot;simulation&quot; from scenario_option&lt;br&gt;&lt;br&gt;uses scenarios.py to compute the constants (both monthly and single valued) for the parameters&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;div&gt;returns:&lt;/div&gt;&lt;div&gt;constants_for_params&lt;/div&gt;time_consts_for_params&lt;br&gt;&lt;br&gt;these are all the relevant variable values needed to compute parameters for the scenario&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" link="set_depending_on_option&lt;br&gt;takes: country_data and scenario_option&lt;br&gt;&lt;br&gt;uses scenarios.py to compute the constants (both monthly and single valued) for the parameters&lt;br&gt;&lt;br&gt;&lt;br&gt;returns:constants_for_params&lt;br&gt;time_consts_for_params&lt;br&gt;&lt;br&gt;these are all the relevant variable values for the scenario&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" id="tfmpyOpyPmMC_fq-cLrZ-9">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+            <mxGeometry x="510" y="-520" width="460" height="270" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-12" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="675" y="-540" as="sourcePoint" />
+            <mxPoint x="675" y="-610" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-13" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="775" y="-610" as="sourcePoint" />
+            <mxPoint x="775" y="-540" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="775" y="-570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-14" value="scenario_option" style="text;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="565" y="-580" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-15" value="&lt;div&gt;constants_for_params&lt;/div&gt;time_consts_for_params" style="text;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="795" y="-600" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-16" value="&lt;div&gt;country_data&lt;/div&gt;&lt;div&gt;scenario_option &quot;simulations&quot;&lt;br&gt;&lt;/div&gt;" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;" parent="1" edge="1">
+          <mxGeometry y="100" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="680" y="-180" as="sourcePoint" />
+            <mxPoint x="680" y="-240" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-17" value="&lt;div&gt;constants_for_params&lt;/div&gt;time_consts_for_params" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;" parent="1" edge="1">
+          <mxGeometry x="-0.3333" y="85" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="795" y="-240" as="sourcePoint" />
+            <mxPoint x="795" y="-180" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-22" value="&lt;div&gt;&lt;div&gt; &lt;i&gt;src/import_scripts_no_food_trade/&lt;/i&gt;&lt;i&gt;create_[&lt;/i&gt;resource name&lt;i&gt;]csv.py&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="370" y="-1248" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-23" value="computer_readable_combined" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1340" y="-1238" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-24" value="data/no_food_trade/raw_data/" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="-1248" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-27" value="IMPORT&amp;nbsp; DATA" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="420" y="-1540" width="290" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-28" value="&lt;div&gt;we run the &lt;i&gt;scripts/run_all_imports.sh&lt;/i&gt; which calls&lt;/div&gt;&lt;div&gt; &lt;i&gt;src/import_scripts_no_food_trade/&lt;/i&gt;&lt;i&gt;create_[&lt;/i&gt;resource name&lt;i&gt;]csv.py&lt;/i&gt;&lt;/div&gt;&lt;div&gt;for all resources (excluding data required for animal_populations.py,&lt;/div&gt;&lt;div&gt; which is an imperfection in the code which should be fixed eventually).&lt;/div&gt;&lt;div&gt;This creates a csv for each food resource in &lt;i&gt;data/no_food_trade/processed_data/&lt;/i&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;Then it calls &lt;div&gt; &lt;i&gt;src/import_scripts_no_food_trade/&lt;/i&gt;import_food_data.py&lt;/div&gt;&lt;div&gt;which combines everything to computer_readable_combined.csv&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="280" y="-1500" width="600" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-29" value="data/no_food_trade/raw_data/" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="-1238" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-30" value="data/no_food_trade/raw_data/" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="50" y="-1228" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-31" value="data/no_food_trade/raw_data/" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="60" y="-1218" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-32" value="data/no_food_trade/raw_data/" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="70" y="-1208" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-37" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="270" y="-1218" as="sourcePoint" />
+            <mxPoint x="320" y="-1218" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-39" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="280" y="-1208" as="sourcePoint" />
+            <mxPoint x="330" y="-1208" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-40" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="290" y="-1198" as="sourcePoint" />
+            <mxPoint x="340" y="-1198" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-41" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="-1188" as="sourcePoint" />
+            <mxPoint x="350" y="-1188" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-42" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="310" y="-1178" as="sourcePoint" />
+            <mxPoint x="360" y="-1178" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-43" value="..." style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="60" y="-1278" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-44" value="..." style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="260" y="-1248" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-45" value="data/no_food_trade/raw_data/" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="690" y="-1238" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-46" value="data/no_food_trade/raw_data/" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="700" y="-1228" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-47" value="data/no_food_trade/raw_data/" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="710" y="-1218" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-48" value="data/no_food_trade/raw_data/" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="-1208" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-49" value="data/no_food_trade/processed_data/" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="730" y="-1198" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-50" value="..." style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="930" y="-1320" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-51" value="&lt;div&gt;&lt;div&gt; &lt;i&gt;src/import_scripts_no_food_trade/&lt;/i&gt;&lt;i&gt;import_food_data.py&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1050" y="-1218" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-52" value="&lt;div&gt;&lt;div&gt; &lt;i&gt;src/import_scripts_no_food_trade/&lt;/i&gt;&lt;i&gt;create_[&lt;/i&gt;resource name&lt;i&gt;]csv.py&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="380" y="-1238" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-53" value="&lt;div&gt;&lt;div&gt; &lt;i&gt;src/import_scripts_no_food_trade/&lt;/i&gt;&lt;i&gt;create_[&lt;/i&gt;resource name&lt;i&gt;]csv.py&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="390" y="-1228" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-54" value="&lt;div&gt;&lt;div&gt; &lt;i&gt;src/import_scripts_no_food_trade/&lt;/i&gt;&lt;i&gt;create_[&lt;/i&gt;resource name&lt;i&gt;]csv.py&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="400" y="-1218" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-55" value="&lt;div&gt;&lt;div&gt; &lt;i&gt;src/import_scripts_no_food_trade/&lt;/i&gt;&lt;i&gt;create_[&lt;/i&gt;resource name&lt;i&gt;]csv.py&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="410" y="-1208" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-60" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="980" y="-1163.67" as="sourcePoint" />
+            <mxPoint x="1030" y="-1163.67" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-62" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="630" y="-1188" as="sourcePoint" />
+            <mxPoint x="680" y="-1188" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-63" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="640" y="-1178" as="sourcePoint" />
+            <mxPoint x="690" y="-1178" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-64" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="650" y="-1168" as="sourcePoint" />
+            <mxPoint x="700" y="-1168" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-65" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="660" y="-1158" as="sourcePoint" />
+            <mxPoint x="710" y="-1158" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-66" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="670" y="-1148" as="sourcePoint" />
+            <mxPoint x="720" y="-1148" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-67" value="..." style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="620" y="-1218" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-68" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1270" y="-1169" as="sourcePoint" />
+            <mxPoint x="1320" y="-1169" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-69" value="&lt;div&gt;constants_for_params &lt;br&gt;&lt;/div&gt;time_consts_for_params" style="text;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="647" y="210" width="180" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-1" value="&amp;nbsp;computer_readable_combined.csv" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;entryX=0.364;entryY=0.751;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" target="GCf3FXKfKVam4WNOABnw-7" edge="1">
+          <mxGeometry x="-0.0239" y="-3" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="260" y="-290" as="sourcePoint" />
+            <mxPoint x="509.75" y="-105" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-3" value="" style="curved=1;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1430" y="-1060" as="sourcePoint" />
+            <mxPoint x="260" y="-290" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="650" y="-880" />
+              <mxPoint x="480" y="-910" />
+              <mxPoint x="390" y="-910" />
+              <mxPoint x="330" y="-870" />
+              <mxPoint x="260" y="-830" />
+              <mxPoint x="250" y="-620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-8" value="&lt;b&gt;SCENARIO LOADING AND PARAMETER SELECTION&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="100" y="-770" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-10" value="&lt;div&gt;&lt;i&gt;animal_populations.py&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;src.food_system.animal_populations.CalculateFeedAndMeat&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Run all the calculations to determine animals slaughetered and number of dairy animals producing milk. &lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Has its own separate data import scheme which is not ideal.&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-445" y="620" width="425" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-11" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" parent="1" target="GCf3FXKfKVam4WNOABnw-10" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="290" y="648" as="sourcePoint" />
+            <mxPoint x="40" y="640" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-12" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" source="GCf3FXKfKVam4WNOABnw-10" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="45" y="700" as="sourcePoint" />
+            <mxPoint x="290" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-13" value="&lt;div&gt;animal population information&lt;/div&gt;&lt;div&gt;available_feed&lt;br&gt;available_grass&lt;br&gt;BREEDING_STRATEGY&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="80" y="570" width="190" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-14" value="&lt;div&gt;feed_used&lt;/div&gt;&lt;div&gt;dairy population&lt;/div&gt;animal slaughter" style="text;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="90" y="690" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-15" value="data/no_food_trade/animal_feed_data/" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-450" y="370" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-16" value="data/no_food_trade/animal_feed_data/species_options.csv" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-266" y="110" width="152" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-17" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-170" y="210" as="sourcePoint" />
+            <mxPoint x="-170" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-18" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-340" y="540" as="sourcePoint" />
+            <mxPoint x="-340" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-19" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="-380" y="-250" width="430" height="470" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-20" value="&lt;b&gt;USER INPUT&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-310" y="-230" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-22" value="&lt;b&gt;ANIMAL POPULATIONS&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-430" y="300" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-23" value="&lt;div&gt;&lt;i&gt;parameters.py&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;compute_parameters_second_round()&lt;br&gt;compute_parameters_first_round()&lt;br&gt;compute_parameters_third_round&lt;/i&gt;()&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Calculate parameters needed for this round of optimization&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1278" y="415" width="290" height="215" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-24" value="constants_inputs&#xa;time_consts_inputs" style="text;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="1098" y="410" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-26" value="constants_out for the round&#xa;time_consts out for the round&#xa;feed_and_biofuels for the round&#xa;meat_dictionary (meat produced) for the round" style="text;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="998" y="510" width="270" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-27" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1265" y="590" as="sourcePoint" />
+            <mxPoint x="955" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-29" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="968" y="460" as="sourcePoint" />
+            <mxPoint x="1268" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-30" value="&lt;div&gt;&lt;i&gt;run_scenario.py&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;run_and_analyze_scenario:&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="620" y="410" width="310" height="480" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
