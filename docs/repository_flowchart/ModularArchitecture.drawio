@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-03-24T19:41:35.827Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="E_LUPJNd4bxPMXr01de2" version="24.1.0" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-24T19:46:03.048Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="uM48r21jOpglHXCkrOyF" version="24.1.0" type="github">
   <diagram name="Page-1" id="vb958Nm0k1HjrjN-Do-v">
-    <mxGraphModel dx="3860" dy="3601" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+    <mxGraphModel dx="4261" dy="3985" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -8,10 +8,10 @@
           <mxGeometry x="-380" y="-250" width="430" height="470" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-12" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" vertex="1" parent="1">
-          <mxGeometry x="-280" y="870" width="450" height="300" as="geometry" />
+          <mxGeometry x="-640" y="1050" width="450" height="300" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-21" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
-          <mxGeometry x="-490" y="260" width="520" height="530" as="geometry" />
+          <mxGeometry x="-850" y="440" width="520" height="530" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-6" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
           <mxGeometry x="20" y="-1500" width="1590" height="510" as="geometry" />
@@ -19,7 +19,7 @@
         <mxCell id="GCf3FXKfKVam4WNOABnw-7" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" parent="1" vertex="1">
           <mxGeometry x="64" y="-815" width="1226" height="1005" as="geometry" />
         </mxCell>
-        <mxCell id="RVlSqpslpW0tmy56jza0-9" value="&lt;b&gt;USER INPUT&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;div&gt;scenario_option (also named config or this_simulation).&lt;/div&gt;&lt;div&gt;scenario_option is always the &lt;br&gt;&lt;/div&gt;&lt;div&gt;same for the different countries we run.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;scenario_option is specified either in&lt;br&gt;&lt;/div&gt;&lt;div&gt;plot_manuscript_figures.py&lt;/div&gt;&lt;div&gt; or &lt;br&gt;&lt;/div&gt;&lt;div&gt;src/scenarios/run_scenarios_from_yaml.py&lt;/div&gt;&lt;div&gt;If desired, &lt;br&gt;&lt;/div&gt;species_options.csv can also be adjusted for each scenario." style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+        <mxCell id="RVlSqpslpW0tmy56jza0-9" value="&lt;b&gt;USER INPUT&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;div&gt;scenario_option (also named config or this_simulation).&lt;/div&gt;&lt;div&gt;scenario_option is always the &lt;br&gt;&lt;/div&gt;&lt;div&gt;same for the different countries we run.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;scenario_option is specified either in&lt;br&gt;&lt;/div&gt;&lt;div&gt;plot_manuscript_figures.py&lt;/div&gt;&lt;div&gt; or &lt;br&gt;&lt;/div&gt;&lt;div&gt;src/scenarios/run_scenarios_from_yaml.py&lt;/div&gt;&lt;div&gt;If desired.&lt;br&gt;&lt;/div&gt;species_options.csv can also be adjusted (see &quot;animal populations&quot;)." style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
           <mxGeometry x="-180" y="-190" width="48" height="90" as="geometry" />
         </mxCell>
         <mxCell id="RVlSqpslpW0tmy56jza0-10" value="scenario_option&lt;br&gt;&lt;div&gt;&quot;settings&quot; and &quot;simulations&quot;&lt;br&gt;&lt;/div&gt;" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
@@ -32,7 +32,7 @@
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-1" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="790" y="140" as="sourcePoint" />
-            <mxPoint x="950" y="300" as="targetPoint" />
+            <mxPoint x="790" y="480" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-2" value="&lt;div&gt;&lt;i&gt;run_model_no_trade.py&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;First,&lt;i&gt; run_model_no_trade() &lt;/i&gt;is run&lt;i&gt;.&lt;/i&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;It loops through all countries specified in scenario_option &quot;settings&quot;.&lt;/div&gt;&lt;div&gt;&lt;div&gt;Imports each country as country_data (where country_data comes from each row of computer_readable_combined).&lt;/div&gt;&lt;/div&gt;&lt;div&gt;Then calls&lt;i&gt; &lt;/i&gt;&lt;i&gt;run_optimizer_for_country() &lt;/i&gt;passing in scenario_option and country_data for that country&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;div&gt;&lt;i&gt;run_optimizer_for_country():&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;Calls &lt;i&gt;set_depending_on_option&lt;/i&gt;()&lt;/div&gt;&lt;div&gt;Then for each country, calls run_and_analyze_scenario() passing in &lt;br&gt;&lt;div&gt;constants_for_params and&lt;br&gt;&lt;/div&gt;time_consts_for_params&lt;/div&gt;&amp;nbsp;for the&amp;nbsp; country in question" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -253,157 +253,160 @@
           <mxGeometry x="100" y="-770" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-10" value="&lt;div&gt;&lt;i&gt;animal_populations.py&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;src.food_system.animal_populations.CalculateFeedAndMeat.__init__()&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Run all the calculations to determine animals slaughetered and number of dairy animals producing milk, as well as the amount of feed and grass that the animals consume&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Has its own separate data import scheme which is not ideal.&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="-445" y="610" width="425" height="140" as="geometry" />
+          <mxGeometry x="-805" y="790" width="425" height="140" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-11" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" parent="1" target="GCf3FXKfKVam4WNOABnw-10" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="290" y="648" as="sourcePoint" />
-            <mxPoint x="40" y="640" as="targetPoint" />
+            <mxPoint x="-70" y="828" as="sourcePoint" />
+            <mxPoint x="-320" y="820" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-12" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" source="GCf3FXKfKVam4WNOABnw-10" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="45" y="700" as="sourcePoint" />
-            <mxPoint x="290" y="680" as="targetPoint" />
+            <mxPoint x="-315" y="880" as="sourcePoint" />
+            <mxPoint x="-70" y="860" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-13" value="&lt;div&gt;animal population information&lt;/div&gt;&lt;div&gt;available_feed&lt;br&gt;available_grass&lt;br&gt;BREEDING_STRATEGY&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="80" y="570" width="190" height="100" as="geometry" />
+          <mxGeometry x="-280" y="750" width="190" height="100" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-14" value="&lt;div&gt;feed_used&lt;/div&gt;&lt;div&gt;dairy population&lt;/div&gt;animal slaughter" style="text;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="90" y="690" width="100" height="60" as="geometry" />
+          <mxGeometry x="-270" y="870" width="100" height="60" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-15" value="data/no_food_trade/animal_feed_data/" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="-450" y="370" width="200" height="150" as="geometry" />
+          <mxGeometry x="-810" y="550" width="200" height="150" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-16" value="data/no_food_trade/animal_feed_data/species_options.csv" style="shape=datastore;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="-266" y="110" width="152" height="80" as="geometry" />
+          <mxGeometry x="-592" y="530" width="152" height="80" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-17" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="-170" y="210" as="sourcePoint" />
-            <mxPoint x="-170" y="600" as="targetPoint" />
+            <mxPoint x="-530" y="640" as="sourcePoint" />
+            <mxPoint x="-530" y="780" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-18" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="-340" y="540" as="sourcePoint" />
-            <mxPoint x="-340" y="600" as="targetPoint" />
+            <mxPoint x="-700" y="720" as="sourcePoint" />
+            <mxPoint x="-700" y="780" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-20" value="&lt;b&gt;USER INPUT&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="-310" y="-230" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-22" value="&lt;b&gt;ANIMAL POPULATIONS&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="-430" y="300" width="60" height="30" as="geometry" />
+          <mxGeometry x="-790" y="480" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-23" value="&lt;div&gt;&lt;i&gt;parameters.py&lt;/i&gt;&lt;br&gt;&lt;i&gt;&lt;i&gt;compute_parameters_first_round()&lt;/i&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;compute_parameters_second_round()&lt;br&gt;compute_parameters_third_round&lt;/i&gt;()&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Calculate parameters needed for this round of optimization.&lt;/div&gt;&lt;div&gt;Intended as a minimal interface to call all the necessary functions, but has become a bit bloated due to the messiness with animal_populations.py and the 3 rounds.&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="305" y="550" width="290" height="330" as="geometry" />
+          <mxGeometry x="-55" y="730" width="290" height="330" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-24" value="constants_inputs&#xa;time_consts_inputs" style="text;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="725" y="540" width="120" height="40" as="geometry" />
+          <mxGeometry x="365" y="720" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-26" value="constants_out for the round&#xa;time_consts out for the round&#xa;feed_and_biofuels for the round&#xa;meat_dictionary (meat produced) for the round" style="text;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="625" y="640" width="270" height="100" as="geometry" />
+          <mxGeometry x="265" y="820" width="270" height="100" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-27" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="625" y="720" as="sourcePoint" />
-            <mxPoint x="890" y="720" as="targetPoint" />
+            <mxPoint x="265" y="900" as="sourcePoint" />
+            <mxPoint x="530" y="900" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-29" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="880" y="590" as="sourcePoint" />
-            <mxPoint x="628" y="590" as="targetPoint" />
+            <mxPoint x="520" y="770" as="sourcePoint" />
+            <mxPoint x="268" y="770" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-30" value="&lt;div&gt;&lt;i&gt;run_scenario.py&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_and_analyze_scenario() &lt;/i&gt;is called&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;which calls in turn&lt;i&gt; run_round_1()&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_round_2()&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_round_3()&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;these call&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;i&gt;compute_parameters_first_round()&lt;/i&gt;&lt;/i&gt;&lt;div&gt;&lt;i&gt;compute_parameters_second_round()&lt;br&gt;compute_parameters_third_round&lt;/i&gt;()&lt;/div&gt;&lt;div&gt;and all also call&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_optimizer()&lt;/i&gt;&lt;/div&gt;&lt;div&gt;and finally&lt;i&gt; &lt;/i&gt;&lt;br&gt;&lt;i&gt;&lt;i&gt;run_and_analyze_scenario() &lt;/i&gt;&lt;/i&gt;calls&lt;i&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;display_results_of_optimizer_round()&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;i&gt;&lt;i&gt;run_and_analyze_scenario() &lt;/i&gt;&lt;/i&gt;is run once for each country. It runs each of the 3 rounds of optimization. For each round of optimization (&lt;i&gt;&lt;i&gt;compute_parameters_first_round()&lt;/i&gt;&lt;/i&gt;&lt;div&gt;&lt;i&gt;compute_parameters_second_round()&lt;br&gt;compute_parameters_third_round&lt;/i&gt;())&lt;/div&gt;, it first computes the parameters required for the round of optimization. Then, it actually runs the optimization with run_optimizer())&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;The interpreted_results object from the final round of optimization is then passed to display_optimizer_results and is additionally returned.&lt;br&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="950" y="330" width="440" height="500" as="geometry" />
+          <mxGeometry x="590" y="510" width="440" height="500" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-2" value="src/food_system/*.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-80" y="930" width="120" height="60" as="geometry" />
+          <mxGeometry x="-440" y="1110" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-3" value="src/food_system/*.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-70" y="940" width="120" height="60" as="geometry" />
+          <mxGeometry x="-430" y="1120" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-4" value="src/food_system/*.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-60" y="950" width="120" height="60" as="geometry" />
+          <mxGeometry x="-420" y="1130" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-5" value="src/food_system/*.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-50" y="960" width="120" height="60" as="geometry" />
+          <mxGeometry x="-410" y="1140" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-6" value="src/food_system/*.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-40" y="970" width="120" height="60" as="geometry" />
+          <mxGeometry x="-400" y="1150" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-7" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="260" y="810" as="sourcePoint" />
-            <mxPoint x="80" y="910" as="targetPoint" />
+            <mxPoint x="-100" y="990" as="sourcePoint" />
+            <mxPoint x="-280" y="1090" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-8" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="120" y="940" as="sourcePoint" />
-            <mxPoint x="285" y="840" as="targetPoint" />
+            <mxPoint x="-240" y="1120" as="sourcePoint" />
+            <mxPoint x="-75" y="1020" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-9" value="time_consts in&#xa;constants_inputs" style="text;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="100" y="810" width="120" height="50" as="geometry" />
+          <mxGeometry x="-260" y="990" width="120" height="50" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-10" value="time_consts out&#xa;constants_outputs" style="text;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="190" y="910" width="120" height="50" as="geometry" />
+          <mxGeometry x="-170" y="1090" width="120" height="50" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-11" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;The food_system classes contain&lt;br&gt;&lt;/div&gt;&lt;div&gt;helper functions for calculating values &lt;br&gt;&lt;/div&gt;&lt;div&gt;necessary to run the optimization for this round. These are all referred to as &quot;parameters&quot; of the linear optimization.&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;Each type of food has its own class and set of functions related to that type of food" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-142" y="1070" width="302" height="40" as="geometry" />
+          <mxGeometry x="-502" y="1250" width="302" height="40" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-13" value="&lt;b&gt;FOOD SYSTEM&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-262.5" y="880" width="60" height="30" as="geometry" />
+          <mxGeometry x="-622.5" y="1060" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-14" value="&lt;br&gt;&lt;div&gt;interpreted_results&lt;/div&gt;" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
-          <mxGeometry x="-0.3802" y="-45" width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="1050" y="300" as="sourcePoint" />
+          <mxGeometry x="-0.3939" y="-60" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="900" y="470" as="sourcePoint" />
             <mxPoint x="900" y="140" as="targetPoint" />
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-16" value="&lt;div&gt;run_scenario.py&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_optimizer()&lt;/i&gt;&lt;/div&gt;&lt;div&gt;After single valued numeric or string values (consts_for_optimizer for the round) and monthly numeric values&amp;nbsp; (time_consts) are computed, they are passed in to the optimizer in order to&amp;nbsp; run the linear optimizations.&lt;/div&gt;&lt;div&gt;The Optimizer class is instantiated, and initialized with these constants, and either &quot;to_humans&quot; or &quot;to_animals&quot; optimization round is run.&lt;br&gt;Then, &lt;i&gt;interpret_optimizer_results() &lt;/i&gt;is called&amp;nbsp; with the pulp model object containing the results of the series of optimizations.&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="1010" width="340" height="260" as="geometry" />
+          <mxGeometry x="640" y="1190" width="340" height="260" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-17" value="&lt;div&gt;run_scenario.py&lt;/div&gt;&lt;div&gt;&lt;i&gt;interpret_optimizer_results()&lt;/i&gt;&lt;/div&gt;&lt;div&gt;The Extractor and Interpreter are initialized. &lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;The Extractor takes all the numeric values determined as the result of the optimizer (the amount of food to humans or the amount of food to animals), and turns them into normal python integers and floats rather than pulp&#39;s weird variable format.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;The Interpreter converts the results to useful units and does some useful analysis, such as computing the percent of people fed, and the feed and biofuel sum.&lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp;The instantiation of the Interpreter (interpreted_results)&amp;nbsp; contains all the data that are used for analysis and plotting this country\s results.&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="980" y="1430" width="340" height="260" as="geometry" />
+          <mxGeometry x="620" y="1610" width="340" height="260" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-18" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="1110" y="850" as="sourcePoint" />
-            <mxPoint x="1110" y="980" as="targetPoint" />
+            <mxPoint x="750" y="1030" as="sourcePoint" />
+            <mxPoint x="750" y="1160" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-19" value="interpreted_results" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry x="-0.5" y="-70" width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="1210" y="970" as="sourcePoint" />
-            <mxPoint x="1210" y="850" as="targetPoint" />
+            <mxPoint x="850" y="1150" as="sourcePoint" />
+            <mxPoint x="850" y="1030" as="targetPoint" />
             <mxPoint y="1" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-20" value="&lt;div&gt;consts_for_optimizer for the round (previously constants_out)&lt;br&gt;&lt;/div&gt;&lt;div&gt;time_consts for the round&lt;br&gt;&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="900" y="890" width="210" height="40" as="geometry" />
+          <mxGeometry x="540" y="1070" width="210" height="40" as="geometry" />
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-21" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="1110" y="1290" as="sourcePoint" />
-            <mxPoint x="1110" y="1420" as="targetPoint" />
+            <mxPoint x="750" y="1470" as="sourcePoint" />
+            <mxPoint x="750" y="1600" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-22" value="interpreted_results" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry x="-0.5" y="-60" width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="1210" y="1410" as="sourcePoint" />
-            <mxPoint x="1210" y="1290" as="targetPoint" />
+            <mxPoint x="850" y="1590" as="sourcePoint" />
+            <mxPoint x="850" y="1470" as="targetPoint" />
             <mxPoint y="1" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Nyg9t3aIWLBTnF1s83V8-23" value="&lt;div&gt;consts_for_optimizer for the round (previously constants_out)&lt;br&gt;&lt;/div&gt;&lt;div&gt;time_consts for the round&lt;br&gt;&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="900" y="1330" width="210" height="40" as="geometry" />
+          <mxGeometry x="540" y="1510" width="210" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Nyg9t3aIWLBTnF1s83V8-24" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="1140" width="750" height="800" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
