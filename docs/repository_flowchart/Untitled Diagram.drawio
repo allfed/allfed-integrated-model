@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-03-24T14:02:45.343Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="wjjb9EQVlqjJK-jWDVK3" version="24.1.0" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-24T14:13:13.756Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="Cio7RphvLTK78CDWXKfk" version="24.1.0" type="github">
   <diagram name="Page-1" id="vb958Nm0k1HjrjN-Do-v">
     <mxGraphModel dx="1392" dy="3030" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
@@ -25,7 +25,7 @@
             <mxPoint x="690" y="307.76" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="RVlSqpslpW0tmy56jza0-7" value="&lt;div&gt;scenarios.py&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;takes all the &lt;br&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="RVlSqpslpW0tmy56jza0-7" value="&lt;div&gt;scenarios.py&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;takes the &lt;br&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="990" y="185" width="250" height="240" as="geometry" />
         </mxCell>
         <mxCell id="RVlSqpslpW0tmy56jza0-8" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
@@ -34,13 +34,13 @@
             <mxPoint x="980" y="310" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="RVlSqpslpW0tmy56jza0-9" value="&lt;div&gt;scenario_option (also named config or this_simulation)&lt;br&gt;&lt;br&gt;either sent from &lt;br&gt;&lt;/div&gt;&lt;div&gt;plot_manuscript_figures.py&lt;/div&gt;&lt;div&gt; or &lt;br&gt;&lt;/div&gt;&lt;div&gt;src/scenarios/run_scenarios_from_yaml.py&lt;br&gt;&lt;/div&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
-          <mxGeometry x="460" y="-190" width="48" height="90" as="geometry" />
+        <mxCell id="RVlSqpslpW0tmy56jza0-9" value="&lt;b&gt;USER SUPPLIES&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;div&gt;scenario_option (also named config or this_simulation)&lt;br&gt;&lt;br&gt;either sent from &lt;br&gt;&lt;/div&gt;&lt;div&gt;plot_manuscript_figures.py&lt;/div&gt;&lt;div&gt; or &lt;br&gt;&lt;/div&gt;&lt;div&gt;src/scenarios/run_scenarios_from_yaml.py&lt;br&gt;&lt;/div&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+          <mxGeometry x="250" y="-190" width="48" height="90" as="geometry" />
         </mxCell>
         <mxCell id="RVlSqpslpW0tmy56jza0-10" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="660" y="-70" as="sourcePoint" />
-            <mxPoint x="750" y="-70" as="targetPoint" />
+            <mxPoint x="450" y="-70" as="sourcePoint" />
+            <mxPoint x="540" y="-70" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-1" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
@@ -49,8 +49,11 @@
             <mxPoint x="980" y="200" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-2" value="&lt;div&gt;&lt;i&gt;import_scripts_no_food_trade/*.py&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;imports all the raw data and converts to computer readable combined&lt;br&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="780" y="-210" width="250" height="240" as="geometry" />
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-2" value="&lt;div&gt;&lt;i&gt;import_scripts_no_food_trade.py&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;imports all the raw data and converts to computer readable combined&lt;br&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="570" y="-210" width="250" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-4" value="&lt;div&gt;&lt;b&gt;Note&lt;/b&gt;: this diagram is just for no trade or partial trade. &lt;br&gt;&lt;/div&gt;&lt;div&gt;Full trade scenarios work differently &lt;br&gt;&lt;/div&gt;&lt;div&gt;(see plot_manuscript_figures rerun_figure_s1 &lt;br&gt;&lt;/div&gt;&lt;div&gt;to see an example, full trade is simpler)&lt;/div&gt;" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="110" y="-620" width="400" height="160" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
