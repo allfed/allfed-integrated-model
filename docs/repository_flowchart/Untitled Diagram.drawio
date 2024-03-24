@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-03-24T17:27:44.640Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="zd3aBcnQ136nvtqTjgNE" version="24.1.0" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-24T17:33:15.500Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0" etag="nLPKbzk4lDMbdeRow8sj" version="24.1.0" type="github">
   <diagram name="Page-1" id="vb958Nm0k1HjrjN-Do-v">
-    <mxGraphModel dx="3016" dy="3082" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+    <mxGraphModel dx="3336" dy="3257" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -17,7 +17,7 @@
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-1" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="790" y="140" as="sourcePoint" />
-            <mxPoint x="790" y="220" as="targetPoint" />
+            <mxPoint x="790" y="360" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-2" value="&lt;div&gt;&lt;i&gt;run_model_no_trade.py&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_model_no_trade():&lt;/i&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Loops through all countries specified in scenario_option &quot;settings&quot;.&lt;/div&gt;&lt;div&gt;&lt;div&gt;Imports each country as country_data (where country_data comes from each row of computer_readable_combined).&lt;/div&gt;&lt;/div&gt;&lt;div&gt;Then calls&lt;i&gt; &lt;/i&gt;&lt;i&gt;run_optimizer_for_country() &lt;/i&gt;passing in scenario_option and country_data for that country&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;div&gt;&lt;i&gt;run_optimizer_for_country():&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;Calls &lt;i&gt;set_depending_on_option&lt;/i&gt;()&lt;/div&gt;&lt;div&gt;Then for each country, calls run_and_analyze_scenario() passing in &lt;br&gt;&lt;div&gt;constants_for_params and&lt;br&gt;&lt;/div&gt;time_consts_for_params&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -27,7 +27,7 @@
           <mxGeometry x="-20" y="-1660" width="400" height="160" as="geometry" />
         </mxCell>
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-6" value="run_and_analyze_scenario:" style="text;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="720" y="280" width="180" height="40" as="geometry" />
+          <mxGeometry x="370" y="350" width="180" height="40" as="geometry" />
         </mxCell>
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-7" value="&lt;div&gt;Scenarios.py&lt;/div&gt;&lt;div&gt;=&amp;gt; Scenarios class has an instance called scenarios_loader&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;set_depending_on_option uses methods in Scenarios to set the specific values of constants_for_params and&lt;br&gt;time_consts_for_params for this simulation&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="595" y="-800" width="252" height="180" as="geometry" />
@@ -71,18 +71,6 @@
             <mxPoint x="795" y="-180" as="targetPoint" />
             <mxPoint as="offset" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-18" value="&lt;div&gt;&lt;i&gt;scenario_runner.py&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;run_and_analyze_scenario():&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="1130" y="-170" width="380" height="200" as="geometry" />
-        </mxCell>
-        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-19" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;" parent="1" edge="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="980" y="-70.42" as="sourcePoint" />
-            <mxPoint x="1110" y="-70.42" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="tfmpyOpyPmMC_fq-cLrZ-21" value="&lt;div&gt;constants_for_params &lt;br&gt;&lt;/div&gt;time_consts_for_params" style="text;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="980" y="-130" width="180" height="50" as="geometry" />
         </mxCell>
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-22" value="&lt;div&gt;&lt;div&gt; &lt;i&gt;src/import_scripts_no_food_trade/&lt;/i&gt;&lt;i&gt;create_[&lt;/i&gt;resource name&lt;i&gt;]csv.py&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="370" y="-1248" width="200" height="150" as="geometry" />
@@ -226,7 +214,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="tfmpyOpyPmMC_fq-cLrZ-69" value="&lt;div&gt;constants_for_params &lt;br&gt;&lt;/div&gt;time_consts_for_params" style="text;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="620" y="150" width="180" height="50" as="geometry" />
+          <mxGeometry x="647" y="210" width="180" height="50" as="geometry" />
         </mxCell>
         <mxCell id="GCf3FXKfKVam4WNOABnw-1" value="&amp;nbsp;computer_readable_combined" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1" target="GCf3FXKfKVam4WNOABnw-2">
           <mxGeometry x="-0.0239" y="-3" width="50" height="50" relative="1" as="geometry">
@@ -251,6 +239,15 @@
               <mxPoint x="250" y="-620" />
             </Array>
           </mxGeometry>
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-6" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="-1500" width="1590" height="510" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-7" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="64" y="-815" width="1226" height="1005" as="geometry" />
+        </mxCell>
+        <mxCell id="GCf3FXKfKVam4WNOABnw-8" value="&lt;b&gt;SCENARIO LOADING AND PARAMETER SELECTION&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="-770" width="60" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
