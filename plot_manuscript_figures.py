@@ -292,28 +292,16 @@ def call_global_scenario_runner(this_simulation, title):
     (
         constants_for_params,
         time_consts_for_params,
-        scenario_loader,
+        scenario_description,
     ) = scenario_runner.set_depending_on_option(this_simulation)
-    NO_TRADE_CSV = (
-        Path(repo_root) / "data" / "no_food_trade" / "computer_readable_combined.csv"
-    )
-    import pandas as pd
-
-    no_trade_table = pd.read_csv(NO_TRADE_CSV)
-    iso3 = "WOR"
-    for index, country_data in no_trade_table.iterrows():
-        country_code = country_data["iso3"]
-        if country_code == iso3:
-            break
 
     interpreted_results = scenario_runner.run_and_analyze_scenario(
         constants_for_params,
         time_consts_for_params,
-        scenario_loader,
+        scenario_description,
         create_pptx_with_all_countries=False,
         show_country_figures=False,
         figure_save_postfix="_world",
-        country_data=country_data,
         save_all_results=False,
         country_name="world",
         country_iso3="WOR",
@@ -350,9 +338,9 @@ def recalculate_plot_1():
     this_simulation["stored_food"] = "baseline"
 
     if RUN_FIGURE_1_LEAVING_TYPICAL_BUFFERS:
-        this_simulation["end_simulation_stocks_ratio"] = (
-            "baseline_no_stored_between_years"
-        )
+        this_simulation[
+            "end_simulation_stocks_ratio"
+        ] = "baseline_no_stored_between_years"
         suffix_storage = ""
     else:
         this_simulation["end_simulation_stocks_ratio"] = "no_stored_between_years"
@@ -682,28 +670,16 @@ def recalculate_plot_s1():
     (
         constants_for_params,
         time_consts_for_params,
-        scenario_loader,
+        scenario_description,
     ) = scenario_runner.set_depending_on_option(this_simulation)
 
-    NO_TRADE_CSV = (
-        Path(repo_root) / "data" / "no_food_trade" / "computer_readable_combined.csv"
-    )
-    import pandas as pd
-
-    no_trade_table = pd.read_csv(NO_TRADE_CSV)
-    iso3 = "WOR"
-    for index, country_data in no_trade_table.iterrows():
-        country_code = country_data["iso3"]
-        if country_code == iso3:
-            break
     interpreted_results = scenario_runner.run_and_analyze_scenario(
         constants_for_params,
         time_consts_for_params,
-        scenario_loader,
+        scenario_description,
         create_pptx_with_all_countries=False,
         show_country_figures=False,
         figure_save_postfix="_world",
-        country_data=country_data,
         save_all_results=False,
         country_name="world",
         country_iso3="WOR",
@@ -719,7 +695,7 @@ def recalculate_plot_s1():
             # + figure_save_postfix,
             True,
             False,
-            scenario_loader.scenario_description,
+            scenario_description,
         )
 
     Plotter.plot_to_humans_stackplot(
@@ -728,7 +704,7 @@ def recalculate_plot_s1():
         "Global Baseline",
         plot_figure=True,
         add_slide_with_fig=False,
-        description=scenario_loader.scenario_description,
+        description=scenario_description,
     )
 
     results = {}

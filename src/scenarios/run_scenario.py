@@ -55,7 +55,7 @@ class ScenarioRunner:
         country_name,
         show_country_figures,
         create_pptx_with_all_countries,
-        scenario_loader,
+        scenario_description,
         figure_save_postfix,
         slaughter_title="",
         feed_title="",
@@ -77,7 +77,7 @@ class ScenarioRunner:
                     + figure_save_postfix,
                     show_country_figures,
                     create_pptx_with_all_countries,
-                    scenario_loader.scenario_description,
+                    scenario_description,
                 )
             if slaughter_title != "":
                 Plotter.plot_slaughter(
@@ -88,7 +88,7 @@ class ScenarioRunner:
                     # + figure_save_postfix,
                     show_country_figures,
                     create_pptx_with_all_countries,
-                    scenario_loader.scenario_description,
+                    scenario_description,
                 )
 
             Plotter.plot_to_humans_stackplot(
@@ -99,7 +99,7 @@ class ScenarioRunner:
                 + figure_save_postfix,
                 show_country_figures,
                 create_pptx_with_all_countries,
-                scenario_loader.scenario_description,
+                scenario_description,
             )
 
     def run_round_1(
@@ -292,11 +292,10 @@ class ScenarioRunner:
         self,
         constants_for_params,
         time_consts_for_params,
-        scenario_loader,
+        scenario_description,
         create_pptx_with_all_countries,
         show_country_figures,
         figure_save_postfix,
-        country_data,
         save_all_results,
         country_name,
         country_iso3,
@@ -327,12 +326,12 @@ class ScenarioRunner:
             biofuels_demand,  # biofuels requested by the user
             feed_meat_object_round1,
         ) = constants_loader.compute_parameters_first_round(
-            constants_for_params, time_consts_for_params, scenario_loader
+            constants_for_params, time_consts_for_params
         )
 
         if save_all_results:
             self.save_outdoor_crop_production_to_csv(
-                time_consts_round1, title, country_data
+                time_consts_round1, title, country_name
             )
 
         each_month_meat_slaughtered = time_consts_round1["each_month_meat_slaughtered"]
@@ -384,7 +383,7 @@ class ScenarioRunner:
                     country_name,
                     show_country_figures,
                     create_pptx_with_all_countries,
-                    scenario_loader,
+                    scenario_description,
                     figure_save_postfix,
                     slaughter_title="Meat produced first round (no feed given to animals)",
                     feed_title="Feed first round (no feed given to animals)",
@@ -459,7 +458,7 @@ class ScenarioRunner:
                         country_name,
                         show_country_figures,
                         create_pptx_with_all_countries,
-                        scenario_loader,
+                        scenario_description,
                         figure_save_postfix,
                         slaughter_title=slaughter_title,
                         feed_title="Feed for second round optimization, no restriction to animals before shutoff",
@@ -504,7 +503,7 @@ class ScenarioRunner:
 
         if save_all_results:
             self.save_feed_and_biofuels_to_csv(
-                feed_demand, biofuels_demand, title, country_data
+                feed_demand, biofuels_demand, title, country_name
             )
 
         if ROUND_1_WAS_RUN_FLAG:
@@ -521,7 +520,7 @@ class ScenarioRunner:
             country_name,
             show_country_figures,
             create_pptx_with_all_countries,
-            scenario_loader,
+            scenario_description,
             figure_save_postfix,
             slaughter_title="slaughter of animals for third round",
             feed_title="feed biofuel for third round",
@@ -539,13 +538,11 @@ class ScenarioRunner:
         model,
         variables,
         time_consts,
-        interpreter,
         percent_fed_from_model,
         optimization_type,
         title="Untitled",
     ):
         validator = Validator()
-
         extractor = Extractor(consts_for_optimizer)
         #  get values from all the optimizer in list and integer formats
         extracted_results = extractor.extract_results(model, variables, time_consts)
@@ -553,6 +550,7 @@ class ScenarioRunner:
         # TODO: eventually all the values not directly solved by the optimizer should
         # be removed from extracted_results
 
+        interpreter = Interpreter()
         #  interpret the results, nicer for plotting, reporting, and printing results
         interpreted_results = interpreter.interpret_results(extracted_results, title)
 
@@ -588,7 +586,6 @@ class ScenarioRunner:
 
         optimizer = Optimizer(consts_for_optimizer, time_consts)
         validator = Validator()
-        interpreter = Interpreter()
 
         if optimization_type == "to_humans":
             (
@@ -616,7 +613,6 @@ class ScenarioRunner:
             model,
             variables,
             time_consts,
-            interpreter,
             percent_fed_from_model,
             optimization_type=optimization_type,
             title=title,
@@ -1301,10 +1297,22 @@ class ScenarioRunner:
             except BaseException:
                 pass
 
-        return constants_for_params, time_consts_for_params, scenario_loader
+        # Print scenario properties
+        PRINT_SCENARIO_PROPERTIES_FLAG = False
+        if PRINT_SCENARIO_PROPERTIES_FLAG:
+            print(scenario_loader.scenario_description)
+
+        # Ensure every parameter has been initialized for the scenarios_loader
+        scenario_loader.check_all_set()
+
+        return (
+            constants_for_params,
+            time_consts_for_params,
+            scenario_loader.scenario_description,
+        )
 
     def save_outdoor_crop_production_to_csv(
-        self, time_consts_round1, title, country_data
+        self, time_consts_round1, title, country_name
     ):
         """
         Saves the outdoor crop production to a csv file
@@ -1320,13 +1328,13 @@ class ScenarioRunner:
         df.to_csv(
             Path(repo_root)
             / "results"
-            / (title + "_" + country_data.country + "_outdoor_crop_production.csv"),
+            / (title + "_" + country_name + "_outdoor_crop_production.csv"),
             index=False,
         )
         return
 
     def save_feed_and_biofuels_to_csv(
-        self, feed_demand, biofuels_demand, title, country_data
+        self, feed_demand, biofuels_demand, title, country_name
     ):
         """
         Saves the feed and biofuels demand to a csv file
@@ -1338,7 +1346,7 @@ class ScenarioRunner:
         df.to_csv(
             Path(repo_root)
             / "results"
-            / (title + "_" + country_data.country + "_feed_and_biofuels_demand.csv"),
+            / (title + "_" + country_name + "_feed_and_biofuels_demand.csv"),
             index=False,
         )
         return

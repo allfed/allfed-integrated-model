@@ -48,6 +48,7 @@ class Plotter:
         plot_figure=True,
         add_slide_with_fig=True,
         description="",
+        split_legend=True,
     ):
         if (not plot_figure) and (not add_slide_with_fig):
             return
@@ -126,7 +127,7 @@ class Plotter:
                 ax.set_ylim([0, maxy])
                 # ax.set_ylim([0, maxy])
 
-                plt.ylabel("Kcals / person / day")
+                plt.ylabel("Kcals / person / day", fontsize=11)
             if label == "b":
                 if not ADD_THE_NUTRITION_PLOT:
                     continue
@@ -148,7 +149,7 @@ class Plotter:
                     )
                 ax.set_xlim([0.25, xlim])
 
-                plt.xlabel("Months since May nuclear winter onset")
+                plt.xlabel("Months since May nuclear winter onset", fontsize=11)
 
                 ax.plot(
                     interpreter.time_months_middle,
@@ -179,19 +180,51 @@ class Plotter:
             if label == "a":
                 if ADD_THE_NUTRITION_PLOT:
                     legend_loc = (-0.15, -0.4)
+                    print(
+                        "the legend will not split when you add nutrition, you can change this easily"
+                        "in plotter.py if you want"
+                    )
                 else:
-                    legend_loc = (0, -0.2)
+                    if not split_legend:
+                        legend_loc = (0, -0.2)
 
                 # get the handles
                 handles, labels = ax.get_legend_handles_labels()
-                plt.legend(
-                    loc="center left",
-                    frameon=False,
-                    bbox_to_anchor=legend_loc,
-                    shadow=False,
-                    handles=reversed(handles),
-                    labels=reversed(labels),
-                )
+                if split_legend and not ADD_THE_NUTRITION_PLOT:
+                    # Use ncol to specify the number of columns in the legend
+                    ax.legend(
+                        reversed(handles),
+                        reversed(labels),
+                        loc="lower center",
+                        ncol=2,
+                        bbox_to_anchor=(
+                            0,
+                            -0.25,
+                            0.75,
+                            0.75,
+                        ),  # x0, y0, width, height (the y0 should be small negative)
+                        mode="expand",  # Ensure the legend uses the full width set by bbox_to_anchor
+                        borderaxespad=0.4,
+                        frameon=False,
+                        prop={"size": 8},
+                        columnspacing=0.25,  # Adjust the space between columns as needed
+                        handletextpad=0.5,  # Adjust the pad between the legend handle and text as needed
+                    )
+
+                    # Adjust the width of the legend - may need to adjust subplot params or legend size
+                    fig.subplots_adjust(
+                        bottom=0.2
+                    )  # Adjust the bottom parameter to make room for the legend
+
+                else:
+                    plt.legend(
+                        loc="center left",
+                        frameon=False,
+                        bbox_to_anchor=legend_loc,
+                        shadow=False,
+                        handles=reversed(handles),
+                        labels=reversed(labels),
+                    )
 
             if label == "b":
                 labels = ["Calories"]
@@ -210,20 +243,20 @@ class Plotter:
 
             if label == "a":
                 if ADD_THE_NUTRITION_PLOT:
-                    plt.title("Food availability")
+                    plt.title("Food availability", fontsize=11)
                 else:
-                    plt.title("Food availability, " + newtitle)
+                    plt.title("Food availability, " + newtitle, fontsize=11)
 
             if label == "b":
-                plt.title("Available food macronutrition")
+                plt.title("Available food macronutrition", fontsize=11)
 
-            plt.xlabel("Months since start of simulation")
+            plt.xlabel("Months since start of simulation", fontsize=11)
 
         # plt.rcParams["figure.figsize"] = [12.50, 10]
 
         fig.set_figheight(8)
         fig.set_figwidth(8)
-        plt.tight_layout()
+        # plt.tight_layout()
         if ADD_THE_NUTRITION_PLOT:
             fig.suptitle(newtitle)
 
@@ -757,9 +790,22 @@ class Plotter:
         plt.show()
 
     def helper_for_plotting_fig_3abcde(
-        interpreter, xlim, gs, row, fig, max_y_percent, ADD_SECOND_COLUMN
+        interpreter,
+        xlim,
+        gs,
+        row,
+        fig,
+        max_y_percent,
+        ADD_SECOND_COLUMN,
+        split_legend=True,
     ):
-        legend = Plotter.get_people_fed_legend(interpreter, True)
+        if split_legend:
+            legend_column1, legend_column2 = Plotter.get_people_fed_legend(
+                interpreter, True, split_legend
+            )
+            legend = legend_column1 + legend_column2
+        else:
+            legend = Plotter.get_people_fed_legend(interpreter, True)
         pal = [
             "#1e7ecd",  # fish
             "#71797E",  # CS
@@ -794,6 +840,7 @@ class Plotter:
                         labels=legend,
                         colors=pal,
                     )
+
                 else:
                     ax.stackplot(
                         interpreter.time_months_middle,
@@ -855,14 +902,39 @@ class Plotter:
                 # get the handles
                 handles, labels = ax.get_legend_handles_labels()
                 if row == 3:
-                    plt.legend(
-                        loc="center left",
-                        frameon=False,
-                        bbox_to_anchor=(0, -1.1),
-                        shadow=False,
-                        handles=reversed(handles),
-                        labels=reversed(labels),
-                    )
+                    if split_legend:
+                        # # Flatten the columns into a single list while maintaining the two-column structure
+                        # legend = legend_column1 + legend_column2
+
+                        # Use ncol to specify the number of columns in the legend
+                        ax.legend(
+                            reversed(handles),
+                            reversed(labels),
+                            loc="lower center",
+                            ncol=2,
+                            bbox_to_anchor=(0.01, -1.6, 0.9, 1),
+                            borderaxespad=0.0,
+                            frameon=False,
+                            prop={"size": 9},  # Adjust the font size as needed
+                            # columnspacing=0.01,  # Adjust space between columns
+                            handletextpad=0.25,  # Adjust the pad between the legend handle and text
+                            mode="expand",  # Make the legend expand to fill the space allocated by bbox_to_anchor
+                        )
+
+                        # Adjust the width of the legend - may need to adjust subplot params or legend size
+                        fig.subplots_adjust(
+                            bottom=0.2
+                        )  # Adjust the bottom parameter to make room for the legend
+
+                    else:
+                        plt.legend(
+                            loc="center left",
+                            frameon=False,
+                            bbox_to_anchor=(0, -1.1),
+                            shadow=False,
+                            handles=reversed(handles),
+                            labels=reversed(labels),
+                        )
 
             if label == "b" and ADD_SECOND_COLUMN:
                 if row == 3:
@@ -905,6 +977,7 @@ class Plotter:
         add_ylabel=True,
         add_xlabel=True,
         ylim_constraint=100000,
+        split_legend=True,
     ):
         legend = Plotter.get_people_fed_legend(interpreter, True)
         pal = [
@@ -991,11 +1064,7 @@ class Plotter:
         return ax, legend, pal
 
     @classmethod
-    def plot_fig_2abcde_updated(
-        crs,
-        lists_of_lists,
-        xlim,
-    ):
+    def plot_fig_2abcde_updated(crs, lists_of_lists, xlim, split_legend=True):
         # put maps and texts together: 5X4
         fig = plt.figure(figsize=(10, 10))
         fig.set_facecolor("white")
@@ -1151,13 +1220,34 @@ class Plotter:
 
         # legend_dict = dict(linewidth=3)
 
-        leg = ax.legend(
-            handles=legend_elements,
-            loc="center",
-            ncol=1,
-            bbox_to_anchor=(0.5, 0.5),
-            framealpha=0,
-        )
+        if split_legend:
+            leg = ax.legend(
+                handles=legend_elements,
+                loc="center",
+                ncol=2,
+                bbox_to_anchor=(0.125, -0.01, 0.85, 1),
+                borderaxespad=0.0,
+                frameon=False,
+                prop={"size": 9},  # Adjust the font size as needed
+                # columnspacing=2.0,  # Adjust space between columns
+                handletextpad=1,  # Adjust the pad between the legend handle and text
+                mode="expand",
+                framealpha=0,
+            )
+
+            # Adjust the width of the legend - may need to adjust subplot params or legend size
+            fig.subplots_adjust(
+                bottom=0.2
+            )  # Adjust the bottom parameter to make room for the legend
+
+        else:
+            leg = ax.legend(
+                handles=legend_elements,
+                loc="center",
+                ncol=1,
+                bbox_to_anchor=(0.5, 0.5),
+                framealpha=0,
+            )
 
         for legobj in leg.legendHandles:
             legobj.set_linewidth(5.0)
@@ -1185,158 +1275,6 @@ class Plotter:
 
         plt.tight_layout()
         # fig.set_dpi(300.0)
-        plt.show()
-
-    def plot_fig_2abcd(interpreter1, interpreter2, xlim):
-        legend = Plotter.get_people_fed_legend(interpreter1, True)
-        fig = plt.figure()
-        pal = [
-            "#1e7ecd",
-            "#71797E",
-            "#e75480",
-            "#76d7ea",
-            "#056608",
-            "#f3f4e3",
-            "#ff0606",
-            "#a5d610",
-            "#ffeb7a",
-            "#e7d2ad",
-        ]
-
-        for i, label in enumerate(("a", "b", "c", "d")):
-            if label == "a":
-                interpreter = interpreter1
-            if label == "b":
-                interpreter = interpreter1
-            if label == "c":
-                interpreter = interpreter2
-            if label == "d":
-                interpreter = interpreter2
-            ax = fig.add_subplot(2, 2, i + 1)
-            ax.set_xlim([0.5, xlim])
-            if label == "a":
-                plt.title("Food availability")
-            if label == "b":
-                plt.title("Available food macronutrition")
-            if label == "c":
-                plt.title("Diet composition")
-            if label == "d":
-                plt.title("Diet macronutrition")
-            if label == "a" or label == "c":
-                ykcals = []
-                ykcals.append(interpreter.fish_kcals_equivalent.kcals)
-                ykcals.append(interpreter.cell_sugar_kcals_equivalent.kcals)
-                ykcals.append(interpreter.scp_kcals_equivalent.kcals)
-                ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
-                ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
-                ykcals.append(interpreter.milk_kcals_equivalent.kcals)
-                ykcals.append(interpreter.meat_kcals_equivalent.kcals)
-                ykcals.append(
-                    interpreter.immediate_outdoor_crops_kcals_equivalent.kcals
-                )
-                ykcals.append(
-                    interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals
-                )
-                ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
-
-                ax.text(
-                    -0.06,
-                    1.1,
-                    label,
-                    transform=ax.transAxes,
-                    fontsize=11,
-                    fontweight="bold",
-                    va="top",
-                    ha="right",
-                )
-                ax.stackplot(
-                    interpreter.time_months_middle,
-                    np.array(ykcals),
-                    labels=legend,
-                    colors=pal,
-                )
-
-                # get the sum of all the ydata up to xlim month,
-                # then find max month
-                maxy = max(sum([x[0:xlim] for x in ykcals]))
-                ax.set_ylim([0, maxy])
-
-                plt.ylabel("Kcals / person / day")
-            if label == "b" or label == "d":
-                ax.text(
-                    -0.06,
-                    1.1,
-                    label,
-                    transform=ax.transAxes,
-                    fontsize=11,
-                    fontweight="bold",
-                    va="top",
-                    ha="right",
-                )
-                plt.xlabel("Months since May nuclear winter onset")
-
-                ax.plot(
-                    interpreter.time_months_middle,
-                    interpreter.kcals_fed,
-                    color="blue",
-                    linestyle="solid",
-                )
-
-                if interpreter.include_fat:
-                    ax.plot(
-                        interpreter.time_months_middle,
-                        interpreter.fat_fed,
-                        color="green",
-                        linestyle="dashed",
-                    )
-
-                if interpreter.include_protein:
-                    ax.plot(
-                        interpreter.time_months_middle,
-                        interpreter.protein_fed,
-                        color="red",
-                        linestyle="dotted",
-                    )
-
-                ax.set_ylabel("Percent of minimum recommendation")
-                ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
-
-            if label == "c":
-                # ax.legend(loc='center left', frameon=False,bbox_to_anchor=(0, -0.2), shadow=False,)
-                # get the handles
-                handles, labels = ax.get_legend_handles_labels()
-                plt.legend(
-                    loc="center left",
-                    frameon=False,
-                    bbox_to_anchor=(-0.15, -0.5),
-                    shadow=False,
-                    handles=reversed(handles),
-                    labels=reversed(labels),
-                )
-
-            if label == "d":
-                labels = ["Calories"]
-                if interpreter.include_fat:
-                    labels += ("Fat",)
-                if interpreter.include_protein:
-                    labels += ("Protein",)
-
-                ax.legend(
-                    loc="center left",
-                    frameon=False,
-                    bbox_to_anchor=(-0.05, -0.3),
-                    shadow=False,
-                    labels=labels,
-                )
-                ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
-
-            plt.xlabel("Months since May nuclear winter onset")
-
-        fig.set_figheight(12)
-        fig.set_figwidth(8)
-        plt.tight_layout()
-        plt.savefig(Path(repo_root) / "results" / "fig_2abcd.png")
-        print("saved figure 2abcd")
         plt.show()
 
     def plot_fig_3abcde_updated(results, xlim, ADD_SECOND_COLUMN=False):
@@ -1694,8 +1632,12 @@ class Plotter:
         plt.show()
 
     @classmethod
-    def plot_fig_s1abcd(crs, interpreter1, interpreter2, xlim, showplot=False):
-        legend = Plotter.get_people_fed_legend(interpreter1, False)
+    def plot_fig_s1abcd(
+        crs, interpreter1, interpreter2, xlim, showplot=False, split_legend=False
+    ):
+        legend_column1, legend_column2 = Plotter.get_people_fed_legend(
+            interpreter1, False, split_legend
+        )
         fig = plt.figure()
         pal = [
             "#1e7ecd",
@@ -1755,13 +1697,20 @@ class Plotter:
                     va="top",
                     ha="right",
                 )
-                ax.stackplot(
-                    interpreter.time_months_middle,
-                    np.array(ykcals),
-                    labels=legend,
-                    colors=pal,
-                )
-
+                if split_legend:
+                    ax.stackplot(
+                        interpreter.time_months_middle,
+                        np.array(ykcals),
+                        labels=legend_column1 + legend_column2,
+                        colors=pal,
+                    )
+                else:
+                    ax.stackplot(
+                        interpreter.time_months_middle,
+                        np.array(ykcals),
+                        labels=legend_column1,
+                        colors=pal,
+                    )
                 # get the sum of all the ydata up to xlim month,
                 # then find max month
                 # maxy = max(sum([x[0:xlim] for x in ykcals]))
@@ -1807,10 +1756,27 @@ class Plotter:
 
                 ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
 
-            if label == "c":
-                # ax.legend(loc='center left', frameon=False,bbox_to_anchor=(0, -0.2), shadow=False,)
-                # get the handles
-                handles, labels = ax.get_legend_handles_labels()
+                if label == "c":
+                    if split_legend:
+                        # Split the legend into two columns
+                        ax.legend(
+                            loc="center left",
+                            frameon=False,
+                            bbox_to_anchor=(0, -0.2),
+                            shadow=False,
+                            ncol=2,
+                        )
+                    else:
+                        # Get the handles and labels
+                        handles, labels = ax.get_legend_handles_labels()
+                        plt.legend(
+                            loc="center left",
+                            frameon=False,
+                            bbox_to_anchor=(-0.15, -0.4),
+                            shadow=False,
+                            handles=reversed(handles),
+                            labels=reversed(labels),
+                        )
                 plt.legend(
                     loc="center left",
                     frameon=False,
@@ -1933,7 +1899,7 @@ class Plotter:
         print("95% upper")
         print(np.percentile(np.array(data), 97.5))
 
-    def get_people_fed_legend(interpreter, is_nuclear_winter):
+    def get_people_fed_legend(interpreter, is_nuclear_winter, split_legend=False):
         if not is_nuclear_winter:
             stored_food_label = (
                 "Crops consumed that month that were\nstored before simulation"
@@ -1998,7 +1964,13 @@ class Plotter:
         else:
             legend = legend + [""]
 
-        return legend
+        if split_legend:
+            # Split the legend into two columns
+            legend_column1 = legend[: len(legend) // 2]
+            legend_column2 = legend[len(legend) // 2 :]
+            return legend_column1, legend_column2
+        else:
+            return legend
 
     def get_feed_biofuels_legend(interpreter):
         stored_food_label = "Stored food, either from before or after catastrophe"

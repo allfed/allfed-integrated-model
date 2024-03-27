@@ -53,9 +53,7 @@ class Parameters:
             self.SIMULATION_STARTING_MONTH
         ]  # Starting month number for the simulation
 
-    def compute_parameters_first_round(
-        self, constants_inputs, time_consts_inputs, scenarios_loader
-    ):
+    def compute_parameters_first_round(self, constants_inputs, time_consts_inputs):
         """
         Computes the parameters for the model based on the inputs and scenarios provided.
         This is relevant for the first round of optimization, with no feed assumed.
@@ -76,14 +74,6 @@ class Parameters:
         # Check if function is run for the first time
         assert self.FIRST_TIME_RUN
         self.FIRST_TIME_RUN = False
-
-        # Print scenario properties
-        PRINT_SCENARIO_PROPERTIES_FLAG = False
-        if PRINT_SCENARIO_PROPERTIES_FLAG:
-            print(scenarios_loader.scenario_description)
-
-        # Ensure every parameter has been initialized for the scenarios_loader
-        scenarios_loader.check_all_set()
 
         # Time dependent constants_out as inputs to the optimizer
         time_consts = {}
@@ -125,7 +115,7 @@ class Parameters:
         )
 
         # Initialize greenhouse constants
-        time_consts = self.init_greenhouse_params(
+        time_consts, outdoor_crops = self.init_greenhouse_params(
             time_consts, constants_inputs, outdoor_crops
         )
 
@@ -501,9 +491,9 @@ class Parameters:
         # set the nutrition constants in the output dictionary
         constants_out["BILLION_KCALS_NEEDED"] = Food.conversions.billion_kcals_needed
         constants_out["THOU_TONS_FAT_NEEDED"] = Food.conversions.thou_tons_fat_needed
-        constants_out["THOU_TONS_PROTEIN_NEEDED"] = (
-            Food.conversions.thou_tons_protein_needed
-        )
+        constants_out[
+            "THOU_TONS_PROTEIN_NEEDED"
+        ] = Food.conversions.thou_tons_protein_needed
         constants_out["KCALS_MONTHLY"] = Food.conversions.kcals_monthly
         constants_out["PROTEIN_MONTHLY"] = Food.conversions.protein_monthly
         constants_out["FAT_MONTHLY"] = Food.conversions.fat_monthly
@@ -558,15 +548,15 @@ class Parameters:
         constants_out["MAXIMUM_DENSITY"] = seaweed.MAXIMUM_DENSITY
         constants_out["MAXIMUM_SEAWEED_AREA"] = seaweed.MAXIMUM_SEAWEED_AREA
         constants_out["INITIAL_BUILT_SEAWEED_AREA"] = seaweed.INITIAL_BUILT_SEAWEED_AREA
-        constants_out["MAX_SEAWEED_AS_PERCENT_KCALS_FEED"] = (
-            seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_FEED
-        )
-        constants_out["MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"] = (
-            seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL
-        )
-        constants_out["MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"] = (
-            seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS
-        )
+        constants_out[
+            "MAX_SEAWEED_AS_PERCENT_KCALS_FEED"
+        ] = seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_FEED
+        constants_out[
+            "MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL"
+        ] = seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_BIOFUEL
+        constants_out[
+            "MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS"
+        ] = seaweed.MAX_SEAWEED_AS_PERCENT_KCALS_HUMANS
 
         # return the constants_out dictionary, built_area, growth_rates, and the Seaweed object
         return constants_out, built_area, growth_rates, seaweed
@@ -611,12 +601,12 @@ class Parameters:
 
         # Update the constants_out dictionary with the outdoor crops' rotation fraction fat, and protein and harvest
         # duration in months
-        constants_out["OG_ROTATION_FRACTION_FAT"] = (
-            outdoor_crops.OG_ROTATION_FRACTION_FAT
-        )
-        constants_out["OG_ROTATION_FRACTION_PROTEIN"] = (
-            outdoor_crops.OG_ROTATION_FRACTION_PROTEIN
-        )
+        constants_out[
+            "OG_ROTATION_FRACTION_FAT"
+        ] = outdoor_crops.OG_ROTATION_FRACTION_FAT
+        constants_out[
+            "OG_ROTATION_FRACTION_PROTEIN"
+        ] = outdoor_crops.OG_ROTATION_FRACTION_PROTEIN
 
         constants_out["INITIAL_HARVEST_DURATION_IN_MONTHS"] = constants_inputs[
             "INITIAL_HARVEST_DURATION_IN_MONTHS"
@@ -742,7 +732,7 @@ class Parameters:
         # Update the time constants dictionary with the calculated values
         time_consts["outdoor_crops"] = outdoor_crops
 
-        return time_consts
+        return time_consts, outdoor_crops
 
     def init_cs_params(self, constants_out, time_consts, constants_inputs):
         """
@@ -797,12 +787,12 @@ class Parameters:
         # Calculate the SCP fat and protein production.
         methane_scp.calculate_scp_fat_and_protein_production()
 
-        constants_out["SCP_KCALS_TO_FAT_CONVERSION"] = (
-            methane_scp.SCP_KCALS_TO_FAT_CONVERSION
-        )
-        constants_out["SCP_KCALS_TO_PROTEIN_CONVERSION"] = (
-            methane_scp.SCP_KCALS_TO_PROTEIN_CONVERSION
-        )
+        constants_out[
+            "SCP_KCALS_TO_FAT_CONVERSION"
+        ] = methane_scp.SCP_KCALS_TO_FAT_CONVERSION
+        constants_out[
+            "SCP_KCALS_TO_PROTEIN_CONVERSION"
+        ] = methane_scp.SCP_KCALS_TO_PROTEIN_CONVERSION
 
         # Add the methane_scp object to the time_consts dictionary.
         time_consts["methane_scp"] = methane_scp.production
@@ -919,12 +909,12 @@ class Parameters:
                     )
                 )
 
-            animal_meat_dictionary[animal.animal_type] = (
-                this_animal_meat.in_units_kcals_equivalent().kcals
-            )
-            animal_meat_dictionary[animal.animal_type + "_population"] = (
-                animal.population
-            )
+            animal_meat_dictionary[
+                animal.animal_type
+            ] = this_animal_meat.in_units_kcals_equivalent().kcals
+            animal_meat_dictionary[
+                animal.animal_type + "_population"
+            ] = animal.population
 
         return animal_meat_dictionary
 
@@ -988,9 +978,9 @@ class Parameters:
         # NOTE: The second round may overwrite this value once the meat is redistributed over time (which is to ensure
         # round 2 strictly has more kcals available, as it is required for optimization contstraints to always to be
         #  satisfied in round 2)
-        time_consts["max_consumed_culled_kcals_each_month"] = (
-            each_month_meat_slaughtered.get_running_total_nutrients_sum().kcals
-        )
+        time_consts[
+            "max_consumed_culled_kcals_each_month"
+        ] = each_month_meat_slaughtered.get_running_total_nutrients_sum().kcals
 
         time_consts["each_month_meat_slaughtered"] = each_month_meat_slaughtered
         # Calculate the amount of culled meat and update constants_out dictionary
@@ -1141,13 +1131,13 @@ class Parameters:
         before_readjust_meat_round2 = copy.deepcopy(
             time_consts_round2["each_month_meat_slaughtered"].kcals
         )
-        time_consts_round2["each_month_meat_slaughtered"].kcals = (
-            self.get_second_round_kcals_with_redistributed_meat(
-                time_consts_round1["each_month_meat_slaughtered"].kcals,
-                time_consts_round2["each_month_meat_slaughtered"].kcals,
-                time_consts_round1["milk_kcals"],
-                time_consts_round2["milk_kcals"],
-            )
+        time_consts_round2[
+            "each_month_meat_slaughtered"
+        ].kcals = self.get_second_round_kcals_with_redistributed_meat(
+            time_consts_round1["each_month_meat_slaughtered"].kcals,
+            time_consts_round2["each_month_meat_slaughtered"].kcals,
+            time_consts_round1["milk_kcals"],
+            time_consts_round2["milk_kcals"],
         )
 
         if time_consts_round2["each_month_meat_slaughtered"].kcals is None:
@@ -1174,9 +1164,9 @@ class Parameters:
             .kcals
         )
 
-        time_consts_round2["max_feed_that_could_be_used"] = (
-            max_feed_that_could_be_used_second_round
-        )
+        time_consts_round2[
+            "max_feed_that_could_be_used"
+        ] = max_feed_that_could_be_used_second_round
 
         time_consts_round2["max_biofuel_that_could_be_used"] = biofuels_demand
 
