@@ -350,9 +350,9 @@ def recalculate_plot_1():
     this_simulation["stored_food"] = "baseline"
 
     if RUN_FIGURE_1_LEAVING_TYPICAL_BUFFERS:
-        this_simulation["end_simulation_stocks_ratio"] = (
-            "baseline_no_stored_between_years"
-        )
+        this_simulation[
+            "end_simulation_stocks_ratio"
+        ] = "baseline_no_stored_between_years"
         suffix_storage = ""
     else:
         this_simulation["end_simulation_stocks_ratio"] = "no_stored_between_years"
@@ -612,6 +612,16 @@ def recalculate_plot_3():
     this_simulation["seasonality"] = "nuclear_winter_globally"
 
     this_simulation["cull"] = "do_eat_culled"
+
+    # WORST CASE + SIMPLE_ADAPTATIONS #
+    this_simulation["meat_strategy"] = "baseline_breeding"
+    this_simulation["waste"] = "baseline"
+    this_simulation["shutoff"] = "continued_after_10_percent_fed"
+
+    title_simple_adaptations = "Trade\n+ Simple Adaptations"
+    results_simple_adaptations = call_global_scenario_runner(
+        this_simulation, title_simple_adaptations
+    )
 
     # WORST CASE + SIMPLE_ADAPTATIONS #
     this_simulation["meat_strategy"] = "baseline_breeding"

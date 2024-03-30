@@ -1954,7 +1954,7 @@ class Plotter:
             legend = legend + [""]
 
         if interpreter.constants["ADD_CELLULOSIC_SUGAR"]:
-            legend = legend + ["Cellulosic Sugar"]
+            legend = legend + ["Lignocellulosic Sugar"]
         else:
             legend = legend + [""]
 
@@ -2005,7 +2005,7 @@ class Plotter:
 
         legend = []
         if interpreter.constants["ADD_CELLULOSIC_SUGAR"]:
-            legend = legend + ["Cellulosic Sugar Feed"]
+            legend = legend + ["Lignocellulosic Sugar Feed"]
         else:
             legend = legend + [""]
 
@@ -2030,7 +2030,7 @@ class Plotter:
             legend = legend + [""]
 
         if interpreter.constants["ADD_CELLULOSIC_SUGAR"]:
-            legend = legend + ["Cellulosic Sugar Feed"]
+            legend = legend + ["Lignocellulosic Sugar Feed"]
         else:
             legend = legend + [""]
 
