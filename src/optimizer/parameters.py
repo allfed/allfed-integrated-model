@@ -586,14 +586,10 @@ class Parameters:
         # Create an instance of the OutdoorCrops class with the constants_inputs dictionary
         outdoor_crops = OutdoorCrops(constants_inputs)
 
-        # Calculate the rotation ratios for the outdoor crops
-        outdoor_crops.calculate_rotation_ratios(constants_inputs)
-        if (
-            constants_inputs["ADD_OUTDOOR_GROWING"]
-            or constants_inputs["ADD_GREENHOUSES"]
-        ):
-            # Calculate the monthly production for the outdoor crops
-            outdoor_crops.calculate_monthly_production(constants_inputs)
+        if constants_inputs["RATIO_INCREASED_CROP_AREA"] > 1:
+            outdoor_crops.assign_increase_from_increased_cultivated_area(
+                constants_inputs
+            )
 
         # Update the constants_out dictionary with the outdoor crops' fraction of fat and protein
         constants_out["OG_FRACTION_FAT"] = outdoor_crops.OG_FRACTION_FAT

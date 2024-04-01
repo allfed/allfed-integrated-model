@@ -443,10 +443,6 @@ class Scenarios:
             "max_area_fraction"
         ]
 
-        constants_for_params["POWER_LAW_IMPROVEMENT"] = country_data[
-            "power_law_improvement"
-        ]
-
         # 1000s of hectares
         constants_for_params["INITIAL_BUILT_SEAWEED_FRACTION"] = country_data[
             "initial_built_fraction"
@@ -1359,9 +1355,9 @@ class Scenarios:
         self.scenario_description += "\nno crop disruption"
         assert not self.DISRUPTION_SET
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
-
-        for i in range(1, 11):
-            constants_for_params["RATIO_CROPS_YEAR" + str(i)] = 1
+        for i in range(len(self.NMONTHS)):
+            constants_for_params[f"baseline_reduction_m{i}"] = 1
+            constants_for_params[f"KCALS_GROWN_NO_RELOCATION_m{i}"] = 1
 
         self.DISRUPTION_SET = True
         return constants_for_params
@@ -1395,40 +1391,13 @@ class Scenarios:
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
 
         self.scenario_description += "\nnuclear winter crops"
-
-        constants_for_params["RATIO_CROPS_YEAR1"] = (
-            1 + country_data["crop_reduction_year1"]
-        )
-        constants_for_params["RATIO_CROPS_YEAR2"] = (
-            1 + country_data["crop_reduction_year2"]
-        )
-        constants_for_params["RATIO_CROPS_YEAR3"] = (
-            1 + country_data["crop_reduction_year3"]
-        )
-        constants_for_params["RATIO_CROPS_YEAR4"] = (
-            1 + country_data["crop_reduction_year4"]
-        )
-        constants_for_params["RATIO_CROPS_YEAR5"] = (
-            1 + country_data["crop_reduction_year5"]
-        )
-        constants_for_params["RATIO_CROPS_YEAR6"] = (
-            1 + country_data["crop_reduction_year6"]
-        )
-        constants_for_params["RATIO_CROPS_YEAR7"] = (
-            1 + country_data["crop_reduction_year7"]
-        )
-        constants_for_params["RATIO_CROPS_YEAR8"] = (
-            1 + country_data["crop_reduction_year8"]
-        )
-        constants_for_params["RATIO_CROPS_YEAR9"] = (
-            1 + country_data["crop_reduction_year9"]
-        )
-        constants_for_params["RATIO_CROPS_YEAR10"] = (
-            1 + country_data["crop_reduction_year10"]
-        )
-        constants_for_params["RATIO_CROPS_YEAR11"] = (
-            1 + country_data["crop_reduction_year10"]
-        )
+        for i in range(len(self.NMONTHS)):
+            constants_for_params[f"baseline_reduction_m{i}"] = country_data[
+                f"baseline_reduction_m{i}"
+            ]
+            constants_for_params[f"KCALS_GROWN_NO_RELOCATION_m{i}"] = country_data[
+                f"KCALS_GROWN_NO_RELOCATION_m{i}"
+            ]
 
         self.DISRUPTION_SET = True
         return constants_for_params
@@ -1439,19 +1408,9 @@ class Scenarios:
 
         self.scenario_description += "\ninstant crop failure"
 
-        constants_for_params["RATIO_OF_CROP_YIELDS_FROM_VERY_BEGINNING"] = 0
-
-        constants_for_params["RATIO_CROPS_YEAR1"] = 0
-        constants_for_params["RATIO_CROPS_YEAR2"] = 0
-        constants_for_params["RATIO_CROPS_YEAR3"] = 0
-        constants_for_params["RATIO_CROPS_YEAR4"] = 0
-        constants_for_params["RATIO_CROPS_YEAR5"] = 0
-        constants_for_params["RATIO_CROPS_YEAR6"] = 0
-        constants_for_params["RATIO_CROPS_YEAR7"] = 0
-        constants_for_params["RATIO_CROPS_YEAR8"] = 0
-        constants_for_params["RATIO_CROPS_YEAR9"] = 0
-        constants_for_params["RATIO_CROPS_YEAR10"] = 0
-        constants_for_params["RATIO_CROPS_YEAR11"] = 0
+        for i in range(len(self.NMONTHS)):
+            constants_for_params[f"baseline_reduction_m{i}"] = 0
+            constants_for_params[f"KCALS_GROWN_NO_RELOCATION_m{i}"] = 0
 
         self.DISRUPTION_SET = True
         return constants_for_params
