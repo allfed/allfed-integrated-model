@@ -10,67 +10,22 @@ import pandas as pd
 from pathlib import Path
 from src.utilities.plotter import Plotter
 import yaml
+import git
+from pathlib import Path
+
+repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 
-def import_consts_yaml():
-    # Assuming 'outdoor_crops_constants.yaml' is in the same directory as your Python script
-    with open("outdoor_crops_constants.yaml", "r") as file:
-        constants = yaml.safe_load(file)
+def calculate_useful_parameters(outdoor_crop_parameters, country_data):
+    if country_data["iso3"] == "WOR":  # we're importing data for the world.
+        BASELINE_CROP_KCALS = outdoor_crop_parameters["BASELINE_CROP_KCALS"]
+        BASELINE_CROP_FAT = outdoor_crop_parameters["BASELINE_CROP_FAT"]
+        BASELINE_CROP_PROTEIN = outdoor_crop_parameters["BASELINE_CROP_PROTEIN"]
+    else:
+        BASELINE_CROP_KCALS = country_data["crop_kcals"]
+        BASELINE_CROP_FAT = country_data["crop_fat"]
+        BASELINE_CROP_PROTEIN = country_data["crop_protein"]
 
-    return constants
-
-
-def get_new_columns_outdoor_crops(no_trade_table_no_monthly_reductions):
-    constants = import_consts_yaml()
-    # Set the starting month number to the simulation starting month number
-
-    # new_columns is a list of dictionaries returned from get_new_columns_outdoor_crops,
-    # where each dictionary represents a new column to be added.
-    new_columns = []
-    for index, country_data in no_trade_table_no_monthly_reductions.iterrows():
-        outdoor_crop_parameters = calculate_useful_parameters(constants)
-
-        # Calculate the monthly production for the outdoor crops
-        (
-            months_cycle,
-            all_months_reductions,
-        ) = calculate_monthly_production(country_data, outdoor_crop_parameters)
-
-        NMONTHS = len(all_months_reductions)
-
-        KCALS_GROWN_NO_RELOCATION = assign_reduction_from_climate_impact(
-            months_cycle,
-            all_months_reductions,
-            outdoor_crop_parameters["ANNUAL_PRODUCTION"],
-            NMONTHS,
-            # outdoor_crop_parameters["OG_KCAL_EXPONENT"],
-        )
-
-        PLOT_WITH_SEASONALITY_FLAG = False
-        if PLOT_WITH_SEASONALITY_FLAG:
-            print("Plotting with seasonality")
-            # ratios between baseline production and actual production
-            ratios = np.divide(
-                KCALS_GROWN_NO_RELOCATION,
-                outdoor_crop_parameters["ANNUAL_PRODUCTION"] * 4e6 / 1e9 / 1,
-            )
-            Plotter.plot_monthly_reductions_seasonally(ratios)
-
-        for i in range(len(KCALS_GROWN_NO_RELOCATION)):
-            outdoor_crop_parameters[
-                f"KCALS_GROWN_NO_RELOCATION_m{i}"
-            ] = KCALS_GROWN_NO_RELOCATION[i]
-            outdoor_crop_parameters[f"baseline_reduction_m{i}"] = all_months_reductions[
-                i
-            ]
-        new_columns.append(outdoor_crop_parameters)
-    return new_columns
-
-
-def calculate_useful_parameters(outdoor_crop_parameters):
-    BASELINE_CROP_KCALS = outdoor_crop_parameters["BASELINE_CROP_KCALS"]
-    BASELINE_CROP_FAT = outdoor_crop_parameters["BASELINE_CROP_FAT"]
-    BASELINE_CROP_PROTEIN = outdoor_crop_parameters["BASELINE_CROP_PROTEIN"]
     STARTING_MONTH_NAME = outdoor_crop_parameters["STARTING_MONTH_NAME"]
     # OG_KCAL_EXPONENT = country_data["OG_KCAL_EXPONENT"]
     # FAO ALL SUPPLY UTILIZATION SHEET
@@ -126,9 +81,69 @@ def calculate_useful_parameters(outdoor_crop_parameters):
     outdoor_crop_parameters["ANNUAL_PRODUCTION"] = ANNUAL_PRODUCTION
     outdoor_crop_parameters["OG_FRACTION_FAT"] = OG_FRACTION_FAT
     outdoor_crop_parameters["OG_FRACTION_PROTEIN"] = OG_FRACTION_PROTEIN
-    # outdoor_crop_parameters["OG_KCAL_EXPONENT"] = OG_KCAL_EXPONENT
 
     return outdoor_crop_parameters
+
+
+def import_consts_yaml():
+    # Assuming 'outdoor_crops_constants.yaml' is in the same directory as your Python script
+    import_path = (
+        Path(repo_root)
+        / "data"
+        / "estimate_harvested_food_trade"
+        / "outdoor_crops_constants.yaml"
+    )
+    with open(import_path, "r") as file:
+        constants = yaml.safe_load(file)
+
+    return constants
+
+
+def get_new_columns_outdoor_crops(no_trade_table_no_monthly_reductions):
+    constants = import_consts_yaml()
+    # Set the starting month number to the simulation starting month number
+
+    # new_columns is a list of dictionaries returned from get_new_columns_outdoor_crops,
+    # where each dictionary represents a new column to be added.
+    new_columns = []
+    for index, country_data in no_trade_table_no_monthly_reductions.iterrows():
+        outdoor_crop_parameters = calculate_useful_parameters(constants, country_data)
+
+        # Calculate the monthly production for the outdoor crops
+        (
+            months_cycle,
+            all_months_reductions,
+        ) = calculate_monthly_production(country_data, outdoor_crop_parameters)
+
+        NMONTHS = len(all_months_reductions)
+
+        KCALS_GROWN_NO_RELOCATION = assign_reduction_from_climate_impact(
+            months_cycle,
+            all_months_reductions,
+            outdoor_crop_parameters["ANNUAL_PRODUCTION"],
+            NMONTHS,
+            # outdoor_crop_parameters["OG_KCAL_EXPONENT"],
+        )
+
+        PLOT_WITH_SEASONALITY_FLAG = False
+        if PLOT_WITH_SEASONALITY_FLAG:
+            print("Plotting with seasonality")
+            # ratios between baseline production and actual production
+            ratios = np.divide(
+                KCALS_GROWN_NO_RELOCATION,
+                outdoor_crop_parameters["ANNUAL_PRODUCTION"] * 4e6 / 1e9 / 1,
+            )
+            Plotter.plot_monthly_reductions_seasonally(ratios)
+
+        for i in range(len(KCALS_GROWN_NO_RELOCATION)):
+            outdoor_crop_parameters[
+                f"KCALS_GROWN_NO_RELOCATION_m{i}"
+            ] = KCALS_GROWN_NO_RELOCATION[i]
+            outdoor_crop_parameters[f"baseline_reduction_m{i}"] = all_months_reductions[
+                i
+            ]
+        new_columns.append(outdoor_crop_parameters)
+    return new_columns
 
 
 def assign_reduction_from_climate_impact(
@@ -170,9 +185,6 @@ def calculate_monthly_production(country_data, outdoor_crop_parameters):
     # https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673
     month_index = outdoor_crop_parameters["STARTING_MONTH_NUM"] - 1
     pd.set_option("display.max_rows", None)
-    print("country_data")
-    print(country_data)
-    print(country_data.index)
     JAN_FRACTION = country_data[f"seasonality_m1"]
     FEB_FRACTION = country_data[f"seasonality_m2"]
     MAR_FRACTION = country_data[f"seasonality_m3"]
@@ -233,22 +245,25 @@ def calculate_monthly_production(country_data, outdoor_crop_parameters):
     OCT_KCALS_OG = OCT_YIELD * 4e6 / 1e9
     NOV_KCALS_OG = NOV_YIELD * 4e6 / 1e9
     DEC_KCALS_OG = DEC_YIELD * 4e6 / 1e9
-    RATIO_KCALS_POSTDISASTER_1Y = country_data["crop_reduction_year1"]
-    RATIO_KCALS_POSTDISASTER_2Y = country_data["crop_reduction_year2"]
-    RATIO_KCALS_POSTDISASTER_3Y = country_data["crop_reduction_year3"]
-    RATIO_KCALS_POSTDISASTER_4Y = country_data["crop_reduction_year4"]
-    RATIO_KCALS_POSTDISASTER_5Y = country_data["crop_reduction_year5"]
-    RATIO_KCALS_POSTDISASTER_6Y = country_data["crop_reduction_year6"]
-    RATIO_KCALS_POSTDISASTER_7Y = country_data["crop_reduction_year7"]
-    RATIO_KCALS_POSTDISASTER_8Y = country_data["crop_reduction_year8"]
-    RATIO_KCALS_POSTDISASTER_9Y = country_data["crop_reduction_year9"]
-    RATIO_KCALS_POSTDISASTER_10Y = country_data["crop_reduction_year10"]
+    RATIO_KCALS_POSTDISASTER_1Y = country_data["crop_reduction_year1"] + 1
+    RATIO_KCALS_POSTDISASTER_2Y = country_data["crop_reduction_year2"] + 1
+    RATIO_KCALS_POSTDISASTER_3Y = country_data["crop_reduction_year3"] + 1
+    RATIO_KCALS_POSTDISASTER_4Y = country_data["crop_reduction_year4"] + 1
+    RATIO_KCALS_POSTDISASTER_5Y = country_data["crop_reduction_year5"] + 1
+    RATIO_KCALS_POSTDISASTER_6Y = country_data["crop_reduction_year6"] + 1
+    RATIO_KCALS_POSTDISASTER_7Y = country_data["crop_reduction_year7"] + 1
+    RATIO_KCALS_POSTDISASTER_8Y = country_data["crop_reduction_year8"] + 1
+    RATIO_KCALS_POSTDISASTER_9Y = country_data["crop_reduction_year9"] + 1
+    RATIO_KCALS_POSTDISASTER_10Y = country_data["crop_reduction_year10"] + 1
+    seasonality_values = []
+    for i in range(1, 12):
+        seasonality_values.append(country_data[f"seasonality_m{i}"])
 
     MAY_UNTIL_DECEMBER_FIRST_YEAR_REDUCTION = (
         get_year_1_ratio_using_fraction_harvest_before_may(
             RATIO_KCALS_POSTDISASTER_1Y,
-            country_data["SEASONALITY"],
-            country_data["COUNTRY_CODE"],
+            seasonality_values,
+            country_data["iso3"],
         )
     )
 

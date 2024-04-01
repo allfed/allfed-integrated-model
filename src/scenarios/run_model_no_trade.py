@@ -155,8 +155,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         NO_TRADE_CSV = (
             Path(repo_root)
             / "data"
-            / "no_food_trade"
-            / "computer_readable_combined.csv"
+            / "estimate_harvested_food_trade"
+            / "computer_readable_combined_domestic_supply.csv"
         )
 
         no_trade_table = pd.read_csv(NO_TRADE_CSV)

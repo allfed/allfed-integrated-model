@@ -810,18 +810,25 @@ class ScenarioRunner:
         else:
             scenario_option_copy = copy.deepcopy(scenario_option)
 
-        time_consts_for_params = {}
+        constants_for_params = {}
+        constants_for_params["NMONTHS"] = scenario_option_copy["NMONTHS"]
 
         # SCALE
         if scenario_option_copy["scale"] == "global":
             assert (
                 country_data is None
             ), "ERROR: country data supplied for global crop run"
-            constants_for_params = scenario_loader.init_global_food_system_properties()
+            (
+                constants_for_params,
+                time_consts_for_params,
+            ) = scenario_loader.init_global_food_system_properties(constants_for_params)
             constants_for_params["COUNTRY_CODE"] = "WOR"
         elif scenario_option_copy["scale"] == "country":
-            constants_for_params = scenario_loader.init_country_food_system_properties(
-                country_data
+            (
+                constants_for_params,
+                time_consts_for_params,
+            ) = scenario_loader.init_country_food_system_properties(
+                constants_for_params, country_data
             )
 
             constants_for_params["COUNTRY_CODE"] = country_data["iso3"]
@@ -830,8 +837,6 @@ class ScenarioRunner:
             assert (
                 scenario_is_correct
             ), "You must specify 'scale' key as global,or country"
-
-        constants_for_params["NMONTHS"] = scenario_option_copy["NMONTHS"]
 
         # STORED FOOD
 
@@ -1304,7 +1309,8 @@ class ScenarioRunner:
 
         # Ensure every parameter has been initialized for the scenarios_loader
         scenario_loader.check_all_set()
-
+        print("time_consts_for_params")
+        print(time_consts_for_params["baseline_reduction"])
         return (
             constants_for_params,
             time_consts_for_params,

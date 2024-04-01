@@ -59,9 +59,8 @@ class Scenarios:
 
     # INITIALIZATION
 
-    def init_generic_scenario(self):
+    def init_generic_scenario(self, constants_for_params):
         assert not self.GENERIC_INITIALIZED_SET
-        constants_for_params = {}
 
         # the following are used for all scenarios
         constants_for_params["GLOBAL_POP"] = 7.723713182e9  # (about 7.8 billion 2020)
@@ -89,12 +88,13 @@ class Scenarios:
         self.GENERIC_INITIALIZED_SET = True
         return constants_for_params
 
-    def init_global_food_system_properties(self):
+    def init_global_food_system_properties(self, constants_for_params):
         self.scenario_description += "\ncontinued trade"
         assert not self.SCALE_SET
         self.IS_GLOBAL_ANALYSIS = True
 
-        constants_for_params = self.init_generic_scenario()
+        constants_for_params = self.init_generic_scenario(constants_for_params)
+        time_consts = {}
 
         # global human population (2020)
         constants_for_params["POP"] = 7723713182  # (about 7.8 billion)
@@ -319,14 +319,15 @@ class Scenarios:
         constants_for_params["COUNTRY_CODE"] = "WOR"
 
         self.SCALE_SET = True
-        return constants_for_params
+        return constants_for_params, time_consts
 
-    def init_country_food_system_properties(self, country_data):
+    def init_country_food_system_properties(self, constants_for_params, country_data):
         self.scenario_description += "\nno food trade"
         assert not self.SCALE_SET
         self.IS_GLOBAL_ANALYSIS = False
 
-        constants_for_params = self.init_generic_scenario()
+        constants_for_params = self.init_generic_scenario(constants_for_params)
+        time_consts = {}
         # global human population (2020)
         constants_for_params["POP"] = country_data["population"]
 
@@ -471,6 +472,25 @@ class Scenarios:
         constants_for_params["TONS_CHICKEN_AND_PORK_ANNUAL"] = (
             country_data["chicken"] + country_data["pork"]
         )
+        constants_for_params["ANNUAL_PRODUCTION"] = country_data["ANNUAL_PRODUCTION"]
+        constants_for_params["OG_FRACTION_FAT"] = country_data["OG_FRACTION_FAT"]
+        constants_for_params["OG_FRACTION_PROTEIN"] = country_data[
+            "OG_FRACTION_PROTEIN"
+        ]
+
+        time_consts["KCALS_GROWN_NO_RELOCATION"] = []
+        time_consts["baseline_reduction"] = []
+        time_consts["domestic_supply"] = []
+        for i in range(constants_for_params["NMONTHS"]):
+            time_consts["KCALS_GROWN_NO_RELOCATION"].append(
+                country_data[f"baseline_reduction_m{i}"]
+            )
+            time_consts["baseline_reduction"].append(
+                country_data[f"KCALS_GROWN_NO_RELOCATION_m{i}"]
+            )
+            time_consts["domestic_supply"].append(country_data[f"domestic_supply_m{i}"])
+
+        constants_for_params["STARTING_MONTH_NUM"] = country_data["STARTING_MONTH_NUM"]
 
         constants_for_params["ROTATION_IMPROVEMENTS"] = {}
         constants_for_params["ROTATION_IMPROVEMENTS"][
@@ -530,7 +550,7 @@ class Scenarios:
         ]
 
         self.SCALE_SET = True
-        return constants_for_params
+        return constants_for_params, time_consts
 
     # FEED AND BIOFUELS
 

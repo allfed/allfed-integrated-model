@@ -45,7 +45,7 @@ class Greenhouses:
             self.GREENHOUSE_AREA_MULTIPLIER = 0
 
     def assign_productivity_reduction_from_climate_impact(
-        self, months_cycle, all_months_reductions, exponent, CROP_WASTE_COEFFICIENT
+        self, constants_for_params, time_consts, exponent, CROP_WASTE_COEFFICIENT
     ):
         """
         Assigns productivity reduction from climate impact to greenhouses.
@@ -71,12 +71,15 @@ class Greenhouses:
 
         """
         # Calculate monthly kcals
-        MONTHLY_KCALS = np.mean(months_cycle) / self.TOTAL_CROP_AREA
+        MONTHLY_KCALS_BASELINE = (
+            np.mean(constants_for_params["ANNUAL_PRODUCTION"] / 12)
+            / self.TOTAL_CROP_AREA
+        )
 
         # Calculate kcals grown per hectare before waste
         KCALS_GROWN_PER_HECTARE_BEFORE_WASTE = []
         for i in range(self.NMONTHS):
-            baseline_reduction = all_months_reductions[i]
+            baseline_reduction = time_consts["baseline_reduction"][i]
 
             # Check if baseline reduction is greater than or equal to zero
             assert round(baseline_reduction, 8) >= 0  # 8 decimal places rounding
@@ -88,29 +91,28 @@ class Greenhouses:
             # Check if baseline reduction is greater than or equal to zero
             assert baseline_reduction >= 0  # 8 decimal places rounding
 
-            # Check if all baseline reductions are greater than or equal to zero
-            assert (baseline_reduction >= 0).all()
-
             # Calculate kcals grown per hectare before waste based on baseline reduction
             if baseline_reduction > 1:
                 KCALS_GROWN_PER_HECTARE_BEFORE_WASTE.append(
-                    MONTHLY_KCALS * baseline_reduction
+                    MONTHLY_KCALS_BASELINE * baseline_reduction
                 )
             else:
                 KCALS_GROWN_PER_HECTARE_BEFORE_WASTE.append(
-                    MONTHLY_KCALS * baseline_reduction**exponent
+                    MONTHLY_KCALS_BASELINE * baseline_reduction**exponent
                 )
 
         # this shortens the used duration of the nuclear winter reductions up to the number of modelled months
-        all_months_reductions = all_months_reductions[
+        all_months_reductions = time_consts["baseline_reduction"][
             0 : len(KCALS_GROWN_PER_HECTARE_BEFORE_WASTE)
         ]
 
+        print("all_months_reductions")
+        print(all_months_reductions)
         # Check if kcals grown per hectare before waste is greater than or equal
         # to monthly kcals times all months reductions
         assert (
             KCALS_GROWN_PER_HECTARE_BEFORE_WASTE
-            >= MONTHLY_KCALS * all_months_reductions
+            >= MONTHLY_KCALS_BASELINE * np.array(all_months_reductions)
         ).all(), "ERROR: Relocation has somehow decreased crop production!"
 
         # Calculate kcals grown per hectare after waste
@@ -118,7 +120,7 @@ class Greenhouses:
             KCALS_GROWN_PER_HECTARE_BEFORE_WASTE
         )
 
-    def get_greenhouse_area(self, constants_for_params, outdoor_crops):
+    def get_greenhouse_area(self, constants_for_params, time_consts, outdoor_crops):
         """
         Calculates the area of greenhouses needed to grow crops and returns it as an array.
         Args:
@@ -166,7 +168,7 @@ class Greenhouses:
                     np.linspace(
                         GREENHOUSE_LIMIT_AREA,
                         GREENHOUSE_LIMIT_AREA,
-                        len(outdoor_crops.KCALS_GROWN) - 42,
+                        self.NMONTHS - 42,
                     ),
                 )
             )
@@ -176,8 +178,8 @@ class Greenhouses:
                 1 - constants_for_params["WASTE_DISTRIBUTION"]["CROPS"] / 100
             ) * (1 - constants_for_params["WASTE_RETAIL"] / 100)
             self.assign_productivity_reduction_from_climate_impact(
-                outdoor_crops.months_cycle,
-                outdoor_crops.all_months_reductions,
+                constants_for_params,
+                time_consts,
                 outdoor_crops.OG_KCAL_EXPONENT,
                 CROP_WASTE_COEFFICIENT,
             )

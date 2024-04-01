@@ -20,19 +20,12 @@ def add_monthly_reductions_to_trade_table(
     Returns:
     - A pandas DataFrame with new monthly reduction columns added.
     """
-
-    # new_columns is a list of dictionaries returned from get_new_columns_outdoor_crops,
-    # where each dictionary represents a new column to be added.
     new_columns = get_new_columns_outdoor_crops(no_trade_table_no_monthly_reductions)
-
-    # Assuming each dictionary in new_columns has the same keys, representing the new column names,
-    # and each key's value is a single value to be added to that column for the corresponding row.
-    for column_name in new_columns[0].keys():
-        # For each column name, extract the corresponding values for all rows and add it to the DataFrame.
-        column_values = [row[column_name] for row in new_columns]
-        no_trade_table_no_monthly_reductions[column_name] = column_values
-
-    return no_trade_table_no_monthly_reductions
+    new_columns_df = pd.DataFrame(new_columns)
+    updated_no_trade_table = pd.concat(
+        [no_trade_table_no_monthly_reductions, new_columns_df], axis=1
+    )
+    return updated_no_trade_table
 
 
 def determine_change_in_trade(matrix, crop_reductions_vector):
@@ -102,11 +95,17 @@ def save_domestic_supply_data(original_df, domestic_supply_data, reduction_colum
     """
     domestic_supply_df = pd.DataFrame(domestic_supply_data).transpose()
     new_column_names = [
-        col.replace("monthly_reduction", "domestic_supply") for col in reduction_columns
+        col.replace("baseline_reduction", "domestic_supply")
+        for col in reduction_columns
     ]
     domestic_supply_df.columns = new_column_names
     combined_df = pd.concat([original_df, domestic_supply_df], axis=1)
-    output_path = Path(repo_root) / "computer_readable_combined_domestic_supply.csv"
+    output_path = (
+        Path(repo_root)
+        / "data"
+        / "estimate_harvested_food_trade"
+        / "computer_readable_combined_domestic_supply.csv"
+    )
     combined_df.to_csv(output_path, index=False)
     print(f"Saved updated data to {output_path}")
 
@@ -130,7 +129,7 @@ def main():
         col for col in no_trade_table.columns if col.startswith("baseline_reduction_m")
     ]
 
-    num_countries = len(reduction_columns)
+    num_countries = no_trade_table.shape[0]
     trade_matrix = import_imports_exports(num_countries)
 
     domestic_supply_monthly = []
@@ -161,4 +160,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main("MAY")
+    main()

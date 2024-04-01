@@ -90,12 +90,12 @@ class Parameters:
 
         # Initialize outdoor crop production variables
         constants_out, outdoor_crops = self.init_outdoor_crops(
-            constants_out, constants_inputs
+            constants_out, constants_inputs, time_consts_inputs
         )
 
         # Initialize greenhouse constants
         time_consts, outdoor_crops = self.init_greenhouse_params(
-            time_consts, constants_inputs, outdoor_crops
+            time_consts, constants_inputs, time_consts_inputs, outdoor_crops
         )
 
         # Initialize stored food variables
@@ -540,7 +540,7 @@ class Parameters:
         # return the constants_out dictionary, built_area, growth_rates, and the Seaweed object
         return constants_out, built_area, growth_rates, seaweed
 
-    def init_outdoor_crops(self, constants_out, constants_inputs):
+    def init_outdoor_crops(self, constants_out, constants_inputs, time_consts):
         """
         Initializes the outdoor crops parameters by calculating the rotation ratios and monthly production
 
@@ -562,14 +562,21 @@ class Parameters:
         # Create an instance of the OutdoorCrops class with the constants_inputs dictionary
         outdoor_crops = OutdoorCrops(constants_inputs)
 
-        if constants_inputs["RATIO_INCREASED_CROP_AREA"] > 1:
-            outdoor_crops.assign_increase_from_increased_cultivated_area(
-                constants_inputs
-            )
+        outdoor_crops.assign_increase_from_relocated_crops(
+            constants_inputs, time_consts
+        )
+        outdoor_crops.assign_increase_from_increased_cultivated_area(constants_inputs)
 
+        print("constants_inputs")
+        import pprint
+
+        pprint.pprint(constants_inputs)
+        print(constants_inputs.keys)
         # Update the constants_out dictionary with the outdoor crops' fraction of fat and protein
-        constants_out["OG_FRACTION_FAT"] = outdoor_crops.OG_FRACTION_FAT
-        constants_out["OG_FRACTION_PROTEIN"] = outdoor_crops.OG_FRACTION_PROTEIN
+        constants_out["OG_FRACTION_FAT"] = constants_inputs["OG_FRACTION_FAT"]
+        constants_out["OG_FRACTION_PROTEIN"] = constants_inputs["OG_FRACTION_PROTEIN"]
+
+        outdoor_crops.calculate_rotation_ratios(constants_inputs)
 
         # Update the constants_out dictionary with the outdoor crops' rotation fraction fat, and protein and harvest
         # duration in months
@@ -656,7 +663,9 @@ class Parameters:
 
         return time_consts
 
-    def init_greenhouse_params(self, time_consts, constants_inputs, outdoor_crops):
+    def init_greenhouse_params(
+        self, time_consts, constants_inputs, time_consts_inputs, outdoor_crops
+    ):
         """
         Initializes the greenhouse parameters and calculates the greenhouse yield per hectare.
 
@@ -674,7 +683,7 @@ class Parameters:
 
         # Calculate the greenhouse area
         greenhouse_area = greenhouses.get_greenhouse_area(
-            constants_inputs, outdoor_crops
+            constants_inputs, time_consts_inputs, outdoor_crops
         )
 
         # Calculate the greenhouse yield per hectare
@@ -700,7 +709,7 @@ class Parameters:
 
         # Update the outdoor crops instance with the post-waste crops food produced
         outdoor_crops.set_crop_production_minus_greenhouse_area(
-            constants_inputs, greenhouses.greenhouse_fraction_area
+            constants_inputs, time_consts_inputs, greenhouses.greenhouse_fraction_area
         )
 
         # Update the time constants dictionary with the calculated values
