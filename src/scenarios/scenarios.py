@@ -100,15 +100,6 @@ class Scenarios:
         constants_for_params["POP"] = 7723713182  # (about 7.8 billion)
 
         # annual tons dry caloric equivalent
-        constants_for_params["BASELINE_CROP_KCALS"] = 3898e6
-
-        # annual tons fat
-        constants_for_params["BASELINE_CROP_FAT"] = 322e6
-
-        # annual tons protein
-        constants_for_params["BASELINE_CROP_PROTEIN"] = 350e6
-
-        # annual tons dry caloric equivalent
         constants_for_params["BIOFUEL_KCALS"] = 623e6
 
         # annual tons fat
@@ -1355,7 +1346,7 @@ class Scenarios:
         self.scenario_description += "\nno crop disruption"
         assert not self.DISRUPTION_SET
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
-        for i in range(len(self.NMONTHS)):
+        for i in range(constants_for_params["NMONTHS"]):
             constants_for_params[f"baseline_reduction_m{i}"] = 1
             constants_for_params[f"KCALS_GROWN_NO_RELOCATION_m{i}"] = 1
 
@@ -1391,7 +1382,7 @@ class Scenarios:
         constants_for_params["ADD_OUTDOOR_GROWING"] = True
 
         self.scenario_description += "\nnuclear winter crops"
-        for i in range(len(self.NMONTHS)):
+        for i in range(constants_for_params["NMONTHS"]):
             constants_for_params[f"baseline_reduction_m{i}"] = country_data[
                 f"baseline_reduction_m{i}"
             ]
@@ -1408,7 +1399,7 @@ class Scenarios:
 
         self.scenario_description += "\ninstant crop failure"
 
-        for i in range(len(self.NMONTHS)):
+        for i in range(constants_for_params["NMONTHS"]):
             constants_for_params[f"baseline_reduction_m{i}"] = 0
             constants_for_params[f"KCALS_GROWN_NO_RELOCATION_m{i}"] = 0
 

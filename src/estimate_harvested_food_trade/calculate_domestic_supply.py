@@ -2,11 +2,15 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 from pathlib import Path
-
+import git
 from estimate_outdoor_crops_by_country import get_new_columns_outdoor_crops
 
+repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
-def add_monthly_reductions_to_trade_table(no_trade_table_no_monthly_reductions):
+
+def add_monthly_reductions_to_trade_table(
+    no_trade_table_no_monthly_reductions,
+):
     """
     Adds new columns representing monthly reductions to the trade table based on external calculations.
 
@@ -102,16 +106,14 @@ def save_domestic_supply_data(original_df, domestic_supply_data, reduction_colum
     ]
     domestic_supply_df.columns = new_column_names
     combined_df = pd.concat([original_df, domestic_supply_df], axis=1)
-    repo_root = Path(__file__).parent
-    output_path = repo_root / "computer_readable_combined_domestic_supply.csv"
+    output_path = Path(repo_root) / "computer_readable_combined_domestic_supply.csv"
     combined_df.to_csv(output_path, index=False)
     print(f"Saved updated data to {output_path}")
 
 
 def get_no_trade_table():
-    repo_root = Path(__file__).parent
     NO_TRADE_CSV = (
-        repo_root / "data" / "no_food_trade" / "computer_readable_combined.csv"
+        Path(repo_root) / "data" / "no_food_trade" / "computer_readable_combined.csv"
     )
     no_trade_table = pd.read_csv(NO_TRADE_CSV)
     return no_trade_table
@@ -143,7 +145,9 @@ def main():
             adjusted_trade_matrix, monthly_reduction_vector
         )
 
-        domestic_production_vector = no_trade_table[f"KCALS_GROWN_NO_RELOCATION_m"{month_index}].values
+        domestic_production_vector = no_trade_table[
+            f"KCALS_GROWN_NO_RELOCATION_m{month_index}"
+        ].values
 
         monthly_domestic_supply = calculate_domestic_supply(
             change_in_trade, domestic_production_vector
@@ -157,4 +161,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("MAY")

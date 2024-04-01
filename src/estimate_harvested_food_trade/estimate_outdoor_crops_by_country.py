@@ -6,16 +6,29 @@ relocation of crops does affect the trade from these countries however
 """
 import pprint
 import numpy as np
+import pandas as pd
+from pathlib import Path
 from src.utilities.plotter import Plotter
+import yaml
+
+
+def import_consts_yaml():
+    # Assuming 'outdoor_crops_constants.yaml' is in the same directory as your Python script
+    with open("outdoor_crops_constants.yaml", "r") as file:
+        constants = yaml.safe_load(file)
+
+    return constants
 
 
 def get_new_columns_outdoor_crops(no_trade_table_no_monthly_reductions):
-    # Assuming new_columns is a list of dictionaries returned from get_new_columns_outdoor_crops,
+    constants = import_consts_yaml()
+    # Set the starting month number to the simulation starting month number
+
+    # new_columns is a list of dictionaries returned from get_new_columns_outdoor_crops,
     # where each dictionary represents a new column to be added.
     new_columns = []
     for index, country_data in no_trade_table_no_monthly_reductions.iterrows():
-        new_columns_dictionary = {}
-        outdoor_crop_parameters = calculate_useful_parameters(country_data)
+        outdoor_crop_parameters = calculate_useful_parameters(constants)
 
         # Calculate the monthly production for the outdoor crops
         (
@@ -23,11 +36,13 @@ def get_new_columns_outdoor_crops(no_trade_table_no_monthly_reductions):
             all_months_reductions,
         ) = calculate_monthly_production(country_data, outdoor_crop_parameters)
 
+        NMONTHS = len(all_months_reductions)
+
         KCALS_GROWN_NO_RELOCATION = assign_reduction_from_climate_impact(
             months_cycle,
             all_months_reductions,
             outdoor_crop_parameters["ANNUAL_PRODUCTION"],
-            outdoor_crop_parameters["NMONTHS"],
+            NMONTHS,
             # outdoor_crop_parameters["OG_KCAL_EXPONENT"],
         )
 
@@ -48,17 +63,15 @@ def get_new_columns_outdoor_crops(no_trade_table_no_monthly_reductions):
             outdoor_crop_parameters[f"baseline_reduction_m{i}"] = all_months_reductions[
                 i
             ]
-        new_columns_dictionary = new_columns_dictionary | outdoor_crop_parameters
-        new_columns.append(new_columns_dictionary)
+        new_columns.append(outdoor_crop_parameters)
     return new_columns
 
 
-def calculate_useful_parameters(country_data):
-    NMONTHS = country_data["NMONTHS"]
-    STARTING_MONTH_NUM = country_data["STARTING_MONTH_NUM"]
-    BASELINE_CROP_KCALS = country_data["BASELINE_CROP_KCALS"]
-    BASELINE_CROP_FAT = country_data["BASELINE_CROP_FAT"]
-    BASELINE_CROP_PROTEIN = country_data["BASELINE_CROP_PROTEIN"]
+def calculate_useful_parameters(outdoor_crop_parameters):
+    BASELINE_CROP_KCALS = outdoor_crop_parameters["BASELINE_CROP_KCALS"]
+    BASELINE_CROP_FAT = outdoor_crop_parameters["BASELINE_CROP_FAT"]
+    BASELINE_CROP_PROTEIN = outdoor_crop_parameters["BASELINE_CROP_PROTEIN"]
+    STARTING_MONTH_NAME = outdoor_crop_parameters["STARTING_MONTH_NAME"]
     # OG_KCAL_EXPONENT = country_data["OG_KCAL_EXPONENT"]
     # FAO ALL SUPPLY UTILIZATION SHEET
     # units are millions tons (dry caloric, fat, protein)
@@ -89,13 +102,31 @@ def calculate_useful_parameters(country_data):
         OG_FRACTION_FAT = 0
         OG_FRACTION_PROTEIN = 0
 
+    # Dictionary of the months to set the starting point of the model to
+    months_dict = {
+        "JAN": 1,
+        "FEB": 2,
+        "MAR": 3,
+        "APR": 4,
+        "MAY": 5,
+        "JUN": 6,
+        "JUL": 7,
+        "AUG": 8,
+        "SEP": 9,
+        "OCT": 10,
+        "NOV": 11,
+        "DEC": 12,
+    }
+    STARTING_MONTH_NUM = months_dict[
+        STARTING_MONTH_NAME
+    ]  # Starting month number for the simulation
+
     outdoor_crop_parameters = {}
     outdoor_crop_parameters["STARTING_MONTH_NUM"] = STARTING_MONTH_NUM
     outdoor_crop_parameters["ANNUAL_PRODUCTION"] = ANNUAL_PRODUCTION
     outdoor_crop_parameters["OG_FRACTION_FAT"] = OG_FRACTION_FAT
     outdoor_crop_parameters["OG_FRACTION_PROTEIN"] = OG_FRACTION_PROTEIN
     # outdoor_crop_parameters["OG_KCAL_EXPONENT"] = OG_KCAL_EXPONENT
-    outdoor_crop_parameters["NMONTHS"] = NMONTHS
 
     return outdoor_crop_parameters
 
@@ -137,19 +168,23 @@ def calculate_monthly_production(country_data, outdoor_crop_parameters):
     # profile to stored food
     # reference: row 11, 'outputs' tab
     # https://docs.google.com/spreadsheets/d/19kzHpux690JTCo2IX2UA1faAd7R1QcBK/edit#gid=1815939673
-    month_index = country_data["STARTING_MONTH_NUM"] - 1
-    JAN_FRACTION = country_data[f"seasonality_m0"]
-    FEB_FRACTION = country_data[f"seasonality_m1"]
-    MAR_FRACTION = country_data[f"seasonality_m2"]
-    APR_FRACTION = country_data[f"seasonality_m3"]
-    MAY_FRACTION = country_data[f"seasonality_m4"]
-    JUN_FRACTION = country_data[f"seasonality_m5"]
-    JUL_FRACTION = country_data[f"seasonality_m6"]
-    AUG_FRACTION = country_data[f"seasonality_m7"]
-    SEP_FRACTION = country_data[f"seasonality_m8"]
-    OCT_FRACTION = country_data[f"seasonality_m9"]
-    NOV_FRACTION = country_data[f"seasonality_m10"]
-    DEC_FRACTION = country_data[f"seasonality_m11"]
+    month_index = outdoor_crop_parameters["STARTING_MONTH_NUM"] - 1
+    pd.set_option("display.max_rows", None)
+    print("country_data")
+    print(country_data)
+    print(country_data.index)
+    JAN_FRACTION = country_data[f"seasonality_m1"]
+    FEB_FRACTION = country_data[f"seasonality_m2"]
+    MAR_FRACTION = country_data[f"seasonality_m3"]
+    APR_FRACTION = country_data[f"seasonality_m4"]
+    MAY_FRACTION = country_data[f"seasonality_m5"]
+    JUN_FRACTION = country_data[f"seasonality_m6"]
+    JUL_FRACTION = country_data[f"seasonality_m7"]
+    AUG_FRACTION = country_data[f"seasonality_m8"]
+    SEP_FRACTION = country_data[f"seasonality_m9"]
+    OCT_FRACTION = country_data[f"seasonality_m10"]
+    NOV_FRACTION = country_data[f"seasonality_m11"]
+    DEC_FRACTION = country_data[f"seasonality_m12"]
 
     SUM = np.sum(
         np.array(
@@ -198,16 +233,16 @@ def calculate_monthly_production(country_data, outdoor_crop_parameters):
     OCT_KCALS_OG = OCT_YIELD * 4e6 / 1e9
     NOV_KCALS_OG = NOV_YIELD * 4e6 / 1e9
     DEC_KCALS_OG = DEC_YIELD * 4e6 / 1e9
-    RATIO_KCALS_POSTDISASTER_1Y = country_data["RATIO_CROPS_YEAR1"]
-    RATIO_KCALS_POSTDISASTER_2Y = country_data["RATIO_CROPS_YEAR2"]
-    RATIO_KCALS_POSTDISASTER_3Y = country_data["RATIO_CROPS_YEAR3"]
-    RATIO_KCALS_POSTDISASTER_4Y = country_data["RATIO_CROPS_YEAR4"]
-    RATIO_KCALS_POSTDISASTER_5Y = country_data["RATIO_CROPS_YEAR5"]
-    RATIO_KCALS_POSTDISASTER_6Y = country_data["RATIO_CROPS_YEAR6"]
-    RATIO_KCALS_POSTDISASTER_7Y = country_data["RATIO_CROPS_YEAR7"]
-    RATIO_KCALS_POSTDISASTER_8Y = country_data["RATIO_CROPS_YEAR8"]
-    RATIO_KCALS_POSTDISASTER_9Y = country_data["RATIO_CROPS_YEAR9"]
-    RATIO_KCALS_POSTDISASTER_10Y = country_data["RATIO_CROPS_YEAR10"]
+    RATIO_KCALS_POSTDISASTER_1Y = country_data["crop_reduction_year1"]
+    RATIO_KCALS_POSTDISASTER_2Y = country_data["crop_reduction_year2"]
+    RATIO_KCALS_POSTDISASTER_3Y = country_data["crop_reduction_year3"]
+    RATIO_KCALS_POSTDISASTER_4Y = country_data["crop_reduction_year4"]
+    RATIO_KCALS_POSTDISASTER_5Y = country_data["crop_reduction_year5"]
+    RATIO_KCALS_POSTDISASTER_6Y = country_data["crop_reduction_year6"]
+    RATIO_KCALS_POSTDISASTER_7Y = country_data["crop_reduction_year7"]
+    RATIO_KCALS_POSTDISASTER_8Y = country_data["crop_reduction_year8"]
+    RATIO_KCALS_POSTDISASTER_9Y = country_data["crop_reduction_year9"]
+    RATIO_KCALS_POSTDISASTER_10Y = country_data["crop_reduction_year10"]
 
     MAY_UNTIL_DECEMBER_FIRST_YEAR_REDUCTION = (
         get_year_1_ratio_using_fraction_harvest_before_may(
@@ -360,6 +395,8 @@ def get_year_1_ratio_using_fraction_harvest_before_may(
 
 
 if __name__ == "__main__":
+    repo_root = Path(__file__).parent
+
     NO_TRADE_CSV = (
         Path(repo_root) / "data" / "no_food_trade" / "computer_readable_combined.csv"
     )

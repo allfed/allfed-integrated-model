@@ -31,27 +31,6 @@ class Parameters:
         to set the starting point of the model to the months specified in parameters.py.
         """
         self.FIRST_TIME_RUN = True  # Flag to indicate if this is the first time the simulation is being run
-        self.SIMULATION_STARTING_MONTH = (
-            "MAY"  # Default starting month for the simulation
-        )
-        # Dictionary of the months to set the starting point of the model to
-        months_dict = {
-            "JAN": 1,
-            "FEB": 2,
-            "MAR": 3,
-            "APR": 4,
-            "MAY": 5,
-            "JUN": 6,
-            "JUL": 7,
-            "AUG": 8,
-            "SEP": 9,
-            "OCT": 10,
-            "NOV": 11,
-            "DEC": 12,
-        }
-        self.SIMULATION_STARTING_MONTH_NUM = months_dict[
-            self.SIMULATION_STARTING_MONTH
-        ]  # Starting month number for the simulation
 
     def compute_parameters_first_round(self, constants_inputs, time_consts_inputs):
         """
@@ -580,9 +559,6 @@ class Parameters:
 
         """
 
-        # Set the starting month number to the simulation starting month number
-        constants_inputs["STARTING_MONTH_NUM"] = self.SIMULATION_STARTING_MONTH_NUM
-
         # Create an instance of the OutdoorCrops class with the constants_inputs dictionary
         outdoor_crops = OutdoorCrops(constants_inputs)
 
@@ -633,7 +609,9 @@ class Parameters:
 
         # calculate the amount of stored food to use if ADD_STORED_FOOD is True
         if constants_out["ADD_STORED_FOOD"]:
-            stored_food.calculate_stored_food_to_use(self.SIMULATION_STARTING_MONTH_NUM)
+            stored_food.calculate_stored_food_to_use(
+                constants_inputs["STARTING_MONTH_NUM"]
+            )
         # if ADD_STORED_FOOD is False, set the initial available stored food to zero
         else:
             stored_food.initial_available = Food(

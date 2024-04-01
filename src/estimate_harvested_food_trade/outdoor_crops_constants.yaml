@@ -1,0 +1,8 @@
+BASELINE_CROP_KCALS: 3898000000  # annual tons dry caloric equivalent
+
+BASELINE_CROP_FAT: 322000000     # annual tons fat
+
+BASELINE_CROP_PROTEIN: 350000000  # annual tons protein
+
+STARTING_MONTH_NAME: "MAY"  # annual tons protein
+
