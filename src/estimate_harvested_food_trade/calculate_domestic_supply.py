@@ -102,6 +102,7 @@ def save_domestic_supply_data(original_df, domestic_supply_data, reduction_colum
     ]
     domestic_supply_df.columns = new_column_names
     combined_df = pd.concat([original_df, domestic_supply_df], axis=1)
+    repo_root = Path(__file__).parent
     output_path = repo_root / "computer_readable_combined_domestic_supply.csv"
     combined_df.to_csv(output_path, index=False)
     print(f"Saved updated data to {output_path}")
@@ -124,7 +125,7 @@ def main():
     )
 
     reduction_columns = [
-        col for col in no_trade_table.columns if col.startswith("monthly_reduction_m")
+        col for col in no_trade_table.columns if col.startswith("baseline_reduction_m")
     ]
 
     num_countries = len(reduction_columns)
@@ -132,15 +133,18 @@ def main():
 
     domestic_supply_monthly = []
 
-    for month_col in reduction_columns:
-        monthly_reduction_vector = no_trade_table[month_col].values
+    for month_index in range(len(reduction_columns)):
+        reduction_column_name = reduction_columns[month_index]
+        monthly_reduction_vector = no_trade_table[reduction_column_name].values
         adjusted_trade_matrix = alter_trade_matrix_with_monthly_reduction(
             trade_matrix, monthly_reduction_vector
         )
         change_in_trade = determine_change_in_trade(
-            adjusted_trade_matrix, np.ones(num_countries)
+            adjusted_trade_matrix, monthly_reduction_vector
         )
-        domestic_production_vector = no_trade_table["crop_kcals"].values
+
+        domestic_production_vector = no_trade_table[f"KCALS_GROWN_NO_RELOCATION_m"{month_index}].values
+
         monthly_domestic_supply = calculate_domestic_supply(
             change_in_trade, domestic_production_vector
         )
