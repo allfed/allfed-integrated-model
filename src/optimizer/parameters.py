@@ -567,11 +567,6 @@ class Parameters:
         )
         outdoor_crops.assign_increase_from_increased_cultivated_area(constants_inputs)
 
-        print("constants_inputs")
-        import pprint
-
-        pprint.pprint(constants_inputs)
-        print(constants_inputs.keys)
         # Update the constants_out dictionary with the outdoor crops' fraction of fat and protein
         constants_out["OG_FRACTION_FAT"] = constants_inputs["OG_FRACTION_FAT"]
         constants_out["OG_FRACTION_PROTEIN"] = constants_inputs["OG_FRACTION_PROTEIN"]

@@ -120,7 +120,6 @@ def get_new_columns_outdoor_crops(no_trade_table_no_monthly_reductions):
         KCALS_GROWN_NO_RELOCATION = assign_reduction_from_climate_impact(
             months_cycle,
             all_months_reductions,
-            outdoor_crop_parameters["ANNUAL_PRODUCTION"],
             NMONTHS,
             # outdoor_crop_parameters["OG_KCAL_EXPONENT"],
         )
@@ -149,7 +148,6 @@ def get_new_columns_outdoor_crops(no_trade_table_no_monthly_reductions):
 def assign_reduction_from_climate_impact(
     months_cycle,
     all_months_reductions,
-    ANNUAL_PRODUCTION,
     NMONTHS,  # , OG_KCAL_EXPONENT
 ):
     KCALS_GROWN = []

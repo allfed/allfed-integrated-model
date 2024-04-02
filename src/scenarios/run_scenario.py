@@ -1309,8 +1309,6 @@ class ScenarioRunner:
 
         # Ensure every parameter has been initialized for the scenarios_loader
         scenario_loader.check_all_set()
-        print("time_consts_for_params")
-        print(time_consts_for_params["baseline_reduction"])
         return (
             constants_for_params,
             time_consts_for_params,
@@ -1337,7 +1335,6 @@ class ScenarioRunner:
             / (title + "_" + country_name + "_outdoor_crop_production.csv"),
             index=False,
         )
-        return
 
     def save_feed_and_biofuels_to_csv(
         self, feed_demand, biofuels_demand, title, country_name

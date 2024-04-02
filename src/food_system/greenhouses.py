@@ -70,17 +70,17 @@ class Greenhouses:
             ... )
 
         """
-        # Calculate monthly kcals
+        # Calculate monthly kcals (convert annual to monthly, convert to billion kcals, divide by area)
         MONTHLY_KCALS_BASELINE = (
             np.mean(constants_for_params["ANNUAL_PRODUCTION"] / 12)
+            * 4e6
+            / 1e9
             / self.TOTAL_CROP_AREA
         )
-
         # Calculate kcals grown per hectare before waste
         KCALS_GROWN_PER_HECTARE_BEFORE_WASTE = []
         for i in range(self.NMONTHS):
             baseline_reduction = time_consts["baseline_reduction"][i]
-
             # Check if baseline reduction is greater than or equal to zero
             assert round(baseline_reduction, 8) >= 0  # 8 decimal places rounding
 
@@ -100,20 +100,6 @@ class Greenhouses:
                 KCALS_GROWN_PER_HECTARE_BEFORE_WASTE.append(
                     MONTHLY_KCALS_BASELINE * baseline_reduction**exponent
                 )
-
-        # this shortens the used duration of the nuclear winter reductions up to the number of modelled months
-        all_months_reductions = time_consts["baseline_reduction"][
-            0 : len(KCALS_GROWN_PER_HECTARE_BEFORE_WASTE)
-        ]
-
-        print("all_months_reductions")
-        print(all_months_reductions)
-        # Check if kcals grown per hectare before waste is greater than or equal
-        # to monthly kcals times all months reductions
-        assert (
-            KCALS_GROWN_PER_HECTARE_BEFORE_WASTE
-            >= MONTHLY_KCALS_BASELINE * np.array(all_months_reductions)
-        ).all(), "ERROR: Relocation has somehow decreased crop production!"
 
         # Calculate kcals grown per hectare after waste
         self.GH_KCALS_GROWN_PER_HECTARE = CROP_WASTE_COEFFICIENT * np.array(

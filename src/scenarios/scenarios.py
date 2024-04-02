@@ -483,10 +483,10 @@ class Scenarios:
         time_consts["domestic_supply"] = []
         for i in range(constants_for_params["NMONTHS"]):
             time_consts["KCALS_GROWN_NO_RELOCATION"].append(
-                country_data[f"baseline_reduction_m{i}"]
+                country_data[f"KCALS_GROWN_NO_RELOCATION_m{i}"]
             )
             time_consts["baseline_reduction"].append(
-                country_data[f"KCALS_GROWN_NO_RELOCATION_m{i}"]
+                country_data[f"baseline_reduction_m{i}"]
             )
             time_consts["domestic_supply"].append(country_data[f"domestic_supply_m{i}"])
 
