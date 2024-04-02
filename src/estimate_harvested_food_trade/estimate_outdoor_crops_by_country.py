@@ -121,7 +121,6 @@ def get_new_columns_outdoor_crops(no_trade_table_no_monthly_reductions):
             months_cycle,
             all_months_reductions,
             NMONTHS,
-            # outdoor_crop_parameters["OG_KCAL_EXPONENT"],
         )
 
         PLOT_WITH_SEASONALITY_FLAG = False
@@ -150,7 +149,6 @@ def assign_reduction_from_climate_impact(
     all_months_reductions,
     NMONTHS,  # , OG_KCAL_EXPONENT
 ):
-    KCALS_GROWN = []
     KCALS_GROWN_NO_RELOCATION = []
     for i in range(NMONTHS):
         cycle_index = i % 12
@@ -163,17 +161,9 @@ def assign_reduction_from_climate_impact(
 
         assert baseline_reduction >= 0  # 8 decimal places rounding
 
-        # if baseline_reduction > 1:
-        # KCALS_GROWN.append(month_kcals * baseline_reduction)
-        # else:
-        #     KCALS_GROWN.append(month_kcals * baseline_reduction**OG_KCAL_EXPONENT)
-
         KCALS_GROWN_NO_RELOCATION.append(month_kcals * baseline_reduction)
 
-        # assert (
-        # KCALS_GROWN[-1] >= month_kcals * baseline_reduction
-        # ), "ERROR: Relocation has somehow decreased crop production!"
-    return KCALS_GROWN_NO_RELOCATION  # , KCALS_GROWN
+    return KCALS_GROWN_NO_RELOCATION
 
 
 def calculate_monthly_production(country_data, outdoor_crop_parameters):
