@@ -429,7 +429,7 @@ def recalculate_plot_1():
     # WORST CASE + SIMPLE_ADAPTATIONS + CULLING + STORAGE #
     this_simulation["meat_strategy"] = "feed_only_ruminants"
     this_simulation["shutoff"] = "long_delayed_shutoff"
-    example_scenario_title = f"Example Scenario:\nSimple Adaptations\n+ Rationing{suffix_storage}\n+Feed Improved"
+    example_scenario_title = f"Example Scenario:\nSimple Adaptations\n+ Rationing{suffix_storage}\n+Humans Prioritized "
     example_scenario = call_scenario_runner_and_set_options(
         this_simulation, example_scenario_title  # , countries_list=["CHN"]
     )
@@ -613,18 +613,18 @@ def recalculate_plot_3():
 
     this_simulation["cull"] = "do_eat_culled"
 
-    # WORST CASE + SIMPLE_ADAPTATIONS #
+    # WORST CASE #
     this_simulation["meat_strategy"] = "baseline_breeding"
-    this_simulation["waste"] = "baseline"
+    this_simulation["waste"] = "baseline_globally"
     this_simulation["shutoff"] = "continued_after_10_percent_fed"
 
-    title_simple_adaptations = "Trade\n+ Simple Adaptations"
-    results_simple_adaptations = call_global_scenario_runner(
-        this_simulation, title_simple_adaptations
+    this_simulation["meat_strategy"] = "baseline_breeding"
+    title_no_adaptations = "Trade, no adaptations"
+    results_no_adaptations = call_global_scenario_runner(
+        this_simulation, title_no_adaptations
     )
 
     # WORST CASE + SIMPLE_ADAPTATIONS #
-    this_simulation["meat_strategy"] = "baseline_breeding"
     this_simulation["waste"] = "tripled_prices_globally"
     this_simulation["shutoff"] = "long_delayed_shutoff_after_10_percent_fed"
 
@@ -638,21 +638,22 @@ def recalculate_plot_3():
     this_simulation["meat_strategy"] = "feed_only_ruminants"
     this_simulation["shutoff"] = "long_delayed_shutoff"
 
-    title_example_scenario = "Trade\n+ Simple Adaptations\n+ Rationing\n+ Improved Feed"
+    title_example_scenario = (
+        "Trade\n+ Simple Adaptations\n+ Rationing\n+ Humans Prioritized"
+    )
     results_example_scenario = call_global_scenario_runner(
         this_simulation, title_example_scenario
     )
 
     # WORST CASE + SIMPLE_ADAPTATIONS + STORAGE + CULLING + ALL RESILIENT FOODS
     this_simulation["scenario"] = "all_resilient_foods"
-    title_resilient_foods = (
-        "Trade\n+ Simple Adaptations\n+ Rationing\n+ Feed Improved\n+ Resilient Foods"
-    )
+    title_resilient_foods = "Trade\n+ Simple Adaptations\n+ Rationing\n+ Humans Prioritized\n+ Resilient Foods"
     results_resilient_foods = call_global_scenario_runner(
         this_simulation, title_resilient_foods
     )
 
     results = {}
+    results[title_no_adaptations] = results_no_adaptations
     results[title_simple_adaptations] = results_simple_adaptations
     results[title_example_scenario] = results_example_scenario
     results[title_resilient_foods] = results_resilient_foods
