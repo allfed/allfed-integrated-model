@@ -262,6 +262,7 @@ class Plotter:
 
         path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
         newtitle_for_save = re.sub(r'[\\/*?:"<>|\n]', "_", newtitle)
+
         saveloc = path_string + newtitle_for_save + ".png"
         feed_saveloc = path_string + newtitle_for_save + "_feed.png"
 
@@ -272,9 +273,9 @@ class Plotter:
             dpi=300,
         )
         if add_slide_with_fig:
-            if interpreter.show_feed_biofuels and os.path.isfile(feed_saveloc):
+            if os.path.isfile(feed_saveloc):
                 crs.mp.insert_slide(
-                    title_below="FEED "
+                    title_below="Feed and Biofuels "
                     + newtitle
                     + ": Percent fed:"
                     + str(round(interpreter.percent_people_fed, 1))
@@ -285,7 +286,7 @@ class Plotter:
 
             if os.path.isfile(slaughter_saveloc):
                 crs.mp.insert_slide(
-                    title_below="SLAUGHTER "
+                    title_below="Animal Slaughter "
                     + newtitle
                     + ": Percent fed:"
                     + str(round(interpreter.percent_people_fed, 1))
@@ -306,7 +307,7 @@ class Plotter:
         if plot_figure:
             plt.show()
         # else:
-        # plt.close()
+        plt.close()
 
     @classmethod
     def plot_feed(
@@ -518,8 +519,7 @@ class Plotter:
         )
         if plot_figure:
             plt.show()
-        # else:
-        # plt.close()
+        plt.close()
 
     @classmethod
     def plot_slaughter(
@@ -681,8 +681,7 @@ class Plotter:
         )
         if plot_figure:
             plt.show()
-        # else:
-        # plt.close()
+        plt.close()
 
     @classmethod
     def plot_fig_1ab_updated(
@@ -2221,13 +2220,13 @@ class Plotter:
         if plot_map:
             plt.show()
         # else:
-        # plt.close()
         if create_slide:
             crs.mp.insert_slide(
                 title_below=save_title_string,
                 description=description,
                 figure_save_loc=saveloc,
             )
+        plt.close()
 
     @classmethod
     def start_pptx(crs, title):
