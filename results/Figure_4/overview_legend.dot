@@ -1,8 +1,0 @@
-digraph ModelOverview{
-
-    norm_consumption [label="Model\nInputs",fontsize=20, style="filled",color="#55AA55"];
-    model [label="Model", shape=box, fontsize=20,style="filled", fillcolor="#669999"];
-    nw [label="Results", shape=octagon,fontsize=20, color="#D46A6A", style="filled"];
-    Baseline [label="Control", shape=octagon,fontsize=20, color="#D49A6A", style="filled"];
-
-}
