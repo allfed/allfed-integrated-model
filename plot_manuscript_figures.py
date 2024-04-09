@@ -21,7 +21,7 @@ repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 
 # COMMAND LINE INTERFACE FUNCTIONS #
-RUN_FIGURE_1_WITH_BASELINE_CLIMATE = False
+RUN_FIGURE_1_AND_3_WITH_BASELINE_CLIMATE = False
 RUN_FIGURE_1_LEAVING_TYPICAL_BUFFERS = False
 RUN_FIGURE_1_NO_STORAGE = False
 
@@ -108,8 +108,6 @@ def main(args):
     RECALCULATE_PLOTS = args[0] == "rerun"
     plots_to_run = args[1:] if "all" not in args[1:] else ["1", "2", "3", "s1"]
     for plot_to_display in plots_to_run:
-        print("plot_to_display")
-        print(plot_to_display)
         if RECALCULATE_PLOTS:
             if plot_to_display == "1":
                 worlds, ratios = recalculate_plot_1()
@@ -255,7 +253,7 @@ def call_scenario_runner_and_set_options(
     assert "nutrition" not in this_simulation_copy, "ERROR: nutrition overwritten"
     assert "fat" not in this_simulation_copy, "ERROR: fat overwritten"
     assert "protein" not in this_simulation_copy, "ERROR: protein overwritten"
-    if RUN_FIGURE_1_WITH_BASELINE_CLIMATE:
+    if RUN_FIGURE_1_AND_3_WITH_BASELINE_CLIMATE:
         this_simulation_copy["crop_disruption"] = "zero"
         this_simulation_copy["grasses"] = "baseline"
         this_simulation_copy["fish"] = "baseline"
@@ -350,9 +348,9 @@ def recalculate_plot_1():
     this_simulation["stored_food"] = "baseline"
 
     if RUN_FIGURE_1_LEAVING_TYPICAL_BUFFERS:
-        this_simulation["end_simulation_stocks_ratio"] = (
-            "baseline_no_stored_between_years"
-        )
+        this_simulation[
+            "end_simulation_stocks_ratio"
+        ] = "baseline_no_stored_between_years"
         suffix_storage = ""
     else:
         this_simulation["end_simulation_stocks_ratio"] = "no_stored_between_years"
@@ -511,7 +509,7 @@ def recalculate_plot_1():
     if RUN_FIGURE_1_LEAVING_TYPICAL_BUFFERS:
         print("\nTypical buffers remain in place in figure 1\n")
 
-    if RUN_FIGURE_1_WITH_BASELINE_CLIMATE:
+    if RUN_FIGURE_1_AND_3_WITH_BASELINE_CLIMATE:
         print("\nBaseline climate run for figure 1\n")
 
     if RUN_FIGURE_1_NO_STORAGE:
@@ -595,10 +593,19 @@ def recalculate_plot_3():
     # WORST CASE #
     this_simulation = {}
     this_simulation["NMONTHS"] = 120
+
+    if RUN_FIGURE_1_AND_3_WITH_BASELINE_CLIMATE:
+        this_simulation["crop_disruption"] = "zero"
+        this_simulation["grasses"] = "baseline"
+        this_simulation["fish"] = "baseline"
+        this_simulation["seasonality"] = "baseline_globally"
+    else:
+        this_simulation["crop_disruption"] = "global_nuclear_winter"
+        this_simulation["grasses"] = "global_nuclear_winter"
+        this_simulation["fish"] = "nuclear_winter"
+        this_simulation["seasonality"] = "nuclear_winter_globally"
+
     this_simulation["scale"] = "global"
-    this_simulation["crop_disruption"] = "global_nuclear_winter"
-    this_simulation["grasses"] = "global_nuclear_winter"
-    this_simulation["fish"] = "nuclear_winter"
     this_simulation["stored_food"] = "baseline"
 
     this_simulation["nutrition"] = "catastrophe"
@@ -609,7 +616,6 @@ def recalculate_plot_3():
     this_simulation["scenario"] = "no_resilient_foods"
 
     this_simulation["end_simulation_stocks_ratio"] = "no_stored_between_years"
-    this_simulation["seasonality"] = "nuclear_winter_globally"
 
     this_simulation["cull"] = "do_eat_culled"
 

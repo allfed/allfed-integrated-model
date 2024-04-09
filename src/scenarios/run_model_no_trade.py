@@ -59,9 +59,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         if "buffer" not in this_simulation.keys():
             this_simulation["buffer"] = "baseline"
         if "shutoff" not in this_simulation.keys():
-            this_simulation["shutoff"] = (
-                "continued"  # this_simulation["shutoff"] = "immediate"
-            )
+            this_simulation["shutoff"] = "continued"
         if "cull" not in this_simulation.keys():
             this_simulation["cull"] = "do_eat_culled"
 
@@ -210,10 +208,6 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         """
         assert len(scenario_option) > 0, "ERROR: a scenario must be specified"
 
-        if create_pptx_with_all_countries:
-            if not os.path.exists(Path(repo_root) / "results" / "large_reports"):
-                os.mkdir(Path(repo_root) / "results" / "large_reports")
-            Plotter.start_pptx("No trade by country")
         """
         Runs the baseline model by country and without trade
 
@@ -262,6 +256,10 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             print(countries_list)
 
         results = {}
+        if create_pptx_with_all_countries:
+            if not os.path.exists(Path(repo_root) / "results" / "large_reports"):
+                os.mkdir(Path(repo_root) / "results" / "large_reports")
+            Plotter.start_pptx("No trade by country")
 
         for index, country_data in no_trade_table.iterrows():
             country_code = country_data["iso3"]
@@ -281,6 +279,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             # skip countries with no
             if np.isnan(population):
                 continue
+
             country_name = country_data["country"]
             (
                 needs_ratio,
@@ -330,7 +329,7 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         print("")
         print("")
         print("")
-        if show_map_figures or add_map_slide_to_pptx:
+        if show_map_figures:
             Plotter.plot_map_of_countries_fed(
                 world,
                 ratio_fed,
@@ -338,33 +337,35 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
                 show_map_figures,
                 add_map_slide_to_pptx,
             )
+        if create_pptx_with_all_countries:
+            self.save_pptx(title)
+        # print first value of the dict
+        if save_all_results:
+            self.save_all_results_to_csv(results, title)
+        return [world, net_pop, net_pop_fed, results]
+
+    def save_pptx(self, title):
         year = str(date.today().year)
         month = str(date.today().month)
         day = str(date.today().day)
         hour = str(datetime.datetime.now().hour)
         minute = str(datetime.datetime.now().minute)
-        if create_pptx_with_all_countries:
-            file_root = Path(repo_root) / "results" / "large_reports" / "no_food_trade_"
-            Plotter.end_pptx(
-                saveloc=str(file_root)
-                + title
-                + "."
-                + year
-                + "."
-                + month
-                + "."
-                + day
-                + "."
-                + hour
-                + "."
-                + minute
-                + ".pptx"
-            )
-        # @li return a dataframe with each country and the world needs ratio
-        # print first value of the dict
-        if save_all_results:
-            self.save_all_results_to_csv(results, title)
-        return [world, net_pop, net_pop_fed, results]
+        file_root = Path(repo_root) / "results" / "large_reports" / "no_food_trade_"
+        Plotter.end_pptx(
+            saveloc=str(file_root)
+            + title
+            + "."
+            + year
+            + "."
+            + month
+            + "."
+            + day
+            + "."
+            + hour
+            + "."
+            + minute
+            + ".pptx"
+        )
 
     def save_all_results_to_csv(self, results, title):
         """

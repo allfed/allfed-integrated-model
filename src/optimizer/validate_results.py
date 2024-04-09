@@ -360,9 +360,9 @@ class Validator:
             if "population" in key:
                 population_series = np.array(meat_dictionary[key])
                 previous_month = population_series[:-1].copy()
-                previous_month[previous_month == 0] = (
-                    epsilon  # this is to avoid division by zero
-                )
+                previous_month[
+                    previous_month == 0
+                ] = epsilon  # this is to avoid division by zero
                 population_series[population_series < 1] = 0
                 relative_changes = np.diff(population_series) / previous_month
                 assert np.all(relative_changes <= epsilon), (

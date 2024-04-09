@@ -72,9 +72,9 @@ class ScenarioRunner:
                 Plotter.plot_feed(
                     interpreted_results,
                     "earliest_month_zero",
-                    (feed_title + " " if feed_title != "" else "")
-                    + country_name
-                    + figure_save_postfix,
+                    # (feed_title + " " if feed_title != "" else "")
+                    country_name,
+                    # + figure_save_postfix,
                     show_country_figures,
                     create_pptx_with_all_countries,
                     scenario_loader.scenario_description,
