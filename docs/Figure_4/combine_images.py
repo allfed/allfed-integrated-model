@@ -8,7 +8,6 @@ Then to form the complete diagram, run the python script below:
 
 """
 
-
 from PIL import Image
 
 # Load the images
