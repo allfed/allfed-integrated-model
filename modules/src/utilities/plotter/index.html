@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../../../../img/favicon.ico">
+  <title>Plotter - ALLFED Integrated Model</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../../../css/theme.css" />
+  <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Plotter";
+    var mkdocs_page_input_path = "modules/src/utilities/plotter.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../../../.." class="icon icon-home"> ALLFED Integrated Model</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../..">ALLFED Integrated Food System Model</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Modules</span></p>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="#">Src</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="#">Food system</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/animal_populations/">Animal populations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/cellulosic_sugar/">Cellulosic sugar</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/feed_and_biofuels/">Feed and biofuels</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/food/">Food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/greenhouses/">Greenhouses</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/meat_and_dairy/">Meat and dairy</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/methane_scp/">Methane scp</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/outdoor_crops/">Outdoor crops</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/seafood/">Seafood</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/seaweed/">Seaweed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/stored_food/">Stored food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/unit_conversions/">Unit conversions</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Import scripts no food trade</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_crop_macros_csv/">Create crop macros csv</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_nuclear_winter_csv/">Create nuclear winter csv</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Optimizer</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/extract_results/">Extract results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/interpret_results/">Interpret results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/optimizer/">Optimizer</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/parameters/">Parameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/validate_results/">Validate results</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Scenarios</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_model_no_trade/">Run model no trade</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenario/">Run scenario</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenarios_from_yaml/">Run scenarios from yaml</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/scenarios/">Scenarios</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Utilities</a>
+    <ul class="current">
+                <li class="toctree-l3"><a class="reference internal" href="../constants/">Constants</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../import_utilities/">Import utilities</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../make_powerpoint/">Make powerpoint</a>
+                </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="./">Plotter</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#plotter">Plotter</a>
+    </li>
+    </ul>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../..">ALLFED Integrated Model</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Modules &raquo;</li>
+        
+      
+        
+          <li>Src &raquo;</li>
+        
+      
+        
+          <li>Utilities &raquo;</li>
+        
+      
+    
+    <li>Plotter</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1"></h1>
+<h2 id="plotter">Plotter</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L38">source</a></p>
+<pre><code class="language-python">
+</code></pre>
+<p><strong>Methods:</strong></p>
+<h3 id="helper_for_plotting_fig_3abcde">.helper_for_plotting_fig_3abcde</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L791">source</a></p>
+<pre><code class="language-python">.helper_for_plotting_fig_3abcde(
+   interpreter, xlim, gs, row, fig, max_y_percent, ADD_SECOND_COLUMN,
+   split_legend = True
+)
+</code></pre>
+<h3 id="helper_for_plotting_fig_2abcde">.helper_for_plotting_fig_2abcde</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L971">source</a></p>
+<pre><code class="language-python">.helper_for_plotting_fig_2abcde(
+   ax, interpreter, xlim, title, add_ylabel = True, add_xlabel = True,
+   ylim_constraint = 100000, split_legend = True
+)
+</code></pre>
+<h3 id="plot_fig_3abcde_updated">.plot_fig_3abcde_updated</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L1279">source</a></p>
+<pre><code class="language-python">.plot_fig_3abcde_updated(
+   results, xlim, ADD_SECOND_COLUMN = False
+)
+</code></pre>
+<h3 id="plot_fig_3ab">.plot_fig_3ab</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L1363">source</a></p>
+<pre><code class="language-python">.plot_fig_3ab(
+   monte_carlo_data, food_names, removed, added
+)
+</code></pre>
+<h3 id="plot_fig_s2abcd">.plot_fig_s2abcd</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L1460">source</a></p>
+<pre><code class="language-python">.plot_fig_s2abcd(
+   interpreter1, interpreter2, xlim1, xlim2
+)
+</code></pre>
+<h3 id="getylim_nutrients">.getylim_nutrients</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L1823">source</a></p>
+<pre><code class="language-python">.getylim_nutrients(
+   interpreter, xlim
+)
+</code></pre>
+<h3 id="plot_histogram">.plot_histogram</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L1846">source</a></p>
+<pre><code class="language-python">.plot_histogram(
+   ax, data, N, xlabel, ylabel, title
+)
+</code></pre>
+<hr />
+<p>Plots a histogram of the given data on the given axis with the given labels and title.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>ax</strong> (matplotlib.axes.Axes) : The axis to plot the histogram on.</li>
+<li><strong>data</strong> (list) : The data to plot.</li>
+<li><strong>N</strong> (int) : The number of data points.</li>
+<li><strong>xlabel</strong> (str) : The label for the x-axis.</li>
+<li><strong>ylabel</strong> (str) : The label for the y-axis.</li>
+<li><strong>title</strong> (str) : The title for the plot.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; data = [1, 2, 3, 4, 5]
+&gt;&gt;&gt; N = 5
+&gt;&gt;&gt; xlabel = &quot;X Label&quot;
+&gt;&gt;&gt; ylabel = &quot;Y Label&quot;
+&gt;&gt;&gt; title = &quot;Title&quot;
+&gt;&gt;&gt; plot_histogram(ax, data, N, xlabel, ylabel, title)
+</code></pre>
+<h3 id="plot_histogram_with_boxplot">.plot_histogram_with_boxplot</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L1876">source</a></p>
+<pre><code class="language-python">.plot_histogram_with_boxplot(
+   data, xlabel, title
+)
+</code></pre>
+<h3 id="get_people_fed_legend">.get_people_fed_legend</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L1901">source</a></p>
+<pre><code class="language-python">.get_people_fed_legend(
+   interpreter, is_nuclear_winter, split_legend = False
+)
+</code></pre>
+<h3 id="get_feed_biofuels_legend">.get_feed_biofuels_legend</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L1974">source</a></p>
+<pre><code class="language-python">.get_feed_biofuels_legend(
+   interpreter
+)
+</code></pre>
+<h3 id="plot_monthly_reductions_seasonally">.plot_monthly_reductions_seasonally</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L2030">source</a></p>
+<pre><code class="language-python">.plot_monthly_reductions_seasonally(
+   ratios
+)
+</code></pre>
+<h3 id="plot_monthly_reductions_no_seasonality">.plot_monthly_reductions_no_seasonality</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L2042">source</a></p>
+<pre><code class="language-python">.plot_monthly_reductions_no_seasonality(
+   all_months_reductions
+)
+</code></pre>
+<hr />
+<p>Plot the reduction each month, showing the seasonal variability.</p>
+<h3 id="plot_food">.plot_food</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L2057">source</a></p>
+<pre><code class="language-python">.plot_food(
+   food, title
+)
+</code></pre>
+<hr />
+<p>Plot the food generically with the 3 macronutrients.</p>
+<h3 id="plot_food_alternative">.plot_food_alternative</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/plotter.py/#L2121">source</a></p>
+<pre><code class="language-python">.plot_food_alternative(
+   food, title
+)
+</code></pre>
+<hr />
+<p>Plot the food generically with the 3 macronutrients (alternative layout).</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../make_powerpoint/" class="btn btn-neutral" title="Make powerpoint"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Me</p>
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../make_powerpoint/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script>var base_url = '../../../..';</script>
+    <script src="../../../../js/theme_extra.js" defer></script>
+    <script src="../../../../js/theme.js" defer></script>
+      <script src="../../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

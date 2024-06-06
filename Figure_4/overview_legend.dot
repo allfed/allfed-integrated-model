@@ -1,0 +1,19 @@
+digraph ModelOverview {
+    subgraph cluster_0 {
+        label="Legend";
+        // Remove or modify these attributes to control the box appearance
+        // color=black; // Removed to avoid drawing the box
+        // penwidth=1; // Removed since we don't want an outline
+        style=invis; // Makes the subgraph border invisible
+        fontsize=20; // Increased fontsize for the legend label
+        fontname="Helvetica bold"; // Specify a bold font for the legend label
+
+        Baseline [label="Baseline Climate\nScenarios", fontsize=20, fillcolor="#D49A6A", style="filled"];
+        nw [label="Nuclear Winter\nScenarios", fontsize=20, fillcolor="#D46A6A", style="filled"];
+        model [label="Model", fontsize=20, style="filled", fillcolor="#669999"];
+        norm_consumption [label="Model\nInputs", fontsize=20, style="filled", fillcolor="#55AA55"];
+        
+        // Define any edges here if necessary
+    }
+    // Define any nodes or edges outside the subgraph if you want them outside the box
+}
