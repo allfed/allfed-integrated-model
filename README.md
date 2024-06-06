@@ -72,6 +72,8 @@ https://zenodo.org/record/7039924
 
 # more details
 ![Flow Chart](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/outfile.png)
+![Flow Chart](https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/repository_flowchart/ModularArchitecture.drawio(2).svg)
+
 
 
 #### Dependency management with Anaconda
