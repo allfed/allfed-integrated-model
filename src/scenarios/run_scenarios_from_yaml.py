@@ -22,6 +22,7 @@ Usage:
 To run the script, two optional command line arguments can be provided:
 1. To show country-specific figures (True/False)
 2. To display colored maps (True/False)
+3. To run the scenarios in the web interface (True/False)
 If not provided, the default values are True for the first argument and False
 for the second.
 
@@ -104,9 +105,9 @@ def load_config_data(yaml_filename):
 def print_usage_message(repo_root):
     print(
         "Usage: python3 run_scenarios_from_yaml.py",
-        "<show_country_figures: True/False> <color_map: True/False> <yaml_filename>",
+        "<show_country_figures: True/False> <color_map: True/False> <web_interface: True/False> <yaml_filename>",
     )
-    print("Example: python3 run_scenarios_from_yaml.py True False scenarios.yaml")
+    print("Example: python3 run_scenarios_from_yaml.py True False False scenarios.yaml")
     print("Note: all yaml files must be in the scenarios/ directory")
 
     print("\nAvailable scenarios:")

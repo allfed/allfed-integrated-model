@@ -274,6 +274,8 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
             country_data = self.apply_custom_parameters(country_data, scenario_option)
             self.verify_country_data(country_data)
 
+            self.apply_population_loss(country_data, scenario_option)
+
             population = country_data["population"]
 
             # skip countries with no
@@ -900,3 +902,21 @@ class ScenarioRunnerNoTrade(ScenarioRunner):
         assert (
             country_data["kg_meat_per_chicken"] < 5
         ), f"{country}: kg meat per chicken is greater than 5"
+
+    def apply_population_loss(self, country_data, scenario_option):
+        """
+        Apply population loss to the country data
+        """
+        if "nuclear_war_scenario" in scenario_option:
+            nuclear_war_scenario = scenario_option["nuclear_war_scenario"]
+            nuclear_war_csv = Path(repo_root) / "data" / "nuclear_war_scenarios" / f"{nuclear_war_scenario}.csv"
+            
+            nuclear_war_data = pd.read_csv(nuclear_war_csv)
+            country_nuclear_data = nuclear_war_data[nuclear_war_data["iso3"] == country_data["iso3"]]
+            
+            if len(country_nuclear_data) > 0:
+                population_loss = country_nuclear_data["population_loss"].values[0]
+                if np.isnan(population_loss):
+                    population_loss = 0
+                country_data["population"] -= population_loss
+                assert country_data["population"] >= 0, f"{country_data["iso3"]}: population is less than 0"

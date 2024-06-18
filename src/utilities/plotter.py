@@ -779,7 +779,7 @@ class Plotter:
 
         plt.savefig(
             Path(repo_root) / "results" / "fig_1ab.png",
-            dpi=300,
+            dpi=1000,
             facecolor=fig.get_facecolor(),
             transparent=False,
             edgecolor="none",

@@ -22,3 +22,4 @@ simulations:
     meat_strategy: baseline_breeding
     stored_food: baseline
     end_simulation_stocks_ratio: baseline
+    # nuclear_war_scenario: Toon2008_SORT
