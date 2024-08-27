@@ -9,24 +9,23 @@ Created on Tue Jul 19
 @author: morgan
 """
 
-import sys
-
-import numpy as np
 import copy
+import sys
+from pathlib import Path
 
 import git
-from pathlib import Path
+import numpy as np
 import pandas as pd
+from pulp import constants
 
-from src.optimizer.optimizer import Optimizer
-from src.optimizer.interpret_results import Interpreter
-from src.optimizer.extract_results import Extractor
-from src.scenarios.scenarios import Scenarios
-from src.optimizer.validate_results import Validator
-from src.optimizer.parameters import Parameters
-from src.utilities.plotter import Plotter
 from src.food_system.food import Food
-
+from src.optimizer.extract_results import Extractor
+from src.optimizer.interpret_results import Interpreter
+from src.optimizer.optimizer import Optimizer
+from src.optimizer.parameters import Parameters
+from src.optimizer.validate_results import Validator
+from src.scenarios.scenarios import Scenarios
+from src.utilities.plotter import Plotter
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -816,6 +815,7 @@ class ScenarioRunner:
 
         time_consts_for_params = {}
 
+        constants_for_params = None
         # SCALE
         if scenario_option_copy["scale"] == "global":
             assert (
@@ -827,7 +827,7 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.init_country_food_system_properties(
                 country_data
             )
-
+            assert country_data is not None, "ERROR: country data not found"
             constants_for_params["COUNTRY_CODE"] = country_data["iso3"]
         else:
             scenario_is_correct = False
@@ -835,7 +835,10 @@ class ScenarioRunner:
                 scenario_is_correct
             ), "You must specify 'scale' key as global,or country"
 
+        assert constants_for_params is not None, "ERROR: constants_for_params is not set"
         constants_for_params["NMONTHS"] = scenario_option_copy["NMONTHS"]
+
+        assert isinstance(country_data, pd.Series), f"ERROR: country data is in an incorrect format: {type(country_data)}"
 
         # STORED FOOD
 
@@ -1105,6 +1108,17 @@ class ScenarioRunner:
                 "You must specify 'crop_disruption' key as either zero,"
                 "global_nuclear_winter, all_crops_die_instantly, or country_nuclear_winter"
             )
+
+        # EXPANDED AREA
+        try:
+            expanded_area_scenario = scenario_option_copy["expanded_area"]
+        except KeyError:
+            expanded_area_scenario = "none"
+        try:
+            initial_land_clearing_time = scenario_option_copy["expanded_area_init_land_clearing_time"]
+        except KeyError:
+            initial_land_clearing_time = 9
+        constants_for_params = scenario_loader.set_expanded_area(constants_for_params, expanded_area_scenario, initial_land_clearing_time, country_data)
 
         # PROTEIN
 
