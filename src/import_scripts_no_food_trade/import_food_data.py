@@ -7,10 +7,12 @@ The output is saved in data/no_food_trade/computer_readable_file.py.
 
 """
 
-from pathlib import Path
-import pandas as pd
 from functools import reduce
+from pathlib import Path
+
 import git
+import pandas as pd
+
 from src.utilities.import_utilities import ImportUtilities
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
@@ -140,6 +142,7 @@ dataframes_for_merge = [df1.dropna()]  # will add the rest soon
 
 
 # replace eswatini country code in the list (proper code is SWT now, not swaziland SWZ)
+# TODO: issue #138
 expected_country_codes = ImportUtilities.country_codes
 for i in range(len(expected_country_codes)):
     expected_country_codes[i] = expected_country_codes[i].replace("SWZ", "SWT")
@@ -191,6 +194,16 @@ df_merged = reduce(
 assert (
     not df_merged.isnull().values.any()
 ), "Error: there were null values in computer_readable_combined dataframe"
+
+# we do not want to use "inner" here because we do not have expanded area data for
+# all countries; we use "left" instead and fill new values with 0
+expanded_area = pd.read_csv(
+    Path(repo_root) / "data" / "no_food_trade" / "processed_data" / "expanded_area.csv"
+)
+# TODO: issue #138
+expanded_area["iso3"] = expanded_area["iso3"].replace("SWZ", "SWT")
+df_merged = df_merged.merge(expanded_area, how="left", on="iso3")
+df_merged = df_merged.fillna(0)
 
 assert set(df_merged["iso3"].values) == set(
     expected_country_codes
