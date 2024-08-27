@@ -31,7 +31,7 @@ class Scenarios:
         self.FAT_SET = False
         self.CULLING_PARAM_SET = False
         self.MEAT_STRATEGY_SET = False
-        self.EXPANDED_AREA_SET = False 
+        self.EXPANDED_AREA_SET = False
 
         # convenient to understand what scenario is being run exactly
         self.scenario_description = "Scenario properties:\n"
@@ -1459,7 +1459,13 @@ class Scenarios:
         return constants_for_params
 
     # EXPANDED AREA
-    def set_expanded_area(self, constants_for_params: dict, expanded_area_scenario: str, initial_land_clearing_time:int, country_data: pd.Series)->dict:
+    def set_expanded_area(
+        self,
+        constants_for_params: dict,
+        expanded_area_scenario: str,
+        initial_land_clearing_time: int,
+        country_data: pd.Series,
+    ) -> dict:
         """
         Assign constants regarding expanded planted area to the constants_for_params dictionary.
 
@@ -1481,18 +1487,26 @@ class Scenarios:
             case "none":
                 self.scenario_description += "\nno expanded area"
             case "no_trade":
-                self.scenario_description += "\nexpanded planted area with no equipment trade"
+                self.scenario_description += (
+                    "\nexpanded planted area with no equipment trade"
+                )
             case "export_pool":
-                self.scenario_description += "\nexpanded planted area with export pool equipment trade"
+                self.scenario_description += (
+                    "\nexpanded planted area with export pool equipment trade"
+                )
             case _:
-                print(f"WARNING: unrecognised expanded area setting value: {expanded_area_scenario}.")
+                print(
+                    f"WARNING: unrecognised expanded area setting value: {expanded_area_scenario}."
+                )
                 print("WARNING: defaulting to no expanded area")
                 expanded_area_scenario = "none"
                 self.scenario_description += "\nno expanded area"
         try:
             initial_land_clearing_time = int(initial_land_clearing_time)
         except ValueError:
-            print(f"WARNING: invalid value for the `expanded_area_init_land_clearing_time` setting: {initial_land_clearing_time}.")
+            print(
+                f"WARNING: invalid value for the `expanded_area_init_land_clearing_time` setting: {initial_land_clearing_time}."
+            )
             print("WARNING: defaulting to `9`")
             initial_land_clearing_time = 9
         constants_for_params["EXPANDED_AREA"] = expanded_area_scenario
@@ -1501,7 +1515,7 @@ class Scenarios:
             self.EXPANDED_AREA_SET = True
             return constants_for_params
 
-        for year in range(1, int((constants_for_params["NMONTHS"]+1)/12) + 1):
+        for year in range(1, int((constants_for_params["NMONTHS"] + 1) / 12) + 1):
             key_string = f"expanded_area_{expanded_area_scenario}_kcals_year{year}"
             constants_for_params[key_string] = country_data[key_string]
         self.EXPANDED_AREA_SET = True

@@ -835,10 +835,14 @@ class ScenarioRunner:
                 scenario_is_correct
             ), "You must specify 'scale' key as global,or country"
 
-        assert constants_for_params is not None, "ERROR: constants_for_params is not set"
+        assert (
+            constants_for_params is not None
+        ), "ERROR: constants_for_params is not set"
         constants_for_params["NMONTHS"] = scenario_option_copy["NMONTHS"]
 
-        assert isinstance(country_data, pd.Series), f"ERROR: country data is in an incorrect format: {type(country_data)}"
+        assert isinstance(
+            country_data, pd.Series
+        ), f"ERROR: country data is in an incorrect format: {type(country_data)}"
 
         # STORED FOOD
 
@@ -1115,10 +1119,17 @@ class ScenarioRunner:
         except KeyError:
             expanded_area_scenario = "none"
         try:
-            initial_land_clearing_time = scenario_option_copy["expanded_area_init_land_clearing_time"]
+            initial_land_clearing_time = scenario_option_copy[
+                "expanded_area_init_land_clearing_time"
+            ]
         except KeyError:
             initial_land_clearing_time = 9
-        constants_for_params = scenario_loader.set_expanded_area(constants_for_params, expanded_area_scenario, initial_land_clearing_time, country_data)
+        constants_for_params = scenario_loader.set_expanded_area(
+            constants_for_params,
+            expanded_area_scenario,
+            initial_land_clearing_time,
+            country_data,
+        )
 
         # PROTEIN
 
