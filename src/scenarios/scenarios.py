@@ -5,8 +5,8 @@ Also makes sure values are never set twice.
 
 import git
 import numpy as np
+import pandas as pd
 import pytest
-
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -31,6 +31,7 @@ class Scenarios:
         self.FAT_SET = False
         self.CULLING_PARAM_SET = False
         self.MEAT_STRATEGY_SET = False
+        self.EXPANDED_AREA_SET = False 
 
         # convenient to understand what scenario is being run exactly
         self.scenario_description = "Scenario properties:\n"
@@ -56,6 +57,7 @@ class Scenarios:
         assert self.FAT_SET
         assert self.CULLING_PARAM_SET
         assert self.MEAT_STRATEGY_SET
+        assert self.EXPANDED_AREA_SET
 
     # INITIALIZATION
 
@@ -1454,6 +1456,55 @@ class Scenarios:
         constants_for_params["RATIO_CROPS_YEAR11"] = 0
 
         self.DISRUPTION_SET = True
+        return constants_for_params
+
+    # EXPANDED AREA
+    def set_expanded_area(self, constants_for_params: dict, expanded_area_scenario: str, initial_land_clearing_time:int, country_data: pd.Series)->dict:
+        """
+        Assign constants regarding expanded planted area to the constants_for_params dictionary.
+
+        Arguments:
+            constants_for_params (dict): a dictionary containing the constants for parameters.
+            expanded_area_scenario (str): a settings' flag controlling which version of expanded area we use.
+                Defaults to no expanded area.
+            initial_land_clearing_time (int): since it takes time to clear land for crops, we ignore
+                first several months. Defaults to `9`.
+            country_data (pandas.Series): a data series take from computer_readable_combined for
+                a given country.
+
+        Returns:
+            constants_for_params: a modified constants dictionary.
+        """
+        assert not self.EXPANDED_AREA_SET
+        assert not self.IS_GLOBAL_ANALYSIS
+        match expanded_area_scenario:
+            case "none":
+                self.scenario_description += "\nno expanded area"
+            case "no_trade":
+                self.scenario_description += "\nexpanded planted area with no equipment trade"
+            case "export_pool":
+                self.scenario_description += "\nexpanded planted area with export pool equipment trade"
+            case _:
+                print(f"WARNING: unrecognised expanded area setting value: {expanded_area_scenario}.")
+                print("WARNING: defaulting to no expanded area")
+                expanded_area_scenario = "none"
+                self.scenario_description += "\nno expanded area"
+        try:
+            initial_land_clearing_time = int(initial_land_clearing_time)
+        except ValueError:
+            print(f"WARNING: invalid value for the `expanded_area_init_land_clearing_time` setting: {initial_land_clearing_time}.")
+            print("WARNING: defaulting to `9`")
+            initial_land_clearing_time = 9
+        constants_for_params["EXPANDED_AREA"] = expanded_area_scenario
+        constants_for_params["INITIAL_LAND_CLEARING_TIME"] = initial_land_clearing_time
+        if expanded_area_scenario == "none":
+            self.EXPANDED_AREA_SET = True
+            return constants_for_params
+
+        for year in range(1, int((constants_for_params["NMONTHS"]+1)/12) + 1):
+            key_string = f"expanded_area_{expanded_area_scenario}_kcals_year{year}"
+            constants_for_params[key_string] = country_data[key_string]
+        self.EXPANDED_AREA_SET = True
         return constants_for_params
 
     # PROTEIN
