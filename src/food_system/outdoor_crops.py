@@ -368,6 +368,9 @@ class OutdoorCrops:
         self.KCALS_GROWN = list(
             np.array(self.KCALS_GROWN) + expanded_area_monthly_yield
         )
+        self.NO_RELOCATION_KCALS_GROWN = list(
+            np.array(self.NO_RELOCATION_KCALS_GROWN) + expanded_area_monthly_yield
+        )
 
     def assign_reduction_from_climate_impact(self, constants_for_params):
         self.KCALS_GROWN = []
