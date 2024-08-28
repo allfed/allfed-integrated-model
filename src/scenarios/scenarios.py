@@ -1600,18 +1600,6 @@ class Scenarios:
 
         return constants_for_params
 
-    def expanded_area_and_relocated_outdoor_crops(self, constants_for_params):
-        constants_for_params["OG_USE_BETTER_ROTATION"] = True
-
-        # this may seem confusing. KCALS_REDUCTION is the reduction that would otherwise
-        # occur averaging in year 3 globally
-        constants_for_params["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.647
-        constants_for_params["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
-        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 72 / 39
-        constants_for_params["NUMBER_YEARS_TAKES_TO_REACH_INCREASED_AREA"] = 3
-
-        return constants_for_params
-
     def methane_scp(self, constants_for_params):
         # (one month delay built into industrial food numbers)
         constants_for_params["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = 2
@@ -1636,29 +1624,6 @@ class Scenarios:
         self.scenario_description += "\nall resilient foods"
         assert not self.SCENARIO_SET
         constants_for_params = self.relocated_outdoor_crops(constants_for_params)
-        constants_for_params = self.methane_scp(constants_for_params)
-        constants_for_params = self.cellulosic_sugar(constants_for_params)
-        constants_for_params = self.greenhouse(constants_for_params)
-        constants_for_params = self.seaweed(constants_for_params)
-
-        self.SCENARIO_SET = True
-        return constants_for_params
-
-    def get_all_resilient_foods_and_more_area_scenario(self, constants_for_params):
-        self.scenario_description += "\nall resilient foods and more area"
-        assert not self.SCENARIO_SET
-
-        print(
-            "WARNING: There is a known issue where a smaller % minimum needs met occurs"
-        )
-        print("         if methane scp and cellulosic sugar are included")
-        print("         in addition to relocated crops with increased area")
-        print("         in some scenarios, compared to no increased area.")
-
-        constants_for_params = self.expanded_area_and_relocated_outdoor_crops(
-            constants_for_params
-        )
-
         constants_for_params = self.methane_scp(constants_for_params)
         constants_for_params = self.cellulosic_sugar(constants_for_params)
         constants_for_params = self.greenhouse(constants_for_params)
