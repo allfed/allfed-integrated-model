@@ -1515,6 +1515,9 @@ class Scenarios:
             self.EXPANDED_AREA_SET = True
             return constants_for_params
 
+        assert (
+            "nuclear winter crops" in self.scenario_description
+        ), "Expanded area model assumes nuclear winter crop disruption"
         for year in range(1, int((constants_for_params["NMONTHS"] + 1) / 12) + 1):
             key_string = f"expanded_area_{expanded_area_scenario}_kcals_year{year}"
             constants_for_params[key_string] = country_data[key_string]

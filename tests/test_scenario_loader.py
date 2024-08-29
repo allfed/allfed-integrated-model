@@ -24,6 +24,7 @@ def country_data() -> pd.Series:
 def test_set_expanded_area(country_data, expanded_area_scenario) -> None:
     scenario_loader = Scenarios()
     scenario_loader.IS_GLOBAL_ANALYSIS = False
+    scenario_loader.scenario_description += "nuclear winter crops"
     scenario_description = scenario_loader.scenario_description
     constants_for_params = {"NMONTHS": 120}
     initial_land_clearing_time = random() * 100

@@ -8,7 +8,7 @@ simulations:
     scale: country
     seasonality: country
     grasses: baseline
-    crop_disruption: zero
+    crop_disruption: country_nuclear_winter
     scenario: no_resilient_foods
     fish: baseline
     waste: baseline_in_country
@@ -22,5 +22,5 @@ simulations:
     meat_strategy: baseline_breeding
     stored_food: baseline
     end_simulation_stocks_ratio: baseline
-    expanded_area: export_pool 
+    expanded_area: no_trade 
     expanded_area_init_land_clearing_time: 9
