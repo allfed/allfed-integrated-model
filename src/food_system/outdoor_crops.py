@@ -362,7 +362,7 @@ class OutdoorCrops:
         # it takes time to clear the area to crops
         # so initial several months do not yield
         expanded_area_monthly_yield[
-            : constants_for_params["INITIAL_LAND_CLEARING_TIME"]
+            : constants_for_params["EXPANDED_AREA_INIT_DELAY"]
         ] = 0
 
         self.KCALS_GROWN = list(

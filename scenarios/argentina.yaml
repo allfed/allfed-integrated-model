@@ -127,4 +127,4 @@ simulations:
     cull: do_eat_culled
     meat_strategy: reduce_breeding
     expanded_area: export_pool 
-    expanded_area_init_land_clearing_time: 9
+    expanded_area_init_delay: 9

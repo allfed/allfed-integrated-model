@@ -1120,7 +1120,7 @@ class ScenarioRunner:
             expanded_area_scenario = "none"
         try:
             initial_land_clearing_time = scenario_option_copy[
-                "expanded_area_init_land_clearing_time"
+                "expanded_area_init_delay"
             ]
         except KeyError:
             initial_land_clearing_time = 9

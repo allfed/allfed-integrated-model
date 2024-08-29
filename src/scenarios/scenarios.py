@@ -1463,7 +1463,7 @@ class Scenarios:
         self,
         constants_for_params: dict,
         expanded_area_scenario: str,
-        initial_land_clearing_time: int,
+        initial_delay_months: int,
         country_data: pd.Series,
     ) -> dict:
         """
@@ -1502,15 +1502,15 @@ class Scenarios:
                 expanded_area_scenario = "none"
                 self.scenario_description += "\nno expanded area"
         try:
-            initial_land_clearing_time = int(initial_land_clearing_time)
+            initial_delay_months = int(initial_delay_months)
         except ValueError:
             print(
-                f"WARNING: invalid value for the `expanded_area_init_land_clearing_time` setting: {initial_land_clearing_time}."
+                f"WARNING: invalid value for the `expanded_area_init_delay` setting: {initial_delay_months}."
             )
             print("WARNING: defaulting to `9`")
-            initial_land_clearing_time = 9
+            initial_delay_months = 9
         constants_for_params["EXPANDED_AREA"] = expanded_area_scenario
-        constants_for_params["INITIAL_LAND_CLEARING_TIME"] = initial_land_clearing_time
+        constants_for_params["EXPANDED_AREA_INIT_DELAY"] = initial_delay_months
         if expanded_area_scenario == "none":
             self.EXPANDED_AREA_SET = True
             return constants_for_params

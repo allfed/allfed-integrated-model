@@ -23,4 +23,4 @@ simulations:
     stored_food: baseline
     end_simulation_stocks_ratio: baseline
     expanded_area: no_trade 
-    expanded_area_init_land_clearing_time: 9
+    expanded_area_init_delay: 9

@@ -43,10 +43,10 @@ def test_set_expanded_area(country_data, expanded_area_scenario) -> None:
         "export_pool",
     ], "expanded area scenario is set incorrectly"
     assert isinstance(
-        constants_for_params["INITIAL_LAND_CLEARING_TIME"], int
+        constants_for_params["EXPANDED_AREA_INIT_DELAY"], int
     ), "initial land clearing time is not an integer"
     assert (
-        constants_for_params["INITIAL_LAND_CLEARING_TIME"] >= 0
+        constants_for_params["EXPANDED_AREA_INIT_DELAY"] >= 0
     ), "initial land clearing time is negative"
     if expanded_area_scenario != "none":
         # TODO: this assumes "NMONTHS" = 120, as for the forseable future

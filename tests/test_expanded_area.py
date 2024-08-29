@@ -36,7 +36,7 @@ def test_expanded_area_is_better():
         result = next(filter(lambda line: "iso3" in line, result))
         result = float(result[-result[::-1].find(":") :].strip().replace("%", ""))
         pct_people_fed[expanded_area_scenario] = result
-    assert (  # GTM
+    assert (
         pct_people_fed["no_trade"] >= pct_people_fed["none"]
     ), f"expanded area result worse than without for {country}"
     assert (
