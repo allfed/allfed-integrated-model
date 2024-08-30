@@ -1463,7 +1463,6 @@ class Scenarios:
         self,
         constants_for_params: dict,
         expanded_area_scenario: str,
-        initial_delay_months: int,
         country_data: pd.Series,
     ) -> dict:
         """
