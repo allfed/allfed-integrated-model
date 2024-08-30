@@ -824,6 +824,10 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.init_global_food_system_properties()
             constants_for_params["COUNTRY_CODE"] = "WOR"
         elif scenario_option_copy["scale"] == "country":
+            assert isinstance(
+                country_data, pd.Series
+            ), f"ERROR: country data is in an incorrect format: {type(country_data)}"
+
             constants_for_params = scenario_loader.init_country_food_system_properties(
                 country_data
             )
@@ -839,10 +843,6 @@ class ScenarioRunner:
             constants_for_params is not None
         ), "ERROR: constants_for_params is not set"
         constants_for_params["NMONTHS"] = scenario_option_copy["NMONTHS"]
-
-        assert isinstance(
-            country_data, pd.Series
-        ), f"ERROR: country data is in an incorrect format: {type(country_data)}"
 
         # STORED FOOD
 

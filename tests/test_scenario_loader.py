@@ -28,11 +28,9 @@ def test_set_expanded_area(country_data, expanded_area_scenario) -> None:
     scenario_loader.scenario_description += "nuclear winter crops"
     scenario_description = scenario_loader.scenario_description
     constants_for_params = {"NMONTHS": 120}
-    initial_land_clearing_time = random() * 100
     scenario_loader.set_expanded_area(
         constants_for_params,
         expanded_area_scenario,
-        initial_land_clearing_time,  # type: ignore
         country_data,
     )
     assert (

@@ -1481,7 +1481,6 @@ class Scenarios:
             constants_for_params: a modified constants dictionary.
         """
         assert not self.EXPANDED_AREA_SET
-        assert not self.IS_GLOBAL_ANALYSIS
         match expanded_area_scenario:
             case "none":
                 self.scenario_description += "\nno expanded area"
@@ -1505,6 +1504,7 @@ class Scenarios:
             self.EXPANDED_AREA_SET = True
             return constants_for_params
 
+        assert not self.IS_GLOBAL_ANALYSIS
         assert (
             "nuclear winter crops" in self.scenario_description
         ), "Expanded area model assumes nuclear winter crop disruption"
