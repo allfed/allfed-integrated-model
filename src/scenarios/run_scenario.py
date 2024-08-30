@@ -831,7 +831,6 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.init_country_food_system_properties(
                 country_data
             )
-            assert country_data is not None, "ERROR: country data not found"
             constants_for_params["COUNTRY_CODE"] = country_data["iso3"]
         else:
             scenario_is_correct = False

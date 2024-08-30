@@ -3,6 +3,8 @@ Scenarios.py: Provides numbers and methods to set the specific scenario to be op
 Also makes sure values are never set twice.
 """
 
+from pathlib import Path
+
 import git
 import numpy as np
 import pandas as pd
@@ -1463,8 +1465,9 @@ class Scenarios:
         self,
         constants_for_params: dict,
         expanded_area_scenario: str,
-        country_data: pd.Series,
+        country_data: pd.Series | None,
     ) -> dict:
+        global repo_root
         """
         Assign constants regarding expanded planted area to the constants_for_params dictionary.
 
@@ -1504,13 +1507,32 @@ class Scenarios:
             self.EXPANDED_AREA_SET = True
             return constants_for_params
 
-        assert not self.IS_GLOBAL_ANALYSIS
         assert (
             "nuclear winter crops" in self.scenario_description
         ), "Expanded area model assumes nuclear winter crop disruption"
-        for year in range(1, int((constants_for_params["NMONTHS"] + 1) / 12) + 1):
-            key_string = f"expanded_area_{expanded_area_scenario}_kcals_year{year}"
-            constants_for_params[key_string] = country_data[key_string]
+        colnames = [
+            f"expanded_area_{expanded_area_scenario}_kcals_year{year}"
+            for year in range(
+                1, int((constants_for_params["NMONTHS"] + 1) / 12) + 1
+            )
+        ]
+        if isinstance(country_data, pd.Series):
+            assert not self.IS_GLOBAL_ANALYSIS
+            constants_for_params |= country_data.loc[colnames].to_dict()
+        else:
+            assert self.IS_GLOBAL_ANALYSIS
+            constants_for_params |= (
+                pd.read_csv(
+                    Path(repo_root)
+                    / "data"
+                    / "no_food_trade"
+                    / "processed_data"
+                    / "expanded_area.csv",
+                    usecols=colnames,
+                )
+                .sum(axis=0)
+                .to_dict()
+            )
         self.EXPANDED_AREA_SET = True
         return constants_for_params
 
