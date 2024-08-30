@@ -90,7 +90,6 @@ simulations:
   - **scenario**:
     - `no_resilient_foods` - Uses current food production only
     - `all_resilient_foods` - Enables scaled up seaweed, cellulosic sugar, methane SCP
-    - `all_resilient_foods_and_more_area` - Enables resilient foods and expands cropland area
     - `seaweed` - Enables scaled up seaweed production
     - `methane_scp` - Enables scaled up methane SCP production
     - `cellulosic_sugar` - Enables scaled up cellulosic sugar production
@@ -151,6 +150,10 @@ simulations:
   - **meat_strategy**:
     - `reduce_breeding` - Reduce breeding in accordance to "reduced" column in data/no_food_trade/animal_feed_data/species_options.csv. Essentiall, nearly all breeding is stopped immediately after the nuclear winter.
     - `baseline_breeding` - Normal breeding levels to maintain livestock levels, "baseline" column in data/no_food_trade/animal_feed_data/species_options.csv
+  - **expanded_area**:
+    - `none` - no expanded planted area shall be considered
+    - `no_trade` - expanded planted area with no equipment trade: each country relies solely on the equipment within its borders to clear its respective productive area, assuming that machines are fully mobile within the country they belong to and that productive area within a country is one combined region. It is assumed a country’s machinery is focused on land clearing, but since the equipment is assumed to only be operating 56 hours/week, other tasks could be performed with multiple shifts.
+    - `export_pool` - expanded planted area with export pool: a machinery inventory constituted by machines loaned by several countries without productive area that other countries with less machinery can tap into to increase their fleet, making the land clearing process faster. We stipulated countries without productive area loan 30% and 40% of their construction and forestry machines to the export pool, respectively. It is also assumed the machinery distribution is maintained constant after this loan, according to the fraction occupied by each equipment type in the global machinery stock.
 
 ## Detailed Notes
 
