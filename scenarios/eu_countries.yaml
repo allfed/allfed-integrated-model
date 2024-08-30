@@ -163,4 +163,3 @@ simulations:
     cull: do_eat_culled
     meat_strategy: reduce_breeding
     expanded_area: export_pool 
-    expanded_area_init_delay: 9

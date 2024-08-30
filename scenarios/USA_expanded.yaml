@@ -23,4 +23,3 @@ simulations:
     stored_food: baseline
     end_simulation_stocks_ratio: baseline
     expanded_area: no_trade 
-    expanded_area_init_delay: 9

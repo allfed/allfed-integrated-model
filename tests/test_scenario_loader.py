@@ -1,3 +1,4 @@
+from operator import itemgetter
 from pathlib import Path
 from random import random
 
@@ -42,12 +43,6 @@ def test_set_expanded_area(country_data, expanded_area_scenario) -> None:
         "no_trade",
         "export_pool",
     ], "expanded area scenario is set incorrectly"
-    assert isinstance(
-        constants_for_params["EXPANDED_AREA_INIT_DELAY"], int
-    ), "initial land clearing time is not an integer"
-    assert (
-        constants_for_params["EXPANDED_AREA_INIT_DELAY"] >= 0
-    ), "initial land clearing time is negative"
     if expanded_area_scenario != "none":
         # TODO: this assumes "NMONTHS" = 120, as for the forseable future
         # this is what we want, however, we might need to update this
@@ -64,3 +59,11 @@ def test_set_expanded_area(country_data, expanded_area_scenario) -> None:
         assert len(expanded_area_years_in_data) == len(
             expanded_area_years_in_constants
         ), "number of expanded area years does not match between country data and set constants"
+        assert all(
+            [
+                isinstance(v, float)
+                for v in itemgetter(*expanded_area_years_in_constants)(
+                    constants_for_params
+                )
+            ]
+        ), "expanded area yiels are not all floating point numbers"

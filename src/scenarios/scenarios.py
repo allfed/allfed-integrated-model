@@ -1501,16 +1501,7 @@ class Scenarios:
                 print("WARNING: defaulting to no expanded area")
                 expanded_area_scenario = "none"
                 self.scenario_description += "\nno expanded area"
-        try:
-            initial_delay_months = int(initial_delay_months)
-        except ValueError:
-            print(
-                f"WARNING: invalid value for the `expanded_area_init_delay` setting: {initial_delay_months}."
-            )
-            print("WARNING: defaulting to `9`")
-            initial_delay_months = 9
         constants_for_params["EXPANDED_AREA"] = expanded_area_scenario
-        constants_for_params["EXPANDED_AREA_INIT_DELAY"] = initial_delay_months
         if expanded_area_scenario == "none":
             self.EXPANDED_AREA_SET = True
             return constants_for_params

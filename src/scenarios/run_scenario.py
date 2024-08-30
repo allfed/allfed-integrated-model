@@ -1118,16 +1118,9 @@ class ScenarioRunner:
             expanded_area_scenario = scenario_option_copy["expanded_area"]
         except KeyError:
             expanded_area_scenario = "none"
-        try:
-            initial_land_clearing_time = scenario_option_copy[
-                "expanded_area_init_delay"
-            ]
-        except KeyError:
-            initial_land_clearing_time = 9
         constants_for_params = scenario_loader.set_expanded_area(
             constants_for_params,
             expanded_area_scenario,
-            initial_land_clearing_time,
             country_data,
         )
 

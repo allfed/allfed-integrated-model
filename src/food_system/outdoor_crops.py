@@ -359,11 +359,13 @@ class OutdoorCrops:
             constants_for_params["SEASONALITY"], expanded_area_yearly_yield
         ).T.ravel()
 
-        # it takes time to clear the area to crops
-        # so initial several months do not yield
-        expanded_area_monthly_yield[
-            : constants_for_params["EXPANDED_AREA_INIT_DELAY"]
-        ] = 0
+        # the expanded area model assumes that:
+        # ```land cleared in a month is immediately cultivated,
+        # and wheat is harvested from that area 8 months after cultivation,
+        # which we considered a conservative average
+        # since harvest could happen 4 to 12 months after clearing.```
+        # therefore we zero out first 8 months
+        expanded_area_monthly_yield[:9] = 0
 
         self.KCALS_GROWN = list(
             np.array(self.KCALS_GROWN) + expanded_area_monthly_yield
