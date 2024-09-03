@@ -349,6 +349,7 @@ class OutdoorCrops:
         Returns:
             None.
         """
+        assert constants_for_params["EXPANDED_AREA"] != "none"
         expanded_area_yearly_yield = [
             constants_for_params[
                 f"expanded_area_{constants_for_params["EXPANDED_AREA"]}_kcals_year{year}"
@@ -357,7 +358,7 @@ class OutdoorCrops:
         ]
         expanded_area_monthly_yield = np.outer(
             constants_for_params["SEASONALITY"], expanded_area_yearly_yield
-        ).T.ravel()
+        ).T.ravel()[: self.NMONTHS]
 
         # the expanded area model assumes that:
         # ```land cleared in a month is immediately cultivated,
