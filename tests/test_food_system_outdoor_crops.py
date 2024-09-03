@@ -10,6 +10,12 @@ from src.food_system.outdoor_crops import OutdoorCrops
 
 @pytest.fixture
 def constants_for_params() -> dict:
+    """
+    The file used here is a snapshot from a simulation run of
+    the USA_extended.yaml scenario.
+    The snapshot is of the ```constants_for_params``` dict,
+    captured immediately before the instantiation of the OutdoorCrops class.
+    """
     repo_root = git.Repo(".", search_parent_directories=True).working_dir
     test_data_path = (
         Path(repo_root)
