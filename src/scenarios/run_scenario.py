@@ -9,24 +9,23 @@ Created on Tue Jul 19
 @author: morgan
 """
 
-import sys
-
-import numpy as np
 import copy
+import sys
+from pathlib import Path
 
 import git
-from pathlib import Path
+import numpy as np
 import pandas as pd
+from pulp import constants
 
-from src.optimizer.optimizer import Optimizer
-from src.optimizer.interpret_results import Interpreter
-from src.optimizer.extract_results import Extractor
-from src.scenarios.scenarios import Scenarios
-from src.optimizer.validate_results import Validator
-from src.optimizer.parameters import Parameters
-from src.utilities.plotter import Plotter
 from src.food_system.food import Food
-
+from src.optimizer.extract_results import Extractor
+from src.optimizer.interpret_results import Interpreter
+from src.optimizer.optimizer import Optimizer
+from src.optimizer.parameters import Parameters
+from src.optimizer.validate_results import Validator
+from src.scenarios.scenarios import Scenarios
+from src.utilities.plotter import Plotter
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -816,6 +815,7 @@ class ScenarioRunner:
 
         time_consts_for_params = {}
 
+        constants_for_params = None
         # SCALE
         if scenario_option_copy["scale"] == "global":
             assert (
@@ -824,10 +824,13 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.init_global_food_system_properties()
             constants_for_params["COUNTRY_CODE"] = "WOR"
         elif scenario_option_copy["scale"] == "country":
+            assert isinstance(
+                country_data, pd.Series
+            ), f"ERROR: country data is in an incorrect format: {type(country_data)}"
+
             constants_for_params = scenario_loader.init_country_food_system_properties(
                 country_data
             )
-
             constants_for_params["COUNTRY_CODE"] = country_data["iso3"]
         else:
             scenario_is_correct = False
@@ -835,6 +838,9 @@ class ScenarioRunner:
                 scenario_is_correct
             ), "You must specify 'scale' key as global,or country"
 
+        assert (
+            constants_for_params is not None
+        ), "ERROR: constants_for_params is not set"
         constants_for_params["NMONTHS"] = scenario_option_copy["NMONTHS"]
 
         # STORED FOOD
@@ -1106,6 +1112,17 @@ class ScenarioRunner:
                 "global_nuclear_winter, all_crops_die_instantly, or country_nuclear_winter"
             )
 
+        # EXPANDED AREA
+        try:
+            expanded_area_scenario = scenario_option_copy["expanded_area"]
+        except KeyError:
+            expanded_area_scenario = "none"
+        constants_for_params = scenario_loader.set_expanded_area(
+            constants_for_params,
+            expanded_area_scenario,
+            country_data,
+        )
+
         # PROTEIN
 
         if scenario_option_copy["protein"] == "required":
@@ -1163,12 +1180,6 @@ class ScenarioRunner:
             constants_for_params = scenario_loader.get_all_resilient_foods_scenario(
                 constants_for_params
             )
-        elif scenario_option_copy["scenario"] == "all_resilient_foods_and_more_area":
-            constants_for_params = (
-                scenario_loader.get_all_resilient_foods_and_more_area_scenario(
-                    constants_for_params
-                )
-            )
         elif scenario_option_copy["scenario"] == "no_resilient_foods":
             constants_for_params = scenario_loader.get_no_resilient_food_scenario(
                 constants_for_params
@@ -1202,7 +1213,7 @@ class ScenarioRunner:
 
             assert scenario_is_correct, (
                 "You must specify 'scenario' key as either baseline_climate,"
-                "all_resilient_foods,all_resilient_foods_and_more_area,no_resilient_foods,seaweed,methane_scp,"
+                "all_resilient_foods,,no_resilient_foods,seaweed,methane_scp,"
                 "cellulosic_sugar,industrial_foods,relocated_crops or greenhouse"
             )
 

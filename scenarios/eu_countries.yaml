@@ -145,9 +145,9 @@ simulations:
     
   # Nuclear winter with resilient foods & more area
   net_nuclear_resilient_more_area:
-    title: Net Food Production, Resilient Foods
+    title: Net Food Production, Resilient Foods, Expanded Area
     scale: country
-    scenario: all_resilient_foods_and_more_area
+    scenario: all_resilient_foods
     seasonality: country
     grasses: country_nuclear_winter
     crop_disruption: country_nuclear_winter 
@@ -162,3 +162,4 @@ simulations:
     shutoff: long_delayed_shutoff
     cull: do_eat_culled
     meat_strategy: reduce_breeding
+    expanded_area: export_pool 

@@ -7,8 +7,9 @@
 """
 
 import numpy as np
-from src.utilities.plotter import Plotter
+
 from src.food_system.food import Food
+from src.utilities.plotter import Plotter
 
 
 class OutdoorCrops:
@@ -324,8 +325,8 @@ class OutdoorCrops:
 
         self.assign_reduction_from_climate_impact(constants_for_params)
 
-        if constants_for_params["RATIO_INCREASED_CROP_AREA"] > 1:
-            self.assign_increase_from_increased_cultivated_area(constants_for_params)
+        if constants_for_params["EXPANDED_AREA"] != "none":
+            self.assign_increase_from_expanded_planted_area(constants_for_params)
 
         PLOT_WITH_SEASONALITY_FLAG = False
         if PLOT_WITH_SEASONALITY_FLAG:
@@ -336,31 +337,43 @@ class OutdoorCrops:
             )
             Plotter.plot_monthly_reductions_seasonally(ratios)
 
-    def assign_increase_from_increased_cultivated_area(self, constants_for_params):
-        # Constants
+    def assign_increase_from_expanded_planted_area(
+        self, constants_for_params: dict
+    ) -> None:
+        """
+        Add expanded planted area crop yield to outdoor growing crop Calories count.
 
-        N = constants_for_params["INITIAL_HARVEST_DURATION_IN_MONTHS"]
-        max_value = constants_for_params["RATIO_INCREASED_CROP_AREA"]
-        total_months = (
-            constants_for_params["NUMBER_YEARS_TAKES_TO_REACH_INCREASED_AREA"] * 12
+        Arguments:
+            constants_for_params (dict): a dictionary containing the constants for parameters.
+
+        Returns:
+            None.
+        """
+        assert constants_for_params["EXPANDED_AREA"] != "none"
+        expanded_area_yearly_yield = [
+            constants_for_params[
+                f"expanded_area_{constants_for_params["EXPANDED_AREA"]}_kcals_year{year}"
+            ]
+            for year in range(1, 11)
+        ]
+        expanded_area_monthly_yield = np.outer(
+            constants_for_params["SEASONALITY"], expanded_area_yearly_yield
+        ).T.ravel()[: self.NMONTHS]
+
+        # the expanded area model assumes that:
+        # ```land cleared in a month is immediately cultivated,
+        # and wheat is harvested from that area 8 months after cultivation,
+        # which we considered a conservative average
+        # since harvest could happen 4 to 12 months after clearing.```
+        # therefore we zero out first 8 months
+        expanded_area_monthly_yield[:9] = 0
+
+        self.KCALS_GROWN = list(
+            np.array(self.KCALS_GROWN) + expanded_area_monthly_yield
         )
-
-        # Create the linspace
-        linspace = np.ones(self.NMONTHS)
-
-        # Calculate the increment per month after the delay
-        increment = (max_value - 1) / (total_months - N)
-
-        # Update the linspace values
-        for i in range(N, total_months):
-            linspace[i] = 1 + (i - N) * increment
-
-        # Maintain the value after the specified number of years
-        linspace[total_months:] = max_value
-
-        # increase the kcals grown using the increased ratio due to increased area
-        for i in range(self.NMONTHS):
-            self.KCALS_GROWN[i] = self.KCALS_GROWN[i] * linspace[i]
+        self.NO_RELOCATION_KCALS_GROWN = list(
+            np.array(self.NO_RELOCATION_KCALS_GROWN) + expanded_area_monthly_yield
+        )
 
     def assign_reduction_from_climate_impact(self, constants_for_params):
         self.KCALS_GROWN = []

@@ -3,10 +3,12 @@ Scenarios.py: Provides numbers and methods to set the specific scenario to be op
 Also makes sure values are never set twice.
 """
 
+from pathlib import Path
+
 import git
 import numpy as np
+import pandas as pd
 import pytest
-
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -31,6 +33,7 @@ class Scenarios:
         self.FAT_SET = False
         self.CULLING_PARAM_SET = False
         self.MEAT_STRATEGY_SET = False
+        self.EXPANDED_AREA_SET = False
 
         # convenient to understand what scenario is being run exactly
         self.scenario_description = "Scenario properties:\n"
@@ -56,6 +59,7 @@ class Scenarios:
         assert self.FAT_SET
         assert self.CULLING_PARAM_SET
         assert self.MEAT_STRATEGY_SET
+        assert self.EXPANDED_AREA_SET
 
     # INITIALIZATION
 
@@ -1456,6 +1460,82 @@ class Scenarios:
         self.DISRUPTION_SET = True
         return constants_for_params
 
+    # EXPANDED AREA
+    def set_expanded_area(
+        self,
+        constants_for_params: dict,
+        expanded_area_scenario: str,
+        country_data: pd.Series | None,
+    ) -> dict:
+        global repo_root
+        """
+        Assign constants regarding expanded planted area to the constants_for_params dictionary.
+
+        Arguments:
+            constants_for_params (dict): a dictionary containing the constants for parameters.
+            expanded_area_scenario (str): a settings' flag controlling which version of expanded area we use.
+                Defaults to no expanded area.
+            initial_land_clearing_time (int): since it takes time to clear land for crops, we ignore
+                first several months. Defaults to `9`.
+            country_data (pandas.Series): a data series take from computer_readable_combined for
+                a given country.
+
+        Returns:
+            constants_for_params: a modified constants dictionary.
+        """
+        assert not self.EXPANDED_AREA_SET
+        match expanded_area_scenario:
+            case "none":
+                self.scenario_description += "\nno expanded area"
+            case "no_trade":
+                self.scenario_description += (
+                    "\nexpanded planted area with no equipment trade"
+                )
+            case "export_pool":
+                self.scenario_description += (
+                    "\nexpanded planted area with export pool equipment trade"
+                )
+            case _:
+                print(
+                    f"WARNING: unrecognised expanded area setting value: {expanded_area_scenario}."
+                )
+                print("WARNING: defaulting to no expanded area")
+                expanded_area_scenario = "none"
+                self.scenario_description += "\nno expanded area"
+        constants_for_params["EXPANDED_AREA"] = expanded_area_scenario
+        if expanded_area_scenario == "none":
+            self.EXPANDED_AREA_SET = True
+            return constants_for_params
+
+        assert (
+            "nuclear winter crops" in self.scenario_description
+        ), "Expanded area model assumes nuclear winter crop disruption"
+        colnames = [
+            f"expanded_area_{expanded_area_scenario}_kcals_year{year}"
+            for year in range(
+                1, int((constants_for_params["NMONTHS"] + 1) / 12) + 1
+            )
+        ]
+        if isinstance(country_data, pd.Series):
+            assert not self.IS_GLOBAL_ANALYSIS
+            constants_for_params |= country_data.loc[colnames].to_dict()
+        else:
+            assert self.IS_GLOBAL_ANALYSIS
+            constants_for_params |= (
+                pd.read_csv(
+                    Path(repo_root)
+                    / "data"
+                    / "no_food_trade"
+                    / "processed_data"
+                    / "expanded_area.csv",
+                    usecols=colnames,
+                )
+                .sum(axis=0)
+                .to_dict()
+            )
+        self.EXPANDED_AREA_SET = True
+        return constants_for_params
+
     # PROTEIN
 
     def include_protein(self, constants_for_params):
@@ -1535,18 +1615,6 @@ class Scenarios:
 
         return constants_for_params
 
-    def expanded_area_and_relocated_outdoor_crops(self, constants_for_params):
-        constants_for_params["OG_USE_BETTER_ROTATION"] = True
-
-        # this may seem confusing. KCALS_REDUCTION is the reduction that would otherwise
-        # occur averaging in year 3 globally
-        constants_for_params["ROTATION_IMPROVEMENTS"]["FAT_RATIO"] = 1.647
-        constants_for_params["ROTATION_IMPROVEMENTS"]["PROTEIN_RATIO"] = 1.108
-        constants_for_params["RATIO_INCREASED_CROP_AREA"] = 72 / 39
-        constants_for_params["NUMBER_YEARS_TAKES_TO_REACH_INCREASED_AREA"] = 3
-
-        return constants_for_params
-
     def methane_scp(self, constants_for_params):
         # (one month delay built into industrial food numbers)
         constants_for_params["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] = 2
@@ -1571,29 +1639,6 @@ class Scenarios:
         self.scenario_description += "\nall resilient foods"
         assert not self.SCENARIO_SET
         constants_for_params = self.relocated_outdoor_crops(constants_for_params)
-        constants_for_params = self.methane_scp(constants_for_params)
-        constants_for_params = self.cellulosic_sugar(constants_for_params)
-        constants_for_params = self.greenhouse(constants_for_params)
-        constants_for_params = self.seaweed(constants_for_params)
-
-        self.SCENARIO_SET = True
-        return constants_for_params
-
-    def get_all_resilient_foods_and_more_area_scenario(self, constants_for_params):
-        self.scenario_description += "\nall resilient foods and more area"
-        assert not self.SCENARIO_SET
-
-        print(
-            "WARNING: There is a known issue where a smaller % minimum needs met occurs"
-        )
-        print("         if methane scp and cellulosic sugar are included")
-        print("         in addition to relocated crops with increased area")
-        print("         in some scenarios, compared to no increased area.")
-
-        constants_for_params = self.expanded_area_and_relocated_outdoor_crops(
-            constants_for_params
-        )
-
         constants_for_params = self.methane_scp(constants_for_params)
         constants_for_params = self.cellulosic_sugar(constants_for_params)
         constants_for_params = self.greenhouse(constants_for_params)

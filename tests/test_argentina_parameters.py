@@ -5,6 +5,7 @@ output is as expected.
 """
 
 import itertools
+
 import pytest
 
 from src.scenarios.run_model_no_trade import ScenarioRunnerNoTrade
@@ -162,7 +163,6 @@ def run_all_combinations():
         scenario_options = [
             "no_resilient_foods",
             "all_resilient_foods",
-            "all_resilient_foods_and_more_area",
             "seaweed",
             "methane_scp",
             "cellulosic_sugar",
@@ -266,7 +266,6 @@ def test_resilient_foods(run_all_combinations):
         "no_resilient_foods"
         <= ("seaweed","methane_scp","cellulosic_sugar","relocated_crops","greenhouse","industrial_foods")
         <= "all_resilient_foods"
-        <= "all_resilient_foods_and_more_area"
         and that
         "methane_scp" <= "industrial_foods"
         "cellulosic_sugar" <= "industrial_foods"
@@ -291,8 +290,6 @@ def test_resilient_foods(run_all_combinations):
         industrial_foods_only_sum_total_kcals = None
         all_resilient_food_result = None
         all_resilient_food_sum_total_kcals = None
-        all_resilient_food_and_more_area_result = None
-        all_resilient_food_and_more_area_sum_total_kcals = None
         for run in runs:
             if run["scenario"] == "no_resilient_foods":
                 no_resilient_food_result = run["percent_people_fed"]
@@ -316,11 +313,6 @@ def test_resilient_foods(run_all_combinations):
             elif run["scenario"] == "all_resilient_foods":
                 all_resilient_food_result = run["percent_people_fed"]
                 all_resilient_food_sum_total_kcals = run["sum_total_kcals"]
-            elif run["scenario"] == "all_resilient_foods_and_more_area":
-                all_resilient_food_and_more_area_result = run["percent_people_fed"]
-                all_resilient_food_and_more_area_sum_total_kcals = run[
-                    "sum_total_kcals"
-                ]
             else:
                 raise ValueError("Unexpected scenario")
         # Now we check if all conditions are met
@@ -401,16 +393,6 @@ def test_resilient_foods(run_all_combinations):
             assert_message=(
                 "Adding all resilient foods cannot decrease the number of people fed compared to having "
                 "just industrial foods"
-            ),
-        )
-        assert_fewer_people_fed_or_less_overall_food(
-            result_smaller=all_resilient_food_result,
-            result_sum_total_smaller=all_resilient_food_sum_total_kcals,
-            result_bigger=all_resilient_food_and_more_area_result,
-            result_sum_total_bigger=all_resilient_food_and_more_area_sum_total_kcals,
-            assert_message=(
-                "Adding more area cannot decrease the number of people fed compared to having just "
-                "resilient foods"
             ),
         )
 
