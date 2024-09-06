@@ -1,11 +1,9 @@
 from operator import itemgetter
 from pathlib import Path
-from random import random
 
 import git
 import pandas as pd
 import pytest
-from pulp import constants
 
 from src.scenarios.scenarios import Scenarios
 
