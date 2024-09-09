@@ -148,7 +148,6 @@ for df_id, df in enumerate(dataframes):
         "south korea",
     ]:
         dataframes[df_id] = df.replace({"KOR": "PRK", "PRK": "KOR"})
-
 # df1 (population) has ground truth country names
 # and any null rows in the "population" dataframe is dropped, as the merge will
 # only keep rows which exist in df1
