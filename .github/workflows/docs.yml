@@ -44,6 +44,7 @@ jobs:
           mkdocs gh-deploy --force --clean --verbose
 
       - name: Commit any changes to docs
+        continue-on-error: true
         run: |
           git config --local user.name "github-actions[bot]"
           git add ./docs
@@ -53,5 +54,5 @@ jobs:
         continue-on-error: true
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PAT }}
           branch: main
