@@ -1,6 +1,6 @@
 """Function which initiliases all of the animal population data Working file for now, may be broken up.
 
-Requierments:
+Requirements:
     - animal population data
     - animal slaughter data
     - animal feed data
