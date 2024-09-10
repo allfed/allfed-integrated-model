@@ -152,6 +152,10 @@ simulations:
     - `reduce_breeding` - Reduce breeding in accordance to "reduced" column in data/no_food_trade/animal_feed_data/species_options.csv. Essentiall, nearly all breeding is stopped immediately after the nuclear winter.
     - `baseline_breeding` - Normal breeding levels to maintain livestock levels, "baseline" column in data/no_food_trade/animal_feed_data/species_options.csv
 
+  - **nuclear_war_scenario**:
+    - do not include if you do not want to apply a nuclear war scenario population and industry loss.
+    - if including, must be the name of a csv file in the data/nuclear_war_scenarios directory.
+
 ## Detailed Notes
 
 The `scale` setting determines whether the simulation is run for the entire world (`global`) or a single specified country (`country`).
@@ -178,4 +182,6 @@ The `waste` setting controls the percent of food wasted at the retail and consum
 
 `fat` and `protein` control whether meeting fat and protein requirements are tracked.
 
-Finally, `meat_strategy` sets whether feed is prioritized for dairy cows, then to pigs and chickens, then to cattle for beef (`efficient`), or distributed proportionally to present-day ratios of feed (`inefficient`).
+`meat_strategy` sets whether feed is prioritized for dairy cows, then to pigs and chickens, then to cattle for beef (`efficient`), or distributed proportionally to present-day ratios of feed (`inefficient`).
+
+`nuclear_war_scenario` allows you to apply a nuclear war scenario population and industry loss. For now, the industry loss is only applied to crops (loss of fertilizers and pesticides), and is applied irrespective of the value of `crop_disruption`. This reduction is applied multiplicatively to the crop production (reduced by nuclear winter effects of not) for each country.

@@ -1,5 +1,7 @@
 The population losses given in these csv files were calculated using [this code](https://github.com/allfed/Population-Loss-NW). Note that this does not account for injuries or casualties due to radiation fallout. Only fatalities due to the explosions are considered, see [the relevant repository](https://github.com/allfed/Population-Loss-NW) for more details. Below is a short description of the different scenarios currently included.
 
+The csv files also give the percentage of industry loss for each country. This is the percentage of the industry that is destroyed by fire or disabled by HEMPs. The files also provide the percentage of crop yield loss for each country given the drop in the availability of fertilizers and pesticides in each scenario. Again, see [the relevant repository](https://github.com/allfed/Population-Loss-NW) for more details.
+
 ## `Toon2008_SORT`
 
 This scenario is based on [Toon et al. 2008](https://pubs.aip.org/physicstoday/article/61/12/37/393240/Environmental-consequences-of-nuclear-war). In this scenario,  we assume that Russia targets 1000 weapons on the US and 200 warheads each on France, Germany, India, Japan, Pakistan, and the UK. We assume the US targets 1100 weapons each on China and Russia. Targets are selected by finding for a given country where to detonate a given number of warheads over the country's most populated region and without overlapping targets. All nuclear weapons are assumed to have a yield of 100 kt. In this scenario, total fatalities reach 570 million.

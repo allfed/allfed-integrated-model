@@ -1106,6 +1106,14 @@ class ScenarioRunner:
                 "global_nuclear_winter, all_crops_die_instantly, or country_nuclear_winter"
             )
 
+        # AGRICULTURE INPUT LOSS
+
+        if "nuclear_war_scenario" in scenario_option:
+            nuclear_war_scenario = scenario_option["nuclear_war_scenario"]
+            constants_for_params = scenario_loader.apply_agriculture_input_loss(
+                nuclear_war_scenario, constants_for_params, country_data
+            )
+
         # PROTEIN
 
         if scenario_option_copy["protein"] == "required":

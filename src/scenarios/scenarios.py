@@ -6,6 +6,8 @@ Also makes sure values are never set twice.
 import git
 import numpy as np
 import pytest
+import pandas as pd
+from pathlib import Path
 
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
@@ -1387,6 +1389,7 @@ class Scenarios:
         self.DISRUPTION_SET = True
         return constants_for_params
 
+
     def set_nuclear_winter_country_disruption_to_crops(
         self, constants_for_params, country_data
     ):
@@ -1454,6 +1457,36 @@ class Scenarios:
         constants_for_params["RATIO_CROPS_YEAR11"] = 0
 
         self.DISRUPTION_SET = True
+        return constants_for_params
+    
+
+    def apply_agriculture_input_loss(
+        self, nuclear_war_scenario, constants_for_params, country_data
+    ):
+        """
+        This function applies the agriculture yield loss resulting from loss of industry
+        in a given nuclear war scenario.
+        """
+        nuclear_war_csv = (
+            Path(repo_root)
+            / "data"
+            / "nuclear_war_scenarios"
+            / f"{nuclear_war_scenario}.csv"
+        )
+        nuclear_war_data = pd.read_csv(nuclear_war_csv)
+        country_nuclear_data = nuclear_war_data[
+            nuclear_war_data["iso3"] == country_data["iso3"]
+        ]
+        for year in range(1, 11):
+            constants_for_params[f"RATIO_CROPS_YEAR{year}"] = constants_for_params[
+                f"RATIO_CROPS_YEAR{year}"
+            ] * (1 - country_nuclear_data["yield_loss_pct"].values[0] / 100)
+        try:
+            constants_for_params["RATIO_CROPS_YEAR11"] = constants_for_params[
+                "RATIO_CROPS_YEAR11"
+            ] * (1 - country_nuclear_data["yield_loss_pct"].values[0] / 100)
+        except KeyError:
+            pass
         return constants_for_params
 
     # PROTEIN
