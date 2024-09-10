@@ -54,5 +54,5 @@ jobs:
         continue-on-error: true
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.PAT }} # Use a Personal Access Token here
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
