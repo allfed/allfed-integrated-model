@@ -41,7 +41,7 @@ jobs:
           gendocs --config mkgendocs.yml
       - name: deploy
         run: |
-          mkdocs gh-deploy --force --clean --verbose
+          mkdocs gh-deploy --clean --verbose
 
       - name: Commit any changes to docs
         continue-on-error: true
