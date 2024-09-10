@@ -1120,17 +1120,23 @@ class Scenarios:
         assert self.IS_GLOBAL_ANALYSIS
         assert not self.GRASSES_SET
 
+        # Data source: Xia et al. (2020)
+        # Global food insecurity and famine from reduced crop, marine fishery and livestock production due 
+        # to climate disruption from nuclear war soot injection
+        
+        # link: https://www.nature.com/articles/s43016-022-00573-0/figures/2
+        # the grass reduction plot (figure 2, graph d)
         # tons dry caloric monthly
-        constants_for_params["RATIO_GRASSES_YEAR1"] = 0.65
-        constants_for_params["RATIO_GRASSES_YEAR2"] = 0.23
-        constants_for_params["RATIO_GRASSES_YEAR3"] = 0.14
-        constants_for_params["RATIO_GRASSES_YEAR4"] = 0.13
-        constants_for_params["RATIO_GRASSES_YEAR5"] = 0.13
-        constants_for_params["RATIO_GRASSES_YEAR6"] = 0.19
-        constants_for_params["RATIO_GRASSES_YEAR7"] = 0.24
-        constants_for_params["RATIO_GRASSES_YEAR8"] = 0.33  # TODO: UPDATE THESE
-        constants_for_params["RATIO_GRASSES_YEAR9"] = 0.33  # TODO: UPDATE THESE
-        constants_for_params["RATIO_GRASSES_YEAR10"] = 0.33  # TODO: UPDATE THESE
+        constants_for_params["RATIO_GRASSES_YEAR1"] = 0.72 # 28 from graph
+        constants_for_params["RATIO_GRASSES_YEAR2"] = 0.24 # 76 from graph
+        constants_for_params["RATIO_GRASSES_YEAR3"] = 0.16 # 84 from graph
+        constants_for_params["RATIO_GRASSES_YEAR4"] = 0.13 # 87 from graph
+        constants_for_params["RATIO_GRASSES_YEAR5"] = 0.125 # 87.5 from graph
+        constants_for_params["RATIO_GRASSES_YEAR6"] = 0.15 # 85 from graph
+        constants_for_params["RATIO_GRASSES_YEAR7"] = 0.17 # 83 from graph
+        constants_for_params["RATIO_GRASSES_YEAR8"] = 0.23 # 77 from graph
+        constants_for_params["RATIO_GRASSES_YEAR9"] = 0.32 # 68 from graph
+        constants_for_params["RATIO_GRASSES_YEAR10"] = 0.41 # 59 from graph
 
         self.GRASSES_SET = True
         return constants_for_params
@@ -1177,167 +1183,32 @@ class Scenarios:
         Set the fish percentages in every country (or globally) from baseline
         although this is a global number, we don't have the regional number, so
         we use the global instead.
+
+        This data comes from reading the graph off of this figure in the following paper:
+        Global food insecurity and famine from reduced crop, marine fishery and livestock production due 
+        to climate disruption from nuclear war soot injection
+        https://www.nature.com/articles/s43016-022-00573-0/figures/2        
+        Specifically, plot b.
+
         """
         self.scenario_description += "\nreduced fish"
         assert not self.FISH_SET
-        time_consts["FISH_PERCENT_MONTHLY"] = list(
-            np.array(
-                [
-                    0.0,
-                    -0.90909091,
-                    -1.81818182,
-                    -2.72727273,
-                    -3.63636364,
-                    -4.54545455,
-                    -5.45454545,
-                    -6.36363636,
-                    -7.27272727,
-                    -8.18181818,
-                    -9.09090909,
-                    -10,
-                    -10.0,
-                    -12.0,
-                    -14.0,
-                    -16.0,
-                    -18.0,
-                    -20.0,
-                    -22.0,
-                    -24.0,
-                    -26.0,
-                    -28.0,
-                    -30.0,
-                    -32.0,
-                    -32.0,
-                    -32.27272727,
-                    -32.54545455,
-                    -32.81818182,
-                    -33.09090909,
-                    -33.36363636,
-                    -33.63636364,
-                    -33.90909091,
-                    -34.18181818,
-                    -34.45454545,
-                    -34.72727273,
-                    -35.0,
-                    -35.0,
-                    -34.90909091,
-                    -34.81818182,
-                    -34.72727273,
-                    -34.63636364,
-                    -34.54545455,
-                    -34.45454545,
-                    -34.36363636,
-                    -34.27272727,
-                    -34.18181818,
-                    -34.09090909,
-                    -34.0,
-                    -34.0,
-                    -33.90909091,
-                    -33.81818182,
-                    -33.72727273,
-                    -33.63636364,
-                    -33.54545455,
-                    -33.45454545,
-                    -33.36363636,
-                    -33.27272727,
-                    -33.18181818,
-                    -33.09090909,
-                    -33.0,
-                    -33.0,
-                    -32.81818182,
-                    -32.63636364,
-                    -32.45454545,
-                    -32.27272727,
-                    -32.09090909,
-                    -31.90909091,
-                    -31.72727273,
-                    -31.54545455,
-                    -31.36363636,
-                    -31.18181818,
-                    -31.0,
-                    -31.0,
-                    -30.90909091,
-                    -30.81818182,
-                    -30.72727273,
-                    -30.63636364,
-                    -30.54545455,
-                    -30.45454545,
-                    -30.36363636,
-                    -30.27272727,
-                    -30.18181818,
-                    -30.09090909,
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                    -30.0,  # TODO: update to correct number for these months
-                ]
-            )
-            + 100
-        )
+        yearly_fish_reduction = [
+            0, -11, -32, -35, -34, -32.5, -32, -30, -29, -27, -22, -15, -8, 0, 0, 0
+        ]
+
+        # Interpolating for each month
+        monthly_fish_reduction = np.concatenate([
+            np.linspace(yearly_fish_reduction[i], yearly_fish_reduction[i + 1], num=12, endpoint=False)
+            for i in range(len(yearly_fish_reduction) - 1)
+        ])
+
+        # Append the last year's steady value
+        monthly_fish_reduction = np.append(monthly_fish_reduction, np.full(12, yearly_fish_reduction[-1]))
+
+        # change to a positive percentage.
+        time_consts["FISH_PERCENT_MONTHLY"] = monthly_fish_reduction + 100
+        import matplotlib.pyplot as plt
 
         self.FISH_SET = True
         return time_consts
