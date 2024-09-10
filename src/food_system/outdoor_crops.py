@@ -118,8 +118,8 @@ class OutdoorCrops:
         for the early part of the year's harvest.
 
         Returns:
-        - fraction_continued_yields (float): The fraction of normal harvest that is
-          expected to continue after adjustments for nuclear winter conditions.
+            - fraction_continued_yields (float): The fraction of normal harvest that is
+            expected to continue after adjustments for nuclear winter conditions.
         """
         if country_iso3 == "ZAF":
             harvest_before_may_this_country = 1
