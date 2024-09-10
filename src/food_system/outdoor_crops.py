@@ -101,24 +101,24 @@ class OutdoorCrops:
         self, first_year_xia_et_al_reduction, seasonality_values, country_iso3
     ):
         """
-        Calculates the fraction of expected yield that continues during the first year 
-        of a nuclear winter, accounting only for the harvest before May. This function 
+        Calculates the fraction of expected yield that continues during the first year
+        of a nuclear winter, accounting only for the harvest before May. This function
         adjusts the initial reduction estimate by subtracting harvest amounts post-May.
 
         Parameters:
-        - first_year_xia_et_al_reduction (float): The estimated reduction in harvest 
+        - first_year_xia_et_al_reduction (float): The estimated reduction in harvest
           for the first year as a percentage.
-        - seasonality_values (list of floats): Monthly distribution percentages of the 
+        - seasonality_values (list of floats): Monthly distribution percentages of the
           annual harvest.
         - country_iso3 (str): ISO3 country code.
 
         The function considers specific exceptions for certain countries with predetermined
         values, reflecting different agricultural timelines. The result is a ratio indicating
-        the extent of agricultural yield continuing through the nuclear winter, adjusted 
+        the extent of agricultural yield continuing through the nuclear winter, adjusted
         for the early part of the year's harvest.
 
         Returns:
-        - fraction_continued_yields (float): The fraction of normal harvest that is 
+        - fraction_continued_yields (float): The fraction of normal harvest that is
           expected to continue after adjustments for nuclear winter conditions.
         """
         if country_iso3 == "ZAF":

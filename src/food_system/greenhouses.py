@@ -130,10 +130,10 @@ class Greenhouses:
             numpy.ndarray: an array containing the area of greenhouses needed to grow crops
 
         This function calculates the area of greenhouses needed to grow crops. It first checks if there is any crop
-        area to grow. If there is no crop area, it returns an array of zeros. If there is crop area, it calculates 
-        the area of greenhouses needed based on the greenhouse area multiplier and the total crop area. If the 
-        greenhouse area multiplier is not specified, it uses the greenhouse fraction from Australia to calculate 
-        the greenhouse area. It then assigns the productivity reduction from climate impact and returns the 
+        area to grow. If there is no crop area, it returns an array of zeros. If there is crop area, it calculates
+        the area of greenhouses needed based on the greenhouse area multiplier and the total crop area. If the
+        greenhouse area multiplier is not specified, it uses the greenhouse fraction from Australia to calculate
+        the greenhouse area. It then assigns the productivity reduction from climate impact and returns the
         greenhouse area array.
         """
         # greenhouses tab
