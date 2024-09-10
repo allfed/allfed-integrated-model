@@ -32,6 +32,7 @@ jobs:
           pip install pyyaml
           python automate_mkdocs.py
           git add .
+
       - name: Update and Build GH Pages
         run: |
           python -m pip install --upgrade pip
@@ -40,25 +41,22 @@ jobs:
           pip install markupsafe==2.0.1
           pip install jinja2==2.11
           gendocs --config mkgendocs.yml
+
       - name: deploy
         run: |
-          mkdocs gh-deploy --force --clean --verbose 	    
+          mkdocs gh-deploy --force --clean --verbose
 
       - name: Commit any changes to docs
         continue-on-error: true
         run: |
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"   # Set the Git user email
+          git config --local user.name "github-actions[bot]"                            # Set the Git user name
           git add ./docs
-          git commit -m "Auto-updating the docs"
-          
+          git commit -m "Auto-updating the docs" || echo "No changes to commit"
 
-      - name: Push the changes to master
-        continue-on-error: true
+      - name: Push the changes to main
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
-          force: true  
-
-
-
+          force: true
