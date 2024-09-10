@@ -44,7 +44,6 @@ jobs:
           mkdocs gh-deploy --force --clean --verbose
 
       - name: Commit any changes to docs
-        continue-on-error: true
         run: |
           git config --local user.name "github-actions[bot]"
           git add ./docs
