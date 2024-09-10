@@ -1121,22 +1121,22 @@ class Scenarios:
         assert not self.GRASSES_SET
 
         # Data source: Xia et al. (2020)
-        # Global food insecurity and famine from reduced crop, marine fishery and livestock production due 
+        # Global food insecurity and famine from reduced crop, marine fishery and livestock production due
         # to climate disruption from nuclear war soot injection
-        
+
         # link: https://www.nature.com/articles/s43016-022-00573-0/figures/2
         # the grass reduction plot (figure 2, graph d)
         # tons dry caloric monthly
-        constants_for_params["RATIO_GRASSES_YEAR1"] = 0.72 # 28 from graph
-        constants_for_params["RATIO_GRASSES_YEAR2"] = 0.24 # 76 from graph
-        constants_for_params["RATIO_GRASSES_YEAR3"] = 0.16 # 84 from graph
-        constants_for_params["RATIO_GRASSES_YEAR4"] = 0.13 # 87 from graph
-        constants_for_params["RATIO_GRASSES_YEAR5"] = 0.125 # 87.5 from graph
-        constants_for_params["RATIO_GRASSES_YEAR6"] = 0.15 # 85 from graph
-        constants_for_params["RATIO_GRASSES_YEAR7"] = 0.17 # 83 from graph
-        constants_for_params["RATIO_GRASSES_YEAR8"] = 0.23 # 77 from graph
-        constants_for_params["RATIO_GRASSES_YEAR9"] = 0.32 # 68 from graph
-        constants_for_params["RATIO_GRASSES_YEAR10"] = 0.41 # 59 from graph
+        constants_for_params["RATIO_GRASSES_YEAR1"] = 0.72  # 28 from graph
+        constants_for_params["RATIO_GRASSES_YEAR2"] = 0.24  # 76 from graph
+        constants_for_params["RATIO_GRASSES_YEAR3"] = 0.16  # 84 from graph
+        constants_for_params["RATIO_GRASSES_YEAR4"] = 0.13  # 87 from graph
+        constants_for_params["RATIO_GRASSES_YEAR5"] = 0.125  # 87.5 from graph
+        constants_for_params["RATIO_GRASSES_YEAR6"] = 0.15  # 85 from graph
+        constants_for_params["RATIO_GRASSES_YEAR7"] = 0.17  # 83 from graph
+        constants_for_params["RATIO_GRASSES_YEAR8"] = 0.23  # 77 from graph
+        constants_for_params["RATIO_GRASSES_YEAR9"] = 0.32  # 68 from graph
+        constants_for_params["RATIO_GRASSES_YEAR10"] = 0.41  # 59 from graph
 
         self.GRASSES_SET = True
         return constants_for_params
@@ -1185,26 +1185,50 @@ class Scenarios:
         we use the global instead.
 
         This data comes from reading the graph off of this figure in the following paper:
-        Global food insecurity and famine from reduced crop, marine fishery and livestock production due 
+        Global food insecurity and famine from reduced crop, marine fishery and livestock production due
         to climate disruption from nuclear war soot injection
-        https://www.nature.com/articles/s43016-022-00573-0/figures/2        
+        https://www.nature.com/articles/s43016-022-00573-0/figures/2
         Specifically, plot b.
 
         """
         self.scenario_description += "\nreduced fish"
         assert not self.FISH_SET
         yearly_fish_reduction = [
-            0, -11, -32, -35, -34, -32.5, -32, -30, -29, -27, -22, -15, -8, 0, 0, 0
+            0,
+            -11,
+            -32,
+            -35,
+            -34,
+            -32.5,
+            -32,
+            -30,
+            -29,
+            -27,
+            -22,
+            -15,
+            -8,
+            0,
+            0,
+            0,
         ]
 
         # Interpolating for each month
-        monthly_fish_reduction = np.concatenate([
-            np.linspace(yearly_fish_reduction[i], yearly_fish_reduction[i + 1], num=12, endpoint=False)
-            for i in range(len(yearly_fish_reduction) - 1)
-        ])
+        monthly_fish_reduction = np.concatenate(
+            [
+                np.linspace(
+                    yearly_fish_reduction[i],
+                    yearly_fish_reduction[i + 1],
+                    num=12,
+                    endpoint=False,
+                )
+                for i in range(len(yearly_fish_reduction) - 1)
+            ]
+        )
 
         # Append the last year's steady value
-        monthly_fish_reduction = np.append(monthly_fish_reduction, np.full(12, yearly_fish_reduction[-1]))
+        monthly_fish_reduction = np.append(
+            monthly_fish_reduction, np.full(12, yearly_fish_reduction[-1])
+        )
 
         # change to a positive percentage.
         time_consts["FISH_PERCENT_MONTHLY"] = monthly_fish_reduction + 100
