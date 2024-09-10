@@ -69,7 +69,7 @@ class StoredFood:
 
         The minimum of any beginning month is a reasonable proxy for the very
         lowest levels stocks reach.
-        
+
         Note:
             The optimizer will run through the stocks for the duration of
             each month. So, even starting at August (the minimum month), you would
