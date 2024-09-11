@@ -7,10 +7,12 @@ The output is saved in data/no_food_trade/computer_readable_file.py.
 
 """
 
-from pathlib import Path
-import pandas as pd
 from functools import reduce
+from pathlib import Path
+
 import git
+import pandas as pd
+
 from src.utilities.import_utilities import ImportUtilities
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
@@ -133,10 +135,23 @@ dataframes = [
 ]
 
 
+# PRK/KOR fix
+# certain tabs in the data source spreadsheet have PRK iso code instead of KOR
+# and vice versa.
+# It seems that the values in the spreadsheet correspond correctly to the
+# name of the country so we need to fix the iso codes.
+# Instead of manually fixing the spreadsheet we can automate it here.
+for df_id, df in enumerate(dataframes):
+    korean_entries = df[df["iso3"].isin(["PRK", "KOR"])].set_index("iso3")
+    if korean_entries.loc["KOR", "country"].lower() not in [
+        "republic of korea",
+        "south korea",
+    ]:
+        dataframes[df_id] = df.replace({"KOR": "PRK", "PRK": "KOR"})
 # df1 (population) has ground truth country names
 # and any null rows in the "population" dataframe is dropped, as the merge will
 # only keep rows which exist in df1
-dataframes_for_merge = [df1.dropna()]  # will add the rest soon
+dataframes_for_merge = [dataframes[0].dropna()]  # will add the rest soon
 
 
 # replace eswatini country code in the list (proper code is SWT now, not swaziland SWZ)

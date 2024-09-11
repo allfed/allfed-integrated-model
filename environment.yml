@@ -3,16 +3,20 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - openpyxl
-  - statsmodels
-  - python-pptx
-  - pytest
-  - geopandas
-  - seaborn
-  - pyyaml 
-  - ipykernel
-  - flake8
-  - plotly # consider removing, but required for animal populations currently
+  - setuptools=72.1.0
+  - pytest=7.4.4
+  - pandas=2.2.2
+  - numpy=1.26.4
+  - matplotlib=3.8.4
+  - scipy=1.13.1
+  - seaborn=0.12.2
+  - shapely=2.0.5
+  - fiona=1.9.5
+  - geopandas=0.14.2
+  - openpyxl=3.1.5
+  - python-pptx=0.6.23
+  - plotly=5.22.0
+  - PyYAML=6.0.1
+  - gitpython=3.1.43
   - pip:
-    - gitpython
-    - pulp
+    - pulp=2.9.0
