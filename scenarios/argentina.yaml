@@ -20,7 +20,7 @@ simulations:
     nutrition: baseline 
     intake_constraints: enabled
     stored_food: baseline
-    end_simulation_stocks_ratio: baseline
+    ratio_stocks_untouched: baseline
     shutoff: continued
     cull: do_eat_culled
     fat: not_required
@@ -40,7 +40,7 @@ simulations:
     nutrition: baseline
     intake_constraints: enabled
     stored_food: baseline
-    end_simulation_stocks_ratio: baseline
+    ratio_stocks_untouched: baseline
     shutoff: immediate
     cull: dont_eat_culled
     fat: not_required
@@ -62,7 +62,7 @@ simulations:
     nutrition: catastrophe
     intake_constraints: enabled
     stored_food: baseline
-    end_simulation_stocks_ratio: zero
+    ratio_stocks_untouched: zero
     shutoff: continued
     cull: do_eat_culled
     meat_strategy: reduce_breeding
@@ -82,7 +82,7 @@ simulations:
     nutrition: catastrophe
     intake_constraints: enabled
     stored_food: baseline
-    end_simulation_stocks_ratio: zero
+    ratio_stocks_untouched: zero
     shutoff: long_delayed_shutoff
     cull: do_eat_culled
     meat_strategy: reduce_breeding
@@ -102,7 +102,7 @@ simulations:
     nutrition: catastrophe
     intake_constraints: enabled
     stored_food: baseline
-    end_simulation_stocks_ratio: zero
+    ratio_stocks_untouched: zero
     shutoff: long_delayed_shutoff
     cull: do_eat_culled
     meat_strategy: reduce_breeding
@@ -122,7 +122,7 @@ simulations:
     nutrition: catastrophe
     intake_constraints: enabled
     stored_food: baseline
-    end_simulation_stocks_ratio: zero
+    ratio_stocks_untouched: zero
     shutoff: long_delayed_shutoff
     cull: do_eat_culled
     meat_strategy: reduce_breeding
