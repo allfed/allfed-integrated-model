@@ -5,11 +5,13 @@ using the production of each crop combined with the nutrition of the crops.
 @author: morgan
 """
 
-import pandas as pd
-import numpy as np
-from src.utilities.import_utilities import ImportUtilities
-import git
 from pathlib import Path
+
+import git
+import numpy as np
+import pandas as pd
+
+from src.utilities.import_utilities import ImportUtilities
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
@@ -55,10 +57,8 @@ class CropMacros:
 
         # Import nutrition data from Excel file
         xls = pd.ExcelFile(self.NUTRITION_XLS)
-        nutrition = pd.read_excel(xls, "Nutrition")[
-            ["Item", "Calories", "Protein", "Fat"]
-        ]
-
+        nutrition = pd.read_excel(xls, sheet_name="Nutrition", usecols="A:D")
+        nutrition.columns = ["Item", "Calories", "Protein", "Fat"]
         # Define column names for production data
         iso3_code = "Area Code (ISO3)"
         production_col_names = [
