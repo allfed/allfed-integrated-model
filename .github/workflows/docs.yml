@@ -1,5 +1,4 @@
 name: Docs
-
 on:
   # Trigger the workflow on push or pull request,
   # but only for the main branch
@@ -9,11 +8,14 @@ on:
   pull_request:
     branches:
       - main
+  workflow_run:
+    workflows: ["Tests"]  # This refers to the "Tests" workflow name
+    types:
+      - completed  # Trigger after "Tests" workflow is completed
 
 jobs:
   build:
     name: Docs
-    needs: Running Tests # This ensures docs job runs after the 'Running Tests' job in the Tests workflow
     runs-on: ubuntu-latest
     strategy:
       matrix:
