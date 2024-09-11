@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../../../../img/favicon.ico">
+  <title>Parameters - ALLFED Integrated Model</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../../../css/theme.css" />
+  <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Parameters";
+    var mkdocs_page_input_path = "modules/src/optimizer/parameters.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../../../.." class="icon icon-home"> ALLFED Integrated Model</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../..">ALLFED Integrated Food System Model</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Modules</span></p>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="#">Src</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="#">Food system</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/animal_populations/">Animal populations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/cellulosic_sugar/">Cellulosic sugar</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/feed_and_biofuels/">Feed and biofuels</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/food/">Food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/greenhouses/">Greenhouses</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/meat_and_dairy/">Meat and dairy</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/methane_scp/">Methane scp</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/outdoor_crops/">Outdoor crops</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/seafood/">Seafood</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/seaweed/">Seaweed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/stored_food/">Stored food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/unit_conversions/">Unit conversions</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Import scripts no food trade</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_crop_macros_csv/">Create crop macros csv</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_nuclear_winter_csv/">Create nuclear winter csv</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Optimizer</a>
+    <ul class="current">
+                <li class="toctree-l3"><a class="reference internal" href="../extract_results/">Extract results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../interpret_results/">Interpret results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../optimizer/">Optimizer</a>
+                </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="./">Parameters</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#parameters">Parameters</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../validate_results/">Validate results</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Scenarios</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_model_no_trade/">Run model no trade</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenario/">Run scenario</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenarios_from_yaml/">Run scenarios from yaml</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/scenarios/">Scenarios</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Utilities</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/constants/">Constants</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/import_utilities/">Import utilities</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/make_powerpoint/">Make powerpoint</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/plotter/">Plotter</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../..">ALLFED Integrated Model</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Modules &raquo;</li>
+        
+      
+        
+          <li>Src &raquo;</li>
+        
+      
+        
+          <li>Optimizer &raquo;</li>
+        
+      
+    
+    <li>Parameters</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1"></h1>
+<h2 id="parameters">Parameters</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L27">source</a></p>
+<pre><code class="language-python">
+</code></pre>
+<p><strong>Methods:</strong></p>
+<h3 id="compute_parameters_first_round">.compute_parameters_first_round</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L56">source</a></p>
+<pre><code class="language-python">.compute_parameters_first_round(
+   constants_inputs, time_consts_inputs, scenarios_loader
+)
+</code></pre>
+<hr />
+<p>Computes the parameters for the model based on the inputs and scenarios provided.
+This is relevant for the first round of optimization, with no feed assumed.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>constants_inputs</strong> (dict) : A dictionary containing the constant inputs for the model.</li>
+<li><strong>scenarios_loader</strong> (ScenariosLoader) : An instance of the ScenariosLoader class containing the scenario inputs.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : A tuple containing the computed constants, time constants, and feed and biofuels.</li>
+</ul>
+<p><strong>Raises</strong></p>
+<ul>
+<li><strong>AssertionError</strong>  : If maintained meat needs to be added for continued feed usage or if the function is not
+run for the first time.</li>
+</ul>
+<h3 id="get_second_round_kcals_with_redistributed_meat">.get_second_round_kcals_with_redistributed_meat</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L165">source</a></p>
+<pre><code class="language-python">.get_second_round_kcals_with_redistributed_meat(
+   round_1_meat_kcals, round_2_meat_kcals, milk_kcals_round1, milk_kcals_round2
+)
+</code></pre>
+<hr />
+<p>Gets a new array of kcals where the sum of kcals from meat remains the same, but the places where the meat was
+originally larger than round 1 is reduced, and the places where the meat was less than round 1 is increased.</p>
+<h3 id="fill_negatives_with_positives">.fill_negatives_with_positives</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L240">source</a></p>
+<pre><code class="language-python">.fill_negatives_with_positives(
+   arr
+)
+</code></pre>
+<h3 id="init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels_round1">.init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels_round1</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L265">source</a></p>
+<pre><code class="language-python">.init_meat_and_dairy_and_feed_from_breeding_and_subtract_feed_biofuels_round1(
+   constants_out, constants_inputs, time_consts
+)
+</code></pre>
+<h3 id="assert_constants_not_nan">.assert_constants_not_nan</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L369">source</a></p>
+<pre><code class="language-python">.assert_constants_not_nan(
+   consts_for_optimizer, time_consts
+)
+</code></pre>
+<hr />
+<p>This function checks that there are no NaN values in the constants, as the linear optimizer
+will fail in a mysterious way if there are. It does this by iterating through the consts_for_optimizer
+and time_consts dictionaries and checking each value for NaN.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>consts_for_optimizer</strong> (dict) : A dictionary of single-valued constants</li>
+<li><strong>time_consts</strong> (dict) : A dictionary of time constants</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<h3 id="assert_dictionary_value_not_nan">.assert_dictionary_value_not_nan</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L392">source</a></p>
+<pre><code class="language-python">.assert_dictionary_value_not_nan(
+   key, value
+)
+</code></pre>
+<hr />
+<p>Asserts if a dictionary value is not NaN. If it is NaN, raises an AssertionError and prints the key.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>key</strong> (str) : The key of the dictionary value being checked.</li>
+<li><strong>value</strong> (Any) : The value of the dictionary being checked.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>None</p>
+<p><strong>Raises</strong></p>
+<ul>
+<li><strong>AssertionError</strong>  : If the value is NaN.</li>
+</ul>
+<h3 id="init_scenario">.init_scenario</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L424">source</a></p>
+<pre><code class="language-python">.init_scenario(
+   constants_out, constants_inputs
+)
+</code></pre>
+<hr />
+<p>Initializes the scenario for some constants_out used for the optimizer.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>constants_out</strong> (dict) : A dictionary containing constants used for the optimizer.</li>
+<li><strong>constants_inputs</strong> (dict) : A dictionary containing input constants.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : A dictionary containing constants used for the optimizer.</li>
+</ul>
+<h3 id="set_nutrition_per_month">.set_nutrition_per_month</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L463">source</a></p>
+<pre><code class="language-python">.set_nutrition_per_month(
+   constants_out, constants_inputs
+)
+</code></pre>
+<hr />
+<p>Set the nutrition per month for the simulation.</p>
+<p>This function sets the nutrition per month for the simulation based on the input constants.
+It assumes a 2100 kcals diet, and scales the "upper safe" nutrition from the spreadsheet down to this
+"standard" level.
+It also adds 20% loss, according to the sorts of loss seen in this spreadsheet.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong>  : instance of the class</li>
+<li><strong>constants_out</strong> (dict) : dictionary containing the output constants</li>
+<li><strong>constants_inputs</strong> (dict) : dictionary containing the input constants</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : dictionary containing the updated output constants</li>
+</ul>
+<h3 id="set_seaweed_params">.set_seaweed_params</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L522">source</a></p>
+<pre><code class="language-python">.set_seaweed_params(
+   constants_out, constants_inputs
+)
+</code></pre>
+<hr />
+<p>This function sets the seaweed parameters by calling the Seaweed class methods and
+assigning the resulting values to the constants_out dictionary. It also calculates
+the built_area and growth_rates using the Seaweed class methods and returns them
+along with the constants_out dictionary and the Seaweed object.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>constants_out</strong> (dict) : dictionary containing the output constants</li>
+<li><strong>constants_inputs</strong> (dict) : dictionary containing the input constants</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : a tuple containing the constants_out dictionary, built_area, growth_rates,
+and the Seaweed object</li>
+</ul>
+<h3 id="init_outdoor_crops">.init_outdoor_crops</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L574">source</a></p>
+<pre><code class="language-python">.init_outdoor_crops(
+   constants_out, constants_inputs
+)
+</code></pre>
+<hr />
+<p>Initializes the outdoor crops parameters by calculating the rotation ratios and monthly production</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>constants_out</strong> (dict) : A dictionary containing the output constants</li>
+<li><strong>constants_inputs</strong> (dict) : A dictionary containing the input constants</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : A tuple containing the updated constants_out and the outdoor_crops object</li>
+</ul>
+<hr />
+<p>This function initializes the outdoor crops parameters by calculating the rotation ratios and monthly
+production.
+It takes in two dictionaries, constants_out and constants_inputs, which contain the output and input constants
+respectively.
+The function returns a tuple containing the updated constants_out and the outdoor_crops object.</p>
+<h3 id="init_stored_food">.init_stored_food</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L630">source</a></p>
+<pre><code class="language-python">.init_stored_food(
+   constants_out, constants_inputs, outdoor_crops
+)
+</code></pre>
+<hr />
+<p>Initializes the stored food object and calculates the amount of stored food to use
+based on the simulation starting month number. If ADD_STORED_FOOD is False, the initial
+available stored food is set to zero.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong>  : the object instance</li>
+<li><strong>constants_out</strong> (dict) : dictionary containing output constants</li>
+<li><strong>constants_inputs</strong> (dict) : dictionary containing input constants</li>
+<li><strong>outdoor_crops</strong> (list) : list of outdoor crop objects</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : a tuple containing the updated constants_out dictionary and the stored_food object</li>
+</ul>
+<h3 id="init_fish_params">.init_fish_params</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L674">source</a></p>
+<pre><code class="language-python">.init_fish_params(
+   time_consts, constants_inputs, time_consts_inputs
+)
+</code></pre>
+<hr />
+<p>Initializes seafood parameters, not including seaweed.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>constants_out</strong> (dict) : A dictionary containing constants for output.</li>
+<li><strong>time_consts</strong> (dict) : A dictionary containing monthly constants.</li>
+<li><strong>constants_inputs</strong> (dict) : A dictionary containing constants inputted to parameters.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>time_consts</strong> (dict) : updated time_consts</li>
+</ul>
+<h3 id="init_greenhouse_params">.init_greenhouse_params</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L695">source</a></p>
+<pre><code class="language-python">.init_greenhouse_params(
+   time_consts, constants_inputs, outdoor_crops
+)
+</code></pre>
+<hr />
+<p>Initializes the greenhouse parameters and calculates the greenhouse yield per hectare.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>time_consts</strong> (dict) : dictionary containing time constants</li>
+<li><strong>constants_inputs</strong> (dict) : dictionary containing constant inputs</li>
+<li><strong>outdoor_crops</strong> (OutdoorCrops) : instance of the OutdoorCrops class</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : dictionary containing updated time constants</li>
+</ul>
+<h3 id="init_cs_params">.init_cs_params</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L747">source</a></p>
+<pre><code class="language-python">.init_cs_params(
+   constants_out, time_consts, constants_inputs
+)
+</code></pre>
+<hr />
+<p>Initializes the parameters for the cellulosic sugar model.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>time_consts</strong> (dict) : A dictionary containing time constants.</li>
+<li><strong>constants_inputs</strong> (dict) : A dictionary containing inputs for the constants.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : A tuple containing the updated time constants dictionary and the
+calculated cellulosic sugar object.</li>
+</ul>
+<hr />
+<p>This function initializes the parameters for the cellulosic sugar model by
+creating a CellulosicSugar object and calculating the monthly cellulosic sugar
+production using the inputs provided in the constants_inputs dictionary. The
+resulting object is then added to the time_consts dictionary.</p>
+<h3 id="init_scp_params">.init_scp_params</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L778">source</a></p>
+<pre><code class="language-python">.init_scp_params(
+   constants_out, time_consts, constants_inputs
+)
+</code></pre>
+<hr />
+<p>Initializes the parameters for single cell protein.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>time_consts</strong> (dict) : A dictionary containing time constants.</li>
+<li><strong>constants_inputs</strong> (dict) : A dictionary containing constant inputs.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : A tuple containing the updated time constants dictionary and the methane_scp object.</li>
+</ul>
+<h3 id="init_meat_and_dairy_and_feed_from_breeding">.init_meat_and_dairy_and_feed_from_breeding</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L813">source</a></p>
+<pre><code class="language-python">.init_meat_and_dairy_and_feed_from_breeding(
+   constants_inputs, feed_meat_object, feed_and_biofuels_class, meat_and_dairy,
+   constants_out, time_consts
+)
+</code></pre>
+<h3 id="get_animal_meat_dictionary">.get_animal_meat_dictionary</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L860">source</a></p>
+<pre><code class="language-python">.get_animal_meat_dictionary(
+   constants_inputs, feed_meat_object, meat_and_dairy
+)
+</code></pre>
+<h3 id="calculate_meat_from_feed_results">.calculate_meat_from_feed_results</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L939">source</a></p>
+<pre><code class="language-python">.calculate_meat_from_feed_results(
+   constants_inputs, constants_out, time_consts, meat_and_dairy,
+   feed_meat_object
+)
+</code></pre>
+<hr />
+<p>Calculates the amount of culled meat from feed results and updates the constants_out and time_consts
+dictionaries.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>constants_inputs</strong> (dict) : dictionary containing input constants</li>
+<li><strong>constants_out</strong> (dict) : dictionary containing constants to be updated</li>
+<li><strong>time_consts</strong> (dict) : dictionary containing time constants to be updated</li>
+<li><strong>meat_and_dairy</strong> (MeatAndDairy) : instance of MeatAndDairy class</li>
+<li><strong>feed_dairy_meat_results</strong> (dict) : dictionary containing feed, dairy, and meat results</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : tuple containing updated constants_out and time_consts dictionaries</li>
+</ul>
+<h3 id="calculate_non_meat_and_dairy_from_feed_results">.calculate_non_meat_and_dairy_from_feed_results</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1016">source</a></p>
+<pre><code class="language-python">.calculate_non_meat_and_dairy_from_feed_results(
+   constants_inputs, constants_out, time_consts, dairy_pop, meat_and_dairy
+)
+</code></pre>
+<hr />
+<p>Calculates the non-culled meat and dairy from feed results.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong>  : instance of the Parameters class</li>
+<li><strong>constants_inputs</strong> (dict) : dictionary of input constants</li>
+<li><strong>constants_out</strong> (dict) : dictionary of output constants</li>
+<li><strong>time_consts</strong> (dict) : dictionary of time constants</li>
+<li><strong>dairy_pop</strong> (float) : number of dairy cows</li>
+<li><strong>meat_and_dairy</strong> (MeatAndDairy) : instance of the MeatAndDairy class</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : tuple containing constants_out and time_consts</li>
+</ul>
+<h3 id="compute_parameters_second_round">.compute_parameters_second_round</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1085">source</a></p>
+<pre><code class="language-python">.compute_parameters_second_round(
+   constants_inputs, constants_out_round1, time_consts_round1,
+   interpreted_results_round1
+)
+</code></pre>
+<hr />
+<p>Compute the parameters for the second round of optimizations, where we now know the amount of feed
+available for animals after humans have used all they need for their minimum nutritional needs.</p>
+<h3 id="calculate_human_consumption_for_min_needs">.calculate_human_consumption_for_min_needs</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1248">source</a></p>
+<pre><code class="language-python">.calculate_human_consumption_for_min_needs(
+   constants_inputs, interpreted_results_round1, extra_meat_round2
+)
+</code></pre>
+<hr />
+<p>We run through each month and determine the amount consumed each month of all foods.
+However, any human consumption which exceeds the starvation percentage is ignored.
+To determine when to start ignoring human consumption, we loop through the different foods
+in the following order of priority for humans to consume:
+  First fish, then meat, then dairy, then greenhouse crops, then outdoor crops, then stored food,
+  then scp, then cs, then seaweed.</p>
+<p>NOTE: We only use variables set here in the optimizer that are NOT  greenhouses or dairy or fish, because
+greenhouses and dairy and fish are not actually added as variables in the model (they are added as monthly
+constants to sum of human consumption) and they cannot be optimized.
+Furthermore, these foods always go to humans anyway.
+We only add these variables for the purposes of validation in the case
+that they sum up to human caloric minimum needs.</p>
+<h3 id="assert_consumption_within_limits">.assert_consumption_within_limits</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1478">source</a></p>
+<pre><code class="language-python">.assert_consumption_within_limits(
+   human_food_consumption, kcals_daily_maximum
+)
+</code></pre>
+<hr />
+<p>Asserts that each Food object in the human_food_consumption dictionary is less than
+or equal to kcals_daily_maximum for all months.</p>
+<h3 id="increase_biofuels_then_feed">.increase_biofuels_then_feed</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1504">source</a></p>
+<pre><code class="language-python">.increase_biofuels_then_feed(
+   biofuel, feed, increase, max_biofuel, max_feed, total_crops_available
+)
+</code></pre>
+<h3 id="compute_parameters_third_round">.compute_parameters_third_round</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/parameters.py/#L1544">source</a></p>
+<pre><code class="language-python">.compute_parameters_third_round(
+   constants_inputs, constants_out_round1, constants_out_round2,
+   time_consts_round1, time_consts_round2, interpreted_results_round1,
+   interpreted_results_round2, feed_and_biofuels_class, feed_demand,
+   biofuels_demand, feed_meat_object_round1
+)
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../validate_results/" class="btn btn-neutral float-right" title="Validate results">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../optimizer/" class="btn btn-neutral" title="Optimizer"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Me</p>
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../optimizer/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../validate_results/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../../../..';</script>
+    <script src="../../../../js/theme_extra.js" defer></script>
+    <script src="../../../../js/theme.js" defer></script>
+      <script src="../../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

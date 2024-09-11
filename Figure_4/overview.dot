@@ -1,0 +1,84 @@
+digraph ModelOverview{
+    // Food Consumption during normal times
+    norm_consumption [label="Food\nConsumption", fontsize=20, style="filled",fillcolor="#55AA55"];
+    Waste[style="filled", fillcolor="#55AA55",fontsize=20]
+    Waste -> norm_consumption;
+    Feed[style="filled", fillcolor="#55AA55",fontsize=20]
+    Feed -> norm_consumption;
+    Biofuel[style="filled", fillcolor="#55AA55", fontsize=20]
+    Biofuel -> norm_consumption;
+
+    // Food Ressources during Standard Times
+    std_resources [label="Standard Food\nResources", style="filled",fontsize=20,fillcolor="#55AA55"];
+    stored_food [label="Stored\nFood",style="filled", fontsize=20,fillcolor="#55AA55"];
+    outdoor_crop [label="Outdoor\nCrop",style="filled",fontsize=20, fillcolor="#55AA55"];
+    meat [label="Meat/Dairy",style="filled", fontsize=20,fillcolor="#55AA55"];
+    Fish [style="filled",fontsize=20, fillcolor="#55AA55"]
+    stored_food -> std_resources;
+    outdoor_crop -> std_resources;
+    meat -> std_resources;
+    Fish -> std_resources;
+
+    // Resilient Foods
+    res_resources [label="Resilient Food\nResources", style="filled",fontsize=20,fillcolor="#55AA55"];
+    Seaweed[style="filled",fontsize=20, fillcolor="#55AA55"]
+    Seaweed -> res_resources;
+    Greenhouses[style="filled",fontsize=20, fillcolor="#55AA55"]
+    Greenhouses -> res_resources;
+    industrial_food [label="Industrial\nFood",style="filled",fontsize=20, fillcolor="#55AA55"];
+    industrial_food -> res_resources;
+
+    // Link foods to the model
+    model [label="Import\nData", fontsize=25, style="filled", fillcolor="#669999"];
+    norm_consumption -> model;
+    std_resources -> model;
+    res_resources -> model;
+
+    // Create base scenarios
+    nw [label="Nuclear\nWinter",  fillcolor="#D46A6A",fontsize=20, style="filled"];
+    Baseline [label="Baseline",  fillcolor="#D49A6A",fontsize=20, style="filled"];
+    model -> Baseline;
+    model -> nw;
+
+    // Create 150 tg scenarios
+    nw_trade [label="With Trade\nGlobal",  fillcolor="#D46A6A", fontsize=20,style="filled"];
+    nw_no_trade [label="No Trade\nBy Country",  fillcolor="#D46A6A",fontsize=20, style="filled"];
+    nw -> nw_trade;
+    nw -> nw_no_trade;
+
+    nw_trade_no_res_food [label="No Resilient\nFood", fontsize=20, fillcolor="#D46A6A", style="filled"];
+    nw_trade_res_food [label="Resilient\nFood",  fontsize=20,fillcolor="#D46A6A", style="filled"];
+    nw_no_trade_no_res_food [label="No Resilient\nFood",fontsize=20,  fillcolor="#D46A6A", style="filled"];
+    nw_no_trade_res_food [label="Resilient\nFood", fontsize=20, fillcolor="#D46A6A", style="filled"];
+    nw_trade -> nw_trade_no_res_food;
+    nw_trade -> nw_trade_res_food;
+    nw_no_trade -> nw_no_trade_no_res_food;
+    nw_no_trade -> nw_no_trade_res_food;
+
+
+    // Create baseline scenarios
+    Baseline_trade [label="With Trade\nGlobal", fontsize=20, fillcolor="#D49A6A", style="filled"];
+    Baseline_no_trade [label="No Trade\nBy Country",fontsize=20,  fillcolor="#D49A6A", style="filled"];
+    Baseline -> Baseline_trade;
+    Baseline -> Baseline_no_trade;
+
+
+    // Link to optomization and analysis
+    opt [label="Optimization",  style="filled", fontsize=20,fillcolor="#669999"];
+    Baseline_trade -> opt;
+    Baseline_no_trade -> opt;
+    nw_trade_no_res_food -> opt;
+    nw_trade_res_food -> opt;
+    nw_no_trade_no_res_food -> opt;
+    nw_no_trade_res_food -> opt;
+
+    // Link to analysis
+    analysis [label="Analysis",  style="filled",fontsize=20, fillcolor="#669999"];
+    opt -> analysis;
+
+
+
+
+
+
+}

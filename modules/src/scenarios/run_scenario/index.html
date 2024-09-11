@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../../../../img/favicon.ico">
+  <title>Run scenario - ALLFED Integrated Model</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../../../css/theme.css" />
+  <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Run scenario";
+    var mkdocs_page_input_path = "modules/src/scenarios/run_scenario.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../../../.." class="icon icon-home"> ALLFED Integrated Model</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../..">ALLFED Integrated Food System Model</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Modules</span></p>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="#">Src</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="#">Food system</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/animal_populations/">Animal populations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/cellulosic_sugar/">Cellulosic sugar</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/feed_and_biofuels/">Feed and biofuels</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/food/">Food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/greenhouses/">Greenhouses</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/meat_and_dairy/">Meat and dairy</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/methane_scp/">Methane scp</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/outdoor_crops/">Outdoor crops</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/seafood/">Seafood</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/seaweed/">Seaweed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/stored_food/">Stored food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/unit_conversions/">Unit conversions</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Import scripts no food trade</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_crop_macros_csv/">Create crop macros csv</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_nuclear_winter_csv/">Create nuclear winter csv</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Optimizer</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/extract_results/">Extract results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/interpret_results/">Interpret results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/optimizer/">Optimizer</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/parameters/">Parameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/validate_results/">Validate results</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Scenarios</a>
+    <ul class="current">
+                <li class="toctree-l3"><a class="reference internal" href="../run_model_no_trade/">Run model no trade</a>
+                </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="./">Run scenario</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#scenariorunner">ScenarioRunner</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../run_scenarios_from_yaml/">Run scenarios from yaml</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../scenarios/">Scenarios</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Utilities</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/constants/">Constants</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/import_utilities/">Import utilities</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/make_powerpoint/">Make powerpoint</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/plotter/">Plotter</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../..">ALLFED Integrated Model</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Modules &raquo;</li>
+        
+      
+        
+          <li>Src &raquo;</li>
+        
+      
+        
+          <li>Scenarios &raquo;</li>
+        
+      
+    
+    <li>Run scenario</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1"></h1>
+<h2 id="scenariorunner">ScenarioRunner</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L48">source</a></p>
+<pre><code class="language-python">
+</code></pre>
+<p><strong>Methods:</strong></p>
+<h3 id="display_results_of_optimizer_round">.display_results_of_optimizer_round</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L52">source</a></p>
+<pre><code class="language-python">.display_results_of_optimizer_round(
+   interpreted_results, country_name, show_country_figures,
+   create_pptx_with_all_countries, scenario_loader, figure_save_postfix,
+   slaughter_title = '', feed_title = '', to_humans_title = ''
+)
+</code></pre>
+<h3 id="run_round_1">.run_round_1</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L105">source</a></p>
+<pre><code class="language-python">.run_round_1(
+   consts_for_optimizer_round1, time_consts_round1, interpreter,
+   feed_and_biofuels_round1, meat_dictionary_zero_feed_biofuels,
+   title = 'Untitled'
+)
+</code></pre>
+<h3 id="run_round_2">.run_round_2</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L137">source</a></p>
+<pre><code class="language-python">.run_round_2(
+   constants_loader, constants_for_params, interpreted_results_round1,
+   percent_fed_from_model_round1, consts_for_optimizer_round1,
+   time_consts_round1, interpreter, title = 'Untitled'
+)
+</code></pre>
+<h3 id="run_round_3">.run_round_3</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L223">source</a></p>
+<pre><code class="language-python">.run_round_3(
+   constants_loader, constants_for_params, consts_for_optimizer_round1,
+   consts_for_optimizer_round2, time_consts_round1, time_consts_round2,
+   interpreted_results_round2, feed_and_biofuels_round1, feed_demand,
+   biofuels_demand, interpreted_results_round1, meat_dictionary_round2,
+   each_month_meat_slaughtered, max_consumed_culled_kcals_each_month,
+   meat_summed_consumption, feed_meat_object_round1, title = 'Untitled'
+)
+</code></pre>
+<h3 id="get_interpreted_results_for_round3_if_zero_feed">.get_interpreted_results_for_round3_if_zero_feed</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L274">source</a></p>
+<pre><code class="language-python">.get_interpreted_results_for_round3_if_zero_feed(
+   interpreter, NMONTHS
+)
+</code></pre>
+<h3 id="run_and_analyze_scenario">.run_and_analyze_scenario</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L291">source</a></p>
+<pre><code class="language-python">.run_and_analyze_scenario(
+   constants_for_params, time_consts_for_params, scenario_loader,
+   create_pptx_with_all_countries, show_country_figures, figure_save_postfix,
+   country_data, save_all_results, country_name, country_iso3, title = 'Untitled'
+)
+</code></pre>
+<hr />
+<p>computes params, Runs the optimizer, extracts data from optimizer, interprets
+the results, validates the results, and optionally prints an output with people
+fed.</p>
+<p>arguments: constants from the scenario, scenario loader (to print the aspects
+of the scenario and check no scenario parameter has been set twice or left
+unset)</p>
+<p>returns: the interpreted results</p>
+<h3 id="interpret_optimizer_results">.interpret_optimizer_results</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L536">source</a></p>
+<pre><code class="language-python">.interpret_optimizer_results(
+   consts_for_optimizer, model, variables, time_consts, interpreter,
+   percent_fed_from_model, optimization_type, title = 'Untitled'
+)
+</code></pre>
+<h3 id="run_optimizer">.run_optimizer</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L573">source</a></p>
+<pre><code class="language-python">.run_optimizer(
+   consts_for_optimizer, time_consts, optimization_type = None,
+   min_human_food_consumption = None, title = 'Untitled'
+)
+</code></pre>
+<hr />
+<p>Runs the optimizer and returns the model, variables, and constants</p>
+<h3 id="alter_scenario_if_known_to_fail">.alter_scenario_if_known_to_fail</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L641">source</a></p>
+<pre><code class="language-python">.alter_scenario_if_known_to_fail(
+   scenario_option, iso3
+)
+</code></pre>
+<hr />
+<p>These are the scenarios I seem to be unable to determine why optimization is failing.
+I belive I have hit diminishing returns trying to figure them out, so I just patch them instead.</p>
+<h3 id="set_depending_on_option">.set_depending_on_option</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L750">source</a></p>
+<pre><code class="language-python">.set_depending_on_option(
+   scenario_option, country_data = None
+)
+</code></pre>
+<h3 id="save_outdoor_crop_production_to_csv">.save_outdoor_crop_production_to_csv</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L1306">source</a></p>
+<pre><code class="language-python">.save_outdoor_crop_production_to_csv(
+   time_consts_round1, title, country_data
+)
+</code></pre>
+<hr />
+<p>Saves the outdoor crop production to a csv file</p>
+<h3 id="save_feed_and_biofuels_to_csv">.save_feed_and_biofuels_to_csv</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L1328">source</a></p>
+<pre><code class="language-python">.save_feed_and_biofuels_to_csv(
+   feed_demand, biofuels_demand, title, country_data
+)
+</code></pre>
+<hr />
+<p>Saves the feed and biofuels demand to a csv file</p>
+<hr />
+<h3 id="are_dicts_approx_same">are_dicts_approx_same</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/scenarios/run_scenario.py/#L34">source</a></p>
+<pre><code class="language-python">.are_dicts_approx_same(
+   dict1, dict2
+)
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../run_scenarios_from_yaml/" class="btn btn-neutral float-right" title="Run scenarios from yaml">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../run_model_no_trade/" class="btn btn-neutral" title="Run model no trade"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Me</p>
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../run_model_no_trade/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../run_scenarios_from_yaml/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../../../..';</script>
+    <script src="../../../../js/theme_extra.js" defer></script>
+    <script src="../../../../js/theme.js" defer></script>
+      <script src="../../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

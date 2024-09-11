@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../../../../img/favicon.ico">
+  <title>Animal populations - ALLFED Integrated Model</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../../../css/theme.css" />
+  <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Animal populations";
+    var mkdocs_page_input_path = "modules/src/food_system/animal_populations.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../../../.." class="icon icon-home"> ALLFED Integrated Model</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../..">ALLFED Integrated Food System Model</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Modules</span></p>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="#">Src</a>
+    <ul class="current">
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Food system</a>
+    <ul class="current">
+                <li class="toctree-l3 current"><a class="reference internal current" href="./">Animal populations</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#calculatefeedandmeat">CalculateFeedAndMeat</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#countrydata">CountryData</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#animalspecies">AnimalSpecies</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_1">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_2">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_1">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_3">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_2">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#animalpopulation">AnimalPopulation</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_4">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_3">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_5">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_4">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_6">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_5">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_7">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_6">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_8">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_7">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_9">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_8">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#animaldatareader">AnimalDataReader</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_9">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_10">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_11">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_12">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_13">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#animalmodelbuilder">AnimalModelBuilder</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_10">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_14">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_11">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_15">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_12">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_16">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_13">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_17">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#debugging">Debugging</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../cellulosic_sugar/">Cellulosic sugar</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../feed_and_biofuels/">Feed and biofuels</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../food/">Food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../greenhouses/">Greenhouses</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../meat_and_dairy/">Meat and dairy</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../methane_scp/">Methane scp</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../outdoor_crops/">Outdoor crops</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../seafood/">Seafood</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../seaweed/">Seaweed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../stored_food/">Stored food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../unit_conversions/">Unit conversions</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Import scripts no food trade</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_crop_macros_csv/">Create crop macros csv</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_nuclear_winter_csv/">Create nuclear winter csv</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Optimizer</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/extract_results/">Extract results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/interpret_results/">Interpret results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/optimizer/">Optimizer</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/parameters/">Parameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/validate_results/">Validate results</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Scenarios</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_model_no_trade/">Run model no trade</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenario/">Run scenario</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenarios_from_yaml/">Run scenarios from yaml</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/scenarios/">Scenarios</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Utilities</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/constants/">Constants</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/import_utilities/">Import utilities</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/make_powerpoint/">Make powerpoint</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/plotter/">Plotter</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../..">ALLFED Integrated Model</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Modules &raquo;</li>
+        
+      
+        
+          <li>Src &raquo;</li>
+        
+      
+        
+          <li>Food system &raquo;</li>
+        
+      
+    
+    <li>Animal populations</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1"></h1>
+<h2 id="calculatefeedandmeat">CalculateFeedAndMeat</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L43">source</a></p>
+<pre><code class="language-python">CalculateFeedAndMeat(
+   country_code, available_feed, available_grass, scenario,
+   kcals_per_head_meat_dict, constants_inputs = None
+)
+</code></pre>
+<p><strong>Methods:</strong></p>
+<h3 id="get_meat_produced">.get_meat_produced</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L70">source</a></p>
+<pre><code class="language-python">.get_meat_produced()
+</code></pre>
+<h3 id="get_total_dairy_cows">.get_total_dairy_cows</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L140">source</a></p>
+<pre><code class="language-python">.get_total_dairy_cows()
+</code></pre>
+<h3 id="get_total_milk_bearing_animals">.get_total_milk_bearing_animals</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L155">source</a></p>
+<pre><code class="language-python">.get_total_milk_bearing_animals()
+</code></pre>
+<hr />
+<p>Calculates the total number of milk-bearing animals in the population.</p>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>ndarray</strong>  : An array containing the total number of milk-bearing animals for each month</li>
+</ul>
+<hr />
+<h2 id="countrydata">CountryData</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L170">source</a></p>
+<pre><code class="language-python">CountryData(
+   country_name
+)
+</code></pre>
+<hr />
+<p>Main functionalities:
+CountryData is a class that represents data for a specific country in the food system model. It contains fields
+for various data points such as slaughter hours, homekill hours, and meat output. The class has methods
+for setting livestock unit factors, calculating homekill hours, and calculating total slaughter hours.</p>
+<p>Methods:
+- <strong>init</strong>(self, country_name): initializes the CountryData object with the given country name and sets
+various fields to empty lists or 0.</p>
+<hr />
+<pre><code> LSU conversion factors for the country based on the given dataframes.
+</code></pre>
+<ul>
+<li>homekill_desperation_parameters(self): sets the homekill fraction and other death homekill rate.</li>
+<li>calculate_homekill_hours(self): calculates the number of hours required to slaughter homekill animals.
+    the given list.</li>
+</ul>
+<p>Fields:
+- country_name: the name of the country.
+- slaughter_hours: a list of total slaughter hours for each month.
+- homekill_hours_total_month: a list of total homekill hours for each month.
+- homekill_hours_budget: a list of budgeted homekill hours for each month.
+- meat_output: a list of meat output for each month.
+- small_slaughter_hours: the number of small animal slaughter hours for the country.
+- medium_slaughter_hours: the number of medium animal hours for the country.
+- large_slaughter_hours: the number of large animal hours for the country.
+- EK_region: the FAO region for the country.
+- LSU_conversion_factors: a dictionary of livestock unit conversion factors for the country.</p>
+<p><strong>Methods:</strong></p>
+<h3 id="set_livestock_unit_factors">.set_livestock_unit_factors</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L210">source</a></p>
+<pre><code class="language-python">.set_livestock_unit_factors(
+   df_country_info, df_regional_conversion_factors
+)
+</code></pre>
+<hr />
+<p>Requires inputs of the country info dataframe, and the regional conversion factors dataframe
+df_regional_conversion_factors dataframe contains the conversion factors for the LSU for each animal type, based
+on ther region. And the other, df_country_info contains the mapping from the country to the region.</p>
+<p>Country Name needs to be the index of the df_country_info dataframe</p>
+<h3 id="homekill_desperation_parameters">.homekill_desperation_parameters</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L257">source</a></p>
+<pre><code class="language-python">.homekill_desperation_parameters()
+</code></pre>
+<h3 id="calculate_homekill_hours">.calculate_homekill_hours</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L264">source</a></p>
+<pre><code class="language-python">.calculate_homekill_hours()
+</code></pre>
+<hr />
+<p>Function to calculate the number of hours required to slaughter the homekill animals.</p>
+<h3 id="calculate_total_slaughter_hours">.calculate_total_slaughter_hours</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L271">source</a></p>
+<pre><code class="language-python">.calculate_total_slaughter_hours(
+   all_animals
+)
+</code></pre>
+<hr />
+<p>Probably unneccesary, but could be sueful to ibnterogate the number of salughter hours to compare between
+countries.</p>
+<p>Not required for the program to work (and not called)</p>
+<hr />
+<h2 id="animalspecies">AnimalSpecies</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L298">source</a></p>
+<pre><code class="language-python">AnimalSpecies(
+   animal_type, animal_species
+)
+</code></pre>
+<hr />
+<p>Class to store animal population data in. Needs to store the following: animal type, population, and slaughter.</p>
+<h2 id="parameters">Parameters</h2>
+<p>animal_type : str
+Type of animal (beef, pork, chicken etc...)
+population : int
+Number of animals (total)
+slaughter : int
+Number of animals slaughtered this month
+pregnant : int
+Number of animals pregnant this month
+starving : int
+Number of animals starving this month
+feed_balance : int
+Amount of feed required this month
+nutrition_ratio : object
+Object containing the nutrition ratio for the animal type</p>
+<p><strong>Methods:</strong></p>
+<h3 id="update_attributes">.update_attributes</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L329">source</a></p>
+<pre><code class="language-python">.update_attributes(
+   **kwargs
+)
+</code></pre>
+<h3 id="set_animal_attributes">.set_animal_attributes</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L333">source</a></p>
+<pre><code class="language-python">.set_animal_attributes(
+   population, slaughter, animal_function, livestock_unit, digestion_type,
+   animal_size, approximate_feed_conversion, digestion_efficiency_grass = 0.6,
+   digestion_efficiency_feed = 0.8, carb_requirement = -1, protein_requirement = -1,
+   fat_requirement = -1
+)
+</code></pre>
+<h3 id="set_lsu_attributes">.set_LSU_attributes</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L419">source</a></p>
+<pre><code class="language-python">.set_LSU_attributes(
+   country_object
+)
+</code></pre>
+<h3 id="set_species_milk_attributes">.set_species_milk_attributes</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L425">source</a></p>
+<pre><code class="language-python">.set_species_milk_attributes(
+   productive_milk_age_start, productive_milk_age_end,
+   insemination_cycle_time_for_milk, milk_production_per_month_per_head = None
+)
+</code></pre>
+<h3 id="retiring_milk_head_monthly">.retiring_milk_head_monthly</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L460">source</a></p>
+<pre><code class="language-python">.retiring_milk_head_monthly()
+</code></pre>
+<hr />
+<p>Function to calculate the number of retiring milk animals per month</p>
+<h3 id="set_species_slaughter_attributes">.set_species_slaughter_attributes</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L466">source</a></p>
+<pre><code class="language-python">.set_species_slaughter_attributes(
+   gestation, other_animal_death_rate_annual, animals_per_pregnancy,
+   animal_slaughter_hours, change_in_slaughter_rate,
+   pregnant_animal_slaughter_fraction, reduction_in_animal_breeding,
+   target_population_fraction, starvation_death_fraction,
+   transfer_births_or_head
+)
+</code></pre>
+<hr />
+<p>Function to set the attributes of the animal species that are related to slaughter</p>
+<h2 id="parameters_1">Parameters</h2>
+<p>gestation : int
+gestation period in months</p>
+<hr />
+<pre><code>annual death rate of animals
+number of animals per pregnancy
+hours per animal spent slaughtering
+0.5 = half of animals slaughtered
+animals are attempted to be slaughtered, 0.5 = half of pregnant animals
+1 = no reduction, 0.5 = half of animals are bred
+= target population is equal to the iniitla population, 0 = targetting to kill all animals
+population or head imported from other countries
+</code></pre>
+<h2 id="returns">Returns</h2>
+<p>None</p>
+<h3 id="set_milk_birth">.set_milk_birth</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L667">source</a></p>
+<pre><code class="language-python">.set_milk_birth()
+</code></pre>
+<h3 id="set_initial_milk_transfer">.set_initial_milk_transfer</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L680">source</a></p>
+<pre><code class="language-python">.set_initial_milk_transfer()
+</code></pre>
+<h3 id="total_homekill">.total_homekill</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L689">source</a></p>
+<pre><code class="language-python">.total_homekill()
+</code></pre>
+<hr />
+<p>Function to calculate the total homekill per month.</p>
+<h2 id="parameters_2">Parameters</h2>
+<p>None</p>
+<h2 id="returns_1">Returns</h2>
+<p>total_homekill : int
+the total homekill per month</p>
+<h3 id="exported_births">.exported_births</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L713">source</a></p>
+<pre><code class="language-python">.exported_births()
+</code></pre>
+<hr />
+<p>Function to calculate the number of births exported from the animal population.</p>
+<h2 id="parameters_3">Parameters</h2>
+<p>None</p>
+<h2 id="returns_2">Returns</h2>
+<p>exported_births : int
+the number of births exported from the animal population</p>
+<h3 id="one_lsu_monthly_billion_kcal">.one_LSU_monthly_billion_kcal</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L730">source</a></p>
+<pre><code class="language-python">.one_LSU_monthly_billion_kcal()
+</code></pre>
+<h3 id="net_energy_required_per_month">.net_energy_required_per_month</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L747">source</a></p>
+<pre><code class="language-python">.net_energy_required_per_month()
+</code></pre>
+<hr />
+<p>Function to calculate the total net energy required per month for the species</p>
+<h3 id="net_energy_required_per_species">.net_energy_required_per_species</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L756">source</a></p>
+<pre><code class="language-python">.net_energy_required_per_species()
+</code></pre>
+<hr />
+<p>Function to calculate the total net energy required per month for the species</p>
+<h3 id="reset_ne_balance">.reset_NE_balance</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L763">source</a></p>
+<pre><code class="language-python">.reset_NE_balance()
+</code></pre>
+<hr />
+<p>This function resets the feed balance to the feed required per month for the species
+Needs to be run before feeding the animals each month.</p>
+<h3 id="feed_the_species">.feed_the_species</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L773">source</a></p>
+<pre><code class="language-python">.feed_the_species(
+   grass_input, feed_input, is_ruminant = False
+)
+</code></pre>
+<h3 id="append_month_zero">.append_month_zero</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L817">source</a></p>
+<pre><code class="language-python">.append_month_zero()
+</code></pre>
+<hr />
+<p>Objective:
+- The objective of the 'append_month_zero' method is to append the baseline values of various attributes
+of the animal species to their respective lists. These values will be used as a reference point for future
+calculations.</p>
+<hr />
+<p>Inputs:
+- The method takes no external inputs. It uses the instance variables of the class 'AnimalSpecies' to
+calculate and append the baseline values.</p>
+<hr />
+<h2 id="animalpopulation">AnimalPopulation</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L961">source</a></p>
+<pre><code class="language-python">AnimalPopulation()
+</code></pre>
+<p><strong>Methods:</strong></p>
+<h3 id="calculate_additive_births">.calculate_additive_births</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L962">source</a></p>
+<pre><code class="language-python">.calculate_additive_births(
+   animal, current_month
+)
+</code></pre>
+<h3 id="calculate_change_in_population">.calculate_change_in_population</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L979">source</a></p>
+<pre><code class="language-python">.calculate_change_in_population(
+   animal, country_object, new_additive_animals_month,
+   remaining_hours_this_size
+)
+</code></pre>
+<hr />
+<p>This function will calculate the change in animal population for a given animal type
+It will do so by calculating the number of new births, the number of deaths, and the number of animals
+slaughtered
+It will then update the animal object with the new population</p>
+<p>It will also update the animal object with the number of animals that are pregnant, and the number of animals
+that are lactating</p>
+<p>Some parameters are calulctaed before the 'slaughter event' where the populations change, some are calculated
+after
+Those that are calulcated before are:
+- the new births this month (based on the number of animals that are pregnant)
+- other deaths this month
+- the slauhter rate this month
+- spare slaughter hours this month</p>
+<hr />
+<p>Those that are calculated after are:
+    - the number of animals that are lactating
+    - the new population this month
+    - the population of animals that are pregnant for next month</p>
+<h3 id="calculate_pregnant_animals_birthing">.calculate_pregnant_animals_birthing</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1092">source</a></p>
+<pre><code class="language-python">.calculate_pregnant_animals_birthing(
+   animal, new_pregnant_animals_total
+)
+</code></pre>
+<hr />
+<p>This function will calculate the number of pregnant animals birthing this month, based on the number of
+pregnant animals remaining
+Uses a simple calculation of the number of pregnant animals divided by the gestation period
+This is not a perfect calculation, as it assumes that an even distribution of animals will birth each month
+However, it is a good approximation for the purposes of this model</p>
+<h2 id="parameters_4">Parameters</h2>
+<p>animal : AnimalSpecies
+The animal object for the animal type that you want to calculate the change in population for</p>
+<hr />
+<pre><code>The number of pregnant animals remaining this month
+</code></pre>
+<h2 id="returns_3">Returns</h2>
+<pre><code>The number of pregnant animals birthing this month
+</code></pre>
+<h3 id="calculate_pregnant_slaughter">.calculate_pregnant_slaughter</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1118">source</a></p>
+<pre><code class="language-python">.calculate_pregnant_slaughter(
+   animal, new_slaughter_rate
+)
+</code></pre>
+<hr />
+<p>This function will determine how many of the animals who died this month were pregnant
+Check if the number of pregnant animals set for slaughter is less than the number of animals slaughtered this
+month
+If so, proceed to calculate the number of pregnant animals slaughtered
+Otherwise, set the number of pregnant animals slaughtered to the number of animals slaughtered this month</p>
+<h3 id="calculate_animal_population">.calculate_animal_population</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1194">source</a></p>
+<pre><code class="language-python">.calculate_animal_population(
+   animal, country_object, new_additive_animals_month, new_other_animal_death,
+   new_slaughter_rate
+)
+</code></pre>
+<h3 id="calculate_births">.calculate_births</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1244">source</a></p>
+<pre><code class="language-python">.calculate_births(
+   animal
+)
+</code></pre>
+<hr />
+<p>This function calculates the number of new births this month</p>
+<h2 id="parameters_5">Parameters</h2>
+<p>animal : object
+The animal object that is being calculated</p>
+<hr />
+<h2 id="returns_4">Returns</h2>
+<pre><code>from milk animals, not total births (meat and milk))
+to meat births from milk animals, not total births (meat and milk))
+</code></pre>
+<h3 id="calculate_breeding_changes">.calculate_breeding_changes</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1275">source</a></p>
+<pre><code class="language-python">.calculate_breeding_changes(
+   animal
+)
+</code></pre>
+<hr />
+<p>This function calculates the changes in breeding for the animal type
+This is <em>only</em> called after the gestation period is over
+It will update the animal object with the new number of pregnant animals
+Based on the reduction in breeding</p>
+<p>Pregnant slaughter is halted, as breeding changes have taken place from the breeding intervention</p>
+<h2 id="parameters_6">Parameters</h2>
+<p>animal : object
+The animal object that is being calculated</p>
+<hr />
+<h2 id="returns_5">Returns</h2>
+<p>None</p>
+<h3 id="calculate_other_deaths">.calculate_other_deaths</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1305">source</a></p>
+<pre><code class="language-python">.calculate_other_deaths(
+   animal
+)
+</code></pre>
+<h3 id="calculate_slaughter_rate">.calculate_slaughter_rate</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1311">source</a></p>
+<pre><code class="language-python">.calculate_slaughter_rate(
+   animal, country_object, new_births_animals_month, new_other_animal_death,
+   remaining_hours_this_size
+)
+</code></pre>
+<hr />
+<p>This function calculates the new slaughter rate based on the spare slaughter hours and the target animal
+population</p>
+<h2 id="parameters_7">Parameters</h2>
+<p>animal : object
+The animal object that is being calculated</p>
+<hr />
+<pre><code>The number of spare slaughter hours generated
+The target animal population
+</code></pre>
+<h2 id="returns_6">Returns</h2>
+<pre><code>The new slaughter rate
+The number of spare slaughter hours remaining after the new slaughter rate is calculated
+</code></pre>
+<h3 id="calculate_other_death_homekill_head">.calculate_other_death_homekill_head</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1378">source</a></p>
+<pre><code class="language-python">.calculate_other_death_homekill_head(
+   animal, country_object
+)
+</code></pre>
+<h3 id="calculate_healthy_homekill_head">.calculate_healthy_homekill_head</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1401">source</a></p>
+<pre><code class="language-python">.calculate_healthy_homekill_head(
+   animal, country_object
+)
+</code></pre>
+<h3 id="calculate_starving_pop_post_slaughter_healthy_homekill">.calculate_starving_pop_post_slaughter_healthy_homekill</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1427">source</a></p>
+<pre><code class="language-python">.calculate_starving_pop_post_slaughter_healthy_homekill(
+   animal
+)
+</code></pre>
+<h3 id="calculate_starving_homekill_head">.calculate_starving_homekill_head</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1442">source</a></p>
+<pre><code class="language-python">.calculate_starving_homekill_head(
+   animal, country_object,
+   population_starving_post_slaughter_and_healthy_homekill
+)
+</code></pre>
+<h3 id="calculate_starving_pop_post_all_slaughter_homekill">.calculate_starving_pop_post_all_slaughter_homekill</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1480">source</a></p>
+<pre><code class="language-python">.calculate_starving_pop_post_all_slaughter_homekill(
+   animal, population_starving_post_slaughter_and_healthy_homekill
+)
+</code></pre>
+<h3 id="other_death_pregnant_adjustment">.other_death_pregnant_adjustment</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1491">source</a></p>
+<pre><code class="language-python">.other_death_pregnant_adjustment(
+   animal
+)
+</code></pre>
+<h3 id="calculate_starving_other_death_head">.calculate_starving_other_death_head</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1531">source</a></p>
+<pre><code class="language-python">.calculate_starving_other_death_head(
+   animal, population_starving_post_slaughter_and_all_homekill
+)
+</code></pre>
+<hr />
+<p>This function calculates the number of animals that die from starvation in a month.</p>
+<p>It takes the population of animals that are starving after slaughter and homekill, and calculates the number
+of animals that die from starvation.
+In terms of physical relevance - the animals that don't die from starvation are the ones that are able to find
+enough other food to survive or have fat stores etc.
+These animals ARE NOT turned in to meat.
+Those that are turned in to meat are captured in the homekill functions.</p>
+<h2 id="parameters_8">Parameters</h2>
+<p>animal : Animal
+The animal object that is being calculated for.</p>
+<hr />
+<pre><code>The number of animals that are starving after slaughter and homekill.
+</code></pre>
+<h2 id="returns_7">Returns</h2>
+<p>float
+    The number of animals that die from starvation in a month.</p>
+<h3 id="calculate_final_population">.calculate_final_population</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1564">source</a></p>
+<pre><code class="language-python">.calculate_final_population(
+   animal
+)
+</code></pre>
+<hr />
+<p>This function calculates the final population of the animal after all the slaughter and homekill has been done.</p>
+<h2 id="parameters_9">Parameters</h2>
+<p>animal : Animal
+The animal object that is being calculated for.</p>
+<hr />
+<h2 id="returns_8">Returns</h2>
+<p>float
+    The final population of the animal.</p>
+<h3 id="feed_animals">.feed_animals</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1594">source</a></p>
+<pre><code class="language-python">.feed_animals(
+   animal_list, ruminants, available_feed, available_grass
+)
+</code></pre>
+<hr />
+<p>This function will feed the animals
+It will do so by allocating the grass first to those animals that can eat it,
+and then allocating the remaining feed to the remaining animals</p>
+<p>It will also priotiise the animals that are most efficient at converting feed,
+This means starting with milk.</p>
+<p>List needs to be sorted in the oprder you want the animals to be prioritised for feed</p>
+<h3 id="calculate_starving_animals_after_feed">.calculate_starving_animals_after_feed</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1619">source</a></p>
+<pre><code class="language-python">.calculate_starving_animals_after_feed(
+   animal_list
+)
+</code></pre>
+<hr />
+<p>This function will calculate the number of animals that are starving after feeding
+It iterates through the animal list and calculates the number of animals that are starving
+result is appended to the animal object</p>
+<h3 id="set_current_populations">.set_current_populations</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1630">source</a></p>
+<pre><code class="language-python">.set_current_populations(
+   animal_objects
+)
+</code></pre>
+<hr />
+<p>Sets the current population of each animal object
+This simply sets the current population to the value at the end of the previous month.
+This value is then updated during the month loop.
+Runs at the start opf the month before any changes to population are made.</p>
+<h3 id="appened_current_populations">.appened_current_populations</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1652">source</a></p>
+<pre><code class="language-python">.appened_current_populations(
+   animal_objects
+)
+</code></pre>
+<hr />
+<p>Appends the current population of each animal object to its population list.
+Runs at the end of the month loop once currrent population has been updated</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>animal_objects</strong> (<em>type</em>) : <em>description</em></li>
+</ul>
+<hr />
+<h2 id="animaldatareader">AnimalDataReader</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1665">source</a></p>
+<pre><code class="language-python">AnimalDataReader()
+</code></pre>
+<p><strong>Methods:</strong></p>
+<h3 id="read_animal_population_data">.read_animal_population_data</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1666">source</a></p>
+<pre><code class="language-python">.read_animal_population_data(
+   filename
+)
+</code></pre>
+<hr />
+<p>Read animal population data from CSV file</p>
+<h2 id="returns_9">Returns</h2>
+<p>df_animal_stock_info : pandas dataframe
+Dataframe containing animal population data</p>
+<h3 id="read_animal_nutrition_data">.read_animal_nutrition_data</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1692">source</a></p>
+<pre><code class="language-python">.read_animal_nutrition_data(
+   filename
+)
+</code></pre>
+<hr />
+<p>"
+Read animal nutrition data from CSV file</p>
+<h2 id="returns_10">Returns</h2>
+<p>df_animal_nutrition : pandas dataframe
+Dataframe containing animal nutrition data</p>
+<h3 id="read_animal_options">.read_animal_options</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1717">source</a></p>
+<pre><code class="language-python">.read_animal_options(
+   filename
+)
+</code></pre>
+<hr />
+<p>"
+Read animal nutrition data from CSV file</p>
+<h2 id="returns_11">Returns</h2>
+<p>df_animal_nutrition : pandas dataframe
+Dataframe containing animal nutrition data</p>
+<h3 id="read_animal_regional_factors">.read_animal_regional_factors</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1738">source</a></p>
+<pre><code class="language-python">.read_animal_regional_factors(
+   filename
+)
+</code></pre>
+<hr />
+<p>"
+Read animal nutrition data from CSV file</p>
+<h2 id="returns_12">Returns</h2>
+<p>df_animal_nutrition : pandas dataframe
+Dataframe containing animal nutrition data</p>
+<h3 id="read_country_data">.read_country_data</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1759">source</a></p>
+<pre><code class="language-python">.read_country_data(
+   filename
+)
+</code></pre>
+<hr />
+<p>"
+Read animal nutrition data from CSV file</p>
+<h2 id="returns_13">Returns</h2>
+<p>df_animal_nutrition : pandas dataframe
+Dataframe containing animal nutrition data</p>
+<hr />
+<h2 id="animalmodelbuilder">AnimalModelBuilder</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1781">source</a></p>
+<pre><code class="language-python">AnimalModelBuilder()
+</code></pre>
+<p><strong>Methods:</strong></p>
+<h3 id="create_animal_objects">.create_animal_objects</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1782">source</a></p>
+<pre><code class="language-python">.create_animal_objects(
+   df_animal_stock_info, df_animal_attributes
+)
+</code></pre>
+<hr />
+<p>Create animal objects from dataframes</p>
+<h2 id="parameters_10">Parameters</h2>
+<p>df_animal_stock_info : pandas dataframe
+Single dimension Dataframe containing animal population data for each country</p>
+<hr />
+<pre><code>Dataframe containing animal nutrition data
+</code></pre>
+<h2 id="returns_14">Returns</h2>
+<pre><code>List of animal objects
+</code></pre>
+<h3 id="get_optimal_next_animal_to_feed">.get_optimal_next_animal_to_feed</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L1868">source</a></p>
+<pre><code class="language-python">.get_optimal_next_animal_to_feed(
+   animal_dict, kcals_per_head_meat_dict, df_animal_attributes
+)
+</code></pre>
+<h3 id="update_animal_objects_with_slaughter">.update_animal_objects_with_slaughter</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L2070">source</a></p>
+<pre><code class="language-python">.update_animal_objects_with_slaughter(
+   animal_list, df_animal_attributes, df_animal_options, scenario,
+   kcals_per_head_meat_dict
+)
+</code></pre>
+<hr />
+<p>This function updates the animal objects with the slaughter data</p>
+<h2 id="parameters_11">Parameters</h2>
+<p>animal_list : list
+List of animal objects</p>
+<hr />
+<pre><code>Dataframe containing animal attibute data
+Dataframe containing animal options data
+</code></pre>
+<h2 id="returns_15">Returns</h2>
+<pre><code>List of animal objects
+</code></pre>
+<h3 id="update_animal_objects_with_milk">.update_animal_objects_with_milk</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L2175">source</a></p>
+<pre><code class="language-python">.update_animal_objects_with_milk(
+   animal_list, df_animal_attributes
+)
+</code></pre>
+<hr />
+<p>This function updates the animal objects with the slaughter data.</p>
+<h2 id="parameters_12">Parameters</h2>
+<p>animal_list : list
+List of animal objects</p>
+<hr />
+<pre><code>Dataframe containing animal attibute data
+Dataframe containing animal options data
+</code></pre>
+<h2 id="returns_16">Returns</h2>
+<pre><code>List of animal objects
+</code></pre>
+<h3 id="update_animal_objects_lsu_factor">.update_animal_objects_LSU_factor</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L2219">source</a></p>
+<pre><code class="language-python">.update_animal_objects_LSU_factor(
+   animal_list, country_object
+)
+</code></pre>
+<hr />
+<p>This function updates the animal objects with the LSU factors</p>
+<h2 id="parameters_13">Parameters</h2>
+<p>animal_list : list
+List of animal objects</p>
+<hr />
+<pre><code>Object containing country data
+</code></pre>
+<h2 id="returns_17">Returns</h2>
+<pre><code>List of animal objects
+</code></pre>
+<h3 id="remove_first_month">.remove_first_month</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L2241">source</a></p>
+<pre><code class="language-python">.remove_first_month(
+   animal
+)
+</code></pre>
+<hr />
+<h2 id="debugging">Debugging</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L2249">source</a></p>
+<pre><code class="language-python">Debugging()
+</code></pre>
+<p><strong>Methods:</strong></p>
+<h3 id="print_list_lengths">.print_list_lengths</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L2250">source</a></p>
+<pre><code class="language-python">.print_list_lengths(
+   obj
+)
+</code></pre>
+<h3 id="save_single_animal_data_to_csv">.save_single_animal_data_to_csv</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L2258">source</a></p>
+<pre><code class="language-python">.save_single_animal_data_to_csv(
+   animal, output_path = 'animal_single_data_to_csv.csv'
+)
+</code></pre>
+<h3 id="print_list_any">.print_list_any</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L2305">source</a></p>
+<pre><code class="language-python">.print_list_any(
+   animal_list
+)
+</code></pre>
+<h3 id="available_feed_function">.available_feed_function</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L2369">source</a></p>
+<pre><code class="language-python">.available_feed_function(
+   billion_kcals, months_to_run = 120
+)
+</code></pre>
+<hr />
+<p>Energy is expressed as digestible (DE), metabolizable (ME), or net energy (NE) by considering the loss of
+energy during digestion and metabolism from gross energy (GE) in the feed, as follows:</p>
+<p>Gross energy (GE): the amount of energy in the feed.
+Digestible energy (DE): the amount of energy in the feed minus the amount of energy lost in the feces.
+Metabolizable energy (ME): the amount of energy in the feed minus the energy lost in the feces and urine.
+Net energy (NE): the amount of energy in the feed minus the energy lost in the feces, urine, and in heat
+production through digestive and metabolic processes, i.e. heat increment.</p>
+<h3 id="available_grass_function">.available_grass_function</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L2401">source</a></p>
+<pre><code class="language-python">.available_grass_function(
+   billion_kcals, months_to_run = 120
+)
+</code></pre>
+<hr />
+<h3 id="check-is-billion-kcals">CHECK IS BILLION KCALS</h3>
+<p>Energy is expressed as digestible (DE), metabolizable (ME), or net energy (NE) by considering the loss of energy
+during digestion and metabolism from gross energy (GE) in the feed, as follows:</p>
+<p>Gross energy (GE): the amount of energy in the feed. Digestible energy (DE): the amount of energy in the feed
+minus the amount of energy lost in the feces. Metabolizable energy (ME): the amount of energy in the feed minus
+the energy lost in the feces and urine. Net energy (NE): the amount of energy in the feed minus the energy lost
+in the feces, urine, and in heat production through digestive and metabolic processes, i.e. heat increment.</p>
+<hr />
+<h3 id="calculate_net_slaughter_hours_by_size">calculate_net_slaughter_hours_by_size</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L2437">source</a></p>
+<pre><code class="language-python">.calculate_net_slaughter_hours_by_size(
+   animals
+)
+</code></pre>
+<hr />
+<p>@author: DMR
+This function gets the total hours in the relevant size (small, medium, or large) which can be used to slaughter
+animals of that size</p>
+<hr />
+<h3 id="world_test">world_test</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/food_system/animal_populations.py/#L2813">source</a></p>
+<pre><code class="language-python">.world_test()
+</code></pre>
+<hr />
+<p>Test the animal population model for the case with full-trade by including worldwide aggregated
+feed and grass supply.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../cellulosic_sugar/" class="btn btn-neutral float-right" title="Cellulosic sugar">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../../.." class="btn btn-neutral" title="ALLFED Integrated Food System Model"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Me</p>
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../../.." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../cellulosic_sugar/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../../../..';</script>
+    <script src="../../../../js/theme_extra.js" defer></script>
+    <script src="../../../../js/theme.js" defer></script>
+      <script src="../../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

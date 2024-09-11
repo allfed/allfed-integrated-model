@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="None">
+  
+  
+  <link rel="shortcut icon" href="img/favicon.ico">
+  <title>ALLFED Integrated Model</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "ALLFED Integrated Food System Model";
+    var mkdocs_page_input_path = "index.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="js/jquery-2.1.1.min.js" defer></script>
+  <script src="js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="." class="icon icon-home"> ALLFED Integrated Model</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href=".">ALLFED Integrated Food System Model</a>
+    <ul class="current">
+    </ul>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Modules</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="#">Src</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="#">Food system</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/food_system/animal_populations/">Animal populations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/food_system/cellulosic_sugar/">Cellulosic sugar</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/food_system/feed_and_biofuels/">Feed and biofuels</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/food_system/food/">Food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/food_system/greenhouses/">Greenhouses</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/food_system/meat_and_dairy/">Meat and dairy</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/food_system/methane_scp/">Methane scp</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/food_system/outdoor_crops/">Outdoor crops</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/food_system/seafood/">Seafood</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/food_system/seaweed/">Seaweed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/food_system/stored_food/">Stored food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/food_system/unit_conversions/">Unit conversions</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Import scripts no food trade</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/import_scripts_no_food_trade/create_crop_macros_csv/">Create crop macros csv</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/import_scripts_no_food_trade/create_nuclear_winter_csv/">Create nuclear winter csv</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Optimizer</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/optimizer/extract_results/">Extract results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/optimizer/interpret_results/">Interpret results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/optimizer/optimizer/">Optimizer</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/optimizer/parameters/">Parameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/optimizer/validate_results/">Validate results</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Scenarios</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/scenarios/run_model_no_trade/">Run model no trade</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/scenarios/run_scenario/">Run scenario</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/scenarios/run_scenarios_from_yaml/">Run scenarios from yaml</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/scenarios/scenarios/">Scenarios</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Utilities</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/utilities/constants/">Constants</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/utilities/import_utilities/">Import utilities</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/utilities/make_powerpoint/">Make powerpoint</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="modules/src/utilities/plotter/">Plotter</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href=".">ALLFED Integrated Model</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>ALLFED Integrated Food System Model</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="allfed-integrated-food-system-model">ALLFED Integrated Food System Model</h1>
+<hr />
+<p><img alt="Testing" src="https://github.com/allfed/allfed-integrated-model/actions/workflows/testing.yml/badge.svg" />
+<a href="https://zenodo.org/badge/latestdoi/380878388"><img alt="DOI" src="https://zenodo.org/badge/380878388.svg" /></a>
+<a href="https://www.gnu.org/licenses/gpl-3.0"><img alt="License: GPL v3" src="https://img.shields.io/badge/License-GPLv3-blue.svg" /></a></p>
+<hr />
+<p>An integrated food supply model for resilient foods in nuclear winter</p>
+<h1 id="run-the-model">Run the model</h1>
+<ul>
+<li>You can create a variety of different scenarios with this model. A collection of possible scenarios are already available in the scenarios folder (e.g. <code>run_model_with_resilient_foods.py</code>). Examples of usage can be found in the scripts folder. Resulting pptx can be found in results/large_reports/. If you don't wish to run these results yourself, you can find more pregenerated results in the Zenodo repository (https://zenodo.org/record/7039924).</li>
+</ul>
+<h3 id="running-on-command-line">Running on command line</h3>
+<p>(See Dependencies section first)</p>
+<p>Results from the paper can be rerun using the following command:</p>
+<pre><code class="language-bash">python3 plot_manuscript_figures.py rerun all
+</code></pre>
+<p>You can always just run </p>
+<pre><code class="language-bash">python3 plot_manuscript_figures.py
+</code></pre>
+<p>To see how to run fewer plots, load plots you already ran, or show specific results from the paper.</p>
+<p>Individual scenarios, or a series of scenarios of interest, can be specified in the scenarios/ folder.</p>
+<pre><code class="language-bash">./run_scenarios_from_yaml.sh True False True argentina.yaml
+</code></pre>
+<p>This shows a series of stackplots of argentina with no food trade, including animal slaughter, feed, and food available to humans after waste each month. The scenarios shown are:</p>
+<ol>
+<li>Baseline net production (continued feed/biofuel, normal climate)</li>
+<li>Baseline gross production (shut off feed/biofuel, normal climate)</li>
+<li>Nuclear winter net production (continued feed/biofuel, 150 Tg nuclear winter)</li>
+<li>Nuclear winter with reduced feed/waste  (continued feed/biofuel, nuclear winter, reduced waste)</li>
+<li>Nuclear winter with resilient foods (continued feed/biofuel, nuclear winter, reduced waste, resilient foods)</li>
+<li>Nuclear winter with resilient foods &amp; more area (continued feed/biofuel, nuclear winter, reduced waste, resilient foods, cropland expansion)</li>
+</ol>
+<p>The first argument is whether to show plotted simulation results for the different rounds of optimization.
+The second argument is whether to show a map of percent people fed for all countries, and shows at the end for each type of scenario specified in the yaml file.
+The third argument should be set to False unless you are running the model from the <a href="https://github.com/allfed/integrated-model-web">web interface</a>.</p>
+<p>Rounds of optimization: Round1 is zero feed/biofuel for ascertaining minimum human needs that can be satisfied, Round2 determines the amount of feed and biofuel that could be used to optimally produce feed and optionally biofuel, and the Round3 finally combines the appropriate amount of feed and biofuel used while still satisfying human minimum caloric needs. You can alter the plots shown by commenting out display code in scenarios/run_scenario.py display_results_of_optimizer_round function calls.</p>
+<p>To run these scenarios for a specific country, you can create a new yaml file with a specific country specified in the yaml file. For example, to run Oman, you can add the following to the yaml:</p>
+<pre><code>settings:
+  countries: &quot;OMN&quot;
+</code></pre>
+<p>Where "OMN" is the 3 letter iso3 code for Oman.</p>
+<p>If you name this new yaml file for the scenarios as: "your_yaml_file_here.yaml", then you would run:</p>
+<pre><code class="language-bash">./run_scenarios_from_yaml.sh True False your_yaml_file_here.yaml
+</code></pre>
+<p>To see the results for Oman baseline, nuclear winter, and nuclear winter with resilient foods.</p>
+<h1 id="more-details">More Details</h1>
+<p>See the zenodo repository for more results and reports:
+https://zenodo.org/record/7039924</p>
+<h1 id="how-the-model-works-in-general">How the model works in general</h1>
+<p><img alt="Flow Chart" src="https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/overview.png" /></p>
+<h1 id="more-details_1">more details</h1>
+<p><img alt="Flow Chart" src="https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/outfile.png" />
+<img alt="Flow Chart" src="https://raw.githubusercontent.com/allfed/allfed-integrated-model/main/docs/repository_flowchart/ModularArchitecture.drawio(2).svg" /></p>
+<h4 id="dependency-management-with-anaconda">Dependency management with Anaconda</h4>
+<p>The integrated model is written in python 3, ensure you have some version of python3, although it has only been tested with python 3.9 or later. Then, install the required packages using conda or miniconda:</p>
+<p>You'll also need to install conda or miniconda, micromamba, or similar.</p>
+<p>See https://docs.anaconda.com/anaconda/install/index.html for installation instructions.</p>
+<p>Once the program is installed on your device, set up a separate environment for the project
+(do not use your base environment). This step and the following can be done in two ways:
+- using the GUI or
+- using the Anaconda Prompt.
+For people new to coding the GUI is more intuitive.</p>
+<h5 id="gui">GUI</h5>
+<ol>
+<li>Open the Anaconda Navigator.</li>
+<li>Select the tap "Environments".</li>
+<li>Click "Import" and select the "environment.yml" file from the repository and name the new
+    environment. All dependencies will be installed automatically.</li>
+</ol>
+<h5 id="anaconda-prompt">Anaconda Prompt</h5>
+<ol>
+<li>Open Anaconda Prompt.</li>
+<li>Type in the following line:</li>
+</ol>
+<pre><code class="language-bash">conda env create -f environment.yml
+</code></pre>
+<p>The dependencies will be installed automatically and the environment will be name intmodel.</p>
+<p>If you close out the terminal and open it later you will want to activate the environment again using</p>
+<pre><code class="language-bash">conda activate intmodel
+</code></pre>
+<p>For both versions: Code from this project will only run smoothly when opened in the new
+environment and when the working directory is set to the path location of the repository on
+your machine.</p>
+<h1 id="regenerate-documentation">Regenerate documentation</h1>
+<pre><code class="language-bash">python3 automate_mkdocs.py
+gendocs --config mkgendocs.yml
+mkdocs serve
+</code></pre>
+<p>Then navigate to <code>http://127.0.0.1:8000/</code> in your web browser.</p>
+<h1 id="detailed-explanation-of-files-and-folders-in-this-repository">Detailed Explanation of Files and Folders in this Repository</h1>
+<p>Below we explain all of the folders and files used for getting data, processing data, running simulations, then displaying and saving results of models.</p>
+<p>Files purely for  mentation or creating the python environment are not included below.</p>
+<h2 id="directory-structure">Directory Structure</h2>
+<pre><code>├── data/
+│
+│   All the tabulated data used for the repository, as well as intermediary 
+│   processed results from import scripts. Also contains data explaining 
+│   assumptions of the model in the Supplemental_Data.xlsx file.    
+│
+├── results/
+│
+│   Outputs of the model including figures and pptx generated reports. 
+│
+├── scripts/
+│
+│   Convenient scripts used to run sets of python scripts.
+│
+├── src/
+│                 
+│   All of the code used to model the food system and to run simulations.
+│
+</code></pre>
+<h2 id="data">data/</h2>
+<p>All data for the use of generating scenarios is contained in this directory, with the exception that some aggregate global constants for the food system are stored in the <strong>src/scenarios/scenarios.py</strong> file.
+(Note: currently getting rid of "magic numbers" in other files, but it is a long process)</p>
+<p><strong>resilient_food_primary_results.npy</strong>, <strong>no_resilient_food_primary_results.npy</strong></p>
+<p>These are used for plotting data from src/scenarios/plot_primary_food.py.</p>
+<p><strong>Supplemental_Data.xlsx</strong></p>
+<p>This is part of the raw data imported in the case of Nutrition, or 
+used directly for estimating the performance of crop relocation or expected 
+diet availability, as well as crop seasonality. </p>
+<p>The spreadsheet contains the following tabs: </p>
+<ul>
+<li>Summary of field margins</li>
+<li>Cost modelling</li>
+<li>Diet affordability</li>
+<li>Crop years</li>
+<li>Production &amp; stocks seasonality</li>
+<li>Crop Model Results</li>
+<li>Crop Model ASRS Relocation Estimate</li>
+<li>Crop Model No Relocation</li>
+<li>Crop Model 2005</li>
+<li>Production 2005</li>
+<li>Production 2005 Raw</li>
+<li>Nutrition</li>
+</ul>
+<h2 id="datano_food_trade">data/no_food_trade/</h2>
+<p>Contains data used to run the country-by-country no food trade model.</p>
+<p><strong>processed_data/</strong> </p>
+<p>All of the CSV files in this folder are generated by running the scripts/run_all_imports.sh file. They contain data in standard format for each country on values of interest for the food system models (for no food trade scenarios).</p>
+<p><strong>raw_data/</strong> </p>
+<p>All data files used for each country in the no food trade scenarios, directly from the data source (before processing to make standard format). Processing of these files happens using the import files in <strong>/src/import_scripts_no_food_trade/</strong> directory, which can in turn be called all at once using the <strong>scripts/run_all_imports.sh</strong> script.</p>
+<p><strong>computer_readable_combined.csv</strong></p>
+<p>The ultimate result from running all the import scripts in <strong>src/import_scripts_no_food_trade</strong>, (also accomplished using <strong>scripts/run_all_scripts.py</strong>). In particular, the <strong>src/import_scripts_no_food_trade/import_food_data.py</strong> file creates this by merging the csvs into a dataframe then exporting the result to this csv.</p>
+<h2 id="datano_food_traderaw_data">data/no_food_trade/raw_data/</h2>
+<p>Raw data files for each country in the no food trade scenarios, directly from the data source (before processing to make standard format). Processing of these files happens using the import files in <strong>/src/import_scripts_no_food_trade/</strong> directory, which can in turn be called all at once using the <strong>scripts/run_all_imports.sh</strong> script.</p>
+<p><strong>FAOSTAT_*_.CSV</strong></p>
+<p>Data files imported directly from FAOSTAT for the year in question.</p>
+<p><strong>Integrated Model With No Food Trade.xlsx</strong></p>
+<p>The spreadsheet is used as a remaining set of data pertaining to no food trade
+scenarios, which is imported in addition to raw FAOSTAT data to create the 
+final computer_readable_code.csv file.</p>
+<p>Contains the following tabs:
+* Population
+* Food waste
+* Outdoor crop Production Seasonality
+* Outdoor Crop Production Baseline
+* Outdoor Crop Production NW
+* Food Stocks
+* Seafood - excluding seaweeds
+* Grazing
+* Seaweed
+* Cellulosic Sugar
+* Greenhouses
+* Methane SCP
+* Combined</p>
+<p><strong>rutgers_nw_production_raw.csv</strong></p>
+<p>Raw data provided by the Rutgers Toon group from Xia et al publication regarding grasses and staple crops (spring wheat, maize, soybean, rice) fractional crop yields to baseline in a 150 tg nuclear winter scenario.</p>
+<h2 id="results">results/</h2>
+<p>Outputs of the model including figures and pptx generated reports. </p>
+<p><strong>large_reports/</strong></p>
+<p>Reports generated with the <strong>run_model_no_trade_baseline.py</strong>, <strong>run_model_no_trade_no_resilient_foods.py</strong>, and <strong>run_model_no_trade_with_resilient_foods.py</strong> in <strong>src/scenarios/</strong>.</p>
+<p><strong>Figure_4/</strong></p>
+<p>Diagrammatic flow chart of the integrated model. </p>
+<p><strong>*.fig</strong></p>
+<p>Figures produced by running some <strong>src/scenarios/</strong> files. The last stage of figure generation (plotting itself) always occurs in the <strong>src/utilities/plotter.py</strong> file.</p>
+<h2 id="scripts">scripts/</h2>
+<p>Convenient scripts used to run sets of python scripts.</p>
+<p><strong>create_all_no_trade_scenario_pptx.sh</strong></p>
+<p>Generates a full set of results in <strong>results/large_reports/</strong> by running run_model_no_trade scripts in <strong>src/scenarios/</strong>, using both the "single" and "multi" arguments.</p>
+<p><strong>run_all_imports.sh</strong></p>
+<p>This script creates all the imported .csv files in the <strong>data/no_food_trade/processed_data</strong> folder, by running all the <strong>import_*_csv.py</strong> scripts in <strong>src/import_scripts_no_food_trade/</strong>. It's required to run this for importing all the food system input data before running simulations if no_food_trade scenarios are being run.</p>
+<h2 id="src">src/</h2>
+<p>All of the code used to model the food system and to run simulations</p>
+<p><strong>food_system/</strong></p>
+<p>Called by the compute_parameters function in <strong>src/optimizer/parameters.py</strong>, each function represents a different part of the food system. </p>
+<p><strong>import_scripts_no_food_trade/</strong></p>
+<p>This is required to be run before other files in <strong>src/</strong> in order to import raw data into a usable format for other files in <strong>src/</strong>. It is a set of scripts that are run to import food system data, typically by the <strong>scripts/run_all_imports.sh</strong> file. These create the imported .csv files in the <strong>data/no_food_trade/processed_data</strong> folder. It's required to run this for importing all the food system input data before running simulations for no_food_trade scenarios.</p>
+<h2 id="srcoptimizer">src/optimizer/</h2>
+<p>The optimizer folder runs the following sequence in order for every scenario: compute_parameters, run_optimizer, extract_results, interpret_results, validate_results. The <strong>parameters.py</strong> file also imports all the <strong>src/food_system</strong> category-specific calculations. The results of <strong>parameters.py</strong> are sent to the <strong>optimizer.py</strong> through the constants_out variable.</p>
+<p>Optimization in optimizer uses the PuLP linear optimizer to optimally satisfy the series of constraints used in that model.</p>
+<h2 id="srcscenarios">src/scenarios/</h2>
+<p>Running a script in scenarios is done after completing import of the scripts, if no_food_trade scenarios are being run. The scenarios are all either involving full food trade or no food trade between trading blocs, as determined by the trading bloc data in <strong>no_food_trade/computer_readable_combined.csv</strong> and globally-aggregated data stored in <strong>scenarios.py</strong>.</p>
+<p>Utility files used to specify the scenarios are: <strong>scenarios.py</strong></p>
+<p>Finally the results are returned from run_scenario back up the call chain in reverse order.</p>
+<p><strong>utilities/</strong></p>
+<p>various useful utilities that are called elsewhere in the program, that do not serve any core function for the modelling. Notably, all the plotting code is located in the utilities directory.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="modules/src/food_system/animal_populations/" class="btn btn-neutral float-right" title="Animal populations">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Me</p>
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+      <span><a href="modules/src/food_system/animal_populations/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme_extra.js" defer></script>
+    <script src="js/theme.js" defer></script>
+      <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.2.3
+Build Date UTC : 2024-09-11 10:33:30.515350+00:00
+-->

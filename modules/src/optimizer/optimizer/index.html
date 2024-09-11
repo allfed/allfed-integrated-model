@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../../../../img/favicon.ico">
+  <title>Optimizer - ALLFED Integrated Model</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../../../css/theme.css" />
+  <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Optimizer";
+    var mkdocs_page_input_path = "modules/src/optimizer/optimizer.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../../../.." class="icon icon-home"> ALLFED Integrated Model</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../..">ALLFED Integrated Food System Model</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Modules</span></p>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="#">Src</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="#">Food system</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/animal_populations/">Animal populations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/cellulosic_sugar/">Cellulosic sugar</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/feed_and_biofuels/">Feed and biofuels</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/food/">Food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/greenhouses/">Greenhouses</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/meat_and_dairy/">Meat and dairy</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/methane_scp/">Methane scp</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/outdoor_crops/">Outdoor crops</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/seafood/">Seafood</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/seaweed/">Seaweed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/stored_food/">Stored food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/unit_conversions/">Unit conversions</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Import scripts no food trade</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_crop_macros_csv/">Create crop macros csv</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_nuclear_winter_csv/">Create nuclear winter csv</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Optimizer</a>
+    <ul class="current">
+                <li class="toctree-l3"><a class="reference internal" href="../extract_results/">Extract results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../interpret_results/">Interpret results</a>
+                </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="./">Optimizer</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#optimizer">Optimizer</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../parameters/">Parameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../validate_results/">Validate results</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Scenarios</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_model_no_trade/">Run model no trade</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenario/">Run scenario</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenarios_from_yaml/">Run scenarios from yaml</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/scenarios/">Scenarios</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Utilities</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/constants/">Constants</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/import_utilities/">Import utilities</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/make_powerpoint/">Make powerpoint</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../utilities/plotter/">Plotter</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../..">ALLFED Integrated Model</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Modules &raquo;</li>
+        
+      
+        
+          <li>Src &raquo;</li>
+        
+      
+        
+          <li>Optimizer &raquo;</li>
+        
+      
+    
+    <li>Optimizer</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1"></h1>
+<h2 id="optimizer">Optimizer</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L13">source</a></p>
+<pre><code class="language-python">Optimizer(
+   consts_for_optimizer, time_consts
+)
+</code></pre>
+<p><strong>Methods:</strong></p>
+<h3 id="optimize_to_humans">.optimize_to_humans</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L69">source</a></p>
+<pre><code class="language-python">.optimize_to_humans(
+   consts_for_optimizer, time_consts
+)
+</code></pre>
+<hr />
+<p>This function optimizes the model to maximize the amount of food produced for humans.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>consts_for_optimizer</strong> (dict) : A dictionary containing single-valued constants</li>
+<li><strong>time_consts</strong> (dict) : A dictionary containing time-related constants</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : A tuple containing the following:<ul>
+<li>model (LpProblem): The model to optimize</li>
+<li>variables (dict): A dictionary containing the variables in the model</li>
+<li>maximize_constraints (list): A list of constraints to maximize</li>
+</ul>
+</li>
+</ul>
+<h3 id="optimize_feed_to_animals">.optimize_feed_to_animals</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L114">source</a></p>
+<pre><code class="language-python">.optimize_feed_to_animals(
+   consts_for_optimizer, time_consts, min_human_food_consumption
+)
+</code></pre>
+<hr />
+<p>This function optimizes the model to maximize the amount of food produced for feed and biofuel.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>consts_for_optimizer</strong> (dict) : A dictionary containing single-valued constants</li>
+<li><strong>time_consts</strong> (dict) : A dictionary containing time-related constants</li>
+<li><strong>min_human_food_consumption</strong> (dict) : A dictionary of foods mandated to be fed to humans in the optimization
+    in order of preference</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : A tuple containing the following:<ul>
+<li>model (LpProblem): The model to optimize</li>
+<li>variables (dict): A dictionary containing the variables in the model</li>
+<li>maximize_constraints (list): A list of constraints to maximize</li>
+</ul>
+</li>
+</ul>
+<h3 id="assign_predetermined_human_consumption_of_foods">.assign_predetermined_human_consumption_of_foods</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L165">source</a></p>
+<pre><code class="language-python">.assign_predetermined_human_consumption_of_foods(
+   model, month, variables, min_human_food_consumption, food_type
+)
+</code></pre>
+<h3 id="add_variables_and_constraints_to_model">.add_variables_and_constraints_to_model</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L233">source</a></p>
+<pre><code class="language-python">.add_variables_and_constraints_to_model(
+   model, variables, consts_for_optimizer, optimization_type
+)
+</code></pre>
+<hr />
+<p>This function is utilized for adding variables and constraints to a given optimization model. It operates on
+resource constants and single valued constants.</p>
+<h3 id="parameters">Parameters:</h3>
+<ul>
+<li><code>model</code>: A PULP linear programming model object. This model should be already defined but may be in need of
+ decision variables, objective function, and constraints.</li>
+<li><code>variables</code>: A dictionary object storing decision variables of the model.</li>
+<li><code>resource_constants</code>: A dictionary object, where each item includes information about a resource, including
+ the prefixes and function for variable and constraint generation.</li>
+<li><code>consts_for_optimizer</code>: A dictionary object consisting of constant parameters used throughout the
+optimization process.</li>
+</ul>
+<h3 id="behavior">Behavior:</h3>
+<p>The function operates in two major steps:</p>
+<ul>
+<li>First, it loops through each resource in <code>resource_constants</code>. If the corresponding key
+in <code>consts_for_optimizer</code> is set to True, it generates and adds new variables based on
+the resource prefixes. It then generates and adds constraints to the model for each month
+ in the time horizon (from 0 to NMONTHS), using the function provided with each resource.</li>
+</ul>
+<hr />
+<ul>
+<li>After adding all resource-based variables and constraints, the function adds objectives to
+   the model for each month in the time horizon. These objectives are added to the
+   <code>maximize_constraints</code> list, which is only used for validation.</li>
+</ul>
+<p>The function concludes by adding the objective function (stored under the "objective_function" key in the
+<code>variables</code> dictionary) to the model.</p>
+<h3 id="returns">Returns:</h3>
+<p>This function returns three outputs:</p>
+<ul>
+<li><code>model</code>: The updated PULP model after adding the variables, constraints, and the objective function.</li>
+<li><code>variables</code>: The updated dictionary of variables after the function has added new variables.</li>
+<li><code>maximize_constraints</code>: A list of the objective functions added to the model, used for validation purposes.</li>
+</ul>
+<h3 id="add_resource_specific_conditions_to_model">.add_resource_specific_conditions_to_model</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L334">source</a></p>
+<pre><code class="language-python">.add_resource_specific_conditions_to_model(
+   model, variables, month, optimization_type, func, food_name
+)
+</code></pre>
+<h3 id="run_optimizations_on_constraints">.run_optimizations_on_constraints</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L351">source</a></p>
+<pre><code class="language-python">.run_optimizations_on_constraints(
+   model, variables, consts_for_optimizer, optimization_type
+)
+</code></pre>
+<hr />
+<p>This function is part of a resource allocation system aiming to model systems which
+1. minimizes human starvation
+2. maximizes feed going to animals, and secondarily biofuel, assuming minimal nutrition for humans are met
+3. reduces unnecessary fluctuations in the predicted food consumption.</p>
+<hr />
+<p>This function specifically takes the series of constraints which either involve a maximization of the minimum
+to_human food, OR a maximization of the number of months where to_animals feed demand is fully met, starting at
+the first month of the simulation.</p>
+<p>The function executes a series of optimization steps. After solving the initial model, it performs several more
+rounds of optimization, each with added constraints based on the results of the previous round.</p>
+<p>Here's a brief overview of the operations it performs:</p>
+<ul>
+<li>It first solves the initial model and asserts that the optimization was successful.</li>
+<li>It then constrains the next optimization to have the same minimum starvation as the previous optimization.</li>
+<li>If the first optimization was successful, it optimizes the best food consumption that goes to humans.</li>
+<li>After that, it constrains the next optimization to have the same total resilient foods in feed as the
+    previous optimization.</li>
+<li>If the first optimization was successful and if food storage between years is allowed, it further optimizes
+    to reduce fluctuations in food distribution.</li>
+</ul>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong>  : The optimizer object.</li>
+<li><strong>model</strong>  : A PULP linear programming model object. This model should be already defined and configured.</li>
+<li><strong>variables</strong>  : A dictionary containing the variables used in the optimization.</li>
+<li><strong>consts_for_optimizer</strong>  : A dictionary of constant parameters that are used throughout the optimization
+process.</li>
+</ul>
+<h3 id="constrain_next_optimization_to_have_same_total_resilient_foods_in_feed">.constrain_next_optimization_to_have_same_total_resilient_foods_in_feed</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L484">source</a></p>
+<pre><code class="language-python">.constrain_next_optimization_to_have_same_total_resilient_foods_in_feed(
+   model_max_to_humans, variables
+)
+</code></pre>
+<hr />
+<p>Constrains the next optimization to have the same total resilient foods in feed as the previous optimization.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>model_max_to_humans</strong> (tuple) : A tuple containing the model and the maximizer string.</li>
+<li><strong>variables</strong> (dict) : A dictionary containing the variables used in the optimization.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : A tuple containing the updated model and variables.</li>
+</ul>
+<h3 id="add_conditions_to_model">.add_conditions_to_model</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L548">source</a></p>
+<pre><code class="language-python">.add_conditions_to_model(
+   model, month, conditions
+)
+</code></pre>
+<hr />
+<p>Adds conditions to a given model for a given month.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>model</strong> (Pulp ) : The model to which the conditions will be added.</li>
+<li><strong>month</strong> (str) : The month for which the conditions will be added.</li>
+<li><strong>conditions</strong> (dict) : A dictionary containing the conditions to be added to the model.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>LpProblem</strong>  : The updated model with the added conditions.</li>
+</ul>
+<p><strong>Example</strong></p>
+<ul>
+<li>'x &gt; 0', 'condition2': 'y &lt; 10'}</li>
+</ul>
+<pre><code class="language-python">
+&gt;&gt;&gt; updated_model = add_conditions_to_model(model, '1', conditions)
+</code></pre>
+<h3 id="load_variable_names_and_prefixes">.load_variable_names_and_prefixes</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L575">source</a></p>
+<pre><code class="language-python">.load_variable_names_and_prefixes()
+</code></pre>
+<hr />
+<p>This function initializes a dictionary of variable names and prefixes, and returns it.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong>  : instance of the Optimizer class</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>variables</strong> (dict) : a dictionary containing variable names and prefixes</li>
+</ul>
+<h3 id="optimize_best_food_consumption_to_go_to_humans">.optimize_best_food_consumption_to_go_to_humans</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L663">source</a></p>
+<pre><code class="language-python">.optimize_best_food_consumption_to_go_to_humans(
+   model, variables, ASSERT_SUCCESSFUL_OPTIMIZATION, consts_for_optimizer
+)
+</code></pre>
+<hr />
+<p>This function optimizes the amount of food to be allocated to humans while ensuring that the minimum
+demands for feed and biofuel are met.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong>  : instance of the Optimizer class</li>
+<li><strong>model</strong>  : the model to be optimized</li>
+<li><strong>variables</strong>  : dictionary of variables used in the model</li>
+<li><strong>ASSERT_SUCCESSFUL_OPTIMIZATION</strong>  : assertion to check if optimization was successful</li>
+<li><strong>consts_for_optimizer</strong>  : dictionary of constants used in the model</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : a tuple containing the optimized model and the updated variables dictionary</li>
+</ul>
+<h3 id="reduce_fluctuations_with_a_final_optimization">.reduce_fluctuations_with_a_final_optimization</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L735">source</a></p>
+<pre><code class="language-python">.reduce_fluctuations_with_a_final_optimization(
+   model, variables, ASSERT_SUCCESSFUL_OPTIMIZATION, consts_for_optimizer,
+   optimization_type
+)
+</code></pre>
+<hr />
+<p>Optimize the smoothing objective function to reduce fluctuations in the model.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>model</strong> (pulp.LpProblem) : The model to optimize.</li>
+<li><strong>variables</strong> (dict) : A dictionary of variables used in the model.</li>
+<li><strong>ASSERT_SUCCESSFUL_OPTIMIZATION</strong> (bool) : A flag to assert if optimization was successful.</li>
+<li><strong>consts_for_optimizer</strong> (dict) : A dictionary of constants used in the model.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : A tuple containing the optimized model and the updated variables dictionary.</li>
+</ul>
+<h3 id="constrain_next_optimization_to_have_same_minimum_starvation">.constrain_next_optimization_to_have_same_minimum_starvation</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L965">source</a></p>
+<pre><code class="language-python">.constrain_next_optimization_to_have_same_minimum_starvation(
+   model, variables
+)
+</code></pre>
+<hr />
+<p>This function constrains the next optimization to have the same minimum starvation
+as the previous optimization. It does this by setting the minimum value to the
+previous optimization value and ensuring that consumed_kcals meets this value each month.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong> (Optimizer) : The Optimizer object.</li>
+<li><strong>model</strong> (pulp.LpProblem) : The optimization model.</li>
+<li><strong>variables</strong> (dict) : A dictionary of variables used in the optimization.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : A tuple containing the updated optimization model and variables.</li>
+</ul>
+<p><strong>Example</strong></p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>model, variables = constrain_next_optimization_to_have_same_minimum_starvation(
+...     self, model, variables
+... )</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="constrain_next_optimization_to_have_same_feed_biofuel">.constrain_next_optimization_to_have_same_feed_biofuel</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1035">source</a></p>
+<pre><code class="language-python">.constrain_next_optimization_to_have_same_feed_biofuel(
+   model, variables
+)
+</code></pre>
+<hr />
+<p>This function constrains the next optimization to have the same minimum starvation
+as the previous optimization. It does this by setting the minimum value to the
+previous optimization value and ensuring that consumed_kcals meets this value each month.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong> (Optimizer) : The Optimizer object.</li>
+<li><strong>model</strong> (pulp.LpProblem) : The optimization model.</li>
+<li><strong>variables</strong> (dict) : A dictionary of variables used in the optimization.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : A tuple containing the updated optimization model and variables.</li>
+</ul>
+<p><strong>Example</strong></p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>model, variables = constrain_next_optimization_to_have_same_minimum_starvation(
+...     self, model, variables
+... )</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="create_lp_variables">.create_lp_variables</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1079">source</a></p>
+<pre><code class="language-python">.create_lp_variables(
+   prefix, month
+)
+</code></pre>
+<hr />
+<p>Create a pulp variable with a given prefix and month.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>prefix</strong> (str) : A string prefix for the variable name.</li>
+<li><strong>month</strong> (int) : An integer representing the month for the variable name.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>LpVariable</strong>  : A pulp variable with a given name and lower bound of 0.</li>
+</ul>
+<h3 id="add_constraints">.add_constraints</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1094">source</a></p>
+<pre><code class="language-python">.add_constraints(
+   model, month, condition, prefix
+)
+</code></pre>
+<hr />
+<p>Adds a constraint to the given model based on the given condition, month, and prefix.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>model</strong> (Model) : The model to which the constraint will be added.</li>
+<li><strong>month</strong> (str) : The month to which the constraint applies.</li>
+<li><strong>condition</strong> (str) : The condition that the constraint enforces.</li>
+<li><strong>prefix</strong> (str) : The prefix to use in the constraint name.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>Model</strong>  : The updated model with the added constraint.</li>
+</ul>
+<h3 id="add_variable_from_prefixes">.add_variable_from_prefixes</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1112">source</a></p>
+<pre><code class="language-python">.add_variable_from_prefixes(
+   variables, prefixes
+)
+</code></pre>
+<hr />
+<p>Adds variables to the LP problem for each prefix and month.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>variables</strong> (dict) : A dictionary containing the LP variables for each prefix and month.</li>
+<li><strong>prefixes</strong> (list) : A list of prefixes for which variables need to be added.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : A dictionary containing the updated LP variables for each prefix and month.</li>
+</ul>
+<h3 id="add_percentage_intake_constraints">.add_percentage_intake_constraints</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1134">source</a></p>
+<pre><code class="language-python">.add_percentage_intake_constraints(
+   model, variables, month, optimization_type
+)
+</code></pre>
+<hr />
+<p>Adds constraints to the optimization model based on the percentage intake of the nonhuman and human diets.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>model</strong> (object) : The optimization model object</li>
+<li><strong>variables</strong> (dict) : A dictionary of variables used in the optimization model</li>
+<li><strong>month</strong> (int) : The month for which the constraints are being added</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>object</strong>  : The optimization model object with added constraints</li>
+</ul>
+<h3 id="get_feed_sum">.get_feed_sum</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1263">source</a></p>
+<pre><code class="language-python">.get_feed_sum(
+   variables, month
+)
+</code></pre>
+<h3 id="get_biofuel_sum">.get_biofuel_sum</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1273">source</a></p>
+<pre><code class="language-python">.get_biofuel_sum(
+   variables, month
+)
+</code></pre>
+<h3 id="add_feed_biofuel_to_model">.add_feed_biofuel_to_model</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1283">source</a></p>
+<pre><code class="language-python">.add_feed_biofuel_to_model(
+   model, variables, month, optimization_type
+)
+</code></pre>
+<hr />
+<p>Adds feed and biofuel variables to the model for a given month.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>model</strong> (LpProblem) : The LpProblem model to add the variables to.</li>
+<li><strong>variables</strong> (dict) : A dictionary containing the variables to add to the model.</li>
+<li><strong>month</strong> (int) : The month for which to add the variables.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>LpProblem</strong>  : The Pulp model with the added variables.</li>
+</ul>
+<p><strong>Example</strong></p>
+<ul>
+<li>[1, 2, 3],</li>
+<li>[4, 5, 6],</li>
+<li>[7, 8, 9],</li>
+<li>[10, 11, 12],</li>
+<li>[13, 14, 15],</li>
+<li>[16, 17, 18],</li>
+<li>[19, 20, 21],</li>
+<li>[22, 23, 24],</li>
+<li>[25, 26, 27],</li>
+<li>[28, 29, 30],</li>
+</ul>
+<pre><code class="language-python">
+&gt;&gt;&gt; variables = {
+... }
+&gt;&gt;&gt; optimizer = Optimizer()
+&gt;&gt;&gt; optimizer.add_feed_biofuel_to_model(model, variables, 0)
+</code></pre>
+<h3 id="add_total_human_consumption_to_model">.add_total_human_consumption_to_model</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1367">source</a></p>
+<pre><code class="language-python">.add_total_human_consumption_to_model(
+   model, variables, month, optimization_type
+)
+</code></pre>
+<hr />
+<p>Adds conditions that are not specific to a specific food (not defined in a function for that food)
+to the optimization model.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>model</strong> (pulp.LpProblem) : The optimization model to which objectives are added.</li>
+<li><strong>variables</strong> (dict) : A dictionary of variables used in the optimization model.</li>
+<li><strong>month</strong> (int) : The month for which objectives are added.</li>
+<li><strong>maximize_constraints</strong> (list) : A list of constraints to be maximized.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>list</strong>  : A list containing the updated model, variables, and maximize_constraints.</li>
+</ul>
+<h3 id="add_maximize_min_month_objective_to_model">.add_maximize_min_month_objective_to_model</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1481">source</a></p>
+<pre><code class="language-python">.add_maximize_min_month_objective_to_model(
+   model, variables, month, maximize_constraints
+)
+</code></pre>
+<h3 id="get_nonhuman_consumption_sum">.get_nonhuman_consumption_sum</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1517">source</a></p>
+<pre><code class="language-python">.get_nonhuman_consumption_sum(
+   nmonths, variables
+)
+</code></pre>
+<h3 id="add_maximize_sum_total_feed_used_by_animals">.add_maximize_sum_total_feed_used_by_animals</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1525">source</a></p>
+<pre><code class="language-python">.add_maximize_sum_total_feed_used_by_animals(
+   model, variables, nmonths
+)
+</code></pre>
+<h3 id="add_seaweed_to_model">.add_seaweed_to_model</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1547">source</a></p>
+<pre><code class="language-python">.add_seaweed_to_model(
+   month, variables
+)
+</code></pre>
+<hr />
+<p>Adds seaweed to the model by setting conditions for the seaweed wet on farm, used area, and other variables.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>month</strong> (int) : the current month of the simulation</li>
+<li><strong>variables</strong> (dict) : a dictionary containing the current values of the variables in the simulation</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : a dictionary containing the conditions for the seaweed wet on farm, used area, and other variables</li>
+</ul>
+<h3 id="add_stored_food_to_model_only_first_year">.add_stored_food_to_model_only_first_year</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1617">source</a></p>
+<pre><code class="language-python">.add_stored_food_to_model_only_first_year(
+   month, variables
+)
+</code></pre>
+<hr />
+<p>Adds stored food to the model for the first year only.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>month</strong> (int) : the current month of the simulation</li>
+<li><strong>variables</strong> (dict) : a dictionary containing the variables of the simulation</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : a dictionary containing the conditions for the simulation</li>
+</ul>
+<h3 id="add_stored_food_to_model">.add_stored_food_to_model</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1693">source</a></p>
+<pre><code class="language-python">.add_stored_food_to_model(
+   month, variables
+)
+</code></pre>
+<h3 id="add_meat_to_model">.add_meat_to_model</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1735">source</a></p>
+<pre><code class="language-python">.add_meat_to_model(
+   month, variables
+)
+</code></pre>
+<hr />
+<p>This function adds meat to the model based on the month and variables passed in.</p>
+<p>It just makes sure the sum total meat consumed never exceeds the sum total allowed consumption.
+The maximum per month constraint is responsible for making sure meat eaten each month does not
+exceed the amount in that month and the months prior.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>month</strong> (int) : The month for which the meat is being added</li>
+<li><strong>variables</strong> (dict) : A dictionary containing variables related to meat</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : A dictionary containing conditions related to meat</li>
+</ul>
+<h3 id="add_meat_to_model_no_storage">.add_meat_to_model_no_storage</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1785">source</a></p>
+<pre><code class="language-python">.add_meat_to_model_no_storage(
+   month, variables
+)
+</code></pre>
+<hr />
+<p>This function adds meat to the model based on the month and variables passed in.</p>
+<p>It simply sets the meat eaten to the amount of meat slaughtered -- no storage at all.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>month</strong> (int) : The month for which the meat is being added</li>
+<li><strong>variables</strong> (dict) : A dictionary containing variables related to meat</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : A dictionary containing conditions related to meat</li>
+</ul>
+<h3 id="add_outdoor_crops_to_model_no_storage">.add_outdoor_crops_to_model_no_storage</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1812">source</a></p>
+<pre><code class="language-python">.add_outdoor_crops_to_model_no_storage(
+   month, variables
+)
+</code></pre>
+<hr />
+<p>Adds a condition to the model that checks if the crops food storage is zero for a given month.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>month</strong> (int) : The month to check the crops food storage for.</li>
+<li><strong>variables</strong> (dict) : A dictionary containing the variables used in the model.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : A dictionary containing the condition to be added to the model.</li>
+</ul>
+<p><strong>Example</strong></p>
+<ul>
+<li>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}</li>
+<li>True}<blockquote>
+<blockquote>
+<blockquote>
+<p>add_outdoor_crops_to_model_no_storage(3, variables)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+</ul>
+<h3 id="handle_first_month">.handle_first_month</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1848">source</a></p>
+<pre><code class="language-python">.handle_first_month(
+   variables, month
+)
+</code></pre>
+<hr />
+<p>This function handles the first month of the simulation. It checks if the crops food storage is equal to the
+outdoor crops production minus the crops food eaten. If this condition is met, it returns a dictionary with the
+condition as a key and True as a value.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>self</strong> (Optimizer) : the instance of the Optimizer class</li>
+<li><strong>variables</strong> (dict) : a dictionary containing the variables used in the simulation</li>
+<li><strong>month</strong> (int) : the current month of the simulation</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : a dictionary containing the condition as a key and True as a value if the condition is met</li>
+</ul>
+<h3 id="handle_last_month">.handle_last_month</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1871">source</a></p>
+<pre><code class="language-python">.handle_last_month(
+   variables, month, use_relocated_crops, initial_harvest_duration
+)
+</code></pre>
+<h3 id="handle_other_months">.handle_other_months</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1899">source</a></p>
+<pre><code class="language-python">.handle_other_months(
+   variables, month, use_relocated_crops
+)
+</code></pre>
+<hr />
+<p>This function handles months that are not January or July. It calculates the conditions for the month based on
+the variables passed in and returns them.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>variables</strong> (dict) : A dictionary containing variables for the simulation</li>
+<li><strong>month</strong> (int) : The current month of the simulation</li>
+<li><strong>use_relocated_crops</strong> (bool) : A boolean indicating whether or not to use relocated crops</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : A dictionary containing the conditions for the month</li>
+</ul>
+<p><strong>Example</strong></p>
+<ul>
+<li>[100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200],</li>
+<li>[10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]</li>
+<li>True}</li>
+</ul>
+<pre><code class="language-python">
+&gt;&gt;&gt; month = 2
+&gt;&gt;&gt; use_relocated_crops = False
+&gt;&gt;&gt; optimizer = Optimizer()
+&gt;&gt;&gt; optimizer.handle_other_months(variables, month, use_relocated_crops)
+</code></pre>
+<h3 id="add_crops_food_consumed_with_nutrient_name">.add_crops_food_consumed_with_nutrient_name</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1935">source</a></p>
+<pre><code class="language-python">.add_crops_food_consumed_with_nutrient_name(
+   variables, month, nutrient, lowercase_nutrient
+)
+</code></pre>
+<h3 id="create_linear_constraints_for_fat_and_protein_crops_food">.create_linear_constraints_for_fat_and_protein_crops_food</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L1951">source</a></p>
+<pre><code class="language-python">.create_linear_constraints_for_fat_and_protein_crops_food(
+   month, variables, fat_multiplier, protein_multiplier
+)
+</code></pre>
+<hr />
+<p>This function creates linear constraints for fat and protein crops food.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>month</strong> (int) : The month for which the constraints are being created</li>
+<li><strong>variables</strong> (dict) : A dictionary containing variables used in the constraints</li>
+<li><strong>fat_multiplier</strong> (float) : The multiplier for fat</li>
+<li><strong>protein_multiplier</strong> (float) : The multiplier for protein</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : A dictionary containing the created constraints</li>
+</ul>
+<h3 id="get_outdoor_crops_month_constants">.get_outdoor_crops_month_constants</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L2011">source</a></p>
+<pre><code class="language-python">.get_outdoor_crops_month_constants(
+   use_relocated_crops, month
+)
+</code></pre>
+<hr />
+<p>Calculates the constants for outdoor crops based on the month and whether or not
+relocated crops are being used. Returns a tuple of the initial harvest duration,
+fat multiplier, and protein multiplier.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>use_relocated_crops</strong> (bool) : Whether or not relocated crops are being used.</li>
+<li><strong>month</strong> (int) : The current month.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>tuple</strong>  : A tuple containing the initial harvest duration, fat multiplier, and
+protein multiplier.</li>
+</ul>
+<p><strong>Example</strong></p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>get_outdoor_crops_month_constants(True, 5)
+(7, 0.4, 0.3)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="add_outdoor_crops_to_model">.add_outdoor_crops_to_model</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L2051">source</a></p>
+<pre><code class="language-python">.add_outdoor_crops_to_model(
+   month, variables
+)
+</code></pre>
+<h3 id="add_methane_scp_to_model">.add_methane_scp_to_model</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L2087">source</a></p>
+<pre><code class="language-python">.add_methane_scp_to_model(
+   month, variables
+)
+</code></pre>
+<hr />
+<p>Adds the methane SCP (Substrate Coefficient of Production) constraint to the model for a given month.
+The constraint ensures that the total amount of methane SCP from all sources is less than or equal to the
+maximum amount of methane SCP allowed for that month.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>month</strong> (int) : The month for which the constraint is being added.</li>
+<li><strong>variables</strong> (dict) : A dictionary containing the variables used in the constraint.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : A dictionary containing the methane SCP constraint.</li>
+</ul>
+<p><strong>Example</strong></p>
+<ul>
+<li>[10, 20, 30],</li>
+<li>[5, 10, 15],</li>
+<li>[2, 4, 6]</li>
+<li>True}</li>
+</ul>
+<pre><code class="language-python">
+&gt;&gt;&gt; optimizer = Optimizer()
+&gt;&gt;&gt; constraint = optimizer.add_methane_scp_to_model(1, variables)
+&gt;&gt;&gt; print(constraint)
+</code></pre>
+<h3 id="add_cellulosic_sugar_to_model">.add_cellulosic_sugar_to_model</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/optimizer/optimizer.py/#L2129">source</a></p>
+<pre><code class="language-python">.add_cellulosic_sugar_to_model(
+   month, variables
+)
+</code></pre>
+<hr />
+<p>Adds the amount of cellulosic sugar available in a given month to the model and checks if it is within the
+limit of available kcals for that month.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>month</strong> (int) : The month for which the cellulosic sugar is being added to the model.</li>
+<li><strong>variables</strong> (dict) : A dictionary containing the variables for the model.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : A dictionary containing the conditions for the model.</li>
+</ul>
+<p><strong>Example</strong></p>
+<ul>
+<li>[100, 200, 300],</li>
+<li>[50, 100, 150],</li>
+<li>[25, 50, 75]</li>
+<li>True}</li>
+</ul>
+<pre><code class="language-python">
+&gt;&gt;&gt; optimizer = Optimizer()
+&gt;&gt;&gt; optimizer.add_cellulosic_sugar_to_model(1, variables)
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../parameters/" class="btn btn-neutral float-right" title="Parameters">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../interpret_results/" class="btn btn-neutral" title="Interpret results"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Me</p>
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../interpret_results/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../parameters/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../../../..';</script>
+    <script src="../../../../js/theme_extra.js" defer></script>
+    <script src="../../../../js/theme.js" defer></script>
+      <script src="../../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

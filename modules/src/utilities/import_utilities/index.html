@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../../../../img/favicon.ico">
+  <title>Import utilities - ALLFED Integrated Model</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../../../css/theme.css" />
+  <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Import utilities";
+    var mkdocs_page_input_path = "modules/src/utilities/import_utilities.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../../../.." class="icon icon-home"> ALLFED Integrated Model</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../..">ALLFED Integrated Food System Model</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Modules</span></p>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="#">Src</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="#">Food system</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/animal_populations/">Animal populations</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/cellulosic_sugar/">Cellulosic sugar</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/feed_and_biofuels/">Feed and biofuels</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/food/">Food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/greenhouses/">Greenhouses</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/meat_and_dairy/">Meat and dairy</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/methane_scp/">Methane scp</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/outdoor_crops/">Outdoor crops</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/seafood/">Seafood</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/seaweed/">Seaweed</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/stored_food/">Stored food</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../food_system/unit_conversions/">Unit conversions</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Import scripts no food trade</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_crop_macros_csv/">Create crop macros csv</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../import_scripts_no_food_trade/create_nuclear_winter_csv/">Create nuclear winter csv</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Optimizer</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/extract_results/">Extract results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/interpret_results/">Interpret results</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/optimizer/">Optimizer</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/parameters/">Parameters</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../optimizer/validate_results/">Validate results</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="#">Scenarios</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_model_no_trade/">Run model no trade</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenario/">Run scenario</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/run_scenarios_from_yaml/">Run scenarios from yaml</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../scenarios/scenarios/">Scenarios</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Utilities</a>
+    <ul class="current">
+                <li class="toctree-l3"><a class="reference internal" href="../constants/">Constants</a>
+                </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="./">Import utilities</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#importutilities">ImportUtilities</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../make_powerpoint/">Make powerpoint</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../plotter/">Plotter</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../..">ALLFED Integrated Model</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Modules &raquo;</li>
+        
+      
+        
+          <li>Src &raquo;</li>
+        
+      
+        
+          <li>Utilities &raquo;</li>
+        
+      
+    
+    <li>Import utilities</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1"></h1>
+<h2 id="importutilities">ImportUtilities</h2>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/import_utilities.py/#L5">source</a></p>
+<pre><code class="language-python">ImportUtilities()
+</code></pre>
+<hr />
+<p>This class contains methods for importing data from various sources.</p>
+<p><strong>Methods:</strong></p>
+<h3 id="stack_on_list">.stack_on_list</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/import_utilities.py/#L369">source</a></p>
+<pre><code class="language-python">.stack_on_list(
+   list, layer
+)
+</code></pre>
+<hr />
+<p>This function creates another layer on an existing stack of layers, or creates the first
+layer in the stack. It takes in the original list and the layer to be added, and returns
+the combined original and layer with the list stacked down below it.</p>
+<p><strong>Example</strong></p>
+<p>If we have an existing list [a,b,c] and we want to add [d,e,f] to it, we can call the
+function like this:
+stack_on_list([a,b,c], [d,e,f])</p>
+<p>This will give us:
+[
+    [a,b,c],
+    [d,e,f]
+]</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>list</strong> (numpy.ndarray) : The original list to which the layer is to be added</li>
+<li><strong>layer</strong> (numpy.ndarray) : The layer to be added to the original list</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>ndarray</strong>  : The combined list with the layer stacked down below it</li>
+</ul>
+<h3 id="add_row_to_csv">.add_row_to_csv</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/import_utilities.py/#L402">source</a></p>
+<pre><code class="language-python">.add_row_to_csv(
+   nw_csv, country, country_name, reductions
+)
+</code></pre>
+<hr />
+<p>Adds a row to a CSV file.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>nw_csv</strong> (List[List[str]]) : The CSV file to add a row to.</li>
+<li><strong>country</strong> (str) : The country to add to the row.</li>
+<li><strong>country_name</strong> (str) : The name of the country to add to the row.</li>
+<li><strong>reductions</strong> (List[float]) : A list of reduction values to add to the row.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li>The updated CSV file with the new row added.</li>
+</ul>
+<h3 id="weighted_average_percentages">.weighted_average_percentages</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/import_utilities.py/#L426">source</a></p>
+<pre><code class="language-python">.weighted_average_percentages(
+   percentages, weights
+)
+</code></pre>
+<hr />
+<p>Calculates the weighted average of a list of percentage reductions.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>percentages</strong> (list) : A list of percentage reductions.</li>
+<li><strong>weights</strong> (list) : A list of weights corresponding to the percentages.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>float</strong>  : The weighted average of the percentages.</li>
+</ul>
+<p><strong>Raises</strong></p>
+<ul>
+<li><strong>AssertionError</strong>  : If the length of the percentages and weights lists are not equal.</li>
+<li><strong>AssertionError</strong>  : If the sum of the weights is not between 0.99999 and 1.00001.</li>
+</ul>
+<hr />
+<p>The function calculates the weighted average of a list of percentage reductions.
+Any non-possible number is removed. The remaining are averaged.
+If only non-possible numbers are included, then the result is a non-possible number.</p>
+<p>A percentage reduction is considered non-possible if it is greater than 1e5 or less than -100.</p>
+<p>If there are no valid percentages, the function returns 9.37e36.</p>
+<h3 id="average_percentages">.average_percentages</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/import_utilities.py/#L499">source</a></p>
+<pre><code class="language-python">.average_percentages(
+   percentages
+)
+</code></pre>
+<hr />
+<p>This function calculates the weighted average of a list of percentages.
+The weightings are set up to be even across all percentages.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>percentages</strong> (list) : A list of percentages to be averaged.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>float</strong>  : The weighted average of the percentages.</li>
+</ul>
+<h3 id="average_columns">.average_columns</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/import_utilities.py/#L525">source</a></p>
+<pre><code class="language-python">.average_columns(
+   vstack
+)
+</code></pre>
+<hr />
+<p>This function takes a vertical stack of columns and returns a single row with the averages of each column.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>vstack</strong> (numpy.ndarray) : A vertical stack of columns.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>list</strong>  : A single row with the averages of each column.</li>
+</ul>
+<p><strong>Example</strong></p>
+<pre><code class="language-python">
+&gt;&gt;&gt; vstack = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+&gt;&gt;&gt; average_columns(vstack)
+[4.0, 5.0, 6.0]
+</code></pre>
+<h3 id="clean_up_eswatini">.clean_up_eswatini</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/import_utilities.py/#L548">source</a></p>
+<pre><code class="language-python">.clean_up_eswatini(
+   nw_csv
+)
+</code></pre>
+<hr />
+<p>This function changes the country code for Swaziland from the FAOSTAT default to the USDA
+standard for compatibility with other datasets. It does this by finding the index of the
+Swaziland country code in the input numpy array and changing it to the new country code
+for Eswatini.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>nw_csv</strong> (numpy.ndarray) : A numpy array containing country codes and other data</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>ndarray</strong>  : The input numpy array with the Swaziland country code changed to Eswatini</li>
+</ul>
+<h3 id="import_csv">.import_csv</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/import_utilities.py/#L571">source</a></p>
+<pre><code class="language-python">.import_csv(
+   csv_loc, col_names, iso3_col_name
+)
+</code></pre>
+<hr />
+<p>This function imports a CSV file into a pandas dataframe and calls the import_csv_from_df function.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>csv_loc</strong> (str) : The file path of the CSV file to be imported.</li>
+<li><strong>col_names</strong> (list) : A list of column names to be included in the dataframe.</li>
+<li><strong>iso3_col_name</strong> (str) : The name of the column containing the ISO3 country codes.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>DataFrame</strong>  : A dataframe containing the specified columns from the CSV file.</li>
+</ul>
+<p><strong>Example</strong></p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>import_csv('data.csv', ['col1', 'col2', 'col3'], 'iso3_code')</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="import_csv_from_df">.import_csv_from_df</h3>
+<p><a href="https://github.com/allfed/allfed-integrated-model/blob/master/src/utilities/import_utilities.py/#L593">source</a></p>
+<pre><code class="language-python">.import_csv_from_df(
+   df, iso3_col_name
+)
+</code></pre>
+<hr />
+<p>This function takes a pandas dataframe and a column name as input and returns a dictionary
+containing each table for each unique value in the specified column.</p>
+<p><strong>Args</strong></p>
+<ul>
+<li><strong>df</strong> (pandas.DataFrame) : The input dataframe</li>
+<li><strong>iso3_col_name</strong> (str) : The name of the column containing the unique values</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>dict</strong>  : A dictionary containing each table for each unique value in the specified column</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../make_powerpoint/" class="btn btn-neutral float-right" title="Make powerpoint">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../constants/" class="btn btn-neutral" title="Constants"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Me</p>
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../constants/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../make_powerpoint/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../../../..';</script>
+    <script src="../../../../js/theme_extra.js" defer></script>
+    <script src="../../../../js/theme.js" defer></script>
+      <script src="../../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
