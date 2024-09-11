@@ -36,7 +36,9 @@ class StoredFood:
 
         # (nuclear event in mid-may)
 
-        self.ratio_lowest_stocks_untouched = constants_for_params["RATIO_STOCKS_UNTOUCHED"]
+        self.ratio_lowest_stocks_untouched = constants_for_params[
+            "RATIO_STOCKS_UNTOUCHED"
+        ]
         self.percent_stored_food_to_use = constants_for_params[
             "PERCENT_STORED_FOOD_TO_USE"
         ]

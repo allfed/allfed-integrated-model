@@ -861,8 +861,7 @@ class ScenarioRunner:
                 constants_for_params
             )
         elif (
-            scenario_option_copy["ratio_stocks_untouched"]
-            == "no_stored_between_years"
+            scenario_option_copy["ratio_stocks_untouched"] == "no_stored_between_years"
         ):
             constants_for_params = scenario_loader.set_no_stored_food_between_years(
                 constants_for_params
