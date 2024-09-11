@@ -30,7 +30,7 @@ def create_food_monthly(
     protein_units="kcals each months",
 ):
     """
-    creates a food instance that has monthly values and returns it
+    Creates a food instance that has monthly values and returns it.
     """
     food_monthly = Food(
         kcals=kcals,
@@ -45,7 +45,7 @@ def create_food_monthly(
 
 def test_set_nutrition_requirement_scalar():
     """
-    Tests if the function works with a scalar food
+    Tests if the function works with a scalar food.
     """
 
     Food.conversions.set_nutrition_requirements(
