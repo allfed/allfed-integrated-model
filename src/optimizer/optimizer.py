@@ -1413,69 +1413,6 @@ class Optimizer:
             "Kcals_Fed_Month_" + str(month) + "_Constraint",
         )
 
-        # Add constraints for consumed fat and protein
-        # TODO: PUT BACK IN!
-        # if self.consts_for_optimizer["inputs"]["INCLUDE_FAT"]:
-        #     # fat monthly is in units thousand tons
-        #     model += (
-        #         variables["consumed_fat"][month]
-        #         == (
-        #             variables["stored_food_eaten"][month]
-        #             * self.consts_for_optimizer["SF_FRACTION_FAT"]
-        #             + variables["crops_food_consumed_fat"][month]
-        #             + variables["seaweed_to_humans"][month]
-        #             * self.consts_for_optimizer["SEAWEED_FAT"]
-        #             + variables["seaweed_feed"][month]
-        #             * self.consts_for_optimizer["SEAWEED_FAT"]
-        #             + self.time_consts["milk_fat"][month]
-        #             + self.time_consts["cattle_grazing_maintained_fat"][month]
-        #             + variables["meat_eaten"][month]
-        #             * self.consts_for_optimizer["MEAT_FRACTION_FAT"]
-        #             + variables["methane_scp_to_humans"][month]
-        #             * self.consts_for_optimizer["SCP_KCALS_TO_FAT_CONVERSION"]
-        #             + variables["methane_scp_feed"][month]
-        #             * self.consts_for_optimizer["SCP_KCALS_TO_FAT_CONVERSION"]
-        #             + self.time_consts["greenhouse_area"][month]
-        #             * self.time_consts["greenhouse_fat_per_ha"][month]
-        #             + self.time_consts["fish"].to_humans.fat[month]
-        #             - self.time_consts["nonhuman_consumption"].fat[month]
-        #         )
-        #         / self.consts_for_optimizer["THOU_TONS_FAT_NEEDED"]
-        #         * 100,
-        #         "Fat_Fed_Month_" + str(month) + "_Constraint",
-        #     )
-
-        # if self.consts_for_optimizer["inputs"]["INCLUDE_PROTEIN"]:
-        #     model += (
-        #         variables["consumed_protein"][month]
-        #         == (
-        #             variables["stored_food_eaten"][month]
-        #             * self.consts_for_optimizer["SF_FRACTION_PROTEIN"]
-        #             + variables["crops_food_consumed_protein"][month]
-        #             + variables["seaweed_to_humans"][month]
-        #             * self.consts_for_optimizer["SEAWEED_PROTEIN"]
-        #             + variables["seaweed_feed"][month]
-        #             * self.consts_for_optimizer["SEAWEED_PROTEIN"]
-        #             + self.time_consts["milk_protein"][month]
-        #             + self.time_consts["cattle_grazing_maintained_protein"][month]
-        #             + variables["methane_scp_to_humans"][month]
-        #             * self.consts_for_optimizer["SCP_KCALS_TO_PROTEIN_CONVERSION"]
-        #             + variables["methane_scp_feed"][month]
-        #             * self.consts_for_optimizer["SCP_KCALS_TO_PROTEIN_CONVERSION"]
-        #             + variables["meat_eaten"][month]
-        #             * self.consts_for_optimizer["MEAT_FRACTION_PROTEIN"]
-        #             + self.time_consts["greenhouse_area"][month]
-        #             * self.time_consts["greenhouse_protein_per_ha"][month]
-        #             + self.time_consts["fish"].to_humans.kcals[month]
-        #             - self.time_consts["nonhuman_consumption"].protein[month]
-        #         )
-        #         / self.consts_for_optimizer["THOU_TONS_PROTEIN_NEEDED"]
-        #         * 100,
-        #         "Protein_Fed_Month_" + str(month) + "_Constraint",
-        #     )
-
-        # Add constraint for no feeding human edible maintained meat or milk to animals or biofuels
-
         return model, variables
 
     def add_maximize_min_month_objective_to_model(
@@ -1538,7 +1475,6 @@ class Optimizer:
             variables["objective_function"] <= 2 / 3 * feed_sum + biofuel_sum / 3,
             maximizer_string,
         )
-        # TODO: ADD FAT AND PROTEIN
 
         return model, variables, maximize_constraints
 
@@ -1825,7 +1761,7 @@ class Optimizer:
             {'Crops_Food_Storage_Zero': True}
         """
         conditions = {}
-        # TODO: add fat and protein variables
+
         conditions.update(
             self.create_linear_constraints_for_fat_and_protein_crops_food(
                 month, variables, None, None
@@ -1874,8 +1810,8 @@ class Optimizer:
         if use_relocated_crops:
             assert (
                 month > initial_harvest_duration
-            ), """ERROR: In relocated case, you need to have a scenario at least 1 harvest duration long,
-                right now it is this many months for harvest duration:""" + str(
+            ), """ERROR: In relocated case, you need to have a scenario at least 1 harvest duration long.
+                Right now it is this many months for harvest duration:""" + str(
                 initial_harvest_duration
             )
 

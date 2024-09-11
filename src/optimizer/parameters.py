@@ -1137,7 +1137,6 @@ class Parameters:
         # As a result, there is more meat slaughtered earlier in the first round with no feed.
         # This function moves any such increase in meat to earlier in the second round, so that the second round
         # Strictly, always, has equal or more meat available, as is required by the second round optimization
-        # TODO: get  working with protein and fat
         before_readjust_meat_round2 = copy.deepcopy(
             time_consts_round2["each_month_meat_slaughtered"].kcals
         )
@@ -1312,9 +1311,6 @@ class Parameters:
         cs_consumption = []
         seaweed_consumption = []
 
-        # TODO: make this function work with fat and protein minimums...
-        #       In that case, we would need to consider the amount of food needed to meet human minimum needs, even if
-        #       kcals were more than 2100 per day, if fat or protein were still below the minimum.
         for month_index in range(0, constants_inputs["NMONTHS"]):
             remaining_kcals = food_daily_maximum.kcals
 
@@ -1555,7 +1551,6 @@ class Parameters:
         biofuels_demand,
         feed_meat_object_round1,
     ):
-        # TODO: make this function work with fat and protein minimums...
 
         time_consts_round3 = copy.deepcopy(time_consts_round1)
         constants_out_round3 = copy.deepcopy(constants_out_round1)
