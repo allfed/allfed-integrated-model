@@ -34,6 +34,14 @@ jobs:
           pip install pyyaml
           python automate_mkdocs.py
           git add .
+      - name: Pull latest gh-pages
+        run: |
+          git fetch origin gh-pages
+          git checkout gh-pages
+          git pull origin gh-pages
+      - name: Switch back to main branch
+        run: |
+          git checkout main
       - name: Update and Build GH Pages
         run: |
           python -m pip install --upgrade pip
@@ -58,4 +66,4 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
+          branch: gh-pages
