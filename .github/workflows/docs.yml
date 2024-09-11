@@ -34,6 +34,9 @@ jobs:
           pip install pyyaml
           python automate_mkdocs.py
           git add .
+      - name: Stash changes before switching branches
+        run: |
+          git stash
       - name: Pull latest gh-pages
         run: |
           git fetch origin gh-pages
@@ -42,6 +45,9 @@ jobs:
       - name: Switch back to main branch
         run: |
           git checkout main
+      - name: Apply stashed changes
+        run: |
+          git stash pop
       - name: Update and Build GH Pages
         run: |
           python -m pip install --upgrade pip
