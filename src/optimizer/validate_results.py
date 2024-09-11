@@ -203,11 +203,11 @@ class Validator:
                     f"WARNING: country {country_code} reports results potentially incorrectly by a few percent (< 5%)."
                 )
                 print(
-                    f"        linear optimization found {round(percent_fed_from_model,2)}% fed,"
+                    f"        linear optimization found {round(percent_fed_from_model, 2)}% fed,"
                 )
                 print(
                     "        but summing each food reported in stackplot adds to"
-                    f" {round(percent_people_fed_by_summing_all_foods,2)}%."
+                    f" {round(percent_people_fed_by_summing_all_foods, 2)}%."
                 )
                 print(
                     f"        Ignoring this because {country_code} is small and difference is small."
@@ -349,7 +349,7 @@ class Validator:
                 relative_changes = np.diff(population_series) / previous_month
                 assert np.all(relative_changes <= epsilon), (
                     f"Error: round {round} of optimization has increasing {key} with time "
-                    + f"beyond the allowed {epsilon*100}% threshold"
+                    + f"beyond the allowed {epsilon * 100}% threshold"
                 )
 
     @staticmethod
