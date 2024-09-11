@@ -203,11 +203,11 @@ class Validator:
                     f"WARNING: country {country_code} reports results potentially incorrectly by a few percent (< 5%)."
                 )
                 print(
-                    f"        linear optimization found {round(percent_fed_from_model,2)}% fed,"
+                    f"        linear optimization found {round(percent_fed_from_model, 2)}% fed,"
                 )
                 print(
                     "        but summing each food reported in stackplot adds to"
-                    f" {round(percent_people_fed_by_summing_all_foods,2)}%."
+                    f" {round(percent_people_fed_by_summing_all_foods, 2)}%."
                 )
                 print(
                     f"        Ignoring this because {country_code} is small and difference is small."
@@ -250,24 +250,6 @@ class Validator:
         interpreted_results.milk.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.immediate_outdoor_crops.make_sure_fat_protein_zero_if_kcals_is_zero()
         interpreted_results.new_stored_outdoor_crops.make_sure_fat_protein_zero_if_kcals_is_zero()
-
-        # TODO: REINSTATE ONCE FIGURED OUT WHY THIS FAILS
-        # I'm pretty sure, if there is some food that gets its kcals used up by feed
-        # but not its calories, it's alright if only fat goes to humans, and no kcals...
-        # which is wierd, but it's a reasonable way for the model to work I think
-
-        # Check each feed and biofuel for consistency
-        # interpreted_results.stored_food_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
-        # interpreted_results.seaweed_rounded.get_rounded_to_decimal(
-        #     2
-        # ).make_sure_fat_protein_zero_if_kcals_is_zero()
-        # interpreted_results.outdoor_crops_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
-        # interpreted_results.immediate_outdoor_crops_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
-        # interpreted_results.new_stored_outdoor_crops_rounded.make_sure_fat_protein_zero_if_kcals_is_zero()
-        # interpreted_results.stored_food_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
-        # interpreted_results.outdoor_crops_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
-        # interpreted_results.immediate_outdoor_crops_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
-        # interpreted_results.new_stored_outdoor_crops_to_humans.make_sure_fat_protein_zero_if_kcals_is_zero()
 
     def ensure_never_nan(self, interpreted_results):
         """
@@ -367,7 +349,7 @@ class Validator:
                 relative_changes = np.diff(population_series) / previous_month
                 assert np.all(relative_changes <= epsilon), (
                     f"Error: round {round} of optimization has increasing {key} with time "
-                    + f"beyond the allowed {epsilon*100}% threshold"
+                    + f"beyond the allowed {epsilon * 100}% threshold"
                 )
 
     @staticmethod

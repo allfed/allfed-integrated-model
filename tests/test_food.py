@@ -21,7 +21,7 @@ def set_nutrition_requirements():
 
 def create_food_monthly(kcals=[1, 2, 1], fat=[1, 2, 2], protein=[1, 2, 2]):
     """
-    creates a food instance that has monthly values and returns it
+    Creates a food instance that has monthly values and returns it.
     """
     food_monthly = Food(
         kcals=np.array(kcals),

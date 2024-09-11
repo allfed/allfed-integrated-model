@@ -35,7 +35,6 @@ def assert_fewer_people_fed_or_less_overall_food(
     is run, suddenly there's more feed and fewer people fed. So when we add seaweed, cs, or methane scp to the scenario
     sometimes this actually reduces people fed. It's also the case when we relocate crops and seaweed, cs, or scp are
     enabled.
-    Also, sometimes
     """
     if result_smaller <= 100 or result_bigger <= 100:
         # less than 100% fed! must be fewer people fed in the smaller scenario
@@ -271,8 +270,6 @@ def test_resilient_foods(run_all_combinations):
         "methane_scp" <= "industrial_foods"
         "cellulosic_sugar" <= "industrial_foods"
     This is repeated for all available combinations of the other parameters
-
-    Specifically,
     """
     select_runs_results = select_runs(run_all_combinations, "scenario")
     # print(select_runs_results)
