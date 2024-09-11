@@ -1232,7 +1232,6 @@ class Scenarios:
 
         # change to a positive percentage.
         time_consts["FISH_PERCENT_MONTHLY"] = monthly_fish_reduction + 100
-        import matplotlib.pyplot as plt
 
         self.FISH_SET = True
         return time_consts
