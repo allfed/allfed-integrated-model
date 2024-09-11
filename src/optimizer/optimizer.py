@@ -1874,8 +1874,8 @@ class Optimizer:
         if use_relocated_crops:
             assert (
                 month > initial_harvest_duration
-            ), """ERROR: In relocated case, you need to have a scenario at least 1 harvest duration long,
-                right now it is this many months for harvest duration:""" + str(
+            ), """ERROR: In relocated case, you need to have a scenario at least 1 harvest duration long.
+                Right now it is this many months for harvest duration:""" + str(
                 initial_harvest_duration
             )
 
