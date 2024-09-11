@@ -1,6 +1,6 @@
 """Function which initiliases all of the animal population data Working file for now, may be broken up.
 
-Requierments:
+Requirements:
     - animal population data
     - animal slaughter data
     - animal feed data
@@ -214,7 +214,7 @@ class CountryData:
         df_regional_conversion_factors dataframe contains the conversion factors for the LSU for each animal type, based
         on ther region. And the other, df_country_info contains the mapping from the country to the region.
 
-        Country Name needs to be the index of the df_country_info dataframe
+        Country Name needs to be the index of the df_country_info dataframe.
         """
 
         # raise type error if the df_country_info is not a dtaaframe with alpha3 as the index
