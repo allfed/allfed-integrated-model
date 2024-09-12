@@ -36,7 +36,9 @@ class StoredFood:
 
         # (nuclear event in mid-may)
 
-        self.end_simulation_ratio = constants_for_params["END_SIMULATION_STOCKS_RATIO"]
+        self.ratio_lowest_stocks_untouched = constants_for_params[
+            "RATIO_STOCKS_UNTOUCHED"
+        ]
         self.percent_stored_food_to_use = constants_for_params[
             "PERCENT_STORED_FOOD_TO_USE"
         ]
@@ -62,7 +64,6 @@ class StoredFood:
         Returns:
             float: the total stored food in millions of tons dry caloric
 
-        Assumptions:
 
 
         The stocks listed are tabulated at the end of the month.
@@ -78,11 +79,11 @@ class StoredFood:
         """
 
         starting_month_index = starting_month - 1  # convert to zero indexed
-        end_simulation_ratio = self.end_simulation_ratio
+        ratio_lowest_stocks_untouched = self.ratio_lowest_stocks_untouched
         fraction_stored_food_to_use = self.percent_stored_food_to_use / 100
         end_of_month_stocks = self.end_of_month_stocks
 
-        # lowest stock levels in baseline scenario (if end_simulation_ratio == 1)
+        # lowest stock levels in baseline scenario (if ratio_lowest_stocks_untouched == 1)
         lowest_stocks = min(end_of_month_stocks)
 
         # month before simulation start
@@ -90,15 +91,10 @@ class StoredFood:
 
         stocks_at_start_of_month = end_of_month_stocks[month_before_index]
 
-        # BUG! TODO: Make it so that the stored food is able to go negative
-        # even if we end up with the right amount at the end of the simulation
-        # (end_simulation_ratio is currently reducing *initial* stored food, but this is not accurate and
-        # overestimates starvation)
-
         # stores at the start of the simulation
         self.TONS_DRY_CALORIC_EQIVALENT_SF = (
             stocks_at_start_of_month * fraction_stored_food_to_use
-            - lowest_stocks * end_simulation_ratio
+            - lowest_stocks * ratio_lowest_stocks_untouched
         )
         assert (
             self.TONS_DRY_CALORIC_EQIVALENT_SF >= 0

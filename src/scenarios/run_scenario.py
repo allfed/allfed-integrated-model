@@ -687,7 +687,7 @@ class ScenarioRunner:
                 ],
                 "crop_disruption": ["zero", "baseline"],
                 "meat_strategy": ["feed_only_ruminants"],
-                "end_simulation_stocks_ratio": ["zero", "baseline"],
+                "ratio_stocks_untouched": ["zero", "baseline"],
                 "cull": ["do_eat_culled"],
                 "shutoff": ["long_delayed_shutoff"],
                 "CORRECTION": {"shutoff": "immediate"},
@@ -709,7 +709,7 @@ class ScenarioRunner:
                 ],
                 "crop_disruption": ["zero", "baseline"],
                 "meat_strategy": ["feed_only_ruminants"],
-                "end_simulation_stocks_ratio": ["zero", "baseline"],
+                "ratio_stocks_untouched": ["zero", "baseline"],
                 "cull": ["do_eat_culled"],
                 "shutoff": ["long_delayed_shutoff"],
                 "CORRECTION": {"shutoff": "immediate"},
@@ -759,8 +759,8 @@ class ScenarioRunner:
         assert "stored_food" in scenario_option.keys(), "You must specify 'stored_food'"
 
         assert (
-            "end_simulation_stocks_ratio" in scenario_option.keys()
-        ), "You must specify 'end_simulation_stocks_ratio'"
+            "ratio_stocks_untouched" in scenario_option.keys()
+        ), "You must specify 'ratio_stocks_untouched'"
 
         assert "shutoff" in scenario_option.keys(), """You must specify 'shutoff'"""
 
@@ -854,25 +854,24 @@ class ScenarioRunner:
                 scenario_is_correct
             ), "You must specify 'stored_food' key as zero, or baseline"
 
-        # END_SIMULATION_STOCKS_RATIO
+        # RATIO_STOCKS_UNTOUCHED
 
-        if scenario_option_copy["end_simulation_stocks_ratio"] == "zero":
+        if scenario_option_copy["ratio_stocks_untouched"] == "zero":
             constants_for_params = scenario_loader.set_stored_food_buffer_zero(
                 constants_for_params
             )
         elif (
-            scenario_option_copy["end_simulation_stocks_ratio"]
-            == "no_stored_between_years"
+            scenario_option_copy["ratio_stocks_untouched"] == "no_stored_between_years"
         ):
             constants_for_params = scenario_loader.set_no_stored_food_between_years(
                 constants_for_params
             )
-        elif scenario_option_copy["end_simulation_stocks_ratio"] == "baseline":
+        elif scenario_option_copy["ratio_stocks_untouched"] == "baseline":
             constants_for_params = scenario_loader.set_stored_food_buffer_as_baseline(
                 constants_for_params
             )
         elif (
-            scenario_option_copy["end_simulation_stocks_ratio"]
+            scenario_option_copy["ratio_stocks_untouched"]
             == "baseline_no_stored_between_years"
         ):
             constants_for_params = scenario_loader.set_stored_food_buffer_as_baseline_and_no_stored_between_years(
@@ -882,7 +881,7 @@ class ScenarioRunner:
             scenario_is_correct = False
 
             assert scenario_is_correct, (
-                "You must specify 'end_simulation_stocks_ratio' key as zero, no_stored_between_years, "
+                "You must specify 'ratio_stocks_untouched' key as zero, no_stored_between_years, "
                 "baseline_no_stored_between_years, or baseline"
             )
 
@@ -1256,12 +1255,12 @@ class ScenarioRunner:
                 <= 100
             ), "MINIMUM_PERCENT_FED_BEFORE_NONHUMAN_CONSUMPTION_ALLOWED must be between 0 and 100"
 
-        # modify END_SIMULATION_STOCKS_RATIO to custom value
-        if "END_SIMULATION_STOCKS_RATIO" in scenario_option_copy.keys():
-            constants_for_params["END_SIMULATION_STOCKS_RATIO"] = float(
-                scenario_option_copy["END_SIMULATION_STOCKS_RATIO"]
+        # modify RATIO_STOCKS_UNTOUCHED to custom value
+        if "RATIO_STOCKS_UNTOUCHED" in scenario_option_copy.keys():
+            constants_for_params["RATIO_STOCKS_UNTOUCHED"] = float(
+                scenario_option_copy["RATIO_STOCKS_UNTOUCHED"]
             )
-            assert 0 <= constants_for_params["END_SIMULATION_STOCKS_RATIO"] <= 1
+            assert 0 <= constants_for_params["RATIO_STOCKS_UNTOUCHED"] <= 1
 
         # apply fix multiplier to crop production
         if "CROP_PRODUCTION_MULTIPLIER" in scenario_option_copy.keys():

@@ -124,9 +124,9 @@ simulations:
     - `zero` - No stored food available at start of simulation
     - `baseline` - All stored food estimated available at start of simulation
     
-  - **end_simulation_stocks_ratio**:
-    - `zero` - No food stocks maintained at the end of the simulation 
-    - `baseline` - Reduces available stored food by current lowest month stocks estimates, to account for the need to maintain a buffer at the end of the simulation
+  - **ratio_stocks_untouched**:
+    - `zero` - No food stocks are put into "reserve". So they are all available for consumption.
+    - `baseline` - Reduces available stored food by current lowest month stocks estimates, to account for the need to maintain a buffer throughout the simulation.
     - `no_stored_food_between_years` - All stored food available at first month, but then no usage of food storage allowed between each 12 month period.
 
   - **shutoff**:

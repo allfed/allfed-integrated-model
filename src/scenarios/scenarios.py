@@ -965,7 +965,7 @@ class Scenarios:
         self.scenario_description += "\nall stocks used"
         assert not self.STORED_FOOD_END_SIM_SET
         constants_for_params["STORE_FOOD_BETWEEN_YEARS"] = True
-        constants_for_params["END_SIMULATION_STOCKS_RATIO"] = 0
+        constants_for_params["RATIO_STOCKS_UNTOUCHED"] = 0
 
         self.STORED_FOOD_END_SIM_SET = True
         return constants_for_params
@@ -984,7 +984,7 @@ class Scenarios:
         self.scenario_description += "\nstored food/stored meat unused after 12 months"
         assert not self.STORED_FOOD_END_SIM_SET
         constants_for_params["STORE_FOOD_BETWEEN_YEARS"] = False
-        constants_for_params["END_SIMULATION_STOCKS_RATIO"] = 0
+        constants_for_params["RATIO_STOCKS_UNTOUCHED"] = 0
         self.STORED_FOOD_END_SIM_SET = True
         return constants_for_params
 
@@ -997,7 +997,7 @@ class Scenarios:
         self.scenario_description += "\nstocks available at end of simulation"
         assert not self.STORED_FOOD_END_SIM_SET
         constants_for_params["STORE_FOOD_BETWEEN_YEARS"] = True
-        constants_for_params["END_SIMULATION_STOCKS_RATIO"] = 1
+        constants_for_params["RATIO_STOCKS_UNTOUCHED"] = 1
 
         self.STORED_FOOD_END_SIM_SET = True
         return constants_for_params
@@ -1013,7 +1013,7 @@ class Scenarios:
         self.scenario_description += "\nstocks available at end of simulation"
         assert not self.STORED_FOOD_END_SIM_SET
         constants_for_params["STORE_FOOD_BETWEEN_YEARS"] = False
-        constants_for_params["END_SIMULATION_STOCKS_RATIO"] = 1
+        constants_for_params["RATIO_STOCKS_UNTOUCHED"] = 1
 
         self.STORED_FOOD_END_SIM_SET = True
         return constants_for_params
