@@ -348,9 +348,7 @@ def recalculate_plot_1():
     this_simulation["stored_food"] = "baseline"
 
     if RUN_FIGURE_1_LEAVING_TYPICAL_BUFFERS:
-        this_simulation["ratio_stocks_untouched"] = (
-            "baseline_no_stored_between_years"
-        )
+        this_simulation["ratio_stocks_untouched"] = "baseline_no_stored_between_years"
         suffix_storage = ""
     else:
         this_simulation["ratio_stocks_untouched"] = "no_stored_between_years"
