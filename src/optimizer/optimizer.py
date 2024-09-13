@@ -533,7 +533,7 @@ class Optimizer:
                 + variables["seaweed_biofuel"][month]
             ) / self.NMONTHS >= (
                 scp_sum + cell_sugar_sum + seaweed_sum
-            ) / self.NMONTHS * 0.99995  # TODO: can this just be equal to 1? # NOTE: seems to fail if I set it to 1...
+            ) / self.NMONTHS * 0.99995
 
         # Add the constraint to the model
         # TODO: can this just be set to "equals?"
