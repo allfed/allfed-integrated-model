@@ -351,7 +351,7 @@ def recalculate_plot_1():
         this_simulation["ratio_stocks_untouched"] = "baseline_no_stored_between_years"
         suffix_storage = ""
     else:
-        this_simulation["ratio_stocks_untouched"] = "no_stored_between_years"
+        this_simulation["end_simulation_stocks_ratio"] = "no_stored_between_years"
 
     this_simulation["seasonality"] = "country"
 
@@ -401,14 +401,14 @@ def recalculate_plot_1():
         assert (
             not RUN_FIGURE_1_NO_STORAGE
         ), "ERROR: You can't run typical buffers if there's no storage..."
-        this_simulation["ratio_stocks_untouched"] = "baseline"
+        this_simulation["end_simulation_stocks_ratio"] = "baseline"
         suffix_storage = " (Reduced)"
     else:
-        this_simulation["ratio_stocks_untouched"] = "zero"
+        this_simulation["end_simulation_stocks_ratio"] = "zero"
         suffix_storage = ""
 
     if RUN_FIGURE_1_NO_STORAGE:
-        this_simulation["ratio_stocks_untouched"] = "no_stored_between_years"
+        this_simulation["end_simulation_stocks_ratio"] = "no_stored_between_years"
         include_storage_resilient_foods_tag = ", No Rationing"
         suffix_storage = " Removed"
     else:
@@ -523,7 +523,7 @@ def recalculate_plot_2():
     this_simulation["scenario"] = "no_resilient_foods"
 
     this_simulation["stored_food"] = "baseline"
-    this_simulation["ratio_stocks_untouched"] = "zero"  # use all the stocks up
+    this_simulation["end_simulation_stocks_ratio"] = "zero"  # use all the stocks up
 
     this_simulation["buffer"] = "zero"
     this_simulation["seasonality"] = "country"
@@ -613,7 +613,7 @@ def recalculate_plot_3():
 
     this_simulation["scenario"] = "no_resilient_foods"
 
-    this_simulation["ratio_stocks_untouched"] = "no_stored_between_years"
+    this_simulation["end_simulation_stocks_ratio"] = "no_stored_between_years"
 
     this_simulation["cull"] = "do_eat_culled"
 
@@ -638,7 +638,7 @@ def recalculate_plot_3():
     )
 
     # WORST CASE + SIMPLE_ADAPTATIONS + CULLING + STORAGE #
-    this_simulation["ratio_stocks_untouched"] = "zero"
+    this_simulation["end_simulation_stocks_ratio"] = "zero"
     this_simulation["meat_strategy"] = "feed_only_ruminants"
     this_simulation["shutoff"] = "long_delayed_shutoff"
 
@@ -682,7 +682,7 @@ def recalculate_plot_s1():
 
     this_simulation["scenario"] = "no_resilient_foods"
 
-    this_simulation["ratio_stocks_untouched"] = "baseline"
+    this_simulation["end_simulation_stocks_ratio"] = "baseline"
     this_simulation["seasonality"] = "baseline_globally"
 
     this_simulation["cull"] = "do_eat_culled"
