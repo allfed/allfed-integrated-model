@@ -286,7 +286,7 @@ class Validator:
         Args:
             interpreted_results (InterpretedResults): An instance of the InterpretedResults class
         Raises:
-            AssertionError: If any of the results variables are less than zero
+            AssertionError: If any of the results variables are less than zero.
         """
         # Check that the cell_sugar variable is greater than or equal to zero
         assert interpreted_results.cell_sugar.all_greater_than_or_equal_to_zero(
