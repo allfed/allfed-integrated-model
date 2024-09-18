@@ -5,6 +5,7 @@ Functions and constants relating to cellulosic sugar production
 """
 
 import numpy as np
+
 from src.food_system.food import Food
 
 
@@ -12,6 +13,9 @@ class CellulosicSugar:
     def __init__(self, constants_for_params):
         """
         Initializes the CellulosicSugar object with the given constants for parameters.
+
+        This is based on:
+        https://www.sciencedirect.com/science/article/abs/pii/S0960308521001620
 
         Args:
             constants_for_params (dict): A dictionary containing the constants for parameters.
@@ -32,20 +36,11 @@ class CellulosicSugar:
             "INDUSTRIAL_FOODS_SLOPE_MULTIPLIER"
         ]
 
-        # billion kcals a month for country in question
-
-        self.COUNTRY_MONTHLY_NEEDS = (
-            constants_for_params["POP"] * Food.conversions.kcals_monthly / 1e9
-        )
-
         # percentage of sugar waste
         self.SUGAR_WASTE_DISTRIBUTION = constants_for_params["WASTE_DISTRIBUTION"][
             "SUGAR"
         ]
         self.SUGAR_WASTE_RETAIL = constants_for_params["WASTE_RETAIL"]
-
-        # this all comes from one of Juan's recently published industrial foods
-        # papers
 
     # papers
     def calculate_monthly_cs_production(self, constants_for_params):
@@ -88,6 +83,9 @@ class CellulosicSugar:
                     * constants_for_params["CS_GLOBAL_PRODUCTION_FRACTION"]
                     * (1 - self.SUGAR_WASTE_DISTRIBUTION / 100)
                 )
+            production_kcals_CS_per_month_long = np.array(
+                production_kcals_CS_per_month_long
+            )
         else:
             # if cellulosic sugar should not be added, set the production to zero
             production_kcals_CS_per_month_long = np.zeros(
@@ -100,7 +98,7 @@ class CellulosicSugar:
 
         # set the production of cellulosic sugar to a Food object
         self.production = Food(
-            kcals=np.array(self.production_kcals_CS_per_month),
+            kcals=self.production_kcals_CS_per_month,
             fat=np.zeros(len(self.production_kcals_CS_per_month)),
             protein=np.zeros(len(self.production_kcals_CS_per_month)),
             kcals_units="billion kcals each month",
