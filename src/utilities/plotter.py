@@ -14,11 +14,12 @@ import matplotlib.gridspec as gridspec
 import os
 import pandas as pd
 from src.utilities.make_powerpoint import MakePowerpoint
-
+from IPython import embed
 from pathlib import Path
 from matplotlib.lines import Line2D
 import re
 import git
+from matplotlib.ticker import MaxNLocator
 
 plt.rcParams["axes.facecolor"] = "white"
 plt.rcParams["savefig.facecolor"] = "white"
@@ -53,7 +54,9 @@ class Plotter:
         if (not plot_figure) and (not add_slide_with_fig):
             return
 
-        ADD_THE_NUTRITION_PLOT = interpreter.include_protein or interpreter.include_fat
+        ADD_THE_NUTRITION_PLOT = (
+            interpreter.include_protein or interpreter.include_fat
+        )
 
         is_nuclear_winter = "baseline" not in newtitle.lower()
 
@@ -86,8 +89,12 @@ class Plotter:
             ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
             ykcals.append(interpreter.milk_kcals_equivalent.kcals)
             ykcals.append(interpreter.meat_kcals_equivalent.kcals)
-            ykcals.append(interpreter.immediate_outdoor_crops_kcals_equivalent.kcals)
-            ykcals.append(interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals)
+            ykcals.append(
+                interpreter.immediate_outdoor_crops_kcals_equivalent.kcals
+            )
+            ykcals.append(
+                interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals
+            )
             ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
 
             if label == "a":
@@ -260,7 +267,9 @@ class Plotter:
         if ADD_THE_NUTRITION_PLOT:
             fig.suptitle(newtitle)
 
-        path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
+        path_string = str(
+            Path(repo_root) / "results" / "large_reports" / "no_trade"
+        )
         newtitle_for_save = re.sub(r'[\\/*?:"<>|\n]', "_", newtitle)
 
         saveloc = path_string + newtitle_for_save + ".png"
@@ -322,7 +331,9 @@ class Plotter:
         if (not plot_figure) and (not add_slide_with_fig):
             return
 
-        ADD_THE_NUTRITION_PLOT = interpreter.include_protein or interpreter.include_fat
+        ADD_THE_NUTRITION_PLOT = (
+            interpreter.include_protein or interpreter.include_fat
+        )
 
         legend = Plotter.get_feed_biofuels_legend(interpreter)
         fig = plt.figure()
@@ -370,11 +381,17 @@ class Plotter:
             ykcals.append(interpreter.seaweed_feed_kcals_equivalent.kcals)
             ykcals.append(interpreter.outdoor_crops_feed_kcals_equivalent.kcals)
             ykcals.append(interpreter.stored_food_feed_kcals_equivalent.kcals)
-            ykcals.append(interpreter.cell_sugar_biofuels_kcals_equivalent.kcals)
+            ykcals.append(
+                interpreter.cell_sugar_biofuels_kcals_equivalent.kcals
+            )
             ykcals.append(interpreter.scp_biofuels_kcals_equivalent.kcals)
             ykcals.append(interpreter.seaweed_biofuels_kcals_equivalent.kcals)
-            ykcals.append(interpreter.outdoor_crops_biofuels_kcals_equivalent.kcals)
-            ykcals.append(interpreter.stored_food_biofuels_kcals_equivalent.kcals)
+            ykcals.append(
+                interpreter.outdoor_crops_biofuels_kcals_equivalent.kcals
+            )
+            ykcals.append(
+                interpreter.stored_food_biofuels_kcals_equivalent.kcals
+            )
             if label == "a":
                 if ADD_THE_NUTRITION_PLOT:
                     ax.text(
@@ -509,9 +526,13 @@ class Plotter:
         plt.tight_layout()
         if ADD_THE_NUTRITION_PLOT:
             fig.suptitle(newtitle)
-        path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
+        path_string = str(
+            Path(repo_root) / "results" / "large_reports" / "no_trade"
+        )
 
-        saveloc = path_string + re.sub(r'[\\/*?:"<>|\n]', "_", newtitle) + "_feed.png"
+        saveloc = (
+            path_string + re.sub(r'[\\/*?:"<>|\n]', "_", newtitle) + "_feed.png"
+        )
         plt.savefig(
             # Replace problematic characters with an underscore or remove them
             saveloc,
@@ -598,13 +619,20 @@ class Plotter:
                 # Apply hatches to each stack
                 for stack, hatch in zip(stacks, hatches):
                     stack.set_hatch(hatch)
-                ax.set_title("Meat Production and Animal populations over Simulation")
-                ax.set_ylabel("Kcals per person per day of meat slaughtered each month")
+                ax.set_title(
+                    "Meat Production and Animal populations over Simulation"
+                )
+                ax.set_ylabel(
+                    "Kcals per person per day of meat slaughtered each month"
+                )
                 # Add legend and any other necessary plot formatting
                 plt.title("Meat slaughtered over time")
                 # Add a legend underneath this subplot
                 ax.legend(
-                    loc="upper center", bbox_to_anchor=(0.5, -0.15), shadow=True, ncol=2
+                    loc="upper center",
+                    bbox_to_anchor=(0.5, -0.15),
+                    shadow=True,
+                    ncol=2,
                 )
             if label == "b":
                 labels = []  # to collect labels for the legend
@@ -620,7 +648,9 @@ class Plotter:
                 for index, (
                     animal_label,
                     animal_population,
-                ) in enumerate(interpreter.animal_population_dictionary.items()):
+                ) in enumerate(
+                    interpreter.animal_population_dictionary.items()
+                ):
                     population_ratio = animal_population / animal_population[0]
                     ax.plot(interpreter.time_months_middle, population_ratio)
                     labels.append(animal_label)
@@ -669,10 +699,14 @@ class Plotter:
         fig.set_figwidth(8)
         plt.tight_layout()
         fig.suptitle(newtitle)
-        path_string = str(Path(repo_root) / "results" / "large_reports" / "no_trade")
+        path_string = str(
+            Path(repo_root) / "results" / "large_reports" / "no_trade"
+        )
 
         saveloc = (
-            path_string + re.sub(r'[\\/*?:"<>|\n]', "_", newtitle) + "_slaughter.png"
+            path_string
+            + re.sub(r'[\\/*?:"<>|\n]', "_", newtitle)
+            + "_slaughter.png"
         )
         plt.savefig(
             # Replace problematic characters with an underscore or remove them
@@ -690,7 +724,7 @@ class Plotter:
         ratios,
         xlim,
     ):
-        fig = plt.figure(figsize=(10, 10))
+        fig = plt.figure(figsize=(14, 10))
 
         scenario_labels = list(worlds.keys())
         gs = gridspec.GridSpec(
@@ -701,6 +735,7 @@ class Plotter:
             width_ratios=[1, 2, 1, 2],
             height_ratios=[2, 2, 2, 2, 2, 0.5],
         )
+
         # plt.show()
         # axes = axes.ravel()
         figure_a_text_indices = [0, 4, 8, 12, 16]
@@ -713,13 +748,24 @@ class Plotter:
                 a = np.array([[0, 1]])
                 plt.imshow(a, cmap="viridis")
                 plt.gca().set_visible(False)
-                plt.colorbar(
+                # plt.colorbar(
+                #     orientation="horizontal",
+                #     ax=ax,
+                #     label="Fraction of minimum caloric needs met",
+                #     aspect=30,
+                #     fraction=0.5,
+                # )
+                cb = plt.colorbar(
                     orientation="horizontal",
                     ax=ax,
-                    label="Fraction of minimum caloric needs met",
                     aspect=30,
                     fraction=0.5,
                 )
+                cb.ax.set_xlabel(
+                    "Fraction of minimum caloric needs met",
+                    fontsize=12,
+                )
+                cb.ax.tick_params(labelsize=10)  # Adjust the tick label size
 
             if i in figure_a_text_indices:
                 # text for figure b
@@ -752,8 +798,14 @@ class Plotter:
                 ax.text(
                     0.6,
                     0.5,
-                    (scenario_label + "\n\nNeeds met: " + str(int(ratio)) + "%"),
+                    (
+                        scenario_label
+                        + "\n\nNeeds met: "
+                        + str(int(ratio))
+                        + "%"
+                    ),
                     fontweight="bold",
+                    fontsize=12,  # Add this line and adjust size
                     bbox={
                         "facecolor": "white",
                         "alpha": 1,
@@ -764,18 +816,25 @@ class Plotter:
                     va="center",
                 )
             if i in figure_a_indices or i in figure_b_indices:
+                world = world[world["continent"] != "Antarctica"]
                 world = world.to_crs(
                     "+proj=wintri"
                 )  # Change projection to Winkel Tripel
+                # embed()
+
                 world.plot(
                     ax=ax,
                     column="needs_ratio",
                     cmap="viridis",
                 )
-
                 world.boundary.plot(ax=ax, color="Black", linewidth=0.1)
+                # ax.set_ylim([-60, 90])  # Cut off the South Pole
                 ax.axes.get_xaxis().set_ticks([])
                 ax.axes.get_yaxis().set_ticks([])
+
+                # world.boundary.plot(ax=ax, color="Black", linewidth=0.1)
+                # ax.axes.get_xaxis().set_ticks([])
+                # ax.axes.get_yaxis().set_ticks([])
 
         plt.savefig(
             Path(repo_root) / "results" / "fig_1ab.png",
@@ -788,186 +847,6 @@ class Plotter:
         plt.tight_layout()
         plt.show()
 
-    def helper_for_plotting_fig_3abcde(
-        interpreter,
-        xlim,
-        gs,
-        row,
-        fig,
-        max_y_percent,
-        ADD_SECOND_COLUMN,
-        split_legend=True,
-    ):
-        if split_legend:
-            legend_column1, legend_column2 = Plotter.get_people_fed_legend(
-                interpreter, True, split_legend
-            )
-            legend = legend_column1 + legend_column2
-        else:
-            legend = Plotter.get_people_fed_legend(interpreter, True)
-        pal = [
-            "#1e7ecd",  # fish
-            "#71797E",  # CS
-            "#e75480",  # SCP
-            "#76d7ea",  # greenhouses
-            "#056608",  # seaweeed
-            "#f3f4e3",  # milk
-            "#ff0606",  # meat
-            "#a5d610",  # immediate OG
-            "#ffeb7a",  # new stored OG
-            "#e7d2ad",  # stored food
-        ]
-        for i, label in enumerate(("a", "b")):
-            ykcals = []
-            ykcals.append(interpreter.fish_kcals_equivalent.kcals)
-            ykcals.append(interpreter.cell_sugar_kcals_equivalent.kcals)
-            ykcals.append(interpreter.scp_kcals_equivalent.kcals)
-            ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
-            ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
-            ykcals.append(interpreter.milk_kcals_equivalent.kcals)
-            ykcals.append(interpreter.meat_kcals_equivalent.kcals)
-            ykcals.append(interpreter.immediate_outdoor_crops_kcals_equivalent.kcals)
-            ykcals.append(interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals)
-            ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
-
-            if label == "a":
-                ax = fig.add_subplot(gs[row, 1])
-                if row == 4:
-                    ax.stackplot(
-                        interpreter.time_months_middle,
-                        np.array(ykcals),
-                        labels=legend,
-                        colors=pal,
-                    )
-
-                else:
-                    ax.stackplot(
-                        interpreter.time_months_middle,
-                        np.array(ykcals),
-                        colors=pal,
-                    )
-                if row == 4:
-                    plt.xlabel("Months since May nuclear winter onset", fontsize=9)
-
-                # get the sum of all the ydata up to xlim month,
-                # then find max month
-                # maxy = max(sum([x[0:xlim] for x in ykcals]))
-                # maxy = max([sum(x[0:xlim]) for x in ykcals])
-                maxy = 0
-                for i in range(xlim):
-                    if max_y_percent != -1:
-                        maxy = max_y_percent / 100 * 2100
-                    else:
-                        maxy = max(maxy, sum([x[i] for x in ykcals]))
-
-                ax.set_ylim([0, maxy])
-                # ax.set_ylim([0, maxy])
-
-                plt.ylabel("Kcals / person / day", fontsize=9)
-            if label == "b" and ADD_SECOND_COLUMN:
-                ax = fig.add_subplot(gs[row, 2])
-
-                ax.plot(
-                    interpreter.time_months_middle,
-                    interpreter.kcals_fed,
-                    color="blue",
-                    linestyle="solid",
-                )
-
-                if interpreter.include_fat:
-                    # 1 gram of fat is 9 kcals.
-                    ax.plot(
-                        interpreter.time_months_middle,
-                        interpreter.fat_fed,
-                        color="green",
-                        linestyle="dashed",
-                    )
-                if interpreter.include_protein:
-                    ax.plot(
-                        interpreter.time_months_middle,
-                        interpreter.protein_fed,
-                        color="red",
-                        linestyle="dotted",
-                    )
-                if max_y_percent != -1:
-                    ax.set_ylim([0, max_y_percent])
-                ax.set_ylabel("% min recommended", fontsize=9)
-                # ax.set_ylim(Plotter.getylim_nutrients(interpreter, xlim))
-            ax.set_xlim([0.5, xlim])
-
-            if label == "a":
-                if row == 1:
-                    plt.title("Needs Met, Caloric\n", fontsize=10, fontweight="bold")
-                # get the handles
-                handles, labels = ax.get_legend_handles_labels()
-                if row == 4:
-                    if split_legend:
-                        # # Flatten the columns into a single list while maintaining the two-column structure
-                        # legend = legend_column1 + legend_column2
-
-                        # Use ncol to specify the number of columns in the legend
-                        ax.legend(
-                            reversed(handles),
-                            reversed(labels),
-                            loc="lower center",
-                            ncol=2,
-                            bbox_to_anchor=(0.01, -1.7, 0.9, 1),
-                            borderaxespad=0.0,
-                            frameon=False,
-                            prop={"size": 9},  # Adjust the font size as needed
-                            # columnspacing=0.01,  # Adjust space between columns
-                            handletextpad=0.25,  # Adjust the pad between the legend handle and text
-                            mode="expand",  # Make the legend expand to fill the space allocated by bbox_to_anchor
-                        )
-
-                        # Adjust the width of the legend - may need to adjust subplot params or legend size
-                        fig.subplots_adjust(
-                            bottom=0.2
-                        )  # Adjust the bottom parameter to make room for the legend
-
-                    else:
-                        plt.legend(
-                            loc="center left",
-                            frameon=False,
-                            bbox_to_anchor=(0, -1.1),
-                            shadow=False,
-                            handles=reversed(handles),
-                            labels=reversed(labels),
-                        )
-
-            if label == "b" and ADD_SECOND_COLUMN:
-                if row == 4:
-                    labels = ["Calories"]
-                    if interpreter.include_fat:
-                        labels += ("Fat",)
-                    if interpreter.include_protein:
-                        labels += ("Protein",)
-
-                    ax.legend(
-                        loc="center left",
-                        frameon=False,
-                        bbox_to_anchor=(-0.05, -0.3),
-                        shadow=False,
-                        labels=labels,
-                    )
-                if row == 1:
-                    plt.title(
-                        "Needs Met, All Macronutrients\n",
-                        fontsize=10,
-                        fontweight="bold",
-                    )
-
-            if row == 4:
-                plt.xlabel("Months since May nuclear winter onset", fontsize=9)
-
-        # plt.rcParams["figure.figsize"] = [12.50, 10]
-
-        # fig.set_figheight(8)
-        # fig.set_figwidth(8)
-        # plt.tight_layout()
-
-        return gs, fig
-
     def helper_for_plotting_fig_2abcde(
         ax,
         interpreter,
@@ -978,7 +857,13 @@ class Plotter:
         ylim_constraint=100000,
         split_legend=True,
     ):
-        legend = Plotter.get_people_fed_legend(interpreter, True)
+
+        legend = Plotter.get_people_fed_legend(
+            interpreter,
+            is_nuclear_winter=True,
+            split_legend=False,
+            split_a_lot=True,
+        )
         pal = [
             "#1e7ecd",
             "#71797E",
@@ -999,8 +884,12 @@ class Plotter:
         ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
         ykcals.append(interpreter.milk_kcals_equivalent.kcals)
         ykcals.append(interpreter.meat_kcals_equivalent.kcals)
-        ykcals.append(interpreter.immediate_outdoor_crops_kcals_equivalent.kcals)
-        ykcals.append(interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals)
+        ykcals.append(
+            interpreter.immediate_outdoor_crops_kcals_equivalent.kcals
+        )
+        ykcals.append(
+            interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals
+        )
         ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
 
         # ax.text(
@@ -1029,11 +918,23 @@ class Plotter:
 
         # maxy += maxy / 20
         ax.set_ylim([0, min(maxy, ylim_constraint)])
+        # Set more ticks on Y-axis
+        ax.yaxis.set_major_locator(
+            MaxNLocator(nbins=5)
+        )  # Adjust nbins to the number of ticks you want
+
         ax.set_xlim([0, xlim])
+        ax.tick_params(
+            axis="x", labelsize=10
+        )  # Set X-axis tick label size to 12 (adjust as needed)
+        ax.tick_params(
+            axis="y", labelsize=10
+        )  # Set Y-axis tick label size to 12 (adjust as needed)
+
         if add_ylabel:
-            plt.ylabel("Kcals / person / day", fontsize=9)
+            plt.ylabel("Kcals / person / day", fontsize=10)
         if add_xlabel:
-            plt.xlabel("Months since May nuclear winter onset", fontsize=9)
+            plt.xlabel("Months since May nuclear winter onset", fontsize=12)
 
         # get the handles
         handles, labels = ax.get_legend_handles_labels()
@@ -1049,7 +950,7 @@ class Plotter:
         plt.title(
             title,
             fontweight="bold",
-            fontsize=9,
+            fontsize=11,
         )
 
         # plt.xlabel("Months since May nuclear winter onset")
@@ -1062,34 +963,302 @@ class Plotter:
         # plt.show()
         return ax, legend, pal
 
+    # @classmethod
+    # def plot_fig_2abcde_updated(crs, lists_of_lists, xlim, split_legend=True):
+    #     # put maps and texts together: 5X4
+    #     fig = plt.figure(figsize=(10, 10))
+    #     fig.set_facecolor("white")
+    #     # gs = gridspec.GridSpec(
+    #     #     7,
+    #     #     3,
+    #     #     wspace=0.3,
+    #     #     hspace=0.5,
+    #     #     width_ratios=[0.25, 2, 2],
+    #     #     height_ratios=[0.5, 2, 2, 2, 2, 2, 3],
+    #     #     left=0.2,  # Increased from 0.02 to make room for the legend
+    #     #     right=0.98,
+    #     #     top=0.98,
+    #     #     bottom=0.02,
+    #     # )
+    #     gs = gridspec.GridSpec(
+    #         7,
+    #         4,  # Increased from 3 to 4 columns
+    #         wspace=0.3,
+    #         hspace=0.5,
+    #         width_ratios=[
+    #             1.2,
+    #             0.25,
+    #             2,
+    #             2,
+    #         ],  # Added a new width ratio for the legend column
+    #         height_ratios=[0.5, 2, 2, 2, 2, 2, 3],
+    #         left=0.02,
+    #         right=0.98,
+    #         top=0.98,
+    #         bottom=0.02,
+    #     )
+    #     # Create an axis for the legend
+    #     legend_ax = fig.add_subplot(gs[:, 0])  # Use all rows in the first column
+    #     legend_ax.axis('off')  # Hide the axis frame
+
+    #     # to just increase width...
+    #     # gs = gridspec.GridSpec(
+    #     #     7,
+    #     #     3,
+    #     #     wspace=0.3,
+    #     #     hspace=0.5,
+    #     #     width_ratios=[0.25, 2, 2],
+    #     #     height_ratios=[0.5, 2, 2, 2, 2, 2, 3],
+    #     #     left=0.02,
+    #     #     right=0.98,
+    #     #     top=0.98,
+    #     #     bottom=0.02,
+    #     # )
+
+    #     # plt.show()
+    #     # axes = axes.ravel()
+    #     figure_a_indices = [0, 1, 2, 3, 4]
+    #     figure_b_indices = [5, 6, 7, 8, 9]
+    #     ax = []
+    #     ax = fig.add_subplot(gs[0, 1])
+    #     ax.text(
+    #         0.5,
+    #         0.5,
+    #         ("Example Scenario"),
+    #         fontweight="bold",
+    #         bbox={
+    #             "facecolor": "white",
+    #             "alpha": 1,
+    #             "edgecolor": "none",
+    #             "pad": 1,
+    #         },
+    #         ha="center",
+    #         va="center",
+    #         fontsize=10,
+    #     )
+    #     ax.axis("off")
+
+    #     ax = fig.add_subplot(gs[0, 2])
+    #     ax.text(
+    #         0.5,
+    #         0.5,
+    #         ("Example Scenario + Resilient Foods"),
+    #         fontweight="bold",
+    #         bbox={
+    #             "facecolor": "white",
+    #             "alpha": 1,
+    #             "edgecolor": "none",
+    #             "pad": 1,
+    #         },
+    #         fontsize=10,
+    #         ha="center",
+    #         va="center",
+    #     )
+    #     ax.axis("off")
+
+    #     for i in range(10):
+    #         people_fed = int(lists_of_lists[i][0])
+    #         country_name = lists_of_lists[i][1]
+    #         interpreter = lists_of_lists[i][2]
+    #         if i == 10:
+    #             ax = fig.add_subplot(gs[5, :])
+    #             a = np.array([[0, 1]])
+    #             plt.imshow(a, cmap="viridis")
+    #             plt.gca().set_visible(False)
+    #             plt.colorbar(
+    #                 orientation="horizontal",
+    #                 ax=ax,
+    #                 label="Fraction minimum caloric needs met",
+    #                 aspect=30,
+    #                 fraction=0.5,
+    #             )
+
+    #         if i in figure_a_indices:
+    #             add_ylabel = True
+    #             row_index = i
+    #             ax.axis("off")
+    #             ax = fig.add_subplot(gs[row_index + 1, 0])
+    #             ax.text(
+    #                 0.5,
+    #                 0.5,
+    #                 country_name,  # + "\n\nNeeds met: " + str(people_fed) + "%"),
+    #                 fontweight="bold",
+    #                 bbox={
+    #                     "facecolor": "white",
+    #                     "alpha": 1,
+    #                     "edgecolor": "none",
+    #                     "pad": 1,
+    #                 },
+    #                 ha="center",
+    #                 va="center",
+    #                 rotation=90,
+    #                 fontsize=10,
+    #             )
+
+    #             ax.axis("off")
+    #             ax = fig.add_subplot(gs[row_index + 1, 1])
+    #             # figure a
+    #         elif i in figure_b_indices:
+    #             add_ylabel = False
+    #             # figure b
+    #             row_index = i - 5
+    #             ax.axis("off")
+    #             ax = fig.add_subplot(gs[row_index + 1, 2])
+    #             # xticks = ax.get_xticks()
+    #             # ax.set_xticklabels(xticks, rotation=0, fontsize=9)
+    #             # ax.xaxis.set_major_formatter(lambda x, pos: str(round(x / 12, 0)))
+
+    #         if i in figure_a_indices or i in figure_b_indices:
+    #             if row_index == 4:
+    #                 add_xlabel = True
+    #             else:
+    #                 add_xlabel = False
+
+    #             CONSTRAIN_UP_TO_PERCENT_FED = True
+    #             if CONSTRAIN_UP_TO_PERCENT_FED:
+    #                 # constrain to only show up to the level of people fed in the scenario
+    #                 ylim_constraint = (
+    #                     people_fed
+    #                     / 100
+    #                     * interpreter.constants["inputs"]["NUTRITION"][
+    #                         "KCALS_DAILY"
+    #                     ]
+    #                 )
+    #             else:
+    #                 ylim_constraint = 10000
+
+    #             ax, legend, pal = Plotter.helper_for_plotting_fig_2abcde(
+    #                 ax,
+    #                 interpreter,
+    #                 xlim,
+    #                 "Needs met: " + str(people_fed) + "%",
+    #                 add_ylabel,
+    #                 add_xlabel,
+    #                 ylim_constraint=ylim_constraint,
+    #             )
+    #             # xticks = ax.get_xticks()
+    #             ax = fig.add_subplot(gs[row_index + 1, 2])
+    #             # ax.set_xticklabels(xticks, rotation=0, fontsize=9)
+    #             # ax.xaxis.set_major_formatter(ticker.FormatStrFormatter("%d"))
+    #             # ax.xaxis.set_major_formatter(lambda x, pos: str(round(x / 12, 0)))
+
+    #     ax.axis("off")
+    #     ax = fig.add_subplot(gs[6, :])
+    #     legend_elements = []
+    #     for i in range(len(legend)):
+    #         # flip order
+    #         flipped_i = len(legend) - i - 1
+    #         adjusted_legend = legend[flipped_i].replace("\n", " ")
+    #         legend_elements.append(
+    #             Line2D([0], [0], color=pal[flipped_i], label=adjusted_legend)
+    #         )
+    #         # legend_elements.append(PolyCollection([0], [0], color=pal[i], label=legend[i]))
+
+    #     # legend_dict = dict(linewidth=3)
+
+    #     if split_legend:
+    #         leg = ax.legend(
+    #             handles=legend_elements,
+    #             loc="center",
+    #             ncol=2,
+    #             bbox_to_anchor=(0.125, -0.01, 0.85, 1),
+    #             borderaxespad=0.0,
+    #             frameon=False,
+    #             prop={"size": 9},  # Adjust the font size as needed
+    #             # columnspacing=2.0,  # Adjust space between columns
+    #             handletextpad=1,  # Adjust the pad between the legend handle and text
+    #             mode="expand",
+    #             framealpha=0,
+    #         )
+
+    #         # Adjust the width of the legend - may need to adjust subplot params or legend size
+    #         fig.subplots_adjust(
+    #             bottom=0.2
+    #         )  # Adjust the bottom parameter to make room for the legend
+
+    #     else:
+    #         leg = ax.legend(
+    #             handles=legend_elements,
+    #             loc="center",
+    #             ncol=1,
+    #             bbox_to_anchor=(0.5, 0.5),
+    #             framealpha=0,
+    #         )
+
+    #     for legobj in leg.legend_handles:
+    #         legobj.set_linewidth(5.0)
+
+    #     # leg.get_frame().set_alpha(None)
+    #     # leg.get_frame().set_facecolor(None)
+
+    #     # ax.legend(bbox_to_anchor=(1, 1))
+    #     # for i in r
+    #     # leg.get_lines()[0].set_linewidth(6)
+    #     # for i in range(1, 4):
+    #     # line = plt.plot(i * np.arange(1, 10))[0]
+    #     # ax.plot(-i * np.arange(1, 10), ls="--", color=line.get_color())
+
+    #     # plt.show()
+    #     ax.axis("off")
+
+    #     plt.savefig(
+    #         Path(repo_root) / "results" / "fig_2abcde.png",
+    #         dpi=300,
+    #         facecolor=fig.get_facecolor(),
+    #         transparent=False,
+    #         edgecolor="none",
+    #     )
+
+    #     plt.tight_layout()
+    #     # fig.set_dpi(300.0)
+    #     plt.show()
     @classmethod
     def plot_fig_2abcde_updated(crs, lists_of_lists, xlim, split_legend=True):
-        # put maps and texts together: 5X4
+        # Create the figure
         fig = plt.figure(figsize=(10, 10))
         fig.set_facecolor("white")
+
+        # Adjust GridSpec to add an extra column for the legend
         gs = gridspec.GridSpec(
             7,
-            3,
+            4,  # Number of columns remains the same
             wspace=0.3,
             hspace=0.5,
-            width_ratios=[0.25, 2, 2],
+            width_ratios=[
+                0.25,  # Column for country names (rotated text)
+                2,  # Column for Figure A data
+                2,  # Column for Figure B data
+                1,  # Legend column moved to the right
+            ],
             height_ratios=[0.5, 2, 2, 2, 2, 2, 3],
             left=0.02,
-            right=0.98,
+            right=0.95,
             top=0.98,
             bottom=0.02,
         )
 
-        # plt.show()
-        # axes = axes.ravel()
+        # Create an axis for the legend
+        # legend_ax = fig.add_subplot(
+        #     gs[:, 0]
+        # )  # Use all rows in the first column
+        # # Create an axis for the legend
+        legend_ax = fig.add_subplot(gs[:, 3])  # Use all rows in the last column
+        legend_ax.axis("off")  # Hide the axis frame
+
+        # legend_ax = fig.add_subplot(gs[:, -1])
+
+        # legend_ax.axis("off")  # Hide the axis frame
+
+        # Define figure indices
         figure_a_indices = [0, 1, 2, 3, 4]
         figure_b_indices = [5, 6, 7, 8, 9]
-        ax = []
+
+        # Add titles to the top of the figure
         ax = fig.add_subplot(gs[0, 1])
         ax.text(
             0.5,
-            0.5,
-            ("Example Scenario"),
+            0.75,
+            "Example Scenario",
             fontweight="bold",
             bbox={
                 "facecolor": "white",
@@ -1099,15 +1268,15 @@ class Plotter:
             },
             ha="center",
             va="center",
-            fontsize=10,
+            fontsize=12,
         )
         ax.axis("off")
 
         ax = fig.add_subplot(gs[0, 2])
         ax.text(
             0.5,
-            0.5,
-            ("Example Scenario + Resilient Foods"),
+            0.75,
+            "Example Scenario\n + Resilient Foods",
             fontweight="bold",
             bbox={
                 "facecolor": "white",
@@ -1115,38 +1284,30 @@ class Plotter:
                 "edgecolor": "none",
                 "pad": 1,
             },
-            fontsize=10,
+            fontsize=12,
             ha="center",
             va="center",
         )
         ax.axis("off")
 
+        # Loop through the list of scenarios
         for i in range(10):
             people_fed = int(lists_of_lists[i][0])
             country_name = lists_of_lists[i][1]
             interpreter = lists_of_lists[i][2]
-            if i == 10:
-                ax = fig.add_subplot(gs[5, :])
-                a = np.array([[0, 1]])
-                plt.imshow(a, cmap="viridis")
-                plt.gca().set_visible(False)
-                plt.colorbar(
-                    orientation="horizontal",
-                    ax=ax,
-                    label="Fraction minimum caloric needs met",
-                    aspect=30,
-                    fraction=0.5,
-                )
 
             if i in figure_a_indices:
                 add_ylabel = True
                 row_index = i
-                ax.axis("off")
-                ax = fig.add_subplot(gs[row_index + 1, 0])
+                # Add country name text rotated vertically
+                # Add country name text rotated vertically
+                ax = fig.add_subplot(
+                    gs[row_index + 1, 0]
+                )  # Now in the first column
                 ax.text(
                     0.5,
                     0.5,
-                    country_name,  # + "\n\nNeeds met: " + str(people_fed) + "%"),
+                    country_name,
                     fontweight="bold",
                     bbox={
                         "facecolor": "white",
@@ -1157,35 +1318,36 @@ class Plotter:
                     ha="center",
                     va="center",
                     rotation=90,
-                    fontsize=10,
+                    fontsize=13,
                 )
-
                 ax.axis("off")
-                ax = fig.add_subplot(gs[row_index + 1, 1])
-                # figure a
+                # Add the data subplot for Figure A
+                # Add the data subplot for Figure A
+                ax = fig.add_subplot(
+                    gs[row_index + 1, 1]
+                )  # Now in the second column
+
             elif i in figure_b_indices:
                 add_ylabel = False
-                # figure b
                 row_index = i - 5
-                ax.axis("off")
-                ax = fig.add_subplot(gs[row_index + 1, 2])
-                # xticks = ax.get_xticks()
-                # ax.set_xticklabels(xticks, rotation=0, fontsize=9)
-                # ax.xaxis.set_major_formatter(lambda x, pos: str(round(x / 12, 0)))
+                # Add the data subplot for Figure B
+                # Add the data subplot for Figure B
+                ax = fig.add_subplot(
+                    gs[row_index + 1, 2]
+                )  # Now in the third column
 
             if i in figure_a_indices or i in figure_b_indices:
-                if row_index == 4:
-                    add_xlabel = True
-                else:
-                    add_xlabel = False
+                add_xlabel = True if row_index == 4 else False
 
                 CONSTRAIN_UP_TO_PERCENT_FED = True
                 if CONSTRAIN_UP_TO_PERCENT_FED:
-                    # constrain to only show up to the level of people fed in the scenario
+                    # Constrain to only show up to the level of people fed in the scenario
                     ylim_constraint = (
                         people_fed
                         / 100
-                        * interpreter.constants["inputs"]["NUTRITION"]["KCALS_DAILY"]
+                        * interpreter.constants["inputs"]["NUTRITION"][
+                            "KCALS_DAILY"
+                        ]
                     )
                 else:
                     ylim_constraint = 10000
@@ -1199,71 +1361,96 @@ class Plotter:
                     add_xlabel,
                     ylim_constraint=ylim_constraint,
                 )
-                # xticks = ax.get_xticks()
-                ax = fig.add_subplot(gs[row_index + 1, 2])
-                # ax.set_xticklabels(xticks, rotation=0, fontsize=9)
-                # ax.xaxis.set_major_formatter(ticker.FormatStrFormatter("%d"))
-                # ax.xaxis.set_major_formatter(lambda x, pos: str(round(x / 12, 0)))
 
-        ax.axis("off")
-        ax = fig.add_subplot(gs[6, :])
+        # Create legend elements
         legend_elements = []
         for i in range(len(legend)):
-            # flip order
+            # Flip order to match stackplot
             flipped_i = len(legend) - i - 1
-            adjusted_legend = legend[flipped_i].replace("\n", " ")
+            adjusted_legend = legend[flipped_i]  # .replace("\n", " ")
             legend_elements.append(
                 Line2D([0], [0], color=pal[flipped_i], label=adjusted_legend)
             )
-            # legend_elements.append(PolyCollection([0], [0], color=pal[i], label=legend[i]))
 
-        # legend_dict = dict(linewidth=3)
-
+        # Add the legend to the legend axis
         if split_legend:
-            leg = ax.legend(
+            leg = legend_ax.legend(
+                bbox_to_anchor=(
+                    0.5,
+                    0.93,
+                ),  # Move the legend down slightly (0.9 -> 0.8)
                 handles=legend_elements,
-                loc="center",
-                ncol=2,
-                bbox_to_anchor=(0.125, -0.01, 0.85, 1),
-                borderaxespad=0.0,
+                loc="upper center",
+                ncol=1,
                 frameon=False,
-                prop={"size": 9},  # Adjust the font size as needed
-                # columnspacing=2.0,  # Adjust space between columns
-                handletextpad=1,  # Adjust the pad between the legend handle and text
-                mode="expand",
-                framealpha=0,
+                prop={"size": 11},
+                handletextpad=2,
+                borderaxespad=1,
+                labelspacing=2,  # Increase vertical space between legend entries
             )
+            # for txt in leg.get_texts():
+            #     txt.set_ha("center")  # Set horizontal alignment to center
+            #     # txt.set_va("center")  # Set vertical alignment to center
 
-            # Adjust the width of the legend - may need to adjust subplot params or legend size
-            fig.subplots_adjust(
-                bottom=0.2
-            )  # Adjust the bottom parameter to make room for the legend
+            # Add the legend to the legend axis, move it down, and adjust the handle and label positioning
+            # leg = legend_ax.legend(
+            #     handles=legend_elements,
+            #     loc="upper center",  # Legend stays centered at the top
+            #     ncol=1,
+            #     bbox_to_anchor=(
+            #         0.5,
+            #         0.8,
+            #     ),  # Move the legend down slightly (0.9 -> 0.8)
+            #     frameon=False,
+            #     prop={"size": 9},
+            #     handletextpad=1,  # Adjust spacing between handle and text
+            #     borderaxespad=0.0,
+            #     handleheight=2.0,  # Position the color box above the text
+            #     labelspacing=1.2,  # Increase vertical space between legend entries
+            # )
+            # Add the legend to the legend axis and move it down slightly
+            # leg = legend_ax.legend(
+            #     handles=legend_elements,
+            #     loc="upper center",  # Legend stays centered at the top
+            #     ncol=1,
+            #     bbox_to_anchor=(
+            #         1,
+            #         1,
+            #     ),  # Move the legend down slightly (0.9 -> 0.8)
+            #     frameon=False,
+            #     prop={"size": 11},
+            #     handletextpad=1,
+            #     borderaxespad=0.0,
+            #     labelspacing=2.5,  # Increase vertical space between legend entries
+            # )
+
+            # # Adjust the position of the text to be above the markers
+            # for txt in leg.get_texts():
+            #     txt.set_ha("center")  # Center-align the text horizontally
+            #     txt.set_position(
+            #         (-250, -150)
+            #     )  # Set the x (horizontal) and y (vertical) positions to push text above the markers
+            # Add the legend to the legend axis and move it down slightly
 
         else:
-            leg = ax.legend(
+            leg = legend_ax.legend(
                 handles=legend_elements,
-                loc="center",
+                loc="upper center",
                 ncol=1,
-                bbox_to_anchor=(0.5, 0.5),
-                framealpha=0,
+                frameon=False,
+                prop={"size": 14},
+                handletextpad=2,
+                borderaxespad=0.1,
             )
 
-        for legobj in leg.legendHandles:
+        # Set the linewidth of legend handles
+        for legobj in leg.legend_handles:
             legobj.set_linewidth(5.0)
 
-        # leg.get_frame().set_alpha(None)
-        # leg.get_frame().set_facecolor(None)
+        # Adjust the layout
+        plt.tight_layout()
 
-        # ax.legend(bbox_to_anchor=(1, 1))
-        # for i in r
-        # leg.get_lines()[0].set_linewidth(6)
-        # for i in range(1, 4):
-        # line = plt.plot(i * np.arange(1, 10))[0]
-        # ax.plot(-i * np.arange(1, 10), ls="--", color=line.get_color())
-
-        # plt.show()
-        ax.axis("off")
-
+        # Save and show the figure
         plt.savefig(
             Path(repo_root) / "results" / "fig_2abcde.png",
             dpi=300,
@@ -1272,8 +1459,6 @@ class Plotter:
             edgecolor="none",
         )
 
-        plt.tight_layout()
-        # fig.set_dpi(300.0)
         plt.show()
 
     def plot_fig_3abcde_updated(results, xlim, ADD_SECOND_COLUMN=False):
@@ -1285,27 +1470,26 @@ class Plotter:
                 [interpreter.percent_people_fed, interpreter, scenario_name]
             )
 
-        # put maps and texts together: 5X4
-        fig = plt.figure(figsize=(10, 8))
+        # Adjust gridspec to have 2 columns and 3 rows
+        fig = plt.figure(figsize=(10, 10))
 
         gs = gridspec.GridSpec(
-            6,
-            3 if ADD_SECOND_COLUMN else 2,
+            3,
+            2,
             wspace=0.4,
-            hspace=0.5,
-            width_ratios=[1, 2, 2] if ADD_SECOND_COLUMN else [1, 4],
-            height_ratios=[0.125, 2, 2, 2, 2, 3],
-            left=0.02,
-            right=0.98,
-            top=0.98,
-            bottom=0.02,
+            hspace=1.2,
+            left=0.1,
+            right=0.95,
+            top=0.91,
+            bottom=0.05,
+            height_ratios=[2, 2, 0.5],
         )
 
-        ax = fig.add_subplot(gs[0, 1])
-        ax.axis("off")
-        if ADD_SECOND_COLUMN:
-            ax = fig.add_subplot(gs[0, 2])
-            ax.axis("off")
+        labels = {1: "a", 2: "b", 3: "c", 4: "d"}
+
+        # List to collect handles and labels for legend
+        handles_list = []
+        labels_list = []
 
         for i in range(4):
             [
@@ -1313,42 +1497,43 @@ class Plotter:
                 interpreter,
                 scenario_name,
             ] = lists_of_lists[i]
-            row = i + 1
+            row = i // 2  # Rows 0 or 1
+            col = i % 2  # Columns 0 or 1
             max_y_percent = -1
-            gs, fig = Plotter.helper_for_plotting_fig_3abcde(
-                interpreter, xlim, gs, row, fig, max_y_percent, ADD_SECOND_COLUMN
+            label = labels[i + 1]
+            gs, fig, handles, labels_legend = (
+                Plotter.helper_for_plotting_fig_3abcde(
+                    interpreter,
+                    xlim,
+                    gs,
+                    row,
+                    col,
+                    fig,
+                    max_y_percent,
+                    ADD_SECOND_COLUMN,
+                    label=label,
+                    scenario_name=scenario_name,
+                    percent_people_fed=percent_people_fed,
+                )
             )
-            ax = fig.add_subplot(gs[row, 0])
-            percent_fed = str(int(percent_people_fed))
-            labels = {1: "a", 2: "b", 3: "c", 4: "d"}
-            ax.text(
-                0.5,
-                1.2,
-                labels[row],
-                transform=ax.transAxes,
-                fontsize=11,
-                fontweight="bold",
-                va="top",
-                ha="right",
-            )
+            if i == 3:
+                handles_list = handles
+                labels_list = labels_legend
 
-            ax.text(
-                0.5,
-                0.5,
-                scenario_name + "\n\nNeeds met: " + percent_fed + "%",
-                fontweight="bold",
-                bbox={
-                    "facecolor": "white",
-                    "alpha": 1,
-                    "edgecolor": "none",
-                    "pad": 1,
-                },
-                fontsize=10,
-                ha="center",
-                va="center",
-            )
-
-            ax.axis("off")
+        # Add legend in the last row, spanning both columns
+        ax = fig.add_subplot(gs[2, :])
+        ax.axis("off")
+        ax.legend(
+            reversed(handles_list),
+            reversed(labels_list),
+            loc="center",
+            ncol=2,  # As per user request
+            frameon=False,
+            prop={"size": 16},
+            handletextpad=0.25,
+            mode="expand",
+            bbox_to_anchor=(0.0, 0.5, 1.0, 1.0),
+        )
 
         plt.savefig(
             Path(repo_root) / "results" / "fig_3abc.png",
@@ -1359,6 +1544,128 @@ class Plotter:
         )
 
         plt.show()
+
+    def helper_for_plotting_fig_3abcde(
+        interpreter,
+        xlim,
+        gs,
+        row,
+        col,
+        fig,
+        max_y_percent,
+        ADD_SECOND_COLUMN,
+        label,
+        scenario_name,
+        percent_people_fed,
+        split_legend=True,
+    ):
+        if split_legend:
+            legend_column1, legend_column2 = Plotter.get_people_fed_legend(
+                interpreter, True, split_legend
+            )
+            legend = legend_column1 + legend_column2
+        else:
+            legend = Plotter.get_people_fed_legend(interpreter, True)
+        pal = [
+            "#1e7ecd",  # fish
+            "#71797E",  # CS
+            "#e75480",  # SCP
+            "#76d7ea",  # greenhouses
+            "#056608",  # seaweed
+            "#f3f4e3",  # milk
+            "#ff0606",  # meat
+            "#a5d610",  # immediate OG
+            "#ffeb7a",  # new stored OG
+            "#e7d2ad",  # stored food
+        ]
+
+        ykcals = []
+        ykcals.append(interpreter.fish_kcals_equivalent.kcals)
+        ykcals.append(interpreter.cell_sugar_kcals_equivalent.kcals)
+        ykcals.append(interpreter.scp_kcals_equivalent.kcals)
+        ykcals.append(interpreter.greenhouse_kcals_equivalent.kcals)
+        ykcals.append(interpreter.seaweed_kcals_equivalent.kcals)
+        ykcals.append(interpreter.milk_kcals_equivalent.kcals)
+        ykcals.append(interpreter.meat_kcals_equivalent.kcals)
+        ykcals.append(
+            interpreter.immediate_outdoor_crops_kcals_equivalent.kcals
+        )
+        ykcals.append(
+            interpreter.new_stored_outdoor_crops_kcals_equivalent.kcals
+        )
+        ykcals.append(interpreter.stored_food_kcals_equivalent.kcals)
+
+        # Create the axis
+        ax = fig.add_subplot(gs[row, col])
+
+        # Add y-axis label for plots 'a' and 'c' (row = 0, col = 0 for 'a'; row = 1, col = 0 for 'c')
+        if (row == 0 and col == 0) or (row == 1 and col == 0):
+            ax.set_ylabel("Kcals / person / day", fontsize=15)
+
+        # Plot the data
+        if row == 1 and col == 1:  # Last plot
+            ax.stackplot(
+                interpreter.time_months_middle,
+                np.array(ykcals),
+                labels=legend,
+                colors=pal,
+            )
+        else:
+            ax.stackplot(
+                interpreter.time_months_middle,
+                np.array(ykcals),
+                colors=pal,
+            )
+
+        # Set tick parameters and y-axis locator
+        ax.tick_params(axis="x", labelsize=15)
+        ax.tick_params(axis="y", labelsize=15)
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+
+        # Set x and y limits
+        ax.set_xlim([0.5, xlim])
+
+        # Set y limits
+        if max_y_percent != -1:
+            maxy = max_y_percent / 100 * 2100
+        else:
+            maxy = 0
+            for i in range(xlim):
+                maxy = max(maxy, sum([x[i] for x in ykcals]))
+        ax.set_ylim([0, maxy])
+
+        # Set x-label
+        if (row == 1 and col == 0) or (row == 1 and col == 1):
+            ax.set_xlabel("Months since May nuclear winter onset", fontsize=16)
+
+        # Set title
+        ax.set_title(
+            scenario_name
+            + "\nNeeds met: "
+            + str(int(percent_people_fed))
+            + "%",
+            fontsize=16,
+            fontweight="bold",  # This makes the title bold
+        )
+
+        # Add label below x-axis
+        ax.text(
+            0,
+            1.2,
+            "(" + label + ")",
+            transform=ax.transAxes,
+            fontsize=16,
+            ha="center",
+            va="top",
+        )
+
+        # Collect handles and labels for legend
+        if row == 1 and col == 1:
+            handles, labels_legend = ax.get_legend_handles_labels()
+        else:
+            handles, labels_legend = [], []
+
+        return gs, fig, handles, labels_legend
 
     def plot_fig_3ab(monte_carlo_data, food_names, removed, added):
         # fig = plt.figure()
@@ -1418,14 +1725,18 @@ class Plotter:
                         dict["category"],
                         ["loss of calories if removed"] * len(food_removed),
                     )
-                    dict["food"] = np.append(dict["food"], [f] * len(food_removed))
+                    dict["food"] = np.append(
+                        dict["food"], [f] * len(food_removed)
+                    )
                     dict["calories"] = np.append(dict["calories"], removed[f])
                     food_added = added[f]
                     dict["category"] = np.append(
                         dict["category"],
                         ["additional calories if included"] * len(food_added),
                     )
-                    dict["food"] = np.append(dict["food"], [f] * len(food_added))
+                    dict["food"] = np.append(
+                        dict["food"], [f] * len(food_added)
+                    )
                     dict["calories"] = np.append(dict["calories"], added[f])
                 df = pd.DataFrame.from_dict(dict)
                 sns.boxplot(
@@ -1442,14 +1753,20 @@ class Plotter:
                 plt.legend(
                     bbox_to_anchor=(0.0, -0.1),
                 )
-                ax3.set(xlabel="change in caloric availability (Kcals / person / day)")
+                ax3.set(
+                    xlabel="change in caloric availability (Kcals / person / day)"
+                )
                 plt.ylabel("")
                 handles, labels = ax3.get_legend_handles_labels()
-                ax4.legend(handles, labels, frameon=False, bbox_to_anchor=(0.8, 0.8))
+                ax4.legend(
+                    handles, labels, frameon=False, bbox_to_anchor=(0.8, 0.8)
+                )
                 ax4.axis("off")
             if label == "b":
                 sns.histplot(data=monte_carlo_data, ax=ax_hist)
-                ax_hist.set(xlabel="mean caloric availability (Kcals / person / day)")
+                ax_hist.set(
+                    xlabel="mean caloric availability (Kcals / person / day)"
+                )
                 ax_hist.set(title="Monte Carlo outcomes")
 
         plt.tight_layout()
@@ -1632,7 +1949,12 @@ class Plotter:
 
     @classmethod
     def plot_fig_s1abcd(
-        crs, interpreter1, interpreter2, xlim, showplot=False, split_legend=False
+        crs,
+        interpreter1,
+        interpreter2,
+        xlim,
+        showplot=False,
+        split_legend=False,
     ):
         legend_column1, legend_column2 = Plotter.get_people_fed_legend(
             interpreter1, False, split_legend
@@ -1834,11 +2156,13 @@ class Plotter:
             protein = interpreter.kcals_fed
 
         min_plot = (
-            min([min(fat[0:xlim]), min(protein[0:xlim]), min(kcals[0:xlim])]) - 20
+            min([min(fat[0:xlim]), min(protein[0:xlim]), min(kcals[0:xlim])])
+            - 20
         )
 
         max_plot = (
-            max([max(fat[0:xlim]), max(protein[0:xlim]), max(kcals[0:xlim])]) + 20
+            max([max(fat[0:xlim]), max(protein[0:xlim]), max(kcals[0:xlim])])
+            + 20
         )
 
         return [min_plot, max_plot]
@@ -1868,7 +2192,9 @@ class Plotter:
             >>> plot_histogram(ax, data, N, xlabel, ylabel, title)
         """
         num_bins = int(N / 10)  # Calculate the number of bins for the histogram
-        ax.hist(data, bins=num_bins, facecolor="blue", alpha=0.5)  # Plot the histogram
+        ax.hist(
+            data, bins=num_bins, facecolor="blue", alpha=0.5
+        )  # Plot the histogram
         ax.set_xlabel(xlabel)  # Set the x-axis label
         ax.set_ylabel(ylabel)  # Set the y-axis label
         ax.set_title(title)  # Set the plot title
@@ -1898,19 +2224,21 @@ class Plotter:
         print("95% upper")
         print(np.percentile(np.array(data), 97.5))
 
-    def get_people_fed_legend(interpreter, is_nuclear_winter, split_legend=False):
+    def get_people_fed_legend(
+        interpreter, is_nuclear_winter, split_legend=False, split_a_lot=False
+    ):
         if not is_nuclear_winter:
             stored_food_label = (
                 "Crops consumed that month that were\nstored before simulation"
             )
-            OG_stored_label = (
-                "Crops consumed that month that were\nstored after simulation start"
-            )
+            OG_stored_label = "Crops consumed that month that were\nstored after simulation start"
         else:
-            stored_food_label = "Crops consumed that month that were\nstored before nuclear winter onset"
-            OG_stored_label = (
-                "Crops consumed that month that were\nstored after nuclear winter onset"
-            )
+            if split_a_lot:
+                stored_food_label = "Crops consumed\nthat month\nthat were\nstored before\nnuclear winter\nonset"
+                OG_stored_label = "Crops consumed\nthat month\nthat were\nstored after\nnuclear winter\nonset"
+            else:
+                stored_food_label = "Crops consumed that month that were\nstored before nuclear winter onset"
+                OG_stored_label = "Crops consumed that month that were\nstored after nuclear winter onset"
 
         legend = []
         if interpreter.constants["ADD_FISH"]:
@@ -1949,7 +2277,11 @@ class Plotter:
             legend = legend + [""]
 
         if interpreter.constants["ADD_OUTDOOR_GROWING"]:
-            legend = legend + ["Outdoor Crops consumed immediately"]
+            if split_a_lot:
+                legend = legend + ["Outdoor Crops\nconsumed\nimmediately"]
+            else:
+                legend = legend + ["Outdoor Crops consumed immediately"]
+
         else:
             legend = legend + [""]
 
@@ -1972,7 +2304,9 @@ class Plotter:
             return legend
 
     def get_feed_biofuels_legend(interpreter):
-        stored_food_label = "Stored food, either from before or after catastrophe"
+        stored_food_label = (
+            "Stored food, either from before or after catastrophe"
+        )
 
         legend = []
         if interpreter.constants["ADD_CELLULOSIC_SUGAR"]:
@@ -2034,7 +2368,9 @@ class Plotter:
 
         plt.xlabel("month")
         plt.ylabel("ratios to baseline production")
-        plt.title("fraction of crop production per month, including seasonality")
+        plt.title(
+            "fraction of crop production per month, including seasonality"
+        )
         # plt.xlim([0, 12 * 5])
         # plt.ylim([0, 1.5])
         plt.show()
@@ -2047,7 +2383,9 @@ class Plotter:
             0, len(all_months_reductions), len(all_months_reductions)
         )
         plt.scatter(month_nums, all_months_reductions)
-        plt.title("fraction of crop production per month, not including seasonality")
+        plt.title(
+            "fraction of crop production per month, not including seasonality"
+        )
         plt.xlabel("month")
         plt.ylabel("ratio to baseline production")
         # plt.xlim([0, 12 * 5])
@@ -2192,7 +2530,9 @@ class Plotter:
             return
         fig, ax = plt.subplots()
         world.boundary.plot(ax=ax, color="Black", linewidth=0.1)
-        world = world.to_crs("+proj=wintri")  # Change projection to Winkel Tripel
+        world = world.to_crs(
+            "+proj=wintri"
+        )  # Change projection to Winkel Tripel
         world.plot(
             ax=ax,
             column="needs_ratio",

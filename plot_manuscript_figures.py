@@ -390,7 +390,7 @@ def recalculate_plot_1():
     this_simulation["waste"] = "tripled_prices_in_country"
     this_simulation["shutoff"] = "long_delayed_shutoff_after_10_percent_fed"
     simple_adaptations_title = (
-        "Simple Adaptations \n(waste reduced,\n feed + biofuel delayed shutoff)"
+        "Simple Adaptations \n(waste reduced,\n feed + biofuel\ndelayed shutoff)"
     )
     simple_adaptations = call_scenario_runner_and_set_options(
         this_simulation,
