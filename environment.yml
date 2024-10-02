@@ -18,5 +18,6 @@ dependencies:
   - plotly=5.22.0
   - PyYAML=6.0.1
   - gitpython=3.1.43
+  - pip
   - pip:
-    - pulp=2.9.0
+    - pulp==2.9.0
