@@ -7,6 +7,7 @@
 """
 
 import numpy as np
+
 from src.food_system.food import Food
 
 
@@ -84,9 +85,9 @@ class Seafood:
                 production_protein_fish_per_month.append(x / 100 * self.FISH_PROTEIN)
                 production_fat_fish_per_month.append(x / 100 * self.FISH_FAT)
         else:
-            production_kcals_fish_per_month = [0] * len(FISH_PERCENT_EACH_MONTH)
-            production_protein_fish_per_month = [0] * len(FISH_PERCENT_EACH_MONTH)
-            production_fat_fish_per_month = [0] * len(FISH_PERCENT_EACH_MONTH)
+            production_kcals_fish_per_month = [0.0] * len(FISH_PERCENT_EACH_MONTH)
+            production_protein_fish_per_month = [0.0] * len(FISH_PERCENT_EACH_MONTH)
+            production_fat_fish_per_month = [0.0] * len(FISH_PERCENT_EACH_MONTH)
 
         # Set the seafood production to the calculated fish production.
         self.to_humans = Food(
