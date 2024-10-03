@@ -78,9 +78,15 @@ class StoredFood:
             until the end of August to determine the stocks.
         """
 
+        assert (
+            starting_month >= 1 and starting_month <= 12
+        ), "ERROR: starting month must be within [1,12]"
         starting_month_index = starting_month - 1  # convert to zero indexed
         ratio_lowest_stocks_untouched = self.ratio_lowest_stocks_untouched
         fraction_stored_food_to_use = self.percent_stored_food_to_use / 100
+        assert (
+            fraction_stored_food_to_use >= ratio_lowest_stocks_untouched
+        ), "ERROR: fraction_stored_food_to_use must be greater or equal to the ratio_lowest_stocks_untouched"
         end_of_month_stocks = self.end_of_month_stocks
 
         # lowest stock levels in baseline scenario (if ratio_lowest_stocks_untouched == 1)
@@ -119,18 +125,3 @@ class StoredFood:
             fat_units="thousand tons",
             protein_units="thousand tons",
         )
-
-    # def set_to_zero(self):
-    #     """
-    #     Initializes the stored food to zero.
-    #     """
-    #     self.TONS_DRY_CALORIC_EQIVALENT_SF = 0
-    #     self.INITIAL_SF_KCALS = 0
-    #     self.initial_available.kcals = 0
-    #     self.initial_available.fat = 0
-    #     self.initial_available.protein = 0
-    #     self.initial_available.set_units(
-    #         kcals_units="billion kcals",
-    #         fat_units="thousand tons",
-    #         protein_units="thousand tons",
-    #     )
