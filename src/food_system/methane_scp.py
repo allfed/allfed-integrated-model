@@ -7,6 +7,7 @@
 """
 
 import numpy as np
+
 from src.food_system.food import Food
 
 
@@ -51,7 +52,7 @@ class MethaneSCP:
         self.NMONTHS = constants_for_params["NMONTHS"]
 
         # set the SCP_KCALS_PER_KG, SCP_FRAC_PROTEIN, and SCP_FRAC_FAT attributes
-        self.SCP_KCALS_PER_KG = 5350  # kcals per kg of scp
+        self.SCP_KCALS_PER_KG = 5350.0  # kcals per kg of scp
         self.SCP_FRAC_PROTEIN = (
             0.650  # fraction protein by mass (1kg is 650 grams protein)
         )
