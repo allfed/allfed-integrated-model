@@ -1,6 +1,7 @@
 from random import randint, random
 from typing import Any
 
+import numpy as np
 import pytest
 
 from src.food_system.food import Food
@@ -46,3 +47,25 @@ def test_init(constants_for_params):
         mscp.SCP_WASTE_DISTRIBUTION
         == constants_for_params["WASTE_DISTRIBUTION"]["SUGAR"]
     )
+
+
+@pytest.mark.parametrize("kcals", ("array", "list"))
+def test_create_csp_food_from_kcals(kcals, constants_for_params):
+    assert Food.conversions
+    Food.conversions.kcals_monthly = 2100 * 30
+    mscp = MethaneSCP(constants_for_params)
+    if kcals == "array":
+        kcals = np.random.random(constants_for_params["NMONTHS"]) * 1e9
+    else:
+        kcals = list(np.random.random(constants_for_params["NMONTHS"]) * 1e9)
+    scp_food = mscp.create_scp_food_from_kcals(kcals)
+    assert isinstance(scp_food, Food)
+    assert isinstance(scp_food.kcals, np.ndarray)
+    assert len(scp_food.kcals) == constants_for_params["NMONTHS"]
+    assert np.all(scp_food.kcals)
+    assert isinstance(scp_food.fat, np.ndarray)
+    assert len(scp_food.fat) == constants_for_params["NMONTHS"]
+    assert np.all(scp_food.fat)
+    assert isinstance(scp_food.protein, np.ndarray)
+    assert len(scp_food.protein) == constants_for_params["NMONTHS"]
+    assert np.all(scp_food.protein)

@@ -7,6 +7,7 @@
 """
 
 import numpy as np
+from numpy.typing import ArrayLike
 
 from src.food_system.food import Food
 
@@ -127,16 +128,23 @@ class MethaneSCP:
         else:
             self.production_kcals_scp_per_month = [0] * self.NMONTHS
 
-    def create_scp_food_from_kcals(self, kcals):
-        # billions of kcals converted to 1000s of tons fat
+    def create_scp_food_from_kcals(self, kcals: ArrayLike) -> Food:
+        """
+        Args:
+            kcals (np.ArrayLike): array/list of billions of kcals for each month
 
-        production_fat = np.array(
-            list(np.array(kcals) * self.SCP_KCALS_TO_FAT_CONVERSION)
-        )
+        Returns:
+            Food object.
+        """
+        kcals = np.squeeze(np.array(kcals))
+        assert isinstance(kcals, np.ndarray)
+        assert kcals.ndim == 1
+
+        # billions of kcals converted to 1000s of tons fat
+        production_fat = kcals * self.SCP_KCALS_TO_FAT_CONVERSION
         # billions of kcals converted to 1000s of tons protein
-        production_protein = np.array(
-            list(np.array(kcals) * self.SCP_KCALS_TO_PROTEIN_CONVERSION)
-        )
+        production_protein = kcals * self.SCP_KCALS_TO_PROTEIN_CONVERSION
+
         return Food(
             kcals=kcals,
             fat=production_fat,
