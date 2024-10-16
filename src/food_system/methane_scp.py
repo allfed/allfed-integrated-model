@@ -7,6 +7,8 @@
 """
 
 import numpy as np
+from numpy.typing import ArrayLike
+
 from src.food_system.food import Food
 
 
@@ -51,7 +53,7 @@ class MethaneSCP:
         self.NMONTHS = constants_for_params["NMONTHS"]
 
         # set the SCP_KCALS_PER_KG, SCP_FRAC_PROTEIN, and SCP_FRAC_FAT attributes
-        self.SCP_KCALS_PER_KG = 5350  # kcals per kg of scp
+        self.SCP_KCALS_PER_KG = 5350.0  # kcals per kg of scp
         self.SCP_FRAC_PROTEIN = (
             0.650  # fraction protein by mass (1kg is 650 grams protein)
         )
@@ -126,16 +128,23 @@ class MethaneSCP:
         else:
             self.production_kcals_scp_per_month = [0] * self.NMONTHS
 
-    def create_scp_food_from_kcals(self, kcals):
-        # billions of kcals converted to 1000s of tons fat
+    def create_scp_food_from_kcals(self, kcals: ArrayLike) -> Food:
+        """
+        Args:
+            kcals (np.ArrayLike): array/list of billions of kcals for each month
 
-        production_fat = np.array(
-            list(np.array(kcals) * self.SCP_KCALS_TO_FAT_CONVERSION)
-        )
+        Returns:
+            Food object.
+        """
+        kcals = np.squeeze(np.array(kcals))
+        assert isinstance(kcals, np.ndarray)
+        assert kcals.ndim == 1
+
+        # billions of kcals converted to 1000s of tons fat
+        production_fat = kcals * self.SCP_KCALS_TO_FAT_CONVERSION
         # billions of kcals converted to 1000s of tons protein
-        production_protein = np.array(
-            list(np.array(kcals) * self.SCP_KCALS_TO_PROTEIN_CONVERSION)
-        )
+        production_protein = kcals * self.SCP_KCALS_TO_PROTEIN_CONVERSION
+
         return Food(
             kcals=kcals,
             fat=production_fat,
