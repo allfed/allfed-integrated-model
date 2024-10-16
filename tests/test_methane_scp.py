@@ -1,5 +1,6 @@
 from random import randint, random
 from typing import Any
+from unittest.mock import patch
 
 import numpy as np
 import pytest
@@ -17,6 +18,7 @@ def constants_for_params() -> dict[str, Any]:
         "WASTE_DISTRIBUTION": {"SUGAR": randint(1, 99)},
         "WASTE_RETAIL": randint(1, 99),
         "CS_GLOBAL_PRODUCTION_FRACTION": random(),
+        "SCP_GLOBAL_PRODUCTION_FRACTION": random(),
     }
     _dict |= {"DELAY": {"INDUSTRIAL_FOODS_MONTHS": randint(1, _dict["NMONTHS"] - 1)}}
     _dict |= {"GLOBAL_POP": _dict["POP"] * 10}
@@ -49,6 +51,27 @@ def test_init(constants_for_params):
     )
 
 
+@pytest.mark.parametrize("add_methane", [True, False])
+def test_calculate_monthly_scp_caloric_production(add_methane, constants_for_params):
+    assert Food.conversions
+    Food.conversions.kcals_monthly = 2100 * 30
+    constants_for_params["ADD_METHANE_SCP"] = add_methane
+    mscp = MethaneSCP(constants_for_params)
+    mscp.calculate_monthly_scp_caloric_production(constants_for_params)
+    assert isinstance(mscp.production_kcals_scp_per_month, list)
+    assert len(mscp.production_kcals_scp_per_month) == constants_for_params["NMONTHS"]
+    if not add_methane:
+        assert not any(mscp.production_kcals_scp_per_month)
+    else:
+        # TODO:why is the industrial delay added twice?
+        zero_valued_months = (
+            constants_for_params["DELAY"]["INDUSTRIAL_FOODS_MONTHS"] * 2 + 12
+        )
+        assert not any(mscp.production_kcals_scp_per_month[:zero_valued_months])
+        if mscp.production_kcals_scp_per_month[zero_valued_months:]:
+            assert any(mscp.production_kcals_scp_per_month[zero_valued_months:])
+
+
 @pytest.mark.parametrize("kcals", ("array", "list"))
 def test_create_csp_food_from_kcals(kcals, constants_for_params):
     assert Food.conversions
@@ -69,3 +92,17 @@ def test_create_csp_food_from_kcals(kcals, constants_for_params):
     assert isinstance(scp_food.protein, np.ndarray)
     assert len(scp_food.protein) == constants_for_params["NMONTHS"]
     assert np.all(scp_food.protein)
+
+
+@pytest.mark.parametrize("add_methane", [True, False])
+def test_calculate_scp_fat_and_protein_production(add_methane, constants_for_params):
+    assert Food.conversions
+    Food.conversions.kcals_monthly = 2100 * 30
+    constants_for_params["ADD_METHANE_SCP"] = add_methane
+    mscp = MethaneSCP(constants_for_params)
+    mscp.calculate_monthly_scp_caloric_production(constants_for_params)
+    mscp.calculate_scp_fat_and_protein_production()
+    assert isinstance(mscp.production, Food)
+    with patch.object(mscp, "create_scp_food_from_kcals") as mock_func:
+        mscp.calculate_scp_fat_and_protein_production()
+        mock_func.assert_called_once()
