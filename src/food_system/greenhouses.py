@@ -71,6 +71,10 @@ class Greenhouses:
 
         """
         # Calculate monthly kcals
+        assert self.TOTAL_CROP_AREA > 0, "total crop area cannot be zero"
+        assert len(all_months_reductions) >= self.NMONTHS, "not enough reduction values"
+        assert isinstance(all_months_reductions, np.ndarray)
+
         MONTHLY_KCALS = np.mean(months_cycle) / self.TOTAL_CROP_AREA
 
         # Calculate kcals grown per hectare before waste
