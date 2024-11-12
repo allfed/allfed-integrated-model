@@ -1,4 +1,3 @@
-from inspect import Attribute
 from itertools import product
 from random import randint, random
 from typing import Any
