@@ -71,6 +71,10 @@ class Greenhouses:
 
         """
         # Calculate monthly kcals
+        assert self.TOTAL_CROP_AREA > 0, "total crop area cannot be zero"
+        assert len(all_months_reductions) >= self.NMONTHS, "not enough reduction values"
+        assert isinstance(all_months_reductions, np.ndarray)
+
         MONTHLY_KCALS = np.mean(months_cycle) / self.TOTAL_CROP_AREA
 
         # Calculate kcals grown per hectare before waste
@@ -151,6 +155,7 @@ class Greenhouses:
             return np.zeros(self.NMONTHS)
 
         if self.ADD_GREENHOUSES:
+            assert len(outdoor_crops.KCALS_GROWN) >= 42
             GREENHOUSE_LIMIT_AREA = (
                 self.TOTAL_CROP_AREA * self.GREENHOUSE_AREA_MULTIPLIER
             )
@@ -216,6 +221,7 @@ class Greenhouses:
             [33.0, 33.0, 33.0, 33.0, 33.0, 33.0, 33.0, 33.0, 33.0, 33.0, 33.0, 33.0])
         """
 
+        assert hasattr(self, "GH_KCALS_GROWN_PER_HECTARE")
         # Constants for fat and protein ratios
         KCAL_RATIO = outdoor_crops.KCAL_RATIO_ROTATION
         FAT_RATIO = outdoor_crops.FAT_RATIO_ROTATION
