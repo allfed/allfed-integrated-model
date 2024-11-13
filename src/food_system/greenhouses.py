@@ -155,6 +155,7 @@ class Greenhouses:
             return np.zeros(self.NMONTHS)
 
         if self.ADD_GREENHOUSES:
+            assert len(outdoor_crops.KCALS_GROWN) >= 42
             GREENHOUSE_LIMIT_AREA = (
                 self.TOTAL_CROP_AREA * self.GREENHOUSE_AREA_MULTIPLIER
             )

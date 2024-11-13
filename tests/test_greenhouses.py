@@ -1,5 +1,6 @@
 from itertools import product
 from random import randint, random
+from types import SimpleNamespace
 from typing import Any
 
 import numpy as np
@@ -30,6 +31,19 @@ class TestGreenhouses:
             _d
             | {"DELAY": {"GREENHOUSE_MONTHS": randint(0, _d["NMONTHS"] - 1)}}
             | {"STARTING_MONTH_NUM": randint(0, _d["NMONTHS"] - 1)}
+        )
+
+    @pytest.fixture
+    def outdoor_crops(self):
+        months_cycle = np.random.random(12) * 1e3
+        exponent = random()
+        reductions = np.random.random(200)
+        kcals_grown = np.random.random(200) * 1e3
+        return SimpleNamespace(
+            months_cycle=months_cycle,
+            all_months_reductions=reductions,
+            OG_KCAL_EXPONENT=exponent,
+            KCALS_GROWN=kcals_grown,
         )
 
     def test_init(self, add_greenhouses, constants_for_params):
@@ -84,7 +98,8 @@ class TestGreenhouses:
         exponent = random()
         reductions = np.random.random(gh.NMONTHS + 1)
         # all_months_reduction cases
-        # case 1 all > 1
+        # case 1
+        # all > 1
         gh.assign_productivity_reduction_from_climate_impact(
             months_cycle, reductions + 1, exponent, crop_waste_coeff
         )
@@ -96,7 +111,8 @@ class TestGreenhouses:
             * crop_waste_coeff
             / gh.TOTAL_CROP_AREA
         )
-        # case 2 all < 1 but > 0
+        # case 2
+        # all < 1 but > 0
         gh.assign_productivity_reduction_from_climate_impact(
             months_cycle, reductions, exponent, crop_waste_coeff
         )
@@ -108,12 +124,14 @@ class TestGreenhouses:
             * crop_waste_coeff
             / gh.TOTAL_CROP_AREA
         )
-        # case 3 < 0 --> assertion error
+        # case 3
+        # < 0 --> assertion error
         with pytest.raises(AssertionError):
             gh.assign_productivity_reduction_from_climate_impact(
                 months_cycle, reductions - 1, exponent, crop_waste_coeff
             )
-        # case 4 < 0 but only slighlty (1e-9) --> all get set to 0
+        # case 4
+        # < 0 but only slighlty (1e-9) --> all get set to 0
         gh.assign_productivity_reduction_from_climate_impact(
             months_cycle, np.array([-1e-9] * gh.NMONTHS), exponent, crop_waste_coeff
         )
@@ -127,3 +145,34 @@ class TestGreenhouses:
             gh.assign_productivity_reduction_from_climate_impact(
                 months_cycle, reductions, exponent + 1, crop_waste_coeff
             )
+
+    def test_get_greenhouse_area(
+        self, add_greenhouses, constants_for_params, outdoor_crops
+    ):
+        gh = Greenhouses(constants_for_params)
+        gh_area = gh.get_greenhouse_area(constants_for_params, outdoor_crops)
+        assert isinstance(gh_area, np.ndarray)
+        assert len(gh_area) == constants_for_params["NMONTHS"]
+        if gh.TOTAL_CROP_AREA == 0:
+            assert not any(gh_area)
+        else:
+            if add_greenhouses:
+                assert not any(
+                    gh_area[: 5 + constants_for_params["DELAY"]["GREENHOUSE_MONTHS"]]
+                )
+                assert all(
+                    gh_area[
+                        5 + constants_for_params["DELAY"]["GREENHOUSE_MONTHS"] + 1 :
+                    ]
+                    > 0
+                )
+                assert gh_area[
+                    5 + constants_for_params["DELAY"]["GREENHOUSE_MONTHS"] + 36 :
+                ] == pytest.approx(gh.TOTAL_CROP_AREA * gh.GREENHOUSE_AREA_MULTIPLIER)
+            else:
+                assert isinstance(gh.GH_KCALS_GROWN_PER_HECTARE, list)
+                assert len(gh.GH_KCALS_GROWN_PER_HECTARE) == gh.NMONTHS
+                assert not any(gh.GH_KCALS_GROWN_PER_HECTARE)
+                assert not any(gh_area)
+                assert isinstance(gh.greenhouse_fraction_area, np.ndarray)
+                assert not any(gh.greenhouse_fraction_area)
