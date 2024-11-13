@@ -26,6 +26,7 @@ class TestGreenhouses:
             "INITIAL_GLOBAL_CROP_AREA": (0.5 + random()) * 1e9,
             "INITIAL_CROP_AREA_FRACTION": initial_crop_area_fraction,
             "GREENHOUSE_AREA_MULTIPLIER": random(),
+            "GREENHOUSE_GAIN_PCT": randint(1, 100),
         }
         return (
             _d
@@ -39,11 +40,17 @@ class TestGreenhouses:
         exponent = random()
         reductions = np.random.random(200)
         kcals_grown = np.random.random(200) * 1e3
+        kcal_ratio = random()
+        fat_ratio = random()
+        protein_ratio = random()
         return SimpleNamespace(
             months_cycle=months_cycle,
             all_months_reductions=reductions,
             OG_KCAL_EXPONENT=exponent,
             KCALS_GROWN=kcals_grown,
+            KCAL_RATIO_ROTATION=kcal_ratio,
+            FAT_RATIO_ROTATION=fat_ratio,
+            PROTEIN_RATIO_ROTATION=protein_ratio,
         )
 
     def test_init(self, add_greenhouses, constants_for_params):
@@ -73,10 +80,12 @@ class TestGreenhouses:
             with pytest.raises(AttributeError):
                 assert isinstance(gh.greenhouse_delay, int)
 
-    def test_assign_producivity_from_climate_impact(self, constants_for_params):
+    def test_assign_producivity_from_climate_impact(
+        self, initial_crop_area_fraction, constants_for_params
+    ):
         gh = Greenhouses(constants_for_params)
         months_cycle = np.random.random(12) * 1e3
-        if gh.TOTAL_CROP_AREA == 0:
+        if initial_crop_area_fraction == 0:
             with pytest.raises(AssertionError, match="total crop area cannot be zero"):
                 gh.assign_productivity_reduction_from_climate_impact(
                     [1], np.random.random(gh.NMONTHS - 1), 0.5, 0.5
@@ -147,13 +156,17 @@ class TestGreenhouses:
             )
 
     def test_get_greenhouse_area(
-        self, add_greenhouses, constants_for_params, outdoor_crops
+        self,
+        add_greenhouses,
+        initial_crop_area_fraction,
+        constants_for_params,
+        outdoor_crops,
     ):
         gh = Greenhouses(constants_for_params)
         gh_area = gh.get_greenhouse_area(constants_for_params, outdoor_crops)
         assert isinstance(gh_area, np.ndarray)
         assert len(gh_area) == constants_for_params["NMONTHS"]
-        if gh.TOTAL_CROP_AREA == 0:
+        if initial_crop_area_fraction == 0:
             assert not any(gh_area)
         else:
             if add_greenhouses:
@@ -176,3 +189,52 @@ class TestGreenhouses:
                 assert not any(gh_area)
                 assert isinstance(gh.greenhouse_fraction_area, np.ndarray)
                 assert not any(gh.greenhouse_fraction_area)
+
+    def test_get_greenhouse_yield_per_ha(
+        self,
+        add_greenhouses,
+        initial_crop_area_fraction,
+        constants_for_params,
+        outdoor_crops,
+    ):
+        gh = Greenhouses(constants_for_params)
+        with pytest.raises(AssertionError):
+            gh_yield = gh.get_greenhouse_yield_per_ha(
+                constants_for_params, outdoor_crops
+            )
+        if initial_crop_area_fraction == 0:
+            with pytest.raises(AssertionError):
+                gh.assign_productivity_reduction_from_climate_impact(
+                    outdoor_crops.months_cycle,
+                    outdoor_crops.all_months_reductions,
+                    outdoor_crops.OG_KCAL_EXPONENT,
+                    0.5,
+                )
+            return
+        gh.assign_productivity_reduction_from_climate_impact(
+            outdoor_crops.months_cycle,
+            outdoor_crops.all_months_reductions,
+            outdoor_crops.OG_KCAL_EXPONENT,
+            0.5,
+        )
+        gh_yield = gh.get_greenhouse_yield_per_ha(constants_for_params, outdoor_crops)
+        assert isinstance(gh_yield, tuple)
+        assert len(gh_yield) == 3
+        assert all([isinstance(x, list) for x in gh_yield])
+        gh_yield = np.concatenate(gh_yield)
+        assert len(gh_yield) == 3 * constants_for_params["NMONTHS"]
+        if add_greenhouses:
+            assert (gh_yield > 0).all()
+            assert gh_yield[: gh.NMONTHS] == pytest.approx(
+                gh.GH_KCALS_GROWN_PER_HECTARE
+                * outdoor_crops.KCAL_RATIO_ROTATION
+                * (1 + constants_for_params["GREENHOUSE_GAIN_PCT"] / 100)
+            )
+            assert gh_yield[gh.NMONTHS : 2 * gh.NMONTHS] == pytest.approx(
+                gh_yield[: gh.NMONTHS] * outdoor_crops.FAT_RATIO_ROTATION
+            )
+            assert gh_yield[2 * gh.NMONTHS :] == pytest.approx(
+                gh_yield[: gh.NMONTHS] * outdoor_crops.PROTEIN_RATIO_ROTATION
+            )
+        else:
+            assert not gh_yield.any()

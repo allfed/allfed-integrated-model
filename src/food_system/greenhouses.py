@@ -221,6 +221,7 @@ class Greenhouses:
             [33.0, 33.0, 33.0, 33.0, 33.0, 33.0, 33.0, 33.0, 33.0, 33.0, 33.0, 33.0])
         """
 
+        assert hasattr(self, "GH_KCALS_GROWN_PER_HECTARE")
         # Constants for fat and protein ratios
         KCAL_RATIO = outdoor_crops.KCAL_RATIO_ROTATION
         FAT_RATIO = outdoor_crops.FAT_RATIO_ROTATION
