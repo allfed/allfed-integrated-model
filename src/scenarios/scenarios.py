@@ -5,7 +5,6 @@ Also makes sure values are never set twice.
 
 import git
 import numpy as np
-import pytest
 
 
 repo_root = git.Repo(".", search_parent_directories=True).working_dir
@@ -1088,8 +1087,8 @@ class Scenarios:
             country_data["seasonality_m" + str(i)] for i in range(1, 13)
         ]
 
-        # check that the seasonality sums to one using pytest approx
-        assert np.sum(constants_for_params["SEASONALITY"]) == pytest.approx(1.0), (
+        # check that the seasonality sums to one
+        assert np.isclose(np.sum(constants_for_params["SEASONALITY"]), 1.0), (
             "ERROR: Seasonality does not sum to one for country: "
             + country_data["country"]
         )
