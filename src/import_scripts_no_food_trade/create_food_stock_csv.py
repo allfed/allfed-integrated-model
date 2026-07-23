@@ -6,39 +6,16 @@ repo_root = git.Repo(".", search_parent_directories=True).working_dir
 
 print("importing food stocks data...")
 
-NO_TRADE_XLS = (
-    Path(repo_root)
-    / "data"
-    / "no_food_trade"
-    / "raw_data"
-    / "Integrated Model With No Food Trade.xlsx"
+BASE_STOCKS_CSV = (
+    Path(repo_root) / "data" / "no_food_trade" / "raw_data" / "base_stocks.csv"
 )
 
-xls = pd.ExcelFile(NO_TRADE_XLS)
+df_stock = pd.read_csv(BASE_STOCKS_CSV)
 
-df_stock = pd.read_excel(xls, "Food Stocks")[
-    [
-        "ISO3 Country Code",
-        "Country",
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-    ]
-]
-
-# Rename columns
-df_stock.columns = [
-    "iso3",
-    "country",
+# The base stocks dataset provides a single stock level per country in millions
+# of tonnes (dry caloric equivalent). The model's data schema expects end-of-month
+# stocks for all 12 months in tonnes, so the base value is applied to every month.
+MONTH_COLUMNS = [
     "stocks_kcals_jan",
     "stocks_kcals_feb",
     "stocks_kcals_mar",
@@ -52,19 +29,11 @@ df_stock.columns = [
     "stocks_kcals_nov",
     "stocks_kcals_dec",
 ]
-df_stock["stocks_kcals_jan"] = df_stock["stocks_kcals_jan"] * 1e6
-df_stock["stocks_kcals_feb"] = df_stock["stocks_kcals_feb"] * 1e6
-df_stock["stocks_kcals_mar"] = df_stock["stocks_kcals_mar"] * 1e6
-df_stock["stocks_kcals_apr"] = df_stock["stocks_kcals_apr"] * 1e6
-df_stock["stocks_kcals_may"] = df_stock["stocks_kcals_may"] * 1e6
-df_stock["stocks_kcals_jun"] = df_stock["stocks_kcals_jun"] * 1e6
-df_stock["stocks_kcals_jul"] = df_stock["stocks_kcals_jul"] * 1e6
-df_stock["stocks_kcals_aug"] = df_stock["stocks_kcals_aug"] * 1e6
-df_stock["stocks_kcals_sep"] = df_stock["stocks_kcals_sep"] * 1e6
-df_stock["stocks_kcals_oct"] = df_stock["stocks_kcals_oct"] * 1e6
-df_stock["stocks_kcals_nov"] = df_stock["stocks_kcals_nov"] * 1e6
-df_stock["stocks_kcals_dec"] = df_stock["stocks_kcals_dec"] * 1e6
 
+for month_column in MONTH_COLUMNS:
+    df_stock[month_column] = df_stock["base_stocks_million_tonnes"] * 1e6
+
+df_stock = df_stock[["iso3", "country"] + MONTH_COLUMNS]
 
 df_stock.to_csv(
     Path(repo_root)
